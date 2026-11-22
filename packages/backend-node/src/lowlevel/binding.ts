@@ -589,6 +589,30 @@ export function getNodeBinding(): NativeAddon {
     "Expected native addon to export mini()",
   );
   invariant(
+    typeof native.ducrss === "function",
+    "Expected native addon to export ducrss()",
+  );
+  invariant(
+    typeof native.dvcrss === "function",
+    "Expected native addon to export dvcrss()",
+  );
+  invariant(
+    typeof native.dvdot === "function",
+    "Expected native addon to export dvdot()",
+  );
+  invariant(
+    typeof native.dvhat === "function",
+    "Expected native addon to export dvhat()",
+  );
+  invariant(
+    typeof native.dvnorm === "function",
+    "Expected native addon to export dvnorm()",
+  );
+  invariant(
+    typeof native.dvsep === "function",
+    "Expected native addon to export dvsep()",
+  );
+  invariant(
     typeof native.reclat === "function",
     "Expected native addon to export reclat(rect)",
   );

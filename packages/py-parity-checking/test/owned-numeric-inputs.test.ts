@@ -53,6 +53,30 @@ for (const backend of ["node", "wasm"] as const) {
         expect(raw.mini(readOnce(2, -3, 5, 4))).toEqual(
           raw.mini([2, -3, 5, 4]),
         );
+        expect(
+          raw.ducrss(
+            readOnce(1, 2, -3, 4, 5, -6),
+            readOnce(-2, 4, 7, -3, 2, 1),
+          ),
+        ).toEqual(raw.ducrss([1, 2, -3, 4, 5, -6], [-2, 4, 7, -3, 2, 1]));
+        expect(
+          raw.dvcrss(
+            readOnce(1, 2, -3, 4, 5, -6),
+            readOnce(-2, 4, 7, -3, 2, 1),
+          ),
+        ).toEqual(raw.dvcrss([1, 2, -3, 4, 5, -6], [-2, 4, 7, -3, 2, 1]));
+        expect(
+          raw.dvdot(readOnce(1, 2, -3, 4, 5, -6), readOnce(-2, 4, 7, -3, 2, 1)),
+        ).toEqual(raw.dvdot([1, 2, -3, 4, 5, -6], [-2, 4, 7, -3, 2, 1]));
+        expect(raw.dvhat(readOnce(1, 2, -3, 4, 5, -6))).toEqual(
+          raw.dvhat([1, 2, -3, 4, 5, -6]),
+        );
+        expect(raw.dvnorm(readOnce(1, 2, -3, 4, 5, -6))).toEqual(
+          raw.dvnorm([1, 2, -3, 4, 5, -6]),
+        );
+        expect(
+          raw.dvsep(readOnce(1, 2, -3, 4, 5, -6), readOnce(-2, 4, 7, -3, 2, 1)),
+        ).toEqual(raw.dvsep([1, 2, -3, 4, 5, -6], [-2, 4, 7, -3, 2, 1]));
         expect(raw.failed()).toBe(false);
       } finally {
         await dispose();

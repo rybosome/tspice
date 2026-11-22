@@ -1,0 +1,933 @@
+{
+  "schemaVersion": 1,
+  "batch": "a11-state-derivatives",
+  "traceFiles": [
+    "packages/py-parity-checking/src/run-tspice/domains/coords-vectors.ts",
+    "packages/py-parity-checking/src/run-tspice/dispatch.ts",
+    "packages/py-parity-checking/src/case-types.ts",
+    "packages/py-parity-checking/src/cases/index.ts",
+    "packages/py-parity-checking/test/state-derivatives.test.ts",
+    "packages/py-parity-checking/test/state-derivatives-extremes.test.ts",
+    "packages/backend-wasm/test/state-derivatives-allocations.test.ts",
+    "packages/backend-node/test/state-derivatives-domain.test.ts",
+    "fixtures/consumer-nodom/src/index.ts",
+    "scripts/build-backend-wasm.mjs",
+    "packages/backend-wasm/src/lowlevel/exports.ts",
+    "packages/backend-node/src/lowlevel/binding.ts",
+    "packages/backend-node/src/runtime/addon.ts",
+    "packages/backend-wasm/src/codec/alloc.ts",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/coords_vectors.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/decode.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/__init__.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/coords_vectors.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/workflow.py",
+    "docs/step8-state-derivatives.md",
+    "packages/backend-wasm/src/codec/errors.ts",
+    "packages/backend-node/src/domains/coords-vectors.ts",
+    "packages/backend-wasm/src/domains/coords-vectors.ts",
+    "packages/py-parity-checking/test/owned-numeric-inputs.test.ts"
+  ],
+  "executions": [
+    {
+      "id": "local-a11-b20b8172-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "68d751b329d69be5a5ea266f7044bcbc84bf2aee15f6492e2cf6ec0cc2b99a2e",
+      "caseIds": [
+        "coords-vectors-ducrss-dyadic-collinear-states",
+        "coords-vectors-ducrss-mixed-components-and-order",
+        "coords-vectors-ducrss-orthogonal-basis-rates",
+        "coords-vectors-ducrss-scaled-derivatives",
+        "coords-vectors-ducrss-scaled-states",
+        "coords-vectors-ducrss-zero-position-and-velocity",
+        "coords-vectors-dvcrss-dyadic-collinear-states",
+        "coords-vectors-dvcrss-mixed-components-and-order",
+        "coords-vectors-dvcrss-orthogonal-basis-rates",
+        "coords-vectors-dvcrss-scaled-derivatives",
+        "coords-vectors-dvcrss-scaled-states",
+        "coords-vectors-dvcrss-zero-position-and-velocity",
+        "coords-vectors-dvdot-dyadic-collinear-states",
+        "coords-vectors-dvdot-mixed-components-and-order",
+        "coords-vectors-dvdot-orthogonal-basis-rates",
+        "coords-vectors-dvdot-scaled-derivatives",
+        "coords-vectors-dvdot-scaled-states",
+        "coords-vectors-dvdot-zero-position-and-velocity",
+        "coords-vectors-dvhat-mixed-components",
+        "coords-vectors-dvhat-radial-and-transverse-motion",
+        "coords-vectors-dvhat-scaled-derivatives",
+        "coords-vectors-dvhat-scaled-states",
+        "coords-vectors-dvhat-zero-position-and-velocity",
+        "coords-vectors-dvhat-zero-position-exact-extrema",
+        "coords-vectors-dvnorm-mixed-components",
+        "coords-vectors-dvnorm-radial-and-transverse-motion",
+        "coords-vectors-dvnorm-scaled-derivatives",
+        "coords-vectors-dvnorm-scaled-states",
+        "coords-vectors-dvnorm-zero-position-and-velocity",
+        "coords-vectors-dvsep-axis-collinear-states",
+        "coords-vectors-dvsep-decimal-overflow-negative",
+        "coords-vectors-dvsep-decimal-overflow-positive",
+        "coords-vectors-dvsep-division-underflow-and-finite-boundary",
+        "coords-vectors-dvsep-mixed-components-and-order",
+        "coords-vectors-dvsep-near-parallel-axis",
+        "coords-vectors-dvsep-orthogonal-basis-rates",
+        "coords-vectors-dvsep-scaled-derivatives",
+        "coords-vectors-dvsep-scaled-states",
+        "coords-vectors-dvsep-zero-position-and-velocity"
+      ],
+      "observation": "Both complete required local lanes passed at sourceb20b8172. Native-required executed2296 actual Node/WASM live comparisons and2522 parity-package tests with no skips, including production native guard;98native631WASM28core150facade tests passed. JS lane passed2296live and2521parity plus expected guard skip. Canonical source CI observation remains pending.",
+      "historical": true
+    },
+    {
+      "id": "local-a11-b20b8172-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "68d751b329d69be5a5ea266f7044bcbc84bf2aee15f6492e2cf6ec0cc2b99a2e",
+      "caseIds": [
+        "coords-vectors-ducrss-dyadic-collinear-states",
+        "coords-vectors-ducrss-mixed-components-and-order",
+        "coords-vectors-ducrss-orthogonal-basis-rates",
+        "coords-vectors-ducrss-scaled-derivatives",
+        "coords-vectors-ducrss-scaled-states",
+        "coords-vectors-ducrss-zero-position-and-velocity",
+        "coords-vectors-dvcrss-dyadic-collinear-states",
+        "coords-vectors-dvcrss-mixed-components-and-order",
+        "coords-vectors-dvcrss-orthogonal-basis-rates",
+        "coords-vectors-dvcrss-scaled-derivatives",
+        "coords-vectors-dvcrss-scaled-states",
+        "coords-vectors-dvcrss-zero-position-and-velocity",
+        "coords-vectors-dvdot-dyadic-collinear-states",
+        "coords-vectors-dvdot-mixed-components-and-order",
+        "coords-vectors-dvdot-orthogonal-basis-rates",
+        "coords-vectors-dvdot-scaled-derivatives",
+        "coords-vectors-dvdot-scaled-states",
+        "coords-vectors-dvdot-zero-position-and-velocity",
+        "coords-vectors-dvhat-mixed-components",
+        "coords-vectors-dvhat-radial-and-transverse-motion",
+        "coords-vectors-dvhat-scaled-derivatives",
+        "coords-vectors-dvhat-scaled-states",
+        "coords-vectors-dvhat-zero-position-and-velocity",
+        "coords-vectors-dvhat-zero-position-exact-extrema",
+        "coords-vectors-dvnorm-mixed-components",
+        "coords-vectors-dvnorm-radial-and-transverse-motion",
+        "coords-vectors-dvnorm-scaled-derivatives",
+        "coords-vectors-dvnorm-scaled-states",
+        "coords-vectors-dvnorm-zero-position-and-velocity",
+        "coords-vectors-dvsep-axis-collinear-states",
+        "coords-vectors-dvsep-decimal-overflow-negative",
+        "coords-vectors-dvsep-decimal-overflow-positive",
+        "coords-vectors-dvsep-division-underflow-and-finite-boundary",
+        "coords-vectors-dvsep-mixed-components-and-order",
+        "coords-vectors-dvsep-near-parallel-axis",
+        "coords-vectors-dvsep-orthogonal-basis-rates",
+        "coords-vectors-dvsep-scaled-derivatives",
+        "coords-vectors-dvsep-scaled-states",
+        "coords-vectors-dvsep-zero-position-and-velocity"
+      ],
+      "observation": "Both complete required local lanes passed at sourceb20b8172. Native-required executed2296 actual Node/WASM live comparisons and2522 parity-package tests with no skips, including production native guard;98native631WASM28core150facade tests passed. JS lane passed2296live and2521parity plus expected guard skip. Canonical source CI observation remains pending.",
+      "historical": true
+    },
+    {
+      "id": "local-a11-7ffccbc5-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "a69c1e6ba8e0c72169bf7b2a6c6f5540cfa3bf5dee9548abd4f94ba5ae840c1a",
+      "caseIds": [
+        "coords-vectors-ducrss-dyadic-collinear-states",
+        "coords-vectors-ducrss-mixed-components-and-order",
+        "coords-vectors-ducrss-orthogonal-basis-rates",
+        "coords-vectors-ducrss-scaled-derivatives",
+        "coords-vectors-ducrss-scaled-states",
+        "coords-vectors-ducrss-zero-position-and-velocity",
+        "coords-vectors-dvcrss-dyadic-collinear-states",
+        "coords-vectors-dvcrss-mixed-components-and-order",
+        "coords-vectors-dvcrss-orthogonal-basis-rates",
+        "coords-vectors-dvcrss-scaled-derivatives",
+        "coords-vectors-dvcrss-scaled-states",
+        "coords-vectors-dvcrss-zero-position-and-velocity",
+        "coords-vectors-dvdot-dyadic-collinear-states",
+        "coords-vectors-dvdot-mixed-components-and-order",
+        "coords-vectors-dvdot-orthogonal-basis-rates",
+        "coords-vectors-dvdot-scaled-derivatives",
+        "coords-vectors-dvdot-scaled-states",
+        "coords-vectors-dvdot-zero-position-and-velocity",
+        "coords-vectors-dvhat-mixed-components",
+        "coords-vectors-dvhat-radial-and-transverse-motion",
+        "coords-vectors-dvhat-scaled-derivatives",
+        "coords-vectors-dvhat-scaled-states",
+        "coords-vectors-dvhat-zero-position-and-velocity",
+        "coords-vectors-dvhat-zero-position-exact-extrema",
+        "coords-vectors-dvnorm-mixed-components",
+        "coords-vectors-dvnorm-radial-and-transverse-motion",
+        "coords-vectors-dvnorm-scaled-derivatives",
+        "coords-vectors-dvnorm-scaled-states",
+        "coords-vectors-dvnorm-zero-position-and-velocity",
+        "coords-vectors-dvsep-axis-collinear-states",
+        "coords-vectors-dvsep-decimal-overflow-negative",
+        "coords-vectors-dvsep-decimal-overflow-positive",
+        "coords-vectors-dvsep-division-underflow-and-finite-boundary",
+        "coords-vectors-dvsep-mixed-components-and-order",
+        "coords-vectors-dvsep-near-parallel-axis",
+        "coords-vectors-dvsep-orthogonal-basis-rates",
+        "coords-vectors-dvsep-scaled-derivatives",
+        "coords-vectors-dvsep-scaled-states",
+        "coords-vectors-dvsep-zero-position-and-velocity"
+      ],
+      "observation": "Both complete required lanes passed locally on 7ffccbc529e65fe58844fc4917bacc0d41a694f9. JavaScript: 2,523 parity tests and one expected guard skip. Native-required: 2,296 registered Node/WASM live comparisons; 2,524 parity-package tests with no skips, including the native-required guard; 98 native wrapper, 631 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "local-a11-7ffccbc5-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "a69c1e6ba8e0c72169bf7b2a6c6f5540cfa3bf5dee9548abd4f94ba5ae840c1a",
+      "caseIds": [
+        "coords-vectors-ducrss-dyadic-collinear-states",
+        "coords-vectors-ducrss-mixed-components-and-order",
+        "coords-vectors-ducrss-orthogonal-basis-rates",
+        "coords-vectors-ducrss-scaled-derivatives",
+        "coords-vectors-ducrss-scaled-states",
+        "coords-vectors-ducrss-zero-position-and-velocity",
+        "coords-vectors-dvcrss-dyadic-collinear-states",
+        "coords-vectors-dvcrss-mixed-components-and-order",
+        "coords-vectors-dvcrss-orthogonal-basis-rates",
+        "coords-vectors-dvcrss-scaled-derivatives",
+        "coords-vectors-dvcrss-scaled-states",
+        "coords-vectors-dvcrss-zero-position-and-velocity",
+        "coords-vectors-dvdot-dyadic-collinear-states",
+        "coords-vectors-dvdot-mixed-components-and-order",
+        "coords-vectors-dvdot-orthogonal-basis-rates",
+        "coords-vectors-dvdot-scaled-derivatives",
+        "coords-vectors-dvdot-scaled-states",
+        "coords-vectors-dvdot-zero-position-and-velocity",
+        "coords-vectors-dvhat-mixed-components",
+        "coords-vectors-dvhat-radial-and-transverse-motion",
+        "coords-vectors-dvhat-scaled-derivatives",
+        "coords-vectors-dvhat-scaled-states",
+        "coords-vectors-dvhat-zero-position-and-velocity",
+        "coords-vectors-dvhat-zero-position-exact-extrema",
+        "coords-vectors-dvnorm-mixed-components",
+        "coords-vectors-dvnorm-radial-and-transverse-motion",
+        "coords-vectors-dvnorm-scaled-derivatives",
+        "coords-vectors-dvnorm-scaled-states",
+        "coords-vectors-dvnorm-zero-position-and-velocity",
+        "coords-vectors-dvsep-axis-collinear-states",
+        "coords-vectors-dvsep-decimal-overflow-negative",
+        "coords-vectors-dvsep-decimal-overflow-positive",
+        "coords-vectors-dvsep-division-underflow-and-finite-boundary",
+        "coords-vectors-dvsep-mixed-components-and-order",
+        "coords-vectors-dvsep-near-parallel-axis",
+        "coords-vectors-dvsep-orthogonal-basis-rates",
+        "coords-vectors-dvsep-scaled-derivatives",
+        "coords-vectors-dvsep-scaled-states",
+        "coords-vectors-dvsep-zero-position-and-velocity"
+      ],
+      "observation": "Both complete required lanes passed locally on 7ffccbc529e65fe58844fc4917bacc0d41a694f9. JavaScript: 2,523 parity tests and one expected guard skip. Native-required: 2,296 registered Node/WASM live comparisons; 2,524 parity-package tests with no skips, including the native-required guard; 98 native wrapper, 631 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-a11-7ffccbc5-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "a69c1e6ba8e0c72169bf7b2a6c6f5540cfa3bf5dee9548abd4f94ba5ae840c1a",
+      "caseIds": [
+        "coords-vectors-ducrss-dyadic-collinear-states",
+        "coords-vectors-ducrss-mixed-components-and-order",
+        "coords-vectors-ducrss-orthogonal-basis-rates",
+        "coords-vectors-ducrss-scaled-derivatives",
+        "coords-vectors-ducrss-scaled-states",
+        "coords-vectors-ducrss-zero-position-and-velocity",
+        "coords-vectors-dvcrss-dyadic-collinear-states",
+        "coords-vectors-dvcrss-mixed-components-and-order",
+        "coords-vectors-dvcrss-orthogonal-basis-rates",
+        "coords-vectors-dvcrss-scaled-derivatives",
+        "coords-vectors-dvcrss-scaled-states",
+        "coords-vectors-dvcrss-zero-position-and-velocity",
+        "coords-vectors-dvdot-dyadic-collinear-states",
+        "coords-vectors-dvdot-mixed-components-and-order",
+        "coords-vectors-dvdot-orthogonal-basis-rates",
+        "coords-vectors-dvdot-scaled-derivatives",
+        "coords-vectors-dvdot-scaled-states",
+        "coords-vectors-dvdot-zero-position-and-velocity",
+        "coords-vectors-dvhat-mixed-components",
+        "coords-vectors-dvhat-radial-and-transverse-motion",
+        "coords-vectors-dvhat-scaled-derivatives",
+        "coords-vectors-dvhat-scaled-states",
+        "coords-vectors-dvhat-zero-position-and-velocity",
+        "coords-vectors-dvhat-zero-position-exact-extrema",
+        "coords-vectors-dvnorm-mixed-components",
+        "coords-vectors-dvnorm-radial-and-transverse-motion",
+        "coords-vectors-dvnorm-scaled-derivatives",
+        "coords-vectors-dvnorm-scaled-states",
+        "coords-vectors-dvnorm-zero-position-and-velocity",
+        "coords-vectors-dvsep-axis-collinear-states",
+        "coords-vectors-dvsep-decimal-overflow-negative",
+        "coords-vectors-dvsep-decimal-overflow-positive",
+        "coords-vectors-dvsep-division-underflow-and-finite-boundary",
+        "coords-vectors-dvsep-mixed-components-and-order",
+        "coords-vectors-dvsep-near-parallel-axis",
+        "coords-vectors-dvsep-orthogonal-basis-rates",
+        "coords-vectors-dvsep-scaled-derivatives",
+        "coords-vectors-dvsep-scaled-states",
+        "coords-vectors-dvsep-zero-position-and-velocity"
+      ],
+      "commit": "7ffccbc529e65fe58844fc4917bacc0d41a694f9",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43550316080/job/132311040070",
+      "observation": "Inspected successful Linux Node 22 native-required job 132311040070 on 7ffccbc529e65fe58844fc4917bacc0d41a694f9: 2,296 registered Node/WASM live comparisons; 2,524 parity-package tests with no skips, including the native-required guard; 98 native wrapper, 631 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-a11-7ffccbc5-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "a69c1e6ba8e0c72169bf7b2a6c6f5540cfa3bf5dee9548abd4f94ba5ae840c1a",
+      "caseIds": [
+        "coords-vectors-ducrss-dyadic-collinear-states",
+        "coords-vectors-ducrss-mixed-components-and-order",
+        "coords-vectors-ducrss-orthogonal-basis-rates",
+        "coords-vectors-ducrss-scaled-derivatives",
+        "coords-vectors-ducrss-scaled-states",
+        "coords-vectors-ducrss-zero-position-and-velocity",
+        "coords-vectors-dvcrss-dyadic-collinear-states",
+        "coords-vectors-dvcrss-mixed-components-and-order",
+        "coords-vectors-dvcrss-orthogonal-basis-rates",
+        "coords-vectors-dvcrss-scaled-derivatives",
+        "coords-vectors-dvcrss-scaled-states",
+        "coords-vectors-dvcrss-zero-position-and-velocity",
+        "coords-vectors-dvdot-dyadic-collinear-states",
+        "coords-vectors-dvdot-mixed-components-and-order",
+        "coords-vectors-dvdot-orthogonal-basis-rates",
+        "coords-vectors-dvdot-scaled-derivatives",
+        "coords-vectors-dvdot-scaled-states",
+        "coords-vectors-dvdot-zero-position-and-velocity",
+        "coords-vectors-dvhat-mixed-components",
+        "coords-vectors-dvhat-radial-and-transverse-motion",
+        "coords-vectors-dvhat-scaled-derivatives",
+        "coords-vectors-dvhat-scaled-states",
+        "coords-vectors-dvhat-zero-position-and-velocity",
+        "coords-vectors-dvhat-zero-position-exact-extrema",
+        "coords-vectors-dvnorm-mixed-components",
+        "coords-vectors-dvnorm-radial-and-transverse-motion",
+        "coords-vectors-dvnorm-scaled-derivatives",
+        "coords-vectors-dvnorm-scaled-states",
+        "coords-vectors-dvnorm-zero-position-and-velocity",
+        "coords-vectors-dvsep-axis-collinear-states",
+        "coords-vectors-dvsep-decimal-overflow-negative",
+        "coords-vectors-dvsep-decimal-overflow-positive",
+        "coords-vectors-dvsep-division-underflow-and-finite-boundary",
+        "coords-vectors-dvsep-mixed-components-and-order",
+        "coords-vectors-dvsep-near-parallel-axis",
+        "coords-vectors-dvsep-orthogonal-basis-rates",
+        "coords-vectors-dvsep-scaled-derivatives",
+        "coords-vectors-dvsep-scaled-states",
+        "coords-vectors-dvsep-zero-position-and-velocity"
+      ],
+      "commit": "7ffccbc529e65fe58844fc4917bacc0d41a694f9",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43550316080/job/132311040070",
+      "observation": "Inspected successful Linux Node 22 native-required job 132311040070 on 7ffccbc529e65fe58844fc4917bacc0d41a694f9: 2,296 registered Node/WASM live comparisons; 2,524 parity-package tests with no skips, including the native-required guard; 98 native wrapper, 631 WASM, 28 core and 150 facade tests passed."
+    }
+  ],
+  "routines": [
+    {
+      "routine": "ducrss_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ducrss_c.html",
+      "semantics": "raw.ducrss(a,b) returns the actual unit cross position and its derivative as a new six-component state. Pinned N0067 first divides all six components of each input by its largest absolute position component (leaving zero-position states unscaled), then calls dvcrss and dvhat. A computed zero cross therefore preserves the derivative of the internally scaled cross, not necessarily the original cross. Nonzero normalization remains sensitive near collinearity. NAIF requires caller magnitudes that avoid intermediate overflow. Inputs are readonly six-element finite states in [position,derivative] order and are not mutated. State outputs are owned arrays; actual numeric outputs are not normalized or clamped.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-ducrss-mixed-components-and-order",
+          "coverage": ["success", "edge"],
+          "observes": "Observe all six normalized-cross components for mixed input and reversed operand order."
+        },
+        {
+          "caseId": "coords-vectors-ducrss-zero-position-and-velocity",
+          "coverage": ["success", "edge"],
+          "observes": "Observe either/both zero positions, distinct nonzero derivatives, zero entire states and static inputs; internal scaling leaves zero-position states unscaled."
+        },
+        {
+          "caseId": "coords-vectors-ducrss-dyadic-collinear-states",
+          "coverage": ["success", "edge"],
+          "observes": "Observe exact axis and dyadic non-axis collinearity; all derivative components expose internal whole-state scaling, including [0,0,0,0,-1,-1] versus the unscaled cross derivative."
+        },
+        {
+          "caseId": "coords-vectors-ducrss-orthogonal-basis-rates",
+          "coverage": ["success", "edge"],
+          "observes": "Observe normalized cross direction and its nonzero derivative for differently scaled moving axes."
+        },
+        {
+          "caseId": "coords-vectors-ducrss-scaled-states",
+          "coverage": ["success", "edge"],
+          "observes": "Observe actual whole-state scaling by 1e100 and 1e-100. All six normalized outputs retain direction/rate under common state scaling."
+        },
+        {
+          "caseId": "coords-vectors-ducrss-scaled-derivatives",
+          "coverage": ["success", "edge"],
+          "observes": "Observe unchanged positions with derivatives alone scaled by 1e100 and 1e-100. Focused live comparison independently rescales scalar rates or the final three vector entries while preserving the first three position outputs."
+        }
+      ],
+      "edgeAssessment": "Mixed/reversed inputs, either zero state/position, zero derivatives, orthogonal moving axes and dyadic collinearity observe both position and derivative. Explicit scaled-singular values distinguish original from internally scaled cross derivatives. Whole-state scaling and derivative-only scaling remain inside the caller overflow restriction; no universal singular cross-build equality is claimed.",
+      "errorAssessment": "NAIF treats ordinary defined inputs as error-free. Invalid length/type/nonfinite input is wrapper validation, separately exercised for every component. No artificial scientific exception is invented. Magnitudes that overflow intermediate arithmetic are outside the documented caller responsibility and are not used as scientific acceptance inputs.",
+      "fixtures": [],
+      "fixtureRationale": "Project-authored numerical states, compatible frames/derivative parameters and deterministic magnitude boundaries. No kernels, external scientific data or persistent resources; no fixture provenance gap.",
+      "cleanup": "Kernel-free numerical states require no file/handle/kernel lifecycle. Shared C checks non-null buffers, uses fixed local result storage, calls the actual canonical routine and publishes successful values after SPICE failure checking. Error diagnostics are captured/reset before throwing. Native copies six-element results under the existing global mutex; WASM transactionally releases allocations on failure and success and copies outputs before release. Public tests dispose clients; error tests explicitly verify recovery. Allocation instrumentation and malformed-input checks are separate from scientific output evidence.",
+      "tolerance": "Normal comparison remains atol=1e-12/rtol=1e-12 for every returned scalar or six-state component. Focused live comparisons rescale tiny derivatives and squared-scale cross/dot outputs to prevent zero from satisfying absolute tolerance; position and derivative halves are handled independently. Exact singular acceptance uses representable scaled/axis cases; source-specific normalization conditioning is documented without promising identical cross-build output for every mathematical collinearity.",
+      "findings": [
+        {
+          "id": "scaled-singular-derivative-prose",
+          "status": "repaired",
+          "summary": "Published zero-cross prose can imply the derivative of the original cross, but pinned N0067 scales both entire states before dvcrss/dvhat; actual locked oracle produces a different singular derivative.",
+          "repair": "Retain direct canonical calls and document the scaled-state zero-cross convention in public JSDoc and durable source evidence. Registered dyadic/axis and zero-position observations plus exact focused checks distinguish scaled and original cross derivatives; no scientific workaround.",
+          "evidence": [
+            "packages/backend-contract/src/domains/coords-vectors.ts",
+            "packages/py-parity-checking/test/state-derivatives.test.ts",
+            "docs/step8-state-derivatives.md"
+          ],
+          "caseIds": [
+            "coords-vectors-ducrss-dyadic-collinear-states",
+            "coords-vectors-ducrss-zero-position-and-velocity"
+          ]
+        },
+        {
+          "id": "validated-input-snapshot",
+          "status": "repaired",
+          "summary": "The adapters validated caller-owned numeric arrays and then read them again while dispatching or marshaling. These later reads could differ from the checked values.",
+          "repair": "Copy each of the six finite state components once into an owned position/velocity tuple before dispatch. Preserve the original state layout and scientific derivative algorithms. The focused public boundary regression compares single-read inputs with ordinary arrays on both real backends; unchanged registered cases retain the independent scientific oracle.",
+          "evidence": [
+            "packages/backend-node/src/domains/coords-vectors.ts",
+            "packages/backend-wasm/src/domains/coords-vectors.ts",
+            "packages/py-parity-checking/test/owned-numeric-inputs.test.ts"
+          ],
+          "caseIds": ["coords-vectors-ducrss-mixed-components-and-order"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.ducrss -> typed Node adapter with exact six-number validation -> actual native ducrss binding with fixed local buffers/global SPICE mutex -> shared tspice_ducrss -> canonical ducrss_c. Independent Python calls the actual locked SpiceyPy ducrss wrapper and forwards every output entry/scalar.",
+          "executions": ["local-a11-7ffccbc5-node", "ci-a11-7ffccbc5-node"]
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.ducrss -> typed WASM adapter with exact six-number validation -> exported _tspice_ducrss with transactional buffers and copied output -> shared tspice_ducrss -> canonical ducrss_c. Independent Python calls the actual locked SpiceyPy ducrss wrapper and forwards every output entry/scalar.",
+          "executions": ["local-a11-7ffccbc5-wasm", "ci-a11-7ffccbc5-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "dvcrss_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dvcrss_c.html",
+      "semantics": "raw.dvcrss(a,b) returns [cross(a.position,b.position), cross(a.derivative,b.position)+cross(a.position,b.derivative)] through actual CSPICE. Every component and operand order matter; zero position can leave a nonzero derivative. Floating overflow, underflow and cancellation in the actual cross/add operations are retained. Inputs are readonly six-element finite states in [position,derivative] order and are not mutated. State outputs are owned arrays; actual numeric outputs are not normalized or clamped.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-dvcrss-mixed-components-and-order",
+          "coverage": ["success", "edge"],
+          "observes": "Observe all six cross/derivative components and antisymmetric operand reversal."
+        },
+        {
+          "caseId": "coords-vectors-dvcrss-zero-position-and-velocity",
+          "coverage": ["success", "edge"],
+          "observes": "Observe either/both zero positions independently of velocities, distinguishing nonzero derivative terms from a zero cross position."
+        },
+        {
+          "caseId": "coords-vectors-dvcrss-dyadic-collinear-states",
+          "coverage": ["success", "edge"],
+          "observes": "Observe zero cross positions but nonzero original-state derivative entries, distinct from ducrss scaled singular output."
+        },
+        {
+          "caseId": "coords-vectors-dvcrss-orthogonal-basis-rates",
+          "coverage": ["success", "edge"],
+          "observes": "Observe original cross scale and the two derivative cross terms on moving coordinate axes."
+        },
+        {
+          "caseId": "coords-vectors-dvcrss-scaled-states",
+          "coverage": ["success", "edge"],
+          "observes": "Observe actual whole-state scaling by 1e100 and 1e-100. All six outputs have quadratic scale; focused comparison rescales by 1e±200."
+        },
+        {
+          "caseId": "coords-vectors-dvcrss-scaled-derivatives",
+          "coverage": ["success", "edge"],
+          "observes": "Observe unchanged positions with derivatives alone scaled by 1e100 and 1e-100. Focused live comparison independently rescales scalar rates or the final three vector entries while preserving the first three position outputs."
+        }
+      ],
+      "edgeAssessment": "Mixed/reversed input states, each zero position and zero derivative, collinear/dyadic inputs, moving orthogonal axes and independent state/derivative scales distinguish cross sign and both derivative terms. Separate tagged actual-oracle observations retain overflowing position/derivative entries and finite controls.",
+      "errorAssessment": "NAIF treats ordinary defined inputs as error-free. Invalid length/type/nonfinite input is wrapper validation, separately exercised for every component. No artificial scientific exception is invented.",
+      "fixtures": [],
+      "fixtureRationale": "Project-authored numerical states, compatible frames/derivative parameters and deterministic magnitude boundaries. No kernels, external scientific data or persistent resources; no fixture provenance gap.",
+      "cleanup": "Kernel-free numerical states require no file/handle/kernel lifecycle. Shared C checks non-null buffers, uses fixed local result storage, calls the actual canonical routine and publishes successful values after SPICE failure checking. Error diagnostics are captured/reset before throwing. Native copies six-element results under the existing global mutex; WASM transactionally releases allocations on failure and success and copies outputs before release. Public tests dispose clients; error tests explicitly verify recovery. Allocation instrumentation and malformed-input checks are separate from scientific output evidence.",
+      "tolerance": "Normal comparison remains atol=1e-12/rtol=1e-12 for every returned scalar or six-state component. Focused live comparisons rescale tiny derivatives and squared-scale cross/dot outputs to prevent zero from satisfying absolute tolerance; position and derivative halves are handled independently. Separate tagged live observations compare every component, NaN/Inf and zero signs exactly, and finite nonzero values with relative-only 1e-12 tolerance. No global comparator change.",
+      "findings": [
+        {
+          "id": "validated-input-snapshot",
+          "status": "repaired",
+          "summary": "The adapters validated caller-owned numeric arrays and then read them again while dispatching or marshaling. These later reads could differ from the checked values.",
+          "repair": "Copy each of the six finite state components once into an owned position/velocity tuple before dispatch. Preserve the original state layout and scientific derivative algorithms. The focused public boundary regression compares single-read inputs with ordinary arrays on both real backends; unchanged registered cases retain the independent scientific oracle.",
+          "evidence": [
+            "packages/backend-node/src/domains/coords-vectors.ts",
+            "packages/backend-wasm/src/domains/coords-vectors.ts",
+            "packages/py-parity-checking/test/owned-numeric-inputs.test.ts"
+          ],
+          "caseIds": ["coords-vectors-dvcrss-mixed-components-and-order"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.dvcrss -> typed Node adapter with exact six-number validation -> actual native dvcrss binding with fixed local buffers/global SPICE mutex -> shared tspice_dvcrss -> canonical dvcrss_c. Independent Python calls the actual locked SpiceyPy dvcrss wrapper and forwards every output entry/scalar.",
+          "executions": ["local-a11-7ffccbc5-node", "ci-a11-7ffccbc5-node"]
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.dvcrss -> typed WASM adapter with exact six-number validation -> exported _tspice_dvcrss with transactional buffers and copied output -> shared tspice_dvcrss -> canonical dvcrss_c. Independent Python calls the actual locked SpiceyPy dvcrss wrapper and forwards every output entry/scalar.",
+          "executions": ["local-a11-7ffccbc5-wasm", "ci-a11-7ffccbc5-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "dvdot_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dvdot_c.html",
+      "semantics": "raw.dvdot(a,b) returns the actual derivative of the position dot product, combining six ordered products of each position and the other derivative. It is not a six-dimensional dot product. Both position and derivative slots matter. NAIF requires caller magnitudes that avoid overflow in products/summation. Inputs are readonly six-element finite states in [position,derivative] order and are not mutated. State outputs are owned arrays; actual numeric outputs are not normalized or clamped.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-dvdot-mixed-components-and-order",
+          "coverage": ["success", "edge"],
+          "observes": "Observe both position/derivative contributions and symmetric operand reversal in the scalar rate."
+        },
+        {
+          "caseId": "coords-vectors-dvdot-zero-position-and-velocity",
+          "coverage": ["success", "edge"],
+          "observes": "Observe each cross-slot dot contribution with zero position or derivative; zero position alone need not force the total rate to zero."
+        },
+        {
+          "caseId": "coords-vectors-dvdot-dyadic-collinear-states",
+          "coverage": ["success", "edge"],
+          "observes": "Observe actual position-dot derivative for parallel/opposed and dyadic non-axis states; this scalar has no cross-normalization singularity."
+        },
+        {
+          "caseId": "coords-vectors-dvdot-orthogonal-basis-rates",
+          "coverage": ["success", "edge"],
+          "observes": "Observe nonzero dot derivative even where the position dot is initially zero."
+        },
+        {
+          "caseId": "coords-vectors-dvdot-scaled-states",
+          "coverage": ["success", "edge"],
+          "observes": "Observe actual whole-state scaling by 1e100 and 1e-100. The scalar has quadratic scale; focused comparison rescales by 1e±200."
+        },
+        {
+          "caseId": "coords-vectors-dvdot-scaled-derivatives",
+          "coverage": ["success", "edge"],
+          "observes": "Observe unchanged positions with derivatives alone scaled by 1e100 and 1e-100. Focused live comparison independently rescales scalar rates or the final three vector entries while preserving the first three position outputs."
+        }
+      ],
+      "edgeAssessment": "Mixed and reversed states, all/one/both zero positions, static derivatives, dyadic collinearity, orthogonal moving axes and separate whole-state/derivative scales distinguish the six cross-slot products. Acceptance stays within NAIF caller overflow restrictions rather than manufacturing out-of-domain scientific cases.",
+      "errorAssessment": "NAIF treats ordinary defined inputs as error-free. Invalid length/type/nonfinite input is wrapper validation, separately exercised for every component. No artificial scientific exception is invented. Magnitudes that overflow intermediate arithmetic are outside the documented caller responsibility and are not used as scientific acceptance inputs.",
+      "fixtures": [],
+      "fixtureRationale": "Project-authored numerical states, compatible frames/derivative parameters and deterministic magnitude boundaries. No kernels, external scientific data or persistent resources; no fixture provenance gap.",
+      "cleanup": "Kernel-free numerical states require no file/handle/kernel lifecycle. Shared C checks non-null buffers, uses fixed local result storage, calls the actual canonical routine and publishes successful values after SPICE failure checking. Error diagnostics are captured/reset before throwing. Native copies six-element results under the existing global mutex; WASM transactionally releases allocations on failure and success and copies outputs before release. Public tests dispose clients; error tests explicitly verify recovery. Allocation instrumentation and malformed-input checks are separate from scientific output evidence.",
+      "tolerance": "Normal comparison remains atol=1e-12/rtol=1e-12 for every returned scalar or six-state component. Focused live comparisons rescale tiny derivatives and squared-scale cross/dot outputs to prevent zero from satisfying absolute tolerance; position and derivative halves are handled independently.",
+      "findings": [
+        {
+          "id": "validated-input-snapshot",
+          "status": "repaired",
+          "summary": "The adapters validated caller-owned numeric arrays and then read them again while dispatching or marshaling. These later reads could differ from the checked values.",
+          "repair": "Copy each of the six finite state components once into an owned position/velocity tuple before dispatch. Preserve the original state layout and scientific derivative algorithms. The focused public boundary regression compares single-read inputs with ordinary arrays on both real backends; unchanged registered cases retain the independent scientific oracle.",
+          "evidence": [
+            "packages/backend-node/src/domains/coords-vectors.ts",
+            "packages/backend-wasm/src/domains/coords-vectors.ts",
+            "packages/py-parity-checking/test/owned-numeric-inputs.test.ts"
+          ],
+          "caseIds": ["coords-vectors-dvdot-mixed-components-and-order"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.dvdot -> typed Node adapter with exact six-number validation -> actual native dvdot binding with fixed local buffers/global SPICE mutex -> shared tspice_dvdot -> canonical dvdot_c. Independent Python calls the actual locked SpiceyPy dvdot wrapper and forwards every output entry/scalar.",
+          "executions": ["local-a11-7ffccbc5-node", "ci-a11-7ffccbc5-node"]
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.dvdot -> typed WASM adapter with exact six-number validation -> exported _tspice_dvdot with transactional buffers and copied output -> shared tspice_dvdot -> canonical dvdot_c. Independent Python calls the actual locked SpiceyPy dvdot wrapper and forwards every output entry/scalar.",
+          "executions": ["local-a11-7ffccbc5-wasm", "ci-a11-7ffccbc5-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "dvhat_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dvhat_c.html",
+      "semantics": "raw.dvhat(state) returns the actual unit position and its derivative in a new six-component state. Pinned source obtains unit position/norm, removes the velocity projection along that direction, then scales by reciprocal norm. A computed zero norm instead gives zero position and copies the input derivative unchanged. Actual intermediate/reciprocal limits and all six outputs are preserved. Inputs are readonly six-element finite states in [position,derivative] order and are not mutated. State outputs are owned arrays; actual numeric outputs are not normalized or clamped.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-dvhat-mixed-components",
+          "coverage": ["success", "edge"],
+          "observes": "Observe all six unit/derivative entries for three mixed states including a known length-13 position."
+        },
+        {
+          "caseId": "coords-vectors-dvhat-zero-position-and-velocity",
+          "coverage": ["success", "edge"],
+          "observes": "Observe zero norm copying the entire input derivative, all-zero state and static nonzero position."
+        },
+        {
+          "caseId": "coords-vectors-dvhat-radial-and-transverse-motion",
+          "coverage": ["success", "edge"],
+          "observes": "Observe radial motion producing zero unit-direction derivative and transverse motion producing signed derivatives scaled by position length."
+        },
+        {
+          "caseId": "coords-vectors-dvhat-scaled-states",
+          "coverage": ["success", "edge"],
+          "observes": "Observe actual whole-state scaling by 1e100 and 1e-100. Unit direction and its derivative retain the common-scale-invariant result."
+        },
+        {
+          "caseId": "coords-vectors-dvhat-scaled-derivatives",
+          "coverage": ["success", "edge"],
+          "observes": "Observe unchanged positions with derivatives alone scaled by 1e100 and 1e-100. Focused live comparison independently rescales scalar rates or the final three vector entries while preserving the first three position outputs."
+        },
+        {
+          "caseId": "coords-vectors-dvhat-zero-position-exact-extrema",
+          "coverage": ["success", "edge"],
+          "observes": "Observe zero output position and exact copied derivative [MAX,-MAX,MIN], with a separate focused exact comparison so subnormal output cannot pass as zero."
+        }
+      ],
+      "edgeAssessment": "Mixed six-component states, zero position with nonzero derivative, zero derivative, inward/outward radial and transverse motion, whole-state and derivative-only scales distinguish normalization from derivative transport. Exact copied extrema/subnormals and negative zero are observable; tagged finite/nonfinite cases retain reciprocal-norm limits and all six fields.",
+      "errorAssessment": "NAIF treats ordinary defined inputs as error-free. Invalid length/type/nonfinite input is wrapper validation, separately exercised for every component. No artificial scientific exception is invented.",
+      "fixtures": [],
+      "fixtureRationale": "Project-authored numerical states, compatible frames/derivative parameters and deterministic magnitude boundaries. No kernels, external scientific data or persistent resources; no fixture provenance gap.",
+      "cleanup": "Kernel-free numerical states require no file/handle/kernel lifecycle. Shared C checks non-null buffers, uses fixed local result storage, calls the actual canonical routine and publishes successful values after SPICE failure checking. Error diagnostics are captured/reset before throwing. Native copies six-element results under the existing global mutex; WASM transactionally releases allocations on failure and success and copies outputs before release. Public tests dispose clients; error tests explicitly verify recovery. Allocation instrumentation and malformed-input checks are separate from scientific output evidence.",
+      "tolerance": "Normal comparison remains atol=1e-12/rtol=1e-12 for every returned scalar or six-state component. Focused live comparisons rescale tiny derivatives and squared-scale cross/dot outputs to prevent zero from satisfying absolute tolerance; position and derivative halves are handled independently. Separate tagged live observations compare every component, NaN/Inf and zero signs exactly, and finite nonzero values with relative-only 1e-12 tolerance. No global comparator change. Exact copied extrema/subnormal and signed-zero derivative fields are checked independently of normal absolute tolerance.",
+      "findings": [
+        {
+          "id": "validated-input-snapshot",
+          "status": "repaired",
+          "summary": "The adapters validated caller-owned numeric arrays and then read them again while dispatching or marshaling. These later reads could differ from the checked values.",
+          "repair": "Copy each of the six finite state components once into an owned position/velocity tuple before dispatch. Preserve the original state layout and scientific derivative algorithms. The focused public boundary regression compares single-read inputs with ordinary arrays on both real backends; unchanged registered cases retain the independent scientific oracle.",
+          "evidence": [
+            "packages/backend-node/src/domains/coords-vectors.ts",
+            "packages/backend-wasm/src/domains/coords-vectors.ts",
+            "packages/py-parity-checking/test/owned-numeric-inputs.test.ts"
+          ],
+          "caseIds": ["coords-vectors-dvhat-mixed-components"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.dvhat -> typed Node adapter with exact six-number validation -> actual native dvhat binding with fixed local buffers/global SPICE mutex -> shared tspice_dvhat -> canonical dvhat_c. Independent Python calls the actual locked SpiceyPy dvhat wrapper and forwards every output entry/scalar.",
+          "executions": ["local-a11-7ffccbc5-node", "ci-a11-7ffccbc5-node"]
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.dvhat -> typed WASM adapter with exact six-number validation -> exported _tspice_dvhat with transactional buffers and copied output -> shared tspice_dvhat -> canonical dvhat_c. Independent Python calls the actual locked SpiceyPy dvhat wrapper and forwards every output entry/scalar.",
+          "executions": ["local-a11-7ffccbc5-wasm", "ci-a11-7ffccbc5-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "dvnorm_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dvnorm_c.html",
+      "semantics": "raw.dvnorm(state) returns the actual dot product of the input derivative and unit position, with original derivative units. If the computed position norm is zero it returns zero. It preserves the pinned normalization and dot-product numerical limits without a substitute formula. Inputs are readonly six-element finite states in [position,derivative] order and are not mutated. State outputs are owned arrays; actual numeric outputs are not normalized or clamped.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-dvnorm-mixed-components",
+          "coverage": ["success", "edge"],
+          "observes": "Observe scalar rates for three mixed states including a known length-13 position."
+        },
+        {
+          "caseId": "coords-vectors-dvnorm-zero-position-and-velocity",
+          "coverage": ["success", "edge"],
+          "observes": "Observe zero position and static nonzero position returning zero, without inventing division errors."
+        },
+        {
+          "caseId": "coords-vectors-dvnorm-radial-and-transverse-motion",
+          "coverage": ["success", "edge"],
+          "observes": "Observe outward/inward signed norm rates and transverse zero norm rates."
+        },
+        {
+          "caseId": "coords-vectors-dvnorm-scaled-states",
+          "coverage": ["success", "edge"],
+          "observes": "Observe actual whole-state scaling by 1e100 and 1e-100. The scalar derivative scales linearly and is rescaled in focused comparison."
+        },
+        {
+          "caseId": "coords-vectors-dvnorm-scaled-derivatives",
+          "coverage": ["success", "edge"],
+          "observes": "Observe unchanged positions with derivatives alone scaled by 1e100 and 1e-100. Focused live comparison independently rescales scalar rates or the final three vector entries while preserving the first three position outputs."
+        }
+      ],
+      "edgeAssessment": "Mixed states, either zero position or derivative, signed inward/outward radial and transverse motion, large/small whole-state and derivative scales distinguish the scalar rate from norm itself. Tagged positive/negative overflow and overflowing-position normalization cases retain the actual output, with finite controls.",
+      "errorAssessment": "NAIF treats ordinary defined inputs as error-free. Invalid length/type/nonfinite input is wrapper validation, separately exercised for every component. No artificial scientific exception is invented.",
+      "fixtures": [],
+      "fixtureRationale": "Project-authored numerical states, compatible frames/derivative parameters and deterministic magnitude boundaries. No kernels, external scientific data or persistent resources; no fixture provenance gap.",
+      "cleanup": "Kernel-free numerical states require no file/handle/kernel lifecycle. Shared C checks non-null buffers, uses fixed local result storage, calls the actual canonical routine and publishes successful values after SPICE failure checking. Error diagnostics are captured/reset before throwing. Native copies six-element results under the existing global mutex; WASM transactionally releases allocations on failure and success and copies outputs before release. Public tests dispose clients; error tests explicitly verify recovery. Allocation instrumentation and malformed-input checks are separate from scientific output evidence.",
+      "tolerance": "Normal comparison remains atol=1e-12/rtol=1e-12 for every returned scalar or six-state component. Focused live comparisons rescale tiny derivatives and squared-scale cross/dot outputs to prevent zero from satisfying absolute tolerance; position and derivative halves are handled independently. Separate tagged live observations compare every component, NaN/Inf and zero signs exactly, and finite nonzero values with relative-only 1e-12 tolerance. No global comparator change.",
+      "findings": [
+        {
+          "id": "validated-input-snapshot",
+          "status": "repaired",
+          "summary": "The adapters validated caller-owned numeric arrays and then read them again while dispatching or marshaling. These later reads could differ from the checked values.",
+          "repair": "Copy each of the six finite state components once into an owned position/velocity tuple before dispatch. Preserve the original state layout and scientific derivative algorithms. The focused public boundary regression compares single-read inputs with ordinary arrays on both real backends; unchanged registered cases retain the independent scientific oracle.",
+          "evidence": [
+            "packages/backend-node/src/domains/coords-vectors.ts",
+            "packages/backend-wasm/src/domains/coords-vectors.ts",
+            "packages/py-parity-checking/test/owned-numeric-inputs.test.ts"
+          ],
+          "caseIds": ["coords-vectors-dvnorm-mixed-components"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.dvnorm -> typed Node adapter with exact six-number validation -> actual native dvnorm binding with fixed local buffers/global SPICE mutex -> shared tspice_dvnorm -> canonical dvnorm_c. Independent Python calls the actual locked SpiceyPy dvnorm wrapper and forwards every output entry/scalar.",
+          "executions": ["local-a11-7ffccbc5-node", "ci-a11-7ffccbc5-node"]
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.dvnorm -> typed WASM adapter with exact six-number validation -> exported _tspice_dvnorm with transactional buffers and copied output -> shared tspice_dvnorm -> canonical dvnorm_c. Independent Python calls the actual locked SpiceyPy dvnorm wrapper and forwards every output entry/scalar.",
+          "executions": ["local-a11-7ffccbc5-wasm", "ci-a11-7ffccbc5-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "dvsep_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dvsep_c.html",
+      "semantics": "raw.dvsep(a,b) returns the actual angular-separation derivative in radians per common derivative parameter. States share observer, frame and epoch. Pinned source normalizes both states with dvhat, returns zero if their computed position cross is exactly zero, otherwise divides the negative derivative of the normalized dot by the normalized cross norm through ZZDIV. Decimal-exponent guarded underflow returns zero, detected numeric overflow propagates as SPICE(NUMERICOVERFLOW), and exact mathematical collinearity can be poorly conditioned after normalization. Inputs are readonly six-element finite states in [position,derivative] order and are not mutated. State outputs are owned arrays; actual numeric outputs are not normalized or clamped.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-dvsep-mixed-components-and-order",
+          "coverage": ["success", "edge"],
+          "observes": "Observe full angular rate and its symmetric operand reversal for well-conditioned mixed states."
+        },
+        {
+          "caseId": "coords-vectors-dvsep-zero-position-and-velocity",
+          "coverage": ["success", "edge"],
+          "observes": "Observe zero positions giving computed zero cross and static nonzero positions giving zero rate, including nonzero derivatives on zero positions."
+        },
+        {
+          "caseId": "coords-vectors-dvsep-axis-collinear-states",
+          "coverage": ["success", "edge"],
+          "observes": "Observe exact normalized-cross zero and scalar zero for axis-aligned parallel/opposed positions. Non-axis singular normalization residuals are separately documented, not forced to this value."
+        },
+        {
+          "caseId": "coords-vectors-dvsep-orthogonal-basis-rates",
+          "coverage": ["success", "edge"],
+          "observes": "Observe signed separation rates at orthogonal positions and changing orientations."
+        },
+        {
+          "caseId": "coords-vectors-dvsep-scaled-states",
+          "coverage": ["success", "edge"],
+          "observes": "Observe actual whole-state scaling by 1e100 and 1e-100. The angular rate retains its common-scale-invariant result."
+        },
+        {
+          "caseId": "coords-vectors-dvsep-scaled-derivatives",
+          "coverage": ["success", "edge"],
+          "observes": "Observe unchanged positions with derivatives alone scaled by 1e100 and 1e-100. Focused live comparison independently rescales scalar rates or the final three vector entries while preserving the first three position outputs."
+        },
+        {
+          "caseId": "coords-vectors-dvsep-near-parallel-axis",
+          "coverage": ["success", "edge"],
+          "observes": "Observe nonzero signed rates for near-parallel and near-opposed positions with nonzero separation, retaining the actual quotient without clamping."
+        },
+        {
+          "caseId": "coords-vectors-dvsep-division-underflow-and-finite-boundary",
+          "coverage": ["success", "edge"],
+          "observes": "Observe signed 1e-308 rates returning zero under ZZDIV, signed 1e-306 rates surviving and signed 1e308 finite rates accepted. Focused live scaling distinguishes tiny finite rates from zero."
+        },
+        {
+          "caseId": "coords-vectors-dvsep-decimal-overflow-positive",
+          "coverage": ["error"],
+          "observes": "Observe actual SPICE(NUMERICOVERFLOW) at finite positive input derivative 1.5e308; it is an error, not the C fallback scalar zero."
+        },
+        {
+          "caseId": "coords-vectors-dvsep-decimal-overflow-negative",
+          "coverage": ["error"],
+          "observes": "Observe actual SPICE(NUMERICOVERFLOW) at finite negative input derivative -1.5e308, with explicit reset/recovery tests."
+        }
+      ],
+      "edgeAssessment": "Mixed/reversed states, zeros, static derivatives, exact axis collinearity, orthogonal moving axes, near-parallel nonzero states and scale variations distinguish rate signs and magnitude. Both signed ZZDIV underflow returns, finite tiny/large controls and genuine signed decimal-overflow exceptions are reviewed. Non-axis mathematical collinearity is explicitly documented as a normalization-conditioning boundary, not repaired by clamping.",
+      "errorAssessment": "Two registered finite-input cases observe genuine SPICE(NUMERICOVERFLOW), including both signs, from ZZDIV decimal-exponent guarding. Focused live error checks compare the independent failure, then assert backend automatic reset and actual valid-call recovery. Underflow returns zero without error. DIVIDEBYZERO is documented as a source call-tree branch, not claimed covered by a fabricated or unobserved input. Invalid six-state shape/nonfinite slots are separate wrapper validation.",
+      "fixtures": [],
+      "fixtureRationale": "Project-authored numerical states, compatible frames/derivative parameters and deterministic magnitude boundaries. No kernels, external scientific data or persistent resources; no fixture provenance gap.",
+      "cleanup": "Kernel-free numerical states require no file/handle/kernel lifecycle. Shared C checks non-null buffers, uses fixed local result storage, calls the actual canonical routine and publishes successful values after SPICE failure checking. Error diagnostics are captured/reset before throwing. Native copies six-element results under the existing global mutex; WASM transactionally releases allocations on failure and success and copies outputs before release. Public tests dispose clients; error tests explicitly verify recovery. Allocation instrumentation and malformed-input checks are separate from scientific output evidence.",
+      "tolerance": "Normal comparison remains atol=1e-12/rtol=1e-12 for every returned scalar or six-state component. Focused live comparisons rescale tiny derivatives and squared-scale cross/dot outputs to prevent zero from satisfying absolute tolerance; position and derivative halves are handled independently. Exact singular acceptance uses representable scaled/axis cases; source-specific normalization conditioning is documented without promising identical cross-build output for every mathematical collinearity. Guarded zero returns are exact and finite tiny/large cutoff controls are separately rescaled; error matching requires NUMERICOVERFLOW and recovery.",
+      "findings": [
+        {
+          "id": "normalized-collinearity-conditioning",
+          "status": "repaired",
+          "summary": "Locked oracle returns a nonzero ill-conditioned quotient for one mathematically collinear dyadic input after normalization by sqrt21, so mathematical collinearity alone cannot establish portable exact-zero output.",
+          "repair": "Document exact computed-cross zero and the singular conditioning limit. Use axis-aligned parallel/opposed states for exact-zero acceptance while retaining mixed and near-parallel nonzero live cases, complete scalar comparisons and all error/cutoff cases. No global tolerance, production arithmetic or eligibility change.",
+          "evidence": [
+            "packages/backend-contract/src/domains/coords-vectors.ts",
+            "packages/py-parity-checking/test/state-derivatives.test.ts",
+            "docs/step8-state-derivatives.md"
+          ],
+          "caseIds": [
+            "coords-vectors-dvsep-axis-collinear-states",
+            "coords-vectors-dvsep-mixed-components-and-order",
+            "coords-vectors-dvsep-near-parallel-axis"
+          ]
+        },
+        {
+          "id": "guarded-division-underflow-semantics",
+          "status": "repaired",
+          "summary": "The general header wording groups underflow with signaled numeric errors, but pinned ZZDIV returns zero without signaling for sufficiently small nonzero quotients; its overflow cutoff also precedes the maximum finite double.",
+          "repair": "Document and observe both signed underflow-zero values, signed tiny/large finite controls and actual signed NUMERICOVERFLOW exceptions with reset/recovery. Preserve the direct result/error distinction instead of inferring behavior from the prose.",
+          "evidence": [
+            "packages/backend-contract/src/domains/coords-vectors.ts",
+            "packages/py-parity-checking/test/state-derivatives.test.ts",
+            "packages/backend-node/test/state-derivatives-domain.test.ts",
+            "docs/step8-state-derivatives.md"
+          ],
+          "caseIds": [
+            "coords-vectors-dvsep-division-underflow-and-finite-boundary",
+            "coords-vectors-dvsep-decimal-overflow-positive",
+            "coords-vectors-dvsep-decimal-overflow-negative"
+          ]
+        },
+        {
+          "id": "structured-error-allocation-accounting",
+          "status": "repaired",
+          "summary": "The WASM genuine dvsep error test initially counted only four routine buffers and omitted three existing structured-diagnostic buffers, so its allocation-count assertion failed despite correct cleanup and scientific error behavior.",
+          "repair": "Count seven allocations: four routine buffers plus existing short/long/trace diagnostic buffers. Retain pointer/free accounting, NUMERICOVERFLOW assertion and recovery; no production or scientific comparator change.",
+          "evidence": [
+            "packages/backend-wasm/test/state-derivatives-allocations.test.ts",
+            "packages/backend-wasm/src/codec/errors.ts",
+            "docs/step8-state-derivatives.md"
+          ],
+          "caseIds": [
+            "coords-vectors-dvsep-decimal-overflow-positive",
+            "coords-vectors-dvsep-decimal-overflow-negative"
+          ]
+        },
+        {
+          "id": "validated-input-snapshot",
+          "status": "repaired",
+          "summary": "The adapters validated caller-owned numeric arrays and then read them again while dispatching or marshaling. These later reads could differ from the checked values.",
+          "repair": "Copy each of the six finite state components once into an owned position/velocity tuple before dispatch. Preserve the original state layout and scientific derivative algorithms. The focused public boundary regression compares single-read inputs with ordinary arrays on both real backends; unchanged registered cases retain the independent scientific oracle.",
+          "evidence": [
+            "packages/backend-node/src/domains/coords-vectors.ts",
+            "packages/backend-wasm/src/domains/coords-vectors.ts",
+            "packages/py-parity-checking/test/owned-numeric-inputs.test.ts"
+          ],
+          "caseIds": ["coords-vectors-dvsep-mixed-components-and-order"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.dvsep -> typed Node adapter with exact six-number validation -> actual native dvsep binding with fixed local buffers/global SPICE mutex -> shared tspice_dvsep -> canonical dvsep_c. Independent Python calls the actual locked SpiceyPy dvsep wrapper and forwards every output entry/scalar.",
+          "executions": ["local-a11-7ffccbc5-node", "ci-a11-7ffccbc5-node"]
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.dvsep -> typed WASM adapter with exact six-number validation -> exported _tspice_dvsep with transactional buffers and copied output -> shared tspice_dvsep -> canonical dvsep_c. Independent Python calls the actual locked SpiceyPy dvsep wrapper and forwards every output entry/scalar.",
+          "executions": ["local-a11-7ffccbc5-wasm", "ci-a11-7ffccbc5-wasm"]
+        }
+      }
+    }
+  ],
+  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
+}

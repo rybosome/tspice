@@ -206,7 +206,43 @@ export type Matrix6x6 = [
   [number, number, number, number, number, number],
 ];
 
+export type Vector6 = [number, number, number, number, number, number];
+
 export type Vector3 = [number, number, number];
+
+export type StepCoordsVectorsDucrss = {
+  op: "coords-vectors.ducrss";
+  a: Vector6;
+  b: Vector6;
+};
+
+export type StepCoordsVectorsDvcrss = {
+  op: "coords-vectors.dvcrss";
+  a: Vector6;
+  b: Vector6;
+};
+
+export type StepCoordsVectorsDvdot = {
+  op: "coords-vectors.dvdot";
+  a: Vector6;
+  b: Vector6;
+};
+
+export type StepCoordsVectorsDvhat = {
+  op: "coords-vectors.dvhat";
+  state: Vector6;
+};
+
+export type StepCoordsVectorsDvnorm = {
+  op: "coords-vectors.dvnorm";
+  state: Vector6;
+};
+
+export type StepCoordsVectorsDvsep = {
+  op: "coords-vectors.dvsep";
+  a: Vector6;
+  b: Vector6;
+};
 
 export type StepCoordsVectorsBrcktd = {
   op: "coords-vectors.brcktd";
@@ -1698,6 +1734,12 @@ export type WorkflowStep =
   | StepCoordsVectorsMaxi
   | StepCoordsVectorsMind
   | StepCoordsVectorsMini
+  | StepCoordsVectorsDucrss
+  | StepCoordsVectorsDvcrss
+  | StepCoordsVectorsDvdot
+  | StepCoordsVectorsDvhat
+  | StepCoordsVectorsDvnorm
+  | StepCoordsVectorsDvsep
   | StepCoordsVectorsReclat
   | StepCoordsVectorsLatrec
   | StepCoordsVectorsRecsph
@@ -1949,6 +1991,12 @@ export type StepOutput =
   | { op: "coords-vectors.maxi"; value: number }
   | { op: "coords-vectors.mind"; value: number }
   | { op: "coords-vectors.mini"; value: number }
+  | { op: "coords-vectors.ducrss"; value: Vector6 }
+  | { op: "coords-vectors.dvcrss"; value: Vector6 }
+  | { op: "coords-vectors.dvdot"; value: number }
+  | { op: "coords-vectors.dvhat"; value: Vector6 }
+  | { op: "coords-vectors.dvnorm"; value: number }
+  | { op: "coords-vectors.dvsep"; value: number }
   | { op: "time.str2et"; value: number }
   | { op: "time.et2utc"; value: string }
   | { op: "time.spd"; value: number }

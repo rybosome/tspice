@@ -1,0 +1,103 @@
+[
+  {
+    "caseId": "coords-vectors-dvnorm-mixed-components",
+    "description": "dvnorm: mixed-components; kernel-free authored states in a common frame, observe every actual output component using the locked independent oracle.",
+    "workflow": [
+      {
+        "op": "coords-vectors.dvnorm",
+        "state": [1, -2, 4, 3, -5, 7]
+      },
+      {
+        "op": "coords-vectors.dvnorm",
+        "state": [-3, 5, 7, 11, 13, -17]
+      },
+      {
+        "op": "coords-vectors.dvnorm",
+        "state": [3, -4, 12, 5, 7, -11]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-dvnorm-zero-position-and-velocity",
+    "description": "dvnorm: zero-position-and-velocity; kernel-free authored states in a common frame, observe every actual output component using the locked independent oracle.",
+    "workflow": [
+      {
+        "op": "coords-vectors.dvnorm",
+        "state": [0, 0, 0, 0, 0, 0]
+      },
+      {
+        "op": "coords-vectors.dvnorm",
+        "state": [0, 0, 0, 2, -3, 4]
+      },
+      {
+        "op": "coords-vectors.dvnorm",
+        "state": [1, -2, 4, 0, 0, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-dvnorm-radial-and-transverse-motion",
+    "description": "dvnorm: radial-and-transverse-motion; kernel-free authored states in a common frame, observe every actual output component using the locked independent oracle.",
+    "workflow": [
+      {
+        "op": "coords-vectors.dvnorm",
+        "state": [2, 0, 0, 6, 0, 0]
+      },
+      {
+        "op": "coords-vectors.dvnorm",
+        "state": [-2, 0, 0, 6, 0, 0]
+      },
+      {
+        "op": "coords-vectors.dvnorm",
+        "state": [2, 0, 0, 0, -3, 4]
+      },
+      {
+        "op": "coords-vectors.dvnorm",
+        "state": [0, 0, -4, 3, -5, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-dvnorm-scaled-states",
+    "description": "dvnorm: scaled-states; kernel-free authored states in a common frame, observe every actual output component using the locked independent oracle.",
+    "workflow": [
+      {
+        "op": "coords-vectors.dvnorm",
+        "state": [1e100, -2e100, 4e100, 3.0000000000000002e100, -5e100, 7e100]
+      },
+      {
+        "op": "coords-vectors.dvnorm",
+        "state": [1e-100, -2e-100, 4e-100, 3e-100, -5e-100, 7e-100]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-dvnorm-scaled-derivatives",
+    "description": "dvnorm: scaled-derivatives; kernel-free authored states in a common frame, observe every actual output component using the locked independent oracle.",
+    "workflow": [
+      {
+        "op": "coords-vectors.dvnorm",
+        "state": [1, -2, 4, 3.0000000000000002e100, -5e100, 7e100]
+      },
+      {
+        "op": "coords-vectors.dvnorm",
+        "state": [1, -2, 4, 3e-100, -5e-100, 7e-100]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

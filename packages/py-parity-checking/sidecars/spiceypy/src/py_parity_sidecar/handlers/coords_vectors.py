@@ -51,6 +51,12 @@ from ..models import (
     StepCoordsVectorsMaxi,
     StepCoordsVectorsMind,
     StepCoordsVectorsMini,
+    StepCoordsVectorsDucrss,
+    StepCoordsVectorsDvcrss,
+    StepCoordsVectorsDvdot,
+    StepCoordsVectorsDvhat,
+    StepCoordsVectorsDvnorm,
+    StepCoordsVectorsDvsep,
     StepCoordsVectorsReclat,
     StepCoordsVectorsRecgeo,
     StepCoordsVectorsRecsph,
@@ -79,6 +85,13 @@ from ..models import (
     WorkflowStep,
 )
 from ..runtime import SidecarRuntimeContext
+
+
+def _to_vec6(values: object) -> list[float]:
+    out = values.tolist() if hasattr(values, "tolist") else values
+    if not isinstance(out, list) or len(out) != 6:
+        raise TypeError(f"Expected length-6 state output, got: {out!r}")
+    return [float(value) for value in out]
 
 
 def _to_vec3(values: object) -> list[float]:
@@ -262,6 +275,30 @@ def run_coords_vectors_step(step: WorkflowStep, _context: SidecarRuntimeContext)
     if isinstance(step, StepCoordsVectorsMini):
         out = scalar_math_oracle.mini(step.values)
         return StepOutput(op=step.op, value=int(out))
+
+    if isinstance(step, StepCoordsVectorsDucrss):
+        out = sp.ducrss(step.a, step.b)
+        return StepOutput(op=step.op, value=_to_vec6(out))
+
+    if isinstance(step, StepCoordsVectorsDvcrss):
+        out = sp.dvcrss(step.a, step.b)
+        return StepOutput(op=step.op, value=_to_vec6(out))
+
+    if isinstance(step, StepCoordsVectorsDvdot):
+        out = sp.dvdot(step.a, step.b)
+        return StepOutput(op=step.op, value=float(out))
+
+    if isinstance(step, StepCoordsVectorsDvhat):
+        out = sp.dvhat(step.state)
+        return StepOutput(op=step.op, value=_to_vec6(out))
+
+    if isinstance(step, StepCoordsVectorsDvnorm):
+        out = sp.dvnorm(step.state)
+        return StepOutput(op=step.op, value=float(out))
+
+    if isinstance(step, StepCoordsVectorsDvsep):
+        out = sp.dvsep(step.a, step.b)
+        return StepOutput(op=step.op, value=float(out))
 
     if isinstance(step, StepCoordsVectorsReclat):
         radius, lon, lat = sp.reclat(step.rectan)

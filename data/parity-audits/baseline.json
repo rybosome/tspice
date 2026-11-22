@@ -577,5 +577,21 @@
       "prs": ["https://github.com/rybosome/tspice/pull/714"],
       "nextAction": "Source-bound local and canonical Linux Node 22 native-required executions observed. Await final complete PR matrix and confirm rebaseability."
     }
+  ],
+  "expansionBatches": [
+    {
+      "id": "a11-state-derivatives",
+      "routines": [
+        "ducrss_c",
+        "dvcrss_c",
+        "dvdot_c",
+        "dvhat_c",
+        "dvnorm_c",
+        "dvsep_c"
+      ],
+      "dependsOn": [],
+      "prs": ["https://github.com/rybosome/tspice/pull/716"],
+      "nextAction": "Source-bound local and canonical Linux Node 22 native-required executions observed. Await final complete PR matrix and confirm rebaseability."
+    }
   ]
 }

@@ -45,6 +45,12 @@ import type {
   StepCoordsVectorsMaxi,
   StepCoordsVectorsMind,
   StepCoordsVectorsMini,
+  StepCoordsVectorsDucrss,
+  StepCoordsVectorsDvcrss,
+  StepCoordsVectorsDvdot,
+  StepCoordsVectorsDvhat,
+  StepCoordsVectorsDvnorm,
+  StepCoordsVectorsDvsep,
   StepCoordsVectorsReclat,
   StepCoordsVectorsRecgeo,
   StepCoordsVectorsRecsph,
@@ -116,6 +122,12 @@ type CoordsVectorsStep =
   | StepCoordsVectorsMaxi
   | StepCoordsVectorsMind
   | StepCoordsVectorsMini
+  | StepCoordsVectorsDucrss
+  | StepCoordsVectorsDvcrss
+  | StepCoordsVectorsDvdot
+  | StepCoordsVectorsDvhat
+  | StepCoordsVectorsDvnorm
+  | StepCoordsVectorsDvsep
   | StepCoordsVectorsReclat
   | StepCoordsVectorsLatrec
   | StepCoordsVectorsRecsph
@@ -434,6 +446,36 @@ export function runCoordsVectorsStep(
 
     case "coords-vectors.mini": {
       const out = context.spice.raw.mini(step.values);
+      return { op: step.op, value: out };
+    }
+
+    case "coords-vectors.ducrss": {
+      const out = context.spice.raw.ducrss(step.a, step.b);
+      return { op: step.op, value: out };
+    }
+
+    case "coords-vectors.dvcrss": {
+      const out = context.spice.raw.dvcrss(step.a, step.b);
+      return { op: step.op, value: out };
+    }
+
+    case "coords-vectors.dvdot": {
+      const out = context.spice.raw.dvdot(step.a, step.b);
+      return { op: step.op, value: out };
+    }
+
+    case "coords-vectors.dvhat": {
+      const out = context.spice.raw.dvhat(step.state);
+      return { op: step.op, value: out };
+    }
+
+    case "coords-vectors.dvnorm": {
+      const out = context.spice.raw.dvnorm(step.state);
+      return { op: step.op, value: out };
+    }
+
+    case "coords-vectors.dvsep": {
+      const out = context.spice.raw.dvsep(step.a, step.b);
       return { op: step.op, value: out };
     }
 

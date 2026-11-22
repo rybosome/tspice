@@ -111,6 +111,29 @@ independent oracle handlers, models/decoder, and focused tests. Old executions
 remain historical until fresh source-bound required local and canonical CI
 observations are recorded; review alone is not verification.
 
+## State derivatives expansion
+
+A11 reviews six direct state-derivative routines: `ducrss`, `dvcrss`, `dvdot`,
+`dvhat`, `dvnorm` and `dvsep`. The 39 registered scenarios contain 106 actual
+routine calls, including two genuine `dvsep` numeric-overflow errors. Inputs
+are authored readonly six-component states; all output position/derivative
+entries or scalar values reach the actual locked SpiceyPy wrappers.
+
+[State derivative evidence](step8-state-derivatives.md) records the pinned
+whole-state scaling behind `ducrss`'s zero-cross derivative, `dvhat`'s copied
+zero-position derivative, and `dvsep`'s guarded division and normalization
+conditioning. Caller overflow restrictions for `ducrss`/`dvdot` remain intact.
+Twelve separate tagged observations preserve complete finite/nonfinite outputs
+and signed zeros for the unrestricted routines, with finite controls. Focused
+live rescaling keeps tiny derivatives observable; no global tolerance changes.
+The narrow WASM error-test allocation repair counts existing structured
+short/long/trace buffers without changing production or scientific assertions.
+
+The original 162-routine assignment remains immutable; only these six routines
+are added as this branch's expansion. All earlier executions are historical and
+all judgments remain `reviewed` until fresh required local and observed canonical
+CI evidence is recorded against the final source digest.
+
 ## Recording verification
 
 Execution records are maintained observations, not inferred from CI configuration or scenario registration. Record the command, backend, native-required flag where applicable, successful scenario IDs, result summary, and SHA-256 source digest. CI observations also need the actual successful job URL and tested commit. Inspect logs for executed cases and absence of unexpected skips before recording success. Local observations describe the run result; durable CI links provide independently inspectable execution evidence.
@@ -179,6 +202,9 @@ Copy each validated rectangular coordinate once into an owned three-vector and d
 
 `sumad_c`, `sumai_c`, `maxd_c`, `maxi_c`, `mind_c`, `mini_c` now marshal the same entries that the typed adapters validated.
 Capture the input count, copy each finite or signed32 entry once, validate the sumai prefix using the owned copy and send the same values to the canonical reduction. Scalar clamp/conversion methods have no array input. The focused public boundary regression compares single-read inputs with ordinary arrays on both real backends; unchanged registered cases retain the independent scientific oracle.
+
+`ducrss_c`, `dvcrss_c`, `dvdot_c`, `dvhat_c`, `dvnorm_c`, `dvsep_c` now marshal the same entries that the typed adapters validated.
+Copy each of the six finite state components once into an owned position/velocity tuple before dispatch. Preserve the original state layout and scientific derivative algorithms. The focused public boundary regression compares single-read inputs with ordinary arrays on both real backends; unchanged registered cases retain the independent scientific oracle.
 
 Regression evidence: [owned-numeric-inputs.test.ts](../packages/py-parity-checking/test/owned-numeric-inputs.test.ts). These adapter checks do not replace
 the independent scientific workflows. Earlier executions remain historical on

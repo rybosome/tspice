@@ -62,6 +62,12 @@ import coordsVectorsMaxdCasesRaw from "./coords-vectors/maxd.cases.json" with { 
 import coordsVectorsMaxiCasesRaw from "./coords-vectors/maxi.cases.json" with { type: "json" };
 import coordsVectorsMindCasesRaw from "./coords-vectors/mind.cases.json" with { type: "json" };
 import coordsVectorsMiniCasesRaw from "./coords-vectors/mini.cases.json" with { type: "json" };
+import coordsVectorsDucrssCasesRaw from "./coords-vectors/ducrss.cases.json" with { type: "json" };
+import coordsVectorsDvcrssCasesRaw from "./coords-vectors/dvcrss.cases.json" with { type: "json" };
+import coordsVectorsDvdotCasesRaw from "./coords-vectors/dvdot.cases.json" with { type: "json" };
+import coordsVectorsDvhatCasesRaw from "./coords-vectors/dvhat.cases.json" with { type: "json" };
+import coordsVectorsDvnormCasesRaw from "./coords-vectors/dvnorm.cases.json" with { type: "json" };
+import coordsVectorsDvsepCasesRaw from "./coords-vectors/dvsep.cases.json" with { type: "json" };
 import coordsVectorsAxisarCasesRaw from "./coords-vectors/axisar.cases.json" with { type: "json" };
 import coordsVectorsGeorecCasesRaw from "./coords-vectors/georec.cases.json" with { type: "json" };
 import coordsVectorsLatrecCasesRaw from "./coords-vectors/latrec.cases.json" with { type: "json" };
@@ -282,6 +288,13 @@ export const coordsVectorsCases: ParityCase[] = [
   ...(coordsVectorsMaxiCasesRaw as ParityCase[]),
   ...(coordsVectorsMindCasesRaw as ParityCase[]),
   ...(coordsVectorsMiniCasesRaw as ParityCase[]),
+
+  ...(coordsVectorsDucrssCasesRaw as ParityCase[]),
+  ...(coordsVectorsDvcrssCasesRaw as ParityCase[]),
+  ...(coordsVectorsDvdotCasesRaw as ParityCase[]),
+  ...(coordsVectorsDvhatCasesRaw as ParityCase[]),
+  ...(coordsVectorsDvnormCasesRaw as ParityCase[]),
+  ...(coordsVectorsDvsepCasesRaw as ParityCase[]),
 
   ...(coordsVectorsReclatCasesRaw as ParityCase[]),
   ...(coordsVectorsLatrecCasesRaw as ParityCase[]),

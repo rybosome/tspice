@@ -96,6 +96,12 @@ export function dispatchStep(
     case "coords-vectors.maxi":
     case "coords-vectors.mind":
     case "coords-vectors.mini":
+    case "coords-vectors.ducrss":
+    case "coords-vectors.dvcrss":
+    case "coords-vectors.dvdot":
+    case "coords-vectors.dvhat":
+    case "coords-vectors.dvnorm":
+    case "coords-vectors.dvsep":
     case "coords-vectors.reclat":
     case "coords-vectors.latrec":
     case "coords-vectors.recsph":
