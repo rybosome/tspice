@@ -312,15 +312,9 @@ export function createGeometryGfApi(
       }),
     uddf: (...args) => user.sync.uddf(module._tspice_uddf, ...args),
     uddc: (...args) => user.sync.uddc(module._tspice_uddc, ...args),
-    gfevnt: (...args) => {
-      configured.gfevnt(false, module._tspice_gfevnt, ...args);
-    },
-    gffove: (...args) => {
-      configured.gffove(false, module._tspice_gffove, ...args);
-    },
-    gfocce: (...args) => {
-      configured.gfocce(false, module._tspice_gfocce, ...args);
-    },
+    gfevnt: (...args) => { configured.gfevnt(false, module._tspice_gfevnt, ...args); },
+    gffove: (...args) => { configured.gffove(false, module._tspice_gffove, ...args); },
+    gfocce: (...args) => { configured.gfocce(false, module._tspice_gfocce, ...args); },
     gfudb: (...args) => user.sync.gfudb(module._tspice_gfudb, ...args),
     gfuds: (...args) => user.sync.gfuds(module._tspice_gfuds, ...args),
 

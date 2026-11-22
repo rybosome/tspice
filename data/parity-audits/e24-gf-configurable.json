@@ -10,7 +10,8 @@
     "packages/tspice/test/gf-worker-callbacks.test.ts",
     "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/configured_gf.py",
     "packages/py-parity-checking/src/run-tspice/domains/geometry-gf.ts",
-    "docs/step8-gf-configurable.md"
+    "docs/step8-gf-configurable.md",
+    "packages/py-parity-checking/test/gf-configurable-public.test.ts"
   ],
   "executions": [],
   "routines": [
@@ -22,12 +23,18 @@
       "scenarios": [
         {
           "caseId": "geometry-gf-gfevnt-progress",
-          "coverage": ["edge", "success"],
+          "coverage": [
+            "edge",
+            "success"
+          ],
           "observes": "Records all callback inputs in order and both complete caller windows."
         },
         {
           "caseId": "geometry-gf-gfevnt-interrupted",
-          "coverage": ["edge", "success"],
+          "coverage": [
+            "edge",
+            "success"
+          ],
           "observes": "Records all callback inputs in order and both complete caller windows."
         }
       ],
@@ -40,13 +47,19 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": [
+            "unreviewed",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "Raw gfevnt delegates through the node adapter and shared shim to gfevnt_c.",
           "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": [
+            "unreviewed",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "Raw gfevnt delegates through the wasm adapter and shared shim to gfevnt_c.",
           "executions": []
@@ -61,12 +74,18 @@
       "scenarios": [
         {
           "caseId": "geometry-gf-gffove-progress",
-          "coverage": ["edge", "success"],
+          "coverage": [
+            "edge",
+            "success"
+          ],
           "observes": "Records all callback inputs in order and both complete caller windows."
         },
         {
           "caseId": "geometry-gf-gffove-interrupted",
-          "coverage": ["edge", "success"],
+          "coverage": [
+            "edge",
+            "success"
+          ],
           "observes": "Records all callback inputs in order and both complete caller windows."
         }
       ],
@@ -79,13 +98,19 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": [
+            "unreviewed",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "Raw gffove delegates through the node adapter and shared shim to gffove_c.",
           "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": [
+            "unreviewed",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "Raw gffove delegates through the wasm adapter and shared shim to gffove_c.",
           "executions": []
@@ -100,12 +125,18 @@
       "scenarios": [
         {
           "caseId": "geometry-gf-gfocce-progress",
-          "coverage": ["edge", "success"],
+          "coverage": [
+            "edge",
+            "success"
+          ],
           "observes": "Records all callback inputs in order and both complete caller windows."
         },
         {
           "caseId": "geometry-gf-gfocce-interrupted",
-          "coverage": ["edge", "success"],
+          "coverage": [
+            "edge",
+            "success"
+          ],
           "observes": "Records all callback inputs in order and both complete caller windows."
         }
       ],
@@ -118,13 +149,19 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": [
+            "unreviewed",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "Raw gfocce delegates through the node adapter and shared shim to gfocce_c.",
           "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": [
+            "unreviewed",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "Raw gfocce delegates through the wasm adapter and shared shim to gfocce_c.",
           "executions": []

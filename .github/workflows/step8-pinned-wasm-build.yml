@@ -46,7 +46,7 @@ jobs:
           pnpm run stage:native-platform
           pnpm run build
           pnpm -C packages/py-parity-checking setup:sidecar
-          TSPICE_EXPECT_NATIVE=true pnpm -C packages/py-parity-checking exec vitest run test/parity.test.ts -t 'geometry-gf-(gfevnt|gffove|gfocce)'
+          TSPICE_EXPECT_NATIVE=true pnpm -C packages/py-parity-checking exec vitest run test/parity.test.ts test/gf-configurable-public.test.ts -t 'geometry-gf-(gfevnt|gffove|gfocce)|configurable search preserves'
       - uses: actions/upload-artifact@v4
         with:
           name: step8-wasm-assets

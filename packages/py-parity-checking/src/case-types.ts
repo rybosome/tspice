@@ -1084,12 +1084,11 @@ type ConfiguredGfFixture = {
   resultMaxIntervals?: number;
 };
 
-export type StepGeometryGfConfigured = ConfiguredGfFixture &
-  (
-    | { op: "geometry-gf.gfevnt"; search: GfEventSearch }
-    | { op: "geometry-gf.gffove"; search: GfFovSearch }
-    | { op: "geometry-gf.gfocce"; search: GfOccultationSearch }
-  );
+export type StepGeometryGfConfigured = ConfiguredGfFixture & (
+  | { op: "geometry-gf.gfevnt"; search: GfEventSearch }
+  | { op: "geometry-gf.gffove"; search: GfFovSearch }
+  | { op: "geometry-gf.gfocce"; search: GfOccultationSearch }
+);
 
 export type StepGeometryGfGfoclt = {
   op: "geometry-gf.gfoclt";
@@ -2087,10 +2086,7 @@ export type StepOutput =
   | { op: "geometry-gf.gfrefn"; value: number }
   | { op: "geometry-gf.gfrepi"; value: null }
   | { op: "geometry-gf.gfrepf"; value: null }
-  | {
-      op: "geometry-gf.gfevnt" | "geometry-gf.gffove" | "geometry-gf.gfocce";
-      value: GfSearchWindowPayload & { callbacks: GfControlEvent[] };
-    }
+  | { op: "geometry-gf.gfevnt" | "geometry-gf.gffove" | "geometry-gf.gfocce"; value: GfSearchWindowPayload & { callbacks: GfControlEvent[] } }
   | { op: "geometry-gf.gfoclt"; value: GfSearchWindowPayload }
   | { op: "geometry-gf.gfrfov"; value: GfSearchWindowPayload }
   | { op: "geometry-gf.gftfov"; value: GfSearchWindowPayload }

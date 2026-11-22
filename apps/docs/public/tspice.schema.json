@@ -93,30 +93,6 @@
         "description": "Argument object for kit.getState() (target, observer, time, frame, aberration)."
       },
       {
-        "name": "GfControl",
-        "description": "Public export from @rybosome/tspice."
-      },
-      {
-        "name": "GfControlEvent",
-        "description": "Public export from @rybosome/tspice."
-      },
-      {
-        "name": "GfEventSearch",
-        "description": "Public export from @rybosome/tspice."
-      },
-      {
-        "name": "GfFovSearch",
-        "description": "Public export from @rybosome/tspice."
-      },
-      {
-        "name": "GfOccultationSearch",
-        "description": "Public export from @rybosome/tspice."
-      },
-      {
-        "name": "GfQuantityParameter",
-        "description": "Public export from @rybosome/tspice."
-      },
-      {
         "name": "KernelPack",
         "description": "A small ordered set of kernels (URLs + load paths), plus an optional baseUrl for rooting relative kernel URLs at load time."
       },

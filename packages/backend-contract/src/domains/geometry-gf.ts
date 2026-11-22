@@ -26,6 +26,7 @@ export type GfScalar = (et: number) => number;
 /** Evaluate a boolean condition with access to the same scalar passed to the search. */
 export type GfCondition = (scalar: GfScalar, et: number) => boolean;
 
+/** Convergence and optional control events for configurable searches. */
 export type GfSearchOptions = {
   tolerance: number;
   report?: boolean;
@@ -41,6 +42,7 @@ export type GfQuantityParameter = {
   logical?: boolean;
 };
 
+/** A named geometric quantity and the relation to find. */
 export type GfEventSearch = GfSearchOptions & {
   quantity: string;
   parameters: readonly GfQuantityParameter[];
@@ -50,6 +52,7 @@ export type GfEventSearch = GfSearchOptions & {
   workspaceIntervals: number;
 };
 
+/** Instrument, target or ray, and observer for a configurable FOV search. */
 export type GfFovSearch = GfSearchOptions & {
   instrument: string;
   shape: string;
@@ -60,6 +63,7 @@ export type GfFovSearch = GfSearchOptions & {
   observer: string;
 };
 
+/** Front and back targets and observer for a configurable occultation search. */
 export type GfOccultationSearch = GfSearchOptions & {
   occultation: string;
   front: string;
@@ -77,30 +81,15 @@ export interface GeometryGfApi {
   /** Find a configurable event over a named geometric quantity. An interrupted search keeps the original result window.
    * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/gfevnt_c.html
    */
-  gfevnt(
-    search: GfEventSearch,
-    cnfine: SpiceWindow,
-    result: SpiceWindow,
-    control: GfControl,
-  ): void;
+  gfevnt(search: GfEventSearch, cnfine: SpiceWindow, result: SpiceWindow, control: GfControl): void;
   /** Find field-of-view intersections using a caller-defined step and refinement. An interrupted search keeps the original result window.
    * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/gffove_c.html
    */
-  gffove(
-    search: GfFovSearch,
-    cnfine: SpiceWindow,
-    result: SpiceWindow,
-    control: GfControl,
-  ): void;
+  gffove(search: GfFovSearch, cnfine: SpiceWindow, result: SpiceWindow, control: GfControl): void;
   /** Find occultations using a caller-defined step and refinement. An interrupted search keeps the original result window.
    * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/gfocce_c.html
    */
-  gfocce(
-    search: GfOccultationSearch,
-    cnfine: SpiceWindow,
-    result: SpiceWindow,
-    control: GfControl,
-  ): void;
+  gfocce(search: GfOccultationSearch, cnfine: SpiceWindow, result: SpiceWindow, control: GfControl): void;
 
   /** Return the initialized accumulator after the dummy scalar callback. Initial value defaults to zero.
    * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/udf_c.html

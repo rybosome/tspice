@@ -27,8 +27,7 @@ function bytes(value: string) {
 
 function optionalFlag(value: boolean | undefined, label: string): number {
   if (value === undefined) return 0;
-  if (typeof value !== "boolean")
-    throw new TypeError(`Expected a boolean GF ${label}`);
+  if (typeof value !== "boolean") throw new TypeError(`Expected a boolean GF ${label}`);
   return Number(value);
 }
 
@@ -48,23 +47,14 @@ export function createConfiguredGf(module: EmscriptenModule) {
     assertSpiceInt32(search.workspaceIntervals, "GF workspace intervals");
     const count = search.parameters.length;
     const names = search.parameters.map((row) => bytes(row.name));
-    const texts = search.parameters.map((row) =>
-      bytes(row.text === undefined ? "" : row.text),
-    );
-    const rowBytes = Math.max(
-      2,
-      ...names.map((v) => v.length + 1),
-      ...texts.map((v) => v.length + 1),
-    );
-    if (rowBytes > 8192)
-      throw new RangeError("Geometry Finder parameter row is too long");
+    const texts = search.parameters.map((row) => bytes(row.text === undefined ? "" : row.text));
+    const rowBytes = Math.max(2, ...names.map((v) => v.length + 1), ...texts.map((v) => v.length + 1));
+    if (rowBytes > 8192) throw new RangeError("Geometry Finder parameter row is too long");
     const writeColumn = (data: Uint8Array[]) => {
       const length = rowBytes * Math.max(1, count);
       const ptr = allocate(length);
       module.HEAPU8.fill(0, ptr >>> 0, (ptr >>> 0) + length);
-      data.forEach((row, index) =>
-        module.HEAPU8.set(row, (ptr >>> 0) + index * rowBytes),
-      );
+      data.forEach((row, index) => module.HEAPU8.set(row, (ptr >>> 0) + index * rowBytes));
       return ptr;
     };
     const namePtr = writeColumn(names);
@@ -80,56 +70,21 @@ export function createConfiguredGf(module: EmscriptenModule) {
       assertSpiceInt32(integer, "GF quantity integer parameter");
       module.HEAPF64[(reals >>> 3) + index] = real;
       module.HEAP32[(integers >>> 2) + index] = integer;
-      module.HEAP32[(logicals >>> 2) + index] = optionalFlag(
-        row.logical,
-        "quantity logical parameter",
-      );
+      module.HEAP32[(logicals >>> 2) + index] = optionalFlag(row.logical, "quantity logical parameter");
     });
-    return [
-      writeText(search.quantity, allocate),
-      count,
-      rowBytes,
-      namePtr,
-      textPtr,
-      reals,
-      integers,
-      logicals,
-      writeText(search.relation, allocate),
-      search.reference,
-      search.tolerance,
-      search.adjustment,
-      search.workspaceIntervals,
-    ];
+    return [writeText(search.quantity, allocate), count, rowBytes, namePtr, textPtr, reals, integers, logicals,
+      writeText(search.relation, allocate), search.reference, search.tolerance, search.adjustment, search.workspaceIntervals];
   }
   function encodeFov(search: GfFovSearch, allocate: Allocate) {
     const ray = fovRayDirection(search.ray);
     const vector = allocate(24);
     module.HEAPF64.set(ray, vector >>> 3);
-    return [
-      writeText(search.instrument, allocate),
-      writeText(search.shape, allocate),
-      vector,
-      ...[search.target, search.frame, search.aberration, search.observer].map(
-        (text) => writeText(text, allocate),
-      ),
-      search.tolerance,
-    ];
+    return [writeText(search.instrument, allocate), writeText(search.shape, allocate), vector,
+      ...[search.target, search.frame, search.aberration, search.observer].map((text) => writeText(text, allocate)), search.tolerance];
   }
   function encodeOccultation(search: GfOccultationSearch, allocate: Allocate) {
-    return [
-      ...[
-        search.occultation,
-        search.front,
-        search.frontShape,
-        search.frontFrame,
-        search.back,
-        search.backShape,
-        search.backFrame,
-        search.aberration,
-        search.observer,
-      ].map((text) => writeText(text, allocate)),
-      search.tolerance,
-    ];
+    return [...[search.occultation, search.front, search.frontShape, search.frontFrame, search.back,
+      search.backShape, search.backFrame, search.aberration, search.observer].map((text) => writeText(text, allocate)), search.tolerance];
   }
 
   function invoke<T extends Search>(
@@ -144,11 +99,7 @@ export function createConfiguredGf(module: EmscriptenModule) {
   ) {
     if (typeof search !== "object" || search === null)
       throw new TypeError("Expected a Geometry Finder search specification");
-    if (
-      typeof search.tolerance !== "number" ||
-      !Number.isFinite(search.tolerance) ||
-      search.tolerance <= 0
-    )
+    if (typeof search.tolerance !== "number" || !Number.isFinite(search.tolerance) || search.tolerance <= 0)
       throw new RangeError("Expected a positive GF convergence tolerance");
     const report = optionalFlag(search.report, "report flag");
     const bail = optionalFlag(search.bail, "bail flag");
@@ -161,36 +112,17 @@ export function createConfiguredGf(module: EmscriptenModule) {
       invoke: callback,
       prepare(id, allocate) {
         return {
-          args: [
-            0,
-            id,
-            ...marshal(search, allocate),
-            report,
-            bail,
-            input,
-            output,
-          ],
+          args: [0, id, ...marshal(search, allocate), report, bail, input, output],
           read: () => undefined,
         };
       },
     });
   }
 
-  type Args<T extends Search> = [
-    search: T,
-    cnfine: SpiceWindow,
-    result: SpiceWindow,
-    control: GfControl,
-  ];
+  type Args<T extends Search> = [search: T, cnfine: SpiceWindow, result: SpiceWindow, control: GfControl];
   return {
-    gfevnt: (async: boolean, direct: Direct, ...args: Args<GfEventSearch>) =>
-      invoke(async, "tspice_gfevnt", direct, encodeEvent, ...args),
-    gffove: (async: boolean, direct: Direct, ...args: Args<GfFovSearch>) =>
-      invoke(async, "tspice_gffove", direct, encodeFov, ...args),
-    gfocce: (
-      async: boolean,
-      direct: Direct,
-      ...args: Args<GfOccultationSearch>
-    ) => invoke(async, "tspice_gfocce", direct, encodeOccultation, ...args),
+    gfevnt: (async: boolean, direct: Direct, ...args: Args<GfEventSearch>) => invoke(async, "tspice_gfevnt", direct, encodeEvent, ...args),
+    gffove: (async: boolean, direct: Direct, ...args: Args<GfFovSearch>) => invoke(async, "tspice_gffove", direct, encodeFov, ...args),
+    gfocce: (async: boolean, direct: Direct, ...args: Args<GfOccultationSearch>) => invoke(async, "tspice_gfocce", direct, encodeOccultation, ...args),
   };
 }
