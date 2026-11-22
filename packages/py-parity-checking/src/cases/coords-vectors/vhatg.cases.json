@@ -1,0 +1,91 @@
+[
+  {
+    "caseId": "coords-vectors-vhatg-dimension-zero",
+    "description": "vhatg: actual C dimension-zero call with valid non-NULL storage; vector-output conversion uses the narrowly scoped independent binding, scalar wrappers call CSPICE directly.",
+    "workflow": [
+      {
+        "op": "coords-vectors.vhatg",
+        "v": []
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-vhatg-dimension-one",
+    "description": "vhatg: dimension-one; kernel-free actual raw outputs, every component compared with the independent locked CSPICE oracle.",
+    "workflow": [
+      {
+        "op": "coords-vectors.vhatg",
+        "v": [7]
+      },
+      {
+        "op": "coords-vectors.vhatg",
+        "v": [-3]
+      },
+      {
+        "op": "coords-vectors.vhatg",
+        "v": [0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-vhatg-mixed-dimensions",
+    "description": "vhatg: mixed-dimensions; kernel-free actual raw outputs, every component compared with the independent locked CSPICE oracle.",
+    "workflow": [
+      {
+        "op": "coords-vectors.vhatg",
+        "v": [3, 4]
+      },
+      {
+        "op": "coords-vectors.vhatg",
+        "v": [3, -4, 0, 12]
+      },
+      {
+        "op": "coords-vectors.vhatg",
+        "v": [1, -2, 4, -8, 16, -32, 64]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-vhatg-zero-and-last-component",
+    "description": "vhatg: zero-and-last-component; kernel-free actual raw outputs, every component compared with the independent locked CSPICE oracle.",
+    "workflow": [
+      {
+        "op": "coords-vectors.vhatg",
+        "v": [0, 0, 0, 0]
+      },
+      {
+        "op": "coords-vectors.vhatg",
+        "v": [0, 0, 0, 0, 0, 0, -7]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-vhatg-scaled-magnitudes",
+    "description": "vhatg: scaled-magnitudes; kernel-free actual raw outputs, every component compared with the independent locked CSPICE oracle.",
+    "workflow": [
+      {
+        "op": "coords-vectors.vhatg",
+        "v": [3.0000000000000002e100, -4e100, 0, 1.2000000000000001e101]
+      },
+      {
+        "op": "coords-vectors.vhatg",
+        "v": [3e-100, -4e-100, 0, 1.2e-99]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

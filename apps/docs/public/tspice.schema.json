@@ -157,6 +157,10 @@
         "description": "High-level convenience API built on top of the raw backend."
       },
       {
+        "name": "SpiceQuaternion",
+        "description": "Public export from @rybosome/tspice."
+      },
+      {
         "name": "SpiceSync",
         "description": "Alias of Spice (sync-ish client)."
       },

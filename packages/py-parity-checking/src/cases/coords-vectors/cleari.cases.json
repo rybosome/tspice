@@ -1,0 +1,112 @@
+[
+  {
+    "caseId": "coords-vectors-cleari-prefix-and-unchanged-tail",
+    "description": "Initialize distinct destination elements and observe the entire mutated prefix and untouched suffix.",
+    "workflow": [
+      {
+        "op": "coords-vectors.cleari",
+        "ndim": 1,
+        "values": [-2147483648, 17, -31, 2147483647, 101, -991]
+      },
+      {
+        "op": "coords-vectors.cleari",
+        "ndim": 2,
+        "values": [-2147483648, 17, -31, 2147483647, 101, -991]
+      },
+      {
+        "op": "coords-vectors.cleari",
+        "ndim": 4,
+        "values": [-2147483648, 17, -31, 2147483647, 101, -991]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-cleari-single-and-full-buffer",
+    "description": "Single-element, non-three and full-capacity writes retain every resulting value.",
+    "workflow": [
+      {
+        "op": "coords-vectors.cleari",
+        "ndim": 1,
+        "values": [23]
+      },
+      {
+        "op": "coords-vectors.cleari",
+        "ndim": 6,
+        "values": [-2147483648, 17, -31, 2147483647, 101, -991]
+      },
+      {
+        "op": "coords-vectors.cleari",
+        "ndim": 3,
+        "values": [11, 22, -33]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-cleari-zero-and-negative-count",
+    "description": "Nonpositive signed counts call the canonical C loop and retain initialized numeric storage.",
+    "workflow": [
+      {
+        "op": "coords-vectors.cleari",
+        "ndim": 0,
+        "values": [-2147483648, 17, -31, 2147483647, 101, -991]
+      },
+      {
+        "op": "coords-vectors.cleari",
+        "ndim": -1,
+        "values": [-2147483648, 17, -31, 2147483647, 101, -991]
+      },
+      {
+        "op": "coords-vectors.cleari",
+        "ndim": -2147483648,
+        "values": [-2147483648, 17, -31, 2147483647, 101, -991]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-cleari-empty-storage",
+    "description": "Pass a valid non-null dummy through each no-write operation and return the empty logical array.",
+    "workflow": [
+      {
+        "op": "coords-vectors.cleari",
+        "ndim": 0,
+        "values": []
+      },
+      {
+        "op": "coords-vectors.cleari",
+        "ndim": -11,
+        "values": []
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-cleari-signed-int32-limits",
+    "description": "Signed 32-bit extrema exercise integer marshalling and retained suffix elements.",
+    "workflow": [
+      {
+        "op": "coords-vectors.cleari",
+        "ndim": 1,
+        "values": [-2147483648, 17, -31, 2147483647, 101, -991]
+      },
+      {
+        "op": "coords-vectors.cleari",
+        "ndim": 2,
+        "values": [-991, 101, 2147483647, -31, 17, -2147483648]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

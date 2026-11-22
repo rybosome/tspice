@@ -1,0 +1,156 @@
+[
+  {
+    "caseId": "coords-vectors-qderiv-half-interval-and-orientation",
+    "description": "Delta is the signed half interval. Swapping endpoints and reversing delta preserves each component.",
+    "workflow": [
+      {
+        "op": "coords-vectors.qderiv",
+        "f0": [1],
+        "f2": [9],
+        "delta": 1
+      },
+      {
+        "op": "coords-vectors.qderiv",
+        "f0": [-2, 3, -5, 7],
+        "f2": [11, -13, 17, -19],
+        "delta": 2
+      },
+      {
+        "op": "coords-vectors.qderiv",
+        "f0": [-2, 3, -5, 7],
+        "f2": [11, -13, 17, -19],
+        "delta": -2
+      },
+      {
+        "op": "coords-vectors.qderiv",
+        "f0": [11, -13, 17, -19],
+        "f2": [-2, 3, -5, 7],
+        "delta": -2
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-qderiv-variable-dimensions",
+    "description": "Every component of each nonempty derivative vector is observable, including non-three dimensions.",
+    "workflow": [
+      {
+        "op": "coords-vectors.qderiv",
+        "f0": [1, 0],
+        "f2": [-3, 7],
+        "delta": 0.5
+      },
+      {
+        "op": "coords-vectors.qderiv",
+        "f0": [-2, 3, -5, 7],
+        "f2": [11, -13, 17, -19],
+        "delta": 2
+      },
+      {
+        "op": "coords-vectors.qderiv",
+        "f0": [-2, 7, 11, 13, -17, 3, 5],
+        "f2": [19, -23, 29, 31, 37, -41, 43],
+        "delta": -4
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-qderiv-constant-endpoints",
+    "description": "Equal endpoint values have zero derivative in every component.",
+    "workflow": [
+      {
+        "op": "coords-vectors.qderiv",
+        "f0": [-2, 3, -5, 7],
+        "f2": [-2, 3, -5, 7],
+        "delta": 2
+      },
+      {
+        "op": "coords-vectors.qderiv",
+        "f0": [0, 0],
+        "f2": [0, 0],
+        "delta": -0.5
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-qderiv-scaled-ordinates",
+    "description": "Focused tests restore tiny and large derivative components to comparable units before live comparison.",
+    "workflow": [
+      {
+        "op": "coords-vectors.qderiv",
+        "f0": [-2e100, 3.0000000000000002e100, -5e100, 7e100],
+        "f2": [1.1e101, -1.3e101, 1.7e101, -1.9e101],
+        "delta": 2
+      },
+      {
+        "op": "coords-vectors.qderiv",
+        "f0": [-2e-100, 3e-100, -5e-100, 7e-100],
+        "f2": [1.1e-99, -1.3e-99, 1.7e-99, -1.9e-99],
+        "delta": 2
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-qderiv-scaled-abscissas",
+    "description": "A change of time units changes every derivative inversely.",
+    "workflow": [
+      {
+        "op": "coords-vectors.qderiv",
+        "f0": [-2, 3, -5, 7],
+        "f2": [11, -13, 17, -19],
+        "delta": 2e100
+      },
+      {
+        "op": "coords-vectors.qderiv",
+        "f0": [-2, 3, -5, 7],
+        "f2": [11, -13, 17, -19],
+        "delta": 2e-100
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-qderiv-balanced-extreme-endpoints",
+    "description": "CSPICE scales endpoints before adding; even opposite extreme endpoints can yield a finite vector with a nonzero subnormal component.",
+    "workflow": [
+      {
+        "op": "coords-vectors.qderiv",
+        "f0": [-1.7976931348623157e308, 1.7976931348623157e308, 1],
+        "f2": [1.7976931348623157e308, -1.7976931348623157e308, -1],
+        "delta": 1.7976931348623157e308
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-qderiv-zero-delta-error",
+    "description": "Zero half spacing on nonempty vectors signals a real CSPICE division error.",
+    "workflow": [
+      {
+        "op": "coords-vectors.qderiv",
+        "f0": [-2, 3, -5, 7],
+        "f2": [11, -13, 17, -19],
+        "delta": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["DIVIDEBYZERO"]
+    }
+  }
+]

@@ -1,0 +1,142 @@
+[
+  {
+    "caseId": "coords-vectors-vrelg-dimension-zero",
+    "description": "vrelg: actual C dimension-zero call with valid non-NULL storage; vector-output conversion uses the narrowly scoped independent binding, scalar wrappers call CSPICE directly.",
+    "workflow": [
+      {
+        "op": "coords-vectors.vrelg",
+        "a": [],
+        "b": []
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-vrelg-dimension-one",
+    "description": "vrelg: dimension-one; kernel-free actual raw outputs, every component compared with the independent locked CSPICE oracle.",
+    "workflow": [
+      {
+        "op": "coords-vectors.vrelg",
+        "a": [3],
+        "b": [-7]
+      },
+      {
+        "op": "coords-vectors.vrelg",
+        "a": [-2],
+        "b": [5]
+      },
+      {
+        "op": "coords-vectors.vrelg",
+        "a": [0],
+        "b": [0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-vrelg-mixed-dimensions-and-order",
+    "description": "vrelg: mixed-dimensions-and-order; kernel-free actual raw outputs, every component compared with the independent locked CSPICE oracle.",
+    "workflow": [
+      {
+        "op": "coords-vectors.vrelg",
+        "a": [2, -5],
+        "b": [7, 11]
+      },
+      {
+        "op": "coords-vectors.vrelg",
+        "a": [3, -4, 0, 12],
+        "b": [2, 7, -11, 5]
+      },
+      {
+        "op": "coords-vectors.vrelg",
+        "a": [1, -2, 4, -8, 16, -32, 64],
+        "b": [-3, 5, -7, 11, -13, 17, -19]
+      },
+      {
+        "op": "coords-vectors.vrelg",
+        "a": [-3, 5, -7, 11, -13, 17, -19],
+        "b": [1, -2, 4, -8, 16, -32, 64]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-vrelg-zero-and-axis-boundaries",
+    "description": "vrelg: zero-and-axis-boundaries; kernel-free actual raw outputs, every component compared with the independent locked CSPICE oracle.",
+    "workflow": [
+      {
+        "op": "coords-vectors.vrelg",
+        "a": [0, 0, 0, 0],
+        "b": [2, -3, 5, 7]
+      },
+      {
+        "op": "coords-vectors.vrelg",
+        "a": [2, -3, 5, 7],
+        "b": [0, 0, 0, 0]
+      },
+      {
+        "op": "coords-vectors.vrelg",
+        "a": [1, 0, 0, 0],
+        "b": [2, 0, 0, 0]
+      },
+      {
+        "op": "coords-vectors.vrelg",
+        "a": [1, 0, 0, 0],
+        "b": [-2, 0, 0, 0]
+      },
+      {
+        "op": "coords-vectors.vrelg",
+        "a": [1, 0, 0, 0],
+        "b": [0, 0, 0, 3]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-vrelg-scaled-magnitudes",
+    "description": "vrelg: scaled-magnitudes; kernel-free actual raw outputs, every component compared with the independent locked CSPICE oracle.",
+    "workflow": [
+      {
+        "op": "coords-vectors.vrelg",
+        "a": [1e100, -2e100, 4e100, -8e100],
+        "b": [2e100, 3.0000000000000002e100, -5e100, 7e100]
+      },
+      {
+        "op": "coords-vectors.vrelg",
+        "a": [1e-100, -2e-100, 4e-100, -8e-100],
+        "b": [2e-100, 3e-100, -5e-100, 7e-100]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-vrelg-nearby-large-components",
+    "description": "vrelg: nearby-large-components; kernel-free actual raw outputs, every component compared with the independent locked CSPICE oracle.",
+    "workflow": [
+      {
+        "op": "coords-vectors.vrelg",
+        "a": [
+          1000000000000000.0, -2000000000000000.0, 4000000000000000.0,
+          -8000000000000000.0
+        ],
+        "b": [
+          1000000000000008.0, -1999999999999984.0, 3999999999999968.0,
+          -7999999999999936.0
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

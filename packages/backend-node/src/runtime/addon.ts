@@ -12,6 +12,29 @@ import type {
 export type NativeAddon = {
   spiceVersion(): string;
 
+  // Error-free CSPICE constants.
+  pi(): number;
+  twopi(): number;
+  halfpi(): number;
+  dpr(): number;
+  rpd(): number;
+  spd(): number;
+  j2000(): number;
+  j1900(): number;
+  b1950(): number;
+
+  // Error-free CSPICE constants.
+  clight(): number;
+  dpmax(): number;
+  dpmin(): number;
+  intmax(): number;
+  intmin(): number;
+  b1900(): number;
+  j1950(): number;
+  j2100(): number;
+  jyear(): number;
+  tyear(): number;
+
   // --- error/status utilities ---
   failed(): boolean;
   reset(): void;
@@ -527,7 +550,352 @@ export type NativeAddon = {
     result: SpiceWindow,
   ): void;
   pxform(from: string, to: string, et: number): number[];
+  frame(x: number[]): { x: unknown; y: unknown; z: unknown };
+  twovec(
+    axdef: number[],
+    indexa: number,
+    plndef: number[],
+    indexp: number,
+  ): unknown;
+  twovxf(
+    axdef: number[],
+    indexa: number,
+    plndef: number[],
+    indexp: number,
+  ): unknown;
+  eul2xf(
+    eulang: number[],
+    axisa: number,
+    axisb: number,
+    axisc: number,
+  ): unknown;
+  xf2eul(
+    xform: number[],
+    axisa: number,
+    axisb: number,
+    axisc: number,
+  ): { eulang: unknown; unique: unknown };
+  xf2rav(xform: number[]): { rot: unknown; av: unknown };
+  rav2xf(rot: number[], av: number[]): unknown;
+  invstm(mat: number[]): unknown;
+  xpose6(m1: number[]): unknown;
   sxform(from: string, to: string, et: number): number[];
+
+  cyllat(
+    radius: number,
+    lon: number,
+    z: number,
+  ): { radius: number; lon: number; lat: number };
+  cylrec(radius: number, lon: number, z: number): number[];
+  cylsph(
+    radius: number,
+    lon: number,
+    z: number,
+  ): { radius: number; colat: number; lon: number };
+  latcyl(
+    radius: number,
+    lon: number,
+    lat: number,
+  ): { radius: number; lon: number; z: number };
+  latsph(
+    radius: number,
+    lon: number,
+    lat: number,
+  ): { radius: number; colat: number; lon: number };
+  reccyl(rect: readonly number[]): { radius: number; lon: number; z: number };
+  sphcyl(
+    radius: number,
+    colat: number,
+    lon: number,
+  ): { radius: number; lon: number; z: number };
+  sphlat(
+    radius: number,
+    colat: number,
+    lon: number,
+  ): { radius: number; lon: number; lat: number };
+
+  vdist(a: readonly number[], b: readonly number[]): number;
+  vequ(v: readonly number[]): number[];
+  vpack(x: number, y: number, z: number): number[];
+  vupack(v: readonly number[]): { x: number; y: number; z: number };
+  vzero(v: readonly number[]): boolean;
+  unorm(v: readonly number[]): { unit: number[]; norm: number };
+  ucrss(a: readonly number[], b: readonly number[]): number[];
+  vsep(a: readonly number[], b: readonly number[]): number;
+
+  vlcom(
+    a: number,
+    v1: readonly number[],
+    b: number,
+    v2: readonly number[],
+  ): number[];
+  vlcom3(
+    a: number,
+    v1: readonly number[],
+    b: number,
+    v2: readonly number[],
+    c: number,
+    v3: readonly number[],
+  ): number[];
+  vperp(a: readonly number[], b: readonly number[]): number[];
+  vproj(a: readonly number[], b: readonly number[]): number[];
+  vrel(a: readonly number[], b: readonly number[]): number;
+  vrotv(v: readonly number[], axis: readonly number[], theta: number): number[];
+  rotvec(v: readonly number[], angle: number, axis: number): number[];
+  vtmv(
+    v1: readonly number[],
+    matrix: readonly number[],
+    v2: readonly number[],
+  ): number;
+
+  azlrec(
+    range: number,
+    az: number,
+    el: number,
+    azccw: boolean,
+    elplsz: boolean,
+  ): number[];
+  recazl(
+    rect: readonly number[],
+    azccw: boolean,
+    elplsz: boolean,
+  ): { range: number; az: number; el: number };
+  pgrrec(
+    body: string,
+    lon: number,
+    lat: number,
+    alt: number,
+    re: number,
+    f: number,
+  ): number[];
+  recpgr(
+    body: string,
+    rect: readonly number[],
+    re: number,
+    f: number,
+  ): { lon: number; lat: number; alt: number };
+  radrec(range: number, ra: number, dec: number): number[];
+  recrad(rect: readonly number[]): { range: number; ra: number; dec: number };
+  srfrec(body: number, lon: number, lat: number): number[];
+
+  brcktd(value: number, end1: number, end2: number): number;
+  brckti(value: number, end1: number, end2: number): number;
+  convrt(value: number, inUnit: string, outUnit: string): number;
+  sumad(values: readonly number[]): number;
+  sumai(values: readonly number[]): number;
+  maxd(values: readonly number[]): number;
+  maxi(values: readonly number[]): number;
+  mind(values: readonly number[]): number;
+  mini(values: readonly number[]): number;
+
+  ducrss(a: readonly number[], b: readonly number[]): number[];
+  dvcrss(a: readonly number[], b: readonly number[]): number[];
+  dvdot(a: readonly number[], b: readonly number[]): number;
+  dvhat(state: readonly number[]): number[];
+  dvnorm(state: readonly number[]): number;
+  dvsep(a: readonly number[], b: readonly number[]): number;
+
+  chbder(
+    cp: readonly number[],
+    x2s: readonly [number, number],
+    x: number,
+    nderiv: number,
+  ): number[];
+  chbigr(
+    cp: readonly number[],
+    x2s: readonly [number, number],
+    x: number,
+  ): { p: number; itgrlp: number };
+  chbint(
+    cp: readonly number[],
+    x2s: readonly [number, number],
+    x: number,
+  ): { p: number; dpdx: number };
+  chbval(
+    cp: readonly number[],
+    x2s: readonly [number, number],
+    x: number,
+  ): number;
+  polyds(coeffs: readonly number[], nderiv: number, t: number): number[];
+  rquad(
+    a: number,
+    b: number,
+    c: number,
+  ): { root1: [number, number]; root2: [number, number] };
+
+  hrmesp(
+    first: number,
+    step: number,
+    yvals: readonly number[],
+    x: number,
+  ): { f: number; df: number };
+  hrmint(
+    xvals: readonly number[],
+    yvals: readonly number[],
+    x: number,
+  ): { f: number; df: number };
+  lgresp(
+    first: number,
+    step: number,
+    yvals: readonly number[],
+    x: number,
+  ): number;
+  lgrind(
+    xvals: readonly number[],
+    yvals: readonly number[],
+    x: number,
+  ): { p: number; dp: number };
+  lgrint(xvals: readonly number[], yvals: readonly number[], x: number): number;
+  qderiv(f0: readonly number[], f2: readonly number[], delta: number): number[];
+
+  clearc(ndim: number, arrlen: number, bytes: readonly number[]): number[];
+  cleard(ndim: number, values: readonly number[]): number[];
+  cleari(ndim: number, values: readonly number[]): number[];
+  filld(value: number, ndim: number, values: readonly number[]): number[];
+  filli(value: number, ndim: number, values: readonly number[]): number[];
+  moved(
+    source: readonly number[],
+    ndim: number,
+    destination: readonly number[],
+  ): number[];
+
+  eul2m(
+    angle3: number,
+    angle2: number,
+    angle1: number,
+    axis3: number,
+    axis2: number,
+    axis1: number,
+  ): unknown;
+  m2eul(
+    m: readonly number[],
+    axis3: number,
+    axis2: number,
+    axis1: number,
+  ): { angle3: unknown; angle2: unknown; angle1: unknown };
+  m2q(m: readonly number[]): unknown;
+  q2m(q: readonly number[]): unknown;
+  qxq(q1: readonly number[], q2: readonly number[]): unknown;
+  qdq2av(q: readonly number[], dq: readonly number[]): unknown;
+  raxisa(m: readonly number[]): { axis: unknown; angle: unknown };
+  dazldr(
+    x: number,
+    y: number,
+    z: number,
+    azccw: boolean,
+    elplsz: boolean,
+  ): number[];
+  dcyldr(x: number, y: number, z: number): number[];
+  dgeodr(x: number, y: number, z: number, re: number, f: number): number[];
+  dlatdr(x: number, y: number, z: number): number[];
+  dpgrdr(
+    body: string,
+    x: number,
+    y: number,
+    z: number,
+    re: number,
+    f: number,
+  ): number[];
+  drdazl(
+    range: number,
+    az: number,
+    el: number,
+    azccw: boolean,
+    elplsz: boolean,
+  ): number[];
+  drdcyl(radius: number, lon: number, z: number): number[];
+  drdgeo(
+    lon: number,
+    lat: number,
+    alt: number,
+    re: number,
+    f: number,
+  ): number[];
+  drdlat(radius: number, lon: number, lat: number): number[];
+  drdpgr(
+    body: string,
+    lon: number,
+    lat: number,
+    alt: number,
+    re: number,
+    f: number,
+  ): number[];
+  drdsph(radius: number, colat: number, lon: number): number[];
+  dsphdr(x: number, y: number, z: number): number[];
+  det(m: readonly number[]): number;
+  diags2(symmat: readonly number[]): { diag: number[]; rotate: number[] };
+  ident(): number[];
+  invert(m: readonly number[]): number[];
+  invort(m: readonly number[]): number[];
+  isrot(m: readonly number[], ntol: number, dtol: number): boolean;
+  mequ(m: readonly number[]): number[];
+  mtxm(a: readonly number[], b: readonly number[]): number[];
+  mxmt(a: readonly number[], b: readonly number[]): number[];
+  trace(m: readonly number[]): number;
+  xpose(m: readonly number[]): number[];
+
+  mequg(m1: readonly number[], nr: number, nc: number): unknown;
+  mtxmg(
+    m1: readonly number[],
+    m2: readonly number[],
+    nc1: number,
+    nr1r2: number,
+    nc2: number,
+  ): unknown;
+  mtxvg(
+    m1: readonly number[],
+    v2: readonly number[],
+    nc1: number,
+    nr1r2: number,
+  ): unknown;
+  mxmg(
+    m1: readonly number[],
+    m2: readonly number[],
+    nr1: number,
+    nc1r2: number,
+    nc2: number,
+  ): unknown;
+  mxmtg(
+    m1: readonly number[],
+    m2: readonly number[],
+    nr1: number,
+    nc1c2: number,
+    nr2: number,
+  ): unknown;
+  mxvg(
+    m1: readonly number[],
+    v2: readonly number[],
+    nr1: number,
+    nc1r2: number,
+  ): unknown;
+  vtmvg(
+    v1: readonly number[],
+    matrix: readonly number[],
+    v2: readonly number[],
+    nrow: number,
+    ncol: number,
+  ): unknown;
+  xposeg(matrix: readonly number[], nrow: number, ncol: number): unknown;
+  vaddg(a: readonly number[], b: readonly number[]): number[];
+  vdistg(a: readonly number[], b: readonly number[]): number;
+  vdotg(a: readonly number[], b: readonly number[]): number;
+  vequg(v: readonly number[]): number[];
+  vhatg(v: readonly number[]): number[];
+  vlcomg(
+    a: number,
+    v1: readonly number[],
+    b: number,
+    v2: readonly number[],
+  ): number[];
+  vminug(v: readonly number[]): number[];
+  vnormg(v: readonly number[]): number;
+  vprojg(a: readonly number[], b: readonly number[]): number[];
+  vrelg(a: readonly number[], b: readonly number[]): number;
+  vsclg(s: number, v: readonly number[]): number[];
+  vsepg(a: readonly number[], b: readonly number[]): number;
+  vsubg(a: readonly number[], b: readonly number[]): number[];
+  vzerog(v: readonly number[]): boolean;
+  unormg(v: readonly number[]): { unit: number[]; norm: number };
 
   reclat(rect: number[]): { radius: number; lon: number; lat: number };
   latrec(radius: number, lon: number, lat: number): number[];

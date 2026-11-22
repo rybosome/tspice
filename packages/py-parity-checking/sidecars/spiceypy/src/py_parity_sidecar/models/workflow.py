@@ -23,6 +23,123 @@ from .coords_vectors import (
     StepCoordsVectorsMtxv,
     StepCoordsVectorsMxm,
     StepCoordsVectorsMxv,
+    StepCoordsVectorsCyllat,
+    StepCoordsVectorsCylrec,
+    StepCoordsVectorsCylsph,
+    StepCoordsVectorsLatcyl,
+    StepCoordsVectorsLatsph,
+    StepCoordsVectorsReccyl,
+    StepCoordsVectorsSphcyl,
+    StepCoordsVectorsSphlat,
+    StepCoordsVectorsVdist,
+    StepCoordsVectorsVequ,
+    StepCoordsVectorsVpack,
+    StepCoordsVectorsVupack,
+    StepCoordsVectorsVzero,
+    StepCoordsVectorsUnorm,
+    StepCoordsVectorsUcrss,
+    StepCoordsVectorsVsep,
+    StepCoordsVectorsVlcom,
+    StepCoordsVectorsVlcom3,
+    StepCoordsVectorsVperp,
+    StepCoordsVectorsVproj,
+    StepCoordsVectorsVrel,
+    StepCoordsVectorsVrotv,
+    StepCoordsVectorsRotvec,
+    StepCoordsVectorsVtmv,
+    StepCoordsVectorsAzlrec,
+    StepCoordsVectorsRecazl,
+    StepCoordsVectorsPgrrec,
+    StepCoordsVectorsRecpgr,
+    StepCoordsVectorsRadrec,
+    StepCoordsVectorsRecrad,
+    StepCoordsVectorsSrfrec,
+    StepCoordsVectorsBrcktd,
+    StepCoordsVectorsBrckti,
+    StepCoordsVectorsConvrt,
+    StepCoordsVectorsSumad,
+    StepCoordsVectorsSumai,
+    StepCoordsVectorsMaxd,
+    StepCoordsVectorsMaxi,
+    StepCoordsVectorsMind,
+    StepCoordsVectorsMini,
+    StepCoordsVectorsDucrss,
+    StepCoordsVectorsDvcrss,
+    StepCoordsVectorsDvdot,
+    StepCoordsVectorsDvhat,
+    StepCoordsVectorsDvnorm,
+    StepCoordsVectorsDvsep,
+    StepCoordsVectorsChbder,
+    StepCoordsVectorsChbigr,
+    StepCoordsVectorsChbint,
+    StepCoordsVectorsChbval,
+    StepCoordsVectorsPolyds,
+    StepCoordsVectorsRquad,
+    StepCoordsVectorsHrmesp,
+    StepCoordsVectorsHrmint,
+    StepCoordsVectorsLgresp,
+    StepCoordsVectorsLgrind,
+    StepCoordsVectorsLgrint,
+    StepCoordsVectorsQderiv,
+    StepCoordsVectorsClearc,
+    StepCoordsVectorsCleard,
+    StepCoordsVectorsCleari,
+    StepCoordsVectorsFilld,
+    StepCoordsVectorsFilli,
+    StepCoordsVectorsMoved,
+    StepCoordsVectorsEul2m,
+    StepCoordsVectorsM2eul,
+    StepCoordsVectorsM2q,
+    StepCoordsVectorsQ2m,
+    StepCoordsVectorsQxq,
+    StepCoordsVectorsQdq2av,
+    StepCoordsVectorsRaxisa,
+    StepCoordsVectorsDet,
+    StepCoordsVectorsDiags2,
+    StepCoordsVectorsIdent,
+    StepCoordsVectorsInvert,
+    StepCoordsVectorsInvort,
+    StepCoordsVectorsIsrot,
+    StepCoordsVectorsMequ,
+    StepCoordsVectorsMtxm,
+    StepCoordsVectorsMxmt,
+    StepCoordsVectorsTrace,
+    StepCoordsVectorsXpose,
+    StepCoordsVectorsMequg,
+    StepCoordsVectorsMtxmg,
+    StepCoordsVectorsMtxvg,
+    StepCoordsVectorsMxmg,
+    StepCoordsVectorsMxmtg,
+    StepCoordsVectorsMxvg,
+    StepCoordsVectorsVtmvg,
+    StepCoordsVectorsXposeg,
+    StepCoordsVectorsVaddg,
+    StepCoordsVectorsVdistg,
+    StepCoordsVectorsVdotg,
+    StepCoordsVectorsVequg,
+    StepCoordsVectorsVhatg,
+    StepCoordsVectorsVlcomg,
+    StepCoordsVectorsVminug,
+    StepCoordsVectorsVnormg,
+    StepCoordsVectorsVprojg,
+    StepCoordsVectorsVrelg,
+    StepCoordsVectorsVsclg,
+    StepCoordsVectorsVsepg,
+    StepCoordsVectorsVsubg,
+    StepCoordsVectorsVzerog,
+    StepCoordsVectorsUnormg,
+    StepCoordsVectorsDazldr,
+    StepCoordsVectorsDcyldr,
+    StepCoordsVectorsDgeodr,
+    StepCoordsVectorsDlatdr,
+    StepCoordsVectorsDpgrdr,
+    StepCoordsVectorsDrdazl,
+    StepCoordsVectorsDrdcyl,
+    StepCoordsVectorsDrdgeo,
+    StepCoordsVectorsDrdlat,
+    StepCoordsVectorsDrdpgr,
+    StepCoordsVectorsDrdsph,
+    StepCoordsVectorsDsphdr,
     StepCoordsVectorsReclat,
     StepCoordsVectorsRecgeo,
     StepCoordsVectorsRecsph,
@@ -34,6 +151,16 @@ from .coords_vectors import (
     StepCoordsVectorsVdot,
     StepCoordsVectorsVhat,
     StepCoordsVectorsVminus,
+    StepCoordsVectorsPi,
+    StepCoordsVectorsTwopi,
+    StepCoordsVectorsHalfpi,
+    StepCoordsVectorsDpr,
+    StepCoordsVectorsRpd,
+    StepCoordsVectorsClight,
+    StepCoordsVectorsDpmax,
+    StepCoordsVectorsDpmin,
+    StepCoordsVectorsIntmax,
+    StepCoordsVectorsIntmin,
     StepCoordsVectorsVnorm,
     StepCoordsVectorsVscl,
     StepCoordsVectorsVsub,
@@ -147,6 +274,15 @@ from .frames import (
     StepFramesFrmnam,
     StepFramesNamfrm,
     StepFramesPxform,
+    StepFramesFrame,
+    StepFramesTwovec,
+    StepFramesTwovxf,
+    StepFramesEul2xf,
+    StepFramesXf2eul,
+    StepFramesXf2rav,
+    StepFramesRav2xf,
+    StepFramesInvstm,
+    StepFramesXpose6,
     StepFramesSxform,
 )
 from .ids_names import (
@@ -194,6 +330,15 @@ from .time import (
     StepTimeTimdefGet,
     StepTimeTimdefSet,
     StepTimeTimout,
+    StepTimeSpd,
+    StepTimeJ2000,
+    StepTimeJ1900,
+    StepTimeB1950,
+    StepTimeB1900,
+    StepTimeJ1950,
+    StepTimeJ2100,
+    StepTimeJyear,
+    StepTimeTyear,
     StepTimeTkvrsn,
     StepTimeTparse,
     StepTimeTpictr,
@@ -203,6 +348,15 @@ from .time import (
 WorkflowStep: TypeAlias = (
     StepTimeStr2Et
     | StepTimeEt2Utc
+    | StepTimeSpd
+    | StepTimeJ2000
+    | StepTimeJ1900
+    | StepTimeB1950
+    | StepTimeB1900
+    | StepTimeJ1950
+    | StepTimeJ2100
+    | StepTimeJyear
+    | StepTimeTyear
     | StepTimeTkvrsn
     | StepTimeTimout
     | StepTimeDeltet
@@ -224,10 +378,137 @@ WorkflowStep: TypeAlias = (
     | StepIdsNamesBodfnd
     | StepIdsNamesBods2c
     | StepIdsNamesBodvar
+    | StepCoordsVectorsCyllat
+    | StepCoordsVectorsCylrec
+    | StepCoordsVectorsCylsph
+    | StepCoordsVectorsLatcyl
+    | StepCoordsVectorsLatsph
+    | StepCoordsVectorsReccyl
+    | StepCoordsVectorsSphcyl
+    | StepCoordsVectorsSphlat
+    | StepCoordsVectorsVdist
+    | StepCoordsVectorsVequ
+    | StepCoordsVectorsVpack
+    | StepCoordsVectorsVupack
+    | StepCoordsVectorsVzero
+    | StepCoordsVectorsUnorm
+    | StepCoordsVectorsUcrss
+    | StepCoordsVectorsVsep
+    | StepCoordsVectorsVlcom
+    | StepCoordsVectorsVlcom3
+    | StepCoordsVectorsVperp
+    | StepCoordsVectorsVproj
+    | StepCoordsVectorsVrel
+    | StepCoordsVectorsVrotv
+    | StepCoordsVectorsRotvec
+    | StepCoordsVectorsVtmv
+    | StepCoordsVectorsAzlrec
+    | StepCoordsVectorsRecazl
+    | StepCoordsVectorsPgrrec
+    | StepCoordsVectorsRecpgr
+    | StepCoordsVectorsRadrec
+    | StepCoordsVectorsRecrad
+    | StepCoordsVectorsSrfrec
+    | StepCoordsVectorsBrcktd
+    | StepCoordsVectorsBrckti
+    | StepCoordsVectorsConvrt
+    | StepCoordsVectorsSumad
+    | StepCoordsVectorsSumai
+    | StepCoordsVectorsMaxd
+    | StepCoordsVectorsMaxi
+    | StepCoordsVectorsMind
+    | StepCoordsVectorsMini
+    | StepCoordsVectorsDucrss
+    | StepCoordsVectorsDvcrss
+    | StepCoordsVectorsDvdot
+    | StepCoordsVectorsDvhat
+    | StepCoordsVectorsDvnorm
+    | StepCoordsVectorsDvsep
+    | StepCoordsVectorsChbder
+    | StepCoordsVectorsChbigr
+    | StepCoordsVectorsChbint
+    | StepCoordsVectorsChbval
+    | StepCoordsVectorsPolyds
+    | StepCoordsVectorsRquad
+    | StepCoordsVectorsHrmesp
+    | StepCoordsVectorsHrmint
+    | StepCoordsVectorsLgresp
+    | StepCoordsVectorsLgrind
+    | StepCoordsVectorsLgrint
+    | StepCoordsVectorsQderiv
+    | StepCoordsVectorsClearc
+    | StepCoordsVectorsCleard
+    | StepCoordsVectorsCleari
+    | StepCoordsVectorsFilld
+    | StepCoordsVectorsFilli
+    | StepCoordsVectorsMoved
+    | StepCoordsVectorsEul2m
+    | StepCoordsVectorsM2eul
+    | StepCoordsVectorsM2q
+    | StepCoordsVectorsQ2m
+    | StepCoordsVectorsQxq
+    | StepCoordsVectorsQdq2av
+    | StepCoordsVectorsRaxisa
+    | StepCoordsVectorsDet
+    | StepCoordsVectorsDiags2
+    | StepCoordsVectorsIdent
+    | StepCoordsVectorsInvert
+    | StepCoordsVectorsInvort
+    | StepCoordsVectorsIsrot
+    | StepCoordsVectorsMequ
+    | StepCoordsVectorsMtxm
+    | StepCoordsVectorsMxmt
+    | StepCoordsVectorsTrace
+    | StepCoordsVectorsXpose
+    | StepCoordsVectorsMequg
+    | StepCoordsVectorsMtxmg
+    | StepCoordsVectorsMtxvg
+    | StepCoordsVectorsMxmg
+    | StepCoordsVectorsMxmtg
+    | StepCoordsVectorsMxvg
+    | StepCoordsVectorsVtmvg
+    | StepCoordsVectorsXposeg
+    | StepCoordsVectorsVaddg
+    | StepCoordsVectorsVdistg
+    | StepCoordsVectorsVdotg
+    | StepCoordsVectorsVequg
+    | StepCoordsVectorsVhatg
+    | StepCoordsVectorsVlcomg
+    | StepCoordsVectorsVminug
+    | StepCoordsVectorsVnormg
+    | StepCoordsVectorsVprojg
+    | StepCoordsVectorsVrelg
+    | StepCoordsVectorsVsclg
+    | StepCoordsVectorsVsepg
+    | StepCoordsVectorsVsubg
+    | StepCoordsVectorsVzerog
+    | StepCoordsVectorsUnormg
+    | StepCoordsVectorsDazldr
+    | StepCoordsVectorsDcyldr
+    | StepCoordsVectorsDgeodr
+    | StepCoordsVectorsDlatdr
+    | StepCoordsVectorsDpgrdr
+    | StepCoordsVectorsDrdazl
+    | StepCoordsVectorsDrdcyl
+    | StepCoordsVectorsDrdgeo
+    | StepCoordsVectorsDrdlat
+    | StepCoordsVectorsDrdpgr
+    | StepCoordsVectorsDrdsph
+    | StepCoordsVectorsDsphdr
     | StepCoordsVectorsReclat
     | StepCoordsVectorsLatrec
     | StepCoordsVectorsRecsph
     | StepCoordsVectorsSphrec
+    | StepCoordsVectorsPi
+    | StepCoordsVectorsTwopi
+    | StepCoordsVectorsHalfpi
+    | StepCoordsVectorsDpr
+    | StepCoordsVectorsRpd
+    | StepCoordsVectorsClight
+    | StepCoordsVectorsDpmax
+    | StepCoordsVectorsDpmin
+    | StepCoordsVectorsIntmax
+    | StepCoordsVectorsIntmin
     | StepCoordsVectorsVnorm
     | StepCoordsVectorsVhat
     | StepCoordsVectorsVdot
@@ -326,6 +607,15 @@ WorkflowStep: TypeAlias = (
     | StepFramesCkobj
     | StepFramesCkcov
     | StepFramesPxform
+    | StepFramesFrame
+    | StepFramesTwovec
+    | StepFramesTwovxf
+    | StepFramesEul2xf
+    | StepFramesXf2eul
+    | StepFramesXf2rav
+    | StepFramesRav2xf
+    | StepFramesInvstm
+    | StepFramesXpose6
     | StepFramesSxform
     | StepEkEkopn
     | StepEkEkopr

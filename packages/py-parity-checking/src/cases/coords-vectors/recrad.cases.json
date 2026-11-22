@@ -1,0 +1,98 @@
+[
+  {
+    "caseId": "coords-vectors-recrad-mixed-quadrants",
+    "description": "recrad: mixed-quadrants; observe every actual returned component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.recrad",
+        "rect": [3, 4, 12]
+      },
+      {
+        "op": "coords-vectors.recrad",
+        "rect": [-3, 4, -12]
+      },
+      {
+        "op": "coords-vectors.recrad",
+        "rect": [-3, -4, 12]
+      },
+      {
+        "op": "coords-vectors.recrad",
+        "rect": [3, -4, -12]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-recrad-zero-and-axes",
+    "description": "recrad: zero-and-axes; observe every actual returned component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.recrad",
+        "rect": [0, 0, 0]
+      },
+      {
+        "op": "coords-vectors.recrad",
+        "rect": [3, 0, 0]
+      },
+      {
+        "op": "coords-vectors.recrad",
+        "rect": [0, 4, 0]
+      },
+      {
+        "op": "coords-vectors.recrad",
+        "rect": [-3, 0, 0]
+      },
+      {
+        "op": "coords-vectors.recrad",
+        "rect": [0, -4, 0]
+      },
+      {
+        "op": "coords-vectors.recrad",
+        "rect": [0, 0, 12]
+      },
+      {
+        "op": "coords-vectors.recrad",
+        "rect": [0, 0, -12]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-recrad-near-axis",
+    "description": "recrad: near-axis; observe every actual returned component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.recrad",
+        "rect": [1, 1e-15, 0]
+      },
+      {
+        "op": "coords-vectors.recrad",
+        "rect": [1, -1e-15, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-recrad-scaled-magnitudes",
+    "description": "recrad: scaled-magnitudes; observe every actual returned component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.recrad",
+        "rect": [3e200, -4e200, 1.2e201]
+      },
+      {
+        "op": "coords-vectors.recrad",
+        "rect": [3e-200, -4e-200, 1.2e-199]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

@@ -12,6 +12,147 @@ export type EmscriptenModule = {
   HEAP32: Int32Array;
   HEAPF64: Float64Array;
 
+  // Error-free scalar constants return their double directly.
+  _tspice_pi(): number;
+  _tspice_twopi(): number;
+  _tspice_halfpi(): number;
+  _tspice_dpr(): number;
+  _tspice_rpd(): number;
+  _tspice_spd(): number;
+  _tspice_j2000(): number;
+  _tspice_j1900(): number;
+  _tspice_b1950(): number;
+
+  // Error-free scalar constants return their double or signed integer directly.
+  _tspice_clight(): number;
+  _tspice_dpmax(): number;
+  _tspice_dpmin(): number;
+  _tspice_intmax(): number;
+  _tspice_intmin(): number;
+  _tspice_b1900(): number;
+  _tspice_j1950(): number;
+  _tspice_j2100(): number;
+  _tspice_jyear(): number;
+  _tspice_tyear(): number;
+
+  _tspice_cyllat(
+    radius: number,
+    lon: number,
+    z: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_cylrec(
+    radius: number,
+    lon: number,
+    z: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_cylsph(
+    radius: number,
+    lon: number,
+    z: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_latcyl(
+    radius: number,
+    lon: number,
+    lat: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_latsph(
+    radius: number,
+    lon: number,
+    lat: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_reccyl(
+    rectPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_sphcyl(
+    radius: number,
+    colat: number,
+    lon: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_sphlat(
+    radius: number,
+    colat: number,
+    lon: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_vdist(
+    aPtr: number,
+    bPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_vequ(
+    vPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_vpack(
+    x: number,
+    y: number,
+    z: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_vupack(
+    vPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_vzero(
+    vPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_unorm(
+    vPtr: number,
+    outPtr: number,
+    normPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_ucrss(
+    aPtr: number,
+    bPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_vsep(
+    aPtr: number,
+    bPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
   // --- error/status utilities ---
   _tspice_get_last_error_short(outPtr: number, outMaxBytes: number): number;
   _tspice_get_last_error_long(outPtr: number, outMaxBytes: number): number;
@@ -519,6 +660,77 @@ export type EmscriptenModule = {
     errPtr: number,
     errMaxBytes: number,
   ): number;
+  _tspice_frame(
+    xPtr: number,
+    outXPtr: number,
+    outYPtr: number,
+    outZPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_twovec(
+    axdefPtr: number,
+    indexa: number,
+    plndefPtr: number,
+    indexp: number,
+    outRotationPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_twovxf(
+    axdefPtr: number,
+    indexa: number,
+    plndefPtr: number,
+    indexp: number,
+    outXformPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_eul2xf(
+    eulangPtr: number,
+    axisa: number,
+    axisb: number,
+    axisc: number,
+    outXformPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_xf2eul(
+    xformPtr: number,
+    axisa: number,
+    axisb: number,
+    axisc: number,
+    outEulangPtr: number,
+    outUniquePtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_xf2rav(
+    xformPtr: number,
+    outRotPtr: number,
+    outAvPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_rav2xf(
+    rotPtr: number,
+    avPtr: number,
+    outXformPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_invstm(
+    matPtr: number,
+    outInvmatPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_xpose6(
+    m1Ptr: number,
+    outMoutPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
   _tspice_sxform(
     fromPtr: number,
     toPtr: number,
@@ -895,6 +1107,834 @@ export type EmscriptenModule = {
   ): number;
 
   // Coordinate conversions + small vector/matrix helpers
+  _tspice_vlcom(
+    a: number,
+    v1Ptr: number,
+    b: number,
+    v2Ptr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_vlcom3(
+    a: number,
+    v1Ptr: number,
+    b: number,
+    v2Ptr: number,
+    c: number,
+    v3Ptr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_vperp(
+    aPtr: number,
+    bPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_vproj(
+    aPtr: number,
+    bPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_vrel(
+    aPtr: number,
+    bPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_vrotv(
+    vPtr: number,
+    axisPtr: number,
+    theta: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_rotvec(
+    vPtr: number,
+    angle: number,
+    axis: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_vtmv(
+    v1Ptr: number,
+    matrixPtr: number,
+    v2Ptr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_azlrec(
+    range: number,
+    az: number,
+    el: number,
+    azccw: number,
+    elplsz: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_recazl(
+    rectPtr: number,
+    azccw: number,
+    elplsz: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_pgrrec(
+    bodyPtr: number,
+    lon: number,
+    lat: number,
+    alt: number,
+    re: number,
+    f: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_recpgr(
+    bodyPtr: number,
+    rectPtr: number,
+    re: number,
+    f: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_radrec(
+    range: number,
+    ra: number,
+    dec: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_recrad(
+    rectPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_srfrec(
+    body: number,
+    lon: number,
+    lat: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_brcktd(
+    value: number,
+    end1: number,
+    end2: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_brckti(
+    value: number,
+    end1: number,
+    end2: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_convrt(
+    value: number,
+    inUnitPtr: number,
+    outUnitPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_sumad(
+    valuesPtr: number,
+    count: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_sumai(
+    valuesPtr: number,
+    count: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_maxd(
+    valuesPtr: number,
+    count: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_maxi(
+    valuesPtr: number,
+    count: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_mind(
+    valuesPtr: number,
+    count: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_mini(
+    valuesPtr: number,
+    count: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_ducrss(
+    aPtr: number,
+    bPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_dvcrss(
+    aPtr: number,
+    bPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_dvdot(
+    aPtr: number,
+    bPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_dvhat(
+    statePtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_dvnorm(
+    statePtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_dvsep(
+    aPtr: number,
+    bPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_chbder(
+    cpPtr: number,
+    ncoeff: number,
+    x2sPtr: number,
+    x: number,
+    nderiv: number,
+    workspacePtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_chbigr(
+    cpPtr: number,
+    ncoeff: number,
+    x2sPtr: number,
+    x: number,
+    outPtr: number,
+    secondaryPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_chbint(
+    cpPtr: number,
+    ncoeff: number,
+    x2sPtr: number,
+    x: number,
+    outPtr: number,
+    secondaryPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_chbval(
+    cpPtr: number,
+    ncoeff: number,
+    x2sPtr: number,
+    x: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_polyds(
+    coeffsPtr: number,
+    ncoeff: number,
+    nderiv: number,
+    t: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_rquad(
+    a: number,
+    b: number,
+    c: number,
+    root1Ptr: number,
+    root2Ptr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_hrmesp(
+    count: number,
+    first: number,
+    step: number,
+    yvalsPtr: number,
+    x: number,
+    outPtr: number,
+    derivativePtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_hrmint(
+    count: number,
+    xvalsPtr: number,
+    yvalsPtr: number,
+    x: number,
+    workPtr: number,
+    outPtr: number,
+    derivativePtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_lgresp(
+    count: number,
+    first: number,
+    step: number,
+    yvalsPtr: number,
+    x: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_lgrind(
+    count: number,
+    xvalsPtr: number,
+    yvalsPtr: number,
+    workPtr: number,
+    x: number,
+    outPtr: number,
+    derivativePtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_lgrint(
+    count: number,
+    xvalsPtr: number,
+    yvalsPtr: number,
+    x: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_qderiv(
+    count: number,
+    f0Ptr: number,
+    f2Ptr: number,
+    delta: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_clearc(
+    ndim: number,
+    arrlen: number,
+    bytesPtr: number,
+    length: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_cleard(
+    ndim: number,
+    valuesPtr: number,
+    length: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_cleari(
+    ndim: number,
+    valuesPtr: number,
+    length: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_filld(
+    value: number,
+    ndim: number,
+    valuesPtr: number,
+    length: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_filli(
+    value: number,
+    ndim: number,
+    valuesPtr: number,
+    length: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_moved(
+    sourcePtr: number,
+    sourceLength: number,
+    ndim: number,
+    destinationPtr: number,
+    destinationLength: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_eul2m(
+    angle3: number,
+    angle2: number,
+    angle1: number,
+    axis3: number,
+    axis2: number,
+    axis1: number,
+    rPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_m2eul(
+    mPtr: number,
+    axis3: number,
+    axis2: number,
+    axis1: number,
+    angle3Ptr: number,
+    angle2Ptr: number,
+    angle1Ptr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_m2q(
+    mPtr: number,
+    qPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_q2m(
+    qPtr: number,
+    rPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_qxq(
+    q1Ptr: number,
+    q2Ptr: number,
+    qoutPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_qdq2av(
+    qPtr: number,
+    dqPtr: number,
+    avPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_raxisa(
+    mPtr: number,
+    axisPtr: number,
+    anglePtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_dazldr(
+    x: number,
+    y: number,
+    z: number,
+    azccw: number,
+    elplsz: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_dcyldr(
+    x: number,
+    y: number,
+    z: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_dgeodr(
+    x: number,
+    y: number,
+    z: number,
+    re: number,
+    f: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_dlatdr(
+    x: number,
+    y: number,
+    z: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_dpgrdr(
+    bodyPtr: number,
+    x: number,
+    y: number,
+    z: number,
+    re: number,
+    f: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_drdazl(
+    range: number,
+    az: number,
+    el: number,
+    azccw: number,
+    elplsz: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_drdcyl(
+    radius: number,
+    lon: number,
+    z: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_drdgeo(
+    lon: number,
+    lat: number,
+    alt: number,
+    re: number,
+    f: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_drdlat(
+    radius: number,
+    lon: number,
+    lat: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_drdpgr(
+    bodyPtr: number,
+    lon: number,
+    lat: number,
+    alt: number,
+    re: number,
+    f: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_drdsph(
+    radius: number,
+    colat: number,
+    lon: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_dsphdr(
+    x: number,
+    y: number,
+    z: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_det(
+    mPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_diags2(
+    symmatPtr: number,
+    diagPtr: number,
+    rotatePtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_ident(outPtr: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_invert(
+    mPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_invort(
+    mPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_isrot(
+    mPtr: number,
+    ntol: number,
+    dtol: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_mequ(
+    mPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_mtxm(
+    aPtr: number,
+    bPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_mxmt(
+    aPtr: number,
+    bPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_trace(
+    mPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_xpose(
+    mPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_mequg(
+    m1Ptr: number,
+    nr: number,
+    nc: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_mtxmg(
+    m1Ptr: number,
+    m2Ptr: number,
+    nc1: number,
+    nr1r2: number,
+    nc2: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_mtxvg(
+    m1Ptr: number,
+    v2Ptr: number,
+    nc1: number,
+    nr1r2: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_mxmg(
+    m1Ptr: number,
+    m2Ptr: number,
+    nr1: number,
+    nc1r2: number,
+    nc2: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_mxmtg(
+    m1Ptr: number,
+    m2Ptr: number,
+    nr1: number,
+    nc1c2: number,
+    nr2: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_mxvg(
+    m1Ptr: number,
+    v2Ptr: number,
+    nr1: number,
+    nc1r2: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_vtmvg(
+    v1Ptr: number,
+    matrixPtr: number,
+    v2Ptr: number,
+    nrow: number,
+    ncol: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_xposeg(
+    matrixPtr: number,
+    nrow: number,
+    ncol: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_vaddg(
+    aPtr: number,
+    bPtr: number,
+    ndim: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_vdistg(
+    aPtr: number,
+    bPtr: number,
+    ndim: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_vdotg(
+    aPtr: number,
+    bPtr: number,
+    ndim: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_vequg(
+    vPtr: number,
+    ndim: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_vhatg(
+    vPtr: number,
+    ndim: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_vlcomg(
+    a: number,
+    v1Ptr: number,
+    b: number,
+    v2Ptr: number,
+    ndim: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_vminug(
+    vPtr: number,
+    ndim: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_vnormg(
+    vPtr: number,
+    ndim: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_vprojg(
+    aPtr: number,
+    bPtr: number,
+    ndim: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_vrelg(
+    aPtr: number,
+    bPtr: number,
+    ndim: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_vsclg(
+    s: number,
+    vPtr: number,
+    ndim: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_vsepg(
+    aPtr: number,
+    bPtr: number,
+    ndim: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_vsubg(
+    aPtr: number,
+    bPtr: number,
+    ndim: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_vzerog(
+    vPtr: number,
+    ndim: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_unormg(
+    vPtr: number,
+    ndim: number,
+    outPtr: number,
+    normPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
   _tspice_reclat(
     rect3Ptr: number,
     outRadiusPtr: number,
@@ -1580,6 +2620,77 @@ export type EmscriptenModule = {
     errPtr: number,
     errMaxBytes: number,
   ): number;
+  _tspice_frame(
+    xPtr: number,
+    outXPtr: number,
+    outYPtr: number,
+    outZPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_twovec(
+    axdefPtr: number,
+    indexa: number,
+    plndefPtr: number,
+    indexp: number,
+    outRotationPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_twovxf(
+    axdefPtr: number,
+    indexa: number,
+    plndefPtr: number,
+    indexp: number,
+    outXformPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_eul2xf(
+    eulangPtr: number,
+    axisa: number,
+    axisb: number,
+    axisc: number,
+    outXformPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_xf2eul(
+    xformPtr: number,
+    axisa: number,
+    axisb: number,
+    axisc: number,
+    outEulangPtr: number,
+    outUniquePtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_xf2rav(
+    xformPtr: number,
+    outRotPtr: number,
+    outAvPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_rav2xf(
+    rotPtr: number,
+    avPtr: number,
+    outXformPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_invstm(
+    matPtr: number,
+    outInvmatPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_xpose6(
+    m1Ptr: number,
+    outMoutPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
   _tspice_sxform(
     fromPtr: number,
     toPtr: number,
@@ -1843,6 +2954,779 @@ export type EmscriptenModule = {
   ): number;
 
   // --- coordinate conversions + small vector/matrix helpers ---
+  _tspice_vlcom(
+    a: number,
+    v1Ptr: number,
+    b: number,
+    v2Ptr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_vlcom3(
+    a: number,
+    v1Ptr: number,
+    b: number,
+    v2Ptr: number,
+    c: number,
+    v3Ptr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_vperp(
+    aPtr: number,
+    bPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_vproj(
+    aPtr: number,
+    bPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_vrel(
+    aPtr: number,
+    bPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_vrotv(
+    vPtr: number,
+    axisPtr: number,
+    theta: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_rotvec(
+    vPtr: number,
+    angle: number,
+    axis: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_vtmv(
+    v1Ptr: number,
+    matrixPtr: number,
+    v2Ptr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_azlrec(
+    range: number,
+    az: number,
+    el: number,
+    azccw: number,
+    elplsz: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_recazl(
+    rectPtr: number,
+    azccw: number,
+    elplsz: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_pgrrec(
+    bodyPtr: number,
+    lon: number,
+    lat: number,
+    alt: number,
+    re: number,
+    f: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_recpgr(
+    bodyPtr: number,
+    rectPtr: number,
+    re: number,
+    f: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_radrec(
+    range: number,
+    ra: number,
+    dec: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_recrad(
+    rectPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_srfrec(
+    body: number,
+    lon: number,
+    lat: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_brcktd(
+    value: number,
+    end1: number,
+    end2: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_brckti(
+    value: number,
+    end1: number,
+    end2: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_convrt(
+    value: number,
+    inUnitPtr: number,
+    outUnitPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_sumad(
+    valuesPtr: number,
+    count: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_sumai(
+    valuesPtr: number,
+    count: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_maxd(
+    valuesPtr: number,
+    count: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_maxi(
+    valuesPtr: number,
+    count: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_mind(
+    valuesPtr: number,
+    count: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_mini(
+    valuesPtr: number,
+    count: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_ducrss(
+    aPtr: number,
+    bPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_dvcrss(
+    aPtr: number,
+    bPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_dvdot(
+    aPtr: number,
+    bPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_dvhat(
+    statePtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_dvnorm(
+    statePtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_dvsep(
+    aPtr: number,
+    bPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_chbder(
+    cpPtr: number,
+    ncoeff: number,
+    x2sPtr: number,
+    x: number,
+    nderiv: number,
+    workspacePtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_chbigr(
+    cpPtr: number,
+    ncoeff: number,
+    x2sPtr: number,
+    x: number,
+    outPtr: number,
+    secondaryPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_chbint(
+    cpPtr: number,
+    ncoeff: number,
+    x2sPtr: number,
+    x: number,
+    outPtr: number,
+    secondaryPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_chbval(
+    cpPtr: number,
+    ncoeff: number,
+    x2sPtr: number,
+    x: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_polyds(
+    coeffsPtr: number,
+    ncoeff: number,
+    nderiv: number,
+    t: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_rquad(
+    a: number,
+    b: number,
+    c: number,
+    root1Ptr: number,
+    root2Ptr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_hrmesp(
+    count: number,
+    first: number,
+    step: number,
+    yvalsPtr: number,
+    x: number,
+    outPtr: number,
+    derivativePtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_hrmint(
+    count: number,
+    xvalsPtr: number,
+    yvalsPtr: number,
+    x: number,
+    workPtr: number,
+    outPtr: number,
+    derivativePtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_lgresp(
+    count: number,
+    first: number,
+    step: number,
+    yvalsPtr: number,
+    x: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_lgrind(
+    count: number,
+    xvalsPtr: number,
+    yvalsPtr: number,
+    workPtr: number,
+    x: number,
+    outPtr: number,
+    derivativePtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_lgrint(
+    count: number,
+    xvalsPtr: number,
+    yvalsPtr: number,
+    x: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_qderiv(
+    count: number,
+    f0Ptr: number,
+    f2Ptr: number,
+    delta: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_clearc(
+    ndim: number,
+    arrlen: number,
+    bytesPtr: number,
+    length: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_cleard(
+    ndim: number,
+    valuesPtr: number,
+    length: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_cleari(
+    ndim: number,
+    valuesPtr: number,
+    length: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_filld(
+    value: number,
+    ndim: number,
+    valuesPtr: number,
+    length: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_filli(
+    value: number,
+    ndim: number,
+    valuesPtr: number,
+    length: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_moved(
+    sourcePtr: number,
+    sourceLength: number,
+    ndim: number,
+    destinationPtr: number,
+    destinationLength: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_dazldr(
+    x: number,
+    y: number,
+    z: number,
+    azccw: number,
+    elplsz: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_dcyldr(
+    x: number,
+    y: number,
+    z: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_dgeodr(
+    x: number,
+    y: number,
+    z: number,
+    re: number,
+    f: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_dlatdr(
+    x: number,
+    y: number,
+    z: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_dpgrdr(
+    bodyPtr: number,
+    x: number,
+    y: number,
+    z: number,
+    re: number,
+    f: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_drdazl(
+    range: number,
+    az: number,
+    el: number,
+    azccw: number,
+    elplsz: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_drdcyl(
+    radius: number,
+    lon: number,
+    z: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_drdgeo(
+    lon: number,
+    lat: number,
+    alt: number,
+    re: number,
+    f: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_drdlat(
+    radius: number,
+    lon: number,
+    lat: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_drdpgr(
+    bodyPtr: number,
+    lon: number,
+    lat: number,
+    alt: number,
+    re: number,
+    f: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_drdsph(
+    radius: number,
+    colat: number,
+    lon: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_dsphdr(
+    x: number,
+    y: number,
+    z: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_det(
+    mPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_diags2(
+    symmatPtr: number,
+    diagPtr: number,
+    rotatePtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_ident(outPtr: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_invert(
+    mPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_invort(
+    mPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_isrot(
+    mPtr: number,
+    ntol: number,
+    dtol: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_mequ(
+    mPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_mtxm(
+    aPtr: number,
+    bPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_mxmt(
+    aPtr: number,
+    bPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_trace(
+    mPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_xpose(
+    mPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_mequg(
+    m1Ptr: number,
+    nr: number,
+    nc: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_mtxmg(
+    m1Ptr: number,
+    m2Ptr: number,
+    nc1: number,
+    nr1r2: number,
+    nc2: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_mtxvg(
+    m1Ptr: number,
+    v2Ptr: number,
+    nc1: number,
+    nr1r2: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_mxmg(
+    m1Ptr: number,
+    m2Ptr: number,
+    nr1: number,
+    nc1r2: number,
+    nc2: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_mxmtg(
+    m1Ptr: number,
+    m2Ptr: number,
+    nr1: number,
+    nc1c2: number,
+    nr2: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_mxvg(
+    m1Ptr: number,
+    v2Ptr: number,
+    nr1: number,
+    nc1r2: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_vtmvg(
+    v1Ptr: number,
+    matrixPtr: number,
+    v2Ptr: number,
+    nrow: number,
+    ncol: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_xposeg(
+    matrixPtr: number,
+    nrow: number,
+    ncol: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_vaddg(
+    aPtr: number,
+    bPtr: number,
+    ndim: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_vdistg(
+    aPtr: number,
+    bPtr: number,
+    ndim: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_vdotg(
+    aPtr: number,
+    bPtr: number,
+    ndim: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_vequg(
+    vPtr: number,
+    ndim: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_vhatg(
+    vPtr: number,
+    ndim: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_vlcomg(
+    a: number,
+    v1Ptr: number,
+    b: number,
+    v2Ptr: number,
+    ndim: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_vminug(
+    vPtr: number,
+    ndim: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_vnormg(
+    vPtr: number,
+    ndim: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_vprojg(
+    aPtr: number,
+    bPtr: number,
+    ndim: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_vrelg(
+    aPtr: number,
+    bPtr: number,
+    ndim: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_vsclg(
+    s: number,
+    vPtr: number,
+    ndim: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_vsepg(
+    aPtr: number,
+    bPtr: number,
+    ndim: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_vsubg(
+    aPtr: number,
+    bPtr: number,
+    ndim: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_vzerog(
+    vPtr: number,
+    ndim: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_unormg(
+    vPtr: number,
+    ndim: number,
+    outPtr: number,
+    normPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
   _tspice_reclat(
     rect3Ptr: number,
     outRadiusPtr: number,
@@ -2227,6 +4111,15 @@ const REQUIRED_FUNCTION_EXPORTS = [
   "_tspice_ckobj",
   "_tspice_ckcov",
   "_tspice_pxform",
+  "_tspice_frame",
+  "_tspice_twovec",
+  "_tspice_twovxf",
+  "_tspice_eul2xf",
+  "_tspice_xf2eul",
+  "_tspice_xf2rav",
+  "_tspice_rav2xf",
+  "_tspice_invstm",
+  "_tspice_xpose6",
   "_tspice_sxform",
   "_tspice_spkezr",
   "_tspice_spkpos",
@@ -2262,6 +4155,107 @@ const REQUIRED_FUNCTION_EXPORTS = [
   "_tspice_gfrepf",
   "_tspice_gfsep",
   "_tspice_gfdist",
+  "_tspice_vlcom",
+  "_tspice_vlcom3",
+  "_tspice_vperp",
+  "_tspice_vproj",
+  "_tspice_vrel",
+  "_tspice_vrotv",
+  "_tspice_rotvec",
+  "_tspice_vtmv",
+  "_tspice_azlrec",
+  "_tspice_recazl",
+  "_tspice_pgrrec",
+  "_tspice_recpgr",
+  "_tspice_radrec",
+  "_tspice_recrad",
+  "_tspice_srfrec",
+  "_tspice_brcktd",
+  "_tspice_brckti",
+  "_tspice_convrt",
+  "_tspice_sumad",
+  "_tspice_sumai",
+  "_tspice_maxd",
+  "_tspice_maxi",
+  "_tspice_mind",
+  "_tspice_mini",
+  "_tspice_ducrss",
+  "_tspice_dvcrss",
+  "_tspice_dvdot",
+  "_tspice_dvhat",
+  "_tspice_dvnorm",
+  "_tspice_dvsep",
+  "_tspice_chbder",
+  "_tspice_chbigr",
+  "_tspice_chbint",
+  "_tspice_chbval",
+  "_tspice_polyds",
+  "_tspice_rquad",
+  "_tspice_hrmesp",
+  "_tspice_hrmint",
+  "_tspice_lgresp",
+  "_tspice_lgrind",
+  "_tspice_lgrint",
+  "_tspice_qderiv",
+  "_tspice_clearc",
+  "_tspice_cleard",
+  "_tspice_cleari",
+  "_tspice_filld",
+  "_tspice_filli",
+  "_tspice_moved",
+  "_tspice_eul2m",
+  "_tspice_m2eul",
+  "_tspice_m2q",
+  "_tspice_q2m",
+  "_tspice_qxq",
+  "_tspice_qdq2av",
+  "_tspice_raxisa",
+  "_tspice_dazldr",
+  "_tspice_dcyldr",
+  "_tspice_dgeodr",
+  "_tspice_dlatdr",
+  "_tspice_dpgrdr",
+  "_tspice_drdazl",
+  "_tspice_drdcyl",
+  "_tspice_drdgeo",
+  "_tspice_drdlat",
+  "_tspice_drdpgr",
+  "_tspice_drdsph",
+  "_tspice_dsphdr",
+  "_tspice_det",
+  "_tspice_diags2",
+  "_tspice_ident",
+  "_tspice_invert",
+  "_tspice_invort",
+  "_tspice_isrot",
+  "_tspice_mequ",
+  "_tspice_mtxm",
+  "_tspice_mxmt",
+  "_tspice_trace",
+  "_tspice_xpose",
+  "_tspice_mequg",
+  "_tspice_mtxmg",
+  "_tspice_mtxvg",
+  "_tspice_mxmg",
+  "_tspice_mxmtg",
+  "_tspice_mxvg",
+  "_tspice_vtmvg",
+  "_tspice_xposeg",
+  "_tspice_vaddg",
+  "_tspice_vdistg",
+  "_tspice_vdotg",
+  "_tspice_vequg",
+  "_tspice_vhatg",
+  "_tspice_vlcomg",
+  "_tspice_vminug",
+  "_tspice_vnormg",
+  "_tspice_vprojg",
+  "_tspice_vrelg",
+  "_tspice_vsclg",
+  "_tspice_vsepg",
+  "_tspice_vsubg",
+  "_tspice_vzerog",
+  "_tspice_unormg",
   "_tspice_reclat",
   "_tspice_latrec",
   "_tspice_recsph",

@@ -1,0 +1,115 @@
+[
+  {
+    "caseId": "coords-vectors-q2m-identity-and-zero",
+    "description": "Both signed scalar identities and zero quaternion.",
+    "workflow": [
+      {
+        "op": "coords-vectors.q2m",
+        "q": [1, 0, 0, 0]
+      },
+      {
+        "op": "coords-vectors.q2m",
+        "q": [-2, 0, 0, 0]
+      },
+      {
+        "op": "coords-vectors.q2m",
+        "q": [0, 0, 0, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-q2m-sign-and-scale",
+    "description": "A quaternion, its negative and nonunit multiples represent the same rotation.",
+    "workflow": [
+      {
+        "op": "coords-vectors.q2m",
+        "q": [1, 2, -3, 4]
+      },
+      {
+        "op": "coords-vectors.q2m",
+        "q": [-1, -2, 3, -4]
+      },
+      {
+        "op": "coords-vectors.q2m",
+        "q": [8, 16, -24, 32]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-q2m-principal-half-turns",
+    "description": "Distinguish scalar-first ordering and each independent axis.",
+    "workflow": [
+      {
+        "op": "coords-vectors.q2m",
+        "q": [0, 1, 0, 0]
+      },
+      {
+        "op": "coords-vectors.q2m",
+        "q": [0, 0, 1, 0]
+      },
+      {
+        "op": "coords-vectors.q2m",
+        "q": [0, 0, 0, 1]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-q2m-off-diagonal-orientation",
+    "description": "Distinguish signs and row-major layout of non-symmetric matrices.",
+    "workflow": [
+      {
+        "op": "coords-vectors.q2m",
+        "q": [1, 0, 0, 1]
+      },
+      {
+        "op": "coords-vectors.q2m",
+        "q": [1, 0, 0, -1]
+      },
+      {
+        "op": "coords-vectors.q2m",
+        "q": [3, -1, 2, -4]
+      },
+      {
+        "op": "coords-vectors.q2m",
+        "q": [2, 5, -7, 1]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-q2m-small-and-large-products",
+    "description": "Observe underflow to identity, normal tiny scale, and the transition to infinite squared length with finite products.",
+    "workflow": [
+      {
+        "op": "coords-vectors.q2m",
+        "q": [1e-300, 0, 1e-300, 0]
+      },
+      {
+        "op": "coords-vectors.q2m",
+        "q": [1e-154, 0, 1e-154, 0]
+      },
+      {
+        "op": "coords-vectors.q2m",
+        "q": [1e70, 0, 1e70, 0]
+      },
+      {
+        "op": "coords-vectors.q2m",
+        "q": [1e154, 0, 1e154, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

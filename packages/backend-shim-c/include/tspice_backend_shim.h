@@ -11,6 +11,49 @@
 extern "C" {
 #endif
 
+// Error-free scalar constants. These allocate nothing and preserve SPICE error state.
+double tspice_pi(void);
+double tspice_twopi(void);
+double tspice_halfpi(void);
+double tspice_dpr(void);
+double tspice_rpd(void);
+double tspice_spd(void);
+double tspice_j2000(void);
+double tspice_j1900(void);
+double tspice_b1950(void);
+
+// Error-free scalar constants. These allocate nothing and preserve SPICE error state.
+double tspice_clight(void);
+double tspice_dpmax(void);
+double tspice_dpmin(void);
+int tspice_intmax(void);
+int tspice_intmin(void);
+double tspice_b1900(void);
+double tspice_j1950(void);
+double tspice_j2100(void);
+double tspice_jyear(void);
+double tspice_tyear(void);
+
+// Coordinate conversions: output is an independent triple in CSPICE argument order.
+int tspice_cyllat(double radius, double lon, double z, double *out3, char *err, int errMaxBytes);
+int tspice_cylrec(double radius, double lon, double z, double *out3, char *err, int errMaxBytes);
+int tspice_cylsph(double radius, double lon, double z, double *out3, char *err, int errMaxBytes);
+int tspice_latcyl(double radius, double lon, double lat, double *out3, char *err, int errMaxBytes);
+int tspice_latsph(double radius, double lon, double lat, double *out3, char *err, int errMaxBytes);
+int tspice_reccyl(const double *rect3, double *out3, char *err, int errMaxBytes);
+int tspice_sphcyl(double radius, double colat, double lon, double *out3, char *err, int errMaxBytes);
+int tspice_sphlat(double radius, double colat, double lon, double *out3, char *err, int errMaxBytes);
+
+// Basic vector operations; outputs are copied into caller-owned buffers.
+int tspice_vdist(const double *a, const double *b, double *out, char *err, int errMaxBytes);
+int tspice_vequ(const double *v, double *out, char *err, int errMaxBytes);
+int tspice_vpack(double x, double y, double z, double *out, char *err, int errMaxBytes);
+int tspice_vupack(const double *v, double *out, char *err, int errMaxBytes);
+int tspice_vzero(const double *v, int *out, char *err, int errMaxBytes);
+int tspice_unorm(const double *v, double *outUnit3, double *outNorm, char *err, int errMaxBytes);
+int tspice_ucrss(const double *a, const double *b, double *out, char *err, int errMaxBytes);
+int tspice_vsep(const double *a, const double *b, double *out, char *err, int errMaxBytes);
+
 // --- CSPICE error handling helpers ---
 //
 // These helpers are a stable ABI surface. Callers should treat them as part of
@@ -681,6 +724,26 @@ int tspice_pxform(
 // sxform_c: compute state transformation matrix.
 //
 // Output matrix is written as 36 doubles in row-major order.
+// Frame algebra uses flat row-major matrices and position/velocity state vectors.
+int tspice_frame(
+    const double *x, double *outX, double *outY, double *outZ, char *err, int errMaxBytes);
+int tspice_twovec(
+    const double *axdef, int indexa, const double *plndef, int indexp, double *outRotation, char *err, int errMaxBytes);
+int tspice_twovxf(
+    const double *axdef, int indexa, const double *plndef, int indexp, double *outXform, char *err, int errMaxBytes);
+int tspice_eul2xf(
+    const double *eulang, int axisa, int axisb, int axisc, double *outXform, char *err, int errMaxBytes);
+int tspice_xf2eul(
+    const double *xform, int axisa, int axisb, int axisc, double *outEulang, int *outUnique, char *err, int errMaxBytes);
+int tspice_xf2rav(
+    const double *xform, double *outRot, double *outAv, char *err, int errMaxBytes);
+int tspice_rav2xf(
+    const double *rot, const double *av, double *outXform, char *err, int errMaxBytes);
+int tspice_invstm(
+    const double *mat, double *outInvmat, char *err, int errMaxBytes);
+int tspice_xpose6(
+    const double *m1, double *outMout, char *err, int errMaxBytes);
+
 int tspice_sxform(
     const char *from,
     const char *to,
@@ -1078,6 +1141,251 @@ int tspice_gfdist(
     int errMaxBytes);
 
 // --- coordinate conversions + small vector/matrix helpers ---
+
+// vlcom_c: preserved argument order; vector/matrix inputs are borrowed.
+int tspice_vlcom(double a, const double *v1, double b, const double *v2, double *out, char *err, int errMaxBytes);
+// vlcom3_c: preserved argument order; vector/matrix inputs are borrowed.
+int tspice_vlcom3(double a, const double *v1, double b, const double *v2, double c, const double *v3, double *out, char *err, int errMaxBytes);
+// vperp_c: preserved argument order; vector/matrix inputs are borrowed.
+int tspice_vperp(const double *a, const double *b, double *out, char *err, int errMaxBytes);
+// vproj_c: preserved argument order; vector/matrix inputs are borrowed.
+int tspice_vproj(const double *a, const double *b, double *out, char *err, int errMaxBytes);
+// vrel_c: preserved argument order; vector/matrix inputs are borrowed.
+int tspice_vrel(const double *a, const double *b, double *out, char *err, int errMaxBytes);
+// vrotv_c: preserved argument order; vector/matrix inputs are borrowed.
+int tspice_vrotv(const double *v, const double *axis, double theta, double *out, char *err, int errMaxBytes);
+// rotvec_c: preserved argument order; vector/matrix inputs are borrowed.
+int tspice_rotvec(const double *v, double angle, int axis, double *out, char *err, int errMaxBytes);
+// vtmv_c: preserved argument order; vector/matrix inputs are borrowed.
+int tspice_vtmv(const double *v1, const double *matrix, const double *v2, double *out, char *err, int errMaxBytes);
+
+// azlrec_c: out stores rectangular x, y, z.
+int tspice_azlrec(double range, double az, double el, int azccw, int elplsz, double *out, char *err, int errMaxBytes);
+// recazl_c: out stores range, az, el.
+int tspice_recazl(const double *rect, int azccw, int elplsz, double *out, char *err, int errMaxBytes);
+// pgrrec_c: out stores rectangular x, y, z.
+int tspice_pgrrec(const char *body, double lon, double lat, double alt, double re, double f, double *out, char *err, int errMaxBytes);
+// recpgr_c: out stores lon, lat, alt.
+int tspice_recpgr(const char *body, const double *rect, double re, double f, double *out, char *err, int errMaxBytes);
+// radrec_c: out stores rectangular x, y, z.
+int tspice_radrec(double range, double ra, double dec, double *out, char *err, int errMaxBytes);
+// recrad_c: out stores range, ra, dec.
+int tspice_recrad(const double *rect, double *out, char *err, int errMaxBytes);
+// srfrec_c: out stores rectangular x, y, z.
+int tspice_srfrec(int body, double lon, double lat, double *out, char *err, int errMaxBytes);
+
+// brcktd_c: preserves CSPICE argument order.
+int tspice_brcktd(double value, double end1, double end2, double *out, char *err, int errMaxBytes);
+// brckti_c: preserves CSPICE argument order.
+int tspice_brckti(int value, int end1, int end2, int *out, char *err, int errMaxBytes);
+// convrt_c: preserves CSPICE argument order.
+int tspice_convrt(double value, const char *inUnit, const char *outUnit, double *out, char *err, int errMaxBytes);
+// sumad_c: array length supplies count.
+int tspice_sumad(const double *values, int count, double *out, char *err, int errMaxBytes);
+// sumai_c: array length supplies count.
+int tspice_sumai(const int *values, int count, int *out, char *err, int errMaxBytes);
+// maxd_c: array length supplies count.
+int tspice_maxd(const double *values, int count, double *out, char *err, int errMaxBytes);
+// maxi_c: array length supplies count.
+int tspice_maxi(const int *values, int count, int *out, char *err, int errMaxBytes);
+// mind_c: array length supplies count.
+int tspice_mind(const double *values, int count, double *out, char *err, int errMaxBytes);
+// mini_c: array length supplies count.
+int tspice_mini(const int *values, int count, int *out, char *err, int errMaxBytes);
+
+// ducrss_c: input states contain six doubles; out contains six doubles.
+int tspice_ducrss(const double *a, const double *b, double *out, char *err, int errMaxBytes);
+// dvcrss_c: input states contain six doubles; out contains six doubles.
+int tspice_dvcrss(const double *a, const double *b, double *out, char *err, int errMaxBytes);
+// dvdot_c: input states contain six doubles; out contains one double.
+int tspice_dvdot(const double *a, const double *b, double *out, char *err, int errMaxBytes);
+// dvhat_c: input states contain six doubles; out contains six doubles.
+int tspice_dvhat(const double *state, double *out, char *err, int errMaxBytes);
+// dvnorm_c: input states contain six doubles; out contains one double.
+int tspice_dvnorm(const double *state, double *out, char *err, int errMaxBytes);
+// dvsep_c: input states contain six doubles; out contains one double.
+int tspice_dvsep(const double *a, const double *b, double *out, char *err, int errMaxBytes);
+
+// chbder_c: adapters infer degree from ncoeff; empty buffers remain non-NULL.
+int tspice_chbder(const double *cp, int ncoeff, const double x2s[2], double x, int nderiv, double *workspace, double *out, char *err, int errMaxBytes);
+// chbigr_c: adapters infer degree from ncoeff; empty buffers remain non-NULL.
+int tspice_chbigr(const double *cp, int ncoeff, const double x2s[2], double x, double *outP, double *outIntegral, char *err, int errMaxBytes);
+// chbint_c: adapters infer degree from ncoeff; empty buffers remain non-NULL.
+int tspice_chbint(const double *cp, int ncoeff, const double x2s[2], double x, double *outP, double *outDerivative, char *err, int errMaxBytes);
+// chbval_c: adapters infer degree from ncoeff; empty buffers remain non-NULL.
+int tspice_chbval(const double *cp, int ncoeff, const double x2s[2], double x, double *out, char *err, int errMaxBytes);
+// polyds_c: adapters infer degree from ncoeff; empty buffers remain non-NULL.
+int tspice_polyds(const double *coeffs, int ncoeff, int nderiv, double t, double *out, char *err, int errMaxBytes);
+// rquad_c: adapters infer degree from ncoeff; empty buffers remain non-NULL.
+int tspice_rquad(double a, double b, double c, double root1[2], double root2[2], char *err, int errMaxBytes);
+
+// hrmesp_c: inferred count, non-NULL buffers, guarded toolkit workspace/index sizes.
+int tspice_hrmesp(int n, double first, double step, const double *yvals, double x, double *outF, double *outDerivative, char *err, int errMaxBytes);
+// hrmint_c: inferred count, non-NULL buffers, guarded toolkit workspace/index sizes.
+int tspice_hrmint(int n, const double *xvals, const double *yvals, double x, double *work, double *outF, double *outDerivative, char *err, int errMaxBytes);
+// lgresp_c: inferred count, non-NULL buffers, guarded toolkit workspace/index sizes.
+int tspice_lgresp(int n, double first, double step, const double *yvals, double x, double *out, char *err, int errMaxBytes);
+// lgrind_c: inferred count, non-NULL buffers, guarded toolkit workspace/index sizes.
+int tspice_lgrind(int n, const double *xvals, const double *yvals, double *work, double x, double *outP, double *outDerivative, char *err, int errMaxBytes);
+// lgrint_c: inferred count, non-NULL buffers, guarded toolkit workspace/index sizes.
+int tspice_lgrint(int n, const double *xvals, const double *yvals, double x, double *out, char *err, int errMaxBytes);
+// qderiv_c: inferred count, non-NULL buffers, guarded toolkit workspace/index sizes.
+int tspice_qderiv(int n, const double *f0, const double *f2, double delta, double *out, char *err, int errMaxBytes);
+
+// Array capacities are in elements. Empty buffers still have a non-NULL address.
+int tspice_clearc(
+    int ndim, int arrlen, unsigned char *bytes, int length, char *err, int errMaxBytes);
+int tspice_cleard(
+    int ndim, double *values, int length, char *err, int errMaxBytes);
+int tspice_cleari(
+    int ndim, int *values, int length, char *err, int errMaxBytes);
+int tspice_filld(
+    double value, int ndim, double *values, int length, char *err, int errMaxBytes);
+int tspice_filli(
+    int value, int ndim, int *values, int length, char *err, int errMaxBytes);
+int tspice_moved(
+    const double *source, int sourceLength, int ndim, double *destination, int destinationLength, char *err, int errMaxBytes);
+
+// det_c: flat row-major matrix buffers.
+int tspice_eul2m(double angle3, double angle2, double angle1, int axis3, int axis2, int axis1, double *r, char *err, int errMaxBytes);
+int tspice_m2eul(const double * m, int axis3, int axis2, int axis1, double *angle3, double *angle2, double *angle1, char *err, int errMaxBytes);
+int tspice_m2q(const double * m, double *q, char *err, int errMaxBytes);
+int tspice_q2m(const double * q, double *r, char *err, int errMaxBytes);
+int tspice_qxq(const double * q1, const double * q2, double *qout, char *err, int errMaxBytes);
+int tspice_qdq2av(const double * q, const double * dq, double *av, char *err, int errMaxBytes);
+int tspice_raxisa(const double * m, double *axis, double *angle, char *err, int errMaxBytes);
+int tspice_dazldr(double x, double y, double z, int azccw, int elplsz, double *out, char *err, int errMaxBytes);
+int tspice_dcyldr(double x, double y, double z, double *out, char *err, int errMaxBytes);
+int tspice_dgeodr(double x, double y, double z, double re, double f, double *out, char *err, int errMaxBytes);
+int tspice_dlatdr(double x, double y, double z, double *out, char *err, int errMaxBytes);
+int tspice_dpgrdr(const char *body, double x, double y, double z, double re, double f, double *out, char *err, int errMaxBytes);
+int tspice_drdazl(double range, double az, double el, int azccw, int elplsz, double *out, char *err, int errMaxBytes);
+int tspice_drdcyl(double radius, double lon, double z, double *out, char *err, int errMaxBytes);
+int tspice_drdgeo(double lon, double lat, double alt, double re, double f, double *out, char *err, int errMaxBytes);
+int tspice_drdlat(double radius, double lon, double lat, double *out, char *err, int errMaxBytes);
+int tspice_drdpgr(const char *body, double lon, double lat, double alt, double re, double f, double *out, char *err, int errMaxBytes);
+int tspice_drdsph(double radius, double colat, double lon, double *out, char *err, int errMaxBytes);
+int tspice_dsphdr(double x, double y, double z, double *out, char *err, int errMaxBytes);
+
+int tspice_det(const double *m, double *out, char *err, int errMaxBytes);
+// diags2_c: flat row-major matrix buffers.
+int tspice_diags2(const double *symmat, double *diag, double *rotate, char *err, int errMaxBytes);
+// ident_c: flat row-major matrix buffers.
+int tspice_ident(double *out, char *err, int errMaxBytes);
+// invert_c: flat row-major matrix buffers.
+int tspice_invert(const double *m, double *out, char *err, int errMaxBytes);
+// invort_c: flat row-major matrix buffers.
+int tspice_invort(const double *m, double *out, char *err, int errMaxBytes);
+// isrot_c: flat row-major matrix buffers.
+int tspice_isrot(const double *m, double ntol, double dtol, int *out, char *err, int errMaxBytes);
+// mequ_c: flat row-major matrix buffers.
+int tspice_mequ(const double *m, double *out, char *err, int errMaxBytes);
+// mtxm_c: flat row-major matrix buffers.
+int tspice_mtxm(const double *a, const double *b, double *out, char *err, int errMaxBytes);
+// mxmt_c: flat row-major matrix buffers.
+int tspice_mxmt(const double *a, const double *b, double *out, char *err, int errMaxBytes);
+// trace_c: flat row-major matrix buffers.
+int tspice_trace(const double *m, double *out, char *err, int errMaxBytes);
+// xpose_c: flat row-major matrix buffers.
+int tspice_xpose(const double *m, double *out, char *err, int errMaxBytes);
+
+// General matrices use flat row-major inputs and explicit signed dimensions.
+int tspice_mequg(
+    const double *m1,
+    int nr,
+    int nc,
+    double *out,
+    char *err,
+    int errMaxBytes);
+int tspice_mtxmg(
+    const double *m1,
+    const double *m2,
+    int nc1,
+    int nr1r2,
+    int nc2,
+    double *out,
+    char *err,
+    int errMaxBytes);
+int tspice_mtxvg(
+    const double *m1,
+    const double *v2,
+    int nc1,
+    int nr1r2,
+    double *out,
+    char *err,
+    int errMaxBytes);
+int tspice_mxmg(
+    const double *m1,
+    const double *m2,
+    int nr1,
+    int nc1r2,
+    int nc2,
+    double *out,
+    char *err,
+    int errMaxBytes);
+int tspice_mxmtg(
+    const double *m1,
+    const double *m2,
+    int nr1,
+    int nc1c2,
+    int nr2,
+    double *out,
+    char *err,
+    int errMaxBytes);
+int tspice_mxvg(
+    const double *m1,
+    const double *v2,
+    int nr1,
+    int nc1r2,
+    double *out,
+    char *err,
+    int errMaxBytes);
+int tspice_vtmvg(
+    const double *v1,
+    const double *matrix,
+    const double *v2,
+    int nrow,
+    int ncol,
+    double *out,
+    char *err,
+    int errMaxBytes);
+int tspice_xposeg(
+    const double *matrix,
+    int nrow,
+    int ncol,
+    double *out,
+    char *err,
+    int errMaxBytes);
+// vaddg_c: dimension is inferred by adapters; empty buffers remain non-NULL.
+int tspice_vaddg(const double *a, const double *b, int ndim, double *out, char *err, int errMaxBytes);
+// vdistg_c: dimension is inferred by adapters; empty buffers remain non-NULL.
+int tspice_vdistg(const double *a, const double *b, int ndim, double *out, char *err, int errMaxBytes);
+// vdotg_c: dimension is inferred by adapters; empty buffers remain non-NULL.
+int tspice_vdotg(const double *a, const double *b, int ndim, double *out, char *err, int errMaxBytes);
+// vequg_c: dimension is inferred by adapters; empty buffers remain non-NULL.
+int tspice_vequg(const double *v, int ndim, double *out, char *err, int errMaxBytes);
+// vhatg_c: dimension is inferred by adapters; empty buffers remain non-NULL.
+int tspice_vhatg(const double *v, int ndim, double *out, char *err, int errMaxBytes);
+// vlcomg_c: dimension is inferred by adapters; empty buffers remain non-NULL.
+int tspice_vlcomg(double a, const double *v1, double b, const double *v2, int ndim, double *out, char *err, int errMaxBytes);
+// vminug_c: dimension is inferred by adapters; empty buffers remain non-NULL.
+int tspice_vminug(const double *v, int ndim, double *out, char *err, int errMaxBytes);
+// vnormg_c: dimension is inferred by adapters; empty buffers remain non-NULL.
+int tspice_vnormg(const double *v, int ndim, double *out, char *err, int errMaxBytes);
+// vprojg_c: dimension is inferred by adapters; empty buffers remain non-NULL.
+int tspice_vprojg(const double *a, const double *b, int ndim, double *out, char *err, int errMaxBytes);
+// vrelg_c: dimension is inferred by adapters; empty buffers remain non-NULL.
+int tspice_vrelg(const double *a, const double *b, int ndim, double *out, char *err, int errMaxBytes);
+// vsclg_c: dimension is inferred by adapters; empty buffers remain non-NULL.
+int tspice_vsclg(double s, const double *v, int ndim, double *out, char *err, int errMaxBytes);
+// vsepg_c: dimension is inferred by adapters; empty buffers remain non-NULL.
+int tspice_vsepg(const double *a, const double *b, int ndim, double *out, char *err, int errMaxBytes);
+// vsubg_c: dimension is inferred by adapters; empty buffers remain non-NULL.
+int tspice_vsubg(const double *a, const double *b, int ndim, double *out, char *err, int errMaxBytes);
+// vzerog_c: dimension is inferred by adapters; empty buffers remain non-NULL.
+int tspice_vzerog(const double *v, int ndim, int *out, char *err, int errMaxBytes);
+// unormg_c: dimension is inferred by adapters; empty buffers remain non-NULL.
+int tspice_unormg(const double *v, int ndim, double *outUnit, double *outNorm, char *err, int errMaxBytes);
 
 // reclat_c: rectangular -> latitudinal coordinates.
 int tspice_reclat(

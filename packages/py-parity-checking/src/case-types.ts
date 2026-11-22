@@ -1,4 +1,6 @@
 import type {
+  SpiceStateVector,
+  SpiceMatrix6x6,
   FoundDlaDescriptor,
   KernelKindInput,
 } from "@rybosome/tspice-backend-contract";
@@ -31,6 +33,42 @@ export type StepTimeEt2Utc = {
   et: number;
   format: string;
   prec: number;
+};
+
+export type StepTimeSpd = {
+  op: "time.spd";
+};
+
+export type StepTimeJ2000 = {
+  op: "time.j2000";
+};
+
+export type StepTimeJ1900 = {
+  op: "time.j1900";
+};
+
+export type StepTimeB1950 = {
+  op: "time.b1950";
+};
+
+export type StepTimeB1900 = {
+  op: "time.b1900";
+};
+
+export type StepTimeJ1950 = {
+  op: "time.j1950";
+};
+
+export type StepTimeJ2100 = {
+  op: "time.j2100";
+};
+
+export type StepTimeJyear = {
+  op: "time.jyear";
+};
+
+export type StepTimeTyear = {
+  op: "time.tyear";
 };
 
 export type StepTimeTkvrsn = {
@@ -155,6 +193,7 @@ export type StepIdsNamesBodvar = {
   item: string;
 };
 
+export type Quaternion = readonly [number, number, number, number];
 export type Matrix3x3 = [
   [number, number, number],
   [number, number, number],
@@ -170,7 +209,774 @@ export type Matrix6x6 = [
   [number, number, number, number, number, number],
 ];
 
+export type Vector6 = [number, number, number, number, number, number];
+
+export type Vector2 = [number, number];
+
 export type Vector3 = [number, number, number];
+
+export type StepCoordsVectorsDucrss = {
+  op: "coords-vectors.ducrss";
+  a: Vector6;
+  b: Vector6;
+};
+
+export type StepCoordsVectorsDvcrss = {
+  op: "coords-vectors.dvcrss";
+  a: Vector6;
+  b: Vector6;
+};
+
+export type StepCoordsVectorsDvdot = {
+  op: "coords-vectors.dvdot";
+  a: Vector6;
+  b: Vector6;
+};
+
+export type StepCoordsVectorsDvhat = {
+  op: "coords-vectors.dvhat";
+  state: Vector6;
+};
+
+export type StepCoordsVectorsDvnorm = {
+  op: "coords-vectors.dvnorm";
+  state: Vector6;
+};
+
+export type StepCoordsVectorsDvsep = {
+  op: "coords-vectors.dvsep";
+  a: Vector6;
+  b: Vector6;
+};
+
+export type StepCoordsVectorsBrcktd = {
+  op: "coords-vectors.brcktd";
+  value: number;
+  end1: number;
+  end2: number;
+};
+
+export type StepCoordsVectorsBrckti = {
+  op: "coords-vectors.brckti";
+  value: number;
+  end1: number;
+  end2: number;
+};
+
+export type StepCoordsVectorsConvrt = {
+  op: "coords-vectors.convrt";
+  value: number;
+  inUnit: string;
+  outUnit: string;
+};
+
+export type StepCoordsVectorsSumad = {
+  op: "coords-vectors.sumad";
+  values: number[];
+};
+
+export type StepCoordsVectorsSumai = {
+  op: "coords-vectors.sumai";
+  values: number[];
+};
+
+export type StepCoordsVectorsMaxd = {
+  op: "coords-vectors.maxd";
+  values: number[];
+};
+
+export type StepCoordsVectorsMaxi = {
+  op: "coords-vectors.maxi";
+  values: number[];
+};
+
+export type StepCoordsVectorsMind = {
+  op: "coords-vectors.mind";
+  values: number[];
+};
+
+export type StepCoordsVectorsMini = {
+  op: "coords-vectors.mini";
+  values: number[];
+};
+
+export type StepCoordsVectorsAzlrec = {
+  op: "coords-vectors.azlrec";
+  range: number;
+  az: number;
+  el: number;
+  azccw: boolean;
+  elplsz: boolean;
+};
+
+export type StepCoordsVectorsRecazl = {
+  op: "coords-vectors.recazl";
+  rect: Vector3;
+  azccw: boolean;
+  elplsz: boolean;
+};
+
+export type StepCoordsVectorsPgrrec = {
+  op: "coords-vectors.pgrrec";
+  body: string;
+  lon: number;
+  lat: number;
+  alt: number;
+  re: number;
+  f: number;
+};
+
+export type StepCoordsVectorsRecpgr = {
+  op: "coords-vectors.recpgr";
+  body: string;
+  rect: Vector3;
+  re: number;
+  f: number;
+};
+
+export type StepCoordsVectorsRadrec = {
+  op: "coords-vectors.radrec";
+  range: number;
+  ra: number;
+  dec: number;
+};
+
+export type StepCoordsVectorsRecrad = {
+  op: "coords-vectors.recrad";
+  rect: Vector3;
+};
+
+export type StepCoordsVectorsSrfrec = {
+  op: "coords-vectors.srfrec";
+  body: number;
+  lon: number;
+  lat: number;
+};
+
+export type StepCoordsVectorsVlcom = {
+  op: "coords-vectors.vlcom";
+  a: number;
+  v1: Vector3;
+  b: number;
+  v2: Vector3;
+};
+
+export type StepCoordsVectorsVlcom3 = {
+  op: "coords-vectors.vlcom3";
+  a: number;
+  v1: Vector3;
+  b: number;
+  v2: Vector3;
+  c: number;
+  v3: Vector3;
+};
+
+export type StepCoordsVectorsVperp = {
+  op: "coords-vectors.vperp";
+  a: Vector3;
+  b: Vector3;
+};
+
+export type StepCoordsVectorsVproj = {
+  op: "coords-vectors.vproj";
+  a: Vector3;
+  b: Vector3;
+};
+
+export type StepCoordsVectorsVrel = {
+  op: "coords-vectors.vrel";
+  a: Vector3;
+  b: Vector3;
+};
+
+export type StepCoordsVectorsVrotv = {
+  op: "coords-vectors.vrotv";
+  v: Vector3;
+  axis: Vector3;
+  theta: number;
+};
+
+export type StepCoordsVectorsRotvec = {
+  op: "coords-vectors.rotvec";
+  v: Vector3;
+  angle: number;
+  axis: number;
+};
+
+export type StepCoordsVectorsVtmv = {
+  op: "coords-vectors.vtmv";
+  v1: Vector3;
+  matrix: Matrix3x3;
+  v2: Vector3;
+};
+
+export type StepCoordsVectorsVdist = {
+  op: "coords-vectors.vdist";
+  a: Vector3;
+  b: Vector3;
+};
+
+export type StepCoordsVectorsVequ = {
+  op: "coords-vectors.vequ";
+  v: Vector3;
+};
+
+export type StepCoordsVectorsVpack = {
+  op: "coords-vectors.vpack";
+  x: number;
+  y: number;
+  z: number;
+};
+
+export type StepCoordsVectorsVupack = {
+  op: "coords-vectors.vupack";
+  v: Vector3;
+};
+
+export type StepCoordsVectorsVzero = {
+  op: "coords-vectors.vzero";
+  v: Vector3;
+};
+
+export type StepCoordsVectorsUnorm = {
+  op: "coords-vectors.unorm";
+  v: Vector3;
+};
+
+export type StepCoordsVectorsUcrss = {
+  op: "coords-vectors.ucrss";
+  a: Vector3;
+  b: Vector3;
+};
+
+export type StepCoordsVectorsVsep = {
+  op: "coords-vectors.vsep";
+  a: Vector3;
+  b: Vector3;
+};
+
+export type StepCoordsVectorsCyllat = {
+  op: "coords-vectors.cyllat";
+  radius: number;
+  lon: number;
+  z: number;
+};
+
+export type StepCoordsVectorsCylrec = {
+  op: "coords-vectors.cylrec";
+  radius: number;
+  lon: number;
+  z: number;
+};
+
+export type StepCoordsVectorsCylsph = {
+  op: "coords-vectors.cylsph";
+  radius: number;
+  lon: number;
+  z: number;
+};
+
+export type StepCoordsVectorsLatcyl = {
+  op: "coords-vectors.latcyl";
+  radius: number;
+  lon: number;
+  lat: number;
+};
+
+export type StepCoordsVectorsLatsph = {
+  op: "coords-vectors.latsph";
+  radius: number;
+  lon: number;
+  lat: number;
+};
+
+export type StepCoordsVectorsReccyl = {
+  op: "coords-vectors.reccyl";
+  rectan: Vector3;
+};
+
+export type StepCoordsVectorsSphcyl = {
+  op: "coords-vectors.sphcyl";
+  radius: number;
+  colat: number;
+  lon: number;
+};
+
+export type StepCoordsVectorsSphlat = {
+  op: "coords-vectors.sphlat";
+  radius: number;
+  colat: number;
+  lon: number;
+};
+
+export type StepCoordsVectorsChbder = {
+  op: "coords-vectors.chbder";
+  cp: number[];
+  x2s: Vector2;
+  x: number;
+  nderiv: number;
+};
+
+export type StepCoordsVectorsChbigr = {
+  op: "coords-vectors.chbigr";
+  cp: number[];
+  x2s: Vector2;
+  x: number;
+};
+
+export type StepCoordsVectorsChbint = {
+  op: "coords-vectors.chbint";
+  cp: number[];
+  x2s: Vector2;
+  x: number;
+};
+
+export type StepCoordsVectorsChbval = {
+  op: "coords-vectors.chbval";
+  cp: number[];
+  x2s: Vector2;
+  x: number;
+};
+
+export type StepCoordsVectorsPolyds = {
+  op: "coords-vectors.polyds";
+  coeffs: number[];
+  nderiv: number;
+  t: number;
+};
+
+export type StepCoordsVectorsRquad = {
+  op: "coords-vectors.rquad";
+  a: number;
+  b: number;
+  c: number;
+};
+
+export type StepCoordsVectorsHrmesp = {
+  op: "coords-vectors.hrmesp";
+  first: number;
+  step: number;
+  yvals: number[];
+  x: number;
+};
+
+export type StepCoordsVectorsHrmint = {
+  op: "coords-vectors.hrmint";
+  xvals: number[];
+  yvals: number[];
+  x: number;
+};
+
+export type StepCoordsVectorsLgresp = {
+  op: "coords-vectors.lgresp";
+  first: number;
+  step: number;
+  yvals: number[];
+  x: number;
+};
+
+export type StepCoordsVectorsLgrind = {
+  op: "coords-vectors.lgrind";
+  xvals: number[];
+  yvals: number[];
+  x: number;
+};
+
+export type StepCoordsVectorsLgrint = {
+  op: "coords-vectors.lgrint";
+  xvals: number[];
+  yvals: number[];
+  x: number;
+};
+
+export type StepCoordsVectorsQderiv = {
+  op: "coords-vectors.qderiv";
+  f0: number[];
+  f2: number[];
+  delta: number;
+};
+
+export type StepCoordsVectorsClearc = {
+  op: "coords-vectors.clearc";
+  ndim: number;
+  arrlen: number;
+  bytes: number[];
+};
+
+export type StepCoordsVectorsCleard = {
+  op: "coords-vectors.cleard";
+  ndim: number;
+  values: number[];
+};
+
+export type StepCoordsVectorsCleari = {
+  op: "coords-vectors.cleari";
+  ndim: number;
+  values: number[];
+};
+
+export type StepCoordsVectorsFilld = {
+  op: "coords-vectors.filld";
+  value: number;
+  ndim: number;
+  values: number[];
+};
+
+export type StepCoordsVectorsFilli = {
+  op: "coords-vectors.filli";
+  value: number;
+  ndim: number;
+  values: number[];
+};
+
+export type StepCoordsVectorsMoved = {
+  op: "coords-vectors.moved";
+  source: number[];
+  ndim: number;
+  destination: number[];
+};
+
+export type Matrix2RowMajor = [number, number, number, number];
+
+export type StepCoordsVectorsEul2m = {
+  op: "coords-vectors.eul2m";
+  angle3: number;
+  angle2: number;
+  angle1: number;
+  axis3: number;
+  axis2: number;
+  axis1: number;
+};
+export type StepCoordsVectorsM2eul = {
+  op: "coords-vectors.m2eul";
+  m: Matrix3x3;
+  axis3: number;
+  axis2: number;
+  axis1: number;
+};
+export type StepCoordsVectorsM2q = { op: "coords-vectors.m2q"; m: Matrix3x3 };
+export type StepCoordsVectorsQ2m = { op: "coords-vectors.q2m"; q: Quaternion };
+export type StepCoordsVectorsQxq = {
+  op: "coords-vectors.qxq";
+  q1: Quaternion;
+  q2: Quaternion;
+};
+export type StepCoordsVectorsQdq2av = {
+  op: "coords-vectors.qdq2av";
+  q: Quaternion;
+  dq: Quaternion;
+};
+export type StepCoordsVectorsRaxisa = {
+  op: "coords-vectors.raxisa";
+  m: Matrix3x3;
+};
+export type StepCoordsVectorsDet = {
+  op: "coords-vectors.det";
+  m: Matrix3x3;
+};
+
+export type StepCoordsVectorsDiags2 = {
+  op: "coords-vectors.diags2";
+  symmat: Matrix2RowMajor;
+};
+
+export type StepCoordsVectorsIdent = {
+  op: "coords-vectors.ident";
+};
+
+export type StepCoordsVectorsInvert = {
+  op: "coords-vectors.invert";
+  m: Matrix3x3;
+};
+
+export type StepCoordsVectorsInvort = {
+  op: "coords-vectors.invort";
+  m: Matrix3x3;
+};
+
+export type StepCoordsVectorsIsrot = {
+  op: "coords-vectors.isrot";
+  m: Matrix3x3;
+  ntol: number;
+  dtol: number;
+};
+
+export type StepCoordsVectorsMequ = {
+  op: "coords-vectors.mequ";
+  m: Matrix3x3;
+};
+
+export type StepCoordsVectorsMtxm = {
+  op: "coords-vectors.mtxm";
+  a: Matrix3x3;
+  b: Matrix3x3;
+};
+
+export type StepCoordsVectorsMxmt = {
+  op: "coords-vectors.mxmt";
+  a: Matrix3x3;
+  b: Matrix3x3;
+};
+
+export type StepCoordsVectorsTrace = {
+  op: "coords-vectors.trace";
+  m: Matrix3x3;
+};
+
+export type StepCoordsVectorsXpose = {
+  op: "coords-vectors.xpose";
+  m: Matrix3x3;
+};
+
+export type StepCoordsVectorsDazldr = {
+  op: "coords-vectors.dazldr";
+  x: number;
+  y: number;
+  z: number;
+  azccw: boolean;
+  elplsz: boolean;
+};
+
+export type StepCoordsVectorsDcyldr = {
+  op: "coords-vectors.dcyldr";
+  x: number;
+  y: number;
+  z: number;
+};
+
+export type StepCoordsVectorsDgeodr = {
+  op: "coords-vectors.dgeodr";
+  x: number;
+  y: number;
+  z: number;
+  re: number;
+  f: number;
+};
+
+export type StepCoordsVectorsDlatdr = {
+  op: "coords-vectors.dlatdr";
+  x: number;
+  y: number;
+  z: number;
+};
+
+export type StepCoordsVectorsDpgrdr = {
+  op: "coords-vectors.dpgrdr";
+  body: string;
+  x: number;
+  y: number;
+  z: number;
+  re: number;
+  f: number;
+};
+
+export type StepCoordsVectorsDrdazl = {
+  op: "coords-vectors.drdazl";
+  range: number;
+  az: number;
+  el: number;
+  azccw: boolean;
+  elplsz: boolean;
+};
+
+export type StepCoordsVectorsDrdcyl = {
+  op: "coords-vectors.drdcyl";
+  radius: number;
+  lon: number;
+  z: number;
+};
+
+export type StepCoordsVectorsDrdgeo = {
+  op: "coords-vectors.drdgeo";
+  lon: number;
+  lat: number;
+  alt: number;
+  re: number;
+  f: number;
+};
+
+export type StepCoordsVectorsDrdlat = {
+  op: "coords-vectors.drdlat";
+  radius: number;
+  lon: number;
+  lat: number;
+};
+
+export type StepCoordsVectorsDrdpgr = {
+  op: "coords-vectors.drdpgr";
+  body: string;
+  lon: number;
+  lat: number;
+  alt: number;
+  re: number;
+  f: number;
+};
+
+export type StepCoordsVectorsDrdsph = {
+  op: "coords-vectors.drdsph";
+  radius: number;
+  colat: number;
+  lon: number;
+};
+
+export type StepCoordsVectorsDsphdr = {
+  op: "coords-vectors.dsphdr";
+  x: number;
+  y: number;
+  z: number;
+};
+
+export type StepCoordsVectorsMequg = {
+  op: "coords-vectors.mequg";
+  m1: number[];
+  nr: number;
+  nc: number;
+};
+
+export type StepCoordsVectorsMtxmg = {
+  op: "coords-vectors.mtxmg";
+  m1: number[];
+  m2: number[];
+  nc1: number;
+  nr1r2: number;
+  nc2: number;
+};
+
+export type StepCoordsVectorsMtxvg = {
+  op: "coords-vectors.mtxvg";
+  m1: number[];
+  v2: number[];
+  nc1: number;
+  nr1r2: number;
+};
+
+export type StepCoordsVectorsMxmg = {
+  op: "coords-vectors.mxmg";
+  m1: number[];
+  m2: number[];
+  nr1: number;
+  nc1r2: number;
+  nc2: number;
+};
+
+export type StepCoordsVectorsMxmtg = {
+  op: "coords-vectors.mxmtg";
+  m1: number[];
+  m2: number[];
+  nr1: number;
+  nc1c2: number;
+  nr2: number;
+};
+
+export type StepCoordsVectorsMxvg = {
+  op: "coords-vectors.mxvg";
+  m1: number[];
+  v2: number[];
+  nr1: number;
+  nc1r2: number;
+};
+
+export type StepCoordsVectorsVtmvg = {
+  op: "coords-vectors.vtmvg";
+  v1: number[];
+  matrix: number[];
+  v2: number[];
+  nrow: number;
+  ncol: number;
+};
+
+export type StepCoordsVectorsXposeg = {
+  op: "coords-vectors.xposeg";
+  matrix: number[];
+  nrow: number;
+  ncol: number;
+};
+
+export type StepCoordsVectorsVaddg = {
+  op: "coords-vectors.vaddg";
+  a: number[];
+  b: number[];
+};
+
+export type StepCoordsVectorsVdistg = {
+  op: "coords-vectors.vdistg";
+  a: number[];
+  b: number[];
+};
+
+export type StepCoordsVectorsVdotg = {
+  op: "coords-vectors.vdotg";
+  a: number[];
+  b: number[];
+};
+
+export type StepCoordsVectorsVequg = {
+  op: "coords-vectors.vequg";
+  v: number[];
+};
+
+export type StepCoordsVectorsVhatg = {
+  op: "coords-vectors.vhatg";
+  v: number[];
+};
+
+export type StepCoordsVectorsVlcomg = {
+  op: "coords-vectors.vlcomg";
+  a: number;
+  v1: number[];
+  b: number;
+  v2: number[];
+};
+
+export type StepCoordsVectorsVminug = {
+  op: "coords-vectors.vminug";
+  v: number[];
+};
+
+export type StepCoordsVectorsVnormg = {
+  op: "coords-vectors.vnormg";
+  v: number[];
+};
+
+export type StepCoordsVectorsVprojg = {
+  op: "coords-vectors.vprojg";
+  a: number[];
+  b: number[];
+};
+
+export type StepCoordsVectorsVrelg = {
+  op: "coords-vectors.vrelg";
+  a: number[];
+  b: number[];
+};
+
+export type StepCoordsVectorsVsclg = {
+  op: "coords-vectors.vsclg";
+  s: number;
+  v: number[];
+};
+
+export type StepCoordsVectorsVsepg = {
+  op: "coords-vectors.vsepg";
+  a: number[];
+  b: number[];
+};
+
+export type StepCoordsVectorsVsubg = {
+  op: "coords-vectors.vsubg";
+  a: number[];
+  b: number[];
+};
+
+export type StepCoordsVectorsVzerog = {
+  op: "coords-vectors.vzerog";
+  v: number[];
+};
+
+export type StepCoordsVectorsUnormg = {
+  op: "coords-vectors.unormg";
+  v: number[];
+};
 
 export type StepCoordsVectorsReclat = {
   op: "coords-vectors.reclat";
@@ -194,6 +1000,46 @@ export type StepCoordsVectorsSphrec = {
   radius: number;
   colat: number;
   lon: number;
+};
+
+export type StepCoordsVectorsPi = {
+  op: "coords-vectors.pi";
+};
+
+export type StepCoordsVectorsTwopi = {
+  op: "coords-vectors.twopi";
+};
+
+export type StepCoordsVectorsHalfpi = {
+  op: "coords-vectors.halfpi";
+};
+
+export type StepCoordsVectorsDpr = {
+  op: "coords-vectors.dpr";
+};
+
+export type StepCoordsVectorsRpd = {
+  op: "coords-vectors.rpd";
+};
+
+export type StepCoordsVectorsClight = {
+  op: "coords-vectors.clight";
+};
+
+export type StepCoordsVectorsDpmax = {
+  op: "coords-vectors.dpmax";
+};
+
+export type StepCoordsVectorsDpmin = {
+  op: "coords-vectors.dpmin";
+};
+
+export type StepCoordsVectorsIntmax = {
+  op: "coords-vectors.intmax";
+};
+
+export type StepCoordsVectorsIntmin = {
+  op: "coords-vectors.intmin";
 };
 
 export type StepCoordsVectorsVnorm = {
@@ -923,6 +1769,64 @@ export type StepFramesPxform = {
   et: number;
 };
 
+export type StepFramesFrame = {
+  op: "frames.frame";
+  x: Vector3;
+};
+
+export type StepFramesTwovec = {
+  op: "frames.twovec";
+  axdef: Vector3;
+  indexa: number;
+  plndef: Vector3;
+  indexp: number;
+};
+
+export type StepFramesTwovxf = {
+  op: "frames.twovxf";
+  axdef: SpiceStateVector;
+  indexa: number;
+  plndef: SpiceStateVector;
+  indexp: number;
+};
+
+export type StepFramesEul2xf = {
+  op: "frames.eul2xf";
+  eulang: SpiceStateVector;
+  axisa: number;
+  axisb: number;
+  axisc: number;
+};
+
+export type StepFramesXf2eul = {
+  op: "frames.xf2eul";
+  xform: SpiceMatrix6x6;
+  axisa: number;
+  axisb: number;
+  axisc: number;
+};
+
+export type StepFramesXf2rav = {
+  op: "frames.xf2rav";
+  xform: SpiceMatrix6x6;
+};
+
+export type StepFramesRav2xf = {
+  op: "frames.rav2xf";
+  rot: Matrix3x3;
+  av: Vector3;
+};
+
+export type StepFramesInvstm = {
+  op: "frames.invstm";
+  mat: SpiceMatrix6x6;
+};
+
+export type StepFramesXpose6 = {
+  op: "frames.xpose6";
+  m1: SpiceMatrix6x6;
+};
+
 export type StepFramesSxform = {
   op: "frames.sxform";
   from: string;
@@ -1292,6 +2196,15 @@ export type StepDskDskb02 = {
 export type WorkflowStep =
   | StepTimeStr2Et
   | StepTimeEt2Utc
+  | StepTimeSpd
+  | StepTimeJ2000
+  | StepTimeJ1900
+  | StepTimeB1950
+  | StepTimeB1900
+  | StepTimeJ1950
+  | StepTimeJ2100
+  | StepTimeJyear
+  | StepTimeTyear
   | StepTimeTkvrsn
   | StepTimeTimout
   | StepTimeDeltet
@@ -1313,10 +2226,137 @@ export type WorkflowStep =
   | StepIdsNamesBodfnd
   | StepIdsNamesBods2c
   | StepIdsNamesBodvar
+  | StepCoordsVectorsCyllat
+  | StepCoordsVectorsCylrec
+  | StepCoordsVectorsCylsph
+  | StepCoordsVectorsLatcyl
+  | StepCoordsVectorsLatsph
+  | StepCoordsVectorsReccyl
+  | StepCoordsVectorsSphcyl
+  | StepCoordsVectorsSphlat
+  | StepCoordsVectorsVdist
+  | StepCoordsVectorsVequ
+  | StepCoordsVectorsVpack
+  | StepCoordsVectorsVupack
+  | StepCoordsVectorsVzero
+  | StepCoordsVectorsUnorm
+  | StepCoordsVectorsUcrss
+  | StepCoordsVectorsVsep
+  | StepCoordsVectorsVlcom
+  | StepCoordsVectorsVlcom3
+  | StepCoordsVectorsVperp
+  | StepCoordsVectorsVproj
+  | StepCoordsVectorsVrel
+  | StepCoordsVectorsVrotv
+  | StepCoordsVectorsRotvec
+  | StepCoordsVectorsVtmv
+  | StepCoordsVectorsAzlrec
+  | StepCoordsVectorsRecazl
+  | StepCoordsVectorsPgrrec
+  | StepCoordsVectorsRecpgr
+  | StepCoordsVectorsRadrec
+  | StepCoordsVectorsRecrad
+  | StepCoordsVectorsSrfrec
+  | StepCoordsVectorsBrcktd
+  | StepCoordsVectorsBrckti
+  | StepCoordsVectorsConvrt
+  | StepCoordsVectorsSumad
+  | StepCoordsVectorsSumai
+  | StepCoordsVectorsMaxd
+  | StepCoordsVectorsMaxi
+  | StepCoordsVectorsMind
+  | StepCoordsVectorsMini
+  | StepCoordsVectorsDucrss
+  | StepCoordsVectorsDvcrss
+  | StepCoordsVectorsDvdot
+  | StepCoordsVectorsDvhat
+  | StepCoordsVectorsDvnorm
+  | StepCoordsVectorsDvsep
+  | StepCoordsVectorsChbder
+  | StepCoordsVectorsChbigr
+  | StepCoordsVectorsChbint
+  | StepCoordsVectorsChbval
+  | StepCoordsVectorsPolyds
+  | StepCoordsVectorsRquad
+  | StepCoordsVectorsHrmesp
+  | StepCoordsVectorsHrmint
+  | StepCoordsVectorsLgresp
+  | StepCoordsVectorsLgrind
+  | StepCoordsVectorsLgrint
+  | StepCoordsVectorsQderiv
+  | StepCoordsVectorsClearc
+  | StepCoordsVectorsCleard
+  | StepCoordsVectorsCleari
+  | StepCoordsVectorsFilld
+  | StepCoordsVectorsFilli
+  | StepCoordsVectorsMoved
+  | StepCoordsVectorsEul2m
+  | StepCoordsVectorsM2eul
+  | StepCoordsVectorsM2q
+  | StepCoordsVectorsQ2m
+  | StepCoordsVectorsQxq
+  | StepCoordsVectorsQdq2av
+  | StepCoordsVectorsRaxisa
+  | StepCoordsVectorsDet
+  | StepCoordsVectorsDiags2
+  | StepCoordsVectorsIdent
+  | StepCoordsVectorsInvert
+  | StepCoordsVectorsInvort
+  | StepCoordsVectorsIsrot
+  | StepCoordsVectorsMequ
+  | StepCoordsVectorsMtxm
+  | StepCoordsVectorsMxmt
+  | StepCoordsVectorsTrace
+  | StepCoordsVectorsXpose
+  | StepCoordsVectorsMequg
+  | StepCoordsVectorsMtxmg
+  | StepCoordsVectorsMtxvg
+  | StepCoordsVectorsMxmg
+  | StepCoordsVectorsMxmtg
+  | StepCoordsVectorsMxvg
+  | StepCoordsVectorsVtmvg
+  | StepCoordsVectorsXposeg
+  | StepCoordsVectorsVaddg
+  | StepCoordsVectorsVdistg
+  | StepCoordsVectorsVdotg
+  | StepCoordsVectorsVequg
+  | StepCoordsVectorsVhatg
+  | StepCoordsVectorsVlcomg
+  | StepCoordsVectorsVminug
+  | StepCoordsVectorsVnormg
+  | StepCoordsVectorsVprojg
+  | StepCoordsVectorsVrelg
+  | StepCoordsVectorsVsclg
+  | StepCoordsVectorsVsepg
+  | StepCoordsVectorsVsubg
+  | StepCoordsVectorsVzerog
+  | StepCoordsVectorsUnormg
+  | StepCoordsVectorsDazldr
+  | StepCoordsVectorsDcyldr
+  | StepCoordsVectorsDgeodr
+  | StepCoordsVectorsDlatdr
+  | StepCoordsVectorsDpgrdr
+  | StepCoordsVectorsDrdazl
+  | StepCoordsVectorsDrdcyl
+  | StepCoordsVectorsDrdgeo
+  | StepCoordsVectorsDrdlat
+  | StepCoordsVectorsDrdpgr
+  | StepCoordsVectorsDrdsph
+  | StepCoordsVectorsDsphdr
   | StepCoordsVectorsReclat
   | StepCoordsVectorsLatrec
   | StepCoordsVectorsRecsph
   | StepCoordsVectorsSphrec
+  | StepCoordsVectorsPi
+  | StepCoordsVectorsTwopi
+  | StepCoordsVectorsHalfpi
+  | StepCoordsVectorsDpr
+  | StepCoordsVectorsRpd
+  | StepCoordsVectorsClight
+  | StepCoordsVectorsDpmax
+  | StepCoordsVectorsDpmin
+  | StepCoordsVectorsIntmax
+  | StepCoordsVectorsIntmin
   | StepCoordsVectorsVnorm
   | StepCoordsVectorsVhat
   | StepCoordsVectorsVdot
@@ -1415,6 +2455,15 @@ export type WorkflowStep =
   | StepFramesCkobj
   | StepFramesCkcov
   | StepFramesPxform
+  | StepFramesFrame
+  | StepFramesTwovec
+  | StepFramesTwovxf
+  | StepFramesEul2xf
+  | StepFramesXf2eul
+  | StepFramesXf2rav
+  | StepFramesRav2xf
+  | StepFramesInvstm
+  | StepFramesXpose6
   | StepFramesSxform
   | StepEkEkopn
   | StepEkEkopr
@@ -1484,8 +2533,170 @@ export type GfSearchWindowPayload = {
 };
 
 export type StepOutput =
+  | {
+      op: "coords-vectors.cyllat";
+      value: { radius: number; lon: number; lat: number };
+    }
+  | { op: "coords-vectors.cylrec"; value: Vector3 }
+  | {
+      op: "coords-vectors.cylsph";
+      value: { radius: number; colat: number; lon: number };
+    }
+  | {
+      op: "coords-vectors.latcyl";
+      value: { radius: number; lon: number; z: number };
+    }
+  | {
+      op: "coords-vectors.latsph";
+      value: { radius: number; colat: number; lon: number };
+    }
+  | {
+      op: "coords-vectors.reccyl";
+      value: { radius: number; lon: number; z: number };
+    }
+  | {
+      op: "coords-vectors.sphcyl";
+      value: { radius: number; lon: number; z: number };
+    }
+  | {
+      op: "coords-vectors.sphlat";
+      value: { radius: number; lon: number; lat: number };
+    }
+  | { op: "coords-vectors.vdist"; value: number }
+  | { op: "coords-vectors.vequ"; value: Vector3 }
+  | { op: "coords-vectors.vpack"; value: Vector3 }
+  | { op: "coords-vectors.vupack"; value: { x: number; y: number; z: number } }
+  | { op: "coords-vectors.vzero"; value: boolean }
+  | { op: "coords-vectors.unorm"; value: { unit: Vector3; norm: number } }
+  | { op: "coords-vectors.ucrss"; value: Vector3 }
+  | { op: "coords-vectors.vsep"; value: number }
+  | { op: "coords-vectors.vlcom"; value: Vector3 }
+  | { op: "coords-vectors.vlcom3"; value: Vector3 }
+  | { op: "coords-vectors.vperp"; value: Vector3 }
+  | { op: "coords-vectors.vproj"; value: Vector3 }
+  | { op: "coords-vectors.vrel"; value: number }
+  | { op: "coords-vectors.vrotv"; value: Vector3 }
+  | { op: "coords-vectors.rotvec"; value: Vector3 }
+  | { op: "coords-vectors.vtmv"; value: number }
+  | { op: "coords-vectors.azlrec"; value: Vector3 }
+  | {
+      op: "coords-vectors.recazl";
+      value: { range: number; az: number; el: number };
+    }
+  | { op: "coords-vectors.pgrrec"; value: Vector3 }
+  | {
+      op: "coords-vectors.recpgr";
+      value: { lon: number; lat: number; alt: number };
+    }
+  | { op: "coords-vectors.radrec"; value: Vector3 }
+  | {
+      op: "coords-vectors.recrad";
+      value: { range: number; ra: number; dec: number };
+    }
+  | { op: "coords-vectors.srfrec"; value: Vector3 }
+  | { op: "coords-vectors.brcktd"; value: number }
+  | { op: "coords-vectors.brckti"; value: number }
+  | { op: "coords-vectors.convrt"; value: number }
+  | { op: "coords-vectors.sumad"; value: number }
+  | { op: "coords-vectors.sumai"; value: number }
+  | { op: "coords-vectors.maxd"; value: number }
+  | { op: "coords-vectors.maxi"; value: number }
+  | { op: "coords-vectors.mind"; value: number }
+  | { op: "coords-vectors.mini"; value: number }
+  | { op: "coords-vectors.ducrss"; value: Vector6 }
+  | { op: "coords-vectors.dvcrss"; value: Vector6 }
+  | { op: "coords-vectors.dvdot"; value: number }
+  | { op: "coords-vectors.dvhat"; value: Vector6 }
+  | { op: "coords-vectors.dvnorm"; value: number }
+  | { op: "coords-vectors.dvsep"; value: number }
+  | { op: "coords-vectors.chbder"; value: number[] }
+  | { op: "coords-vectors.chbigr"; value: { p: number; itgrlp: number } }
+  | { op: "coords-vectors.chbint"; value: { p: number; dpdx: number } }
+  | { op: "coords-vectors.chbval"; value: number }
+  | { op: "coords-vectors.polyds"; value: number[] }
+  | { op: "coords-vectors.rquad"; value: { root1: Vector2; root2: Vector2 } }
+  | { op: "coords-vectors.hrmesp"; value: { f: number; df: number } }
+  | { op: "coords-vectors.hrmint"; value: { f: number; df: number } }
+  | { op: "coords-vectors.lgresp"; value: number }
+  | { op: "coords-vectors.lgrind"; value: { p: number; dp: number } }
+  | { op: "coords-vectors.lgrint"; value: number }
+  | { op: "coords-vectors.qderiv"; value: number[] }
+  | { op: "coords-vectors.clearc"; value: number[] }
+  | { op: "coords-vectors.cleard"; value: number[] }
+  | { op: "coords-vectors.cleari"; value: number[] }
+  | { op: "coords-vectors.filld"; value: number[] }
+  | { op: "coords-vectors.filli"; value: number[] }
+  | { op: "coords-vectors.moved"; value: number[] }
+  | { op: "coords-vectors.eul2m"; value: Matrix3x3 }
+  | {
+      op: "coords-vectors.m2eul";
+      value: { angle3: number; angle2: number; angle1: number };
+    }
+  | { op: "coords-vectors.m2q"; value: Quaternion }
+  | { op: "coords-vectors.q2m"; value: Matrix3x3 }
+  | { op: "coords-vectors.qxq"; value: Quaternion }
+  | { op: "coords-vectors.qdq2av"; value: Vector3 }
+  | { op: "coords-vectors.raxisa"; value: { axis: Vector3; angle: number } }
+  | { op: "coords-vectors.dazldr"; value: Matrix3x3 }
+  | { op: "coords-vectors.dcyldr"; value: Matrix3x3 }
+  | { op: "coords-vectors.dgeodr"; value: Matrix3x3 }
+  | { op: "coords-vectors.dlatdr"; value: Matrix3x3 }
+  | { op: "coords-vectors.dpgrdr"; value: Matrix3x3 }
+  | { op: "coords-vectors.drdazl"; value: Matrix3x3 }
+  | { op: "coords-vectors.drdcyl"; value: Matrix3x3 }
+  | { op: "coords-vectors.drdgeo"; value: Matrix3x3 }
+  | { op: "coords-vectors.drdlat"; value: Matrix3x3 }
+  | { op: "coords-vectors.drdpgr"; value: Matrix3x3 }
+  | { op: "coords-vectors.drdsph"; value: Matrix3x3 }
+  | { op: "coords-vectors.dsphdr"; value: Matrix3x3 }
+  | { op: "coords-vectors.det"; value: number }
+  | {
+      op: "coords-vectors.diags2";
+      value: { diag: Matrix2RowMajor; rotate: Matrix2RowMajor };
+    }
+  | { op: "coords-vectors.ident"; value: Matrix3x3 }
+  | { op: "coords-vectors.invert"; value: Matrix3x3 }
+  | { op: "coords-vectors.invort"; value: Matrix3x3 }
+  | { op: "coords-vectors.isrot"; value: boolean }
+  | { op: "coords-vectors.mequ"; value: Matrix3x3 }
+  | { op: "coords-vectors.mtxm"; value: Matrix3x3 }
+  | { op: "coords-vectors.mxmt"; value: Matrix3x3 }
+  | { op: "coords-vectors.trace"; value: number }
+  | { op: "coords-vectors.xpose"; value: Matrix3x3 }
+  | { op: "coords-vectors.mequg"; value: number[] }
+  | { op: "coords-vectors.mtxmg"; value: number[] }
+  | { op: "coords-vectors.mtxvg"; value: number[] }
+  | { op: "coords-vectors.mxmg"; value: number[] }
+  | { op: "coords-vectors.mxmtg"; value: number[] }
+  | { op: "coords-vectors.mxvg"; value: number[] }
+  | { op: "coords-vectors.vtmvg"; value: number }
+  | { op: "coords-vectors.xposeg"; value: number[] }
+  | { op: "coords-vectors.vaddg"; value: number[] }
+  | { op: "coords-vectors.vdistg"; value: number }
+  | { op: "coords-vectors.vdotg"; value: number }
+  | { op: "coords-vectors.vequg"; value: number[] }
+  | { op: "coords-vectors.vhatg"; value: number[] }
+  | { op: "coords-vectors.vlcomg"; value: number[] }
+  | { op: "coords-vectors.vminug"; value: number[] }
+  | { op: "coords-vectors.vnormg"; value: number }
+  | { op: "coords-vectors.vprojg"; value: number[] }
+  | { op: "coords-vectors.vrelg"; value: number }
+  | { op: "coords-vectors.vsclg"; value: number[] }
+  | { op: "coords-vectors.vsepg"; value: number }
+  | { op: "coords-vectors.vsubg"; value: number[] }
+  | { op: "coords-vectors.vzerog"; value: boolean }
+  | { op: "coords-vectors.unormg"; value: { unit: number[]; norm: number } }
   | { op: "time.str2et"; value: number }
   | { op: "time.et2utc"; value: string }
+  | { op: "time.spd"; value: number }
+  | { op: "time.j2000"; value: number }
+  | { op: "time.j1900"; value: number }
+  | { op: "time.b1950"; value: number }
+  | { op: "time.b1900"; value: number }
+  | { op: "time.j1950"; value: number }
+  | { op: "time.j2100"; value: number }
+  | { op: "time.jyear"; value: number }
+  | { op: "time.tyear"; value: number }
   | { op: "time.tkvrsn"; value: string }
   | { op: "time.timout"; value: string }
   | { op: "time.deltet"; value: number }
@@ -1525,6 +2736,16 @@ export type StepOutput =
       value: { radius: number; colat: number; lon: number };
     }
   | { op: "coords-vectors.sphrec"; value: Vector3 }
+  | { op: "coords-vectors.pi"; value: number }
+  | { op: "coords-vectors.twopi"; value: number }
+  | { op: "coords-vectors.halfpi"; value: number }
+  | { op: "coords-vectors.dpr"; value: number }
+  | { op: "coords-vectors.rpd"; value: number }
+  | { op: "coords-vectors.clight"; value: number }
+  | { op: "coords-vectors.dpmax"; value: number }
+  | { op: "coords-vectors.dpmin"; value: number }
+  | { op: "coords-vectors.intmax"; value: number }
+  | { op: "coords-vectors.intmin"; value: number }
   | { op: "coords-vectors.vnorm"; value: number }
   | { op: "coords-vectors.vhat"; value: Vector3 }
   | { op: "coords-vectors.vdot"; value: number }
@@ -1766,6 +2987,18 @@ export type StepOutput =
       };
     }
   | { op: "frames.pxform"; value: Matrix3x3 }
+  | { op: "frames.frame"; value: { x: Vector3; y: Vector3; z: Vector3 } }
+  | { op: "frames.twovec"; value: Matrix3x3 }
+  | { op: "frames.twovxf"; value: Matrix6x6 }
+  | { op: "frames.eul2xf"; value: Matrix6x6 }
+  | {
+      op: "frames.xf2eul";
+      value: { eulang: SpiceStateVector; unique: boolean };
+    }
+  | { op: "frames.xf2rav"; value: { rot: Matrix3x3; av: Vector3 } }
+  | { op: "frames.rav2xf"; value: Matrix6x6 }
+  | { op: "frames.invstm"; value: Matrix6x6 }
+  | { op: "frames.xpose6"; value: Matrix6x6 }
   | { op: "frames.sxform"; value: Matrix6x6 }
   | {
       op: "ek.ekopn";

@@ -1,0 +1,182 @@
+[
+  {
+    "caseId": "coords-vectors-polyds-constant-and-empty",
+    "description": "polyds: constant-and-empty; kernel-free actual outputs, every returned field or derivative compared with the locked independent oracle.",
+    "workflow": [
+      {
+        "op": "coords-vectors.polyds",
+        "coeffs": [7],
+        "nderiv": 4,
+        "t": 2
+      },
+      {
+        "op": "coords-vectors.polyds",
+        "coeffs": [0],
+        "nderiv": 3,
+        "t": -2
+      },
+      {
+        "op": "coords-vectors.polyds",
+        "coeffs": [],
+        "nderiv": 0,
+        "t": 2
+      },
+      {
+        "op": "coords-vectors.polyds",
+        "coeffs": [],
+        "nderiv": 4,
+        "t": -3
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-polyds-coefficient-order-and-signed-abscissa",
+    "description": "polyds: coefficient-order-and-signed-abscissa; kernel-free actual outputs, every returned field or derivative compared with the locked independent oracle.",
+    "workflow": [
+      {
+        "op": "coords-vectors.polyds",
+        "coeffs": [2, -3, 5, -7],
+        "nderiv": 4,
+        "t": -2
+      },
+      {
+        "op": "coords-vectors.polyds",
+        "coeffs": [2, -3, 5, -7],
+        "nderiv": 4,
+        "t": -0.5
+      },
+      {
+        "op": "coords-vectors.polyds",
+        "coeffs": [2, -3, 5, -7],
+        "nderiv": 4,
+        "t": 0
+      },
+      {
+        "op": "coords-vectors.polyds",
+        "coeffs": [2, -3, 5, -7],
+        "nderiv": 4,
+        "t": 0.5
+      },
+      {
+        "op": "coords-vectors.polyds",
+        "coeffs": [2, -3, 5, -7],
+        "nderiv": 4,
+        "t": 2
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-polyds-derivative-order-and-zero-tail",
+    "description": "polyds: derivative-order-and-zero-tail; kernel-free actual outputs, every returned field or derivative compared with the locked independent oracle.",
+    "workflow": [
+      {
+        "op": "coords-vectors.polyds",
+        "coeffs": [2, -3, 5, -7],
+        "nderiv": 0,
+        "t": 0.5
+      },
+      {
+        "op": "coords-vectors.polyds",
+        "coeffs": [2, -3, 5, -7],
+        "nderiv": 1,
+        "t": 0.5
+      },
+      {
+        "op": "coords-vectors.polyds",
+        "coeffs": [2, -3, 5, -7],
+        "nderiv": 3,
+        "t": 0.5
+      },
+      {
+        "op": "coords-vectors.polyds",
+        "coeffs": [2, -3, 5, -7],
+        "nderiv": 6,
+        "t": 0.5
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-polyds-negative-order-no-write",
+    "description": "polyds: documented negative-order no-op through the actual independent typed C symbol with unchanged sentinel storage; no fabricated derivative values.",
+    "workflow": [
+      {
+        "op": "coords-vectors.polyds",
+        "coeffs": [2, -3, 5],
+        "nderiv": -1,
+        "t": 2
+      },
+      {
+        "op": "coords-vectors.polyds",
+        "coeffs": [2, -3, 5],
+        "nderiv": -2,
+        "t": 2
+      },
+      {
+        "op": "coords-vectors.polyds",
+        "coeffs": [],
+        "nderiv": -1,
+        "t": 2
+      },
+      {
+        "op": "coords-vectors.polyds",
+        "coeffs": [7],
+        "nderiv": -2147483648,
+        "t": 2
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-polyds-scaled-coefficients",
+    "description": "polyds: scaled-coefficients; kernel-free actual outputs, every returned field or derivative compared with the locked independent oracle.",
+    "workflow": [
+      {
+        "op": "coords-vectors.polyds",
+        "coeffs": [2e100, -3.0000000000000002e100, 5e100, -7e100],
+        "nderiv": 3,
+        "t": 0.5
+      },
+      {
+        "op": "coords-vectors.polyds",
+        "coeffs": [2e-100, -3e-100, 5e-100, -7e-100],
+        "nderiv": 3,
+        "t": 0.5
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-polyds-higher-degree-and-highest-coefficient",
+    "description": "polyds: higher-degree-and-highest-coefficient; kernel-free actual outputs, every returned field or derivative compared with the locked independent oracle.",
+    "workflow": [
+      {
+        "op": "coords-vectors.polyds",
+        "coeffs": [1, 2, 3, 4, 5, 6],
+        "nderiv": 7,
+        "t": 0.5
+      },
+      {
+        "op": "coords-vectors.polyds",
+        "coeffs": [0, 0, 0, 0, 0, 2],
+        "nderiv": 5,
+        "t": -1
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

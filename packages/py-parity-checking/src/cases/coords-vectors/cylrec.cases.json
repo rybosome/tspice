@@ -1,0 +1,119 @@
+[
+  {
+    "caseId": "coords-vectors-cylrec-mixed-signs",
+    "description": "cylrec: mixed-signs; compare all three raw output components with the corresponding live SpiceyPy routine.",
+    "workflow": [
+      {
+        "op": "coords-vectors.cylrec",
+        "radius": 3,
+        "lon": 1.234,
+        "z": -4
+      },
+      {
+        "op": "coords-vectors.cylrec",
+        "radius": 2.5,
+        "lon": -2.25,
+        "z": 6.5
+      },
+      {
+        "op": "coords-vectors.cylrec",
+        "radius": 5,
+        "lon": 4.75,
+        "z": 0
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-cylrec-axis-and-origin",
+    "description": "cylrec: axis-and-origin; compare all three raw output components with the corresponding live SpiceyPy routine.",
+    "workflow": [
+      {
+        "op": "coords-vectors.cylrec",
+        "radius": 0,
+        "lon": -4.5,
+        "z": 3
+      },
+      {
+        "op": "coords-vectors.cylrec",
+        "radius": 0,
+        "lon": 6.75,
+        "z": -3
+      },
+      {
+        "op": "coords-vectors.cylrec",
+        "radius": 0,
+        "lon": 1.7,
+        "z": 0
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-cylrec-negative-radius",
+    "description": "cylrec: negative-radius; compare all three raw output components with the corresponding live SpiceyPy routine.",
+    "workflow": [
+      {
+        "op": "coords-vectors.cylrec",
+        "radius": -3,
+        "lon": 0.7,
+        "z": 4
+      },
+      {
+        "op": "coords-vectors.cylrec",
+        "radius": -3,
+        "lon": -7.2,
+        "z": -4
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-cylrec-unwrapped-longitude",
+    "description": "cylrec: unwrapped-longitude; compare all three raw output components with the corresponding live SpiceyPy routine.",
+    "workflow": [
+      {
+        "op": "coords-vectors.cylrec",
+        "radius": 3,
+        "lon": -15.3,
+        "z": 4
+      },
+      {
+        "op": "coords-vectors.cylrec",
+        "radius": 3,
+        "lon": 20.2,
+        "z": -4
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-cylrec-scaled-magnitudes",
+    "description": "cylrec: scaled-magnitudes; compare all three raw output components with the corresponding live SpiceyPy routine.",
+    "workflow": [
+      {
+        "op": "coords-vectors.cylrec",
+        "radius": 3e200,
+        "lon": 1.2,
+        "z": -4e200
+      },
+      {
+        "op": "coords-vectors.cylrec",
+        "radius": 3e-200,
+        "lon": -1.2,
+        "z": 4e-200
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

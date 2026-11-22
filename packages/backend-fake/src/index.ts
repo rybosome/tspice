@@ -34,6 +34,7 @@ import {
   assertGetmsgWhich,
   assertSpiceInt32,
   brandMat3RowMajor,
+  brandMat3RowMajorResult,
   kxtrctJs,
   matchesKernelKind,
   normalizeBodItem,
@@ -145,6 +146,19 @@ function normalizeName(name: string): string {
   return name.trim();
 }
 
+// Toy general-vector helpers for facade tests, not CSPICE numerical oracles.
+function fakeGeneralNorm(v: readonly number[]): number {
+  return Math.sqrt(v.reduce((sum, value) => sum + value * value, 0));
+}
+
+function fakeGeneralDimensions(
+  a: readonly number[],
+  b: readonly number[],
+): void {
+  if (a.length !== b.length)
+    throw new RangeError("General vectors must have equal lengths");
+}
+
 function parseBodyRef(ref: string): number {
   const trimmed = normalizeName(ref);
 
@@ -212,6 +226,48 @@ function vhat(v: SpiceVector3): SpiceVector3 {
 
 function clamp(x: number, lo: number, hi: number): number {
   return Math.max(lo, Math.min(hi, x));
+}
+
+// Toy state-derivative helpers for facade tests, not CSPICE numerical oracles.
+function fakeStateCross(
+  a: Readonly<SpiceStateVector>,
+  b: Readonly<SpiceStateVector>,
+): SpiceStateVector {
+  const p1: SpiceVector3 = [a[0], a[1], a[2]];
+  const p2: SpiceVector3 = [b[0], b[1], b[2]];
+  const v1: SpiceVector3 = [a[3], a[4], a[5]];
+  const v2: SpiceVector3 = [b[3], b[4], b[5]];
+  return [...vcrss(p1, p2), ...vadd(vcrss(v1, p2), vcrss(p1, v2))];
+}
+
+function fakeStateUnit(state: Readonly<SpiceStateVector>): SpiceStateVector {
+  const position: SpiceVector3 = [state[0], state[1], state[2]];
+  const velocity: SpiceVector3 = [state[3], state[4], state[5]];
+  const norm = vnorm(position);
+  if (norm === 0) return [0, 0, 0, ...velocity];
+  const unit = vscale(1 / norm, position);
+  const derivative = vscale(
+    1 / norm,
+    vsub(velocity, vscale(vdot(unit, velocity), unit)),
+  );
+  return [...unit, ...derivative];
+}
+
+function fakeScaledState(state: Readonly<SpiceStateVector>): SpiceStateVector {
+  const largest = Math.max(
+    Math.abs(state[0]),
+    Math.abs(state[1]),
+    Math.abs(state[2]),
+  );
+  const scale = largest === 0 ? 1 : 1 / largest;
+  return [
+    state[0] * scale,
+    state[1] * scale,
+    state[2] * scale,
+    state[3] * scale,
+    state[4] * scale,
+    state[5] * scale,
+  ];
 }
 
 function angleBetween(a: SpiceVector3, b: SpiceVector3): number {
@@ -286,6 +342,28 @@ function drotZRowMajor(theta: number, w: number): Mat3RowMajor {
     ] as const,
     { label: "fake.drotZRowMajor" },
   );
+}
+
+function fakeMatrixDet(m: Mat3RowMajor): number {
+  return (
+    m[0] * (m[4] * m[8] - m[5] * m[7]) -
+    m[1] * (m[3] * m[8] - m[5] * m[6]) +
+    m[2] * (m[3] * m[7] - m[4] * m[6])
+  );
+}
+
+function fakeMatrixTranspose(m: Mat3RowMajor): Mat3RowMajor {
+  return brandMat3RowMajorResult([
+    m[0],
+    m[3],
+    m[6],
+    m[1],
+    m[4],
+    m[7],
+    m[2],
+    m[5],
+    m[8],
+  ]);
 }
 
 function mmul3(a: Mat3RowMajor, b: Mat3RowMajor): Mat3RowMajor {
@@ -986,6 +1064,33 @@ export function createFakeBackend(
     return [r, r, r];
   };
 
+  // Toy longitude conventions for facade tests; this is not a CSPICE oracle.
+  const fakePlanetographicSense = (body: string): number => {
+    const name = body.trim();
+    const id =
+      customNameToBodyCode.get(name) ??
+      customNameToBodyCode.get(name.toLowerCase()) ??
+      parseBodyRef(body);
+    const override = kernelPool.get(`BODY${id}_PGR_POSITIVE_LON`);
+    if (override) {
+      const value =
+        override.type === "C"
+          ? override.values[0]?.trim().toUpperCase()
+          : undefined;
+      if (value === "EAST") return 1;
+      if (value === "WEST") return -1;
+      throw new Error(
+        "Fake backend: invalid planetographic longitude override",
+      );
+    }
+    if (id === 399) return 1;
+    const pm = kernelPool.get(`BODY${id}_PM`);
+    const rate = pm?.type === "N" ? pm.values[1] : undefined;
+    if (rate === undefined)
+      throw new Error("Fake backend: missing prime meridian rate");
+    return id === 301 || id === 10 || rate < 0 ? 1 : -1;
+  };
+
   const timeKitApi = {
     spiceVersion: () => FAKE_SPICE_VERSION,
   } satisfies TimeKitApi;
@@ -997,6 +1102,27 @@ export function createFakeBackend(
   } satisfies FileIoKitApi;
 
   const rawAndKit = {
+    // Deterministic toy values; the fake backend does not execute CSPICE.
+    pi: () => Math.PI,
+    twopi: () => 2 * Math.PI,
+    halfpi: () => Math.PI / 2,
+    dpr: () => 180 / Math.PI,
+    rpd: () => Math.PI / 180,
+    spd: () => 86400,
+    j2000: () => 2451545,
+    j1900: () => 2415020,
+    b1950: () => 2433282.42345905,
+    // Deterministic toy values; the fake backend does not execute CSPICE.
+    clight: () => 299792.458,
+    dpmax: () => Number.MAX_VALUE,
+    dpmin: () => -Number.MAX_VALUE,
+    intmax: () => 2147483647,
+    intmin: () => -2147483648,
+    b1900: () => 2415020.31352,
+    j1950: () => 2433282.5,
+    j2100: () => 2488070,
+    jyear: () => 31557600,
+    tyear: () => 31556925.9747,
     failed: () => spiceFailed,
     reset: () => {
       spiceFailed = false;
@@ -1591,6 +1717,33 @@ export function createFakeBackend(
       return rotZRowMajor(theta);
     },
 
+    frame: () => {
+      throw new Error("Fake backend does not model frame()");
+    },
+    twovec: () => {
+      throw new Error("Fake backend does not model twovec()");
+    },
+    twovxf: () => {
+      throw new Error("Fake backend does not model twovxf()");
+    },
+    eul2xf: () => {
+      throw new Error("Fake backend does not model eul2xf()");
+    },
+    xf2eul: () => {
+      throw new Error("Fake backend does not model xf2eul()");
+    },
+    xf2rav: () => {
+      throw new Error("Fake backend does not model xf2rav()");
+    },
+    rav2xf: () => {
+      throw new Error("Fake backend does not model rav2xf()");
+    },
+    invstm: () => {
+      throw new Error("Fake backend does not model invstm()");
+    },
+    xpose6: () => {
+      throw new Error("Fake backend does not model xpose6()");
+    },
     sxform: (from: string, to: string, et: number) => {
       const f = parseFrameName(from);
       const t = parseFrameName(to);
@@ -2392,6 +2545,518 @@ export function createFakeBackend(
       throw new Error(spiceCellUnsupported);
     },
 
+    // Toy coordinate conversions; these do not execute CSPICE.
+    cyllat: (radius, lon, z) => ({
+      radius: Math.hypot(radius, z),
+      lon,
+      lat: radius === 0 && z === 0 ? 0 : Math.atan2(z, radius),
+    }),
+    cylrec: (radius, lon, z) => [
+      radius * Math.cos(lon),
+      radius * Math.sin(lon),
+      z,
+    ],
+    cylsph: (radius, lon, z) => ({
+      radius: Math.hypot(radius, z),
+      colat: radius === 0 && z === 0 ? 0 : Math.atan2(radius, z),
+      lon,
+    }),
+    latcyl: (radius, lon, lat) => ({
+      radius: radius * Math.cos(lat),
+      lon,
+      z: radius * Math.sin(lat),
+    }),
+    latsph: (radius, lon, lat) => ({ radius, colat: Math.PI / 2 - lat, lon }),
+    reccyl: (rect) => {
+      const lon =
+        rect[0] === 0 && rect[1] === 0 ? 0 : Math.atan2(rect[1], rect[0]);
+      return {
+        radius: Math.hypot(rect[0], rect[1]),
+        lon: lon < 0 ? lon + TWO_PI : lon,
+        z: rect[2],
+      };
+    },
+    sphcyl: (radius, colat, lon) => ({
+      radius: radius * Math.sin(colat),
+      lon,
+      z: radius * Math.cos(colat),
+    }),
+    sphlat: (radius, colat, lon) => ({ radius, lon, lat: Math.PI / 2 - colat }),
+
+    // Toy vector combinations for facade tests, not a CSPICE numerical oracle.
+    vlcom: (a, v1, b, v2) => [
+      a * v1[0] + b * v2[0],
+      a * v1[1] + b * v2[1],
+      a * v1[2] + b * v2[2],
+    ],
+    vlcom3: (a, v1, b, v2, c, v3) => [
+      a * v1[0] + b * v2[0] + c * v3[0],
+      a * v1[1] + b * v2[1] + c * v3[1],
+      a * v1[2] + b * v2[2] + c * v3[2],
+    ],
+    vperp: (a, b) => {
+      const denominator = vdot([...b], [...b]);
+      if (denominator === 0) return [0, 0, 0];
+      return vsub([...a], vscale(vdot([...a], [...b]) / denominator, [...b]));
+    },
+    vproj: (a, b) => {
+      const denominator = vdot([...b], [...b]);
+      if (denominator === 0) return [0, 0, 0];
+      return vscale(vdot([...a], [...b]) / denominator, [...b]);
+    },
+    vrel: (a, b) => {
+      const denominator = Math.max(vnorm([...a]), vnorm([...b]));
+      return denominator === 0 ? 0 : vnorm(vsub([...a], [...b])) / denominator;
+    },
+    vrotv: (v, axis, theta) =>
+      mxv(axisAngleToRotationRowMajor([...axis], theta), [...v]),
+    rotvec: (v, angle, axis) => {
+      assertSpiceInt32(axis, "rotvec(axis)");
+      // The fake's helper builds an active matrix; negate for coordinate rotation.
+      return mxv(rotateRowMajor(-angle, axis), [...v]);
+    },
+    vtmv: (v1, matrix, v2) => vdot([...v1], mxv(matrix, [...v2])),
+
+    // Toy coordinate conversions for facade tests, not a numerical oracle.
+    azlrec: (range, az, el, azccw, elplsz) => [
+      range * Math.cos(el) * Math.cos(az),
+      (azccw ? 1 : -1) * range * Math.cos(el) * Math.sin(az),
+      (elplsz ? 1 : -1) * range * Math.sin(el),
+    ],
+    recazl: (rect, azccw, elplsz) => {
+      const range = Math.hypot(...rect);
+      const az =
+        rect[0] === 0 && rect[1] === 0
+          ? 0
+          : Math.atan2((azccw ? 1 : -1) * rect[1], rect[0]);
+      return {
+        range,
+        az: az < 0 ? az + TWO_PI : az,
+        el:
+          range === 0
+            ? 0
+            : Math.atan2(
+                (elplsz ? 1 : -1) * rect[2],
+                Math.hypot(rect[0], rect[1]),
+              ),
+      };
+    },
+    pgrrec: (body, lon, lat, alt, re, f) =>
+      georec(fakePlanetographicSense(body) * lon, lat, alt, re, f),
+    recpgr: (body, rect, re, f) => {
+      const sense = fakePlanetographicSense(body);
+      const result = recgeo([...rect], re, f);
+      const lon = sense * result.lon;
+      return {
+        lon: lon < 0 ? lon + TWO_PI : lon,
+        lat: result.lat,
+        alt: result.alt,
+      };
+    },
+    radrec: (range, ra, dec) => [
+      range * Math.cos(dec) * Math.cos(ra),
+      range * Math.cos(dec) * Math.sin(ra),
+      range * Math.sin(dec),
+    ],
+    recrad: (rect) => {
+      const range = Math.hypot(...rect);
+      const ra =
+        rect[0] === 0 && rect[1] === 0 ? 0 : Math.atan2(rect[1], rect[0]);
+      return {
+        range,
+        ra: ra < 0 ? ra + TWO_PI : ra,
+        dec:
+          range === 0 ? 0 : Math.atan2(rect[2], Math.hypot(rect[0], rect[1])),
+      };
+    },
+    srfrec: (body, lon, lat) => {
+      assertSpiceInt32(body, "srfrec(body)");
+      const entry = kernelPool.get(`BODY${body}_RADII`);
+      if (entry?.type !== "N" || entry.values.length !== 3)
+        throw new Error("Fake backend: srfrec requires three radii");
+      const [a, b, c] = entry.values;
+      if (
+        a === undefined ||
+        b === undefined ||
+        c === undefined ||
+        !(a > 0 && b > 0 && c > 0)
+      )
+        throw new Error("Fake backend: srfrec requires positive radii");
+      const x = Math.cos(lon) * Math.cos(lat);
+      const y = Math.sin(lon) * Math.cos(lat);
+      const z = Math.sin(lat);
+      const scale = 1 / Math.hypot(x / a, y / b, z / c);
+      return [scale * x, scale * y, scale * z];
+    },
+
+    // Toy scalar operations for facade tests, not CSPICE numerical oracles.
+    brcktd: (value, end1, end2) =>
+      Math.max(Math.min(end1, end2), Math.min(Math.max(end1, end2), value)),
+    brckti: (value, end1, end2) => {
+      assertSpiceInt32(value, "brckti(value)");
+      assertSpiceInt32(end1, "brckti(end1)");
+      assertSpiceInt32(end2, "brckti(end2)");
+      return Math.max(
+        Math.min(end1, end2),
+        Math.min(Math.max(end1, end2), value),
+      );
+    },
+    convrt: (value, inUnit, outUnit) => {
+      // Deliberately small, exact unit subset; do not copy scientific constants.
+      const units: Readonly<Record<string, readonly [string, number]>> = {
+        M: ["distance", 1],
+        METERS: ["distance", 1],
+        KM: ["distance", 1000],
+        KILOMETERS: ["distance", 1000],
+        SECONDS: ["time", 1],
+        MINUTES: ["time", 60],
+        HOURS: ["time", 3600],
+        DAYS: ["time", 86400],
+        RADIANS: ["angle", 1],
+        DEGREES: ["angle", Math.PI / 180],
+      };
+      const inName = inUnit.toUpperCase();
+      const outName = outUnit.toUpperCase();
+      const source = Object.hasOwn(units, inName) ? units[inName] : undefined;
+      const target = Object.hasOwn(units, outName) ? units[outName] : undefined;
+      if (!source || !target || source[0] !== target[0])
+        throw new Error(
+          "Fake backend: unsupported or incompatible conversion units",
+        );
+      return (value * source[1]) / target[1];
+    },
+    sumad: (values) => values.reduce((sum, value) => sum + value, 0),
+    sumai: (values) => {
+      let sum = 0;
+      for (const value of values) {
+        assertSpiceInt32(value, "sumai value");
+        sum += value;
+        assertSpiceInt32(sum, "sumai prefix sum");
+      }
+      return sum;
+    },
+    maxd: (values) => {
+      if (values.length > 30)
+        throw new RangeError("maxd accepts at most 30 values");
+      return values.length === 0 ? 0 : Math.max(...values);
+    },
+    maxi: (values) => {
+      if (values.length > 30)
+        throw new RangeError("maxi accepts at most 30 values");
+      for (const value of values) assertSpiceInt32(value, "maxi value");
+      return values.length === 0 ? 0 : Math.max(...values);
+    },
+    mind: (values) => {
+      if (values.length > 30)
+        throw new RangeError("mind accepts at most 30 values");
+      return values.length === 0 ? 0 : Math.min(...values);
+    },
+    mini: (values) => {
+      if (values.length > 30)
+        throw new RangeError("mini accepts at most 30 values");
+      for (const value of values) assertSpiceInt32(value, "mini value");
+      return values.length === 0 ? 0 : Math.min(...values);
+    },
+
+    // Toy state derivatives; real backends call each corresponding CSPICE routine.
+    ducrss: (a, b) =>
+      fakeStateUnit(fakeStateCross(fakeScaledState(a), fakeScaledState(b))),
+    dvcrss: (a, b) => fakeStateCross(a, b),
+    dvdot: (a, b) =>
+      a[0] * b[3] +
+      a[1] * b[4] +
+      a[2] * b[5] +
+      a[3] * b[0] +
+      a[4] * b[1] +
+      a[5] * b[2],
+    dvhat: (state) => fakeStateUnit(state),
+    dvnorm: (state) =>
+      vdot(vhat([state[0], state[1], state[2]]), [
+        state[3],
+        state[4],
+        state[5],
+      ]),
+    dvsep: (a, b) => {
+      const u1 = fakeStateUnit(a);
+      const u2 = fakeStateUnit(b);
+      const p1: SpiceVector3 = [u1[0], u1[1], u1[2]];
+      const p2: SpiceVector3 = [u2[0], u2[1], u2[2]];
+      const denominator = vnorm(vcrss(p1, p2));
+      if (denominator === 0) return 0;
+      return (
+        -(vdot(p1, [u2[3], u2[4], u2[5]]) + vdot([u1[3], u1[4], u1[5]], p2)) /
+        denominator
+      );
+    },
+
+    // This fake intentionally does not model polynomial numerics.
+    chbder: () => {
+      throw new Error("Fake backend does not model chbder()");
+    },
+    chbigr: () => {
+      throw new Error("Fake backend does not model chbigr()");
+    },
+    chbint: () => {
+      throw new Error("Fake backend does not model chbint()");
+    },
+    chbval: () => {
+      throw new Error("Fake backend does not model chbval()");
+    },
+    polyds: () => {
+      throw new Error("Fake backend does not model polyds()");
+    },
+    rquad: () => {
+      throw new Error("Fake backend does not model rquad()");
+    },
+
+    // This fake intentionally does not model interpolation numerics.
+    hrmesp: () => {
+      throw new Error("Fake backend does not model hrmesp()");
+    },
+    hrmint: () => {
+      throw new Error("Fake backend does not model hrmint()");
+    },
+    lgresp: () => {
+      throw new Error("Fake backend does not model lgresp()");
+    },
+    lgrind: () => {
+      throw new Error("Fake backend does not model lgrind()");
+    },
+    lgrint: () => {
+      throw new Error("Fake backend does not model lgrint()");
+    },
+    qderiv: () => {
+      throw new Error("Fake backend does not model qderiv()");
+    },
+
+    clearc: () => {
+      throw new Error("Fake backend does not model clearc()");
+    },
+    cleard: () => {
+      throw new Error("Fake backend does not model cleard()");
+    },
+    cleari: () => {
+      throw new Error("Fake backend does not model cleari()");
+    },
+    filld: () => {
+      throw new Error("Fake backend does not model filld()");
+    },
+    filli: () => {
+      throw new Error("Fake backend does not model filli()");
+    },
+    moved: () => {
+      throw new Error("Fake backend does not model moved()");
+    },
+
+    // Toy fixed matrices for facade tests, not a CSPICE numerical oracle.
+    eul2m: () => {
+      throw new Error("Fake backend: eul2m() is not implemented");
+    },
+    m2eul: () => {
+      throw new Error("Fake backend: m2eul() is not implemented");
+    },
+    m2q: () => {
+      throw new Error("Fake backend: m2q() is not implemented");
+    },
+    q2m: () => {
+      throw new Error("Fake backend: q2m() is not implemented");
+    },
+    qxq: () => {
+      throw new Error("Fake backend: qxq() is not implemented");
+    },
+    qdq2av: () => {
+      throw new Error("Fake backend: qdq2av() is not implemented");
+    },
+    raxisa: () => {
+      throw new Error("Fake backend: raxisa() is not implemented");
+    },
+    dazldr: () => {
+      throw new Error("Fake backend: dazldr() is not implemented");
+    },
+    dcyldr: () => {
+      throw new Error("Fake backend: dcyldr() is not implemented");
+    },
+    dgeodr: () => {
+      throw new Error("Fake backend: dgeodr() is not implemented");
+    },
+    dlatdr: () => {
+      throw new Error("Fake backend: dlatdr() is not implemented");
+    },
+    dpgrdr: () => {
+      throw new Error("Fake backend: dpgrdr() is not implemented");
+    },
+    drdazl: () => {
+      throw new Error("Fake backend: drdazl() is not implemented");
+    },
+    drdcyl: () => {
+      throw new Error("Fake backend: drdcyl() is not implemented");
+    },
+    drdgeo: () => {
+      throw new Error("Fake backend: drdgeo() is not implemented");
+    },
+    drdlat: () => {
+      throw new Error("Fake backend: drdlat() is not implemented");
+    },
+    drdpgr: () => {
+      throw new Error("Fake backend: drdpgr() is not implemented");
+    },
+    drdsph: () => {
+      throw new Error("Fake backend: drdsph() is not implemented");
+    },
+    dsphdr: () => {
+      throw new Error("Fake backend: dsphdr() is not implemented");
+    },
+    det: (m) => fakeMatrixDet(m),
+    diags2: (symmat) => {
+      const a = symmat[0],
+        b = symmat[1],
+        c = symmat[3];
+      if (b === 0) return { diag: [a, 0, 0, c], rotate: [1, 0, 0, 1] };
+      let angle = Math.atan2(2 * b, a - c) / 2;
+      if (angle > Math.PI / 4) angle -= Math.PI / 2;
+      if (angle < -Math.PI / 4) angle += Math.PI / 2;
+      const co = Math.cos(angle),
+        si = Math.sin(angle);
+      return {
+        diag: [
+          a * co * co + 2 * b * co * si + c * si * si,
+          0,
+          0,
+          a * si * si - 2 * b * co * si + c * co * co,
+        ],
+        rotate: [co, -si, si, co],
+      };
+    },
+    ident: () => brandMat3RowMajor([1, 0, 0, 0, 1, 0, 0, 0, 1]),
+    invert: (m) => {
+      const d = fakeMatrixDet(m);
+      if (Math.abs(d) < 1e-16)
+        return brandMat3RowMajor([0, 0, 0, 0, 0, 0, 0, 0, 0]);
+      return brandMat3RowMajorResult([
+        (m[4] * m[8] - m[5] * m[7]) / d,
+        (m[2] * m[7] - m[1] * m[8]) / d,
+        (m[1] * m[5] - m[2] * m[4]) / d,
+        (m[5] * m[6] - m[3] * m[8]) / d,
+        (m[0] * m[8] - m[2] * m[6]) / d,
+        (m[2] * m[3] - m[0] * m[5]) / d,
+        (m[3] * m[7] - m[4] * m[6]) / d,
+        (m[1] * m[6] - m[0] * m[7]) / d,
+        (m[0] * m[4] - m[1] * m[3]) / d,
+      ]);
+    },
+    invort: (m) => {
+      const result: number[] = [];
+      for (let column = 0; column < 3; column++) {
+        const norm = Math.hypot(m[column]!, m[column + 3]!, m[column + 6]!);
+        if (norm === 0) throw new Error("SPICE(ZEROLENGTHCOLUMN)");
+        if (norm < 1 && norm * Number.MAX_VALUE < 1)
+          throw new Error("SPICE(COLUMNTOOSMALL)");
+        for (let row = 0; row < 3; row++)
+          result.push(m[row * 3 + column]! / norm / norm);
+      }
+      return brandMat3RowMajorResult(result);
+    },
+    isrot: (m, ntol, dtol) => {
+      if (ntol < 0 || dtol < 0) throw new Error("SPICE(VALUEOUTOFRANGE)");
+      const norms = [
+        Math.hypot(m[0], m[3], m[6]),
+        Math.hypot(m[1], m[4], m[7]),
+        Math.hypot(m[2], m[5], m[8]),
+      ];
+      const determinant =
+        fakeMatrixDet(m) / (norms[0]! * norms[1]! * norms[2]!);
+      return (
+        norms.every((n) => n >= 1 - ntol && n <= 1 + ntol) &&
+        determinant >= 1 - dtol &&
+        determinant <= 1 + dtol
+      );
+    },
+    mequ: (m) => brandMat3RowMajorResult(m),
+    mtxm: (a, b) => mmul3(fakeMatrixTranspose(a), b),
+    mxmt: (a, b) => mmul3(a, fakeMatrixTranspose(b)),
+    trace: (m) => m[0] + m[4] + m[8],
+    xpose: (m) => fakeMatrixTranspose(m),
+
+    // Toy general-vector operations; real backends call each CSPICE routine.
+    mequg: () => {
+      throw new Error("Fake backend: mequg() is not implemented");
+    },
+    mtxmg: () => {
+      throw new Error("Fake backend: mtxmg() is not implemented");
+    },
+    mtxvg: () => {
+      throw new Error("Fake backend: mtxvg() is not implemented");
+    },
+    mxmg: () => {
+      throw new Error("Fake backend: mxmg() is not implemented");
+    },
+    mxmtg: () => {
+      throw new Error("Fake backend: mxmtg() is not implemented");
+    },
+    mxvg: () => {
+      throw new Error("Fake backend: mxvg() is not implemented");
+    },
+    vtmvg: () => {
+      throw new Error("Fake backend: vtmvg() is not implemented");
+    },
+    xposeg: () => {
+      throw new Error("Fake backend: xposeg() is not implemented");
+    },
+    vaddg: (a, b) => {
+      fakeGeneralDimensions(a, b);
+      return a.map((value, i) => value + b[i]!);
+    },
+    vdistg: (a, b) => {
+      fakeGeneralDimensions(a, b);
+      return fakeGeneralNorm(a.map((value, i) => value - b[i]!));
+    },
+    vdotg: (a, b) => {
+      fakeGeneralDimensions(a, b);
+      return a.reduce((sum, value, i) => sum + value * b[i]!, 0);
+    },
+    vequg: (v) => [...v],
+    vhatg: (v) => {
+      const norm = fakeGeneralNorm(v);
+      return v.map((value) => (norm === 0 ? 0 : value / norm));
+    },
+    vlcomg: (a, v1, b, v2) => {
+      fakeGeneralDimensions(v1, v2);
+      return v1.map((value, i) => a * value + b * v2[i]!);
+    },
+    vminug: (v) => v.map((value) => -value),
+    vnormg: (v) => fakeGeneralNorm(v),
+    vprojg: (a, b) => {
+      fakeGeneralDimensions(a, b);
+      const denominator = b.reduce((sum, value) => sum + value * value, 0);
+      const numerator = a.reduce((sum, value, i) => sum + value * b[i]!, 0);
+      const scale = denominator === 0 ? 0 : numerator / denominator;
+      return b.map((value) => scale * value);
+    },
+    vrelg: (a, b) => {
+      fakeGeneralDimensions(a, b);
+      const denominator = Math.max(fakeGeneralNorm(a), fakeGeneralNorm(b));
+      return denominator === 0
+        ? 0
+        : fakeGeneralNorm(a.map((value, i) => value - b[i]!)) / denominator;
+    },
+    vsclg: (s, v) => v.map((value) => s * value),
+    vsepg: (a, b) => {
+      fakeGeneralDimensions(a, b);
+      const denominator = fakeGeneralNorm(a) * fakeGeneralNorm(b);
+      if (denominator === 0) return 0;
+      const dot = a.reduce((sum, value, i) => sum + value * b[i]!, 0);
+      return Math.acos(clamp(dot / denominator, -1, 1));
+    },
+    vsubg: (a, b) => {
+      fakeGeneralDimensions(a, b);
+      return a.map((value, i) => value - b[i]!);
+    },
+    vzerog: (v) => v.length > 0 && v.every((value) => value === 0),
+    unormg: (v) => {
+      const norm = fakeGeneralNorm(v);
+      return { unit: v.map((value) => (norm === 0 ? 0 : value / norm)), norm };
+    },
+
     reclat: (rect) => {
       const x = rect[0];
       const y = rect[1];
@@ -2429,6 +3094,40 @@ export function createFakeBackend(
         radius * clat * Math.sin(lon),
         radius * slat,
       ];
+    },
+
+    // Toy vector operations; these do not execute CSPICE or serve as an oracle.
+    vdist: (a, b) => Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2]),
+    vequ: (v) => [v[0], v[1], v[2]],
+    vpack: (x, y, z) => [x, y, z],
+    vupack: (v) => ({ x: v[0], y: v[1], z: v[2] }),
+    vzero: (v) => v[0] === 0 && v[1] === 0 && v[2] === 0,
+    unorm: (v) => {
+      const norm = Math.hypot(v[0], v[1], v[2]);
+      const unit: SpiceVector3 =
+        norm === 0 ? [0, 0, 0] : [v[0] / norm, v[1] / norm, v[2] / norm];
+      return { unit, norm };
+    },
+    ucrss: (a, b) => {
+      const x = a[1] * b[2] - a[2] * b[1];
+      const y = a[2] * b[0] - a[0] * b[2];
+      const z = a[0] * b[1] - a[1] * b[0];
+      const norm = Math.hypot(x, y, z);
+      return norm === 0 ? [0, 0, 0] : [x / norm, y / norm, z / norm];
+    },
+    vsep: (a, b) => {
+      const na = Math.hypot(a[0], a[1], a[2]),
+        nb = Math.hypot(b[0], b[1], b[2]);
+      if (na === 0 || nb === 0) return 0;
+      return Math.acos(
+        clamp(
+          (a[0] / na) * (b[0] / nb) +
+            (a[1] / na) * (b[1] / nb) +
+            (a[2] / na) * (b[2] / nb),
+          -1,
+          1,
+        ),
+      );
     },
 
     vnorm: (v) => vnorm(v),

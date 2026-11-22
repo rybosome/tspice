@@ -1,0 +1,141 @@
+[
+  {
+    "caseId": "coords-vectors-moved-disjoint-source-and-destination",
+    "description": "Copy the requested source prefix over distinct destination values and retain the complete destination tail.",
+    "workflow": [
+      {
+        "op": "coords-vectors.moved",
+        "source": [-11.25, 17.5, -3.75, 999.125, 101, -991],
+        "ndim": 1,
+        "destination": [2, 4, 8, 16, 32, 64, 128]
+      },
+      {
+        "op": "coords-vectors.moved",
+        "source": [-11.25, 17.5, -3.75, 999.125, 101, -991],
+        "ndim": 2,
+        "destination": [2, 4, 8, 16, 32, 64, 128]
+      },
+      {
+        "op": "coords-vectors.moved",
+        "source": [-11.25, 17.5, -3.75, 999.125, 101, -991],
+        "ndim": 4,
+        "destination": [2, 4, 8, 16, 32, 64, 128]
+      },
+      {
+        "op": "coords-vectors.moved",
+        "source": [-11.25, 17.5, -3.75, 999.125, 101, -991],
+        "ndim": 6,
+        "destination": [2, 4, 8, 16, 32, 64, 128]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-moved-unequal-lengths",
+    "description": "Source and destination capacities may differ when both fit the copy count.",
+    "workflow": [
+      {
+        "op": "coords-vectors.moved",
+        "source": [1, 2, 3, 4],
+        "ndim": 2,
+        "destination": [7, 8]
+      },
+      {
+        "op": "coords-vectors.moved",
+        "source": [3, 2],
+        "ndim": 2,
+        "destination": [4, 5, 6, 7]
+      },
+      {
+        "op": "coords-vectors.moved",
+        "source": [11],
+        "ndim": 1,
+        "destination": [-4]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-moved-zero-with-empty-or-nonempty",
+    "description": "Zero move count calls the actual routine on valid pointers and preserves all destination values.",
+    "workflow": [
+      {
+        "op": "coords-vectors.moved",
+        "source": [],
+        "ndim": 0,
+        "destination": []
+      },
+      {
+        "op": "coords-vectors.moved",
+        "source": [],
+        "ndim": 0,
+        "destination": [41, 83]
+      },
+      {
+        "op": "coords-vectors.moved",
+        "source": [7],
+        "ndim": 0,
+        "destination": []
+      },
+      {
+        "op": "coords-vectors.moved",
+        "source": [-11.25, 17.5, -3.75, 999.125, 101, -991],
+        "ndim": 0,
+        "destination": [-2147483648, 17, -31, 2147483647, 101, -991]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-moved-distinguishing-order",
+    "description": "Copy order and signed fractional values are visible in each complete output.",
+    "workflow": [
+      {
+        "op": "coords-vectors.moved",
+        "source": [17, -31, 127, -211, 0.75],
+        "ndim": 5,
+        "destination": [0, 0, 0, 0, 0]
+      },
+      {
+        "op": "coords-vectors.moved",
+        "source": [0.75, -211, 127, -31, 17],
+        "ndim": 5,
+        "destination": [1, 1, 1, 1, 1]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-moved-extreme-finite-storage",
+    "description": "Exact assigned doubles include subnormals and extreme magnitudes beside untouched elements.",
+    "workflow": [
+      {
+        "op": "coords-vectors.moved",
+        "source": [
+          1.7976931348623157e308, -1.7976931348623157e308, 5e-324, -5e-324
+        ],
+        "ndim": 4,
+        "destination": [1, 2, 3, 4, 5]
+      },
+      {
+        "op": "coords-vectors.moved",
+        "source": [5e-324, -5e-324],
+        "ndim": 1,
+        "destination": [
+          1.7976931348623157e308, -1.7976931348623157e308, 5e-324, -5e-324
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

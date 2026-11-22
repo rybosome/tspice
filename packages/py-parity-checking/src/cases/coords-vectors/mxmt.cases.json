@@ -1,0 +1,155 @@
+[
+  {
+    "caseId": "coords-vectors-mxmt-asymmetric-operand-order",
+    "description": "mxmt: asymmetric-operand-order; compare every actual raw scalar or matrix component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.mxmt",
+        "a": [
+          [2, -3, 5],
+          [7, 11, -13],
+          [17, 19, 23]
+        ],
+        "b": [
+          [-2, 4, 7],
+          [3, -5, 11],
+          [13, 17, -19]
+        ]
+      },
+      {
+        "op": "coords-vectors.mxmt",
+        "a": [
+          [-2, 4, 7],
+          [3, -5, 11],
+          [13, 17, -19]
+        ],
+        "b": [
+          [2, -3, 5],
+          [7, 11, -13],
+          [17, 19, 23]
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-mxmt-identity-and-zero",
+    "description": "mxmt: identity-and-zero; compare every actual raw scalar or matrix component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.mxmt",
+        "a": [
+          [2, -3, 5],
+          [7, 11, -13],
+          [17, 19, 23]
+        ],
+        "b": [
+          [1, 0, 0],
+          [0, 1, 0],
+          [0, 0, 1]
+        ]
+      },
+      {
+        "op": "coords-vectors.mxmt",
+        "a": [
+          [1, 0, 0],
+          [0, 1, 0],
+          [0, 0, 1]
+        ],
+        "b": [
+          [2, -3, 5],
+          [7, 11, -13],
+          [17, 19, 23]
+        ]
+      },
+      {
+        "op": "coords-vectors.mxmt",
+        "a": [
+          [2, -3, 5],
+          [7, 11, -13],
+          [17, 19, 23]
+        ],
+        "b": [
+          [0, 0, 0],
+          [0, 0, 0],
+          [0, 0, 0]
+        ]
+      },
+      {
+        "op": "coords-vectors.mxmt",
+        "a": [
+          [0, 0, 0],
+          [0, 0, 0],
+          [0, 0, 0]
+        ],
+        "b": [
+          [2, -3, 5],
+          [7, 11, -13],
+          [17, 19, 23]
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-mxmt-gram-matrix",
+    "description": "mxmt: gram-matrix; compare every actual raw scalar or matrix component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.mxmt",
+        "a": [
+          [2, -3, 5],
+          [7, 11, -13],
+          [17, 19, 23]
+        ],
+        "b": [
+          [2, -3, 5],
+          [7, 11, -13],
+          [17, 19, 23]
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-mxmt-balanced-scales",
+    "description": "mxmt: balanced-scales; compare every actual raw scalar or matrix component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.mxmt",
+        "a": [
+          [2e100, -3.0000000000000002e100, 5e100],
+          [7e100, 1.1e101, -1.3e101],
+          [1.7e101, 1.9e101, 2.3e101]
+        ],
+        "b": [
+          [-2e-100, 4e-100, 7e-100],
+          [3e-100, -5e-100, 1.1e-99],
+          [1.3e-99, 1.7e-99, -1.9e-99]
+        ]
+      },
+      {
+        "op": "coords-vectors.mxmt",
+        "a": [
+          [2e-100, -3e-100, 5e-100],
+          [7e-100, 1.1e-99, -1.3e-99],
+          [1.7e-99, 1.9e-99, 2.3e-99]
+        ],
+        "b": [
+          [-2e100, 4e100, 7e100],
+          [3.0000000000000002e100, -5e100, 1.1e101],
+          [1.3e101, 1.7e101, -1.9e101]
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

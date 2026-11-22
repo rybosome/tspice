@@ -94,11 +94,11 @@ test("baseline derives breadth and preserves direct/non-direct evidence", (t) =>
   assert.deepEqual(ledger.summary, {
     total: 652,
     eligible: 649,
-    implemented: 162,
-    planned: 487,
+    implemented: 307,
+    planned: 342,
     excluded: 3,
-    caseFiles: 162,
-    scenarios: 1109,
+    caseFiles: 307,
+    scenarios: 1894,
     wasmRawUnsupported: 0,
   });
   const kplfrm = ledger.routines.find((r) => r.routine === "kplfrm_c");
@@ -197,6 +197,47 @@ test("a constant Node stub does not count as a native route", (t) => {
     "return 0;",
   );
   assert.throws(f.build, /No traced Node native\/shared-shim route for str2et/);
+});
+
+test("a directly included inline shape check cannot substitute for a matrix ABI call", (t) => {
+  const f = fixture(t);
+  const matrices = [
+    "mequg",
+    "mtxmg",
+    "mtxvg",
+    "mxmg",
+    "mxmtg",
+    "mxvg",
+    "vtmvg",
+    "xposeg",
+  ];
+  const ledger = f.build();
+  for (const name of matrices) {
+    const row = ledger.routines.find((r) => r.routine === name + "_c");
+    for (const backend of ["node", "wasm"]) {
+      assert.deepEqual(row.backends[backend].shimSymbols, ["tspice_" + name]);
+      assert.ok(row.backends[backend].cspiceEntrypoints.includes(name + "_c"));
+    }
+  }
+  f.edit(
+    "packages/backend-node/native/src/domains/coords_vectors.cc",
+    "if (tspice_mtxmg(m1.get(),",
+    "if (NoMatrixCall(m1.get(),",
+  );
+  assert.throws(f.build, /No traced Node native\/shared-shim route for mtxmg/);
+});
+
+test("an inline shape check in an unrelated header cannot resolve a call", (t) => {
+  const f = fixture(t);
+  f.edit(
+    "packages/backend-node/native/src/domains/coords_vectors.cc",
+    '#include "tspice_matrix_shapes.h"',
+    "// no local helper definition",
+  );
+  assert.throws(
+    f.build,
+    /Missing shared shim declaration\/definition: tspice_matrix_count/,
+  );
 });
 
 test("removing raw factory composition fails despite dormant domain code", (t) => {
@@ -312,6 +353,39 @@ test("non-direct mappings require an explicit evidence-backed policy", (t) => {
   delete policy.mappingNotes.bodvar;
   fs.writeFileSync(file, JSON.stringify(policy));
   assert.throws(f.build, /Unexplained non-direct node mapping for bodvar/);
+});
+
+test("the EUL2M route retains its linked SPICELIB call and outer trace", (t) => {
+  const f = fixture(t);
+  const routine = f
+    .build()
+    .routines.find((entry) => entry.routine === "eul2m_c");
+  for (const backend of ["node", "wasm"]) {
+    const mapping = routine.mapping[backend];
+    assert.equal(mapping.classification, "alias-or-composed");
+    for (const symbol of ["eul2m_", "chkin_c", "chkout_c"])
+      assert.ok(mapping.cspiceEntrypoints.includes(symbol));
+    assert.ok(!mapping.cspiceEntrypoints.includes("eul2m_c"));
+  }
+
+  const source = "packages/backend-shim-c/src/domains/coords_vectors.c";
+  const invocation =
+    "eul2m_(&angles[0], &angles[1], &angles[2], &axes[0], &axes[1], &axes[2], result);";
+  for (const replacement of [
+    "/* " + invocation + " */",
+    invocation.replace("eul2m_", "eul2xf_"),
+    invocation.replace("eul2m_", "eul2m_c"),
+  ]) {
+    f.edit(source, invocation, replacement);
+    assert.throws(f.build, /Stale non-direct mapping policy for node.eul2m/);
+    f.edit(source, replacement, invocation);
+  }
+  for (const traceCall of ['chkin_c("eul2m_c");', 'chkout_c("eul2m_c");']) {
+    const comment = "/* " + traceCall + " */";
+    f.edit(source, traceCall, comment);
+    assert.throws(f.build, /Stale non-direct mapping policy for node.eul2m/);
+    f.edit(source, comment, traceCall);
+  }
 });
 
 test("CI native expectation forwarding is distinct from exporting it in the shell", (t) => {
@@ -444,8 +518,61 @@ function editAudit(f, mutate, file = "vectors-arithmetic.json") {
 }
 
 test("maintained audit separates reviewed findings from verified backend execution", (t) => {
-  const ledger = fixture(t).build();
-  assert.equal(ledger.audit.baselineRoutines, ledger.summary.implemented);
+  const f = fixture(t);
+  const ledger = f.build();
+  assert.equal(ledger.audit.baselineRoutines, 162);
+  assert.equal(ledger.audit.expansionRoutines, 145);
+  // Each success route reaches its public C entrypoint. The three guarded paths
+  // must also retain the linked numerical routine used to reject invalid input.
+  for (const name of [
+    "frame",
+    "twovec",
+    "twovxf",
+    "eul2xf",
+    "xf2eul",
+    "xf2rav",
+    "rav2xf",
+    "invstm",
+    "xpose6",
+  ]) {
+    const routine = ledger.routines.find(
+      (entry) => entry.routine === name + "_c",
+    );
+    for (const backend of ["node", "wasm"])
+      assert.ok(
+        routine.mapping[backend].cspiceEntrypoints.includes(name + "_c"),
+      );
+  }
+  const definitions = cFunctions(
+    cTokens(
+      fs.readFileSync(
+        path.join(f.root, "packages/backend-shim-c/src/domains/frames.c"),
+        "utf8",
+      ),
+    ),
+  );
+  for (const [routine, guard, component] of [
+    ["twovxf", "check_twovxf", "zztwovxf_"],
+    ["eul2xf", "check_eul2xf_axes", "eul2m_"],
+    ["xf2eul", "check_xf2eul", "xf2eul_"],
+  ]) {
+    assert.ok(
+      cCalls(definitions.get("tspice_" + routine).body).includes(guard),
+    );
+    const calls = cCalls(definitions.get(guard).body);
+    for (const target of [
+      component,
+      "chkin_c",
+      "chkout_c",
+      "frame_algebra_status",
+    ])
+      assert.ok(calls.includes(target));
+  }
+
+  assert.equal(
+    ledger.audit.baselineRoutines + ledger.audit.expansionRoutines,
+    ledger.summary.implemented,
+  );
   for (const backend of ["node", "wasm"]) {
     assert.ok(ledger.audit.counts[backend].reviewed >= 8);
     assert.equal(ledger.audit.counts[backend].verified, 0);
@@ -470,7 +597,21 @@ test("baseline rejects duplicate, removed, and omitted routines", (t) => {
   ]) {
     const f = fixture(t);
     editAudit(f, mutation, "baseline.json");
-    assert.throws(f.build, /duplicate|unknown\/removed|missing from baseline/);
+    assert.throws(f.build, /duplicate|unknown\/removed|missing from audit/);
+  }
+});
+
+test("expansion assignments cannot omit routines, duplicate baseline, or plan absent APIs", (t) => {
+  for (const mutation of [
+    (r) => {
+      r.expansionBatches = [];
+    },
+    (r) => r.expansionBatches[0].routines.push(r.batches[0].routines[0]),
+    (r) => r.expansionBatches[0].routines.push("erract_c"),
+  ]) {
+    const f = fixture(t);
+    editAudit(f, mutation, "baseline.json");
+    assert.throws(f.build, /duplicate|unknown\/removed|missing from audit/);
   }
 });
 

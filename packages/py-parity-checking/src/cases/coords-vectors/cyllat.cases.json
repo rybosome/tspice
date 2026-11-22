@@ -1,0 +1,119 @@
+[
+  {
+    "caseId": "coords-vectors-cyllat-mixed-signs",
+    "description": "cyllat: mixed-signs; compare all three raw output components with the corresponding live SpiceyPy routine.",
+    "workflow": [
+      {
+        "op": "coords-vectors.cyllat",
+        "radius": 3,
+        "lon": 1.234,
+        "z": -4
+      },
+      {
+        "op": "coords-vectors.cyllat",
+        "radius": 2.5,
+        "lon": -2.25,
+        "z": 6.5
+      },
+      {
+        "op": "coords-vectors.cyllat",
+        "radius": 5,
+        "lon": 4.75,
+        "z": 0
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-cyllat-axis-and-origin",
+    "description": "cyllat: axis-and-origin; compare all three raw output components with the corresponding live SpiceyPy routine.",
+    "workflow": [
+      {
+        "op": "coords-vectors.cyllat",
+        "radius": 0,
+        "lon": -4.5,
+        "z": 3
+      },
+      {
+        "op": "coords-vectors.cyllat",
+        "radius": 0,
+        "lon": 6.75,
+        "z": -3
+      },
+      {
+        "op": "coords-vectors.cyllat",
+        "radius": 0,
+        "lon": 1.7,
+        "z": 0
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-cyllat-negative-radius",
+    "description": "cyllat: negative-radius; compare all three raw output components with the corresponding live SpiceyPy routine.",
+    "workflow": [
+      {
+        "op": "coords-vectors.cyllat",
+        "radius": -3,
+        "lon": 0.7,
+        "z": 4
+      },
+      {
+        "op": "coords-vectors.cyllat",
+        "radius": -3,
+        "lon": -7.2,
+        "z": -4
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-cyllat-unwrapped-longitude",
+    "description": "cyllat: unwrapped-longitude; compare all three raw output components with the corresponding live SpiceyPy routine.",
+    "workflow": [
+      {
+        "op": "coords-vectors.cyllat",
+        "radius": 3,
+        "lon": -15.3,
+        "z": 4
+      },
+      {
+        "op": "coords-vectors.cyllat",
+        "radius": 3,
+        "lon": 20.2,
+        "z": -4
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-cyllat-scaled-magnitudes",
+    "description": "cyllat: scaled-magnitudes; compare all three raw output components with the corresponding live SpiceyPy routine.",
+    "workflow": [
+      {
+        "op": "coords-vectors.cyllat",
+        "radius": 3e200,
+        "lon": 1.2,
+        "z": -4e200
+      },
+      {
+        "op": "coords-vectors.cyllat",
+        "radius": 3e-200,
+        "lon": -1.2,
+        "z": 4e-200
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

@@ -1,0 +1,345 @@
+[
+  {
+    "caseId": "coords-vectors-srfrec-triaxial-mixed-and-axes",
+    "description": "srfrec: triaxial-mixed-and-axes; observe every actual returned component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/coordinate-conventions.tpc"
+      },
+      {
+        "op": "coords-vectors.srfrec",
+        "body": 9901001,
+        "lon": 0.7,
+        "lat": -0.4
+      },
+      {
+        "op": "coords-vectors.srfrec",
+        "body": 9901001,
+        "lon": 0,
+        "lat": 0
+      },
+      {
+        "op": "coords-vectors.srfrec",
+        "body": 9901001,
+        "lon": 1.5707963267948966,
+        "lat": 0
+      },
+      {
+        "op": "coords-vectors.srfrec",
+        "body": 9901001,
+        "lon": 3.141592653589793,
+        "lat": 0
+      },
+      {
+        "op": "coords-vectors.srfrec",
+        "body": 9901001,
+        "lon": 0,
+        "lat": 1.5707963267948966
+      },
+      {
+        "op": "coords-vectors.srfrec",
+        "body": 9901001,
+        "lon": 0,
+        "lat": -1.5707963267948966
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-srfrec-oblate-planetocentric-latitude",
+    "description": "srfrec: oblate-planetocentric-latitude; observe every actual returned component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/coordinate-conventions.tpc"
+      },
+      {
+        "op": "coords-vectors.srfrec",
+        "body": 9901002,
+        "lon": 0.7,
+        "lat": 0.4
+      },
+      {
+        "op": "coords-vectors.srfrec",
+        "body": 9901002,
+        "lon": 0.7,
+        "lat": -0.4
+      },
+      {
+        "op": "coords-vectors.srfrec",
+        "body": 9901002,
+        "lon": 0.7,
+        "lat": 0.7853981633974483
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-srfrec-spherical-and-unrestricted-angles",
+    "description": "srfrec: spherical-and-unrestricted-angles; observe every actual returned component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/coordinate-conventions.tpc"
+      },
+      {
+        "op": "coords-vectors.srfrec",
+        "body": 9901003,
+        "lon": 0.7,
+        "lat": -0.4
+      },
+      {
+        "op": "coords-vectors.srfrec",
+        "body": 9901003,
+        "lon": -0.7,
+        "lat": 0.4
+      },
+      {
+        "op": "coords-vectors.srfrec",
+        "body": 9901003,
+        "lon": 6.983185307179586,
+        "lat": 0.4
+      },
+      {
+        "op": "coords-vectors.srfrec",
+        "body": 9901003,
+        "lon": 0.7,
+        "lat": 2.1
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-srfrec-pool-radii-overwrite-lifecycle",
+    "description": "srfrec: pool-radii-overwrite-lifecycle; observe every actual returned component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/coordinate-conventions.tpc"
+      },
+      {
+        "op": "coords-vectors.srfrec",
+        "body": 9901001,
+        "lon": 0.7,
+        "lat": -0.4
+      },
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "BODY9901001_RADII",
+        "values": [6, 4, 2]
+      },
+      {
+        "op": "coords-vectors.srfrec",
+        "body": 9901001,
+        "lon": 0.7,
+        "lat": -0.4
+      },
+      {
+        "op": "kernels.kclear"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/coordinate-conventions.tpc"
+      },
+      {
+        "op": "coords-vectors.srfrec",
+        "body": 9901001,
+        "lon": 0.7,
+        "lat": -0.4
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-srfrec-missing-radii-error",
+    "description": "srfrec: missing-radii-error; observe every actual returned component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.srfrec",
+        "body": 9901001,
+        "lon": 0.7,
+        "lat": -0.4
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["KERNELVARNOTFOUND"]
+    }
+  },
+  {
+    "caseId": "coords-vectors-srfrec-too-few-radii-error",
+    "description": "srfrec: too-few-radii-error; observe every actual returned component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "BODY9901001_RADII",
+        "values": [3, 2]
+      },
+      {
+        "op": "coords-vectors.srfrec",
+        "body": 9901001,
+        "lon": 0.7,
+        "lat": -0.4
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDCOUNT"]
+    }
+  },
+  {
+    "caseId": "coords-vectors-srfrec-too-many-radii-error",
+    "description": "srfrec: too-many-radii-error; observe every actual returned component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "BODY9901001_RADII",
+        "values": [3, 2, 1, 4]
+      },
+      {
+        "op": "coords-vectors.srfrec",
+        "body": 9901001,
+        "lon": 0.7,
+        "lat": -0.4
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["ARRAYTOOSMALL"]
+    }
+  },
+  {
+    "caseId": "coords-vectors-srfrec-zero-axis-radii-error",
+    "description": "srfrec: zero-axis-radii-error; observe every actual returned component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "BODY9901001_RADII",
+        "values": [3, 0, 1]
+      },
+      {
+        "op": "coords-vectors.srfrec",
+        "body": 9901001,
+        "lon": 0.7,
+        "lat": -0.4
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["BADAXISLENGTH"]
+    }
+  },
+  {
+    "caseId": "coords-vectors-srfrec-negative-axis-radii-error",
+    "description": "srfrec: negative-axis-radii-error; observe every actual returned component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "BODY9901001_RADII",
+        "values": [3, -2, 1]
+      },
+      {
+        "op": "coords-vectors.srfrec",
+        "body": 9901001,
+        "lon": 0.7,
+        "lat": -0.4
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["BADAXISLENGTH"]
+    }
+  },
+  {
+    "caseId": "coords-vectors-srfrec-nonnumeric-radii-error",
+    "description": "srfrec: nonnumeric-radii-error; observe every actual returned component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "kernel-pool.pcpool",
+        "name": "BODY9901001_RADII",
+        "values": ["x", "y", "z"]
+      },
+      {
+        "op": "coords-vectors.srfrec",
+        "body": 9901001,
+        "lon": 0.7,
+        "lat": -0.4
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["TYPEMISMATCH"]
+    }
+  },
+  {
+    "caseId": "coords-vectors-srfrec-scaled-radii",
+    "description": "srfrec: scaled-radii; observe every actual returned component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "BODY9901001_RADII",
+        "values": [3e100, 2e100, 1e100]
+      },
+      {
+        "op": "coords-vectors.srfrec",
+        "body": 9901001,
+        "lon": 0.7,
+        "lat": -0.4
+      },
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "BODY9901001_RADII",
+        "values": [3e-100, 2e-100, 1e-100]
+      },
+      {
+        "op": "coords-vectors.srfrec",
+        "body": 9901001,
+        "lon": 0.7,
+        "lat": -0.4
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-srfrec-signed32-body-boundaries",
+    "description": "srfrec: both signed32 body-ID boundaries resolve their own numeric radius variables; observe every actual output component.",
+    "workflow": [
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "BODY-2147483648_RADII",
+        "values": [3, 2, 1]
+      },
+      {
+        "op": "coords-vectors.srfrec",
+        "body": -2147483648,
+        "lon": 0.7,
+        "lat": -0.4
+      },
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "BODY2147483647_RADII",
+        "values": [3, 2, 1]
+      },
+      {
+        "op": "coords-vectors.srfrec",
+        "body": 2147483647,
+        "lon": 0.7,
+        "lat": -0.4
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

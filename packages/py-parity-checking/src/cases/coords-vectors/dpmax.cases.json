@@ -1,0 +1,38 @@
+[
+  {
+    "caseId": "coords-vectors-dpmax-constant-value",
+    "description": "dpmax: compare largest finite double returned by actual raw and live SpiceyPy without kernels.",
+    "workflow": [
+      {
+        "op": "coords-vectors.dpmax"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-dpmax-constant-repeat-after-reset",
+    "description": "dpmax: repeat the raw constant across kernel clear and error reset; all three returned values are compared.",
+    "workflow": [
+      {
+        "op": "coords-vectors.dpmax"
+      },
+      {
+        "op": "kernels.kclear"
+      },
+      {
+        "op": "coords-vectors.dpmax"
+      },
+      {
+        "op": "error.reset"
+      },
+      {
+        "op": "coords-vectors.dpmax"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

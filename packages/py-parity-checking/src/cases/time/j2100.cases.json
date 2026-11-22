@@ -1,0 +1,38 @@
+[
+  {
+    "caseId": "time-j2100-constant-value",
+    "description": "j2100: compare Julian date of J2100 returned by actual raw and live SpiceyPy without kernels.",
+    "workflow": [
+      {
+        "op": "time.j2100"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "time-j2100-constant-repeat-after-reset",
+    "description": "j2100: repeat the raw constant across kernel clear and error reset; all three returned values are compared.",
+    "workflow": [
+      {
+        "op": "time.j2100"
+      },
+      {
+        "op": "kernels.kclear"
+      },
+      {
+        "op": "time.j2100"
+      },
+      {
+        "op": "error.reset"
+      },
+      {
+        "op": "time.j2100"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

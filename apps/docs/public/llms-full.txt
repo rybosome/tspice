@@ -114,6 +114,7 @@ Source: `packages/tspice/src/index.ts`
 - `SpiceClientsBuilder`
 - `SpiceClientsWebWorkerOptions`
 - `SpiceKit`
+- `SpiceQuaternion`
 - `SpiceSync`
 - `SpiceTime`
 - `StateVector`

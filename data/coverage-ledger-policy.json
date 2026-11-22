@@ -92,6 +92,16 @@
         "reason": "Keyword extraction is implemented in shared JavaScript rather than calling a WASM CSPICE export.",
         "expectedEntrypoints": []
       }
+    },
+    "eul2m": {
+      "node": {
+        "reason": "N0067 eul2m_c transposes an uninitialized temporary matrix after early errors. The shared wrapper calls the same linked SPICELIB eul2m_ with initialized storage and the public trace frame, then transposes successful output into row-major form.",
+        "expectedEntrypoints": ["eul2m_", "chkin_c", "chkout_c"]
+      },
+      "wasm": {
+        "reason": "N0067 eul2m_c transposes an uninitialized temporary matrix after early errors. The shared wrapper calls the same linked SPICELIB eul2m_ with initialized storage and the public trace frame, then transposes successful output into row-major form.",
+        "expectedEntrypoints": ["eul2m_", "chkin_c", "chkout_c"]
+      }
     }
   }
 }

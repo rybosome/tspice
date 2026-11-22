@@ -1,0 +1,141 @@
+[
+  {
+    "caseId": "coords-vectors-dvcrss-mixed-components-and-order",
+    "description": "dvcrss: mixed-components-and-order; kernel-free authored states in a common frame, observe every actual output component using the locked independent oracle.",
+    "workflow": [
+      {
+        "op": "coords-vectors.dvcrss",
+        "a": [1, -2, 4, 3, -5, 7],
+        "b": [-3, 5, 7, 11, 13, -17]
+      },
+      {
+        "op": "coords-vectors.dvcrss",
+        "a": [-3, 5, 7, 11, 13, -17],
+        "b": [1, -2, 4, 3, -5, 7]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-dvcrss-zero-position-and-velocity",
+    "description": "dvcrss: zero-position-and-velocity; kernel-free authored states in a common frame, observe every actual output component using the locked independent oracle.",
+    "workflow": [
+      {
+        "op": "coords-vectors.dvcrss",
+        "a": [0, 0, 0, 0, 0, 0],
+        "b": [-3, 5, 7, 11, 13, -17]
+      },
+      {
+        "op": "coords-vectors.dvcrss",
+        "a": [1, -2, 4, 3, -5, 7],
+        "b": [0, 0, 0, 0, 0, 0]
+      },
+      {
+        "op": "coords-vectors.dvcrss",
+        "a": [0, 0, 0, 2, -3, 4],
+        "b": [-3, 5, 7, 11, 13, -17]
+      },
+      {
+        "op": "coords-vectors.dvcrss",
+        "a": [1, -2, 4, 3, -5, 7],
+        "b": [0, 0, 0, 2, -3, 4]
+      },
+      {
+        "op": "coords-vectors.dvcrss",
+        "a": [0, 0, 0, 2, -3, 4],
+        "b": [0, 0, 0, -5, 7, 11]
+      },
+      {
+        "op": "coords-vectors.dvcrss",
+        "a": [1, -2, 4, 0, 0, 0],
+        "b": [-3, 5, 7, 0, 0, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-dvcrss-dyadic-collinear-states",
+    "description": "dvcrss: exactly representable dyadic collinear positions distinguish singular behavior without non-dyadic cross-product cancellation; ducrss scales the states before forming its derivative.",
+    "workflow": [
+      {
+        "op": "coords-vectors.dvcrss",
+        "a": [2, 0, 0, 0, 2, 0],
+        "b": [4, 0, 0, 0, 0, 4]
+      },
+      {
+        "op": "coords-vectors.dvcrss",
+        "a": [2, 0, 0, 0, 2, 0],
+        "b": [-4, 0, 0, 0, 0, 4]
+      },
+      {
+        "op": "coords-vectors.dvcrss",
+        "a": [1, 2, 4, 3, -5, 7],
+        "b": [2, 4, 8, 11, 13, -17]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-dvcrss-orthogonal-basis-rates",
+    "description": "dvcrss: orthogonal-basis-rates; kernel-free authored states in a common frame, observe every actual output component using the locked independent oracle.",
+    "workflow": [
+      {
+        "op": "coords-vectors.dvcrss",
+        "a": [1, 0, 0, 0, 2, 0],
+        "b": [0, 1, 0, 0, 0, 3]
+      },
+      {
+        "op": "coords-vectors.dvcrss",
+        "a": [0, 2, 0, 3, 0, 0],
+        "b": [0, 0, -4, 0, 5, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-dvcrss-scaled-states",
+    "description": "dvcrss: scaled-states; kernel-free authored states in a common frame, observe every actual output component using the locked independent oracle.",
+    "workflow": [
+      {
+        "op": "coords-vectors.dvcrss",
+        "a": [1e100, -2e100, 4e100, 3.0000000000000002e100, -5e100, 7e100],
+        "b": [-3.0000000000000002e100, 5e100, 7e100, 1.1e101, 1.3e101, -1.7e101]
+      },
+      {
+        "op": "coords-vectors.dvcrss",
+        "a": [1e-100, -2e-100, 4e-100, 3e-100, -5e-100, 7e-100],
+        "b": [-3e-100, 5e-100, 7e-100, 1.1e-99, 1.3e-99, -1.7e-99]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-dvcrss-scaled-derivatives",
+    "description": "dvcrss: scaled-derivatives; kernel-free authored states in a common frame, observe every actual output component using the locked independent oracle.",
+    "workflow": [
+      {
+        "op": "coords-vectors.dvcrss",
+        "a": [1, -2, 4, 3.0000000000000002e100, -5e100, 7e100],
+        "b": [-3, 5, 7, 1.1e101, 1.3e101, -1.7e101]
+      },
+      {
+        "op": "coords-vectors.dvcrss",
+        "a": [1, -2, 4, 3e-100, -5e-100, 7e-100],
+        "b": [-3, 5, 7, 1.1e-99, 1.3e-99, -1.7e-99]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

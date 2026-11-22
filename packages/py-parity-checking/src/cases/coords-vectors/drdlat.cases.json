@@ -1,0 +1,113 @@
+[
+  {
+    "caseId": "coords-vectors-drdlat-mixed-positions",
+    "description": "Compare all nine derivative entries at three asymmetric locations, including both signs and unequal angular and distance derivatives.",
+    "workflow": [
+      {
+        "op": "coords-vectors.drdlat",
+        "radius": 7,
+        "lon": 0.45,
+        "lat": -0.6
+      },
+      {
+        "op": "coords-vectors.drdlat",
+        "radius": 2,
+        "lon": 1.1,
+        "lat": 0.3
+      },
+      {
+        "op": "coords-vectors.drdlat",
+        "radius": 5,
+        "lon": -0.7,
+        "lat": 0.2
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-drdlat-zero-radius",
+    "description": "Observe rank-deficient derivatives at zero radius while retaining each derivative with respect to radius.",
+    "workflow": [
+      {
+        "op": "coords-vectors.drdlat",
+        "radius": 0,
+        "lon": 0.8,
+        "lat": -0.5
+      },
+      {
+        "op": "coords-vectors.drdlat",
+        "radius": 0,
+        "lon": -0.4,
+        "lat": 1.2
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-drdlat-angular-periods",
+    "description": "Evaluate actual derivatives with unwrapped angles, quadrant changes and pole conventions.",
+    "workflow": [
+      {
+        "op": "coords-vectors.drdlat",
+        "radius": 3,
+        "lon": 6.983185307179586,
+        "lat": 0.4
+      },
+      {
+        "op": "coords-vectors.drdlat",
+        "radius": 3,
+        "lon": 1.5707963267948966,
+        "lat": 1.5707963267948966
+      },
+      {
+        "op": "coords-vectors.drdlat",
+        "radius": 3,
+        "lon": -1.1,
+        "lat": -0.3
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-drdlat-negative-radius",
+    "description": "Distinguish the routine-specific signed-radius domain and the signs of its angular derivative columns.",
+    "workflow": [
+      {
+        "op": "coords-vectors.drdlat",
+        "radius": -2,
+        "lon": 0.3,
+        "lat": -0.5
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-drdlat-distance-scales",
+    "description": "Separate distance-independent direction cosines from derivatives that scale with distance or reciprocal distance.",
+    "workflow": [
+      {
+        "op": "coords-vectors.drdlat",
+        "radius": 0.001,
+        "lon": 0.3,
+        "lat": -0.2
+      },
+      {
+        "op": "coords-vectors.drdlat",
+        "radius": 100000.0,
+        "lon": -0.4,
+        "lat": 0.7
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

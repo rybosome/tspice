@@ -10,6 +10,150 @@ export function getNodeBinding(): NativeAddon {
   const native = getNativeAddon();
 
   invariant(
+    typeof native.pi === "function",
+    "Expected native addon to export pi()",
+  );
+  invariant(
+    typeof native.twopi === "function",
+    "Expected native addon to export twopi()",
+  );
+  invariant(
+    typeof native.halfpi === "function",
+    "Expected native addon to export halfpi()",
+  );
+  invariant(
+    typeof native.dpr === "function",
+    "Expected native addon to export dpr()",
+  );
+  invariant(
+    typeof native.rpd === "function",
+    "Expected native addon to export rpd()",
+  );
+  invariant(
+    typeof native.spd === "function",
+    "Expected native addon to export spd()",
+  );
+  invariant(
+    typeof native.j2000 === "function",
+    "Expected native addon to export j2000()",
+  );
+  invariant(
+    typeof native.j1900 === "function",
+    "Expected native addon to export j1900()",
+  );
+  invariant(
+    typeof native.b1950 === "function",
+    "Expected native addon to export b1950()",
+  );
+
+  invariant(
+    typeof native.clight === "function",
+    "Expected native addon to export clight()",
+  );
+  invariant(
+    typeof native.dpmax === "function",
+    "Expected native addon to export dpmax()",
+  );
+  invariant(
+    typeof native.dpmin === "function",
+    "Expected native addon to export dpmin()",
+  );
+  invariant(
+    typeof native.intmax === "function",
+    "Expected native addon to export intmax()",
+  );
+  invariant(
+    typeof native.intmin === "function",
+    "Expected native addon to export intmin()",
+  );
+  invariant(
+    typeof native.b1900 === "function",
+    "Expected native addon to export b1900()",
+  );
+  invariant(
+    typeof native.j1950 === "function",
+    "Expected native addon to export j1950()",
+  );
+  invariant(
+    typeof native.j2100 === "function",
+    "Expected native addon to export j2100()",
+  );
+  invariant(
+    typeof native.jyear === "function",
+    "Expected native addon to export jyear()",
+  );
+  invariant(
+    typeof native.tyear === "function",
+    "Expected native addon to export tyear()",
+  );
+
+  invariant(
+    typeof native.cyllat === "function",
+    "Expected native addon to export cyllat()",
+  );
+  invariant(
+    typeof native.cylrec === "function",
+    "Expected native addon to export cylrec()",
+  );
+  invariant(
+    typeof native.cylsph === "function",
+    "Expected native addon to export cylsph()",
+  );
+  invariant(
+    typeof native.latcyl === "function",
+    "Expected native addon to export latcyl()",
+  );
+  invariant(
+    typeof native.latsph === "function",
+    "Expected native addon to export latsph()",
+  );
+  invariant(
+    typeof native.reccyl === "function",
+    "Expected native addon to export reccyl()",
+  );
+  invariant(
+    typeof native.sphcyl === "function",
+    "Expected native addon to export sphcyl()",
+  );
+  invariant(
+    typeof native.sphlat === "function",
+    "Expected native addon to export sphlat()",
+  );
+
+  invariant(
+    typeof native.vdist === "function",
+    "Expected native addon to export vdist()",
+  );
+  invariant(
+    typeof native.vequ === "function",
+    "Expected native addon to export vequ()",
+  );
+  invariant(
+    typeof native.vpack === "function",
+    "Expected native addon to export vpack()",
+  );
+  invariant(
+    typeof native.vupack === "function",
+    "Expected native addon to export vupack()",
+  );
+  invariant(
+    typeof native.vzero === "function",
+    "Expected native addon to export vzero()",
+  );
+  invariant(
+    typeof native.unorm === "function",
+    "Expected native addon to export unorm()",
+  );
+  invariant(
+    typeof native.ucrss === "function",
+    "Expected native addon to export ucrss()",
+  );
+  invariant(
+    typeof native.vsep === "function",
+    "Expected native addon to export vsep()",
+  );
+
+  invariant(
     typeof native.furnsh === "function",
     "Expected native addon to export furnsh(path)",
   );
@@ -344,9 +488,374 @@ export function getNodeBinding(): NativeAddon {
     typeof native.pxform === "function",
     "Expected native addon to export pxform(from, to, et)",
   );
+  invariant(typeof native.frame === "function", "Native addon missing frame()");
+  invariant(
+    typeof native.twovec === "function",
+    "Native addon missing twovec()",
+  );
+  invariant(
+    typeof native.twovxf === "function",
+    "Native addon missing twovxf()",
+  );
+  invariant(
+    typeof native.eul2xf === "function",
+    "Native addon missing eul2xf()",
+  );
+  invariant(
+    typeof native.xf2eul === "function",
+    "Native addon missing xf2eul()",
+  );
+  invariant(
+    typeof native.xf2rav === "function",
+    "Native addon missing xf2rav()",
+  );
+  invariant(
+    typeof native.rav2xf === "function",
+    "Native addon missing rav2xf()",
+  );
+  invariant(
+    typeof native.invstm === "function",
+    "Native addon missing invstm()",
+  );
+  invariant(
+    typeof native.xpose6 === "function",
+    "Native addon missing xpose6()",
+  );
   invariant(
     typeof native.sxform === "function",
     "Expected native addon to export sxform(from, to, et)",
+  );
+  invariant(
+    typeof native.vlcom === "function",
+    "Expected native addon to export vlcom()",
+  );
+  invariant(
+    typeof native.vlcom3 === "function",
+    "Expected native addon to export vlcom3()",
+  );
+  invariant(
+    typeof native.vperp === "function",
+    "Expected native addon to export vperp()",
+  );
+  invariant(
+    typeof native.vproj === "function",
+    "Expected native addon to export vproj()",
+  );
+  invariant(
+    typeof native.vrel === "function",
+    "Expected native addon to export vrel()",
+  );
+  invariant(
+    typeof native.vrotv === "function",
+    "Expected native addon to export vrotv()",
+  );
+  invariant(
+    typeof native.rotvec === "function",
+    "Expected native addon to export rotvec()",
+  );
+  invariant(
+    typeof native.vtmv === "function",
+    "Expected native addon to export vtmv()",
+  );
+  invariant(
+    typeof native.azlrec === "function",
+    "Expected native addon to export azlrec()",
+  );
+  invariant(
+    typeof native.recazl === "function",
+    "Expected native addon to export recazl()",
+  );
+  invariant(
+    typeof native.pgrrec === "function",
+    "Expected native addon to export pgrrec()",
+  );
+  invariant(
+    typeof native.recpgr === "function",
+    "Expected native addon to export recpgr()",
+  );
+  invariant(
+    typeof native.radrec === "function",
+    "Expected native addon to export radrec()",
+  );
+  invariant(
+    typeof native.recrad === "function",
+    "Expected native addon to export recrad()",
+  );
+  invariant(
+    typeof native.srfrec === "function",
+    "Expected native addon to export srfrec()",
+  );
+  invariant(
+    typeof native.brcktd === "function",
+    "Expected native addon to export brcktd()",
+  );
+  invariant(
+    typeof native.brckti === "function",
+    "Expected native addon to export brckti()",
+  );
+  invariant(
+    typeof native.convrt === "function",
+    "Expected native addon to export convrt()",
+  );
+  invariant(
+    typeof native.sumad === "function",
+    "Expected native addon to export sumad()",
+  );
+  invariant(
+    typeof native.sumai === "function",
+    "Expected native addon to export sumai()",
+  );
+  invariant(
+    typeof native.maxd === "function",
+    "Expected native addon to export maxd()",
+  );
+  invariant(
+    typeof native.maxi === "function",
+    "Expected native addon to export maxi()",
+  );
+  invariant(
+    typeof native.mind === "function",
+    "Expected native addon to export mind()",
+  );
+  invariant(
+    typeof native.mini === "function",
+    "Expected native addon to export mini()",
+  );
+  invariant(
+    typeof native.ducrss === "function",
+    "Expected native addon to export ducrss()",
+  );
+  invariant(
+    typeof native.dvcrss === "function",
+    "Expected native addon to export dvcrss()",
+  );
+  invariant(
+    typeof native.dvdot === "function",
+    "Expected native addon to export dvdot()",
+  );
+  invariant(
+    typeof native.dvhat === "function",
+    "Expected native addon to export dvhat()",
+  );
+  invariant(
+    typeof native.dvnorm === "function",
+    "Expected native addon to export dvnorm()",
+  );
+  invariant(
+    typeof native.dvsep === "function",
+    "Expected native addon to export dvsep()",
+  );
+  invariant(
+    typeof native.chbder === "function",
+    "Native addon missing chbder()",
+  );
+  invariant(
+    typeof native.chbigr === "function",
+    "Native addon missing chbigr()",
+  );
+  invariant(
+    typeof native.chbint === "function",
+    "Native addon missing chbint()",
+  );
+  invariant(
+    typeof native.chbval === "function",
+    "Native addon missing chbval()",
+  );
+  invariant(
+    typeof native.polyds === "function",
+    "Native addon missing polyds()",
+  );
+  invariant(typeof native.rquad === "function", "Native addon missing rquad()");
+  invariant(
+    typeof native.hrmesp === "function",
+    "Native addon missing hrmesp()",
+  );
+  invariant(
+    typeof native.hrmint === "function",
+    "Native addon missing hrmint()",
+  );
+  invariant(
+    typeof native.lgresp === "function",
+    "Native addon missing lgresp()",
+  );
+  invariant(
+    typeof native.lgrind === "function",
+    "Native addon missing lgrind()",
+  );
+  invariant(
+    typeof native.lgrint === "function",
+    "Native addon missing lgrint()",
+  );
+  invariant(
+    typeof native.qderiv === "function",
+    "Native addon missing qderiv()",
+  );
+  invariant(
+    typeof native.clearc === "function",
+    "Native addon missing clearc()",
+  );
+  invariant(
+    typeof native.cleard === "function",
+    "Native addon missing cleard()",
+  );
+  invariant(
+    typeof native.cleari === "function",
+    "Native addon missing cleari()",
+  );
+  invariant(typeof native.filld === "function", "Native addon missing filld()");
+  invariant(typeof native.filli === "function", "Native addon missing filli()");
+  invariant(typeof native.moved === "function", "Native addon missing moved()");
+  invariant(
+    typeof native.dazldr === "function",
+    "Expected native addon to export dazldr()",
+  );
+  invariant(
+    typeof native.dcyldr === "function",
+    "Expected native addon to export dcyldr()",
+  );
+  invariant(
+    typeof native.dgeodr === "function",
+    "Expected native addon to export dgeodr()",
+  );
+  invariant(
+    typeof native.dlatdr === "function",
+    "Expected native addon to export dlatdr()",
+  );
+  invariant(
+    typeof native.dpgrdr === "function",
+    "Expected native addon to export dpgrdr()",
+  );
+  invariant(
+    typeof native.drdazl === "function",
+    "Expected native addon to export drdazl()",
+  );
+  invariant(
+    typeof native.drdcyl === "function",
+    "Expected native addon to export drdcyl()",
+  );
+  invariant(
+    typeof native.drdgeo === "function",
+    "Expected native addon to export drdgeo()",
+  );
+  invariant(
+    typeof native.drdlat === "function",
+    "Expected native addon to export drdlat()",
+  );
+  invariant(
+    typeof native.drdpgr === "function",
+    "Expected native addon to export drdpgr()",
+  );
+  invariant(
+    typeof native.drdsph === "function",
+    "Expected native addon to export drdsph()",
+  );
+  invariant(
+    typeof native.dsphdr === "function",
+    "Expected native addon to export dsphdr()",
+  );
+  invariant(
+    typeof native.det === "function",
+    "Expected native addon to export det()",
+  );
+  invariant(
+    typeof native.diags2 === "function",
+    "Expected native addon to export diags2()",
+  );
+  invariant(
+    typeof native.ident === "function",
+    "Expected native addon to export ident()",
+  );
+  invariant(
+    typeof native.invert === "function",
+    "Expected native addon to export invert()",
+  );
+  invariant(
+    typeof native.invort === "function",
+    "Expected native addon to export invort()",
+  );
+  invariant(
+    typeof native.isrot === "function",
+    "Expected native addon to export isrot()",
+  );
+  invariant(
+    typeof native.mequ === "function",
+    "Expected native addon to export mequ()",
+  );
+  invariant(
+    typeof native.mtxm === "function",
+    "Expected native addon to export mtxm()",
+  );
+  invariant(
+    typeof native.mxmt === "function",
+    "Expected native addon to export mxmt()",
+  );
+  invariant(
+    typeof native.trace === "function",
+    "Expected native addon to export trace()",
+  );
+  invariant(
+    typeof native.xpose === "function",
+    "Expected native addon to export xpose()",
+  );
+  invariant(
+    typeof native.vaddg === "function",
+    "Expected native addon to export vaddg()",
+  );
+  invariant(
+    typeof native.vdistg === "function",
+    "Expected native addon to export vdistg()",
+  );
+  invariant(
+    typeof native.vdotg === "function",
+    "Expected native addon to export vdotg()",
+  );
+  invariant(
+    typeof native.vequg === "function",
+    "Expected native addon to export vequg()",
+  );
+  invariant(
+    typeof native.vhatg === "function",
+    "Expected native addon to export vhatg()",
+  );
+  invariant(
+    typeof native.vlcomg === "function",
+    "Expected native addon to export vlcomg()",
+  );
+  invariant(
+    typeof native.vminug === "function",
+    "Expected native addon to export vminug()",
+  );
+  invariant(
+    typeof native.vnormg === "function",
+    "Expected native addon to export vnormg()",
+  );
+  invariant(
+    typeof native.vprojg === "function",
+    "Expected native addon to export vprojg()",
+  );
+  invariant(
+    typeof native.vrelg === "function",
+    "Expected native addon to export vrelg()",
+  );
+  invariant(
+    typeof native.vsclg === "function",
+    "Expected native addon to export vsclg()",
+  );
+  invariant(
+    typeof native.vsepg === "function",
+    "Expected native addon to export vsepg()",
+  );
+  invariant(
+    typeof native.vsubg === "function",
+    "Expected native addon to export vsubg()",
+  );
+  invariant(
+    typeof native.vzerog === "function",
+    "Expected native addon to export vzerog()",
+  );
+  invariant(
+    typeof native.unormg === "function",
+    "Expected native addon to export unormg()",
   );
   invariant(
     typeof native.reclat === "function",
@@ -609,5 +1118,65 @@ export function getNodeBinding(): NativeAddon {
     "Expected native addon to export gfdist(target, abcorr, obsrvr, relate, refval, adjust, step, nintvls, cnfine, result)",
   );
 
+  invariant(
+    typeof native.eul2m === "function",
+    "Expected native addon to export eul2m",
+  );
+  invariant(
+    typeof native.m2eul === "function",
+    "Expected native addon to export m2eul",
+  );
+  invariant(
+    typeof native.m2q === "function",
+    "Expected native addon to export m2q",
+  );
+  invariant(
+    typeof native.q2m === "function",
+    "Expected native addon to export q2m",
+  );
+  invariant(
+    typeof native.qxq === "function",
+    "Expected native addon to export qxq",
+  );
+  invariant(
+    typeof native.qdq2av === "function",
+    "Expected native addon to export qdq2av",
+  );
+  invariant(
+    typeof native.raxisa === "function",
+    "Expected native addon to export raxisa",
+  );
+  invariant(
+    typeof native.mequg === "function",
+    "Expected native addon to export mequg",
+  );
+  invariant(
+    typeof native.mtxmg === "function",
+    "Expected native addon to export mtxmg",
+  );
+  invariant(
+    typeof native.mtxvg === "function",
+    "Expected native addon to export mtxvg",
+  );
+  invariant(
+    typeof native.mxmg === "function",
+    "Expected native addon to export mxmg",
+  );
+  invariant(
+    typeof native.mxmtg === "function",
+    "Expected native addon to export mxmtg",
+  );
+  invariant(
+    typeof native.mxvg === "function",
+    "Expected native addon to export mxvg",
+  );
+  invariant(
+    typeof native.vtmvg === "function",
+    "Expected native addon to export vtmvg",
+  );
+  invariant(
+    typeof native.xposeg === "function",
+    "Expected native addon to export xposeg",
+  );
   return native;
 }

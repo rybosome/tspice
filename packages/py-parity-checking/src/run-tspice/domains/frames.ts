@@ -17,6 +17,15 @@ import type {
   StepFramesFrmnam,
   StepFramesNamfrm,
   StepFramesPxform,
+  StepFramesFrame,
+  StepFramesTwovec,
+  StepFramesTwovxf,
+  StepFramesEul2xf,
+  StepFramesXf2eul,
+  StepFramesXf2rav,
+  StepFramesRav2xf,
+  StepFramesInvstm,
+  StepFramesXpose6,
   StepFramesSxform,
   StepOutput,
 } from "../../case-types.js";
@@ -31,7 +40,7 @@ import {
   registerFinalizer,
   type RunTspiceContext,
 } from "../context.js";
-import { unflattenMatrix } from "../utils/matrix.js";
+import { flattenMatrix, unflattenMatrix } from "../utils/matrix.js";
 
 type FramesStep =
   | StepFramesNamfrm
@@ -47,6 +56,15 @@ type FramesStep =
   | StepFramesCkobj
   | StepFramesCkcov
   | StepFramesPxform
+  | StepFramesFrame
+  | StepFramesTwovec
+  | StepFramesTwovxf
+  | StepFramesEul2xf
+  | StepFramesXf2eul
+  | StepFramesXf2rav
+  | StepFramesRav2xf
+  | StepFramesInvstm
+  | StepFramesXpose6
   | StepFramesSxform;
 
 type FramesCkPathStep = StepFramesCklpf | StepFramesCkobj | StepFramesCkcov;
@@ -402,6 +420,65 @@ export function runFramesStep(
       return { op: step.op, value: unflattenMatrix(matrix) };
     }
 
+    case "frames.frame": {
+      const out = context.spice.raw.frame(step.x);
+      return { op: step.op, value: out };
+    }
+    case "frames.twovec": {
+      const out = context.spice.raw.twovec(
+        step.axdef,
+        step.indexa,
+        step.plndef,
+        step.indexp,
+      );
+      return { op: step.op, value: unflattenMatrix(out) };
+    }
+    case "frames.twovxf": {
+      const out = context.spice.raw.twovxf(
+        step.axdef,
+        step.indexa,
+        step.plndef,
+        step.indexp,
+      );
+      return { op: step.op, value: toMatrix6x6(out) };
+    }
+    case "frames.eul2xf": {
+      const out = context.spice.raw.eul2xf(
+        step.eulang,
+        step.axisa,
+        step.axisb,
+        step.axisc,
+      );
+      return { op: step.op, value: toMatrix6x6(out) };
+    }
+    case "frames.xf2eul": {
+      const out = context.spice.raw.xf2eul(
+        step.xform,
+        step.axisa,
+        step.axisb,
+        step.axisc,
+      );
+      return { op: step.op, value: out };
+    }
+    case "frames.xf2rav": {
+      const out = context.spice.raw.xf2rav(step.xform);
+      return {
+        op: step.op,
+        value: { rot: unflattenMatrix(out.rot), av: out.av },
+      };
+    }
+    case "frames.rav2xf": {
+      const out = context.spice.raw.rav2xf(flattenMatrix(step.rot), step.av);
+      return { op: step.op, value: toMatrix6x6(out) };
+    }
+    case "frames.invstm": {
+      const out = context.spice.raw.invstm(step.mat);
+      return { op: step.op, value: toMatrix6x6(out) };
+    }
+    case "frames.xpose6": {
+      const out = context.spice.raw.xpose6(step.m1);
+      return { op: step.op, value: toMatrix6x6(out) };
+    }
     case "frames.sxform": {
       const matrix = context.spice.raw.sxform(step.from, step.to, step.et);
       return { op: step.op, value: toMatrix6x6(matrix) };

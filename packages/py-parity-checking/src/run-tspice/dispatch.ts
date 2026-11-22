@@ -23,6 +23,15 @@ export function dispatchStep(
   switch (step.op) {
     case "time.str2et":
     case "time.et2utc":
+    case "time.spd":
+    case "time.j2000":
+    case "time.j1900":
+    case "time.b1950":
+    case "time.b1900":
+    case "time.j1950":
+    case "time.j2100":
+    case "time.jyear":
+    case "time.tyear":
     case "time.tkvrsn":
     case "time.timout":
     case "time.deltet":
@@ -47,10 +56,137 @@ export function dispatchStep(
     case "ids-names.bodvar":
       return runIdsNamesStep(context, step);
 
+    case "coords-vectors.cyllat":
+    case "coords-vectors.cylrec":
+    case "coords-vectors.cylsph":
+    case "coords-vectors.latcyl":
+    case "coords-vectors.latsph":
+    case "coords-vectors.reccyl":
+    case "coords-vectors.sphcyl":
+    case "coords-vectors.sphlat":
+    case "coords-vectors.vdist":
+    case "coords-vectors.vequ":
+    case "coords-vectors.vpack":
+    case "coords-vectors.vupack":
+    case "coords-vectors.vzero":
+    case "coords-vectors.unorm":
+    case "coords-vectors.ucrss":
+    case "coords-vectors.vsep":
+    case "coords-vectors.vlcom":
+    case "coords-vectors.vlcom3":
+    case "coords-vectors.vperp":
+    case "coords-vectors.vproj":
+    case "coords-vectors.vrel":
+    case "coords-vectors.vrotv":
+    case "coords-vectors.rotvec":
+    case "coords-vectors.vtmv":
+    case "coords-vectors.azlrec":
+    case "coords-vectors.recazl":
+    case "coords-vectors.pgrrec":
+    case "coords-vectors.recpgr":
+    case "coords-vectors.radrec":
+    case "coords-vectors.recrad":
+    case "coords-vectors.srfrec":
+    case "coords-vectors.brcktd":
+    case "coords-vectors.brckti":
+    case "coords-vectors.convrt":
+    case "coords-vectors.sumad":
+    case "coords-vectors.sumai":
+    case "coords-vectors.maxd":
+    case "coords-vectors.maxi":
+    case "coords-vectors.mind":
+    case "coords-vectors.mini":
+    case "coords-vectors.ducrss":
+    case "coords-vectors.dvcrss":
+    case "coords-vectors.dvdot":
+    case "coords-vectors.dvhat":
+    case "coords-vectors.dvnorm":
+    case "coords-vectors.dvsep":
+    case "coords-vectors.chbder":
+    case "coords-vectors.chbigr":
+    case "coords-vectors.chbint":
+    case "coords-vectors.chbval":
+    case "coords-vectors.polyds":
+    case "coords-vectors.rquad":
+    case "coords-vectors.hrmesp":
+    case "coords-vectors.hrmint":
+    case "coords-vectors.lgresp":
+    case "coords-vectors.lgrind":
+    case "coords-vectors.lgrint":
+    case "coords-vectors.qderiv":
+    case "coords-vectors.clearc":
+    case "coords-vectors.cleard":
+    case "coords-vectors.cleari":
+    case "coords-vectors.filld":
+    case "coords-vectors.filli":
+    case "coords-vectors.moved":
+    case "coords-vectors.eul2m":
+    case "coords-vectors.m2eul":
+    case "coords-vectors.m2q":
+    case "coords-vectors.q2m":
+    case "coords-vectors.qxq":
+    case "coords-vectors.qdq2av":
+    case "coords-vectors.raxisa":
+    case "coords-vectors.det":
+    case "coords-vectors.diags2":
+    case "coords-vectors.ident":
+    case "coords-vectors.invert":
+    case "coords-vectors.invort":
+    case "coords-vectors.isrot":
+    case "coords-vectors.mequ":
+    case "coords-vectors.mtxm":
+    case "coords-vectors.mxmt":
+    case "coords-vectors.trace":
+    case "coords-vectors.xpose":
+    case "coords-vectors.mequg":
+    case "coords-vectors.mtxmg":
+    case "coords-vectors.mtxvg":
+    case "coords-vectors.mxmg":
+    case "coords-vectors.mxmtg":
+    case "coords-vectors.mxvg":
+    case "coords-vectors.vtmvg":
+    case "coords-vectors.xposeg":
+    case "coords-vectors.vaddg":
+    case "coords-vectors.vdistg":
+    case "coords-vectors.vdotg":
+    case "coords-vectors.vequg":
+    case "coords-vectors.vhatg":
+    case "coords-vectors.vlcomg":
+    case "coords-vectors.vminug":
+    case "coords-vectors.vnormg":
+    case "coords-vectors.vprojg":
+    case "coords-vectors.vrelg":
+    case "coords-vectors.vsclg":
+    case "coords-vectors.vsepg":
+    case "coords-vectors.vsubg":
+    case "coords-vectors.vzerog":
+    case "coords-vectors.unormg":
+    case "coords-vectors.dazldr":
+    case "coords-vectors.dcyldr":
+    case "coords-vectors.dgeodr":
+    case "coords-vectors.dlatdr":
+    case "coords-vectors.dpgrdr":
+    case "coords-vectors.drdazl":
+    case "coords-vectors.drdcyl":
+    case "coords-vectors.drdgeo":
+    case "coords-vectors.drdlat":
+    case "coords-vectors.drdpgr":
+    case "coords-vectors.drdsph":
+    case "coords-vectors.dsphdr":
     case "coords-vectors.reclat":
     case "coords-vectors.latrec":
     case "coords-vectors.recsph":
     case "coords-vectors.sphrec":
+    case "coords-vectors.pi":
+    case "coords-vectors.twopi":
+    case "coords-vectors.halfpi":
+    case "coords-vectors.dpr":
+    case "coords-vectors.rpd":
+    case "coords-vectors.clight":
+    case "coords-vectors.dpmax":
+    case "coords-vectors.dpmin":
+    case "coords-vectors.intmax":
+    case "coords-vectors.intmin":
     case "coords-vectors.vnorm":
     case "coords-vectors.vhat":
     case "coords-vectors.vdot":
@@ -193,6 +329,15 @@ export function dispatchStep(
     case "frames.ckobj":
     case "frames.ckcov":
     case "frames.pxform":
+    case "frames.frame":
+    case "frames.twovec":
+    case "frames.twovxf":
+    case "frames.eul2xf":
+    case "frames.xf2eul":
+    case "frames.xf2rav":
+    case "frames.rav2xf":
+    case "frames.invstm":
+    case "frames.xpose6":
     case "frames.sxform":
       return runFramesStep(context, step);
 

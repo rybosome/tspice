@@ -10,6 +10,212 @@ A routine review records the contract, primary NAIF reference, semantics, exact 
 
 `verified` requires meaningful success evidence, no open findings, a PR reference, and both local and observed CI execution for that backend covering every reviewed scenario. An unsupported raw implementation cannot be verified through a harness fallback. Error-free routines can explain why CSPICE error scenarios are inapplicable rather than inventing them.
 
+## Step 8 expansion
+
+The same maintained evidence and acceptance rules apply to new raw routines.
+`baseline.json` retains the original Step 7 `batches` and baseline commit;
+its additive `expansionBatches` assigns newly contract-present routines without
+rewriting that historical denominator. Both sets must be disjoint and together
+cover the current raw contract. Planned routines live only in the
+[expansion queue](step8-expansion.md), where open PRs remain distinct from landed work.
+Adding an expansion assignment alone does not certify a routine. Its same-named
+record must supply the same semantic review and source-bound Node/WASM execution.
+
+## Vector basics expansion
+
+The A08 record reviews `vdist_c`, `vequ_c`, `vpack_c`, `vupack_c`, `vzero_c`,
+`unorm_c`, `ucrss_c`, and `vsep_c`. Its 32 registered workflows make 70 actual
+routine calls per backend, retaining every result component. Copy/pack/unpack
+extremes receive an additional exact live comparison; signed zero is checked
+separately because ordinary JSON parity does not certify its sign. Scaled norm,
+distance and near-parallel angle assertions make small nonzero results
+observable. A scoped live probe preserves and compares nonfinite output classes
+without changing the shared comparator.
+
+The first `ucrss` run exposed a compiler-dependent residual for a mathematically
+parallel pair. The [numerical investigation](step8-vector-numerics.md) preserves
+the original inputs, observed results and source/compiler evidence. Exact-zero
+parity uses dyadic parallel/opposed vectors; mixed, scaled, handedness and
+near-parallel cases remain. This repairs the assertion's conditioning assumption
+and records a numerical limit of direct CSPICE builds; it does not establish
+identical results at ill-conditioned parallel or near-parallel inputs. No routine
+is excluded and the global
+tolerance is unchanged.
+
+Real-backend argument/recovery checks, native result-shape checks, and WASM
+allocation rollback tests cover the wrapper boundary. These are assertion-source
+descriptions, not execution claims. The audit remains `reviewed` until fresh
+source-bound local and observed canonical CI evidence satisfies the normal
+verification requirements. Prior Step 7 observations remain historical on this
+branch.
+
+## Vector combinations expansion
+
+The A09 record reviews `vlcom_c`, `vlcom3_c`, `vperp_c`, `vproj_c`, `vrel_c`,
+`vrotv_c`, `rotvec_c`, and `vtmv_c`. Its 38 registered scenarios make 99 actual
+routine calls per backend. Unequal coefficients, reversed vectors, basis
+directions, signed/modulo axes and nonsymmetric matrices distinguish argument
+order, rotation convention and row-major layout. All output components reach
+the independent live oracle comparison.
+
+Focused comparisons rescale tiny linear/projection/perpendicular results and a
+small relative difference before comparing complete outputs to the live oracle.
+Zero-axis copies receive separate exact literal and signed-zero checks. A scoped
+15-observation live test retains finite and nonfinite result components without
+changing the shared comparator. Real-backend argument/recovery tests, native
+result-shape checks, and 41 WASM allocation failure/success cleanup tests cover
+the wrapper boundary. These describe assertion source; execution claims require
+the maintained evidence records.
+
+The [numerical observations](step8-vector-combinations-numerics.md) document the
+`vperp` zero-reference discrepancy between NAIF prose and the pinned source/live
+oracle, along with finite-input extremes. The raw contract preserves the actual
+routine and states the caveat. No scientific implementation or oracle output is
+substituted, and no routine is excluded. The audit remains `reviewed` pending
+fresh source-bound local and observed canonical CI evidence. Prior Step 7
+executions remain historical on this branch.
+
+## Coordinate conventions expansion
+
+A06 adds seven routines without changing the immutable 162-routine Step 7
+baseline. Its 57 registered scenarios contain 152 new-routine calls and 36
+existing state-control steps. Independent angle flags, RA branches, body aliases,
+PM/longitude overrides, signed flattening, planetocentric radii and genuine SPICE
+errors receive routine-specific observations. All prior executions are historical
+until source-bound required local and canonical CI evidence is recorded.
+
+The [coordinate review](step8-coordinate-conventions.md) records the pinned
+Moon/Sun PM lookup prerequisite, authored fixture provenance and cleanup, and
+ten scoped finite-input extreme observations. Tiny distance/RA comparisons are
+rescaled in focused live tests; global tolerance remains unchanged. The
+[batch audit](../data/parity-audits/a06-coordinate-conventions.json) traces both
+actual raw backends, independent oracle decode/dispatch, native wrapper and WASM
+allocation tests, and state lifecycle code. Reviews alone do not claim verification.
+
+## Scalar math expansion
+
+A03 adds nine routines alongside the unchanged original 162-routine baseline.
+Its 47 registered scenarios contain 373 actual routine calls, including seven
+genuine conversion errors. Four min/max functions have no top-level SpiceyPy
+wrappers; the new independent ctypes binding calls the actual locked library's
+canonical symbols with exact fixed-count/scalar-varargs ABI. Every supported
+arity 0..30 is exercised. Defined-input `sumai` results still come from CSPICE;
+unsafe signed prefixes are separate wrapper-safety checks, never oracle calls
+into undefined C behavior.
+
+The [scalar review](step8-scalar-math.md) records exact source/ABI evidence,
+conversion-table restrictions, ordered floating arithmetic, signed-zero probes,
+and allocation/count boundaries. The
+[batch audit](../data/parity-audits/a03-scalar-math.json) traces actual raw paths,
+independent oracle handlers, models/decoder, and focused tests. Old executions
+remain historical until fresh source-bound required local and canonical CI
+observations are recorded; review alone is not verification.
+
+## State derivatives expansion
+
+A11 reviews six direct state-derivative routines: `ducrss`, `dvcrss`, `dvdot`,
+`dvhat`, `dvnorm` and `dvsep`. The 39 registered scenarios contain 106 actual
+routine calls, including two genuine `dvsep` numeric-overflow errors. Inputs
+are authored readonly six-component states; all output position/derivative
+entries or scalar values reach the actual locked SpiceyPy wrappers.
+
+[State derivative evidence](step8-state-derivatives.md) records the pinned
+whole-state scaling behind `ducrss`'s zero-cross derivative, `dvhat`'s copied
+zero-position derivative, and `dvsep`'s guarded division and normalization
+conditioning. Caller overflow restrictions for `ducrss`/`dvdot` remain intact.
+Twelve separate tagged observations preserve complete finite/nonfinite outputs
+and signed zeros for the unrestricted routines, with finite controls. Focused
+live rescaling keeps tiny derivatives observable; no global tolerance changes.
+The narrow WASM error-test allocation repair counts existing structured
+short/long/trace buffers without changing production or scientific assertions.
+
+The original 162-routine assignment remains immutable; only these six routines
+are added as this branch's expansion. All earlier executions are historical and
+all judgments remain `reviewed` until fresh required local and observed canonical
+CI evidence is recorded against the final source digest.
+
+## Polynomial expansions
+
+A16 reviews `chbder`, `chbigr`, `chbint`, `chbval`, `polyds` and `rquad`.
+Their 46 registered scenarios contain 131 actual routine calls, including five
+genuine degree/radius/degenerate-equation errors. Inferred degree preserves the
+full readonly coefficient array; every derivative, integral and ordered complex
+root field reaches comparison. No kernels or external fixtures are needed.
+
+[Polynomial evidence](step8-polynomial-expansions.md) records normalized
+reliable-use domains, source-derived count/workspace bounds, complete numerical
+outputs and the narrow negative-order `polyds` oracle binding. That independent
+route invokes the actual locked symbol with guarded no-write storage; other
+calls stay on SpiceyPy. The actual `INVALIDDEGREE` error spelling is retained
+despite the header typo. Sixteen tagged observations per backend preserve
+nonfinite outputs and signed zeros within normalized Chebyshev domains, with
+finite controls and focused rescaling; no global tolerance change is made.
+The pinned `rquad_c` checkout-name typo can also print a device-dependent
+diagnostic. Dedicated repeated primary-error/caller-stack observations close
+that evidence gap while documenting the unchanged upstream output limitation.
+Allocation, ownership, error recovery and actual codec/structured-clone checks
+are distinct from scientific and browser-startup evidence.
+
+The original 162-routine assignment remains immutable; only these six routines
+are added on this branch. Earlier executions remain historical and all judgments
+remain `reviewed` until fresh required local and observed canonical CI evidence
+is recorded against the final source digest.
+
+## Fixed matrices expansion
+
+The A12 record reviews `det_c`, `diags2_c`, `ident_c`, `invert_c`, `invort_c`,
+`isrot_c`, `mequ_c`, `mtxm_c`, `mxmt_c`, `trace_c`, and `xpose_c`. Its 50
+registered scenarios make 95 new-routine calls plus one `error.reset` control per
+backend. Eight calls exercise genuine column or tolerance errors; every matrix
+entry and both `diags2` outputs remain observable. Nonsymmetric operands,
+threshold signs/boundaries, ignored lower-triangle entries and independent
+tolerance parameters distinguish the underlying scientific contracts.
+
+Focused tests compare exact identity/copy/transpose outputs to the live oracle
+and rescale tiny determinants, traces, eigenvalues and inverse entries. A scoped
+14-observation live test retains every nonfinite output alongside finite
+controls. The narrow `brandMat3RowMajorResult` helper owns and brands nine numeric
+result entries while leaving existing finite input validation unchanged. Its
+six source tests cover nonfinite values, signed zero, ownership, malformed data,
+freezing and the unchanged input boundary. Native boundary tests and 46 WASM
+allocation failure/success checks cover the compiled adapters.
+
+A focused regression takes actual Node/WASM `invert`, `mtxm`, `mequ` and
+`diags2` results through the existing RPC codec and `structuredClone` on a
+connected test worker pair. It observes complete NaN/infinity, signed-zero and
+multi-matrix outputs. This tests the transport representation boundary; it does
+not claim browser worker startup or asset delivery.
+
+The [numerical review](step8-fixed-matrix-numerics.md) records the pinned-source
+semantics, independent oracle observations and the signed-zero recovery
+assertion repair. These descriptions and local progress do not establish final
+verification: A12 remains `reviewed` until fresh source-bound local and observed
+canonical CI evidence is recorded. The original Step 7 observations remain
+historical on this branch.
+
+## General vectors expansion
+
+A10 reviews fifteen general-dimensional routines in the existing coordinate
+API: `vaddg`, `vdistg`, `vdotg`, `vequg`, `vhatg`, `vlcomg`, `vminug`, `vnormg`,
+`vprojg`, `vrelg`, `vsclg`, `vsepg`, `vsubg`, `vzerog` and `unormg`. Their 82
+registered scenarios contain 205 actual new-routine calls across empty,
+singleton and larger dimensions. Every output component and both `unormg`
+fields reach independent comparison. No kernels or external fixtures are needed.
+
+[General-vector evidence](step8-general-vectors.md) explains the pinned empty
+results, safe dimensions, nine repaired SpiceyPy zero-length output conversions,
+and source-specific numerical limits. The independent repair calls exact
+canonical symbols in the locked library only for empty vector results; ordinary
+nonempty calls remain on SpiceyPy. Separate tagged comparisons retain all fields
+for 22 extreme/signed-zero observations per backend, without changing the normal
+comparator. Allocation, guard, ownership and real RPC codec/structured-clone
+checks are distinct from scientific comparisons and browser startup claims.
+
+The immutable original 162-routine assignment remains intact. This branch adds
+only A10's fifteen routines. Historical Step 7 executions cannot verify changed
+sources; all judgments remain `reviewed` until fresh required local and observed
+canonical CI records are attached to the final source digest.
+
 ## Recording verification
 
 Execution records are maintained observations, not inferred from CI configuration or scenario registration. Record the command, backend, native-required flag where applicable, successful scenario IDs, result summary, and SHA-256 source digest. CI observations also need the actual successful job URL and tested commit. Inspect logs for executed cases and absence of unexpected skips before recording success. Local observations describe the run result; durable CI links provide independently inspectable execution evidence.
@@ -55,3 +261,93 @@ This reuses the #684 cell identity mechanism; no C/WASM regeneration is needed.
 Error workflows can set `capture: true` on the existing `error.sigerr` step. This calls actual `raw.sigerr`, requires a structured SPICE exception, and compares its complete short/long/trace fields plus `raw.failed()` after the backend's automatic reset. No-op signaling and unrelated exceptions fail capture. The oracle calls actual `sp.sigerr`, reads full-size CSPICE buffers, and explicitly resets in `finally` to model the documented shim policy. Other steps continue normally, so stack changes, prepared messages, reset and repeated recovery have observable effects. This internal workflow option does not change public raw semantics.
 
 Both backends reset signaled errors before throwing. A persistent true failure flag cannot be reached through these raw operations alone; the audit records that limitation instead of injecting an artificial flag or claiming a constant-false implementation is fully distinguished by live workflows. The case handlers track caller-managed traceback entries and unwind remaining names in reverse order on success/error; reset alone does not remove them. Leading diagnostic blanks are significant; only trailing CSPICE padding is removed.
+
+## Validated input snapshots
+
+`reccyl_c` now marshals the same entries that the typed adapters validated.
+Copy the three validated rectangular components once into an owned tuple; dispatch the tuple to native or WASM. Scalar-input coordinate routines are unchanged. The focused public boundary regression compares single-read inputs with ordinary arrays on both real backends; unchanged registered cases retain the independent scientific oracle.
+
+Regression evidence: [owned-numeric-inputs.test.ts](../packages/py-parity-checking/test/owned-numeric-inputs.test.ts).
+
+`vdist_c`, `vequ_c`, `vupack_c`, `vzero_c`, `unorm_c`, `ucrss_c`, `vsep_c` now marshal the same entries that the typed adapters validated.
+Read each of the three vector components once into an owned fixed-length input. Both native delegation and WASM marshaling use the validated snapshot. Bounded entry-read and ownership regressions check this adapter property independently of unchanged scientific cases.
+
+Regression evidence: [vector-basics-domain.test.ts](../packages/backend-node/test/vector-basics-domain.test.ts), [vector-basics-allocations.test.ts](../packages/backend-wasm/test/vector-basics-allocations.test.ts).
+
+`vlcom_c`, `vlcom3_c`, `vperp_c`, `vproj_c`, `vrel_c`, `vrotv_c`, `rotvec_c`, `vtmv_c` now marshal the same entries that the typed adapters validated.
+Capture each three-vector and, for vtmv, all nine row-major matrix entries into owned inputs. Both native delegation and WASM marshaling use the validated snapshot. Bounded entry-read and ownership regressions check this adapter property independently of unchanged scientific cases.
+
+Regression evidence: [vector-combinations-domain.test.ts](../packages/backend-node/test/vector-combinations-domain.test.ts), [vector-combinations-allocations.test.ts](../packages/backend-wasm/test/vector-combinations-allocations.test.ts).
+
+`recazl_c`, `recpgr_c`, `recrad_c` now marshal the same entries that the typed adapters validated.
+Copy each validated rectangular coordinate once into an owned three-vector and dispatch only that vector. Keep flag, body-name and ellipsoid semantics unchanged. The focused public boundary regression compares single-read inputs with ordinary arrays on both real backends; unchanged registered cases retain the independent scientific oracle.
+
+`sumad_c`, `sumai_c`, `maxd_c`, `maxi_c`, `mind_c`, `mini_c` now marshal the same entries that the typed adapters validated.
+Capture the input count, copy each finite or signed32 entry once, validate the sumai prefix using the owned copy and send the same values to the canonical reduction. Scalar clamp/conversion methods have no array input. The focused public boundary regression compares single-read inputs with ordinary arrays on both real backends; unchanged registered cases retain the independent scientific oracle.
+
+`ducrss_c`, `dvcrss_c`, `dvdot_c`, `dvhat_c`, `dvnorm_c`, `dvsep_c` now marshal the same entries that the typed adapters validated.
+Copy each of the six finite state components once into an owned position/velocity tuple before dispatch. Preserve the original state layout and scientific derivative algorithms. The focused public boundary regression compares single-read inputs with ordinary arrays on both real backends; unchanged registered cases retain the independent scientific oracle.
+
+Regression evidence: [owned-numeric-inputs.test.ts](../packages/py-parity-checking/test/owned-numeric-inputs.test.ts).
+
+`det_c`, `diags2_c`, `invert_c`, `invort_c`, `isrot_c`, `mequ_c`, `mtxm_c`, `mxmt_c`, `trace_c`, `xpose_c` now marshal the same entries that the typed adapters validated.
+Capture each four- or nine-entry row-major matrix into an owned input. Keep the existing structural input acceptance, result branding and IEEE output behavior. Both native delegation and WASM marshaling use the validated snapshot. Bounded entry-read and ownership regressions check this adapter property independently of unchanged scientific cases.
+
+Regression evidence: [fixed-matrices-domain.test.ts](../packages/backend-node/test/fixed-matrices-domain.test.ts), [fixed-matrices-allocations.test.ts](../packages/backend-wasm/test/fixed-matrices-allocations.test.ts).
+
+`vaddg_c`, `vdistg_c`, `vdotg_c`, `vequg_c`, `vhatg_c`, `vlcomg_c`, `vminug_c`, `vnormg_c`, `vprojg_c`, `vrelg_c`, `vsclg_c`, `vsepg_c`, `vsubg_c`, `vzerog_c`, `unormg_c` now marshal the same entries that the typed adapters validated.
+Capture dimensions, enforce routine-specific count bounds and equal lengths where required, then copy each finite general-vector component once. Use the owned copies for dispatch, buffer sizes and output-length checks. Both native delegation and WASM marshaling use the validated snapshot. Bounded entry-read and ownership regressions check this adapter property independently of unchanged scientific cases.
+
+Regression evidence: [general-vectors-domain.test.ts](../packages/backend-node/test/general-vectors-domain.test.ts), [general-vectors-allocations.test.ts](../packages/backend-wasm/test/general-vectors-allocations.test.ts), [general-vector-input-snapshots.test.ts](../packages/backend-wasm/test/general-vector-input-snapshots.test.ts). These adapter checks do not replace
+the independent scientific workflows. Earlier executions remain historical on
+their recorded fingerprints; both required local lanes and observed canonical CI
+must run on the corrected source before current verification.
+
+The five polynomial array-input methods now marshal validated owned snapshots.
+Their [boundary regressions](step8-polynomial-expansions.md#stable-coefficient-and-transformation-inputs)
+are separate from the unchanged scientific observations. Earlier executions
+remain historical; the corrected source needs fresh required local and CI
+records before either backend can be called verified.
+
+## Interpolation
+
+The [A17 source review](step8-interpolation.md) covers Hermite and Lagrange
+sample layouts, derivative units, midpoint endpoint-vector estimates, hidden
+workspace limits and scientific error recovery. Its six direct raw routes add
+53 registered scenarios / 132 canonical calls (11 genuine errors) to the
+unchanged 162-routine baseline. The review records the native validated-count
+copy repair. Prior-baseline executions are historical; final verification
+requires fresh required local lanes and observed CI for the current source.
+
+## Array storage
+
+A04 adds six direct canonical array clear, fill and move routines. Its 35
+registered workflows make 92 calls to the independent pinned library,
+including three expected character-row size errors. The audit covers the
+complete returned destination, unchanged storage outside the written prefix,
+typed memory, scoped IEEE comparisons and the caller precondition on the
+pinned move implementation. [Array-storage evidence](step8-array-storage.md)
+
+## Rotation representations
+
+A14 adds seven scientific methods on the exact A12 matrix branch. The
+two expansion assignments remain separate. The combined source requires
+new full validation records for each backend. The Euler constructor uses
+the actual linked SPICELIB implementation with defined error handling.
+[Matrix, quaternion, Euler and axis conventions](step8-rotation-representations.md)
+
+## General matrices
+
+Eight row-major operations add 60 registered workflows and 132 explicit calls.
+The independent oracle preserves rectangular, empty and supported signed
+dimensions. Public tests compare every element, owned output, transpose and
+product composition, and exceptional floating-point results.
+[Matrix contracts and numerical observations](step8-general-matrices.md)
+
+## Frame algebra
+
+The A15 review covers nine kernel-independent frame construction and state-transform methods. The 47 registered workflows contain 129 calls and 17 expected toolkit errors. The review tracks full row-major blocks, angular-velocity coordinates, both Euler uniqueness states and the linked-toolkit checks required for three failure paths. [Frame algebra evidence](step8-frame-algebra.md) [Routine audit](../data/parity-audits/a15-frame-algebra.json)
+
+## Coordinate derivatives
+
+A07 covers twelve coordinate Jacobians. The source review records two pinned exception paths, independent directional derivatives, exact buffer ownership and tabulated body conventions. [Scientific and representation evidence](step8-coordinate-jacobians.md) [Per-routine records](../data/parity-audits/a07-coordinate-jacobians.json)

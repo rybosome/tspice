@@ -1,0 +1,166 @@
+[
+  {
+    "caseId": "coords-vectors-mtxvg-unequal-rectangles",
+    "description": "Observe all outputs from asymmetric unequal extents, including different signs, unequal left/right factors and row-major strides.",
+    "workflow": [
+      {
+        "op": "coords-vectors.mtxvg",
+        "m1": [3, 7, -5, 2, 11, -17],
+        "v2": [3, -2, 5],
+        "nc1": 2,
+        "nr1r2": 3
+      },
+      {
+        "op": "coords-vectors.mtxvg",
+        "m1": [3, 11, 2, -5, 7, -17],
+        "v2": [19, 17],
+        "nc1": 3,
+        "nr1r2": 2
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-mtxvg-scalar-row-and-column",
+    "description": "Exercise a scalar product, a single output row and a length-one contraction with differing magnitudes and signs.",
+    "workflow": [
+      {
+        "op": "coords-vectors.mtxvg",
+        "m1": [-3],
+        "v2": [7],
+        "nc1": 1,
+        "nr1r2": 1
+      },
+      {
+        "op": "coords-vectors.mtxvg",
+        "m1": [2, -3, 5, 7],
+        "v2": [11, -13, 17, -19],
+        "nc1": 1,
+        "nr1r2": 4
+      },
+      {
+        "op": "coords-vectors.mtxvg",
+        "m1": [-1, 0, 3],
+        "v2": [4],
+        "nc1": 3,
+        "nr1r2": 1
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-mtxvg-row-selection",
+    "description": "Sparse and permuted basis rows isolate two indices of the input independently.",
+    "workflow": [
+      {
+        "op": "coords-vectors.mtxvg",
+        "m1": [0, -1, 0, 0, 1, 0],
+        "v2": [2, -3, 7],
+        "nc1": 2,
+        "nr1r2": 3
+      },
+      {
+        "op": "coords-vectors.mtxvg",
+        "m1": [1, 0, 0, 0, -1, 0],
+        "v2": [-7, 11],
+        "nc1": 3,
+        "nr1r2": 2
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-mtxvg-ordered-cancellation",
+    "description": "A unit term beside 2⁵³ rounds away before cancellation, distinguishing the ordered dot product from a reordered sum.",
+    "workflow": [
+      {
+        "op": "coords-vectors.mtxvg",
+        "m1": [
+          9007199254740992, -1125899906842624, 1, 1125899906842624,
+          -9007199254740992, 8, 3, -3
+        ],
+        "v2": [1, 1, 1, 1],
+        "nc1": 2,
+        "nr1r2": 4
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-mtxvg-scaled-fractions",
+    "description": "Mixed dyadic and small-magnitude factors exercise every contracted component without rounding-sensitive cancellation.",
+    "workflow": [
+      {
+        "op": "coords-vectors.mtxvg",
+        "m1": [0.125, 0.25, -0.5, 1.5, 2, -4],
+        "v2": [8, -2, 0.5],
+        "nc1": 2,
+        "nr1r2": 3
+      },
+      {
+        "op": "coords-vectors.mtxvg",
+        "m1": [1e-180, 3e-180, 2e-180, -2e-180, -1e-180, 4e-180],
+        "v2": [7, 2, -3],
+        "nc1": 2,
+        "nr1r2": 3
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-mtxvg-zero-contraction",
+    "description": "Zero inner extent with nonzero outer dimensions produces a complete zero output; the independent canonical call receives allocated input sentinels.",
+    "workflow": [
+      {
+        "op": "coords-vectors.mtxvg",
+        "m1": [],
+        "v2": [],
+        "nc1": 2,
+        "nr1r2": 0
+      },
+      {
+        "op": "coords-vectors.mtxvg",
+        "m1": [],
+        "v2": [],
+        "nc1": 1,
+        "nr1r2": 0
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-mtxvg-zero-outer",
+    "description": "Zero output rows and both zero dimensions retain the explicit shape in the actual toolkit call.",
+    "workflow": [
+      {
+        "op": "coords-vectors.mtxvg",
+        "m1": [],
+        "v2": [1, 2, 3],
+        "nc1": 0,
+        "nr1r2": 3
+      },
+      {
+        "op": "coords-vectors.mtxvg",
+        "m1": [],
+        "v2": [],
+        "nc1": 0,
+        "nr1r2": 0
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

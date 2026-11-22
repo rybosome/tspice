@@ -1,0 +1,93 @@
+[
+  {
+    "caseId": "coords-vectors-sumad-empty-singleton-and-mixed",
+    "description": "sumad: empty-singleton-and-mixed; compare the actual scalar returned by independent live CSPICE.",
+    "workflow": [
+      {
+        "op": "coords-vectors.sumad",
+        "values": []
+      },
+      {
+        "op": "coords-vectors.sumad",
+        "values": [2.5]
+      },
+      {
+        "op": "coords-vectors.sumad",
+        "values": [1.25, -2.5, 7.75]
+      },
+      {
+        "op": "coords-vectors.sumad",
+        "values": [-8.5, -0.125, -2.25]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-sumad-ordered-cancellation",
+    "description": "sumad: ordered-cancellation; compare the actual scalar returned by independent live CSPICE.",
+    "workflow": [
+      {
+        "op": "coords-vectors.sumad",
+        "values": [1e16, 1, -1e16]
+      },
+      {
+        "op": "coords-vectors.sumad",
+        "values": [1e16, -1e16, 1]
+      },
+      {
+        "op": "coords-vectors.sumad",
+        "values": [-1e16, -1, 1e16]
+      },
+      {
+        "op": "coords-vectors.sumad",
+        "values": [1e200, -1e200, 1e-200]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-sumad-finite-extrema",
+    "description": "sumad: finite-extrema; compare the actual scalar returned by independent live CSPICE.",
+    "workflow": [
+      {
+        "op": "coords-vectors.sumad",
+        "values": [1.7976931348623157e308]
+      },
+      {
+        "op": "coords-vectors.sumad",
+        "values": [-1.7976931348623157e308]
+      },
+      {
+        "op": "coords-vectors.sumad",
+        "values": [1.7976931348623157e308, -1.7976931348623157e308, 5e-324]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-sumad-longer-than-variadic-limit",
+    "description": "sumad: longer-than-variadic-limit; compare the actual scalar returned by independent live CSPICE.",
+    "workflow": [
+      {
+        "op": "coords-vectors.sumad",
+        "values": [
+          0.25, -0.5, 1, 0.125, 0.25, -0.5, 1, 0.125, 0.25, -0.5, 1, 0.125,
+          0.25, -0.5, 1, 0.125, 0.25, -0.5, 1, 0.125, 0.25, -0.5, 1, 0.125,
+          0.25, -0.5, 1, 0.125, 0.25, -0.5, 1, 0.125, 0.25, -0.5, 1, 0.125,
+          0.25, -0.5, 1, 0.125, 0.25, -0.5, 1, 0.125, 0.25, -0.5, 1, 0.125,
+          0.25, -0.5, 1, 0.125, 0.25, -0.5, 1, 0.125, 0.25, -0.5, 1, 0.125,
+          0.25, -0.5, 1, 0.125
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

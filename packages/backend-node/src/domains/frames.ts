@@ -4,6 +4,11 @@ import type {
 } from "@rybosome/tspice-backend-contract";
 import {
   assertSpiceInt32,
+  brandMat3RowMajorResult,
+  frameOperand,
+  frameVectorResult,
+  frameStateResult,
+  frameMatrixResult,
   brandMat6RowMajor,
   brandMat3RowMajor,
   brandVec3,
@@ -290,6 +295,77 @@ export function createFramesApi(
       return brandMat3RowMajor(m, { label: "pxform()" });
     },
 
+    frame: (x) => {
+      const xCopy = frameOperand(x, 3, "frame(x)");
+      const result = native.frame(xCopy);
+      return {
+        x: frameVectorResult(result.x, "frame(x)"),
+        y: frameVectorResult(result.y, "frame(y)"),
+        z: frameVectorResult(result.z, "frame(z)"),
+      };
+    },
+    twovec: (axdef, indexa, plndef, indexp) => {
+      const axdefCopy = frameOperand(axdef, 3, "twovec(axdef)");
+      assertSpiceInt32(indexa, "twovec(indexa)");
+      const plndefCopy = frameOperand(plndef, 3, "twovec(plndef)");
+      assertSpiceInt32(indexp, "twovec(indexp)");
+      const result = native.twovec(axdefCopy, indexa, plndefCopy, indexp);
+      return brandMat3RowMajorResult(result, { label: "twovec(rotation)" });
+    },
+    twovxf: (axdef, indexa, plndef, indexp) => {
+      const axdefCopy = frameOperand(axdef, 6, "twovxf(axdef)");
+      assertSpiceInt32(indexa, "twovxf(indexa)");
+      const plndefCopy = frameOperand(plndef, 6, "twovxf(plndef)");
+      assertSpiceInt32(indexp, "twovxf(indexp)");
+      const result = native.twovxf(axdefCopy, indexa, plndefCopy, indexp);
+      return frameMatrixResult(result, "twovxf(xform)");
+    },
+    eul2xf: (eulang, axisa, axisb, axisc) => {
+      const eulangCopy = frameOperand(eulang, 6, "eul2xf(eulang)");
+      assertSpiceInt32(axisa, "eul2xf(axisa)");
+      assertSpiceInt32(axisb, "eul2xf(axisb)");
+      assertSpiceInt32(axisc, "eul2xf(axisc)");
+      const result = native.eul2xf(eulangCopy, axisa, axisb, axisc);
+      return frameMatrixResult(result, "eul2xf(xform)");
+    },
+    xf2eul: (xform, axisa, axisb, axisc) => {
+      const xformCopy = frameOperand(xform, 36, "xf2eul(xform)");
+      assertSpiceInt32(axisa, "xf2eul(axisa)");
+      assertSpiceInt32(axisb, "xf2eul(axisb)");
+      assertSpiceInt32(axisc, "xf2eul(axisc)");
+      const result = native.xf2eul(xformCopy, axisa, axisb, axisc);
+      const unique = result.unique;
+      if (typeof unique !== "boolean")
+        throw new TypeError("Invalid XF2EUL uniqueness flag");
+      return {
+        eulang: frameStateResult(result.eulang, "xf2eul(eulang)"),
+        unique,
+      };
+    },
+    xf2rav: (xform) => {
+      const xformCopy = frameOperand(xform, 36, "xf2rav(xform)");
+      const result = native.xf2rav(xformCopy);
+      return {
+        rot: brandMat3RowMajorResult(result.rot, { label: "xf2rav(rot)" }),
+        av: frameVectorResult(result.av, "xf2rav(av)"),
+      };
+    },
+    rav2xf: (rot, av) => {
+      const rotCopy = frameOperand(rot, 9, "rav2xf(rot)");
+      const avCopy = frameOperand(av, 3, "rav2xf(av)");
+      const result = native.rav2xf(rotCopy, avCopy);
+      return frameMatrixResult(result, "rav2xf(xform)");
+    },
+    invstm: (mat) => {
+      const matCopy = frameOperand(mat, 36, "invstm(mat)");
+      const result = native.invstm(matCopy);
+      return frameMatrixResult(result, "invstm(invmat)");
+    },
+    xpose6: (m1) => {
+      const m1Copy = frameOperand(m1, 36, "xpose6(m1)");
+      const result = native.xpose6(m1Copy);
+      return frameMatrixResult(result, "xpose6(mout)");
+    },
     sxform: (from, to, et): SpiceMatrix6x6 => {
       if (!Number.isFinite(et))
         throw new TypeError("sxform(et) must be finite");

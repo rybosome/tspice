@@ -88,6 +88,7 @@ export {
   isMat3ArrayLike9,
   brandMat3ColMajor,
   brandMat3RowMajor,
+  brandMat3RowMajorResult,
   isBrandedMat3ColMajor,
   isBrandedMat3RowMajor,
 } from "./spice-runtime/shared/mat3.js";
@@ -161,3 +162,23 @@ export {
 } from "./spice-runtime/domains/kernels-utils.js";
 
 export { issueOpaqueSpiceHandle } from "./spice-runtime/shared/opaque-handles.js";
+
+export {
+  spiceStorageLength,
+  copySpiceStorage,
+  assertSpiceStorageFits,
+} from "./spice-runtime/shared/array-storage.js";
+
+export {
+  matrixDimension,
+  matrixElementCount,
+  checkMatrixProductRows,
+  checkMatrixInputLength,
+} from "./spice-runtime/domains/general-matrices.js";
+
+export {
+  frameOperand,
+  frameVectorResult,
+  frameStateResult,
+  frameMatrixResult,
+} from "./spice-runtime/domains/frame-algebra.js";

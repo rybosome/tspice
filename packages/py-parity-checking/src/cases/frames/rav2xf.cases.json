@@ -1,0 +1,139 @@
+[
+  {
+    "caseId": "frames-rav2xf-orientations",
+    "description": "Distinguish angular velocity in the source frame from one expressed in the destination frame.",
+    "workflow": [
+      {
+        "op": "frames.rav2xf",
+        "rot": [
+          [1, 0, 0],
+          [0, 1, 0],
+          [0, 0, 1]
+        ],
+        "av": [0, 0, 0]
+      },
+      {
+        "op": "frames.rav2xf",
+        "rot": [
+          [1, 0, 0],
+          [0, 1, 0],
+          [0, 0, 1]
+        ],
+        "av": [0.25, -0.75, 1.5]
+      },
+      {
+        "op": "frames.rav2xf",
+        "rot": [
+          [0, 1, 0],
+          [-1, 0, 0],
+          [0, 0, 1]
+        ],
+        "av": [0, 0, 0]
+      },
+      {
+        "op": "frames.rav2xf",
+        "rot": [
+          [0, 1, 0],
+          [-1, 0, 0],
+          [0, 0, 1]
+        ],
+        "av": [0.25, -0.75, 1.5]
+      },
+      {
+        "op": "frames.rav2xf",
+        "rot": [
+          [0.8165972626963272, 0.10343607588582751, 0.5678643224945613],
+          [-0.44610911781062734, 0.7373856786312658, 0.5071972160370475],
+          [-0.36627252908604757, -0.6675053102072289, 0.6482909032849848]
+        ],
+        "av": [0, 0, 0]
+      },
+      {
+        "op": "frames.rav2xf",
+        "rot": [
+          [0.8165972626963272, 0.10343607588582751, 0.5678643224945613],
+          [-0.44610911781062734, 0.7373856786312658, 0.5071972160370475],
+          [-0.36627252908604757, -0.6675053102072289, 0.6482909032849848]
+        ],
+        "av": [0.25, -0.75, 1.5]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-rav2xf-basis-rates",
+    "description": "Independently activate each component of angular velocity with a nonsymmetric rotation.",
+    "workflow": [
+      {
+        "op": "frames.rav2xf",
+        "rot": [
+          [0, 1, 0],
+          [-1, 0, 0],
+          [0, 0, 1]
+        ],
+        "av": [0.5, 0, 0]
+      },
+      {
+        "op": "frames.rav2xf",
+        "rot": [
+          [0, 1, 0],
+          [-1, 0, 0],
+          [0, 0, 1]
+        ],
+        "av": [0, -0.75, 0]
+      },
+      {
+        "op": "frames.rav2xf",
+        "rot": [
+          [0, 1, 0],
+          [-1, 0, 0],
+          [0, 0, 1]
+        ],
+        "av": [0, 0, 1.25]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-rav2xf-scale",
+    "description": "Compare signed rate blocks while the position rotation stays fixed.",
+    "workflow": [
+      {
+        "op": "frames.rav2xf",
+        "rot": [
+          [0, 1, 0],
+          [-1, 0, 0],
+          [0, 0, 1]
+        ],
+        "av": [
+          2.2737367544323206e-13, -4.547473508864641e-13, 9.094947017729282e-13
+        ]
+      },
+      {
+        "op": "frames.rav2xf",
+        "rot": [
+          [0, 1, 0],
+          [-1, 0, 0],
+          [0, 0, 1]
+        ],
+        "av": [8589934592.0, -17179869184.0, 34359738368]
+      },
+      {
+        "op": "frames.rav2xf",
+        "rot": [
+          [0, 1, 0],
+          [-1, 0, 0],
+          [0, 0, 1]
+        ],
+        "av": [-0.25, 0.5, -1]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]
