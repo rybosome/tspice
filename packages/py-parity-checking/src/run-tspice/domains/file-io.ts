@@ -30,6 +30,15 @@ import type {
   StepFileIoDasac,
   StepFileIoDasdc,
   StepFileIoDasec,
+  StepFileIoDasadc,
+  StepFileIoDasadd,
+  StepFileIoDasadi,
+  StepFileIoDasrdc,
+  StepFileIoDasrdd,
+  StepFileIoDasrdi,
+  StepFileIoDasudc,
+  StepFileIoDasudd,
+  StepFileIoDasudi,
   StepFileIoDasonw,
   StepFileIoDasops,
   StepFileIoDasopw,
@@ -41,6 +50,10 @@ import type {
   StepFileIoDaswbr,
   StepFileIoDascls,
   StepFileIoDasopr,
+  StepFileIoDlabbs,
+  StepFileIoDlabns,
+  StepFileIoDlaens,
+  StepFileIoDlafps,
   StepFileIoDlabfs,
   StepFileIoDlacls,
   StepFileIoDlafns,
@@ -85,6 +98,15 @@ type FileIoStep =
   | StepFileIoDasac
   | StepFileIoDasdc
   | StepFileIoDasec
+  | StepFileIoDasadc
+  | StepFileIoDasadd
+  | StepFileIoDasadi
+  | StepFileIoDasrdc
+  | StepFileIoDasrdd
+  | StepFileIoDasrdi
+  | StepFileIoDasudc
+  | StepFileIoDasudd
+  | StepFileIoDasudi
   | StepFileIoDasonw
   | StepFileIoDasops
   | StepFileIoDasopw
@@ -96,6 +118,10 @@ type FileIoStep =
   | StepFileIoDaswbr
   | StepFileIoDascls
   | StepFileIoDlaopn
+  | StepFileIoDlabbs
+  | StepFileIoDlabns
+  | StepFileIoDlaens
+  | StepFileIoDlafps
   | StepFileIoDlabfs
   | StepFileIoDlafns
   | StepFileIoDlacls
@@ -156,6 +182,12 @@ function requireSpatialIndex(
   }
 
   return index;
+}
+
+function dasRowBytes(data: readonly number[]): Uint8Array {
+  if (data.some((x) => !Number.isInteger(x) || x < 0 || x > 255))
+    throw new TypeError("Expected DAS bytes in [0,255]");
+  return Uint8Array.from(data);
 }
 
 /** Execute one `file-io.*` workflow step in tspice. */
@@ -375,6 +407,82 @@ export function runFileIoStep(
           step.buffln,
         ),
       };
+    case "file-io.dasadc": {
+      const h = requireHandleState(context, step.handleId).handle;
+      context.spice.raw.dasadc(
+        h,
+        step.n,
+        step.bpos,
+        step.epos,
+        step.datlen,
+        dasRowBytes(step.data),
+      );
+      return { op: step.op, value: null };
+    }
+    case "file-io.dasadd": {
+      const h = requireHandleState(context, step.handleId).handle;
+      context.spice.raw.dasadd(h, step.n, step.data);
+      return { op: step.op, value: null };
+    }
+    case "file-io.dasadi": {
+      const h = requireHandleState(context, step.handleId).handle;
+      context.spice.raw.dasadi(h, step.n, step.data);
+      return { op: step.op, value: null };
+    }
+    case "file-io.dasrdc": {
+      const h = requireHandleState(context, step.handleId).handle;
+      return {
+        op: step.op,
+        value: Array.from(
+          context.spice.raw.dasrdc(
+            h,
+            step.first,
+            step.last,
+            step.bpos,
+            step.epos,
+            step.datlen,
+            dasRowBytes(step.data),
+          ),
+        ),
+      };
+    }
+    case "file-io.dasrdd": {
+      const h = requireHandleState(context, step.handleId).handle;
+      return {
+        op: step.op,
+        value: context.spice.raw.dasrdd(h, step.first, step.last),
+      };
+    }
+    case "file-io.dasrdi": {
+      const h = requireHandleState(context, step.handleId).handle;
+      return {
+        op: step.op,
+        value: context.spice.raw.dasrdi(h, step.first, step.last),
+      };
+    }
+    case "file-io.dasudc": {
+      const h = requireHandleState(context, step.handleId).handle;
+      context.spice.raw.dasudc(
+        h,
+        step.first,
+        step.last,
+        step.bpos,
+        step.epos,
+        step.datlen,
+        dasRowBytes(step.data),
+      );
+      return { op: step.op, value: null };
+    }
+    case "file-io.dasudd": {
+      const h = requireHandleState(context, step.handleId).handle;
+      context.spice.raw.dasudd(h, step.first, step.last, step.data);
+      return { op: step.op, value: null };
+    }
+    case "file-io.dasudi": {
+      const h = requireHandleState(context, step.handleId).handle;
+      context.spice.raw.dasudi(h, step.first, step.last, step.data);
+      return { op: step.op, value: null };
+    }
     case "file-io.dasonw":
     case "file-io.dasops":
     case "file-io.dasopw": {
@@ -469,6 +577,43 @@ export function runFileIoStep(
       return { op: step.op, value: null };
     }
 
+    case "file-io.dlabbs": {
+      const state = requireHandleState(context, step.handleId);
+      const out = context.spice.raw.dlabbs(state.handle);
+      if (!out.found) {
+        context.state.fileIo.descriptors.delete(step.descrId);
+        return { op: step.op, value: { found: false } };
+      }
+
+      context.state.fileIo.descriptors.set(step.descrId, out.descr);
+      return { op: step.op, value: { found: true, descr: out.descr } };
+    }
+
+    case "file-io.dlafps": {
+      const state = requireHandleState(context, step.handleId);
+      const descr = requireDescriptor(context, step.descrId);
+      const out = context.spice.raw.dlafps(state.handle, descr);
+      if (!out.found) {
+        context.state.fileIo.descriptors.delete(step.descrId);
+        return { op: step.op, value: { found: false } };
+      }
+
+      context.state.fileIo.descriptors.set(step.descrId, out.descr);
+      return { op: step.op, value: { found: true, descr: out.descr } };
+    }
+
+    case "file-io.dlabns": {
+      context.spice.raw.dlabns(
+        requireHandleState(context, step.handleId).handle,
+      );
+      return { op: step.op, value: null };
+    }
+    case "file-io.dlaens": {
+      context.spice.raw.dlaens(
+        requireHandleState(context, step.handleId).handle,
+      );
+      return { op: step.op, value: null };
+    }
     case "file-io.dlabfs": {
       const state = requireHandleState(context, step.handleId);
       const out = context.spice.raw.dlabfs(state.handle);

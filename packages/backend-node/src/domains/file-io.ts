@@ -2,7 +2,11 @@ import {
   dasCommentTable,
   dasCommentPageBytes,
   dasCommentPage,
+  copyDasBytes,
+  copyDasValues,
+  dasReadCount,
   dasFileTarget,
+  copyDlaDescriptor,
   dasText,
   decodeDasSummary,
   decodeDasAddresses,
@@ -26,43 +30,8 @@ import type {
   SpiceHandleRegistry,
   SpiceHandleKind,
 } from "../runtime/spice-handles.js";
-const I32_MIN = -2147483648;
-const I32_MAX = 2147483647;
 
 const DAS_BACKED = ["DAS", "DLA"] as const satisfies readonly SpiceHandleKind[];
-
-function assertDlaDescriptor(
-  value: unknown,
-  context: string,
-): asserts value is DlaDescriptor {
-  invariant(
-    typeof value === "object" && value !== null,
-    `${context}: expected an object`,
-  );
-  const obj = value as Record<string, unknown>;
-  for (const key of [
-    "bwdptr",
-    "fwdptr",
-    "ibase",
-    "isize",
-    "dbase",
-    "dsize",
-    "cbase",
-    "csize",
-  ] as const) {
-    const v = obj[key];
-    invariant(
-      typeof v === "number" &&
-        Number.isInteger(v) &&
-        v >= I32_MIN &&
-        v <= I32_MAX,
-      `${context}: expected ${key} to be a 32-bit signed integer`,
-    );
-
-    const min = key === "bwdptr" || key === "fwdptr" ? -1 : 0;
-    invariant(v >= min, `${context}: expected ${key} to be >= ${min}`);
-  }
-}
 
 function normalizeFoundDlaDescriptor(
   value: unknown,
@@ -82,8 +51,10 @@ function normalizeFoundDlaDescriptor(
     return { found: false };
   }
 
-  assertDlaDescriptor(obj.descr, `${context}.descr`);
-  return { found: true, descr: obj.descr };
+  return {
+    found: true,
+    descr: copyDlaDescriptor(obj.descr, `${context}.descr`),
+  };
 }
 
 /** Create a {@link FileIoApi} implementation backed by the native Node addon. */
@@ -357,6 +328,116 @@ export function createFileIoApi(
       const { n, done, bytes } = native.dasec(h, bufsiz, buffln);
       return dasCommentPage(n, done, bytes, bufsiz, buffln);
     },
+    dasadc: (
+      handle: SpiceHandle,
+      n: number,
+      bpos: number,
+      epos: number,
+      datlen: number,
+      data: Uint8Array,
+    ) => {
+      const id = dasHandle(handle, "dasadc");
+      assertSpiceInt32(n, "dasadc(n)");
+      assertSpiceInt32(bpos, "dasadc(bpos)");
+      assertSpiceInt32(epos, "dasadc(epos)");
+      assertSpiceInt32(datlen, "dasadc(datlen)");
+      const owned = copyDasBytes(data);
+      native.dasadc(id, n, bpos, epos, datlen, owned);
+    },
+    dasadd: (handle: SpiceHandle, n: number, data: readonly number[]) => {
+      const id = dasHandle(handle, "dasadd");
+      assertSpiceInt32(n, "dasadd(n)");
+      const owned = copyDasValues(data, "double");
+      native.dasadd(id, n, owned);
+    },
+    dasadi: (handle: SpiceHandle, n: number, data: readonly number[]) => {
+      const id = dasHandle(handle, "dasadi");
+      assertSpiceInt32(n, "dasadi(n)");
+      const owned = copyDasValues(data, "integer");
+      native.dasadi(id, n, owned);
+    },
+    dasrdc: (
+      handle: SpiceHandle,
+      first: number,
+      last: number,
+      bpos: number,
+      epos: number,
+      datlen: number,
+      data: Uint8Array,
+    ) => {
+      const id = dasHandle(handle, "dasrdc");
+      assertSpiceInt32(first, "dasrdc(first)");
+      assertSpiceInt32(last, "dasrdc(last)");
+      assertSpiceInt32(bpos, "dasrdc(bpos)");
+      assertSpiceInt32(epos, "dasrdc(epos)");
+      assertSpiceInt32(datlen, "dasrdc(datlen)");
+      const owned = copyDasBytes(data);
+      const count = owned.length;
+      const result = copyDasBytes(
+        native.dasrdc(id, first, last, bpos, epos, datlen, owned),
+      );
+      if (result.length !== count)
+        throw new TypeError("Invalid DAS result length");
+      return result;
+    },
+    dasrdd: (handle: SpiceHandle, first: number, last: number) => {
+      const id = dasHandle(handle, "dasrdd");
+      const count = dasReadCount(first, last, 8);
+      const result = copyDasValues(native.dasrdd(id, first, last), "double");
+      if (result.length !== count)
+        throw new TypeError("Invalid DAS result length");
+      return result;
+    },
+    dasrdi: (handle: SpiceHandle, first: number, last: number) => {
+      const id = dasHandle(handle, "dasrdi");
+      const count = dasReadCount(first, last, 4);
+      const result = copyDasValues(native.dasrdi(id, first, last), "integer");
+      if (result.length !== count)
+        throw new TypeError("Invalid DAS result length");
+      return result;
+    },
+    dasudc: (
+      handle: SpiceHandle,
+      first: number,
+      last: number,
+      bpos: number,
+      epos: number,
+      datlen: number,
+      data: Uint8Array,
+    ) => {
+      const id = dasHandle(handle, "dasudc");
+      assertSpiceInt32(first, "dasudc(first)");
+      assertSpiceInt32(last, "dasudc(last)");
+      assertSpiceInt32(bpos, "dasudc(bpos)");
+      assertSpiceInt32(epos, "dasudc(epos)");
+      assertSpiceInt32(datlen, "dasudc(datlen)");
+      const owned = copyDasBytes(data);
+      native.dasudc(id, first, last, bpos, epos, datlen, owned);
+    },
+    dasudd: (
+      handle: SpiceHandle,
+      first: number,
+      last: number,
+      data: readonly number[],
+    ) => {
+      const id = dasHandle(handle, "dasudd");
+      assertSpiceInt32(first, "dasudd(first)");
+      assertSpiceInt32(last, "dasudd(last)");
+      const owned = copyDasValues(data, "double");
+      native.dasudd(id, first, last, owned);
+    },
+    dasudi: (
+      handle: SpiceHandle,
+      first: number,
+      last: number,
+      data: readonly number[],
+    ) => {
+      const id = dasHandle(handle, "dasudi");
+      assertSpiceInt32(first, "dasudi(first)");
+      assertSpiceInt32(last, "dasudi(last)");
+      const owned = copyDasValues(data, "integer");
+      native.dasudi(id, first, last, owned);
+    },
     dasonw: (
       file: string | VirtualOutput,
       ftype: string,
@@ -437,16 +518,37 @@ export function createFileIoApi(
       ),
 
     dlafns: (handle: SpiceHandle, descr: DlaDescriptor) => {
-      assertDlaDescriptor(descr, "dlafns(descr)");
+      const owned = copyDlaDescriptor(descr, "dlafns(descr)");
       return normalizeFoundDlaDescriptor(
         native.dlafns(
           handles.lookup(handle, DAS_BACKED, "dlafns").nativeHandle,
-          descr,
+          owned,
         ),
         "dlafns()",
       );
     },
 
+    dlabbs: (handle: SpiceHandle) =>
+      normalizeFoundDlaDescriptor(
+        native.dlabbs(
+          handles.lookup(handle, DAS_BACKED, "dlabbs").nativeHandle,
+        ),
+        "dlabbs()",
+      ),
+
+    dlafps: (handle: SpiceHandle, descr: DlaDescriptor) => {
+      const owned = copyDlaDescriptor(descr, "dlafps(descr)");
+      return normalizeFoundDlaDescriptor(
+        native.dlafps(
+          handles.lookup(handle, DAS_BACKED, "dlafps").nativeHandle,
+          owned,
+        ),
+        "dlafps()",
+      );
+    },
+
+    dlabns: (handle) => native.dlabns(dasHandle(handle, "dlabns")),
+    dlaens: (handle) => native.dlaens(dasHandle(handle, "dlaens")),
     dlacls: (handle: SpiceHandle) => closeDasBacked(handle, "dlacls"),
 
     dskopn: (path: string, ifname: string, ncomch: number) =>

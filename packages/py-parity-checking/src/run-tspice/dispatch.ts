@@ -387,6 +387,15 @@ export function dispatchStep(
     case "file-io.dasac":
     case "file-io.dasdc":
     case "file-io.dasec":
+    case "file-io.dasadc":
+    case "file-io.dasadd":
+    case "file-io.dasadi":
+    case "file-io.dasrdc":
+    case "file-io.dasrdd":
+    case "file-io.dasrdi":
+    case "file-io.dasudc":
+    case "file-io.dasudd":
+    case "file-io.dasudi":
     case "file-io.dasonw":
     case "file-io.dasops":
     case "file-io.dasopw":
@@ -398,6 +407,10 @@ export function dispatchStep(
     case "file-io.daswbr":
     case "file-io.dascls":
     case "file-io.dlaopn":
+    case "file-io.dlabbs":
+    case "file-io.dlabns":
+    case "file-io.dlaens":
+    case "file-io.dlafps":
     case "file-io.dlabfs":
     case "file-io.dlafns":
     case "file-io.dlacls":

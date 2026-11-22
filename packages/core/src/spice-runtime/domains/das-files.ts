@@ -184,3 +184,100 @@ export function dasCommentPage(
   }
   return { n, lines, done };
 }
+
+const dasTransferBytes = 256 * 1024 * 1024;
+
+function checkDasCount(count: number, width: number): void {
+  if (
+    !Number.isSafeInteger(count) ||
+    count < 0 ||
+    count > dasTransferBytes / width
+  )
+    throw new RangeError("DAS transfer exceeds the 256 MiB buffer limit");
+}
+
+/** Bound owned storage before reading any array entries. Doubles retain their IEEE bit categories. */
+export function copyDasValues(
+  value: unknown,
+  kind: "double" | "integer",
+): number[] {
+  if (!Array.isArray(value)) throw new TypeError("Expected a DAS number array");
+  const count = value.length;
+  checkDasCount(count, kind === "double" ? 8 : 4);
+  const result: number[] = [];
+  for (let i = 0; i < count; i++) {
+    const word: unknown = value[i];
+    if (typeof word !== "number")
+      throw new TypeError("Expected a number in DAS data");
+    if (kind === "integer") assertSpiceInt32(word, "DAS integer data");
+    result.push(word);
+  }
+  return result;
+}
+
+/** Copy a rectangular table of arbitrary DAS bytes, including NUL and invalid UTF-8. */
+export function copyDasBytes(value: unknown): Uint8Array {
+  if (!(value instanceof Uint8Array))
+    throw new TypeError("Expected a DAS Uint8Array");
+  // Use the typed array's internal length, including for Uint8Array subclasses.
+  const getLength = Object.getOwnPropertyDescriptor(
+    Object.getPrototypeOf(Uint8Array.prototype),
+    "length",
+  )?.get;
+  if (!getLength)
+    throw new TypeError("Typed array length accessor unavailable");
+  const length: unknown = getLength.call(value);
+  if (typeof length !== "number")
+    throw new TypeError("Invalid DAS byte length");
+  checkDasCount(length, 1);
+  const result = new Uint8Array(length);
+  // set reads the source typed array by its internal slots and rejects a grow
+  // beyond the captured length before copying any elements.
+  result.set(value);
+  return result;
+}
+
+/** Bound allocation of a DAS numeric destination; reversed ranges have no output elements. */
+export function dasReadCount(
+  first: number,
+  last: number,
+  width: 4 | 8,
+): number {
+  assertSpiceInt32(first, "DAS first");
+  assertSpiceInt32(last, "DAS last");
+  const count = Math.max(0, last - first + 1);
+  checkDasCount(count, width);
+  return count;
+}
+
+/** Snapshot all eight signed descriptor words. A segment under construction has size −1. */
+export function copyDlaDescriptor(value: unknown, context: string) {
+  if (typeof value !== "object" || value === null)
+    throw new TypeError(context + ": expected a DLA descriptor object");
+  const obj = value;
+  function word(key: string, min: number): number {
+    const v: unknown = Reflect.get(obj, key);
+    if (
+      typeof v !== "number" ||
+      !Number.isInteger(v) ||
+      v < -2147483648 ||
+      v > 2147483647
+    )
+      throw new TypeError(
+        context + ": expected " + key + " to be a 32-bit signed integer",
+      );
+    if (v < min)
+      throw new RangeError(context + ": expected " + key + " to be >= " + min);
+    return v;
+  }
+  return {
+    bwdptr: word("bwdptr", -1),
+    fwdptr: word("fwdptr", -1),
+    ibase: word("ibase", 0),
+    isize: word("isize", -1),
+    dbase: word("dbase", 0),
+    dsize: word("dsize", -1),
+    cbase: word("cbase", 0),
+    csize: word("csize", -1),
+  };
+}

@@ -94,11 +94,11 @@ test("baseline derives breadth and preserves direct/non-direct evidence", (t) =>
   assert.deepEqual(ledger.summary, {
     total: 652,
     eligible: 649,
-    implemented: 457,
-    planned: 192,
+    implemented: 470,
+    planned: 179,
     excluded: 3,
-    caseFiles: 457,
-    scenarios: 3041,
+    caseFiles: 470,
+    scenarios: 3129,
     wasmRawUnsupported: 0,
   });
   const functions = cFunctions(
@@ -622,7 +622,7 @@ test("maintained audit separates reviewed findings from verified backend executi
   const f = fixture(t);
   const ledger = f.build();
   assert.equal(ledger.audit.baselineRoutines, 162);
-  assert.equal(ledger.audit.expansionRoutines, 295);
+  assert.equal(ledger.audit.expansionRoutines, 308);
   // Each success route reaches its public C entrypoint. The three guarded paths
   // must also retain the linked numerical routine used to reject invalid input.
   for (const name of [
@@ -1052,5 +1052,24 @@ test("DASEC extraction needs reachable linked scientific and original conversion
     for (const call of calls) f.edit(source, call, "0 /* " + call + " */");
     assert.throws(f.build, /Stale non-direct mapping policy for node.dasec/);
     for (const call of calls) f.edit(source, "0 /* " + call + " */", call);
+  }
+});
+
+test("DLA segment routes require their actual canonical operations beyond DAS address checks", (t) => {
+  const f = fixture(t);
+  const source = "packages/backend-shim-c/src/domains/file_io.c";
+  for (const [name, args] of [
+    ["dlabbs", "handle, &descriptor, &present"],
+    ["dlabns", "handle"],
+    ["dlaens", "handle"],
+    ["dlafps", "handle, &current, &previous, &present"],
+  ]) {
+    const call = name + "_c(" + args + ")";
+    f.edit(source, call, "0 /* " + call + " */");
+    assert.throws(
+      f.build,
+      new RegExp("Unexplained non-direct node mapping for " + name),
+    );
+    f.edit(source, "0 /* " + call + " */", call);
   }
 });

@@ -2364,6 +2364,82 @@ export type StepFileIoDasec = {
   bufsiz: number;
   buffln?: number;
 };
+export type StepFileIoDasadc = {
+  op: "file-io.dasadc";
+  handleId: string;
+  n: number;
+  bpos: number;
+  epos: number;
+  datlen: number;
+  data: number[];
+};
+
+export type StepFileIoDasadd = {
+  op: "file-io.dasadd";
+  handleId: string;
+  n: number;
+  data: number[];
+};
+
+export type StepFileIoDasadi = {
+  op: "file-io.dasadi";
+  handleId: string;
+  n: number;
+  data: number[];
+};
+
+export type StepFileIoDasrdc = {
+  op: "file-io.dasrdc";
+  handleId: string;
+  first: number;
+  last: number;
+  bpos: number;
+  epos: number;
+  datlen: number;
+  data: number[];
+};
+
+export type StepFileIoDasrdd = {
+  op: "file-io.dasrdd";
+  handleId: string;
+  first: number;
+  last: number;
+};
+
+export type StepFileIoDasrdi = {
+  op: "file-io.dasrdi";
+  handleId: string;
+  first: number;
+  last: number;
+};
+
+export type StepFileIoDasudc = {
+  op: "file-io.dasudc";
+  handleId: string;
+  first: number;
+  last: number;
+  bpos: number;
+  epos: number;
+  datlen: number;
+  data: number[];
+};
+
+export type StepFileIoDasudd = {
+  op: "file-io.dasudd";
+  handleId: string;
+  first: number;
+  last: number;
+  data: number[];
+};
+
+export type StepFileIoDasudi = {
+  op: "file-io.dasudi";
+  handleId: string;
+  first: number;
+  last: number;
+  data: number[];
+};
+
 export type StepFileIoDasonw = {
   op: "file-io.dasonw";
   handleId: string;
@@ -2432,6 +2508,18 @@ export type StepFileIoDlaopn = {
   handleId: string;
 };
 
+export type StepFileIoDlabbs = {
+  op: "file-io.dlabbs";
+  handleId: string;
+  descrId: string;
+};
+export type StepFileIoDlabns = { op: "file-io.dlabns"; handleId: string };
+export type StepFileIoDlaens = { op: "file-io.dlaens"; handleId: string };
+export type StepFileIoDlafps = {
+  op: "file-io.dlafps";
+  handleId: string;
+  descrId: string;
+};
 export type StepFileIoDlabfs = {
   op: "file-io.dlabfs";
   handleId: string;
@@ -3456,6 +3544,15 @@ export type WorkflowStep =
   | StepFileIoDasac
   | StepFileIoDasdc
   | StepFileIoDasec
+  | StepFileIoDasadc
+  | StepFileIoDasadd
+  | StepFileIoDasadi
+  | StepFileIoDasrdc
+  | StepFileIoDasrdd
+  | StepFileIoDasrdi
+  | StepFileIoDasudc
+  | StepFileIoDasudd
+  | StepFileIoDasudi
   | StepFileIoDasonw
   | StepFileIoDasops
   | StepFileIoDasopw
@@ -3467,6 +3564,10 @@ export type WorkflowStep =
   | StepFileIoDaswbr
   | StepFileIoDascls
   | StepFileIoDlaopn
+  | StepFileIoDlabbs
+  | StepFileIoDlabns
+  | StepFileIoDlaens
+  | StepFileIoDlafps
   | StepFileIoDlabfs
   | StepFileIoDlafns
   | StepFileIoDlacls
@@ -4126,6 +4227,15 @@ export type StepOutput =
   | { op: "file-io.dasac"; value: null }
   | { op: "file-io.dasdc"; value: null }
   | { op: "file-io.dasec"; value: ReturnType<SpiceRawBackend["dasec"]> }
+  | { op: "file-io.dasadc"; value: null }
+  | { op: "file-io.dasadd"; value: null }
+  | { op: "file-io.dasadi"; value: null }
+  | { op: "file-io.dasrdc"; value: number[] }
+  | { op: "file-io.dasrdd"; value: number[] }
+  | { op: "file-io.dasrdi"; value: number[] }
+  | { op: "file-io.dasudc"; value: null }
+  | { op: "file-io.dasudd"; value: null }
+  | { op: "file-io.dasudi"; value: null }
   | { op: "file-io.dasonw"; value: null }
   | { op: "file-io.dasops"; value: null }
   | { op: "file-io.dasopw"; value: null }
@@ -4137,6 +4247,10 @@ export type StepOutput =
   | { op: "file-io.daswbr"; value: null }
   | { op: "file-io.dascls"; value: null }
   | { op: "file-io.dlaopn"; value: null }
+  | { op: "file-io.dlabbs"; value: FoundDlaDescriptor }
+  | { op: "file-io.dlabns"; value: null }
+  | { op: "file-io.dlaens"; value: null }
+  | { op: "file-io.dlafps"; value: FoundDlaDescriptor }
   | { op: "file-io.dlabfs"; value: FoundDlaDescriptor }
   | { op: "file-io.dlafns"; value: FoundDlaDescriptor }
   | { op: "file-io.dlacls"; value: null }

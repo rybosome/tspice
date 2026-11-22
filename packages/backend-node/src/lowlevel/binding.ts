@@ -21,6 +21,42 @@ export function getNodeBinding(): NativeAddon {
     "Expected native addon to export dasec",
   );
   invariant(
+    typeof native.dasadc === "function",
+    "Expected native addon to export dasadc",
+  );
+  invariant(
+    typeof native.dasadd === "function",
+    "Expected native addon to export dasadd",
+  );
+  invariant(
+    typeof native.dasadi === "function",
+    "Expected native addon to export dasadi",
+  );
+  invariant(
+    typeof native.dasrdc === "function",
+    "Expected native addon to export dasrdc",
+  );
+  invariant(
+    typeof native.dasrdd === "function",
+    "Expected native addon to export dasrdd",
+  );
+  invariant(
+    typeof native.dasrdi === "function",
+    "Expected native addon to export dasrdi",
+  );
+  invariant(
+    typeof native.dasudc === "function",
+    "Expected native addon to export dasudc",
+  );
+  invariant(
+    typeof native.dasudd === "function",
+    "Expected native addon to export dasudd",
+  );
+  invariant(
+    typeof native.dasudi === "function",
+    "Expected native addon to export dasudi",
+  );
+  invariant(
     typeof native.dasonw === "function",
     "Expected native addon to export dasonw",
   );
@@ -461,6 +497,22 @@ export function getNodeBinding(): NativeAddon {
   invariant(
     typeof native.dlaopn === "function",
     "Expected native addon to export dlaopn(path, ftype, ifname, ncomch)",
+  );
+  invariant(
+    typeof native.dlabbs === "function",
+    "Expected native addon to export dlabbs",
+  );
+  invariant(
+    typeof native.dlabns === "function",
+    "Expected native addon to export dlabns",
+  );
+  invariant(
+    typeof native.dlaens === "function",
+    "Expected native addon to export dlaens",
+  );
+  invariant(
+    typeof native.dlafps === "function",
+    "Expected native addon to export dlafps",
   );
   invariant(
     typeof native.dlabfs === "function",

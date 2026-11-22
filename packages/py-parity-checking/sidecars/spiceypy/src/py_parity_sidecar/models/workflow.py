@@ -293,6 +293,15 @@ from .file_io import (
     StepFileIoDasac,
     StepFileIoDasdc,
     StepFileIoDasec,
+    StepFileIoDasadc,
+    StepFileIoDasadd,
+    StepFileIoDasadi,
+    StepFileIoDasrdc,
+    StepFileIoDasrdd,
+    StepFileIoDasrdi,
+    StepFileIoDasudc,
+    StepFileIoDasudd,
+    StepFileIoDasudi,
     StepFileIoDasonw,
     StepFileIoDasops,
     StepFileIoDasopw,
@@ -304,6 +313,10 @@ from .file_io import (
     StepFileIoDaswbr,
     StepFileIoDascls,
     StepFileIoDasopr,
+    StepFileIoDlabbs,
+    StepFileIoDlabns,
+    StepFileIoDlaens,
+    StepFileIoDlafps,
     StepFileIoDlabfs,
     StepFileIoDlacls,
     StepFileIoDlafns,
@@ -860,6 +873,15 @@ WorkflowStep: TypeAlias = (
     | StepFileIoDasac
     | StepFileIoDasdc
     | StepFileIoDasec
+    | StepFileIoDasadc
+    | StepFileIoDasadd
+    | StepFileIoDasadi
+    | StepFileIoDasrdc
+    | StepFileIoDasrdd
+    | StepFileIoDasrdi
+    | StepFileIoDasudc
+    | StepFileIoDasudd
+    | StepFileIoDasudi
     | StepFileIoDasonw
     | StepFileIoDasops
     | StepFileIoDasopw
@@ -871,6 +893,10 @@ WorkflowStep: TypeAlias = (
     | StepFileIoDaswbr
     | StepFileIoDascls
     | StepFileIoDlaopn
+    | StepFileIoDlabbs
+    | StepFileIoDlabns
+    | StepFileIoDlaens
+    | StepFileIoDlafps
     | StepFileIoDlabfs
     | StepFileIoDlafns
     | StepFileIoDlacls

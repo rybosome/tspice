@@ -322,6 +322,15 @@ import fileIoDafoprCasesRaw from "./file-io/dafopr.cases.json" with { type: "jso
 import fileIoDasacCasesRaw from "./file-io/dasac.cases.json" with { type: "json" };
 import fileIoDasdcCasesRaw from "./file-io/dasdc.cases.json" with { type: "json" };
 import fileIoDasecCasesRaw from "./file-io/dasec.cases.json" with { type: "json" };
+import fileIoDasadcCasesRaw from "./file-io/dasadc.cases.json" with { type: "json" };
+import fileIoDasaddCasesRaw from "./file-io/dasadd.cases.json" with { type: "json" };
+import fileIoDasadiCasesRaw from "./file-io/dasadi.cases.json" with { type: "json" };
+import fileIoDasrdcCasesRaw from "./file-io/dasrdc.cases.json" with { type: "json" };
+import fileIoDasrddCasesRaw from "./file-io/dasrdd.cases.json" with { type: "json" };
+import fileIoDasrdiCasesRaw from "./file-io/dasrdi.cases.json" with { type: "json" };
+import fileIoDasudcCasesRaw from "./file-io/dasudc.cases.json" with { type: "json" };
+import fileIoDasuddCasesRaw from "./file-io/dasudd.cases.json" with { type: "json" };
+import fileIoDasudiCasesRaw from "./file-io/dasudi.cases.json" with { type: "json" };
 import fileIoDasonwCasesRaw from "./file-io/dasonw.cases.json" with { type: "json" };
 import fileIoDasopsCasesRaw from "./file-io/dasops.cases.json" with { type: "json" };
 import fileIoDasopwCasesRaw from "./file-io/dasopw.cases.json" with { type: "json" };
@@ -333,6 +342,10 @@ import fileIoDasrfrCasesRaw from "./file-io/dasrfr.cases.json" with { type: "jso
 import fileIoDaswbrCasesRaw from "./file-io/daswbr.cases.json" with { type: "json" };
 import fileIoDasclsCasesRaw from "./file-io/dascls.cases.json" with { type: "json" };
 import fileIoDasoprCasesRaw from "./file-io/dasopr.cases.json" with { type: "json" };
+import fileIoDlabbsCasesRaw from "./file-io/dlabbs.cases.json" with { type: "json" };
+import fileIoDlabnsCasesRaw from "./file-io/dlabns.cases.json" with { type: "json" };
+import fileIoDlaensCasesRaw from "./file-io/dlaens.cases.json" with { type: "json" };
+import fileIoDlafpsCasesRaw from "./file-io/dlafps.cases.json" with { type: "json" };
 import fileIoDlabfsCasesRaw from "./file-io/dlabfs.cases.json" with { type: "json" };
 import fileIoDlaclsCasesRaw from "./file-io/dlacls.cases.json" with { type: "json" };
 import fileIoDlafnsCasesRaw from "./file-io/dlafns.cases.json" with { type: "json" };
@@ -712,6 +725,15 @@ export const fileIoCases: ParityCase[] = [
   ...(fileIoDasacCasesRaw as ParityCase[]),
   ...(fileIoDasdcCasesRaw as ParityCase[]),
   ...(fileIoDasecCasesRaw as ParityCase[]),
+  ...(fileIoDasadcCasesRaw as ParityCase[]),
+  ...(fileIoDasaddCasesRaw as ParityCase[]),
+  ...(fileIoDasadiCasesRaw as ParityCase[]),
+  ...(fileIoDasrdcCasesRaw as ParityCase[]),
+  ...(fileIoDasrddCasesRaw as ParityCase[]),
+  ...(fileIoDasrdiCasesRaw as ParityCase[]),
+  ...(fileIoDasudcCasesRaw as ParityCase[]),
+  ...(fileIoDasuddCasesRaw as ParityCase[]),
+  ...(fileIoDasudiCasesRaw as ParityCase[]),
   ...(fileIoDasonwCasesRaw as ParityCase[]),
   ...(fileIoDasopsCasesRaw as ParityCase[]),
   ...(fileIoDasopwCasesRaw as ParityCase[]),
@@ -723,6 +745,10 @@ export const fileIoCases: ParityCase[] = [
   ...(fileIoDaswbrCasesRaw as ParityCase[]),
   ...(fileIoDasclsCasesRaw as ParityCase[]),
   ...(fileIoDasoprCasesRaw as ParityCase[]),
+  ...(fileIoDlabbsCasesRaw as ParityCase[]),
+  ...(fileIoDlabnsCasesRaw as ParityCase[]),
+  ...(fileIoDlaensCasesRaw as ParityCase[]),
+  ...(fileIoDlafpsCasesRaw as ParityCase[]),
   ...(fileIoDlabfsCasesRaw as ParityCase[]),
   ...(fileIoDlaclsCasesRaw as ParityCase[]),
   ...(fileIoDlafnsCasesRaw as ParityCase[]),

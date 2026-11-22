@@ -12,6 +12,8 @@ from .. import daf_oracle
 from .. import daf_record_oracle
 from .. import das_comment_oracle
 
+from .. import dla_segment_oracle
+from .. import das_data_oracle
 from ..das_file_oracle import file_record, file_name
 from ..models import (
     PathRefInput,
@@ -40,6 +42,15 @@ from ..models import (
     StepFileIoDasac,
     StepFileIoDasdc,
     StepFileIoDasec,
+    StepFileIoDasadc,
+    StepFileIoDasadd,
+    StepFileIoDasadi,
+    StepFileIoDasrdc,
+    StepFileIoDasrdd,
+    StepFileIoDasrdi,
+    StepFileIoDasudc,
+    StepFileIoDasudd,
+    StepFileIoDasudi,
     StepFileIoDasonw,
     StepFileIoDasops,
     StepFileIoDasopw,
@@ -51,6 +62,10 @@ from ..models import (
     StepFileIoDaswbr,
     StepFileIoDascls,
     StepFileIoDasopr,
+    StepFileIoDlabbs,
+    StepFileIoDlabns,
+    StepFileIoDlaens,
+    StepFileIoDlafps,
     StepFileIoDlabfs,
     StepFileIoDlacls,
     StepFileIoDlafns,
@@ -332,6 +347,41 @@ def run_file_io_step(step: WorkflowStep, context: SidecarRuntimeContext) -> Step
     if isinstance(step,StepFileIoDasec):
         h = _require_handle(state,step.handleId,expected_kind=("DAS","DLA"),require_open=True).handle
         return StepOutput(op=step.op,value=das_comment_oracle.extract(h,step.bufsiz,step.buffln))
+    if isinstance(step, StepFileIoDasadc):
+        h = _require_handle(state, step.handleId, expected_kind=("DAS", "DLA"), require_open=True).handle
+        return StepOutput(op=step.op, value=das_data_oracle.dasadc(h, step.n, step.bpos, step.epos, step.datlen, step.data))
+
+    if isinstance(step, StepFileIoDasadd):
+        h = _require_handle(state, step.handleId, expected_kind=("DAS", "DLA"), require_open=True).handle
+        return StepOutput(op=step.op, value=das_data_oracle.dasadd(h, step.n, step.data))
+
+    if isinstance(step, StepFileIoDasadi):
+        h = _require_handle(state, step.handleId, expected_kind=("DAS", "DLA"), require_open=True).handle
+        return StepOutput(op=step.op, value=das_data_oracle.dasadi(h, step.n, step.data))
+
+    if isinstance(step, StepFileIoDasrdc):
+        h = _require_handle(state, step.handleId, expected_kind=("DAS", "DLA"), require_open=True).handle
+        return StepOutput(op=step.op, value=das_data_oracle.dasrdc(h, step.first, step.last, step.bpos, step.epos, step.datlen, step.data))
+
+    if isinstance(step, StepFileIoDasrdd):
+        h = _require_handle(state, step.handleId, expected_kind=("DAS", "DLA"), require_open=True).handle
+        return StepOutput(op=step.op, value=das_data_oracle.dasrdd(h, step.first, step.last))
+
+    if isinstance(step, StepFileIoDasrdi):
+        h = _require_handle(state, step.handleId, expected_kind=("DAS", "DLA"), require_open=True).handle
+        return StepOutput(op=step.op, value=das_data_oracle.dasrdi(h, step.first, step.last))
+
+    if isinstance(step, StepFileIoDasudc):
+        h = _require_handle(state, step.handleId, expected_kind=("DAS", "DLA"), require_open=True).handle
+        return StepOutput(op=step.op, value=das_data_oracle.dasudc(h, step.first, step.last, step.bpos, step.epos, step.datlen, step.data))
+
+    if isinstance(step, StepFileIoDasudd):
+        h = _require_handle(state, step.handleId, expected_kind=("DAS", "DLA"), require_open=True).handle
+        return StepOutput(op=step.op, value=das_data_oracle.dasudd(h, step.first, step.last, step.data))
+
+    if isinstance(step, StepFileIoDasudi):
+        h = _require_handle(state, step.handleId, expected_kind=("DAS", "DLA"), require_open=True).handle
+        return StepOutput(op=step.op, value=das_data_oracle.dasudi(h, step.first, step.last, step.data))
 
     if isinstance(step, (StepFileIoDasonw, StepFileIoDasopw, StepFileIoDasops)):
         existing = state.handles.get(step.handleId)
@@ -408,6 +458,26 @@ def run_file_io_step(step: WorkflowStep, context: SidecarRuntimeContext) -> Step
         _prepare_output_path(_resolve_file_io_path(context, step.path))
         handle = int(sp.dlaopn(_resolve_file_io_path(context, step.path), step.ftype, step.ifname, step.ncomch))
         _register_handle(state, step.handleId, handle, kind="DLA", close_with="dascls")
+        return StepOutput(op=step.op, value=None)
+
+    if isinstance(step, (StepFileIoDlabbs, StepFileIoDlafps)):
+        h = _require_handle(state, step.handleId, expected_kind=("DAS", "DLA"), require_open=True).handle
+        if isinstance(step, StepFileIoDlabbs):
+            descriptor, found = dla_segment_oracle.last(h)
+        else:
+            descriptor, found = dla_segment_oracle.previous(h, _require_descriptor(state, step.descrId))
+        if not found:
+            state.descriptors.pop(step.descrId, None)
+            return StepOutput(op=step.op, value={"found": False})
+        state.descriptors[step.descrId] = descriptor
+        return StepOutput(op=step.op, value={"found": True, "descr": _descriptor_fields(descriptor)})
+
+    if isinstance(step, (StepFileIoDlabns, StepFileIoDlaens)):
+        h = _require_handle(state, step.handleId, expected_kind=("DAS", "DLA"), require_open=True).handle
+        if isinstance(step, StepFileIoDlabns):
+            dla_segment_oracle.begin(h)
+        else:
+            dla_segment_oracle.end(h)
         return StepOutput(op=step.op, value=None)
 
     if isinstance(step, StepFileIoDlabfs):

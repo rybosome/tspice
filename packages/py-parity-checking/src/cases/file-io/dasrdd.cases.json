@@ -1,0 +1,226 @@
+[
+  {
+    "caseId": "file-io-dasrdd-endpoints",
+    "description": "Read the beginning, interior and final address separately and preserve signed values and binary bytes.",
+    "workflow": [
+      {
+        "op": "file-io.dasops",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dasadd",
+        "handleId": "h",
+        "n": 7,
+        "data": [0.125, -0.5, 8192, -91.75, 1.25, 0.015625, 4.5]
+      },
+      {
+        "op": "file-io.dasrdd",
+        "handleId": "h",
+        "first": 1,
+        "last": 1
+      },
+      {
+        "op": "file-io.dasrdd",
+        "handleId": "h",
+        "first": 2,
+        "last": 5
+      },
+      {
+        "op": "file-io.dasrdd",
+        "handleId": "h",
+        "first": 7,
+        "last": 7
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dasrdd-persisted-read-claims",
+    "description": "Flush and reopen the file twice, close the original token and use the surviving independent read claim.",
+    "workflow": [
+      {
+        "op": "file-io.dasonw",
+        "handleId": "h",
+        "path": {
+          "kind": "scratch",
+          "rel": "observed/data.das"
+        },
+        "ftype": "DATA",
+        "ifname": "DAS DATA",
+        "ncomr": 0
+      },
+      {
+        "op": "file-io.dasadd",
+        "handleId": "h",
+        "n": 7,
+        "data": [0.125, -0.5, 8192, -91.75, 1.25, 0.015625, 4.5]
+      },
+      {
+        "op": "file-io.daswbr",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dasopr",
+        "handleId": "h",
+        "path": {
+          "kind": "scratch",
+          "rel": "observed/data.das"
+        }
+      },
+      {
+        "op": "file-io.dasopr",
+        "handleId": "other",
+        "path": {
+          "kind": "scratch",
+          "rel": "observed/data.das"
+        }
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dasrdd",
+        "handleId": "other",
+        "first": 1,
+        "last": 7
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dasrdd-noncontiguous-records",
+    "description": "Read logical addresses spanning two typed records separated by another physical data type.",
+    "workflow": [
+      {
+        "op": "file-io.dasops",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dasadd",
+        "handleId": "h",
+        "n": 128,
+        "data": [
+          -2.75, -2.5, -2.25, -2.0, -1.75, -1.5, -1.25, -1.0, -0.75, -0.5,
+          -0.25, 0.0, 0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0, 2.25, 2.5,
+          2.75, -2.75, -2.5, -2.25, -2.0, -1.75, -1.5, -1.25, -1.0, -0.75, -0.5,
+          -0.25, 0.0, 0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0, 2.25, 2.5,
+          2.75, -2.75, -2.5, -2.25, -2.0, -1.75, -1.5, -1.25, -1.0, -0.75, -0.5,
+          -0.25, 0.0, 0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0, 2.25, 2.5,
+          2.75, -2.75, -2.5, -2.25, -2.0, -1.75, -1.5, -1.25, -1.0, -0.75, -0.5,
+          -0.25, 0.0, 0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0, 2.25, 2.5,
+          2.75, -2.75, -2.5, -2.25, -2.0, -1.75, -1.5, -1.25, -1.0, -0.75, -0.5,
+          -0.25, 0.0, 0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0, 2.25, 2.5,
+          2.75, -2.75, -2.5, -2.25, -2.0, -1.75, -1.5, -1.25, -1.0, -0.75, -0.5,
+          -0.25, 0.0, 0.25
+        ]
+      },
+      {
+        "op": "file-io.dasadi",
+        "handleId": "h",
+        "n": 1,
+        "data": [85]
+      },
+      {
+        "op": "file-io.dasadd",
+        "handleId": "h",
+        "n": 5,
+        "data": [0.5, 0.75, 1.0, 1.25, 1.5]
+      },
+      {
+        "op": "file-io.dasrdd",
+        "handleId": "h",
+        "first": 125,
+        "last": 132
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dasrdd-reversed",
+    "description": "Two valid endpoints in the same record with first greater than last leave the destination untouched.",
+    "workflow": [
+      {
+        "op": "file-io.dasops",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dasadd",
+        "handleId": "h",
+        "n": 7,
+        "data": [0.125, -0.5, 8192, -91.75, 1.25, 0.015625, 4.5]
+      },
+      {
+        "op": "file-io.dasrdd",
+        "handleId": "h",
+        "first": 4,
+        "last": 2
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dasrdd-before-first",
+    "description": "Check each logical endpoint before reading typed record storage.",
+    "workflow": [
+      {
+        "op": "file-io.dasops",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dasadd",
+        "handleId": "h",
+        "n": 7,
+        "data": [0.125, -0.5, 8192, -91.75, 1.25, 0.015625, 4.5]
+      },
+      {
+        "op": "file-io.dasrdd",
+        "handleId": "h",
+        "first": 0,
+        "last": 1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["DASNOSUCHADDRESS"]
+    }
+  },
+  {
+    "caseId": "file-io-dasrdd-past-logical-end",
+    "description": "Check each logical endpoint before reading typed record storage.",
+    "workflow": [
+      {
+        "op": "file-io.dasops",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dasadd",
+        "handleId": "h",
+        "n": 7,
+        "data": [0.125, -0.5, 8192, -91.75, 1.25, 0.015625, 4.5]
+      },
+      {
+        "op": "file-io.dasrdd",
+        "handleId": "h",
+        "first": 3,
+        "last": 8
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["DASNOSUCHADDRESS"]
+    }
+  }
+]

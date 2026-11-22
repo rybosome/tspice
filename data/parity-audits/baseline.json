@@ -1123,6 +1123,27 @@
       "nextAction": "Verify the combined source on both required lanes and canonical CI."
     },
     {
+      "id": "c05-das-data",
+      "routines": [
+        "dasadc_c",
+        "dasadd_c",
+        "dasadi_c",
+        "dasrdc_c",
+        "dasrdd_c",
+        "dasrdi_c",
+        "dasudc_c",
+        "dasudd_c",
+        "dasudi_c"
+      ],
+      "dependsOn": [
+        "c04-das-lifecycle"
+      ],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/750"
+      ],
+      "nextAction": "Verify the combined source on both required lanes and canonical CI."
+    },
+    {
       "id": "c03-daf-mutation",
       "routines": [
         "dafac_c",
@@ -1151,6 +1172,23 @@
       ],
       "prs": [
         "https://github.com/rybosome/tspice/pull/755"
+      ],
+      "nextAction": "Verify the combined source on both required lanes and canonical CI."
+    },
+    {
+      "id": "c07-dla-segments",
+      "routines": [
+        "dlabbs_c",
+        "dlabns_c",
+        "dlaens_c",
+        "dlafps_c"
+      ],
+      "dependsOn": [
+        "c04-das-lifecycle",
+        "c05-das-data"
+      ],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/758"
       ],
       "nextAction": "Verify the combined source on both required lanes and canonical CI."
     }

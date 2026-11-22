@@ -220,6 +220,48 @@ export type NativeAddon = {
     bufsiz: number,
     buffln: number,
   ): { n: number; done: boolean; bytes: Uint8Array };
+  dasadc(
+    handle: number,
+    n: number,
+    bpos: number,
+    epos: number,
+    datlen: number,
+    data: Uint8Array,
+  ): void;
+  dasadd(handle: number, n: number, data: readonly number[]): void;
+  dasadi(handle: number, n: number, data: readonly number[]): void;
+  dasrdc(
+    handle: number,
+    first: number,
+    last: number,
+    bpos: number,
+    epos: number,
+    datlen: number,
+    data: Uint8Array,
+  ): Uint8Array;
+  dasrdd(handle: number, first: number, last: number): number[];
+  dasrdi(handle: number, first: number, last: number): number[];
+  dasudc(
+    handle: number,
+    first: number,
+    last: number,
+    bpos: number,
+    epos: number,
+    datlen: number,
+    data: Uint8Array,
+  ): void;
+  dasudd(
+    handle: number,
+    first: number,
+    last: number,
+    data: readonly number[],
+  ): void;
+  dasudi(
+    handle: number,
+    first: number,
+    last: number,
+    data: readonly number[],
+  ): void;
   dasonw(path: string, ftype: string, ifname: string, ncomr: number): number;
   dasops(): number;
   dasopw(path: string): number;
@@ -237,6 +279,13 @@ export type NativeAddon = {
   dascls(handle: number): void;
 
   dlaopn(path: string, ftype: string, ifname: string, ncomch: number): number;
+  dlabbs(handle: number): { found: boolean; descr?: Record<string, unknown> };
+  dlafps(
+    handle: number,
+    descr: Record<string, unknown>,
+  ): { found: boolean; descr?: Record<string, unknown> };
+  dlabns(handle: number): void;
+  dlaens(handle: number): void;
   dlabfs(handle: number): { found: boolean; descr?: Record<string, unknown> };
   dlafns(
     handle: number,

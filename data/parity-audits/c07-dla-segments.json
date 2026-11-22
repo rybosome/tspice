@@ -1,0 +1,636 @@
+{
+  "schemaVersion": 1,
+  "batch": "c07-dla-segments",
+  "traceFiles": [
+    "docs/step8-dla-segments.md",
+    "fixtures/consumer-nodom/src/index.ts",
+    "packages/backend-contract/src/domains/file-io.ts",
+    "packages/backend-contract/src/index.ts",
+    "packages/backend-contract/src/shared/types.ts",
+    "packages/backend-fake/src/index.ts",
+    "packages/backend-node/native/binding.gyp",
+    "packages/backend-node/native/src/addon.cc",
+    "packages/backend-node/native/src/domains/file_io.cc",
+    "packages/backend-node/src/domains/file-io.ts",
+    "packages/backend-node/src/index.ts",
+    "packages/backend-node/src/lowlevel/binding.ts",
+    "packages/backend-node/src/runtime/addon.ts",
+    "packages/backend-node/src/runtime/virtual-output-staging.ts",
+    "packages/backend-node/test/dla-segments-domain.test.ts",
+    "packages/backend-shim-c/include/tspice_backend_shim.h",
+    "packages/backend-shim-c/src/domains/file_io.c",
+    "packages/backend-shim-c/src/errors.c",
+    "packages/backend-wasm/src/codec/alloc.ts",
+    "packages/backend-wasm/src/codec/errors.ts",
+    "packages/backend-wasm/src/domains/file-io.ts",
+    "packages/backend-wasm/src/lowlevel/exports.ts",
+    "packages/backend-wasm/src/runtime/create-backend.node.ts",
+    "packages/backend-wasm/src/runtime/create-backend.web.ts",
+    "packages/backend-wasm/src/runtime/fs.ts",
+    "packages/backend-wasm/src/runtime/virtual-outputs.ts",
+    "packages/backend-wasm/test/dla-segments-allocations.test.ts",
+    "packages/core/src/index.ts",
+    "packages/core/src/spice-runtime/domains/das-files.ts",
+    "packages/core/src/spice-runtime/shared/spice-handles.ts",
+    "packages/py-parity-checking/fixtures/README.md",
+    "packages/py-parity-checking/fixtures/generate-audit-dsk.py",
+    "packages/py-parity-checking/fixtures/kernels/audit-geometry.bds",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/das_data_oracle.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/decode.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/dla_segment_oracle.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/file_io.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/workflow.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/__init__.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/file_io.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/workflow.py",
+    "packages/py-parity-checking/src/case-types.ts",
+    "packages/py-parity-checking/src/cases/index.ts",
+    "packages/py-parity-checking/src/run-tspice/dispatch.ts",
+    "packages/py-parity-checking/src/run-tspice/domains/file-io.ts",
+    "packages/py-parity-checking/src/runtime/lifecycle.ts",
+    "packages/py-parity-checking/test/dla-segments-public.test.ts",
+    "packages/tspice/src/index.ts",
+    "scripts/build-backend-wasm.mjs",
+    "scripts/coverage-ledger.test.mjs"
+  ],
+  "executions": [
+    {
+      "id": "local-c07-9d9836f4-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "2ac0ef746475a57bf878819fcce8517b597ca2c4484568b9b0cef77f9bb1371d",
+      "caseIds": [
+        "file-io-dlabbs-empty",
+        "file-io-dlabbs-independent-files",
+        "file-io-dlabbs-mixed",
+        "file-io-dlabbs-one-empty",
+        "file-io-dlabbs-pending",
+        "file-io-dlabbs-repeat",
+        "file-io-dlabbs-synthetic-dsk",
+        "file-io-dlabbs-without-controls",
+        "file-io-dlabns-character-only",
+        "file-io-dlabns-double-only",
+        "file-io-dlabns-first-word-state",
+        "file-io-dlabns-integer-only",
+        "file-io-dlabns-physical-crossing",
+        "file-io-dlabns-read-only",
+        "file-io-dlabns-reopened-writer",
+        "file-io-dlabns-successive-links",
+        "file-io-dlabns-without-header",
+        "file-io-dlaens-empty-last",
+        "file-io-dlaens-logical-ranges",
+        "file-io-dlaens-no-data",
+        "file-io-dlaens-no-segment",
+        "file-io-dlaens-read-only",
+        "file-io-dlaens-recompute-last",
+        "file-io-dlaens-reopened-pending",
+        "file-io-dlaens-three-components",
+        "file-io-dlaens-without-header",
+        "file-io-dlafps-closed-token",
+        "file-io-dlafps-complete-backward",
+        "file-io-dlafps-forward-to-back",
+        "file-io-dlafps-independent-descriptors",
+        "file-io-dlafps-one-end",
+        "file-io-dlafps-reverse-to-forward",
+        "file-io-dlafps-synthetic-dsk",
+        "file-io-dlafps-writer-pending"
+      ],
+      "observation": "Both complete required lanes passed locally on 9d9836f41edb8a86c36268acb439b963b1d27fe7. JavaScript: 2,712 parity tests and one expected guard skip. Native-required: 2,486 registered Node/WASM live comparisons; 2,713 parity-package tests with no skips, including the native-required guard; 87 native wrapper, 677 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "local-c07-9d9836f4-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "2ac0ef746475a57bf878819fcce8517b597ca2c4484568b9b0cef77f9bb1371d",
+      "caseIds": [
+        "file-io-dlabbs-empty",
+        "file-io-dlabbs-independent-files",
+        "file-io-dlabbs-mixed",
+        "file-io-dlabbs-one-empty",
+        "file-io-dlabbs-pending",
+        "file-io-dlabbs-repeat",
+        "file-io-dlabbs-synthetic-dsk",
+        "file-io-dlabbs-without-controls",
+        "file-io-dlabns-character-only",
+        "file-io-dlabns-double-only",
+        "file-io-dlabns-first-word-state",
+        "file-io-dlabns-integer-only",
+        "file-io-dlabns-physical-crossing",
+        "file-io-dlabns-read-only",
+        "file-io-dlabns-reopened-writer",
+        "file-io-dlabns-successive-links",
+        "file-io-dlabns-without-header",
+        "file-io-dlaens-empty-last",
+        "file-io-dlaens-logical-ranges",
+        "file-io-dlaens-no-data",
+        "file-io-dlaens-no-segment",
+        "file-io-dlaens-read-only",
+        "file-io-dlaens-recompute-last",
+        "file-io-dlaens-reopened-pending",
+        "file-io-dlaens-three-components",
+        "file-io-dlaens-without-header",
+        "file-io-dlafps-closed-token",
+        "file-io-dlafps-complete-backward",
+        "file-io-dlafps-forward-to-back",
+        "file-io-dlafps-independent-descriptors",
+        "file-io-dlafps-one-end",
+        "file-io-dlafps-reverse-to-forward",
+        "file-io-dlafps-synthetic-dsk",
+        "file-io-dlafps-writer-pending"
+      ],
+      "observation": "Both complete required lanes passed locally on 9d9836f41edb8a86c36268acb439b963b1d27fe7. JavaScript: 2,712 parity tests and one expected guard skip. Native-required: 2,486 registered Node/WASM live comparisons; 2,713 parity-package tests with no skips, including the native-required guard; 87 native wrapper, 677 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-c07-9d9836f4-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "2ac0ef746475a57bf878819fcce8517b597ca2c4484568b9b0cef77f9bb1371d",
+      "caseIds": [
+        "file-io-dlabbs-empty",
+        "file-io-dlabbs-independent-files",
+        "file-io-dlabbs-mixed",
+        "file-io-dlabbs-one-empty",
+        "file-io-dlabbs-pending",
+        "file-io-dlabbs-repeat",
+        "file-io-dlabbs-synthetic-dsk",
+        "file-io-dlabbs-without-controls",
+        "file-io-dlabns-character-only",
+        "file-io-dlabns-double-only",
+        "file-io-dlabns-first-word-state",
+        "file-io-dlabns-integer-only",
+        "file-io-dlabns-physical-crossing",
+        "file-io-dlabns-read-only",
+        "file-io-dlabns-reopened-writer",
+        "file-io-dlabns-successive-links",
+        "file-io-dlabns-without-header",
+        "file-io-dlaens-empty-last",
+        "file-io-dlaens-logical-ranges",
+        "file-io-dlaens-no-data",
+        "file-io-dlaens-no-segment",
+        "file-io-dlaens-read-only",
+        "file-io-dlaens-recompute-last",
+        "file-io-dlaens-reopened-pending",
+        "file-io-dlaens-three-components",
+        "file-io-dlaens-without-header",
+        "file-io-dlafps-closed-token",
+        "file-io-dlafps-complete-backward",
+        "file-io-dlafps-forward-to-back",
+        "file-io-dlafps-independent-descriptors",
+        "file-io-dlafps-one-end",
+        "file-io-dlafps-reverse-to-forward",
+        "file-io-dlafps-synthetic-dsk",
+        "file-io-dlafps-writer-pending"
+      ],
+      "commit": "9d9836f41edb8a86c36268acb439b963b1d27fe7",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43578704814/job/132398571244",
+      "observation": "Inspected successful Linux Node 22 native-required job 132398571244 on 9d9836f41edb8a86c36268acb439b963b1d27fe7: 2,486 registered Node/WASM live comparisons; 2,713 parity-package tests with no skips, including the native-required guard; 87 native wrapper, 677 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-c07-9d9836f4-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "2ac0ef746475a57bf878819fcce8517b597ca2c4484568b9b0cef77f9bb1371d",
+      "caseIds": [
+        "file-io-dlabbs-empty",
+        "file-io-dlabbs-independent-files",
+        "file-io-dlabbs-mixed",
+        "file-io-dlabbs-one-empty",
+        "file-io-dlabbs-pending",
+        "file-io-dlabbs-repeat",
+        "file-io-dlabbs-synthetic-dsk",
+        "file-io-dlabbs-without-controls",
+        "file-io-dlabns-character-only",
+        "file-io-dlabns-double-only",
+        "file-io-dlabns-first-word-state",
+        "file-io-dlabns-integer-only",
+        "file-io-dlabns-physical-crossing",
+        "file-io-dlabns-read-only",
+        "file-io-dlabns-reopened-writer",
+        "file-io-dlabns-successive-links",
+        "file-io-dlabns-without-header",
+        "file-io-dlaens-empty-last",
+        "file-io-dlaens-logical-ranges",
+        "file-io-dlaens-no-data",
+        "file-io-dlaens-no-segment",
+        "file-io-dlaens-read-only",
+        "file-io-dlaens-recompute-last",
+        "file-io-dlaens-reopened-pending",
+        "file-io-dlaens-three-components",
+        "file-io-dlaens-without-header",
+        "file-io-dlafps-closed-token",
+        "file-io-dlafps-complete-backward",
+        "file-io-dlafps-forward-to-back",
+        "file-io-dlafps-independent-descriptors",
+        "file-io-dlafps-one-end",
+        "file-io-dlafps-reverse-to-forward",
+        "file-io-dlafps-synthetic-dsk",
+        "file-io-dlafps-writer-pending"
+      ],
+      "commit": "9d9836f41edb8a86c36268acb439b963b1d27fe7",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43578704814/job/132398571244",
+      "observation": "Inspected successful Linux Node 22 native-required job 132398571244 on 9d9836f41edb8a86c36268acb439b963b1d27fe7: 2,486 registered Node/WASM live comparisons; 2,713 parity-package tests with no skips, including the native-required guard; 87 native wrapper, 677 WASM, 28 core and 150 facade tests passed."
+    }
+  ],
+  "routines": [
+    {
+      "routine": "dlabbs_c",
+      "contract": "packages/backend-contract/src/domains/file-io.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dlabbs_c.html",
+      "semantics": "Look up the last DLA descriptor and return all eight actual words. Empty files return only found=false. Repeated searches select the tail independently.",
+      "scenarios": [
+        {
+          "caseId": "file-io-dlabbs-empty",
+          "coverage": ["success", "edge"],
+          "observes": "Both a fresh writer and a reopened reader report an empty list."
+        },
+        {
+          "caseId": "file-io-dlabbs-pending",
+          "coverage": ["success", "edge"],
+          "observes": "All eight provisional descriptor words are visible before finalization."
+        },
+        {
+          "caseId": "file-io-dlabbs-one-empty",
+          "coverage": ["success", "edge"],
+          "observes": "A genuine empty segment has three zero sizes and null endpoints, distinct from an empty file."
+        },
+        {
+          "caseId": "file-io-dlabbs-mixed",
+          "coverage": ["success", "edge"],
+          "observes": "Read all eight last words plus actual terminal logical data across dissimilar component sizes."
+        },
+        {
+          "caseId": "file-io-dlabbs-repeat",
+          "coverage": ["success", "edge"],
+          "observes": "Restart from the tail twice around backward movement without a global search cursor."
+        },
+        {
+          "caseId": "file-io-dlabbs-independent-files",
+          "coverage": ["success", "edge"],
+          "observes": "Interleave two DAS writers with unequal tails; each handle selects its own header."
+        },
+        {
+          "caseId": "file-io-dlabbs-synthetic-dsk",
+          "coverage": ["success", "edge"],
+          "observes": "Read actual last descriptor from independent four-segment synthetic tetrahedron DSK."
+        },
+        {
+          "caseId": "file-io-dlabbs-without-controls",
+          "coverage": ["error"],
+          "observes": "A normal empty plain DAS has no integer address three."
+        }
+      ],
+      "edgeAssessment": "Both a fresh writer and a reopened reader report an empty list. All eight provisional descriptor words are visible before finalization. A genuine empty segment has three zero sizes and null endpoints, distinct from an empty file. Read all eight last words plus actual terminal logical data across dissimilar component sizes. Restart from the tail twice around backward movement without a global search cursor. Interleave two DAS writers with unequal tails; each handle selects its own header. Read actual last descriptor from independent four-segment synthetic tetrahedron DSK.",
+      "errorAssessment": "A normal empty plain DAS has no integer address three. DASNOSUCHADDRESS.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-multi-dsk.bds",
+          "provenance": "The checked-in project generator creates four synthetic tetrahedral DLA segments with invented body/surface pairs and geometry.",
+          "distribution": "Project-authored under the repository MIT license."
+        }
+      ],
+      "fixtureRationale": "Workflows separately author named and scratch DAS/DLA files with explicit component bytes, doubles and signed integers. Two traversal profiles also use a four-segment project-authored DSK. All output mutations target transient private files.",
+      "cleanup": "Each open is an owned DAS/DLA claim. Explicit close and scenario finalizers release claims; supplemental tests dispose clients and remove temporary files in finally. Native serialization and bounded WASM allocation fault checks cover all four operations.",
+      "tolerance": "Compare every descriptor word, link, logical header address and component, all found flags, persisted data and scoped diagnostics. Byte and integer checks are exact; supplemental finite double values have exact representations.",
+      "findings": [
+        {
+          "id": "dlabbs-linked-segment-boundary",
+          "status": "repaired",
+          "summary": "The original wrapper copies a descriptor when its second DAS read fails. Preflight its actual integer-word extent under the native lock and then execute dlabbs_c on all defined results. Support provisional component sizes of minus one.",
+          "repair": "The original wrapper copies a descriptor when its second DAS read fails. Preflight its actual integer-word extent under the native lock and then execute dlabbs_c on all defined results. Support provisional component sizes of minus one.",
+          "caseIds": [
+            "file-io-dlabbs-empty",
+            "file-io-dlabbs-pending",
+            "file-io-dlabbs-independent-files",
+            "file-io-dlabbs-synthetic-dsk",
+            "file-io-dlabbs-without-controls"
+          ],
+          "evidence": [
+            "docs/step8-dla-segments.md",
+            "packages/backend-shim-c/src/domains/file_io.c",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/dla_segment_oracle.py",
+            "packages/py-parity-checking/test/dla-segments-public.test.ts",
+            "packages/backend-node/test/dla-segments-domain.test.ts",
+            "packages/backend-wasm/test/dla-segments-allocations.test.ts"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.dlabbs -> owned native handle under process mutex -> tspice_dlabbs -> dlabbs_c. Checked actual DLA/DAS operand reads precede the canonical call. The independent locked wrapper operates on a different file.",
+          "executions": ["local-c07-9d9836f4-node", "ci-c07-9d9836f4-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.dlabbs -> owned WASM handle and scoped buffers -> tspice_dlabbs -> dlabbs_c. Checked actual DLA/DAS operand reads precede the canonical call. The independent locked wrapper operates on a different file.",
+          "executions": ["local-c07-9d9836f4-wasm", "ci-c07-9d9836f4-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "dlabns_c",
+      "contract": "packages/backend-contract/src/domains/file-io.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dlabns_c.html",
+      "semantics": "Begin a segment on an owned DAS-backed DLA writer. The actual eight-word descriptor links the previous tail immediately, and establishes bases and provisional component sizes.",
+      "scenarios": [
+        {
+          "caseId": "file-io-dlabns-first-word-state",
+          "coverage": ["success", "edge"],
+          "observes": "Separate begin from finalization. Observe real control words, descriptor storage, all pending sizes and last addresses."
+        },
+        {
+          "caseId": "file-io-dlabns-successive-links",
+          "coverage": ["success", "edge"],
+          "observes": "Observe the old and new forward/backward links when beginning a subsequent segment."
+        },
+        {
+          "caseId": "file-io-dlabns-character-only",
+          "coverage": ["success", "edge"],
+          "observes": "Append arbitrary binary bytes in a generic DLA segment and retain them beyond close/reopen."
+        },
+        {
+          "caseId": "file-io-dlabns-integer-only",
+          "coverage": ["success", "edge"],
+          "observes": "Append signed integer extrema to the segment following the real descriptor."
+        },
+        {
+          "caseId": "file-io-dlabns-double-only",
+          "coverage": ["success", "edge"],
+          "observes": "Append signed and fractional double words independent of character or integer payloads."
+        },
+        {
+          "caseId": "file-io-dlabns-reopened-writer",
+          "coverage": ["success", "edge"],
+          "observes": "Continue a previously finalized file with DASOPW; observe its old descriptor link and appended component."
+        },
+        {
+          "caseId": "file-io-dlabns-physical-crossing",
+          "coverage": ["success", "edge"],
+          "observes": "Begin after 245 payload integers so the descriptor crosses the 256-word physical integer record."
+        },
+        {
+          "caseId": "file-io-dlabns-read-only",
+          "coverage": ["error"],
+          "observes": "The original DASSIH access check rejects an append to a read-only DLA."
+        },
+        {
+          "caseId": "file-io-dlabns-without-header",
+          "coverage": ["error"],
+          "observes": "A writable plain DAS lacks the DLA header pointers read by DLABNS."
+        }
+      ],
+      "edgeAssessment": "Separate begin from finalization. Observe real control words, descriptor storage, all pending sizes and last addresses. Observe the old and new forward/backward links when beginning a subsequent segment. Append arbitrary binary bytes in a generic DLA segment and retain them beyond close/reopen. Append signed integer extrema to the segment following the real descriptor. Append signed and fractional double words independent of character or integer payloads. Continue a previously finalized file with DASOPW; observe its old descriptor link and appended component. Begin after 245 payload integers so the descriptor crosses the 256-word physical integer record.",
+      "errorAssessment": "The original DASSIH access check rejects an append to a read-only DLA. DASINVALIDACCESS. A writable plain DAS lacks the DLA header pointers read by DLABNS. DASNOSUCHADDRESS.",
+      "fixtures": [],
+      "fixtureRationale": "Workflows separately author named and scratch DAS/DLA files with explicit component bytes, doubles and signed integers. Two traversal profiles also use a four-segment project-authored DSK. All output mutations target transient private files.",
+      "cleanup": "Each open is an owned DAS/DLA claim. Explicit close and scenario finalizers release claims; supplemental tests dispose clients and remove temporary files in finally. Native serialization and bounded WASM allocation fault checks cover all four operations.",
+      "tolerance": "Compare every descriptor word, link, logical header address and component, all found flags, persisted data and scoped diagnostics. Byte and integer checks are exact; supplemental finite double values have exact representations.",
+      "findings": [
+        {
+          "id": "dlabns-linked-segment-boundary",
+          "status": "repaired",
+          "summary": "Preflight the original writer access, header and signed growth before native mutation. Initialize the unused suffix only when the eight-word descriptor allocates a new partial integer record. The original DLAOPN control append receives the same inherited C05 padding policy.",
+          "repair": "Preflight the original writer access, header and signed growth before native mutation. Initialize the unused suffix only when the eight-word descriptor allocates a new partial integer record. The original DLAOPN control append receives the same inherited C05 padding policy.",
+          "caseIds": [
+            "file-io-dlabns-first-word-state",
+            "file-io-dlabns-successive-links",
+            "file-io-dlabns-physical-crossing",
+            "file-io-dlabns-read-only",
+            "file-io-dlabns-without-header"
+          ],
+          "evidence": [
+            "docs/step8-dla-segments.md",
+            "packages/backend-shim-c/src/domains/file_io.c",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/dla_segment_oracle.py",
+            "packages/py-parity-checking/test/dla-segments-public.test.ts",
+            "packages/backend-node/test/dla-segments-domain.test.ts",
+            "packages/backend-wasm/test/dla-segments-allocations.test.ts"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.dlabns -> owned native handle under process mutex -> tspice_dlabns -> dlabns_c. Checked actual DLA/DAS operand reads precede the canonical call. The independent locked wrapper operates on a different file.",
+          "executions": ["local-c07-9d9836f4-node", "ci-c07-9d9836f4-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.dlabns -> owned WASM handle and scoped buffers -> tspice_dlabns -> dlabns_c. Checked actual DLA/DAS operand reads precede the canonical call. The independent locked wrapper operates on a different file.",
+          "executions": ["local-c07-9d9836f4-wasm", "ci-c07-9d9836f4-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "dlaens_c",
+      "contract": "packages/backend-contract/src/domains/file-io.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dlaens_c.html",
+      "semantics": "Set each size in the current last descriptor to its live logical high address minus the stored base. Leave the writer open. Finalization may be repeated on that descriptor.",
+      "scenarios": [
+        {
+          "caseId": "file-io-dlaens-three-components",
+          "coverage": ["success", "edge"],
+          "observes": "Compare provisional and finalized sizes and bases for separately written integer/double/character payloads."
+        },
+        {
+          "caseId": "file-io-dlaens-no-data",
+          "coverage": ["success", "edge"],
+          "observes": "Finalizing a begun segment with no component data writes three zero sizes."
+        },
+        {
+          "caseId": "file-io-dlaens-recompute-last",
+          "coverage": ["success", "edge"],
+          "observes": "Finalizing an existing last descriptor again recomputes sizes; newly appended data and prior links survive."
+        },
+        {
+          "caseId": "file-io-dlaens-reopened-pending",
+          "coverage": ["success", "edge"],
+          "observes": "Close and reopen an unfinished writer, then finalize its persisted component bases."
+        },
+        {
+          "caseId": "file-io-dlaens-logical-ranges",
+          "coverage": ["success", "edge"],
+          "observes": "Multiple batches per component and exact logical endpoint values survive a completed mixed segment."
+        },
+        {
+          "caseId": "file-io-dlaens-empty-last",
+          "coverage": ["success", "edge"],
+          "observes": "A middle segment with no parts and a final populated segment have independent bases, sizes and links."
+        },
+        {
+          "caseId": "file-io-dlaens-read-only",
+          "coverage": ["error"],
+          "observes": "A read-only populated file retains the original DASUDI access failure while finalizing."
+        },
+        {
+          "caseId": "file-io-dlaens-no-segment",
+          "coverage": ["error"],
+          "observes": "An initialized empty list contains the null pointer, which is not a readable last descriptor."
+        },
+        {
+          "caseId": "file-io-dlaens-without-header",
+          "coverage": ["error"],
+          "observes": "A plain DAS lacks integer address three for finalization."
+        }
+      ],
+      "edgeAssessment": "Compare provisional and finalized sizes and bases for separately written integer/double/character payloads. Finalizing a begun segment with no component data writes three zero sizes. Finalizing an existing last descriptor again recomputes sizes; newly appended data and prior links survive. Close and reopen an unfinished writer, then finalize its persisted component bases. Multiple batches per component and exact logical endpoint values survive a completed mixed segment. A middle segment with no parts and a final populated segment have independent bases, sizes and links.",
+      "errorAssessment": "A read-only populated file retains the original DASUDI access failure while finalizing. DASINVALIDACCESS. An initialized empty list contains the null pointer, which is not a readable last descriptor. DASNOSUCHADDRESS. A plain DAS lacks integer address three for finalization. DASNOSUCHADDRESS.",
+      "fixtures": [],
+      "fixtureRationale": "Workflows separately author named and scratch DAS/DLA files with explicit component bytes, doubles and signed integers. Two traversal profiles also use a four-segment project-authored DSK. All output mutations target transient private files.",
+      "cleanup": "Each open is an owned DAS/DLA claim. Explicit close and scenario finalizers release claims; supplemental tests dispose clients and remove temporary files in finally. Native serialization and bounded WASM allocation fault checks cover all four operations.",
+      "tolerance": "Compare every descriptor word, link, logical header address and component, all found flags, persisted data and scoped diagnostics. Byte and integer checks are exact; supplemental finite double values have exact representations.",
+      "findings": [
+        {
+          "id": "dlaens-linked-segment-boundary",
+          "status": "repaired",
+          "summary": "N0067 continues after failed control and descriptor reads. Validate those reads and differences in the original trace before calling the canonical writer on all defined operations. A genuine read-only error still originates in the original update.",
+          "repair": "N0067 continues after failed control and descriptor reads. Validate those reads and differences in the original trace before calling the canonical writer on all defined operations. A genuine read-only error still originates in the original update.",
+          "caseIds": [
+            "file-io-dlaens-three-components",
+            "file-io-dlaens-recompute-last",
+            "file-io-dlaens-reopened-pending",
+            "file-io-dlaens-read-only",
+            "file-io-dlaens-no-segment"
+          ],
+          "evidence": [
+            "docs/step8-dla-segments.md",
+            "packages/backend-shim-c/src/domains/file_io.c",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/dla_segment_oracle.py",
+            "packages/py-parity-checking/test/dla-segments-public.test.ts",
+            "packages/backend-node/test/dla-segments-domain.test.ts",
+            "packages/backend-wasm/test/dla-segments-allocations.test.ts"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.dlaens -> owned native handle under process mutex -> tspice_dlaens -> dlaens_c. Checked actual DLA/DAS operand reads precede the canonical call. The independent locked wrapper operates on a different file.",
+          "executions": ["local-c07-9d9836f4-node", "ci-c07-9d9836f4-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.dlaens -> owned WASM handle and scoped buffers -> tspice_dlaens -> dlaens_c. Checked actual DLA/DAS operand reads precede the canonical call. The independent locked wrapper operates on a different file.",
+          "executions": ["local-c07-9d9836f4-wasm", "ci-c07-9d9836f4-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "dlafps_c",
+      "contract": "packages/backend-contract/src/domains/file-io.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dlafps_c.html",
+      "semantics": "Follow the supplied descriptor’s backward pointer to its predecessor in the specified DLA. A null backward link returns found=false without a file read.",
+      "scenarios": [
+        {
+          "caseId": "file-io-dlafps-one-end",
+          "coverage": ["success", "edge"],
+          "observes": "The first and only descriptor has no preceding segment."
+        },
+        {
+          "caseId": "file-io-dlafps-complete-backward",
+          "coverage": ["success", "edge"],
+          "observes": "Walk three uneven segments to the null backward link, comparing every owned word."
+        },
+        {
+          "caseId": "file-io-dlafps-forward-to-back",
+          "coverage": ["success", "edge"],
+          "observes": "Start backward from a descriptor found by the forward iterator; no separate backward initialization is required."
+        },
+        {
+          "caseId": "file-io-dlafps-reverse-to-forward",
+          "coverage": ["success", "edge"],
+          "observes": "Reverse direction at the middle, advancing back to the same terminal descriptor."
+        },
+        {
+          "caseId": "file-io-dlafps-writer-pending",
+          "coverage": ["success", "edge"],
+          "observes": "Traverse backward from a provisional segment with size words of minus one to its completed predecessor."
+        },
+        {
+          "caseId": "file-io-dlafps-independent-descriptors",
+          "coverage": ["success", "edge"],
+          "observes": "Retain two descriptor references in one file and traverse from each independently."
+        },
+        {
+          "caseId": "file-io-dlafps-synthetic-dsk",
+          "coverage": ["success", "edge"],
+          "observes": "Walk every descriptor of the repository-authored four-segment tetrahedron DSK and terminate at its first link."
+        },
+        {
+          "caseId": "file-io-dlafps-closed-token",
+          "coverage": ["error"],
+          "observes": "Use an actual valid descriptor after its token has been explicitly closed. Ownership rejects the call before native access."
+        }
+      ],
+      "edgeAssessment": "The first and only descriptor has no preceding segment. Walk three uneven segments to the null backward link, comparing every owned word. Start backward from a descriptor found by the forward iterator; no separate backward initialization is required. Reverse direction at the middle, advancing back to the same terminal descriptor. Traverse backward from a provisional segment with size words of minus one to its completed predecessor. Retain two descriptor references in one file and traverse from each independently. Walk every descriptor of the repository-authored four-segment tetrahedron DSK and terminate at its first link.",
+      "errorAssessment": "Use an actual valid descriptor after its token has been explicitly closed. Ownership rejects the call before native access. . A missing predecessor is a normal result. A closed token fails before native execution. A descriptor must come from the supplied file.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-multi-dsk.bds",
+          "provenance": "The checked-in project generator creates four synthetic tetrahedral DLA segments with invented body/surface pairs and geometry.",
+          "distribution": "Project-authored under the repository MIT license."
+        }
+      ],
+      "fixtureRationale": "Workflows separately author named and scratch DAS/DLA files with explicit component bytes, doubles and signed integers. Two traversal profiles also use a four-segment project-authored DSK. All output mutations target transient private files.",
+      "cleanup": "Each open is an owned DAS/DLA claim. Explicit close and scenario finalizers release claims; supplemental tests dispose clients and remove temporary files in finally. Native serialization and bounded WASM allocation fault checks cover all four operations.",
+      "tolerance": "Compare every descriptor word, link, logical header address and component, all found flags, persisted data and scoped diagnostics. Byte and integer checks are exact; supplemental finite double values have exact representations.",
+      "findings": [
+        {
+          "id": "dlafps-linked-segment-boundary",
+          "status": "repaired",
+          "summary": "The C reader assumes a valid address for eight output words. Snapshot the descriptor once and check its read extent before calling the original routine. Fully owned results allow forward/backward composition and preserve provisional words.",
+          "repair": "The C reader assumes a valid address for eight output words. Snapshot the descriptor once and check its read extent before calling the original routine. Fully owned results allow forward/backward composition and preserve provisional words.",
+          "caseIds": [
+            "file-io-dlafps-one-end",
+            "file-io-dlafps-complete-backward",
+            "file-io-dlafps-forward-to-back",
+            "file-io-dlafps-writer-pending",
+            "file-io-dlafps-synthetic-dsk",
+            "file-io-dlafps-closed-token"
+          ],
+          "evidence": [
+            "docs/step8-dla-segments.md",
+            "packages/backend-shim-c/src/domains/file_io.c",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/dla_segment_oracle.py",
+            "packages/py-parity-checking/test/dla-segments-public.test.ts",
+            "packages/backend-node/test/dla-segments-domain.test.ts",
+            "packages/backend-wasm/test/dla-segments-allocations.test.ts"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.dlafps -> owned native handle under process mutex -> tspice_dlafps -> dlafps_c. Checked actual DLA/DAS operand reads precede the canonical call. The independent locked wrapper operates on a different file.",
+          "executions": ["local-c07-9d9836f4-node", "ci-c07-9d9836f4-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.dlafps -> owned WASM handle and scoped buffers -> tspice_dlafps -> dlafps_c. Checked actual DLA/DAS operand reads precede the canonical call. The independent locked wrapper operates on a different file.",
+          "executions": ["local-c07-9d9836f4-wasm", "ci-c07-9d9836f4-wasm"]
+        }
+      }
+    }
+  ],
+  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
+}
