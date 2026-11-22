@@ -220,3 +220,10 @@ export {
   orderRows,
   readOrderRows,
 } from "./spice-runtime/domains/array-order.js";
+
+export {
+  checkTimeText,
+  checkTimeNumber,
+  checkTimeYearWindow,
+  timeOutputCapacity,
+} from "./spice-runtime/domains/time-inputs.js";

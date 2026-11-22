@@ -1,0 +1,389 @@
+[
+  {
+    "caseId": "time-et2lst-sun",
+    "description": "The Sun has noon solar time for every planetocentric longitude without any supplied kernels.",
+    "workflow": [
+      {
+        "op": "time.et2lst",
+        "body": 10,
+        "et": 1,
+        "lon": 0.3,
+        "type": "PLANETOCENTRIC"
+      },
+      {
+        "op": "time.et2lst",
+        "body": 10,
+        "et": -99,
+        "lon": 17.25,
+        "type": "PLANETOCENTRIC"
+      },
+      {
+        "op": "time.et2lst",
+        "body": 10,
+        "et": 0,
+        "lon": -0.7,
+        "type": "PLANETOCENTRIC"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "time-et2lst-time-widths",
+    "description": "Truncate time and AM/PM independently while preserving numeric components.",
+    "workflow": [
+      {
+        "op": "time.et2lst",
+        "body": 10,
+        "et": 0,
+        "lon": 0,
+        "type": "PLANETOCENTRIC",
+        "timlen": 2,
+        "ampmlen": 13
+      },
+      {
+        "op": "time.et2lst",
+        "body": 10,
+        "et": 0,
+        "lon": 0,
+        "type": "PLANETOCENTRIC",
+        "timlen": 9,
+        "ampmlen": 2
+      },
+      {
+        "op": "time.et2lst",
+        "body": 10,
+        "et": 0,
+        "lon": 0,
+        "type": "PLANETOCENTRIC",
+        "timlen": 6,
+        "ampmlen": 9
+      },
+      {
+        "op": "time.et2lst",
+        "body": 10,
+        "et": 0,
+        "lon": 0,
+        "type": "PLANETOCENTRIC",
+        "timlen": 13,
+        "ampmlen": 13
+      },
+      {
+        "op": "time.et2lst",
+        "body": 10,
+        "et": 0,
+        "lon": 0,
+        "type": "PLANETOCENTRIC",
+        "timlen": 2147483647,
+        "ampmlen": 2147483647
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "time-et2lst-east-west",
+    "description": "Compare all five components at signed east and west longitudes, modulo a full rotation.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernel-pool.pcpool",
+        "name": "OBJECT_100101_FRAME",
+        "values": ["AUDIT_GEOMETRY_FIXED"]
+      },
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "BODY100101_PM",
+        "values": [0, 125, 0]
+      },
+      {
+        "op": "time.et2lst",
+        "body": 100101,
+        "et": 0,
+        "lon": 0,
+        "type": "PLANETOCENTRIC"
+      },
+      {
+        "op": "time.et2lst",
+        "body": 100101,
+        "et": 0,
+        "lon": 0.25,
+        "type": "PLANETOCENTRIC"
+      },
+      {
+        "op": "time.et2lst",
+        "body": 100101,
+        "et": 0,
+        "lon": -0.25,
+        "type": "PLANETOCENTRIC"
+      },
+      {
+        "op": "time.et2lst",
+        "body": 100101,
+        "et": 0,
+        "lon": 1.5707963267948966,
+        "type": "PLANETOCENTRIC"
+      },
+      {
+        "op": "time.et2lst",
+        "body": 100101,
+        "et": 0,
+        "lon": -1.5707963267948966,
+        "type": "PLANETOCENTRIC"
+      },
+      {
+        "op": "time.et2lst",
+        "body": 100101,
+        "et": 0,
+        "lon": 6.533185307179586,
+        "type": "PLANETOCENTRIC"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "time-et2lst-time-change",
+    "description": "Sun and synthetic body have independently evolving positions at separated ET instants.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernel-pool.pcpool",
+        "name": "OBJECT_100101_FRAME",
+        "values": ["AUDIT_GEOMETRY_FIXED"]
+      },
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "BODY100101_PM",
+        "values": [0, 125, 0]
+      },
+      {
+        "op": "time.et2lst",
+        "body": 100101,
+        "et": -2000,
+        "lon": 0.6,
+        "type": "PLANETOCENTRIC"
+      },
+      {
+        "op": "time.et2lst",
+        "body": 100101,
+        "et": 0,
+        "lon": 0.6,
+        "type": "PLANETOCENTRIC"
+      },
+      {
+        "op": "time.et2lst",
+        "body": 100101,
+        "et": 2000,
+        "lon": 0.6,
+        "type": "PLANETOCENTRIC"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "time-et2lst-planetographic",
+    "description": "Longitude definition and the sign of the PM rate affect direction and reported solar time.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernel-pool.pcpool",
+        "name": "OBJECT_100101_FRAME",
+        "values": ["AUDIT_GEOMETRY_FIXED"]
+      },
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "BODY100101_PM",
+        "values": [0, 125, 0]
+      },
+      {
+        "op": "time.et2lst",
+        "body": 100101,
+        "et": 0,
+        "lon": 0.25,
+        "type": "PLANETOGRAPHIC"
+      },
+      {
+        "op": "time.et2lst",
+        "body": 100101,
+        "et": 0,
+        "lon": 0.25,
+        "type": "PLANETOCENTRIC"
+      },
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "BODY100101_PM",
+        "values": [0, -125, 0]
+      },
+      {
+        "op": "time.et2lst",
+        "body": 100101,
+        "et": 0,
+        "lon": 0.25,
+        "type": "planetographic"
+      },
+      {
+        "op": "time.et2lst",
+        "body": 100101,
+        "et": 0,
+        "lon": 0.25,
+        "type": "PLANETOCENTRIC"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "time-et2lst-unknown-coordinates",
+    "description": "Unrecognized coordinate system precedes body orientation work.",
+    "workflow": [
+      {
+        "op": "time.et2lst",
+        "body": 123456,
+        "et": 0,
+        "lon": 0,
+        "type": "GEODETIC"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["UNKNOWNSYSTEM"]
+    }
+  },
+  {
+    "caseId": "time-et2lst-frame-missing",
+    "description": "Missing frame association is an actual toolkit error.",
+    "workflow": [
+      {
+        "op": "time.et2lst",
+        "body": 100101,
+        "et": 0,
+        "lon": 0,
+        "type": "PLANETOCENTRIC"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["CANTFINDFRAME"]
+    }
+  },
+  {
+    "caseId": "time-et2lst-missing-spk",
+    "description": "Registered body-fixed frame without solar ephemeris reports missing SPK data.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernel-pool.pcpool",
+        "name": "OBJECT_100101_FRAME",
+        "values": ["AUDIT_GEOMETRY_FIXED"]
+      },
+      {
+        "op": "time.et2lst",
+        "body": 100101,
+        "et": 0,
+        "lon": 0,
+        "type": "PLANETOCENTRIC"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["NOLOADEDFILES"]
+    }
+  },
+  {
+    "caseId": "time-et2lst-missing-rotation",
+    "description": "The ephemeris succeeds but the simulation has no PM rate.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernel-pool.pcpool",
+        "name": "OBJECT_100101_FRAME",
+        "values": ["AUDIT_GEOMETRY_FIXED"]
+      },
+      {
+        "op": "time.et2lst",
+        "body": 100101,
+        "et": 0,
+        "lon": 0,
+        "type": "PLANETOCENTRIC"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["CANTGETROTATIONTYPE"]
+    }
+  },
+  {
+    "caseId": "time-et2lst-short-time",
+    "description": "Each output width has its own capacity check before scientific evaluation.",
+    "workflow": [
+      {
+        "op": "time.et2lst",
+        "body": 100101,
+        "et": 0,
+        "lon": 0,
+        "type": "PLANETOCENTRIC",
+        "timlen": 1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["STRINGTOOSHORT"]
+    }
+  },
+  {
+    "caseId": "time-et2lst-short-ampm",
+    "description": "Each output width has its own capacity check before scientific evaluation.",
+    "workflow": [
+      {
+        "op": "time.et2lst",
+        "body": 100101,
+        "et": 0,
+        "lon": 0,
+        "type": "PLANETOCENTRIC",
+        "ampmlen": 1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["STRINGTOOSHORT"]
+    }
+  }
+]

@@ -448,3 +448,7 @@ oracle. The other three use their corresponding public CSPICE entrypoints.
 ## Frame metadata and transformations
 
 D03 adds six methods to the 162-routine baseline, including the two-epoch orientation error guard. [Scientific and lifecycle evidence](step8-frame-metadata.md) [Routine audit](../data/parity-audits/d03-frame-additions.json)
+
+## Civil time and local solar time expansion
+
+D01 adds five time methods to the immutable 162-routine Step 7 assignment. The reviewed source covers parser effects, exact text, leap-second increments, independent geometry, kernel/error order and safe representation boundaries. Older executions remain tied to their original sources. [Scientific observations and fixture provenance](step8-civil-time.md) [Maintained routine review](../data/parity-audits/d01-time-additions.json)

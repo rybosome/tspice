@@ -2923,11 +2923,11 @@
       ],
       "domain": "time",
       "apiPlacement": "packages/backend-contract/src/domains/time.ts; raw methods retain canonical names without _c.",
-      "owner": null,
+      "owner": "Codex Step 8 (/root)",
       "status": "in-progress",
       "dependsOn": [],
       "prerequisiteReview": "Reuse Step 7 time default restoration; new global parse/year state must have explicit cleanup or subprocess isolation. Distinguish formal calendar/ET/UTC, longitude type and local solar units.",
-      "fixtures": "Existing LSK and authored body constants; independent time/calendar cases around boundaries.",
+      "fixtures": "Existing naif0012.tls; authored audit-geometry.tf/bsp and runtime mappings for synthetic body 100101. No new kernel data.",
       "expectedChanges": {
         "domain": "time",
         "scope": "Add raw contract/JSDoc, shared C calls, Node adapter/native registration and WASM adapter/exports; regenerate compiled artifacts; update fake/facade/schema consumers and live parity dispatch/cases. See common acceptance requirements."
@@ -2939,21 +2939,24 @@
       "prs": [
         "https://github.com/rybosome/tspice/pull/741"
       ],
-      "validationEvidence": [],
-      "nextAction": "Intake the pinned source after checkpoint 02 lands and passes main CI.",
-      "sourceSnapshot": {
-        "number": 741,
-        "url": "https://github.com/rybosome/tspice/pull/741",
-        "head": "d817f7072210756404dab2cdf134e6d84198a834",
-        "base": "73f3fec8788ed926351f891b459ac75d434f6446",
-        "ci": "https://github.com/rybosome/tspice/actions/runs/43571484205",
-        "ciConclusion": "success"
-      },
-      "checkpoint": {
-        "number": 3,
-        "status": "pending intake"
-      },
-      "deliveryNote": "The pinned source head passed its configured CI matrix."
+      "validationEvidence": [
+        {
+          "kind": "focused-compiled-runtime",
+          "result": "Corrected compiled sources passed 76 Node/WASM registered comparisons, four public, 14 Node adapter/native and 20 WASM allocation/guard tests. An actual Chrome worker ran all five methods. The 38 registered workflows contain 163 steps and 95 invocations of the new methods, with 16 expected diagnostics."
+        },
+        {
+          "kind": "source-bound-required-lanes",
+          "testedCommit": "76c549f2deb557021ec0cdb6b6da3ce20ff90b37",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43570044988/job/132372232193",
+          "result": "Both complete required lanes passed locally on 76c549f2deb557021ec0cdb6b6da3ce20ff90b37. JavaScript: 2,510 parity tests and one expected guard skip. Native-required: 2,294 registered Node/WASM live comparisons; 2,511 parity-package tests with no skips, including the native-required guard; 80 native wrapper, 620 WASM, 28 core and 150 facade tests passed. Inspected successful Linux Node 22 native-required job 132372232193 on 76c549f2deb557021ec0cdb6b6da3ce20ff90b37: 2,294 registered Node/WASM live comparisons; 2,511 parity-package tests with no skips, including the native-required guard; 80 native wrapper, 620 WASM, 28 core and 150 facade tests passed."
+        }
+      ],
+      "nextAction": "Wait for the full metadata-head CI matrix and verify explicit rebaseability before marking the PR ready; do not merge.",
+      "baseCommit": "73f3fec8788ed926351f891b459ac75d434f6446",
+      "branch": "codex/expand-time-additions",
+      "worktree": "/private/tmp/tspice-step8-time-additions",
+      "progressNote": "Both required local lanes and observed canonical native-required CI passed on the implementation source 76c549f2. 2,294 registered Node/WASM live comparisons; 2,511 parity-package tests with no skips, including the native-required guard; 80 native wrapper, 620 WASM, 28 core and 150 facade tests passed.",
+      "priorCheckpoint": "The five typed APIs and scientific source reviews are implemented on main 73f3fec8. Guarded canonical UTC2ET and ET2LST paths preserve independent scientific behavior and defined arithmetic."
     },
     {
       "id": "D02-sclk-additions",

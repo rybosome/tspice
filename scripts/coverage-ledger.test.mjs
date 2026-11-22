@@ -94,13 +94,47 @@ test("baseline derives breadth and preserves direct/non-direct evidence", (t) =>
   assert.deepEqual(ledger.summary, {
     total: 652,
     eligible: 649,
-    implemented: 422,
-    planned: 227,
+    implemented: 427,
+    planned: 222,
     excluded: 3,
-    caseFiles: 422,
-    scenarios: 2781,
+    caseFiles: 427,
+    scenarios: 2819,
     wasmRawUnsupported: 0,
   });
+  const functions = cFunctions(
+    cTokens(
+      fs.readFileSync(
+        path.join(f.root, "packages/backend-shim-c/src/domains/time.c"),
+        "utf8",
+      ),
+    ),
+  );
+  for (const name of ["etcal", "utc2et", "tparch", "tsetyr", "et2lst"]) {
+    const row = ledger.routines.find((r) => r.routine === name + "_c");
+    for (const backend of ["node", "wasm"])
+      assert.ok(row.mapping[backend].cspiceEntrypoints.includes(name + "_c"));
+    assert.ok(
+      cCalls(functions.get("tspice_" + name).body).includes(name + "_c"),
+    );
+  }
+  assert.ok(
+    cCalls(functions.get("tspice_utc2et").body).includes("utc_numbers_defined"),
+  );
+  assert.ok(
+    cCalls(functions.get("utc_numbers_defined").body).includes("tpartv_"),
+  );
+  assert.ok(
+    cCalls(functions.get("tspice_et2lst").body).includes("local_time_defined"),
+  );
+  const localCalls = cCalls(functions.get("local_time_defined").body);
+  for (const required of [
+    "body_mapping_defined",
+    "pgrrec_",
+    "cidfrm_",
+    "spkez_",
+    "rmaind_",
+  ])
+    assert.ok(localCalls.includes(required));
   const kplfrm = ledger.routines.find((r) => r.routine === "kplfrm_c");
   assert.equal(kplfrm.inventoryDecision, "planned");
   assert.equal(kplfrm.implementation, "contract-present");
@@ -554,7 +588,7 @@ test("maintained audit separates reviewed findings from verified backend executi
   const f = fixture(t);
   const ledger = f.build();
   assert.equal(ledger.audit.baselineRoutines, 162);
-  assert.equal(ledger.audit.expansionRoutines, 260);
+  assert.equal(ledger.audit.expansionRoutines, 265);
   // Each success route reaches its public C entrypoint. The three guarded paths
   // must also retain the linked numerical routine used to reject invalid input.
   for (const name of [
