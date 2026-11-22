@@ -14,3 +14,12 @@ export function constantTypes(sync: Spice, async: SpiceAsync): void {
   const promisedJulianDate: Promise<number> = async.raw.b1950();
   void [scalar, julianDate, promisedScalar, promisedJulianDate];
 }
+
+/** Check scalar raw API types without browser library declarations. */
+export function scalarConstantTypes(sync: Spice, async: SpiceAsync): void {
+  const secondsPerYear: number = sync.raw.jyear();
+  const minimumInteger: number = sync.raw.intmin();
+  const promisedLimit: Promise<number> = async.raw.dpmax();
+  const promisedDate: Promise<number> = async.raw.b1900();
+  void [secondsPerYear, minimumInteger, promisedLimit, promisedDate];
+}

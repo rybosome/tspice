@@ -751,7 +751,8 @@
         "time-unitim-happy-et-to-tai",
         "time-unitim-missing-lsk-error"
       ],
-      "observation": "Both complete required local lanes passed with Node 22.23.4, pnpm10.13.1, locked Python3.12.15/SpiceyPy6.0.3 and production CSPICE N0067. Current native-required execution rebuilt/loaded production addon and ran native-presence guard, all2254 live comparisons (1127 per backend), all2471 parity-package tests without skips, 84Node/600WASM/28core/150facade tests. First JS attempts exposed required JSDoc and missing platform staging; repaired before successful complete lanes. No scientific tolerances or native guard weakened."
+      "observation": "Both complete required local lanes passed with Node 22.23.4, pnpm10.13.1, locked Python3.12.15/SpiceyPy6.0.3 and production CSPICE N0067. Current native-required execution rebuilt/loaded production addon and ran native-presence guard, all2254 live comparisons (1127 per backend), all2471 parity-package tests without skips, 84Node/600WASM/28core/150facade tests. First JS attempts exposed required JSDoc and missing platform staging; repaired before successful complete lanes. No scientific tolerances or native guard weakened.",
+      "historical": true
     },
     {
       "id": "local-a01-bfedb109-wasm",
@@ -792,7 +793,8 @@
         "time-unitim-happy-et-to-tai",
         "time-unitim-missing-lsk-error"
       ],
-      "observation": "Both complete required local lanes passed with Node 22.23.4, pnpm10.13.1, locked Python3.12.15/SpiceyPy6.0.3 and production CSPICE N0067. Current native-required execution rebuilt/loaded production addon and ran native-presence guard, all2254 live comparisons (1127 per backend), all2471 parity-package tests without skips, 84Node/600WASM/28core/150facade tests. First JS attempts exposed required JSDoc and missing platform staging; repaired before successful complete lanes. No scientific tolerances or native guard weakened."
+      "observation": "Both complete required local lanes passed with Node 22.23.4, pnpm10.13.1, locked Python3.12.15/SpiceyPy6.0.3 and production CSPICE N0067. Current native-required execution rebuilt/loaded production addon and ran native-presence guard, all2254 live comparisons (1127 per backend), all2471 parity-package tests without skips, 84Node/600WASM/28core/150facade tests. First JS attempts exposed required JSDoc and missing platform staging; repaired before successful complete lanes. No scientific tolerances or native guard weakened.",
+      "historical": true
     },
     {
       "id": "ci-a01-bfedb109-node",
@@ -835,7 +837,8 @@
       ],
       "commit": "bfedb1098e738e821b831ba9d1f9d6f7bc24c637",
       "url": "https://github.com/rybosome/tspice/actions/runs/43536295333/job/132265992665",
-      "observation": "Inspected successful canonical Linux Node 22 native-required job on bfedb109: production N0067 addon built and loaded, native-required assertion executed, parity test task was a cache miss and all 2254 live comparisons passed (1127 scenarios per actual backend). All 2471 parity-package tests passed with no skips, plus 84 Node / 600 WASM / 28 core / 150 facade tests. New exact constants and native boundary tests executed. No job retry; remaining matrix jobs are tracked separately."
+      "observation": "Inspected successful canonical Linux Node 22 native-required job on bfedb109: production N0067 addon built and loaded, native-required assertion executed, parity test task was a cache miss and all 2254 live comparisons passed (1127 scenarios per actual backend). All 2471 parity-package tests passed with no skips, plus 84 Node / 600 WASM / 28 core / 150 facade tests. New exact constants and native boundary tests executed. No job retry; remaining matrix jobs are tracked separately.",
+      "historical": true
     },
     {
       "id": "ci-a01-bfedb109-wasm",
@@ -878,7 +881,180 @@
       ],
       "commit": "bfedb1098e738e821b831ba9d1f9d6f7bc24c637",
       "url": "https://github.com/rybosome/tspice/actions/runs/43536295333/job/132265992665",
-      "observation": "Inspected successful canonical Linux Node 22 native-required job on bfedb109: production N0067 addon built and loaded, native-required assertion executed, parity test task was a cache miss and all 2254 live comparisons passed (1127 scenarios per actual backend). All 2471 parity-package tests passed with no skips, plus 84 Node / 600 WASM / 28 core / 150 facade tests. New exact constants and native boundary tests executed. No job retry; remaining matrix jobs are tracked separately."
+      "observation": "Inspected successful canonical Linux Node 22 native-required job on bfedb109: production N0067 addon built and loaded, native-required assertion executed, parity test task was a cache miss and all 2254 live comparisons passed (1127 scenarios per actual backend). All 2471 parity-package tests passed with no skips, plus 84 Node / 600 WASM / 28 core / 150 facade tests. New exact constants and native boundary tests executed. No job retry; remaining matrix jobs are tracked separately.",
+      "historical": true
+    },
+    {
+      "id": "local-a02-d5ba2aee-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "682a66bb85ba31017ff635ac2eeca6bd4db7e11304689e9d3f6d5455495668c0",
+      "caseIds": [
+        "time-str2et-audit-invalid-day",
+        "time-str2et-audit-missing-leap-information",
+        "time-str2et-audit-utc-leap-boundary-and-formats",
+        "time-str2et-happy-j2000",
+        "time-str2et-invalid-time-error",
+        "time-timdef-audit-calendar-zone-system-effects",
+        "time-timdef-audit-early-error-after-mutation",
+        "time-timdef-invalid-system-value-error",
+        "time-timdef-stateful-get-set",
+        "time-timout-audit-internal-picture-boundary",
+        "time-timout-audit-missing-leap-information",
+        "time-timout-audit-signed-epochs-systems-and-precision",
+        "time-timout-empty-picture-error",
+        "time-timout-happy-tdb-picture",
+        "time-tkvrsn-audit-stable-through-kernel-pool-state",
+        "time-tkvrsn-happy-toolkit",
+        "time-tkvrsn-unsupported-item-error",
+        "time-tparse-audit-formal-days-and-fractions",
+        "time-tparse-audit-time-system-not-supported",
+        "time-tparse-happy-utc-iso",
+        "time-tparse-invalid-string-error",
+        "time-tpictr-audit-sample-driven-independent-of-template",
+        "time-tpictr-audit-unrecognized-sample",
+        "time-tpictr-empty-sample-error",
+        "time-tpictr-happy-sample-derived-picture",
+        "time-unitim-audit-bad-system",
+        "time-unitim-audit-systems-julian-days-and-fractions",
+        "time-unitim-happy-et-to-tai",
+        "time-unitim-missing-lsk-error"
+      ],
+      "observation": "Both complete required local lanes passed with Node 22.23.4, pnpm 10.13.1, locked Python 3.12.15/SpiceyPy 6.0.3 and production CSPICE N0067. Native-required execution rebuilt and loaded the production addon, ran the native-presence guard, all 2258 live comparisons (1129 per backend), all 2475 parity-package tests with no skips, and 86 Node / 600 WASM / 28 core / 152 facade tests. Final source includes exact live scalar comparisons and real RPC structured-clone checks. Initial JS formatting failure was fixed before successful complete lanes; no tolerance or guard weakened.",
+      "historical": true
+    },
+    {
+      "id": "local-a02-d5ba2aee-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "682a66bb85ba31017ff635ac2eeca6bd4db7e11304689e9d3f6d5455495668c0",
+      "caseIds": [
+        "time-str2et-audit-invalid-day",
+        "time-str2et-audit-missing-leap-information",
+        "time-str2et-audit-utc-leap-boundary-and-formats",
+        "time-str2et-happy-j2000",
+        "time-str2et-invalid-time-error",
+        "time-timdef-audit-calendar-zone-system-effects",
+        "time-timdef-audit-early-error-after-mutation",
+        "time-timdef-invalid-system-value-error",
+        "time-timdef-stateful-get-set",
+        "time-timout-audit-internal-picture-boundary",
+        "time-timout-audit-missing-leap-information",
+        "time-timout-audit-signed-epochs-systems-and-precision",
+        "time-timout-empty-picture-error",
+        "time-timout-happy-tdb-picture",
+        "time-tkvrsn-audit-stable-through-kernel-pool-state",
+        "time-tkvrsn-happy-toolkit",
+        "time-tkvrsn-unsupported-item-error",
+        "time-tparse-audit-formal-days-and-fractions",
+        "time-tparse-audit-time-system-not-supported",
+        "time-tparse-happy-utc-iso",
+        "time-tparse-invalid-string-error",
+        "time-tpictr-audit-sample-driven-independent-of-template",
+        "time-tpictr-audit-unrecognized-sample",
+        "time-tpictr-empty-sample-error",
+        "time-tpictr-happy-sample-derived-picture",
+        "time-unitim-audit-bad-system",
+        "time-unitim-audit-systems-julian-days-and-fractions",
+        "time-unitim-happy-et-to-tai",
+        "time-unitim-missing-lsk-error"
+      ],
+      "observation": "Both complete required local lanes passed with Node 22.23.4, pnpm 10.13.1, locked Python 3.12.15/SpiceyPy 6.0.3 and production CSPICE N0067. Native-required execution rebuilt and loaded the production addon, ran the native-presence guard, all 2258 live comparisons (1129 per backend), all 2475 parity-package tests with no skips, and 86 Node / 600 WASM / 28 core / 152 facade tests. Final source includes exact live scalar comparisons and real RPC structured-clone checks. Initial JS formatting failure was fixed before successful complete lanes; no tolerance or guard weakened.",
+      "historical": true
+    },
+    {
+      "id": "ci-a02-d5ba2aee-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "682a66bb85ba31017ff635ac2eeca6bd4db7e11304689e9d3f6d5455495668c0",
+      "caseIds": [
+        "time-str2et-audit-invalid-day",
+        "time-str2et-audit-missing-leap-information",
+        "time-str2et-audit-utc-leap-boundary-and-formats",
+        "time-str2et-happy-j2000",
+        "time-str2et-invalid-time-error",
+        "time-timdef-audit-calendar-zone-system-effects",
+        "time-timdef-audit-early-error-after-mutation",
+        "time-timdef-invalid-system-value-error",
+        "time-timdef-stateful-get-set",
+        "time-timout-audit-internal-picture-boundary",
+        "time-timout-audit-missing-leap-information",
+        "time-timout-audit-signed-epochs-systems-and-precision",
+        "time-timout-empty-picture-error",
+        "time-timout-happy-tdb-picture",
+        "time-tkvrsn-audit-stable-through-kernel-pool-state",
+        "time-tkvrsn-happy-toolkit",
+        "time-tkvrsn-unsupported-item-error",
+        "time-tparse-audit-formal-days-and-fractions",
+        "time-tparse-audit-time-system-not-supported",
+        "time-tparse-happy-utc-iso",
+        "time-tparse-invalid-string-error",
+        "time-tpictr-audit-sample-driven-independent-of-template",
+        "time-tpictr-audit-unrecognized-sample",
+        "time-tpictr-empty-sample-error",
+        "time-tpictr-happy-sample-derived-picture",
+        "time-unitim-audit-bad-system",
+        "time-unitim-audit-systems-julian-days-and-fractions",
+        "time-unitim-happy-et-to-tai",
+        "time-unitim-missing-lsk-error"
+      ],
+      "commit": "d5ba2aee2ea707da7c303c4cd2e500c3f6b25cdd",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43536405345/job/132266367481",
+      "observation": "Inspected successful canonical Linux Node 22 native-required job on d5ba2aee: production N0067 addon built and loaded, native-required assertion executed, parity test task was a cache miss and all 2258 live comparisons passed (1129 scenarios per actual backend). All 2475 parity-package tests passed with no skips, plus 86 Node / 600 WASM / 28 core / 152 facade tests. Exact scalar, native boundary and real RPC tests executed. No job retry; remaining matrix jobs are tracked separately.",
+      "historical": true
+    },
+    {
+      "id": "ci-a02-d5ba2aee-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "682a66bb85ba31017ff635ac2eeca6bd4db7e11304689e9d3f6d5455495668c0",
+      "caseIds": [
+        "time-str2et-audit-invalid-day",
+        "time-str2et-audit-missing-leap-information",
+        "time-str2et-audit-utc-leap-boundary-and-formats",
+        "time-str2et-happy-j2000",
+        "time-str2et-invalid-time-error",
+        "time-timdef-audit-calendar-zone-system-effects",
+        "time-timdef-audit-early-error-after-mutation",
+        "time-timdef-invalid-system-value-error",
+        "time-timdef-stateful-get-set",
+        "time-timout-audit-internal-picture-boundary",
+        "time-timout-audit-missing-leap-information",
+        "time-timout-audit-signed-epochs-systems-and-precision",
+        "time-timout-empty-picture-error",
+        "time-timout-happy-tdb-picture",
+        "time-tkvrsn-audit-stable-through-kernel-pool-state",
+        "time-tkvrsn-happy-toolkit",
+        "time-tkvrsn-unsupported-item-error",
+        "time-tparse-audit-formal-days-and-fractions",
+        "time-tparse-audit-time-system-not-supported",
+        "time-tparse-happy-utc-iso",
+        "time-tparse-invalid-string-error",
+        "time-tpictr-audit-sample-driven-independent-of-template",
+        "time-tpictr-audit-unrecognized-sample",
+        "time-tpictr-empty-sample-error",
+        "time-tpictr-happy-sample-derived-picture",
+        "time-unitim-audit-bad-system",
+        "time-unitim-audit-systems-julian-days-and-fractions",
+        "time-unitim-happy-et-to-tai",
+        "time-unitim-missing-lsk-error"
+      ],
+      "commit": "d5ba2aee2ea707da7c303c4cd2e500c3f6b25cdd",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43536405345/job/132266367481",
+      "observation": "Inspected successful canonical Linux Node 22 native-required job on d5ba2aee: production N0067 addon built and loaded, native-required assertion executed, parity test task was a cache miss and all 2258 live comparisons passed (1129 scenarios per actual backend). All 2475 parity-package tests passed with no skips, plus 86 Node / 600 WASM / 28 core / 152 facade tests. Exact scalar, native boundary and real RPC tests executed. No job retry; remaining matrix jobs are tracked separately.",
+      "historical": true
     }
   ],
   "routines": [
@@ -890,27 +1066,41 @@
       "scenarios": [
         {
           "caseId": "time-str2et-happy-j2000",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Every returned ET scalar reaches live comparison, including one-second UTC leap boundaries, day-of-year and signed/fractional explicit TDB inputs; actual named parse/day/kernel failures remain distinct. Case: Parses canonical J2000 TDB literal to ET"
         },
         {
           "caseId": "time-str2et-invalid-time-error",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Every returned ET scalar reaches live comparison, including one-second UTC leap boundaries, day-of-year and signed/fractional explicit TDB inputs; actual named parse/day/kernel failures remain distinct. Case: Representative parse failure for invalid time literal"
         },
         {
           "caseId": "time-str2et-audit-utc-leap-boundary-and-formats",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Every returned ET scalar reaches live comparison, including one-second UTC leap boundaries, day-of-year and signed/fractional explicit TDB inputs; actual named parse/day/kernel failures remain distinct. Case: str2et: utc leap boundary and formats, compare complete actual live SpiceyPy outputs/effects"
         },
         {
           "caseId": "time-str2et-audit-missing-leap-information",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Every returned ET scalar reaches live comparison, including one-second UTC leap boundaries, day-of-year and signed/fractional explicit TDB inputs; actual named parse/day/kernel failures remain distinct. Case: str2et: missing leap information, compare complete actual live SpiceyPy outputs/effects"
         },
         {
           "caseId": "time-str2et-audit-invalid-day",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Every returned ET scalar reaches live comparison, including one-second UTC leap boundaries, day-of-year and signed/fractional explicit TDB inputs; actual named parse/day/kernel failures remain distinct. Case: str2et: invalid day, compare complete actual live SpiceyPy outputs/effects"
         }
       ],
@@ -955,11 +1145,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.str2et -> Node adapter -> serialized native str2et handler -> shared time shim -> actual str2et_c. Oracle calls actual matching SpiceyPy routine; tparse/tpictr diagnostic returns are checked, not substituted.",
-          "executions": ["local-a01-bfedb109-node", "ci-a01-bfedb109-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -974,11 +1165,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.str2et -> WASM adapter/owned buffers -> required compiled export -> shared time shim -> actual str2et_c. Oracle calls actual matching SpiceyPy routine; tparse/tpictr diagnostic returns are checked, not substituted.",
-          "executions": ["local-a01-bfedb109-wasm", "ci-a01-bfedb109-wasm"]
+          "executions": []
         }
       }
     },
@@ -990,22 +1182,34 @@
       "scenarios": [
         {
           "caseId": "time-timdef-stateful-get-set",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Actual GET strings and downstream str2et effects compare calendar, system and zone transitions, including canonical zone and cleared system. Mutation followed by BADTIMEITEM exercises an early failure. Separate real-backend tests prove all caller defaults restored after both successful and failed workflows. Case: Exercises timdef state transitions for SYSTEM and CALENDAR"
         },
         {
           "caseId": "time-timdef-invalid-system-value-error",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Actual GET strings and downstream str2et effects compare calendar, system and zone transitions, including canonical zone and cleared system. Mutation followed by BADTIMEITEM exercises an early failure. Separate real-backend tests prove all caller defaults restored after both successful and failed workflows. Case: Representative timdef error for unsupported SYSTEM value"
         },
         {
           "caseId": "time-timdef-audit-calendar-zone-system-effects",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Actual GET strings and downstream str2et effects compare calendar, system and zone transitions, including canonical zone and cleared system. Mutation followed by BADTIMEITEM exercises an early failure. Separate real-backend tests prove all caller defaults restored after both successful and failed workflows. Case: timdef: calendar zone system effects, compare complete actual live SpiceyPy outputs/effects"
         },
         {
           "caseId": "time-timdef-audit-early-error-after-mutation",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Actual GET strings and downstream str2et effects compare calendar, system and zone transitions, including canonical zone and cleared system. Mutation followed by BADTIMEITEM exercises an early failure. Separate real-backend tests prove all caller defaults restored after both successful and failed workflows. Case: timdef: early error after mutation, compare complete actual live SpiceyPy outputs/effects"
         }
       ],
@@ -1049,7 +1253,9 @@
             "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/decode.py",
             "packages/py-parity-checking/src/cases/time/timdef.cases.json"
           ],
-          "caseIds": ["time-timdef-audit-early-error-after-mutation"]
+          "caseIds": [
+            "time-timdef-audit-early-error-after-mutation"
+          ]
         }
       ],
       "backends": {
@@ -1066,11 +1272,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.timdef -> Node adapter -> serialized native timdef handler -> shared time shim -> actual timdef_c. Oracle calls actual matching SpiceyPy routine; tparse/tpictr diagnostic returns are checked, not substituted.",
-          "executions": ["local-a01-bfedb109-node", "ci-a01-bfedb109-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1085,11 +1292,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.timdef -> WASM adapter/owned buffers -> required compiled export -> shared time shim -> actual timdef_c. Oracle calls actual matching SpiceyPy routine; tparse/tpictr diagnostic returns are checked, not substituted.",
-          "executions": ["local-a01-bfedb109-wasm", "ci-a01-bfedb109-wasm"]
+          "executions": []
         }
       }
     },
@@ -1101,27 +1309,43 @@
       "scenarios": [
         {
           "caseId": "time-timout-happy-tdb-picture",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Complete returned strings reach live comparison across signed/fractional epochs, UTC/TDB/TDT, calendar/ordinal markers, precision beyond 12 places and an overlong literal picture at the toolkit internal cap. Empty picture is documented wrapper validation, not a fabricated raw numeric output. Case: Formats J2000 ET with a TDB time picture"
         },
         {
           "caseId": "time-timout-empty-picture-error",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Existing contract/input boundary rejection; not claimed as same CSPICE diagnostic equivalence. Complete returned strings reach live comparison across signed/fractional epochs, UTC/TDB/TDT, calendar/ordinal markers, precision beyond 12 places and an overlong literal picture at the toolkit internal cap. Empty picture is documented wrapper validation, not a fabricated raw numeric output. Case: Representative timout argument validation error for empty picture"
         },
         {
           "caseId": "time-timout-audit-signed-epochs-systems-and-precision",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Complete returned strings reach live comparison across signed/fractional epochs, UTC/TDB/TDT, calendar/ordinal markers, precision beyond 12 places and an overlong literal picture at the toolkit internal cap. Empty picture is documented wrapper validation, not a fabricated raw numeric output. Case: timout: signed epochs systems and precision, compare complete actual live SpiceyPy outputs/effects"
         },
         {
           "caseId": "time-timout-audit-internal-picture-boundary",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Complete returned strings reach live comparison across signed/fractional epochs, UTC/TDB/TDT, calendar/ordinal markers, precision beyond 12 places and an overlong literal picture at the toolkit internal cap. Empty picture is documented wrapper validation, not a fabricated raw numeric output. Case: timout: internal picture boundary, compare complete actual live SpiceyPy outputs/effects"
         },
         {
           "caseId": "time-timout-audit-missing-leap-information",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Complete returned strings reach live comparison across signed/fractional epochs, UTC/TDB/TDT, calendar/ordinal markers, precision beyond 12 places and an overlong literal picture at the toolkit internal cap. Empty picture is documented wrapper validation, not a fabricated raw numeric output. Case: timout: missing leap information, compare complete actual live SpiceyPy outputs/effects"
         }
       ],
@@ -1151,11 +1375,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.timout -> Node adapter -> serialized native timout handler -> shared time shim -> actual timout_c. Oracle calls actual matching SpiceyPy routine; tparse/tpictr diagnostic returns are checked, not substituted.",
-          "executions": ["local-a01-bfedb109-node", "ci-a01-bfedb109-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1169,11 +1394,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.timout -> WASM adapter/owned buffers -> required compiled export -> shared time shim -> actual timout_c. Oracle calls actual matching SpiceyPy routine; tparse/tpictr diagnostic returns are checked, not substituted.",
-          "executions": ["local-a01-bfedb109-wasm", "ci-a01-bfedb109-wasm"]
+          "executions": []
         }
       }
     },
@@ -1185,17 +1411,27 @@
       "scenarios": [
         {
           "caseId": "time-tkvrsn-happy-toolkit",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Actual version strings reach comparison before/after kernel pool changes. Direct allocation/cache tests feed two distinct module-returned versions through the getter/API and require one getter call per module; full live cases compare the real N0067 toolkit with SpiceyPy. Unsupported item is the existing contract restriction, not CSPICE diagnostic equivalence. Case: Returns toolkit version string for TOOLKIT item"
         },
         {
           "caseId": "time-tkvrsn-unsupported-item-error",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Existing contract/input boundary rejection; not claimed as same CSPICE diagnostic equivalence. Actual version strings reach comparison before/after kernel pool changes. Direct allocation/cache tests feed two distinct module-returned versions through the getter/API and require one getter call per module; full live cases compare the real N0067 toolkit with SpiceyPy. Unsupported item is the existing contract restriction, not CSPICE diagnostic equivalence. Case: Representative tkvrsn error for unsupported item"
         },
         {
           "caseId": "time-tkvrsn-audit-stable-through-kernel-pool-state",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Actual version strings reach comparison before/after kernel pool changes. Direct allocation/cache tests feed two distinct module-returned versions through the getter/API and require one getter call per module; full live cases compare the real N0067 toolkit with SpiceyPy. Unsupported item is the existing contract restriction, not CSPICE diagnostic equivalence. Case: tkvrsn: stable through kernel pool state, compare complete actual live SpiceyPy outputs/effects"
         }
       ],
@@ -1225,11 +1461,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.tkvrsn -> Node adapter -> serialized native spiceVersion handler -> shared time shim -> actual tkvrsn_c. Oracle calls actual matching SpiceyPy routine; tparse/tpictr diagnostic returns are checked, not substituted.",
-          "executions": ["local-a01-bfedb109-node", "ci-a01-bfedb109-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1243,11 +1480,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "cached",
           "trace": "WASM factory -> getToolkitVersion -> compiled tspice_tkvrsn_toolkit -> actual tkvrsn_c(TOOLKIT), then module-local immutable cached raw result. Live oracle calls actual sp.tkvrsn.",
-          "executions": ["local-a01-bfedb109-wasm", "ci-a01-bfedb109-wasm"]
+          "executions": []
         }
       }
     },
@@ -1259,22 +1497,34 @@
       "scenarios": [
         {
           "caseId": "time-tparse-happy-utc-iso",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Actual formal-calendar scalar reaches comparison for positive/negative day offsets, binary fractions, leap-day/second and ordinal inputs. Parse/system-label diagnostic fragments distinguish success from non-CSPICE errmsg failure rather than merely two unrelated exceptions. Case: Parses UTC ISO timestamp to UTC seconds past J2000"
         },
         {
           "caseId": "time-tparse-invalid-string-error",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Actual formal-calendar scalar reaches comparison for positive/negative day offsets, binary fractions, leap-day/second and ordinal inputs. Parse/system-label diagnostic fragments distinguish success from non-CSPICE errmsg failure rather than merely two unrelated exceptions. Case: Representative parse error for invalid UTC time string"
         },
         {
           "caseId": "time-tparse-audit-formal-days-and-fractions",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Actual formal-calendar scalar reaches comparison for positive/negative day offsets, binary fractions, leap-day/second and ordinal inputs. Parse/system-label diagnostic fragments distinguish success from non-CSPICE errmsg failure rather than merely two unrelated exceptions. Case: tparse: formal days and fractions, compare complete actual live SpiceyPy outputs/effects"
         },
         {
           "caseId": "time-tparse-audit-time-system-not-supported",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Actual formal-calendar scalar reaches comparison for positive/negative day offsets, binary fractions, leap-day/second and ordinal inputs. Parse/system-label diagnostic fragments distinguish success from non-CSPICE errmsg failure rather than merely two unrelated exceptions. Case: tparse: time system not supported, compare complete actual live SpiceyPy outputs/effects"
         }
       ],
@@ -1313,11 +1563,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.tparse -> Node adapter -> serialized native tparse handler -> shared time shim -> actual tparse_c. Oracle calls actual matching SpiceyPy routine; tparse/tpictr diagnostic returns are checked, not substituted.",
-          "executions": ["local-a01-bfedb109-node", "ci-a01-bfedb109-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1332,11 +1583,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.tparse -> WASM adapter/owned buffers -> required compiled export -> shared time shim -> actual tparse_c. Oracle calls actual matching SpiceyPy routine; tparse/tpictr diagnostic returns are checked, not substituted.",
-          "executions": ["local-a01-bfedb109-wasm", "ci-a01-bfedb109-wasm"]
+          "executions": []
         }
       }
     },
@@ -1348,22 +1600,34 @@
       "scenarios": [
         {
           "caseId": "time-tpictr-happy-sample-derived-picture",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "The complete derived picture reaches live comparison for different sample formats and near-cap whitespace, with short/4096-character templates on the same sample yielding the same picture. Actual unrecognized-sample diagnostics reach the error assertion; template validation is recorded separately. Case: Derives a time picture from a representative UTC sample"
         },
         {
           "caseId": "time-tpictr-empty-sample-error",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Existing contract/input boundary rejection; not claimed as same CSPICE diagnostic equivalence. The complete derived picture reaches live comparison for different sample formats and near-cap whitespace, with short/4096-character templates on the same sample yielding the same picture. Actual unrecognized-sample diagnostics reach the error assertion; template validation is recorded separately. Case: Representative argument-validation error for empty sample"
         },
         {
           "caseId": "time-tpictr-audit-sample-driven-independent-of-template",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "The complete derived picture reaches live comparison for different sample formats and near-cap whitespace, with short/4096-character templates on the same sample yielding the same picture. Actual unrecognized-sample diagnostics reach the error assertion; template validation is recorded separately. Case: tpictr: sample driven independent of template, compare complete actual live SpiceyPy outputs/effects"
         },
         {
           "caseId": "time-tpictr-audit-unrecognized-sample",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "The complete derived picture reaches live comparison for different sample formats and near-cap whitespace, with short/4096-character templates on the same sample yielding the same picture. Actual unrecognized-sample diagnostics reach the error assertion; template validation is recorded separately. Case: tpictr: unrecognized sample, compare complete actual live SpiceyPy outputs/effects"
         }
       ],
@@ -1387,11 +1651,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.tpictr -> Node adapter -> serialized native tpictr handler -> shared time shim -> actual tpictr_c. Oracle calls actual matching SpiceyPy routine; tparse/tpictr diagnostic returns are checked, not substituted.",
-          "executions": ["local-a01-bfedb109-node", "ci-a01-bfedb109-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1405,11 +1670,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.tpictr -> WASM adapter/owned buffers -> required compiled export -> shared time shim -> actual tpictr_c. Oracle calls actual matching SpiceyPy routine; tparse/tpictr diagnostic returns are checked, not substituted.",
-          "executions": ["local-a01-bfedb109-wasm", "ci-a01-bfedb109-wasm"]
+          "executions": []
         }
       }
     },
@@ -1421,22 +1687,34 @@
       "scenarios": [
         {
           "caseId": "time-unitim-happy-et-to-tai",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "The actual raw epoch is retained along with a seconds-scale offset derived from it for Julian output. This prevents large-baseline relative tolerance hiding about 0.2 seconds near J2000. All returned fields reach live comparison across seconds/Julian aliases, signed fractions, identity, missing metadata and BADTIMETYPE. Case: Converts ET to TAI with leap-seconds kernel loaded"
         },
         {
           "caseId": "time-unitim-missing-lsk-error",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "The actual raw epoch is retained along with a seconds-scale offset derived from it for Julian output. This prevents large-baseline relative tolerance hiding about 0.2 seconds near J2000. All returned fields reach live comparison across seconds/Julian aliases, signed fractions, identity, missing metadata and BADTIMETYPE. Case: Representative unitim error when leap-seconds kernel is missing"
         },
         {
           "caseId": "time-unitim-audit-systems-julian-days-and-fractions",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "The actual raw epoch is retained along with a seconds-scale offset derived from it for Julian output. This prevents large-baseline relative tolerance hiding about 0.2 seconds near J2000. All returned fields reach live comparison across seconds/Julian aliases, signed fractions, identity, missing metadata and BADTIMETYPE. Case: unitim: systems julian days and fractions, compare complete actual live SpiceyPy outputs/effects"
         },
         {
           "caseId": "time-unitim-audit-bad-system",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "The actual raw epoch is retained along with a seconds-scale offset derived from it for Julian output. This prevents large-baseline relative tolerance hiding about 0.2 seconds near J2000. All returned fields reach live comparison across seconds/Julian aliases, signed fractions, identity, missing metadata and BADTIMETYPE. Case: unitim: bad system, compare complete actual live SpiceyPy outputs/effects"
         }
       ],
@@ -1483,11 +1761,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.unitim -> Node adapter -> serialized native unitim handler -> shared time shim -> actual unitim_c. Oracle calls actual matching SpiceyPy routine; tparse/tpictr diagnostic returns are checked, not substituted.",
-          "executions": ["local-a01-bfedb109-node", "ci-a01-bfedb109-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1502,11 +1781,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.unitim -> WASM adapter/owned buffers -> required compiled export -> shared time shim -> actual unitim_c. Oracle calls actual matching SpiceyPy routine; tparse/tpictr diagnostic returns are checked, not substituted.",
-          "executions": ["local-a01-bfedb109-wasm", "ci-a01-bfedb109-wasm"]
+          "executions": []
         }
       }
     }

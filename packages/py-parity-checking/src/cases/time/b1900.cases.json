@@ -1,0 +1,38 @@
+[
+  {
+    "caseId": "time-b1900-constant-value",
+    "description": "b1900: compare full-precision Julian date of B1900 returned by actual raw and live SpiceyPy without kernels.",
+    "workflow": [
+      {
+        "op": "time.b1900"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "time-b1900-constant-repeat-after-reset",
+    "description": "b1900: repeat the raw constant across kernel clear and error reset; all three returned values are compared.",
+    "workflow": [
+      {
+        "op": "time.b1900"
+      },
+      {
+        "op": "kernels.kclear"
+      },
+      {
+        "op": "time.b1900"
+      },
+      {
+        "op": "error.reset"
+      },
+      {
+        "op": "time.b1900"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

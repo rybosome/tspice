@@ -453,6 +453,11 @@ export function createTimeApi(
     j2000: () => module._tspice_j2000(),
     j1900: () => module._tspice_j1900(),
     b1950: () => module._tspice_b1950(),
+    b1900: () => module._tspice_b1900(),
+    j1950: () => module._tspice_j1950(),
+    j2100: () => module._tspice_j2100(),
+    jyear: () => module._tspice_jyear(),
+    tyear: () => module._tspice_tyear(),
     tkvrsn: (item) => {
       if (item !== "TOOLKIT") {
         throw new Error(`Unsupported tkvrsn item: ${item}`);

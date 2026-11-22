@@ -143,3 +143,5 @@ can satisfy a batch.
 No PR may be merged without explicit authorization. Step 9 reconciliation and
 release decisions remain separate; this queue authorizes no version choice,
 publishing or deployment.
+
+The checkpoint also preserves source history and evidence for [#708](https://github.com/rybosome/tspice/pull/708).

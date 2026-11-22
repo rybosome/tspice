@@ -25,6 +25,11 @@ from ..models import (
     StepCoordsVectorsHalfpi,
     StepCoordsVectorsDpr,
     StepCoordsVectorsRpd,
+    StepCoordsVectorsClight,
+    StepCoordsVectorsDpmax,
+    StepCoordsVectorsDpmin,
+    StepCoordsVectorsIntmax,
+    StepCoordsVectorsIntmin,
     StepCoordsVectorsVnorm,
     StepCoordsVectorsVscl,
     StepCoordsVectorsVsub,
@@ -86,6 +91,21 @@ def run_coords_vectors_step(step: WorkflowStep, _context: SidecarRuntimeContext)
 
     if isinstance(step, StepCoordsVectorsRpd):
         return StepOutput(op=step.op, value=float(sp.rpd()))
+
+    if isinstance(step, StepCoordsVectorsClight):
+        return StepOutput(op=step.op, value=float(sp.clight()))
+
+    if isinstance(step, StepCoordsVectorsDpmax):
+        return StepOutput(op=step.op, value=float(sp.dpmax()))
+
+    if isinstance(step, StepCoordsVectorsDpmin):
+        return StepOutput(op=step.op, value=float(sp.dpmin()))
+
+    if isinstance(step, StepCoordsVectorsIntmax):
+        return StepOutput(op=step.op, value=int(sp.intmax()))
+
+    if isinstance(step, StepCoordsVectorsIntmin):
+        return StepOutput(op=step.op, value=int(sp.intmin()))
 
     if isinstance(step, StepCoordsVectorsVnorm):
         out = sp.vnorm(step.v)

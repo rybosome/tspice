@@ -27,6 +27,11 @@ export function dispatchStep(
     case "time.j2000":
     case "time.j1900":
     case "time.b1950":
+    case "time.b1900":
+    case "time.j1950":
+    case "time.j2100":
+    case "time.jyear":
+    case "time.tyear":
     case "time.tkvrsn":
     case "time.timout":
     case "time.deltet":
@@ -60,6 +65,11 @@ export function dispatchStep(
     case "coords-vectors.halfpi":
     case "coords-vectors.dpr":
     case "coords-vectors.rpd":
+    case "coords-vectors.clight":
+    case "coords-vectors.dpmax":
+    case "coords-vectors.dpmin":
+    case "coords-vectors.intmax":
+    case "coords-vectors.intmin":
     case "coords-vectors.vnorm":
     case "coords-vectors.vhat":
     case "coords-vectors.vdot":

@@ -49,6 +49,26 @@ export type StepTimeB1950 = {
   op: "time.b1950";
 };
 
+export type StepTimeB1900 = {
+  op: "time.b1900";
+};
+
+export type StepTimeJ1950 = {
+  op: "time.j1950";
+};
+
+export type StepTimeJ2100 = {
+  op: "time.j2100";
+};
+
+export type StepTimeJyear = {
+  op: "time.jyear";
+};
+
+export type StepTimeTyear = {
+  op: "time.tyear";
+};
+
 export type StepTimeTkvrsn = {
   op: "time.tkvrsn";
   item: "TOOLKIT";
@@ -230,6 +250,26 @@ export type StepCoordsVectorsDpr = {
 
 export type StepCoordsVectorsRpd = {
   op: "coords-vectors.rpd";
+};
+
+export type StepCoordsVectorsClight = {
+  op: "coords-vectors.clight";
+};
+
+export type StepCoordsVectorsDpmax = {
+  op: "coords-vectors.dpmax";
+};
+
+export type StepCoordsVectorsDpmin = {
+  op: "coords-vectors.dpmin";
+};
+
+export type StepCoordsVectorsIntmax = {
+  op: "coords-vectors.intmax";
+};
+
+export type StepCoordsVectorsIntmin = {
+  op: "coords-vectors.intmin";
 };
 
 export type StepCoordsVectorsVnorm = {
@@ -1332,6 +1372,11 @@ export type WorkflowStep =
   | StepTimeJ2000
   | StepTimeJ1900
   | StepTimeB1950
+  | StepTimeB1900
+  | StepTimeJ1950
+  | StepTimeJ2100
+  | StepTimeJyear
+  | StepTimeTyear
   | StepTimeTkvrsn
   | StepTimeTimout
   | StepTimeDeltet
@@ -1362,6 +1407,11 @@ export type WorkflowStep =
   | StepCoordsVectorsHalfpi
   | StepCoordsVectorsDpr
   | StepCoordsVectorsRpd
+  | StepCoordsVectorsClight
+  | StepCoordsVectorsDpmax
+  | StepCoordsVectorsDpmin
+  | StepCoordsVectorsIntmax
+  | StepCoordsVectorsIntmin
   | StepCoordsVectorsVnorm
   | StepCoordsVectorsVhat
   | StepCoordsVectorsVdot
@@ -1535,6 +1585,11 @@ export type StepOutput =
   | { op: "time.j2000"; value: number }
   | { op: "time.j1900"; value: number }
   | { op: "time.b1950"; value: number }
+  | { op: "time.b1900"; value: number }
+  | { op: "time.j1950"; value: number }
+  | { op: "time.j2100"; value: number }
+  | { op: "time.jyear"; value: number }
+  | { op: "time.tyear"; value: number }
   | { op: "time.tkvrsn"; value: string }
   | { op: "time.timout"; value: string }
   | { op: "time.deltet"; value: number }
@@ -1579,6 +1634,11 @@ export type StepOutput =
   | { op: "coords-vectors.halfpi"; value: number }
   | { op: "coords-vectors.dpr"; value: number }
   | { op: "coords-vectors.rpd"; value: number }
+  | { op: "coords-vectors.clight"; value: number }
+  | { op: "coords-vectors.dpmax"; value: number }
+  | { op: "coords-vectors.dpmin"; value: number }
+  | { op: "coords-vectors.intmax"; value: number }
+  | { op: "coords-vectors.intmin"; value: number }
   | { op: "coords-vectors.vnorm"; value: number }
   | { op: "coords-vectors.vhat"; value: Vector3 }
   | { op: "coords-vectors.vdot"; value: number }

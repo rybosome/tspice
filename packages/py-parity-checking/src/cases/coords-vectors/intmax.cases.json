@@ -1,0 +1,38 @@
+[
+  {
+    "caseId": "coords-vectors-intmax-constant-value",
+    "description": "intmax: compare largest SpiceInt returned by actual raw and live SpiceyPy without kernels.",
+    "workflow": [
+      {
+        "op": "coords-vectors.intmax"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-intmax-constant-repeat-after-reset",
+    "description": "intmax: repeat the raw constant across kernel clear and error reset; all three returned values are compared.",
+    "workflow": [
+      {
+        "op": "coords-vectors.intmax"
+      },
+      {
+        "op": "kernels.kclear"
+      },
+      {
+        "op": "coords-vectors.intmax"
+      },
+      {
+        "op": "error.reset"
+      },
+      {
+        "op": "coords-vectors.intmax"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

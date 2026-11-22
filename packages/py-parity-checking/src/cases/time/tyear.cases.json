@@ -1,0 +1,38 @@
+[
+  {
+    "caseId": "time-tyear-constant-value",
+    "description": "tyear: compare seconds in a tropical year returned by actual raw and live SpiceyPy without kernels.",
+    "workflow": [
+      {
+        "op": "time.tyear"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "time-tyear-constant-repeat-after-reset",
+    "description": "tyear: repeat the raw constant across kernel clear and error reset; all three returned values are compared.",
+    "workflow": [
+      {
+        "op": "time.tyear"
+      },
+      {
+        "op": "kernels.kclear"
+      },
+      {
+        "op": "time.tyear"
+      },
+      {
+        "op": "error.reset"
+      },
+      {
+        "op": "time.tyear"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

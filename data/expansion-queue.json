@@ -12,7 +12,11 @@
     "remainingAtBase": 487,
     "registeredCaseFiles": 162,
     "registeredScenarios": 1109,
-    "excluded": ["ftncls_c", "getcml_c", "prompt_c"]
+    "excluded": [
+      "ftncls_c",
+      "getcml_c",
+      "prompt_c"
+    ]
   },
   "statusDefinitions": {
     "planned": "Reserved scheduling proposal; no claim that prerequisite or API/oracle design is settled.",
@@ -93,7 +97,9 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": ["https://github.com/rybosome/tspice/pull/707"],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/707"
+      ],
       "validationEvidence": [
         {
           "sourceCommit": "bfedb1098e738e821b831ba9d1f9d6f7bc24c637",
@@ -138,12 +144,29 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": ["https://github.com/rybosome/tspice/pull/708"],
-      "validationEvidence": [],
-      "nextAction": "Inspect required CI completion, address failures, and record exact successful job/commit/source-digest evidence before marking PR-ready.",
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/708"
+      ],
+      "validationEvidence": [
+        {
+          "kind": "local",
+          "command": "pnpm run check:js:required; TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+          "result": "passed",
+          "sourceCommit": "d5ba2aee2ea707da7c303c4cd2e500c3f6b25cdd",
+          "observation": "Both required local lanes passed; native lane executed 2258 live Node/WASM comparisons and all 2475 parity-package tests with zero skips. Source-bound per-batch fingerprints and actual executions are recorded in data/parity-audits."
+        },
+        {
+          "kind": "ci",
+          "result": "passed",
+          "commit": "d5ba2aee2ea707da7c303c4cd2e500c3f6b25cdd",
+          "url": "https://github.com/rybosome/tspice/actions/runs/43536405345",
+          "observation": "All 15 source-commit jobs completed successfully; inspected uncached Linux Node 22 native-required job 132266367481, production native guard, all 2258 live comparisons and 2475 parity-package tests without skips. No CI retries."
+        }
+      ],
+      "nextAction": "Run the final metadata commit through required CI, explicitly verify GitHub rebaseability, and mark PR #708 ready only after every required job passes.",
       "worktree": "/private/tmp/tspice-step8-scalar-constants",
       "branch": "codex/expand-scalar-constants",
-      "deliveryNote": "Draft PR open; required CI pending. Remains in-progress, not PR-ready or landed."
+      "deliveryNote": "Scientific source and both required local lanes passed; all 15 source CI jobs passed. Current Node/WASM audit fingerprints are verified. Final metadata commit CI and explicit final-head rebaseability remain pending, so this timestamped checkpoint remains in-progress and not landed."
     },
     {
       "id": "A03-scalar-math",
@@ -173,7 +196,12 @@
       },
       "oracle": {
         "status": "independent-route-investigation-required",
-        "missingTopLevelWrappers": ["maxd_c", "maxi_c", "mind_c", "mini_c"]
+        "missingTopLevelWrappers": [
+          "maxd_c",
+          "maxi_c",
+          "mind_c",
+          "mini_c"
+        ]
       },
       "prs": [],
       "validationEvidence": [],
@@ -518,7 +546,9 @@
       "apiPlacement": "packages/backend-contract/src/domains/coords-vectors.ts; raw methods retain canonical names without _c.",
       "owner": null,
       "status": "planned",
-      "dependsOn": ["A10-general-vectors"],
+      "dependsOn": [
+        "A10-general-vectors"
+      ],
       "prerequisiteReview": "Reuse bounded dynamic-array policy from A10; establish explicit rows/columns and row-major layout with nonsquare distinguishing inputs and checked dimension products.",
       "fixtures": "None anticipated; authored scalar/array inputs.",
       "expectedChanges": {
@@ -711,7 +741,9 @@
       "apiPlacement": "Proposed directly consumed strings.ts raw domain: existing domains have no general string API. Confirm this small domain placement before implementation; preserve flat raw method composition and the existing architecture.",
       "owner": null,
       "status": "planned",
-      "dependsOn": ["A18-string-transform"],
+      "dependsOn": [
+        "A18-string-transform"
+      ],
       "prerequisiteReview": "Reuse string boundary policy; verify forward/reverse starting indices, legitimate -1 absence, blanks and byte versus JS character indexing.",
       "fixtures": "None anticipated; authored scalar/array inputs.",
       "expectedChanges": {
@@ -745,7 +777,9 @@
       "apiPlacement": "Proposed directly consumed strings.ts raw domain: existing domains have no general string API. Confirm this small domain placement before implementation; preserve flat raw method composition and the existing architecture.",
       "owner": null,
       "status": "planned",
-      "dependsOn": ["A18-string-transform"],
+      "dependsOn": [
+        "A18-string-transform"
+      ],
       "prerequisiteReview": "Resolve nextwd/nthwd oracle gaps independently. Establish empty token handling, delimiter sets, scan indices and bounded output list storage; split gaps if needed.",
       "fixtures": "None anticipated; authored scalar/array inputs.",
       "expectedChanges": {
@@ -754,7 +788,10 @@
       },
       "oracle": {
         "status": "independent-route-investigation-required",
-        "missingTopLevelWrappers": ["nextwd_c", "nthwd_c"]
+        "missingTopLevelWrappers": [
+          "nextwd_c",
+          "nthwd_c"
+        ]
       },
       "prs": [],
       "validationEvidence": [],
@@ -781,7 +818,9 @@
       "apiPlacement": "Proposed directly consumed strings.ts raw domain: existing domains have no general string API. Confirm this small domain placement before implementation; preserve flat raw method composition and the existing architecture.",
       "owner": null,
       "status": "planned",
-      "dependsOn": ["A18-string-transform"],
+      "dependsOn": [
+        "A18-string-transform"
+      ],
       "prerequisiteReview": "Resolve repml oracle gap. Verify numeric errors, width/precision, ordinal/cardinal English text and replacement count without trimming significant output.",
       "fixtures": "None anticipated; authored scalar/array inputs.",
       "expectedChanges": {
@@ -790,7 +829,9 @@
       },
       "oracle": {
         "status": "independent-route-investigation-required",
-        "missingTopLevelWrappers": ["repml_c"]
+        "missingTopLevelWrappers": [
+          "repml_c"
+        ]
       },
       "prs": [],
       "validationEvidence": [],
@@ -1006,12 +1047,16 @@
       "id": "B04-string-set",
       "title": "List parsing into a character set",
       "wave": "B",
-      "routines": ["lparss_c"],
+      "routines": [
+        "lparss_c"
+      ],
       "domain": "cells-windows",
       "apiPlacement": "packages/backend-contract/src/domains/cells-windows.ts; raw methods retain canonical names without _c.",
       "owner": null,
       "status": "planned",
-      "dependsOn": ["A20-string-tokenize"],
+      "dependsOn": [
+        "A20-string-tokenize"
+      ],
       "prerequisiteReview": "Single routine integrates character width/capacity with parser output; verify deduplication, delimiter behavior and owner-local cell lifecycle. Implement only immediate parser-to-cell bridge.",
       "fixtures": "None anticipated; authored scalar/array inputs.",
       "expectedChanges": {
@@ -1096,7 +1141,12 @@
       "id": "B07-error-policy",
       "title": "Process-global error/reporting policy",
       "wave": "B",
-      "routines": ["erract_c", "errdev_c", "errprt_c", "trcoff_c"],
+      "routines": [
+        "erract_c",
+        "errdev_c",
+        "errprt_c",
+        "trcoff_c"
+      ],
       "domain": "error",
       "apiPlacement": "packages/backend-contract/src/domains/error.ts; raw methods retain canonical names without _c.",
       "owner": null,
@@ -1165,7 +1215,9 @@
       "apiPlacement": "packages/backend-contract/src/domains/file-io.ts; raw methods retain canonical names without _c.",
       "owner": null,
       "status": "planned",
-      "dependsOn": ["C01-daf-navigation"],
+      "dependsOn": [
+        "C01-daf-navigation"
+      ],
       "prerequisiteReview": "Preserve opaque packed integer bytes using existing SPK descriptor lessons; immediate general DAF summary type. Verify 1-based on-disk addresses, architecture/endian data and complete record fields.",
       "fixtures": "Authored DAF files from independent oracle; pinned small record-address fixtures.",
       "expectedChanges": {
@@ -1184,12 +1236,20 @@
       "id": "C03-daf-mutation",
       "title": "DAF comments and summary replacement",
       "wave": "C",
-      "routines": ["dafac_c", "dafdc_c", "dafec_c", "dafrs_c"],
+      "routines": [
+        "dafac_c",
+        "dafdc_c",
+        "dafec_c",
+        "dafrs_c"
+      ],
       "domain": "file-io",
       "apiPlacement": "packages/backend-contract/src/domains/file-io.ts; raw methods retain canonical names without _c.",
       "owner": null,
       "status": "planned",
-      "dependsOn": ["C01-daf-navigation", "C02-daf-records"],
+      "dependsOn": [
+        "C01-daf-navigation",
+        "C02-daf-records"
+      ],
       "prerequisiteReview": "Require writable DAF lifecycle and complete summary observation. Test comment paging, significant blanks, EOF and independent-reader validation after mutation.",
       "fixtures": "Scratch copies generated by live SpiceyPy; cleanup on every close/error path.",
       "expectedChanges": {
@@ -1257,7 +1317,9 @@
       "apiPlacement": "packages/backend-contract/src/domains/file-io.ts; raw methods retain canonical names without _c.",
       "owner": null,
       "status": "planned",
-      "dependsOn": ["C04-das-lifecycle"],
+      "dependsOn": [
+        "C04-das-lifecycle"
+      ],
       "prerequisiteReview": "Resolve missing character read/update oracle wrappers. Verify 1-based logical addresses, character substring bounds, array capacities and independent readback; split supported numeric subset if useful.",
       "fixtures": "Independent live SpiceyPy DAS writer/reader where available; live library ABI route investigation for character records.",
       "expectedChanges": {
@@ -1266,7 +1328,10 @@
       },
       "oracle": {
         "status": "independent-route-investigation-required",
-        "missingTopLevelWrappers": ["dasrdc_c", "dasudc_c"]
+        "missingTopLevelWrappers": [
+          "dasrdc_c",
+          "dasudc_c"
+        ]
       },
       "prs": [],
       "validationEvidence": [],
@@ -1276,12 +1341,18 @@
       "id": "C06-das-comments",
       "title": "DAS comment storage",
       "wave": "C",
-      "routines": ["dasac_c", "dasdc_c", "dasec_c"],
+      "routines": [
+        "dasac_c",
+        "dasdc_c",
+        "dasec_c"
+      ],
       "domain": "file-io",
       "apiPlacement": "packages/backend-contract/src/domains/file-io.ts; raw methods retain canonical names without _c.",
       "owner": null,
       "status": "planned",
-      "dependsOn": ["C04-das-lifecycle"],
+      "dependsOn": [
+        "C04-das-lifecycle"
+      ],
       "prerequisiteReview": "Verify fixed-width text, paged reads, end-of-comments and mutation persistence while preserving file claims.",
       "fixtures": "Small synthetic scratch DAS comment files; independent oracle writer/reader.",
       "expectedChanges": {
@@ -1300,12 +1371,20 @@
       "id": "C07-dla-segments",
       "title": "DLA backward traversal and segment construction",
       "wave": "C",
-      "routines": ["dlabbs_c", "dlabns_c", "dlaens_c", "dlafps_c"],
+      "routines": [
+        "dlabbs_c",
+        "dlabns_c",
+        "dlaens_c",
+        "dlafps_c"
+      ],
       "domain": "file-io",
       "apiPlacement": "packages/backend-contract/src/domains/file-io.ts; raw methods retain canonical names without _c.",
       "owner": null,
       "status": "planned",
-      "dependsOn": ["C04-das-lifecycle", "C05-das-data"],
+      "dependsOn": [
+        "C04-das-lifecycle",
+        "C05-das-data"
+      ],
       "prerequisiteReview": "Reuse all eight DLA descriptor fields and found/error treatment. Test multiple empty/nonempty segments, current segment state and interrupted-write cleanup.",
       "fixtures": "Independent synthetic multi-segment DLA files; no mission data.",
       "expectedChanges": {
@@ -1324,7 +1403,13 @@
       "id": "C08-ek-records",
       "title": "EK record lifecycle",
       "wave": "C",
-      "routines": ["ekappr_c", "ekbseg_c", "ekdelr_c", "ekinsr_c", "ekops_c"],
+      "routines": [
+        "ekappr_c",
+        "ekbseg_c",
+        "ekdelr_c",
+        "ekinsr_c",
+        "ekops_c"
+      ],
       "domain": "ek",
       "apiPlacement": "packages/backend-contract/src/domains/ek.ts; raw methods retain canonical names without _c.",
       "owner": null,
@@ -1363,7 +1448,9 @@
       "apiPlacement": "packages/backend-contract/src/domains/ek.ts; raw methods retain canonical names without _c.",
       "owner": null,
       "status": "planned",
-      "dependsOn": ["C08-ek-records"],
+      "dependsOn": [
+        "C08-ek-records"
+      ],
       "prerequisiteReview": "Verify null flags, vector entry lengths, row indexing, character truncation and schema enforcement; independently query persisted values.",
       "fixtures": "Synthetic mixed-null/multi-value EK records; all scratch output reclaimed.",
       "expectedChanges": {
@@ -1490,7 +1577,10 @@
       "apiPlacement": "packages/backend-contract/src/domains/frames.ts; raw methods retain canonical names without _c.",
       "owner": null,
       "status": "planned",
-      "dependsOn": ["C01-daf-navigation", "C02-daf-records"],
+      "dependsOn": [
+        "C01-daf-navigation",
+        "C02-daf-records"
+      ],
       "prerequisiteReview": "Reuse existing loaded CK and Step 7 pointing/coverage fixtures. Add opaque packed CK descriptor representation only for immediate consumers; validate frame derivatives and record indices.",
       "fixtures": "Existing synthetic type-2/type-3 CKs; add independently generated subtype fixtures only if necessary.",
       "expectedChanges": {
@@ -1509,7 +1599,10 @@
       "id": "C14-text-command-state",
       "title": "Text line reading and command-line state",
       "wave": "C",
-      "routines": ["rdtext_c", "putcml_c"],
+      "routines": [
+        "rdtext_c",
+        "putcml_c"
+      ],
       "domain": "file-io",
       "apiPlacement": "packages/backend-contract/src/domains/file-io.ts; raw methods retain canonical names without _c.",
       "owner": null,
@@ -1523,7 +1616,9 @@
       },
       "oracle": {
         "status": "independent-route-investigation-required",
-        "missingTopLevelWrappers": ["putcml_c"]
+        "missingTopLevelWrappers": [
+          "putcml_c"
+        ]
       },
       "prs": [],
       "validationEvidence": [],
@@ -1533,7 +1628,13 @@
       "id": "D01-time-additions",
       "title": "Calendar parsing controls and local solar time",
       "wave": "D",
-      "routines": ["etcal_c", "utc2et_c", "tparch_c", "tsetyr_c", "et2lst_c"],
+      "routines": [
+        "etcal_c",
+        "utc2et_c",
+        "tparch_c",
+        "tsetyr_c",
+        "et2lst_c"
+      ],
       "domain": "time",
       "apiPlacement": "packages/backend-contract/src/domains/time.ts; raw methods retain canonical names without _c.",
       "owner": null,
@@ -1557,7 +1658,12 @@
       "id": "D02-sclk-additions",
       "title": "Remaining spacecraft-clock primitives",
       "wave": "D",
-      "routines": ["sce2t_c", "scfmt_c", "scpart_c", "sctiks_c"],
+      "routines": [
+        "sce2t_c",
+        "scfmt_c",
+        "scpart_c",
+        "sctiks_c"
+      ],
       "domain": "time",
       "apiPlacement": "packages/backend-contract/src/domains/time.ts; raw methods retain canonical names without _c.",
       "owner": null,
@@ -1612,7 +1718,12 @@
       "id": "D04-surface-names",
       "title": "Surface-name translations",
       "wave": "D",
-      "routines": ["srfc2s_c", "srfcss_c", "srfs2c_c", "srfscc_c"],
+      "routines": [
+        "srfc2s_c",
+        "srfcss_c",
+        "srfs2c_c",
+        "srfscc_c"
+      ],
       "domain": "ids-names",
       "apiPlacement": "packages/backend-contract/src/domains/ids-names.ts; raw methods retain canonical names without _c.",
       "owner": null,
@@ -1636,7 +1747,13 @@
       "id": "E01-orbital-elements",
       "title": "Conic and equinoctial elements",
       "wave": "E",
-      "routines": ["conics_c", "eqncpv_c", "oscelt_c", "oscltx_c", "prop2b_c"],
+      "routines": [
+        "conics_c",
+        "eqncpv_c",
+        "oscelt_c",
+        "oscltx_c",
+        "prop2b_c"
+      ],
       "domain": "ephemeris",
       "apiPlacement": "packages/backend-contract/src/domains/ephemeris.ts; raw methods retain canonical names without _c.",
       "owner": null,
@@ -1660,7 +1777,10 @@
       "id": "E02-tle-propagation",
       "title": "Two-line element parsing and SGP4",
       "wave": "E",
-      "routines": ["evsgp4_c", "getelm_c"],
+      "routines": [
+        "evsgp4_c",
+        "getelm_c"
+      ],
       "domain": "ephemeris",
       "apiPlacement": "packages/backend-contract/src/domains/ephemeris.ts; raw methods retain canonical names without _c.",
       "owner": null,
@@ -1684,7 +1804,12 @@
       "id": "E03-spk-lowlevel",
       "title": "SPK load, native evaluation and subset",
       "wave": "E",
-      "routines": ["spklef_c", "spkuef_c", "spkpvn_c", "spksub_c"],
+      "routines": [
+        "spklef_c",
+        "spkuef_c",
+        "spkpvn_c",
+        "spksub_c"
+      ],
       "domain": "ephemeris",
       "apiPlacement": "packages/backend-contract/src/domains/ephemeris.ts; raw methods retain canonical names without _c.",
       "owner": null,
@@ -1708,7 +1833,11 @@
       "id": "E04-spk-chebyshev",
       "title": "SPK Chebyshev segment writers",
       "wave": "E",
-      "routines": ["spkw02_c", "spkw03_c", "spkw20_c"],
+      "routines": [
+        "spkw02_c",
+        "spkw03_c",
+        "spkw20_c"
+      ],
       "domain": "ephemeris",
       "apiPlacement": "packages/backend-contract/src/domains/ephemeris.ts; raw methods retain canonical names without _c.",
       "owner": null,
@@ -1732,7 +1861,12 @@
       "id": "E05-spk-interpolation",
       "title": "SPK interpolated state writers",
       "wave": "E",
-      "routines": ["spkw09_c", "spkw12_c", "spkw13_c", "spkw18_c"],
+      "routines": [
+        "spkw09_c",
+        "spkw12_c",
+        "spkw13_c",
+        "spkw18_c"
+      ],
       "domain": "ephemeris",
       "apiPlacement": "packages/backend-contract/src/domains/ephemeris.ts; raw methods retain canonical names without _c.",
       "owner": null,
@@ -1756,7 +1890,12 @@
       "id": "E06-spk-analytic",
       "title": "SPK analytic/orbital segment writers",
       "wave": "E",
-      "routines": ["spkw05_c", "spkw10_c", "spkw15_c", "spkw17_c"],
+      "routines": [
+        "spkw05_c",
+        "spkw10_c",
+        "spkw15_c",
+        "spkw17_c"
+      ],
       "domain": "ephemeris",
       "apiPlacement": "packages/backend-contract/src/domains/ephemeris.ts; raw methods retain canonical names without _c.",
       "owner": null,
@@ -1780,7 +1919,11 @@
       "id": "E07-spk-streaming",
       "title": "SPK type-14 streaming workflow",
       "wave": "E",
-      "routines": ["spk14a_c", "spk14b_c", "spk14e_c"],
+      "routines": [
+        "spk14a_c",
+        "spk14b_c",
+        "spk14e_c"
+      ],
       "domain": "ephemeris",
       "apiPlacement": "packages/backend-contract/src/domains/ephemeris.ts; raw methods retain canonical names without _c.",
       "owner": null,
@@ -1837,7 +1980,13 @@
       "id": "E09-spk-relative-observers",
       "title": "Constant position/velocity target and observer states",
       "wave": "E",
-      "routines": ["azlcpo_c", "spkcpo_c", "spkcpt_c", "spkcvo_c", "spkcvt_c"],
+      "routines": [
+        "azlcpo_c",
+        "spkcpo_c",
+        "spkcpt_c",
+        "spkcvo_c",
+        "spkcvt_c"
+      ],
       "domain": "ephemeris",
       "apiPlacement": "packages/backend-contract/src/domains/ephemeris.ts; raw methods retain canonical names without _c.",
       "owner": null,
@@ -1939,7 +2088,9 @@
       "apiPlacement": "packages/backend-contract/src/domains/geometry.ts; raw methods retain canonical names without _c.",
       "owner": null,
       "status": "planned",
-      "dependsOn": ["E11-ellipse-geometry"],
+      "dependsOn": [
+        "E11-ellipse-geometry"
+      ],
       "prerequisiteReview": "Reuse ellipse result from E11 for edlimb; remaining point/normal operations can split independently. Verify axes/inside/outside/tangent and zero-radius errors.",
       "fixtures": "None anticipated; authored scalar/array inputs.",
       "expectedChanges": {
@@ -1958,7 +2109,11 @@
       "id": "E13-surface-derivatives",
       "title": "Surface tangencies and derivatives",
       "wave": "E",
-      "routines": ["dnearp_c", "surfpv_c", "tangpt_c"],
+      "routines": [
+        "dnearp_c",
+        "surfpv_c",
+        "tangpt_c"
+      ],
       "domain": "geometry",
       "apiPlacement": "packages/backend-contract/src/domains/geometry.ts; raw methods retain canonical names without _c.",
       "owner": null,
@@ -1982,7 +2137,13 @@
       "id": "E14-legacy-surface-geometry",
       "title": "Legacy surface points and illumination",
       "wave": "E",
-      "routines": ["illum_c", "srfxpt_c", "subpt_c", "subsol_c", "edterm_c"],
+      "routines": [
+        "illum_c",
+        "srfxpt_c",
+        "subpt_c",
+        "subsol_c",
+        "edterm_c"
+      ],
       "domain": "geometry",
       "apiPlacement": "packages/backend-contract/src/domains/geometry.ts; raw methods retain canonical names without _c.",
       "owner": null,
@@ -2006,7 +2167,12 @@
       "id": "E15-field-of-view",
       "title": "Instrument FOV definitions and visibility",
       "wave": "E",
-      "routines": ["getfov_c", "getfvn_c", "fovray_c", "fovtrg_c"],
+      "routines": [
+        "getfov_c",
+        "getfvn_c",
+        "fovray_c",
+        "fovtrg_c"
+      ],
       "domain": "geometry",
       "apiPlacement": "packages/backend-contract/src/domains/geometry.ts; raw methods retain canonical names without _c.",
       "owner": null,
@@ -2030,7 +2196,11 @@
       "id": "E16-geometry-quantities",
       "title": "Solar longitude, phase and target separation",
       "wave": "E",
-      "routines": ["phaseq_c", "lspcn_c", "trgsep_c"],
+      "routines": [
+        "phaseq_c",
+        "lspcn_c",
+        "trgsep_c"
+      ],
       "domain": "geometry",
       "apiPlacement": "packages/backend-contract/src/domains/geometry.ts; raw methods retain canonical names without _c.",
       "owner": null,
@@ -2117,7 +2287,13 @@
       "id": "E19-dsk-intersections",
       "title": "DSK ray queries and tolerance state",
       "wave": "E",
-      "routines": ["dskx02_c", "dskxsi_c", "dskxv_c", "dskgtl_c", "dskstl_c"],
+      "routines": [
+        "dskx02_c",
+        "dskxsi_c",
+        "dskxv_c",
+        "dskgtl_c",
+        "dskstl_c"
+      ],
       "domain": "dsk",
       "apiPlacement": "packages/backend-contract/src/domains/dsk.ts; raw methods retain canonical names without _c.",
       "owner": null,
@@ -2141,7 +2317,12 @@
       "id": "E20-extended-surfaces",
       "title": "Surface grids, normals, limbs and terminators",
       "wave": "E",
-      "routines": ["latsrf_c", "srfnrm_c", "limbpt_c", "termpt_c"],
+      "routines": [
+        "latsrf_c",
+        "srfnrm_c",
+        "limbpt_c",
+        "termpt_c"
+      ],
       "domain": "geometry",
       "apiPlacement": "packages/backend-contract/src/domains/geometry.ts; raw methods retain canonical names without _c.",
       "owner": null,
@@ -2236,12 +2417,18 @@
       "id": "E23-gf-visibility",
       "title": "Geometry Finder occultation and FOV searches",
       "wave": "E",
-      "routines": ["gfoclt_c", "gfrfov_c", "gftfov_c"],
+      "routines": [
+        "gfoclt_c",
+        "gfrfov_c",
+        "gftfov_c"
+      ],
       "domain": "geometry-gf",
       "apiPlacement": "packages/backend-contract/src/domains/geometry-gf.ts; raw methods retain canonical names without _c.",
       "owner": null,
       "status": "planned",
-      "dependsOn": ["E15-field-of-view"],
+      "dependsOn": [
+        "E15-field-of-view"
+      ],
       "prerequisiteReview": "Reuse reviewed FOV definitions and GF windows; test complete boundary intervals, correction modes, misses and workspace capacity.",
       "fixtures": "Authored FOV/geometry kernels; independent oracle plus analytic event checks.",
       "expectedChanges": {
@@ -2260,7 +2447,11 @@
       "id": "E24-gf-configurable",
       "title": "Configurable Geometry Finder callbacks",
       "wave": "E",
-      "routines": ["gfevnt_c", "gffove_c", "gfocce_c"],
+      "routines": [
+        "gfevnt_c",
+        "gffove_c",
+        "gfocce_c"
+      ],
       "domain": "geometry-gf",
       "apiPlacement": "packages/backend-contract/src/domains/geometry-gf.ts; raw methods retain canonical names without _c.",
       "owner": null,
@@ -2284,7 +2475,13 @@
       "id": "E25-gf-user-functions",
       "title": "User-function search and differentiation",
       "wave": "E",
-      "routines": ["gfudb_c", "gfuds_c", "uddc_c", "uddf_c", "udf_c"],
+      "routines": [
+        "gfudb_c",
+        "gfuds_c",
+        "uddc_c",
+        "uddf_c",
+        "udf_c"
+      ],
       "domain": "geometry-gf",
       "apiPlacement": "packages/backend-contract/src/domains/geometry-gf.ts; raw methods retain canonical names without _c.",
       "owner": null,
@@ -2308,7 +2505,12 @@
       "id": "E26-gf-signals-progress",
       "title": "Geometry Finder interrupts and progress updates",
       "wave": "E",
-      "routines": ["gfbail_c", "gfclrh_c", "gfinth_c", "gfrepu_c"],
+      "routines": [
+        "gfbail_c",
+        "gfclrh_c",
+        "gfinth_c",
+        "gfrepu_c"
+      ],
       "domain": "geometry-gf",
       "apiPlacement": "packages/backend-contract/src/domains/geometry-gf.ts; raw methods retain canonical names without _c.",
       "owner": null,

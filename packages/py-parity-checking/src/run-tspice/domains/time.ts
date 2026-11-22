@@ -14,6 +14,11 @@ import type {
   StepTimeJ2000,
   StepTimeJ1900,
   StepTimeB1950,
+  StepTimeB1900,
+  StepTimeJ1950,
+  StepTimeJ2100,
+  StepTimeJyear,
+  StepTimeTyear,
   StepTimeTkvrsn,
   StepTimeTparse,
   StepTimeTpictr,
@@ -45,6 +50,11 @@ type TimeStep =
   | StepTimeJ2000
   | StepTimeJ1900
   | StepTimeB1950
+  | StepTimeB1900
+  | StepTimeJ1950
+  | StepTimeJ2100
+  | StepTimeJyear
+  | StepTimeTyear
   | StepTimeTkvrsn
   | StepTimeTimout
   | StepTimeDeltet
@@ -77,6 +87,21 @@ export function runTimeStep(
 
     case "time.b1950":
       return { op: step.op, value: context.spice.raw.b1950() };
+
+    case "time.b1900":
+      return { op: step.op, value: context.spice.raw.b1900() };
+
+    case "time.j1950":
+      return { op: step.op, value: context.spice.raw.j1950() };
+
+    case "time.j2100":
+      return { op: step.op, value: context.spice.raw.j2100() };
+
+    case "time.jyear":
+      return { op: step.op, value: context.spice.raw.jyear() };
+
+    case "time.tyear":
+      return { op: step.op, value: context.spice.raw.tyear() };
 
     case "time.str2et":
       return { op: step.op, value: context.spice.raw.str2et(step.time) };

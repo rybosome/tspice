@@ -1007,6 +1007,17 @@ export function createFakeBackend(
     j2000: () => 2451545,
     j1900: () => 2415020,
     b1950: () => 2433282.42345905,
+    // Deterministic toy values; the fake backend does not execute CSPICE.
+    clight: () => 299792.458,
+    dpmax: () => Number.MAX_VALUE,
+    dpmin: () => -Number.MAX_VALUE,
+    intmax: () => 2147483647,
+    intmin: () => -2147483648,
+    b1900: () => 2415020.31352,
+    j1950: () => 2433282.5,
+    j2100: () => 2488070,
+    jyear: () => 31557600,
+    tyear: () => 31556925.9747,
     failed: () => spiceFailed,
     reset: () => {
       spiceFailed = false;

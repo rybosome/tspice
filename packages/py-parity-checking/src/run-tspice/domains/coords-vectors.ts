@@ -21,6 +21,11 @@ import type {
   StepCoordsVectorsHalfpi,
   StepCoordsVectorsDpr,
   StepCoordsVectorsRpd,
+  StepCoordsVectorsClight,
+  StepCoordsVectorsDpmax,
+  StepCoordsVectorsDpmin,
+  StepCoordsVectorsIntmax,
+  StepCoordsVectorsIntmin,
   StepCoordsVectorsVnorm,
   StepCoordsVectorsVscl,
   StepCoordsVectorsVsub,
@@ -40,6 +45,11 @@ type CoordsVectorsStep =
   | StepCoordsVectorsHalfpi
   | StepCoordsVectorsDpr
   | StepCoordsVectorsRpd
+  | StepCoordsVectorsClight
+  | StepCoordsVectorsDpmax
+  | StepCoordsVectorsDpmin
+  | StepCoordsVectorsIntmax
+  | StepCoordsVectorsIntmin
   | StepCoordsVectorsVnorm
   | StepCoordsVectorsVhat
   | StepCoordsVectorsVdot
@@ -95,6 +105,21 @@ export function runCoordsVectorsStep(
 
     case "coords-vectors.rpd":
       return { op: step.op, value: context.spice.raw.rpd() };
+
+    case "coords-vectors.clight":
+      return { op: step.op, value: context.spice.raw.clight() };
+
+    case "coords-vectors.dpmax":
+      return { op: step.op, value: context.spice.raw.dpmax() };
+
+    case "coords-vectors.dpmin":
+      return { op: step.op, value: context.spice.raw.dpmin() };
+
+    case "coords-vectors.intmax":
+      return { op: step.op, value: context.spice.raw.intmax() };
+
+    case "coords-vectors.intmin":
+      return { op: step.op, value: context.spice.raw.intmin() };
 
     case "coords-vectors.reclat": {
       const out = context.spice.raw.reclat(step.rectan);

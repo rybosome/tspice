@@ -94,11 +94,11 @@ test("baseline derives breadth and preserves direct/non-direct evidence", (t) =>
   assert.deepEqual(ledger.summary, {
     total: 652,
     eligible: 649,
-    implemented: 171,
-    planned: 478,
+    implemented: 181,
+    planned: 468,
     excluded: 3,
-    caseFiles: 171,
-    scenarios: 1127,
+    caseFiles: 181,
+    scenarios: 1147,
     wasmRawUnsupported: 0,
   });
   const kplfrm = ledger.routines.find((r) => r.routine === "kplfrm_c");
@@ -446,7 +446,7 @@ function editAudit(f, mutate, file = "vectors-arithmetic.json") {
 test("maintained audit separates reviewed findings from verified backend execution", (t) => {
   const ledger = fixture(t).build();
   assert.equal(ledger.audit.baselineRoutines, 162);
-  assert.equal(ledger.audit.expansionRoutines, 9);
+  assert.equal(ledger.audit.expansionRoutines, 19);
   assert.equal(
     ledger.audit.baselineRoutines + ledger.audit.expansionRoutines,
     ledger.summary.implemented,
@@ -485,7 +485,7 @@ test("expansion assignments cannot omit routines, duplicate baseline, or plan ab
       r.expansionBatches = [];
     },
     (r) => r.expansionBatches[0].routines.push(r.batches[0].routines[0]),
-    (r) => r.expansionBatches[0].routines.push("clight_c"),
+    (r) => r.expansionBatches[0].routines.push("erract_c"),
   ]) {
     const f = fixture(t);
     editAudit(f, mutation, "baseline.json");

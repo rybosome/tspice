@@ -38,6 +38,11 @@ from .models import (
     StepCoordsVectorsHalfpi,
     StepCoordsVectorsDpr,
     StepCoordsVectorsRpd,
+    StepCoordsVectorsClight,
+    StepCoordsVectorsDpmax,
+    StepCoordsVectorsDpmin,
+    StepCoordsVectorsIntmax,
+    StepCoordsVectorsIntmin,
     StepCoordsVectorsVnorm,
     StepCoordsVectorsVscl,
     StepCoordsVectorsVsub,
@@ -179,6 +184,11 @@ from .models import (
     StepTimeJ2000,
     StepTimeJ1900,
     StepTimeB1950,
+    StepTimeB1900,
+    StepTimeJ1950,
+    StepTimeJ2100,
+    StepTimeJyear,
+    StepTimeTyear,
     StepTimeTkvrsn,
     StepTimeTparse,
     StepTimeTpictr,
@@ -386,6 +396,21 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
         case "time.b1950":
             return StepTimeB1950(op=op)
 
+        case "time.b1900":
+            return StepTimeB1900(op=op)
+
+        case "time.j1950":
+            return StepTimeJ1950(op=op)
+
+        case "time.j2100":
+            return StepTimeJ2100(op=op)
+
+        case "time.jyear":
+            return StepTimeJyear(op=op)
+
+        case "time.tyear":
+            return StepTimeTyear(op=op)
+
         case "time.tkvrsn":
             item = _expect_string(step.get("item"), label="time.tkvrsn.item")
             return StepTimeTkvrsn(op=op, item=item)
@@ -559,6 +584,21 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
 
         case "coords-vectors.rpd":
             return StepCoordsVectorsRpd(op=op)
+
+        case "coords-vectors.clight":
+            return StepCoordsVectorsClight(op=op)
+
+        case "coords-vectors.dpmax":
+            return StepCoordsVectorsDpmax(op=op)
+
+        case "coords-vectors.dpmin":
+            return StepCoordsVectorsDpmin(op=op)
+
+        case "coords-vectors.intmax":
+            return StepCoordsVectorsIntmax(op=op)
+
+        case "coords-vectors.intmin":
+            return StepCoordsVectorsIntmin(op=op)
 
         case "coords-vectors.vnorm":
             return StepCoordsVectorsVnorm(op=op, v=_expect_vec3(step.get("v"), label="coords-vectors.vnorm.v"))

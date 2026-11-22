@@ -58,6 +58,40 @@ export function createCoordsVectorsApi(native: NativeAddon): CoordsVectorsApi {
       );
       return out;
     },
+    clight: () => {
+      const out = native.clight();
+      invariant(
+        Number.isFinite(out),
+        "Expected clight() to return a finite number",
+      );
+      return out;
+    },
+    dpmax: () => {
+      const out = native.dpmax();
+      invariant(
+        Number.isFinite(out),
+        "Expected dpmax() to return a finite number",
+      );
+      return out;
+    },
+    dpmin: () => {
+      const out = native.dpmin();
+      invariant(
+        Number.isFinite(out),
+        "Expected dpmin() to return a finite number",
+      );
+      return out;
+    },
+    intmax: () => {
+      const out = native.intmax();
+      assertSpiceInt32(out, "intmax() result");
+      return out;
+    },
+    intmin: () => {
+      const out = native.intmin();
+      assertSpiceInt32(out, "intmin() result");
+      return out;
+    },
     reclat: (rect) => {
       const out = native.reclat(rect);
       invariant(
