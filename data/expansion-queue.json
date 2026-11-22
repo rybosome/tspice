@@ -2753,7 +2753,7 @@
       ],
       "domain": "ek",
       "apiPlacement": "packages/backend-contract/src/domains/ek.ts; raw methods retain canonical names without _c.",
-      "owner": null,
+      "owner": "Codex Step 8 (/root)",
       "status": "in-progress",
       "dependsOn": [],
       "prerequisiteReview": "Reuse Step 7 EK schema/result conventions and actual kernel load ownership. Immediate typed descriptors for column/segment/SELECT metadata; observe every field and valid null/absence.",
@@ -2769,21 +2769,24 @@
       "prs": [
         "https://github.com/rybosome/tspice/pull/767"
       ],
-      "validationEvidence": [],
-      "nextAction": "Intake the pinned source after checkpoint 02 lands and passes main CI.",
-      "sourceSnapshot": {
-        "number": 767,
-        "url": "https://github.com/rybosome/tspice/pull/767",
-        "head": "9a775857d1a4c94b7b4a3a88c727c6782bca1933",
-        "base": "73f3fec8788ed926351f891b459ac75d434f6446",
-        "ci": "https://github.com/rybosome/tspice/actions/runs/43585587292",
-        "ciConclusion": "success"
-      },
-      "checkpoint": {
-        "number": 3,
-        "status": "pending intake"
-      },
-      "deliveryNote": "The pinned source head passed its configured CI matrix."
+      "validationEvidence": [
+        {
+          "kind": "local-focused",
+          "result": "48 scenarios and 96 registered comparisons, 7 public, 2 native and 27 WASM checks, repeated all seven through real Chrome."
+        },
+        {
+          "kind": "source-bound-required-lanes",
+          "testedCommit": "43e36dc906a0c4320be633f7dcef4862e1fd6d22",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43583869001/job/132414114857",
+          "result": "Both complete required lanes passed locally on 43e36dc906a0c4320be633f7dcef4862e1fd6d22. JavaScript: 2,533 parity tests and one expected guard skip. Native-required: 2,314 registered Node/WASM live comparisons; 2,534 parity-package tests with no skips, including the native-required guard; 68 native wrapper, 627 WASM, 28 core and 150 facade tests passed. Inspected successful Linux Node 22 native-required job 132414114857 on 43e36dc906a0c4320be633f7dcef4862e1fd6d22: 2,314 registered Node/WASM live comparisons; 2,534 parity-package tests with no skips, including the native-required guard; 68 native wrapper, 627 WASM, 28 core and 150 facade tests passed."
+        }
+      ],
+      "nextAction": "Wait for the full metadata-head CI matrix and verify explicit rebaseability before marking the PR ready; do not merge.",
+      "worktree": "/private/tmp/tspice-step8-ek-metadata",
+      "branch": "codex/expand-ek-metadata",
+      "baseCommit": "73f3fec8788ed926351f891b459ac75d434f6446",
+      "progressNote": "Both required local lanes and observed canonical native-required CI passed on the implementation source 43e36dc9. 2,314 registered Node/WASM live comparisons; 2,534 parity-package tests with no skips, including the native-required guard; 68 native wrapper, 627 WASM, 28 core and 150 facade tests passed.",
+      "priorCheckpoint": "Seven compiled EK query and metadata operations, complete physical segment/column/SELECT fields, generation-safe direct load/unload and named-result counts."
     },
     {
       "id": "C11-pck-binary",

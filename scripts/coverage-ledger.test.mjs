@@ -94,11 +94,11 @@ test("baseline derives breadth and preserves direct/non-direct evidence", (t) =>
   assert.deepEqual(ledger.summary, {
     total: 652,
     eligible: 649,
-    implemented: 504,
-    planned: 145,
+    implemented: 511,
+    planned: 138,
     excluded: 3,
-    caseFiles: 504,
-    scenarios: 3400,
+    caseFiles: 511,
+    scenarios: 3448,
     wasmRawUnsupported: 0,
   });
   const functions = cFunctions(
@@ -622,7 +622,7 @@ test("maintained audit separates reviewed findings from verified backend executi
   const f = fixture(t);
   const ledger = f.build();
   assert.equal(ledger.audit.baselineRoutines, 162);
-  assert.equal(ledger.audit.expansionRoutines, 342);
+  assert.equal(ledger.audit.expansionRoutines, 349);
   // Each success route reaches its public C entrypoint. The three guarded paths
   // must also retain the linked numerical routine used to reject invalid input.
   for (const name of [
@@ -1085,4 +1085,24 @@ test("an early C string check cannot stand in for the actual EK entry reader", (
     f.build,
     /Missing scientific SPICELIB reader for (node|wasm).ekrced/,
   );
+});
+
+test("EK metadata requires its initialized scientific entry in addition to C width checks", (t) => {
+  for (const [name, call] of [
+    ["ekcii", "ekcii_((char*)table"],
+    ["eknelt", "eknelt_(&index"],
+  ]) {
+    const f = fixture(t);
+    f.edit(
+      "packages/backend-shim-c/src/domains/ek.c",
+      call,
+      call.replace(name + "_", "unrelated_"),
+    );
+    assert.throws(
+      f.build,
+      new RegExp(
+        "Missing scientific EK metadata entry for (node|wasm)\\." + name,
+      ),
+    );
+  }
 });

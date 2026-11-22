@@ -27,6 +27,13 @@ import type {
   StepEkEkucec,
   StepEkEkuced,
   StepEkEkucei,
+  StepEkEkccnt,
+  StepEkEkcii,
+  StepEkEklef,
+  StepEkEknelt,
+  StepEkEkpsel,
+  StepEkEkssum,
+  StepEkEkuef,
   StepEkEkopn,
   StepEkEkopr,
   StepEkEkopw,
@@ -60,6 +67,13 @@ type EkStep =
   | StepEkEkucec
   | StepEkEkuced
   | StepEkEkucei
+  | StepEkEkccnt
+  | StepEkEkcii
+  | StepEkEklef
+  | StepEkEknelt
+  | StepEkEkpsel
+  | StepEkEkssum
+  | StepEkEkuef
   | StepEkEkopn
   | StepEkEkopr
   | StepEkEkopw
@@ -232,6 +246,47 @@ export function runEkStep(context: RunTspiceContext, step: EkStep): StepOutput {
         step.values,
         step.isNull,
       );
+      return { op: step.op, value: null };
+    }
+    case "ek.ekccnt": {
+      return { op: step.op, value: context.spice.raw.ekccnt(step.table) };
+    }
+    case "ek.ekcii": {
+      return {
+        op: step.op,
+        value: context.spice.raw.ekcii(step.table, step.cindex, step.collen),
+      };
+    }
+    case "ek.eklef": {
+      if (context.state.ek.handles.has(step.handleId))
+        throw new Error("Duplicate EK workflow handle");
+      const h = context.spice.raw.eklef(resolveEkPath(step.path));
+      registerEkHandle(context, step.handleId, h, true);
+      return { op: step.op, value: { handleId: step.handleId } };
+    }
+    case "ek.eknelt": {
+      return {
+        op: step.op,
+        value: context.spice.raw.eknelt(step.selidx, step.row),
+      };
+    }
+    case "ek.ekpsel": {
+      return { op: step.op, value: context.spice.raw.ekpsel(step.query) };
+    }
+    case "ek.ekssum": {
+      return {
+        op: step.op,
+        value: context.spice.raw.ekssum(
+          requireEkHandle(context, step.handleId),
+          step.segno,
+        ),
+      };
+    }
+    case "ek.ekuef": {
+      const h = requireEkHandle(context, step.handleId);
+      context.spice.raw.ekuef(h);
+      for (const [id, token] of context.state.ek.handles)
+        if (token === h) context.state.ek.handles.delete(id);
       return { op: step.op, value: null };
     }
     case "ek.ekopn": {

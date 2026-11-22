@@ -3124,6 +3124,22 @@ export type StepEkEkucei = {
   values: number[];
   isNull: boolean;
 };
+export type StepEkEkccnt = { op: "ek.ekccnt"; table: string };
+export type StepEkEkcii = {
+  op: "ek.ekcii";
+  table: string;
+  cindex: number;
+  collen: number;
+};
+export type StepEkEklef = {
+  op: "ek.eklef";
+  path: PathRefLike;
+  handleId: string;
+};
+export type StepEkEknelt = { op: "ek.eknelt"; selidx: number; row: number };
+export type StepEkEkpsel = { op: "ek.ekpsel"; query: string };
+export type StepEkEkssum = { op: "ek.ekssum"; handleId: string; segno: number };
+export type StepEkEkuef = { op: "ek.ekuef"; handleId: string };
 export type StepEkEkopn = {
   op: "ek.ekopn";
   path: PathRefLike;
@@ -3923,6 +3939,13 @@ export type WorkflowStep =
   | StepEkEkucec
   | StepEkEkuced
   | StepEkEkucei
+  | StepEkEkccnt
+  | StepEkEkcii
+  | StepEkEklef
+  | StepEkEknelt
+  | StepEkEkpsel
+  | StepEkEkssum
+  | StepEkEkuef
   | StepEkEkopn
   | StepEkEkopr
   | StepEkEkopw
@@ -4734,6 +4757,25 @@ export type StepOutput =
   | { op: "ek.ekucec"; value: null }
   | { op: "ek.ekuced"; value: null }
   | { op: "ek.ekucei"; value: null }
+  | { op: "ek.ekccnt"; value: number }
+  | {
+      op: "ek.ekcii";
+      value: {
+        column: string;
+        attdsc: import("@rybosome/tspice-backend-contract").EkAttributeDescriptor;
+      };
+    }
+  | { op: "ek.eklef"; value: { handleId: string } }
+  | { op: "ek.eknelt"; value: number }
+  | {
+      op: "ek.ekpsel";
+      value: import("@rybosome/tspice-backend-contract").EkSelectResult;
+    }
+  | {
+      op: "ek.ekssum";
+      value: import("@rybosome/tspice-backend-contract").EkSegmentSummary;
+    }
+  | { op: "ek.ekuef"; value: null }
   | {
       op: "ek.ekopn";
       value: { handleId: string };

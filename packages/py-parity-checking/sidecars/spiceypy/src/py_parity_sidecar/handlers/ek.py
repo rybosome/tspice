@@ -9,6 +9,7 @@ from spiceypy.utils.libspicehelper import libspice
 
 from ..ek_record_oracle import record_schema, edit_record
 from ..ek_entry_oracle import entry
+from .. import ek_metadata_oracle as metadata
 from ..models import (
     PathRef,
     StepEkEkaclc,
@@ -37,6 +38,13 @@ from ..models import (
     StepEkEkucec,
     StepEkEkuced,
     StepEkEkucei,
+    StepEkEkccnt,
+    StepEkEkcii,
+    StepEkEklef,
+    StepEkEknelt,
+    StepEkEkpsel,
+    StepEkEkssum,
+    StepEkEkuef,
     StepEkEkopn,
     StepEkEkopr,
     StepEkEkopw,
@@ -89,7 +97,11 @@ def _close_handle_best_effort(context: SidecarRuntimeContext, handle_id: str) ->
         return
 
     try:
-        sp.ekcls(handle)
+        if handle_id in context.state.ek.loads:
+            sp.ekuef(0 if handle_id in context.state.ek.expiredLoads else handle)
+            context.state.ek.loads.discard(handle_id)
+        else:
+            sp.ekcls(handle)
     except BaseException:
         # Keep the claim so cleanup can retry the actual close.
         return
@@ -280,6 +292,48 @@ def run_ek_step(step: WorkflowStep, context: SidecarRuntimeContext) -> StepOutpu
             step.column, values=step.values, is_null=step.isNull,
         )
         return StepOutput(op=step.op, value=value)
+    metadata_steps = (StepEkEkccnt,StepEkEkcii,StepEkEklef,StepEkEknelt,StepEkEkpsel,StepEkEkssum,StepEkEkuef)
+    if isinstance(step,metadata_steps) and context.state.ek.activeMetadataWrite is not None:
+        raise ValueError("Finish the active EK fast write before inspecting metadata")
+    if isinstance(step,StepEkEkccnt):
+        return StepOutput(op=step.op,value=sp.ekccnt(step.table))
+
+    if isinstance(step,StepEkEkcii):
+        return StepOutput(op=step.op,value=metadata.ekcii(step.table,step.cindex,step.collen))
+
+    if isinstance(step,StepEkEklef):
+        if step.handleId in context.state.ek.handles: raise ValueError("Duplicate EK workflow handle")
+        h=sp.eklef(_resolve_ek_path(context,step.path))
+        _register_handle(context,step.handleId,h)
+        context.state.ek.loads.add(step.handleId)
+        context.state.ek.lastSuccessfulFindNmrows=None
+        return StepOutput(op=step.op,value={"handleId":step.handleId})
+
+    if isinstance(step,StepEkEknelt):
+        if step.row>=0 and step.selidx>=0 and context.state.ek.lastSuccessfulFindNmrows is None and sp.ekntab()>0:
+            raise ValueError("Run ekfind before reading result rows")
+        return StepOutput(op=step.op,value=metadata.eknelt(step.selidx,step.row))
+
+    if isinstance(step,StepEkEkpsel):
+        return StepOutput(op=step.op,value=metadata.ekpsel(step.query))
+
+    if isinstance(step,StepEkEkssum):
+        if step.handleId in context.state.ek.expiredLoads:
+            raise ValueError("EK query load is no longer active")
+        return StepOutput(op=step.op,value=metadata.ekssum(_require_handle(context,step.handleId),step.segno))
+
+    if isinstance(step,StepEkEkuef):
+        h=_require_handle(context,step.handleId)
+        if step.handleId not in context.state.ek.loads: raise ValueError("Expected EK query load")
+        expired = step.handleId in context.state.ek.expiredLoads
+        sp.ekuef(0 if expired else h)
+        for k in list(context.state.ek.loads):
+            if context.state.ek.handles.get(k)==h and ((k in context.state.ek.expiredLoads) == expired):
+                context.state.ek.handles.pop(k,None)
+                context.state.ek.loads.discard(k)
+                context.state.ek.expiredLoads.discard(k)
+        context.state.ek.lastSuccessfulFindNmrows=None
+        return StepOutput(op=step.op,value=None)
 
     if isinstance(step, StepEkEkopn):
         resolved_path = _resolve_ek_path(context, step.path)
@@ -299,10 +353,15 @@ def run_ek_step(step: WorkflowStep, context: SidecarRuntimeContext) -> StepOutpu
         return StepOutput(op=step.op, value={"handleId": step.handleId})
 
     if isinstance(step, StepEkEkcls):
+        if step.handleId in context.state.ek.loads:
+            raise ValueError("EK query registration must be released with ekuef")
         h = _require_handle(context, step.handleId)
         _close_handle(context, step.handleId)
         if context.state.ek.activeFast and context.state.ek.activeFast[0] == h:
             context.state.ek.activeFast = None
+        active=context.state.ek.activeMetadataWrite
+        if active is not None and active[0]==step.handleId:
+            context.state.ek.activeMetadataWrite=None
         return StepOutput(op=step.op, value=None)
 
     if isinstance(step, StepEkEkntab):
@@ -356,6 +415,8 @@ def run_ek_step(step: WorkflowStep, context: SidecarRuntimeContext) -> StepOutpu
             step.decls,
         )
         context.state.ek.activeFast = (handle, int(segno))
+        context.state.ek.activeMetadataWrite = (step.handleId,int(segno))
+        context.state.ek.lastSuccessfulFindNmrows = None
         _register_segment(
             context,
             step.segmentId,
@@ -448,6 +509,8 @@ def run_ek_step(step: WorkflowStep, context: SidecarRuntimeContext) -> StepOutpu
         sp.ekffld(handle, segment.segno, segment.rcptrs)
         if context.state.ek.activeFast == (handle, segment.segno):
             context.state.ek.activeFast = None
+        if context.state.ek.activeMetadataWrite == (segment.handleId,segment.segno):
+            context.state.ek.activeMetadataWrite = None
         return StepOutput(op=step.op, value=None)
 
     return None

@@ -504,3 +504,7 @@ C09 compares nine typed record operations through independently created, updated
 ## CK frame and record access
 
 C13 compares complete CK rotations, state transforms, metadata IDs and type 2/3 records against locked SpiceyPy, with independent physical units and cursor checks. [Scientific evidence and fixture provenance](step8-ck-records.md) [Per-routine judgments](../data/parity-audits/c13-ck-records.json)
+
+## Event kernel metadata
+
+C10 compares loaded tables, physical segment descriptors, SELECT projections, result extents and direct EK lifecycle across independent toolkits. [Metadata findings and acceptance evidence](step8-ek-metadata.md) [Per-routine audit](../data/parity-audits/c10-ek-metadata.json)

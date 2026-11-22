@@ -281,6 +281,13 @@ import ekEkrceiCasesRaw from "./ek/ekrcei.cases.json" with { type: "json" };
 import ekEkucecCasesRaw from "./ek/ekucec.cases.json" with { type: "json" };
 import ekEkucedCasesRaw from "./ek/ekuced.cases.json" with { type: "json" };
 import ekEkuceiCasesRaw from "./ek/ekucei.cases.json" with { type: "json" };
+import ekEkccntCasesRaw from "./ek/ekccnt.cases.json" with { type: "json" };
+import ekEkciiCasesRaw from "./ek/ekcii.cases.json" with { type: "json" };
+import ekEklefCasesRaw from "./ek/eklef.cases.json" with { type: "json" };
+import ekEkneltCasesRaw from "./ek/eknelt.cases.json" with { type: "json" };
+import ekEkpselCasesRaw from "./ek/ekpsel.cases.json" with { type: "json" };
+import ekEkssumCasesRaw from "./ek/ekssum.cases.json" with { type: "json" };
+import ekEkuefCasesRaw from "./ek/ekuef.cases.json" with { type: "json" };
 import ekEkopnCasesRaw from "./ek/ekopn.cases.json" with { type: "json" };
 import ekEkoprCasesRaw from "./ek/ekopr.cases.json" with { type: "json" };
 import ekEkopwCasesRaw from "./ek/ekopw.cases.json" with { type: "json" };
@@ -807,6 +814,13 @@ export const ekCases: ParityCase[] = [
   ...(ekEkucecCasesRaw as ParityCase[]),
   ...(ekEkucedCasesRaw as ParityCase[]),
   ...(ekEkuceiCasesRaw as ParityCase[]),
+  ...(ekEkccntCasesRaw as ParityCase[]),
+  ...(ekEkciiCasesRaw as ParityCase[]),
+  ...(ekEklefCasesRaw as ParityCase[]),
+  ...(ekEkneltCasesRaw as ParityCase[]),
+  ...(ekEkpselCasesRaw as ParityCase[]),
+  ...(ekEkssumCasesRaw as ParityCase[]),
+  ...(ekEkuefCasesRaw as ParityCase[]),
   ...(ekEkopnCasesRaw as ParityCase[]),
   ...(ekEkoprCasesRaw as ParityCase[]),
   ...(ekEkopwCasesRaw as ParityCase[]),

@@ -1,4 +1,9 @@
 export type {
+  EkAttributeDescriptor,
+  EkSegmentSummary,
+  EkSelectResult,
+} from "./domains/ek.js";
+export type {
   AbCorr,
   FixedString,
   Found,

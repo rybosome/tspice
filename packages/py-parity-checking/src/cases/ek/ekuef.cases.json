@@ -1,0 +1,289 @@
+[
+  {
+    "caseId": "ek-ekuef-independent-reader",
+    "description": "Unloading the last direct query file retains an independent reader and its metadata.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-query.ek"
+      },
+      {
+        "op": "kernels.unload",
+        "path": "kernels/audit-query.ek"
+      },
+      {
+        "op": "ek.eklef",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/audit-query.ek"
+        },
+        "handleId": "h"
+      },
+      {
+        "op": "ek.ekopr",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/audit-query.ek"
+        },
+        "handleId": "r"
+      },
+      {
+        "op": "ek.ekuef",
+        "handleId": "h"
+      },
+      {
+        "op": "ek.ekntab"
+      },
+      {
+        "op": "ek.ekssum",
+        "handleId": "r",
+        "segno": 0
+      },
+      {
+        "op": "ek.ekcls",
+        "handleId": "r"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ek-ekuef-file-specific",
+    "description": "Only the selected physical file is removed. Inspect each surviving table schema and metadata.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-tables-one.ek"
+      },
+      {
+        "op": "kernels.unload",
+        "path": "kernels/audit-tables-one.ek"
+      },
+      {
+        "op": "ek.eklef",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/audit-tables-one.ek"
+        },
+        "handleId": "h"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-tables-two.ek"
+      },
+      {
+        "op": "kernels.unload",
+        "path": "kernels/audit-tables-two.ek"
+      },
+      {
+        "op": "ek.eklef",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/audit-tables-two.ek"
+        },
+        "handleId": "b"
+      },
+      {
+        "op": "ek.ekuef",
+        "handleId": "b"
+      },
+      {
+        "op": "ek.ekntab"
+      },
+      {
+        "op": "ek.ekccnt",
+        "table": "AUDIT_ALPHA"
+      },
+      {
+        "op": "ek.ekssum",
+        "handleId": "h",
+        "segno": 2
+      },
+      {
+        "op": "ek.ekuef",
+        "handleId": "h"
+      },
+      {
+        "op": "ek.ekntab"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ek-ekuef-keeper-removal",
+    "description": "After KEEPER removes an overlapping registration, release its generation while a new direct load of the same opened file remains queryable.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-query.ek"
+      },
+      {
+        "op": "ek.ekopr",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/audit-query.ek"
+        },
+        "handleId": "r"
+      },
+      {
+        "op": "ek.eklef",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/audit-query.ek"
+        },
+        "handleId": "h"
+      },
+      {
+        "op": "kernels.unload",
+        "path": "kernels/audit-query.ek"
+      },
+      {
+        "op": "ek.ekntab"
+      },
+      {
+        "op": "ek.eklef",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/audit-query.ek"
+        },
+        "handleId": "new"
+      },
+      {
+        "op": "ek.ekuef",
+        "handleId": "h"
+      },
+      {
+        "op": "ek.ekccnt",
+        "table": "AUDIT_QUERY"
+      },
+      {
+        "op": "ek.ekssum",
+        "handleId": "new",
+        "segno": 0
+      },
+      {
+        "op": "ek.ekuef",
+        "handleId": "new"
+      },
+      {
+        "op": "ek.ekssum",
+        "handleId": "r",
+        "segno": 0
+      },
+      {
+        "op": "ek.ekcls",
+        "handleId": "r"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ek-ekuef-direct-clear-release",
+    "description": "Clear KEEPER twice with a direct-only file loaded, then explicitly unload.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-query.ek"
+      },
+      {
+        "op": "kernels.unload",
+        "path": "kernels/audit-query.ek"
+      },
+      {
+        "op": "ek.eklef",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/audit-query.ek"
+        },
+        "handleId": "h"
+      },
+      {
+        "op": "kernels.kclear"
+      },
+      {
+        "op": "kernels.kclear"
+      },
+      {
+        "op": "ek.ekccnt",
+        "table": "AUDIT_QUERY"
+      },
+      {
+        "op": "ek.ekuef",
+        "handleId": "h"
+      },
+      {
+        "op": "ek.ekntab"
+      },
+      {
+        "op": "kernels.ktotal",
+        "kind": "EK"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ek-ekuef-repeatable-epochs",
+    "description": "Direct unload and reload cycle produces the same physical summary and query count.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-query.ek"
+      },
+      {
+        "op": "kernels.unload",
+        "path": "kernels/audit-query.ek"
+      },
+      {
+        "op": "ek.eklef",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/audit-query.ek"
+        },
+        "handleId": "h"
+      },
+      {
+        "op": "ek.ekssum",
+        "handleId": "h",
+        "segno": 0
+      },
+      {
+        "op": "ek.ekuef",
+        "handleId": "h"
+      },
+      {
+        "op": "ek.eklef",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/audit-query.ek"
+        },
+        "handleId": "h2"
+      },
+      {
+        "op": "ek.ekssum",
+        "handleId": "h2",
+        "segno": 0
+      },
+      {
+        "op": "ek.ekccnt",
+        "table": "AUDIT_QUERY"
+      },
+      {
+        "op": "ek.ekuef",
+        "handleId": "h2"
+      },
+      {
+        "op": "ek.ekntab"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

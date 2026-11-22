@@ -1282,6 +1282,23 @@
         "https://github.com/rybosome/tspice/pull/765"
       ],
       "nextAction": "Verify the combined source on both required lanes and canonical CI."
+    },
+    {
+      "id": "c10-ek-metadata",
+      "routines": [
+        "ekccnt_c",
+        "ekcii_c",
+        "eklef_c",
+        "eknelt_c",
+        "ekpsel_c",
+        "ekssum_c",
+        "ekuef_c"
+      ],
+      "dependsOn": [],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/767"
+      ],
+      "nextAction": "Verify the combined source on both required lanes and canonical CI."
     }
   ]
 }

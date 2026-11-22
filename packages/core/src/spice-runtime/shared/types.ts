@@ -58,7 +58,7 @@ declare const __spiceHandleBrand: unique symbol;
 export type SpiceHandle = number & { readonly [__spiceHandleBrand]: true };
 
 export type SpiceHandleKind =
-  "DAF" | "DAS" | "DLA" | "SPK" | "EK" | "PCK-WRITER" | "PCK-LOADED" | "CK-WRITER";
+  "DAF" | "DAS" | "DLA" | "SPK" | "EK" | "PCK-WRITER" | "PCK-LOADED" | "CK-WRITER" | "EK-LOAD";
 
 export type SpiceHandleEntry = {
   kind: SpiceHandleKind;
