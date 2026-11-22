@@ -1240,6 +1240,82 @@
       "historical": true
     },
     {
+      "id": "local-a18-572a9d29-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "1a4cd511a87d7a43386ac9f67e899163ffef597054e33129b38d4628096103f1",
+      "caseIds": [
+        "kernels-kplfrm-all-inertial-unload-success",
+        "kernels-kplfrm-class-4-success",
+        "kernels-kplfrm-empty-pool-success",
+        "kernels-kplfrm-invalid-class-error",
+        "kernels-kplfrm-set-too-small-error"
+      ],
+      "observation": "Both complete required lanes passed locally on 572a9d29ee66e66b10627e53bddaa1323d2e9b8f. JavaScript: 2,569 parity tests and one expected guard skip. Native-required: 2,346 registered Node/WASM live comparisons; 2,570 parity-package tests with no skips, including the native-required guard; 103 native wrapper, 638 WASM, 28 core and 151 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "local-a18-572a9d29-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "1a4cd511a87d7a43386ac9f67e899163ffef597054e33129b38d4628096103f1",
+      "caseIds": [
+        "kernels-kplfrm-all-inertial-unload-success",
+        "kernels-kplfrm-class-4-success",
+        "kernels-kplfrm-empty-pool-success",
+        "kernels-kplfrm-invalid-class-error",
+        "kernels-kplfrm-set-too-small-error"
+      ],
+      "observation": "Both complete required lanes passed locally on 572a9d29ee66e66b10627e53bddaa1323d2e9b8f. JavaScript: 2,569 parity tests and one expected guard skip. Native-required: 2,346 registered Node/WASM live comparisons; 2,570 parity-package tests with no skips, including the native-required guard; 103 native wrapper, 638 WASM, 28 core and 151 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "ci-a18-572a9d29-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "1a4cd511a87d7a43386ac9f67e899163ffef597054e33129b38d4628096103f1",
+      "caseIds": [
+        "kernels-kplfrm-all-inertial-unload-success",
+        "kernels-kplfrm-class-4-success",
+        "kernels-kplfrm-empty-pool-success",
+        "kernels-kplfrm-invalid-class-error",
+        "kernels-kplfrm-set-too-small-error"
+      ],
+      "commit": "572a9d29ee66e66b10627e53bddaa1323d2e9b8f",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43552166699/job/132316861810",
+      "observation": "Inspected successful Linux Node 22 native-required job 132316861810 on 572a9d29ee66e66b10627e53bddaa1323d2e9b8f: 2,346 registered Node/WASM live comparisons; 2,570 parity-package tests with no skips, including the native-required guard; 103 native wrapper, 638 WASM, 28 core and 151 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "ci-a18-572a9d29-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "1a4cd511a87d7a43386ac9f67e899163ffef597054e33129b38d4628096103f1",
+      "caseIds": [
+        "kernels-kplfrm-all-inertial-unload-success",
+        "kernels-kplfrm-class-4-success",
+        "kernels-kplfrm-empty-pool-success",
+        "kernels-kplfrm-invalid-class-error",
+        "kernels-kplfrm-set-too-small-error"
+      ],
+      "commit": "572a9d29ee66e66b10627e53bddaa1323d2e9b8f",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43552166699/job/132316861810",
+      "observation": "Inspected successful Linux Node 22 native-required job 132316861810 on 572a9d29ee66e66b10627e53bddaa1323d2e9b8f: 2,346 registered Node/WASM live comparisons; 2,570 parity-package tests with no skips, including the native-required guard; 103 native wrapper, 638 WASM, 28 core and 151 facade tests passed.",
+      "historical": true
+    },
+    {
       "id": "local-a12-72bd1365-node",
       "kind": "local",
       "backend": "node",
@@ -3176,82 +3252,6 @@
       "historical": true
     },
     {
-      "id": "local-a18-572a9d29-node",
-      "kind": "local",
-      "backend": "node",
-      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
-      "result": "passed",
-      "nativeRequired": true,
-      "sourceDigest": "1a4cd511a87d7a43386ac9f67e899163ffef597054e33129b38d4628096103f1",
-      "caseIds": [
-        "kernels-kplfrm-all-inertial-unload-success",
-        "kernels-kplfrm-class-4-success",
-        "kernels-kplfrm-empty-pool-success",
-        "kernels-kplfrm-invalid-class-error",
-        "kernels-kplfrm-set-too-small-error"
-      ],
-      "observation": "Both complete required lanes passed locally on 572a9d29ee66e66b10627e53bddaa1323d2e9b8f. JavaScript: 2,569 parity tests and one expected guard skip. Native-required: 2,346 registered Node/WASM live comparisons; 2,570 parity-package tests with no skips, including the native-required guard; 103 native wrapper, 638 WASM, 28 core and 151 facade tests passed.",
-      "historical": true
-    },
-    {
-      "id": "local-a18-572a9d29-wasm",
-      "kind": "local",
-      "backend": "wasm",
-      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
-      "result": "passed",
-      "nativeRequired": true,
-      "sourceDigest": "1a4cd511a87d7a43386ac9f67e899163ffef597054e33129b38d4628096103f1",
-      "caseIds": [
-        "kernels-kplfrm-all-inertial-unload-success",
-        "kernels-kplfrm-class-4-success",
-        "kernels-kplfrm-empty-pool-success",
-        "kernels-kplfrm-invalid-class-error",
-        "kernels-kplfrm-set-too-small-error"
-      ],
-      "observation": "Both complete required lanes passed locally on 572a9d29ee66e66b10627e53bddaa1323d2e9b8f. JavaScript: 2,569 parity tests and one expected guard skip. Native-required: 2,346 registered Node/WASM live comparisons; 2,570 parity-package tests with no skips, including the native-required guard; 103 native wrapper, 638 WASM, 28 core and 151 facade tests passed.",
-      "historical": true
-    },
-    {
-      "id": "ci-a18-572a9d29-node",
-      "kind": "ci",
-      "backend": "node",
-      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
-      "result": "passed",
-      "nativeRequired": true,
-      "sourceDigest": "1a4cd511a87d7a43386ac9f67e899163ffef597054e33129b38d4628096103f1",
-      "caseIds": [
-        "kernels-kplfrm-all-inertial-unload-success",
-        "kernels-kplfrm-class-4-success",
-        "kernels-kplfrm-empty-pool-success",
-        "kernels-kplfrm-invalid-class-error",
-        "kernels-kplfrm-set-too-small-error"
-      ],
-      "commit": "572a9d29ee66e66b10627e53bddaa1323d2e9b8f",
-      "url": "https://github.com/rybosome/tspice/actions/runs/43552166699/job/132316861810",
-      "observation": "Inspected successful Linux Node 22 native-required job 132316861810 on 572a9d29ee66e66b10627e53bddaa1323d2e9b8f: 2,346 registered Node/WASM live comparisons; 2,570 parity-package tests with no skips, including the native-required guard; 103 native wrapper, 638 WASM, 28 core and 151 facade tests passed.",
-      "historical": true
-    },
-    {
-      "id": "ci-a18-572a9d29-wasm",
-      "kind": "ci",
-      "backend": "wasm",
-      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
-      "result": "passed",
-      "nativeRequired": true,
-      "sourceDigest": "1a4cd511a87d7a43386ac9f67e899163ffef597054e33129b38d4628096103f1",
-      "caseIds": [
-        "kernels-kplfrm-all-inertial-unload-success",
-        "kernels-kplfrm-class-4-success",
-        "kernels-kplfrm-empty-pool-success",
-        "kernels-kplfrm-invalid-class-error",
-        "kernels-kplfrm-set-too-small-error"
-      ],
-      "commit": "572a9d29ee66e66b10627e53bddaa1323d2e9b8f",
-      "url": "https://github.com/rybosome/tspice/actions/runs/43552166699/job/132316861810",
-      "observation": "Inspected successful Linux Node 22 native-required job 132316861810 on 572a9d29ee66e66b10627e53bddaa1323d2e9b8f: 2,346 registered Node/WASM live comparisons; 2,570 parity-package tests with no skips, including the native-required guard; 103 native wrapper, 638 WASM, 28 core and 151 facade tests passed.",
-      "historical": true
-    },
-    {
       "id": "local-a19-a2b5705a-node",
       "kind": "local",
       "backend": "node",
@@ -3553,6 +3553,82 @@
       "commit": "2b1e2fc58371f7cb324252947d956cc128571e3a",
       "url": "https://github.com/rybosome/tspice/actions/runs/43565521263/job/132358391458",
       "observation": "Inspected successful Linux Node 22 native-required job 132358391458 on 2b1e2fc58371f7cb324252947d956cc128571e3a: 2,356 registered Node/WASM live comparisons; 2,577 parity-package tests with no skips, including the native-required guard; 85 native wrapper, 634 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "local-a21-d53e2c8a-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "5b83c2cee992bca9ff50d99e2112745cc07edf940e88cb22323ebe4cafae6a27",
+      "caseIds": [
+        "kernels-kplfrm-all-inertial-unload-success",
+        "kernels-kplfrm-class-4-success",
+        "kernels-kplfrm-empty-pool-success",
+        "kernels-kplfrm-invalid-class-error",
+        "kernels-kplfrm-set-too-small-error"
+      ],
+      "observation": "Both complete required lanes passed locally on d53e2c8aa001cd5b343c8f3c73da546def15d75b. JavaScript: 2,706 parity tests and one expected guard skip. Native-required: 2,476 registered Node/WASM live comparisons; 2,707 parity-package tests with no skips, including the native-required guard; 118 native wrapper, 692 WASM, 28 core and 151 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "local-a21-d53e2c8a-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "5b83c2cee992bca9ff50d99e2112745cc07edf940e88cb22323ebe4cafae6a27",
+      "caseIds": [
+        "kernels-kplfrm-all-inertial-unload-success",
+        "kernels-kplfrm-class-4-success",
+        "kernels-kplfrm-empty-pool-success",
+        "kernels-kplfrm-invalid-class-error",
+        "kernels-kplfrm-set-too-small-error"
+      ],
+      "observation": "Both complete required lanes passed locally on d53e2c8aa001cd5b343c8f3c73da546def15d75b. JavaScript: 2,706 parity tests and one expected guard skip. Native-required: 2,476 registered Node/WASM live comparisons; 2,707 parity-package tests with no skips, including the native-required guard; 118 native wrapper, 692 WASM, 28 core and 151 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "ci-a21-d53e2c8a-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "5b83c2cee992bca9ff50d99e2112745cc07edf940e88cb22323ebe4cafae6a27",
+      "caseIds": [
+        "kernels-kplfrm-all-inertial-unload-success",
+        "kernels-kplfrm-class-4-success",
+        "kernels-kplfrm-empty-pool-success",
+        "kernels-kplfrm-invalid-class-error",
+        "kernels-kplfrm-set-too-small-error"
+      ],
+      "commit": "d53e2c8aa001cd5b343c8f3c73da546def15d75b",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43566870555/job/132362525304",
+      "observation": "Inspected successful Linux Node 22 native-required job 132362525304 on d53e2c8aa001cd5b343c8f3c73da546def15d75b: 2,476 registered Node/WASM live comparisons; 2,707 parity-package tests with no skips, including the native-required guard; 118 native wrapper, 692 WASM, 28 core and 151 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "ci-a21-d53e2c8a-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "5b83c2cee992bca9ff50d99e2112745cc07edf940e88cb22323ebe4cafae6a27",
+      "caseIds": [
+        "kernels-kplfrm-all-inertial-unload-success",
+        "kernels-kplfrm-class-4-success",
+        "kernels-kplfrm-empty-pool-success",
+        "kernels-kplfrm-invalid-class-error",
+        "kernels-kplfrm-set-too-small-error"
+      ],
+      "commit": "d53e2c8aa001cd5b343c8f3c73da546def15d75b",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43566870555/job/132362525304",
+      "observation": "Inspected successful Linux Node 22 native-required job 132362525304 on d53e2c8aa001cd5b343c8f3c73da546def15d75b: 2,476 registered Node/WASM live comparisons; 2,707 parity-package tests with no skips, including the native-required guard; 118 native wrapper, 692 WASM, 28 core and 151 facade tests passed.",
       "historical": true
     }
   ],

@@ -1408,6 +1408,18 @@ int tspice_ncposr(const char *text, const char *chars, int start, int *out, char
 int tspice_pos(const char *text, const char *substr, int start, int *out, char *err, int errMaxBytes);
 int tspice_posr(const char *text, const char *substr, int start, int *out, char *err, int errMaxBytes);
 int tspice_esrchc(const char *value, int count, int width, const char *rows, int *out, char *err, int errMaxBytes);
+int tspice_dp2hx(double value, int lenout, char *text, int *size, char *err, int errMaxBytes);
+int tspice_hx2dp(const char *input, int lenout, double *number, int *error, char *text, char *err, int errMaxBytes);
+int tspice_prsdp(const char *input, double *number, char *err, int errMaxBytes);
+int tspice_prsint(const char *input, int *number, char *err, int errMaxBytes);
+int tspice_repmc(const char *input, const char *marker, const char *value, int lenout, char *text, char *err, int errMaxBytes);
+int tspice_repmct(const char *input, const char *marker, int value, int rtcase, int lenout, char *text, char *err, int errMaxBytes);
+int tspice_repmd(const char *input, const char *marker, double value, int sigdig, int lenout, char *text, char *err, int errMaxBytes);
+int tspice_repmf(const char *input, const char *marker, double value, int sigdig, int format, int lenout, char *text, char *err, int errMaxBytes);
+int tspice_repmi(const char *input, const char *marker, int value, int lenout, char *text, char *err, int errMaxBytes);
+int tspice_repml(const char *input, const char *marker, int value, int rtcase, int lenout, char *text, char *err, int errMaxBytes);
+int tspice_repmot(const char *input, const char *marker, int value, int rtcase, int lenout, char *text, char *err, int errMaxBytes);
+
 int tspice_cmprss(int delim, int n, const char *input, int lenout, char *out, char *err, int errMaxBytes);
 int tspice_eqstr(const char *a, const char *b, int *out, char *err, int errMaxBytes);
 int tspice_iswhsp(const char *input, int *out, char *err, int errMaxBytes);

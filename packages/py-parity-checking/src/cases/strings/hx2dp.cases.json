@@ -1,0 +1,165 @@
+[
+  {
+    "caseId": "strings-hx2dp-normalized",
+    "description": "Read leading/trailing blanks, signs, lower-case mantissas and signed base-16 exponents.",
+    "workflow": [
+      {
+        "op": "strings.hx2dp",
+        "input": "  +18^1  "
+      },
+      {
+        "op": "strings.hx2dp",
+        "input": "-a^-1"
+      },
+      {
+        "op": "strings.hx2dp",
+        "input": "1234^+A"
+      },
+      {
+        "op": "strings.hx2dp",
+        "input": "0^0"
+      },
+      {
+        "op": "strings.hx2dp",
+        "input": "^1"
+      },
+      {
+        "op": "strings.hx2dp",
+        "input": "-F^+01"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-hx2dp-returned-diagnostics",
+    "description": "Distinguish returned conversion errors from successful zero, including blank, missing, illegal and overlong mantissas.",
+    "workflow": [
+      {
+        "op": "strings.hx2dp",
+        "input": " "
+      },
+      {
+        "op": "strings.hx2dp",
+        "input": "ABC"
+      },
+      {
+        "op": "strings.hx2dp",
+        "input": "1^"
+      },
+      {
+        "op": "strings.hx2dp",
+        "input": "1G^2"
+      },
+      {
+        "op": "strings.hx2dp",
+        "input": "123456789ABCDEF0123456789ABCDEF0^1"
+      },
+      {
+        "op": "strings.hx2dp",
+        "input": "1^2Q"
+      },
+      {
+        "op": "strings.hx2dp",
+        "input": "0^0"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-hx2dp-exponent-range",
+    "description": "Independent canonical outputs at signed exponent parse overflow and defined binary64 exponent boundaries.",
+    "workflow": [
+      {
+        "op": "strings.hx2dp",
+        "input": "1^80000000"
+      },
+      {
+        "op": "strings.hx2dp",
+        "input": "F^101"
+      },
+      {
+        "op": "strings.hx2dp",
+        "input": "-F^101"
+      },
+      {
+        "op": "strings.hx2dp",
+        "input": "1^-400"
+      },
+      {
+        "op": "strings.hx2dp",
+        "input": "0^400"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-hx2dp-message-room",
+    "description": "Preserve diagnostic prefix truncation and successful empty message for ordinary scientific output.",
+    "workflow": [
+      {
+        "op": "strings.hx2dp",
+        "input": "1G^2",
+        "lenout": 2
+      },
+      {
+        "op": "strings.hx2dp",
+        "input": "1G^2",
+        "lenout": 9
+      },
+      {
+        "op": "strings.hx2dp",
+        "input": "1G^2",
+        "lenout": 193
+      },
+      {
+        "op": "strings.hx2dp",
+        "input": "1G^2",
+        "lenout": 2147483647
+      },
+      {
+        "op": "strings.hx2dp",
+        "input": "2^1",
+        "lenout": 2
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-hx2dp-empty",
+    "description": "C string validation runs before the Fortran conversion.",
+    "workflow": [
+      {
+        "op": "strings.hx2dp",
+        "input": "",
+        "lenout": 48
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["EMPTYSTRING"]
+    }
+  },
+  {
+    "caseId": "strings-hx2dp-capacity",
+    "description": "Canonical fixed-minimum diagnostic buffer validation.",
+    "workflow": [
+      {
+        "op": "strings.hx2dp",
+        "input": "18^1",
+        "lenout": 1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["STRINGTOOSHORT"]
+    }
+  }
+]

@@ -1374,8 +1374,8 @@
         "repmot_c"
       ],
       "domain": "strings",
-      "apiPlacement": "Proposed directly consumed strings.ts raw domain: existing domains have no general string API. Confirm this small domain placement before implementation; preserve flat raw method composition and the existing architecture.",
-      "owner": null,
+      "apiPlacement": "A18 StringsApi, with a tagged HX2DP conversion result, full hexadecimal encoding length and optional caller output capacities.",
+      "owner": "Codex Step 8 (/root)",
       "status": "in-progress",
       "dependsOn": [
         "A18-string-transform"
@@ -1395,21 +1395,28 @@
       "prs": [
         "https://github.com/rybosome/tspice/pull/737"
       ],
-      "validationEvidence": [],
-      "nextAction": "Intake the pinned source after checkpoint 01 lands and passes main CI.",
-      "sourceSnapshot": {
-        "number": 737,
-        "url": "https://github.com/rybosome/tspice/pull/737",
-        "head": "4fb8cb85461237cbae0583b408996eee4cab2ded",
-        "base": "92b3050e86d486d3cc445239355e2d89562dc8ad",
-        "ci": "https://github.com/rybosome/tspice/actions/runs/43568445109",
-        "ciConclusion": "success"
-      },
-      "checkpoint": {
-        "number": 2,
-        "status": "pending intake"
-      },
-      "deliveryNote": "The pinned source head passed its configured CI matrix."
+      "validationEvidence": [
+        {
+          "kind": "local-focused",
+          "result": "65 registered workflows, 225 calls, 23 terminal toolkit errors; 130 actual Node/WASM comparisons, seven independent/public tests, 15 native and 54 real-WASM tests, non-DOM fixture and all eleven through real Chrome."
+        },
+        {
+          "kind": "source-and-abi",
+          "result": "REPML independent canonical typed C symbol; HX2DP bounded scientific-equivalent exponent gate and unchanged-error sentinel; INTTXT minimum gate only for performed word conversion. WASM SHA-256 76c3236935cb0becc673efa64cfa2b11ca436ec5096267210c765279cb05a33c."
+        },
+        {
+          "kind": "source-bound-required-lanes",
+          "testedCommit": "d53e2c8aa001cd5b343c8f3c73da546def15d75b",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43566870555/job/132362525304",
+          "result": "Both complete required lanes passed locally on d53e2c8aa001cd5b343c8f3c73da546def15d75b. JavaScript: 2,706 parity tests and one expected guard skip. Native-required: 2,476 registered Node/WASM live comparisons; 2,707 parity-package tests with no skips, including the native-required guard; 118 native wrapper, 692 WASM, 28 core and 151 facade tests passed. Inspected successful Linux Node 22 native-required job 132362525304 on d53e2c8aa001cd5b343c8f3c73da546def15d75b: 2,476 registered Node/WASM live comparisons; 2,707 parity-package tests with no skips, including the native-required guard; 118 native wrapper, 692 WASM, 28 core and 151 facade tests passed."
+        }
+      ],
+      "nextAction": "Wait for the full metadata-head CI matrix and verify explicit rebaseability before marking the PR ready; do not merge.",
+      "branch": "codex/expand-string-numbers",
+      "worktree": "/private/tmp/tspice-step8-string-numbers",
+      "baseCommit": "92b3050e86d486d3cc445239355e2d89562dc8ad",
+      "progressNote": "Both required local lanes and observed canonical native-required CI passed on the implementation source d53e2c8a. 2,476 registered Node/WASM live comparisons; 2,707 parity-package tests with no skips, including the native-required guard; 118 native wrapper, 692 WASM, 28 core and 151 facade tests passed.",
+      "priorCheckpoint": "All eleven matching shared calls, independent evidence and browser smoke complete. Full local and canonical CI need the final combined source."
     },
     {
       "id": "A22-array-search",

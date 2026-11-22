@@ -1,0 +1,151 @@
+[
+  {
+    "caseId": "strings-prsint-grammar",
+    "description": "Check decimal punctuation, exponent notation and implicit mantissa, including signed results.",
+    "workflow": [
+      {
+        "op": "strings.prsint",
+        "input": " -1,234.75  "
+      },
+      {
+        "op": "strings.prsint",
+        "input": "3.1 4"
+      },
+      {
+        "op": "strings.prsint",
+        "input": "2.5D+1"
+      },
+      {
+        "op": "strings.prsint",
+        "input": "-.75"
+      },
+      {
+        "op": "strings.prsint",
+        "input": "E2"
+      },
+      {
+        "op": "strings.prsint",
+        "input": "+12.2 e-1"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-prsint-pi",
+    "description": "Check mixed-case PI mnemonic and signed forms.",
+    "workflow": [
+      {
+        "op": "strings.prsint",
+        "input": "PI"
+      },
+      {
+        "op": "strings.prsint",
+        "input": "-pI"
+      },
+      {
+        "op": "strings.prsint",
+        "input": "+Pi"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-prsint-limits",
+    "description": "Preserve defined numeric behavior at source-relevant magnitude limits.",
+    "workflow": [
+      {
+        "op": "strings.prsint",
+        "input": "2147483647"
+      },
+      {
+        "op": "strings.prsint",
+        "input": "-2147483648"
+      },
+      {
+        "op": "strings.prsint",
+        "input": "2147483647.9"
+      },
+      {
+        "op": "strings.prsint",
+        "input": "-2147483648.9"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-prsint-invalid",
+    "description": "Check the actual parser diagnostic and traced scientific failure.",
+    "workflow": [
+      {
+        "op": "strings.prsint",
+        "input": "1.2.3"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["NOTANINTEGER"]
+    }
+  },
+  {
+    "caseId": "strings-prsint-range",
+    "description": "Check the actual parser diagnostic and traced scientific failure.",
+    "workflow": [
+      {
+        "op": "strings.prsint",
+        "input": "1e9999"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["NOTANINTEGER"]
+    }
+  },
+  {
+    "caseId": "strings-prsint-blank",
+    "description": "Check the actual parser diagnostic and traced scientific failure.",
+    "workflow": [
+      {
+        "op": "strings.prsint",
+        "input": "   "
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["NOTANINTEGER"]
+    }
+  },
+  {
+    "caseId": "strings-prsint-empty",
+    "description": "Check the actual parser diagnostic and traced scientific failure.",
+    "workflow": [
+      {
+        "op": "strings.prsint",
+        "input": ""
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["EMPTYSTRING"]
+    }
+  },
+  {
+    "caseId": "strings-prsint-bounds",
+    "description": "Truncation outside the representable integer range is an error.",
+    "workflow": [
+      {
+        "op": "strings.prsint",
+        "input": "2147483648"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["NOTANINTEGER"]
+    }
+  }
+]

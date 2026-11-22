@@ -840,6 +840,29 @@
       "nextAction": "Verify the combined source on both required lanes and canonical CI."
     },
     {
+      "id": "a21-string-numeric",
+      "routines": [
+        "dp2hx_c",
+        "hx2dp_c",
+        "prsdp_c",
+        "prsint_c",
+        "repmc_c",
+        "repmct_c",
+        "repmd_c",
+        "repmf_c",
+        "repmi_c",
+        "repml_c",
+        "repmot_c"
+      ],
+      "dependsOn": [
+        "a18-string-transform"
+      ],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/737"
+      ],
+      "nextAction": "Verify the combined source on both required lanes and canonical CI."
+    },
+    {
       "id": "a07-coordinate-jacobians",
       "routines": [
         "dazldr_c",

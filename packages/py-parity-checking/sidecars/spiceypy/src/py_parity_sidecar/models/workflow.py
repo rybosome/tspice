@@ -348,6 +348,17 @@ from .strings import (
     StepStringsPos,
     StepStringsPosr,
     StepStringsEsrchc,
+    StepStringsDp2hx,
+    StepStringsHx2dp,
+    StepStringsPrsdp,
+    StepStringsPrsint,
+    StepStringsRepmc,
+    StepStringsRepmct,
+    StepStringsRepmd,
+    StepStringsRepmf,
+    StepStringsRepmi,
+    StepStringsRepml,
+    StepStringsRepmot,
     StepStringsCmprss,
     StepStringsEqstr,
     StepStringsIswhsp,
@@ -394,6 +405,17 @@ WorkflowStep: TypeAlias = (
     | StepStringsPos
     | StepStringsPosr
     | StepStringsEsrchc
+    | StepStringsDp2hx
+    | StepStringsHx2dp
+    | StepStringsPrsdp
+    | StepStringsPrsint
+    | StepStringsRepmc
+    | StepStringsRepmct
+    | StepStringsRepmd
+    | StepStringsRepmf
+    | StepStringsRepmi
+    | StepStringsRepml
+    | StepStringsRepmot
     | StepStringsCmprss
     | StepStringsEqstr
     | StepStringsIswhsp

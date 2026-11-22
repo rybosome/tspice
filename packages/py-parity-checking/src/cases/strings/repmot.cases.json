@@ -1,0 +1,232 @@
+[
+  {
+    "caseId": "strings-repmot-first-marker",
+    "description": "Only the first matching marker is replaced after trimming ASCII marker blanks; leading literal whitespace is observable.",
+    "workflow": [
+      {
+        "op": "strings.repmot",
+        "input": "  A # #  ",
+        "marker": " # ",
+        "value": 103,
+        "rtcase": "L"
+      },
+      {
+        "op": "strings.repmot",
+        "input": "X#Y#Z",
+        "marker": "#",
+        "value": 103,
+        "rtcase": "L"
+      },
+      {
+        "op": "strings.repmot",
+        "input": "Étape à#\t",
+        "marker": "#",
+        "value": 103,
+        "rtcase": "L"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-repmot-miss-and-blank",
+    "description": "Genuine empty input, missing marker, empty and whitespace-only marker, and input containing a literal tab.",
+    "workflow": [
+      {
+        "op": "strings.repmot",
+        "input": "",
+        "marker": "#",
+        "value": 103,
+        "rtcase": "L"
+      },
+      {
+        "op": "strings.repmot",
+        "input": "unmarked",
+        "marker": "!",
+        "value": 103,
+        "rtcase": "L"
+      },
+      {
+        "op": "strings.repmot",
+        "input": "a b",
+        "marker": "",
+        "value": 103,
+        "rtcase": "L"
+      },
+      {
+        "op": "strings.repmot",
+        "input": "a b",
+        "marker": "  ",
+        "value": 103,
+        "rtcase": "L"
+      },
+      {
+        "op": "strings.repmot",
+        "input": "t\t",
+        "marker": "#",
+        "value": 103,
+        "rtcase": "L"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-repmot-capacity",
+    "description": "Truncate the complete replacement string at explicit UTF-8 byte capacities, including the minimum accepted room and signed maximum.",
+    "workflow": [
+      {
+        "op": "strings.repmot",
+        "input": "a#z",
+        "marker": "#",
+        "value": 103,
+        "rtcase": "L",
+        "lenout": 1
+      },
+      {
+        "op": "strings.repmot",
+        "input": "a#z",
+        "marker": "#",
+        "value": 103,
+        "rtcase": "L",
+        "lenout": 2
+      },
+      {
+        "op": "strings.repmot",
+        "input": "a#z",
+        "marker": "#",
+        "value": 103,
+        "rtcase": "L",
+        "lenout": 3
+      },
+      {
+        "op": "strings.repmot",
+        "input": "a#z",
+        "marker": "#",
+        "value": 103,
+        "rtcase": "L",
+        "lenout": 7
+      },
+      {
+        "op": "strings.repmot",
+        "input": "a#z",
+        "marker": "#",
+        "value": 103,
+        "rtcase": "L",
+        "lenout": 2147483647
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-repmot-bad-room",
+    "description": "The actual canonical routine receives insufficient caller room.",
+    "workflow": [
+      {
+        "op": "strings.repmot",
+        "input": "#",
+        "marker": "#",
+        "value": 103,
+        "rtcase": "L",
+        "lenout": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["STRINGTOOSHORT"]
+    }
+  },
+  {
+    "caseId": "strings-repmot-case-folding",
+    "description": "Compare U/L/C forms, lower-case case selectors, signed words or logical forms and full longest-value output.",
+    "workflow": [
+      {
+        "op": "strings.repmot",
+        "input": "#",
+        "marker": "#",
+        "value": 0,
+        "rtcase": "U"
+      },
+      {
+        "op": "strings.repmot",
+        "input": "#",
+        "marker": "#",
+        "value": 0,
+        "rtcase": "l"
+      },
+      {
+        "op": "strings.repmot",
+        "input": "#",
+        "marker": "#",
+        "value": 0,
+        "rtcase": "C"
+      },
+      {
+        "op": "strings.repmot",
+        "input": "#",
+        "marker": "#",
+        "value": -2147483647,
+        "rtcase": "U"
+      },
+      {
+        "op": "strings.repmot",
+        "input": "#",
+        "marker": "#",
+        "value": -2147483647,
+        "rtcase": "l"
+      },
+      {
+        "op": "strings.repmot",
+        "input": "#",
+        "marker": "#",
+        "value": -2147483647,
+        "rtcase": "C"
+      },
+      {
+        "op": "strings.repmot",
+        "input": "#",
+        "marker": "#",
+        "value": 2147483647,
+        "rtcase": "U"
+      },
+      {
+        "op": "strings.repmot",
+        "input": "#",
+        "marker": "#",
+        "value": 2147483647,
+        "rtcase": "l"
+      },
+      {
+        "op": "strings.repmot",
+        "input": "#",
+        "marker": "#",
+        "value": 2147483647,
+        "rtcase": "C"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-repmot-invalid-case",
+    "description": "The invalid case code signals even when the marker would not match.",
+    "workflow": [
+      {
+        "op": "strings.repmot",
+        "input": "literal",
+        "marker": "#",
+        "value": 103,
+        "rtcase": "Z"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDCASE"]
+    }
+  }
+]

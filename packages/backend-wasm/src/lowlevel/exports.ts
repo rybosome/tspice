@@ -1992,6 +1992,104 @@ export type EmscriptenModule = {
     errPtr: number,
     errMaxBytes: number,
   ): number;
+  _tspice_dp2hx(
+    value: number,
+    lenout: number,
+    text: number,
+    size: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_hx2dp(
+    input: number,
+    lenout: number,
+    number: number,
+    error: number,
+    text: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_prsdp(
+    input: number,
+    number: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_prsint(
+    input: number,
+    number: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_repmc(
+    input: number,
+    marker: number,
+    value: number,
+    lenout: number,
+    text: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_repmct(
+    input: number,
+    marker: number,
+    value: number,
+    rtcase: number,
+    lenout: number,
+    text: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_repmd(
+    input: number,
+    marker: number,
+    value: number,
+    sigdig: number,
+    lenout: number,
+    text: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_repmf(
+    input: number,
+    marker: number,
+    value: number,
+    sigdig: number,
+    format: number,
+    lenout: number,
+    text: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_repmi(
+    input: number,
+    marker: number,
+    value: number,
+    lenout: number,
+    text: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_repml(
+    input: number,
+    marker: number,
+    value: number,
+    rtcase: number,
+    lenout: number,
+    text: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_repmot(
+    input: number,
+    marker: number,
+    value: number,
+    rtcase: number,
+    lenout: number,
+    text: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
   _tspice_cmprss(
     delim: number,
     n: number,
@@ -4808,6 +4906,17 @@ const REQUIRED_FUNCTION_EXPORTS = [
   "_tspice_pos",
   "_tspice_posr",
   "_tspice_esrchc",
+  "_tspice_dp2hx",
+  "_tspice_hx2dp",
+  "_tspice_prsdp",
+  "_tspice_prsint",
+  "_tspice_repmc",
+  "_tspice_repmct",
+  "_tspice_repmd",
+  "_tspice_repmf",
+  "_tspice_repmi",
+  "_tspice_repml",
+  "_tspice_repmot",
   "_tspice_cmprss",
   "_tspice_eqstr",
   "_tspice_iswhsp",

@@ -71,6 +71,79 @@ export type StepStringsEsrchc = {
   values: readonly string[];
 };
 
+export type StepStringsDp2hx = {
+  op: "strings.dp2hx";
+  value: number;
+  lenout?: number;
+};
+export type StepStringsHx2dp = {
+  op: "strings.hx2dp";
+  input: string;
+  lenout?: number;
+};
+export type StepStringsPrsdp = {
+  op: "strings.prsdp";
+  input: string;
+};
+export type StepStringsPrsint = {
+  op: "strings.prsint";
+  input: string;
+};
+export type StepStringsRepmc = {
+  op: "strings.repmc";
+  input: string;
+  marker: string;
+  value: string;
+  lenout?: number;
+};
+export type StepStringsRepmct = {
+  op: "strings.repmct";
+  input: string;
+  marker: string;
+  value: number;
+  rtcase: string;
+  lenout?: number;
+};
+export type StepStringsRepmd = {
+  op: "strings.repmd";
+  input: string;
+  marker: string;
+  value: number;
+  sigdig: number;
+  lenout?: number;
+};
+export type StepStringsRepmf = {
+  op: "strings.repmf";
+  input: string;
+  marker: string;
+  value: number;
+  sigdig: number;
+  format: string;
+  lenout?: number;
+};
+export type StepStringsRepmi = {
+  op: "strings.repmi";
+  input: string;
+  marker: string;
+  value: number;
+  lenout?: number;
+};
+export type StepStringsRepml = {
+  op: "strings.repml";
+  input: string;
+  marker: string;
+  value: boolean;
+  rtcase: string;
+  lenout?: number;
+};
+export type StepStringsRepmot = {
+  op: "strings.repmot";
+  input: string;
+  marker: string;
+  value: number;
+  rtcase: string;
+  lenout?: number;
+};
 export type StepStringsCmprss = {
   op: "strings.cmprss";
   delim: string;
@@ -2443,6 +2516,17 @@ export type WorkflowStep =
   | StepStringsPos
   | StepStringsPosr
   | StepStringsEsrchc
+  | StepStringsDp2hx
+  | StepStringsHx2dp
+  | StepStringsPrsdp
+  | StepStringsPrsint
+  | StepStringsRepmc
+  | StepStringsRepmct
+  | StepStringsRepmd
+  | StepStringsRepmf
+  | StepStringsRepmi
+  | StepStringsRepml
+  | StepStringsRepmot
   | StepStringsCmprss
   | StepStringsEqstr
   | StepStringsIswhsp
@@ -2973,6 +3057,22 @@ export type StepOutput =
   | { op: "strings.pos"; value: number }
   | { op: "strings.posr"; value: number }
   | { op: "strings.esrchc"; value: number }
+  | { op: "strings.dp2hx"; value: { hxstr: string; hxssiz: number } }
+  | {
+      op: "strings.hx2dp";
+      value:
+        | { error: false; number: number; errmsg: string }
+        | { error: true; errmsg: string };
+    }
+  | { op: "strings.prsdp"; value: number }
+  | { op: "strings.prsint"; value: number }
+  | { op: "strings.repmc"; value: string }
+  | { op: "strings.repmct"; value: string }
+  | { op: "strings.repmd"; value: string }
+  | { op: "strings.repmf"; value: string }
+  | { op: "strings.repmi"; value: string }
+  | { op: "strings.repml"; value: string }
+  | { op: "strings.repmot"; value: string }
   | { op: "strings.cmprss"; value: string }
   | { op: "strings.eqstr"; value: boolean }
   | { op: "strings.iswhsp"; value: boolean }

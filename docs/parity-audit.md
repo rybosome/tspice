@@ -386,3 +386,7 @@ A22 depends on the six A24 sorted bounds and adds eight direct raw operations. T
 ## Kernel-pool expansion
 
 B05 adds nine direct kernel-pool operations. The source review covers 69 workflows, 164 calls to the nine new methods and 32 terminal toolkit errors. The routine audit distinguishes two N0067 domain guards and follows KEEPER state, watches, logical continuation records, caller capacities and partial-load effects. [Kernel-pool review](step8-kernel-pool.md) [Per-routine audit](../data/parity-audits/b05-kernel-pool.json)
+
+## Numeric strings and marker replacement
+
+A21 adds eleven direct methods on A18’s string contract. Its conversion flags, buffer truncation and full counts coexist with independently checked scientific errors. Source-derived limits on extreme hexadecimal scaling and minimum integer word conversion apply to the documented calls. [Numeric strings](step8-string-numbers.md) [Per-routine audit](../data/parity-audits/a21-string-numeric.json)
