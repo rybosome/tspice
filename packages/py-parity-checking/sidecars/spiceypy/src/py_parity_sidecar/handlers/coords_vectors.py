@@ -2,6 +2,9 @@ from __future__ import annotations
 
 import spiceypy as sp
 
+from .. import array_order_oracle
+from .. import array_search_oracle, sorted_bounds_oracle
+
 from .. import general_matrix_oracle
 from .. import general_vector_oracle
 
@@ -139,6 +142,31 @@ from ..models import (
     StepCoordsVectorsDrdpgr,
     StepCoordsVectorsDrdsph,
     StepCoordsVectorsDsphdr,
+    StepCoordsVectorsIsordv,
+    StepCoordsVectorsOrderc,
+    StepCoordsVectorsOrderd,
+    StepCoordsVectorsOrderi,
+    StepCoordsVectorsReordc,
+    StepCoordsVectorsReordd,
+    StepCoordsVectorsReordi,
+    StepCoordsVectorsReordl,
+    StepCoordsVectorsShellc,
+    StepCoordsVectorsShelld,
+    StepCoordsVectorsShelli,
+    StepCoordsVectorsLstlec,
+    StepCoordsVectorsLstled,
+    StepCoordsVectorsLstlei,
+    StepCoordsVectorsLstltc,
+    StepCoordsVectorsLstltd,
+    StepCoordsVectorsLstlti,
+    StepCoordsVectorsBschoc,
+    StepCoordsVectorsBschoi,
+    StepCoordsVectorsBsrchc,
+    StepCoordsVectorsBsrchd,
+    StepCoordsVectorsBsrchi,
+    StepCoordsVectorsIsrchc,
+    StepCoordsVectorsIsrchd,
+    StepCoordsVectorsIsrchi,
     StepCoordsVectorsReclat,
     StepCoordsVectorsRecgeo,
     StepCoordsVectorsRecsph,
@@ -717,6 +745,84 @@ def run_coords_vectors_step(step: WorkflowStep, _context: SidecarRuntimeContext)
     if isinstance(step, StepCoordsVectorsDsphdr):
         out = sp.dsphdr(step.x, step.y, step.z)
         return StepOutput(op=step.op, value=_to_matrix3x3(out))
+
+    if isinstance(step, StepCoordsVectorsIsordv):
+        return StepOutput(op=step.op, value=array_order_oracle.run("isordv", step.order))
+    if isinstance(step, StepCoordsVectorsOrderc):
+        return StepOutput(op=step.op, value=array_order_oracle.run("orderc", step.values))
+    if isinstance(step, StepCoordsVectorsOrderd):
+        return StepOutput(op=step.op, value=array_order_oracle.run("orderd", step.values))
+    if isinstance(step, StepCoordsVectorsOrderi):
+        return StepOutput(op=step.op, value=array_order_oracle.run("orderi", step.values))
+    if isinstance(step, StepCoordsVectorsReordc):
+        return StepOutput(op=step.op, value=array_order_oracle.run("reordc", step.values, step.order))
+    if isinstance(step, StepCoordsVectorsReordd):
+        return StepOutput(op=step.op, value=array_order_oracle.run("reordd", step.values, step.order))
+    if isinstance(step, StepCoordsVectorsReordi):
+        return StepOutput(op=step.op, value=array_order_oracle.run("reordi", step.values, step.order))
+    if isinstance(step, StepCoordsVectorsReordl):
+        return StepOutput(op=step.op, value=array_order_oracle.run("reordl", step.values, step.order))
+    if isinstance(step, StepCoordsVectorsShellc):
+        return StepOutput(op=step.op, value=array_order_oracle.run("shellc", step.values))
+    if isinstance(step, StepCoordsVectorsShelld):
+        return StepOutput(op=step.op, value=array_order_oracle.run("shelld", step.values))
+    if isinstance(step, StepCoordsVectorsShelli):
+        return StepOutput(op=step.op, value=array_order_oracle.run("shelli", step.values))
+    if isinstance(step, StepCoordsVectorsLstlec):
+        width, rows = sorted_bounds_oracle.character_rows(step.key, step.values)
+        return StepOutput(op=step.op, value=sp.lstlec(step.key, len(rows), width, rows))
+
+    if isinstance(step, StepCoordsVectorsLstled):
+        sorted_bounds_oracle.numeric(step.key, step.values, integer=False)
+        return StepOutput(op=step.op, value=sp.lstled(step.key, len(step.values), step.values))
+
+    if isinstance(step, StepCoordsVectorsLstlei):
+        sorted_bounds_oracle.numeric(step.key, step.values, integer=True)
+        return StepOutput(op=step.op, value=sp.lstlei(step.key, len(step.values), step.values))
+
+    if isinstance(step, StepCoordsVectorsLstltc):
+        width, rows = sorted_bounds_oracle.character_rows(step.key, step.values)
+        return StepOutput(op=step.op, value=sp.lstltc(step.key, len(rows), width, rows))
+
+    if isinstance(step, StepCoordsVectorsLstltd):
+        sorted_bounds_oracle.numeric(step.key, step.values, integer=False)
+        return StepOutput(op=step.op, value=sp.lstltd(step.key, len(step.values), step.values))
+
+    if isinstance(step, StepCoordsVectorsLstlti):
+        sorted_bounds_oracle.numeric(step.key, step.values, integer=True)
+        return StepOutput(op=step.op, value=sp.lstlti(step.key, len(step.values), step.values))
+
+    if isinstance(step, StepCoordsVectorsBschoc):
+        width = array_search_oracle.character_width(step.key, step.values, order=step.order, binary=True)
+        return StepOutput(op=step.op, value=sp.bschoc(step.key, len(step.values), width, step.values, step.order))
+
+    if isinstance(step, StepCoordsVectorsBschoi):
+        array_search_oracle.numeric(step.key, step.values, order=step.order, binary=True, integer=True)
+        return StepOutput(op=step.op, value=sp.bschoi(step.key, len(step.values), step.values, step.order))
+
+    if isinstance(step, StepCoordsVectorsBsrchc):
+        width = array_search_oracle.character_width(step.key, step.values, order=None, binary=True)
+        return StepOutput(op=step.op, value=sp.bsrchc(step.key, len(step.values), width, step.values))
+
+    if isinstance(step, StepCoordsVectorsBsrchd):
+        array_search_oracle.numeric(step.key, step.values, order=None, binary=True, integer=False)
+        return StepOutput(op=step.op, value=sp.bsrchd(step.key, len(step.values), step.values))
+
+    if isinstance(step, StepCoordsVectorsBsrchi):
+        array_search_oracle.numeric(step.key, step.values, order=None, binary=True, integer=True)
+        return StepOutput(op=step.op, value=sp.bsrchi(step.key, len(step.values), step.values))
+
+    if isinstance(step, StepCoordsVectorsIsrchc):
+        width = array_search_oracle.character_width(step.key, step.values, order=None, binary=False)
+        return StepOutput(op=step.op, value=sp.isrchc(step.key, len(step.values), width, step.values))
+
+    if isinstance(step, StepCoordsVectorsIsrchd):
+        array_search_oracle.numeric(step.key, step.values, order=None, binary=False, integer=False)
+        return StepOutput(op=step.op, value=sp.isrchd(step.key, len(step.values), step.values))
+
+    if isinstance(step, StepCoordsVectorsIsrchi):
+        array_search_oracle.numeric(step.key, step.values, order=None, binary=False, integer=True)
+        return StepOutput(op=step.op, value=sp.isrchi(step.key, len(step.values), step.values))
 
     if isinstance(step, StepCoordsVectorsReclat):
         radius, lon, lat = sp.reclat(step.rectan)

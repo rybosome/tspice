@@ -419,6 +419,20 @@ int tspice_dskb02(
 
 // --- Kernel pool -----------------------------------------------------------
 
+// N0067 pool MAXVAL, MAXLIN and MAXCHR bound the largest meaningful output buffers.
+#define TSPICE_POOL_MAX_VALUES 400000
+#define TSPICE_POOL_MAX_CHAR_ROWS 15000
+#define TSPICE_POOL_TEXT_CAPACITY (TSPICE_POOL_MAX_CHAR_ROWS * 80 + 1)
+int tspice_badkpv(const char *caller, const char *name, const char *comp, int size, int divby, int type, int *bad, char *err, int errMaxBytes);
+int tspice_bodvcd(int body, const char *item, int maxn, int *dim, double *values, char *err, int errMaxBytes);
+int tspice_bodvrd(const char *body, const char *item, int maxn, int *dim, double *values, char *err, int errMaxBytes);
+int tspice_clpool(char *err, int errMaxBytes);
+int tspice_dvpool(const char *name, char *err, int errMaxBytes);
+int tspice_ldpool(const char *path, char *err, int errMaxBytes);
+int tspice_lmpool(const char *rows, int stride, int count, char *err, int errMaxBytes);
+int tspice_stpool(const char *item, int nth, const char *contin, int lenout, char *text, int *size, int *found, char *err, int errMaxBytes);
+int tspice_szpool(const char *name, int *n, int *found, char *err, int errMaxBytes);
+
 int tspice_gdpool(
     const char *name,
     int start,
@@ -1387,6 +1401,86 @@ int tspice_vzerog(const double *v, int ndim, int *out, char *err, int errMaxByte
 // unormg_c: dimension is inferred by adapters; empty buffers remain non-NULL.
 int tspice_unormg(const double *v, int ndim, double *outUnit, double *outNorm, char *err, int errMaxBytes);
 
+int tspice_cpos(const char *text, const char *chars, int start, int *out, char *err, int errMaxBytes);
+int tspice_cposr(const char *text, const char *chars, int start, int *out, char *err, int errMaxBytes);
+int tspice_ncpos(const char *text, const char *chars, int start, int *out, char *err, int errMaxBytes);
+int tspice_ncposr(const char *text, const char *chars, int start, int *out, char *err, int errMaxBytes);
+int tspice_pos(const char *text, const char *substr, int start, int *out, char *err, int errMaxBytes);
+int tspice_posr(const char *text, const char *substr, int start, int *out, char *err, int errMaxBytes);
+int tspice_esrchc(const char *value, int count, int width, const char *rows, int *out, char *err, int errMaxBytes);
+int tspice_dp2hx(double value, int lenout, char *text, int *size, char *err, int errMaxBytes);
+int tspice_hx2dp(const char *input, int lenout, double *number, int *error, char *text, char *err, int errMaxBytes);
+int tspice_prsdp(const char *input, double *number, char *err, int errMaxBytes);
+int tspice_prsint(const char *input, int *number, char *err, int errMaxBytes);
+int tspice_repmc(const char *input, const char *marker, const char *value, int lenout, char *text, char *err, int errMaxBytes);
+int tspice_repmct(const char *input, const char *marker, int value, int rtcase, int lenout, char *text, char *err, int errMaxBytes);
+int tspice_repmd(const char *input, const char *marker, double value, int sigdig, int lenout, char *text, char *err, int errMaxBytes);
+int tspice_repmf(const char *input, const char *marker, double value, int sigdig, int format, int lenout, char *text, char *err, int errMaxBytes);
+int tspice_repmi(const char *input, const char *marker, int value, int lenout, char *text, char *err, int errMaxBytes);
+int tspice_repml(const char *input, const char *marker, int value, int rtcase, int lenout, char *text, char *err, int errMaxBytes);
+int tspice_repmot(const char *input, const char *marker, int value, int rtcase, int lenout, char *text, char *err, int errMaxBytes);
+
+int tspice_nextwd(const char *input, int nexlen, int reslen, char *next, char *rest, char *err, int errMaxBytes);
+int tspice_nthwd(const char *input, int nth, int worlen, char *word, int *loc, char *err, int errMaxBytes);
+int tspice_lparse(const char *list, const char *delim, int nmax, int itemln, int *n, char *items, char *err, int errMaxBytes);
+int tspice_lparsm(const char *list, const char *delims, int nmax, int itemln, int *n, char *items, char *err, int errMaxBytes);
+int tspice_lx4dec(const char *input, int first, double *last, int *nchar, char *err, int errMaxBytes);
+int tspice_lx4num(const char *input, int first, double *last, int *nchar, char *err, int errMaxBytes);
+int tspice_lx4sgn(const char *input, int first, double *last, int *nchar, char *err, int errMaxBytes);
+int tspice_lx4uns(const char *input, int first, double *last, int *nchar, char *err, int errMaxBytes);
+int tspice_lxqstr(const char *input, int qchar, int first, double *last, int *nchar, char *err, int errMaxBytes);
+int tspice_cmprss(int delim, int n, const char *input, int lenout, char *out, char *err, int errMaxBytes);
+int tspice_eqstr(const char *a, const char *b, int *out, char *err, int errMaxBytes);
+int tspice_iswhsp(const char *input, int *out, char *err, int errMaxBytes);
+int tspice_lastnb(const char *input, int *out, char *err, int errMaxBytes);
+int tspice_lcase(char *input, int lenout, char *out, char *err, int errMaxBytes);
+int tspice_ucase(char *input, int lenout, char *out, char *err, int errMaxBytes);
+int tspice_matchi(const char *input, const char *templ, int wstr, int wchr, int *out, char *err, int errMaxBytes);
+int tspice_matchw(const char *input, const char *templ, int wstr, int wchr, int *out, char *err, int errMaxBytes);
+
+// Binary and linear array searches return physical indices, with -1 for a miss.
+int tspice_bschoc(
+    const char *key, int n, int width, const char *rows, const int *order, int *out, char *err, int errMaxBytes);
+int tspice_bschoi(
+    int key, int n, const int *values, const int *order, int *out, char *err, int errMaxBytes);
+int tspice_bsrchc(
+    const char *key, int n, int width, const char *rows, int *out, char *err, int errMaxBytes);
+int tspice_bsrchd(
+    double key, int n, const double *values, int *out, char *err, int errMaxBytes);
+int tspice_bsrchi(
+    int key, int n, const int *values, int *out, char *err, int errMaxBytes);
+int tspice_isrchc(
+    const char *key, int n, int width, const char *rows, int *out, char *err, int errMaxBytes);
+int tspice_isrchd(
+    double key, int n, const double *values, int *out, char *err, int errMaxBytes);
+int tspice_isrchi(
+    int key, int n, const int *values, int *out, char *err, int errMaxBytes);
+
+// Sorted bounds use zero-based result indices. Character rows are blank padded and NUL terminated.
+int tspice_isordv(int n, int *values, int *out, char *err, int cap);
+int tspice_orderc(int n, int width, char *values, int *out, char *err, int cap);
+int tspice_orderd(int n, double *values, int *out, char *err, int cap);
+int tspice_orderi(int n, int *values, int *out, char *err, int cap);
+int tspice_reordc(int n, int *order, int width, char *values, char *err, int cap);
+int tspice_reordd(int n, int *order, double *values, char *err, int cap);
+int tspice_reordi(int n, int *order, int *values, char *err, int cap);
+int tspice_reordl(int n, int *order, int *values, char *err, int cap);
+int tspice_shellc(int n, int width, char *values, char *err, int cap);
+int tspice_shelld(int n, double *values, char *err, int cap);
+int tspice_shelli(int n, int *values, char *err, int cap);
+int tspice_lstlec(
+    const char *key, int n, int width, const char *rows, int *out, char *err, int errMaxBytes);
+int tspice_lstled(
+    double key, int n, const double *values, int *out, char *err, int errMaxBytes);
+int tspice_lstlei(
+    int key, int n, const int *values, int *out, char *err, int errMaxBytes);
+int tspice_lstltc(
+    const char *key, int n, int width, const char *rows, int *out, char *err, int errMaxBytes);
+int tspice_lstltd(
+    double key, int n, const double *values, int *out, char *err, int errMaxBytes);
+int tspice_lstlti(
+    int key, int n, const int *values, int *out, char *err, int errMaxBytes);
+
 // reclat_c: rectangular -> latitudinal coordinates.
 int tspice_reclat(
     const double *rect3,
@@ -1653,7 +1747,27 @@ int tspice_valid(int size, int n, uintptr_t cell, char *err, int errMaxBytes);
 
 int tspice_insrti(int item, uintptr_t cell, char *err, int errMaxBytes);
 int tspice_insrtd(double item, uintptr_t cell, char *err, int errMaxBytes);
+int tspice_lparss(const char *list, const char *delims, uintptr_t handle, char *err, int errMaxBytes);
 int tspice_insrtc(const char *item, uintptr_t cell, char *err, int errMaxBytes);
+
+int tspice_appndc(const char *item, uintptr_t handle, char *err, int errMaxBytes);
+int tspice_appndd(double item, uintptr_t handle, char *err, int errMaxBytes);
+int tspice_appndi(int item, uintptr_t handle, char *err, int errMaxBytes);
+int tspice_elemc(const char *item, uintptr_t handle, int *out, char *err, int errMaxBytes);
+int tspice_elemd(double item, uintptr_t handle, int *out, char *err, int errMaxBytes);
+int tspice_elemi(int item, uintptr_t handle, int *out, char *err, int errMaxBytes);
+int tspice_diff(uintptr_t aHandle, uintptr_t bHandle, uintptr_t resultHandle, char *err, int errMaxBytes);
+int tspice_inter(uintptr_t aHandle, uintptr_t bHandle, uintptr_t resultHandle, char *err, int errMaxBytes);
+int tspice_sdiff(uintptr_t aHandle, uintptr_t bHandle, uintptr_t resultHandle, char *err, int errMaxBytes);
+int tspice_union(uintptr_t aHandle, uintptr_t bHandle, uintptr_t resultHandle, char *err, int errMaxBytes);
+int tspice_set(uintptr_t aHandle, const char *op, uintptr_t bHandle, int *out, char *err, int errMaxBytes);
+int tspice_removc(const char *item, uintptr_t handle, char *err, int errMaxBytes);
+int tspice_removd(double item, uintptr_t handle, char *err, int errMaxBytes);
+int tspice_removi(int item, uintptr_t handle, char *err, int errMaxBytes);
+int tspice_ordc(const char *item, uintptr_t handle, int *out, char *err, int errMaxBytes);
+int tspice_ordd(double item, uintptr_t handle, int *out, char *err, int errMaxBytes);
+int tspice_ordi(int item, uintptr_t handle, int *out, char *err, int errMaxBytes);
+int tspice_copy(uintptr_t sourceHandle, uintptr_t destinationHandle, char *err, int errMaxBytes);
 
 int tspice_cell_geti(uintptr_t cell, int index, int *outItem, char *err, int errMaxBytes);
 int tspice_cell_getd(uintptr_t cell, int index, double *outItem, char *err, int errMaxBytes);
@@ -1664,6 +1778,33 @@ int tspice_cell_getc(
     int outMaxBytes,
     char *err,
     int errMaxBytes);
+
+int tspice_wncomd(
+    double left, double right, uintptr_t windowHandle, uintptr_t resultHandle, char *err, int errMaxBytes);
+int tspice_wncond(
+    double left, double right, uintptr_t windowHandle, char *err, int errMaxBytes);
+int tspice_wndifd(
+    uintptr_t aHandle, uintptr_t bHandle, uintptr_t resultHandle, char *err, int errMaxBytes);
+int tspice_wnelmd(
+    double point, uintptr_t windowHandle, int *out, char *err, int errMaxBytes);
+int tspice_wnexpd(
+    double left, double right, uintptr_t windowHandle, char *err, int errMaxBytes);
+int tspice_wnextd(
+    int side, uintptr_t windowHandle, char *err, int errMaxBytes);
+int tspice_wnfild(
+    double small, uintptr_t windowHandle, char *err, int errMaxBytes);
+int tspice_wnfltd(
+    double small, uintptr_t windowHandle, char *err, int errMaxBytes);
+int tspice_wnincd(
+    double left, double right, uintptr_t windowHandle, int *out, char *err, int errMaxBytes);
+int tspice_wnintd(
+    uintptr_t aHandle, uintptr_t bHandle, uintptr_t resultHandle, char *err, int errMaxBytes);
+int tspice_wnreld(
+    uintptr_t aHandle, const char *op, uintptr_t bHandle, int *out, char *err, int errMaxBytes);
+int tspice_wnsumd(
+    uintptr_t windowHandle, double *meas, double *avg, double *stddev, int *shortest, int *longest, char *err, int errMaxBytes);
+int tspice_wnunid(
+    uintptr_t aHandle, uintptr_t bHandle, uintptr_t resultHandle, char *err, int errMaxBytes);
 
 int tspice_wninsd(double left, double right, uintptr_t window, char *err, int errMaxBytes);
 int tspice_wncard(uintptr_t window, int *outCard, char *err, int errMaxBytes);

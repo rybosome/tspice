@@ -1,0 +1,241 @@
+[
+  {
+    "caseId": "coords-vectors-isrchi-empty",
+    "description": "Return the canonical -1 sentinel for empty input.",
+    "workflow": [
+      {
+        "op": "coords-vectors.isrchi",
+        "key": 0,
+        "values": []
+      },
+      {
+        "op": "coords-vectors.isrchi",
+        "key": -1,
+        "values": []
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-isrchi-singleton",
+    "description": "Test below, at and above a single physical element.",
+    "workflow": [
+      {
+        "op": "coords-vectors.isrchi",
+        "key": 6,
+        "values": [7]
+      },
+      {
+        "op": "coords-vectors.isrchi",
+        "key": 7,
+        "values": [7]
+      },
+      {
+        "op": "coords-vectors.isrchi",
+        "key": 8,
+        "values": [7]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-isrchi-odd",
+    "description": "Find both endpoints, interior, and gaps among signed values.",
+    "workflow": [
+      {
+        "op": "coords-vectors.isrchi",
+        "key": -19,
+        "values": [15, 0, 8, -19, 23, -4, 2]
+      },
+      {
+        "op": "coords-vectors.isrchi",
+        "key": -4,
+        "values": [15, 0, 8, -19, 23, -4, 2]
+      },
+      {
+        "op": "coords-vectors.isrchi",
+        "key": 0,
+        "values": [15, 0, 8, -19, 23, -4, 2]
+      },
+      {
+        "op": "coords-vectors.isrchi",
+        "key": 2,
+        "values": [15, 0, 8, -19, 23, -4, 2]
+      },
+      {
+        "op": "coords-vectors.isrchi",
+        "key": 8,
+        "values": [15, 0, 8, -19, 23, -4, 2]
+      },
+      {
+        "op": "coords-vectors.isrchi",
+        "key": 15,
+        "values": [15, 0, 8, -19, 23, -4, 2]
+      },
+      {
+        "op": "coords-vectors.isrchi",
+        "key": 23,
+        "values": [15, 0, 8, -19, 23, -4, 2]
+      },
+      {
+        "op": "coords-vectors.isrchi",
+        "key": -20,
+        "values": [15, 0, 8, -19, 23, -4, 2]
+      },
+      {
+        "op": "coords-vectors.isrchi",
+        "key": 3,
+        "values": [15, 0, 8, -19, 23, -4, 2]
+      },
+      {
+        "op": "coords-vectors.isrchi",
+        "key": 28,
+        "values": [15, 0, 8, -19, 23, -4, 2]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-isrchi-even",
+    "description": "Check every match across an even-length input.",
+    "workflow": [
+      {
+        "op": "coords-vectors.isrchi",
+        "key": -8,
+        "values": [9, 7, 3, 1, -2, -8]
+      },
+      {
+        "op": "coords-vectors.isrchi",
+        "key": -2,
+        "values": [9, 7, 3, 1, -2, -8]
+      },
+      {
+        "op": "coords-vectors.isrchi",
+        "key": 1,
+        "values": [9, 7, 3, 1, -2, -8]
+      },
+      {
+        "op": "coords-vectors.isrchi",
+        "key": 3,
+        "values": [9, 7, 3, 1, -2, -8]
+      },
+      {
+        "op": "coords-vectors.isrchi",
+        "key": 7,
+        "values": [9, 7, 3, 1, -2, -8]
+      },
+      {
+        "op": "coords-vectors.isrchi",
+        "key": 9,
+        "values": [9, 7, 3, 1, -2, -8]
+      },
+      {
+        "op": "coords-vectors.isrchi",
+        "key": -1,
+        "values": [9, 7, 3, 1, -2, -8]
+      },
+      {
+        "op": "coords-vectors.isrchi",
+        "key": 10,
+        "values": [9, 7, 3, 1, -2, -8]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-isrchi-duplicates",
+    "description": "Check which occurrence the pinned algorithm selects, including a nonidentity physical ordering.",
+    "workflow": [
+      {
+        "op": "coords-vectors.isrchi",
+        "key": -4,
+        "values": [7, 4, 4, 1, 1, 1, 1, -4]
+      },
+      {
+        "op": "coords-vectors.isrchi",
+        "key": 1,
+        "values": [7, 4, 4, 1, 1, 1, 1, -4]
+      },
+      {
+        "op": "coords-vectors.isrchi",
+        "key": 4,
+        "values": [7, 4, 4, 1, 1, 1, 1, -4]
+      },
+      {
+        "op": "coords-vectors.isrchi",
+        "key": 7,
+        "values": [7, 4, 4, 1, 1, 1, 1, -4]
+      },
+      {
+        "op": "coords-vectors.isrchi",
+        "key": 2,
+        "values": [7, 4, 4, 1, 1, 1, 1, -4]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-isrchi-signed-limits",
+    "description": "Use both signed 32-bit endpoints, near neighbors and misses.",
+    "workflow": [
+      {
+        "op": "coords-vectors.isrchi",
+        "key": -2147483648,
+        "values": [2147483647, 2147483646, 1, 0, -1, -2147483647, -2147483648]
+      },
+      {
+        "op": "coords-vectors.isrchi",
+        "key": -2147483647,
+        "values": [2147483647, 2147483646, 1, 0, -1, -2147483647, -2147483648]
+      },
+      {
+        "op": "coords-vectors.isrchi",
+        "key": -1,
+        "values": [2147483647, 2147483646, 1, 0, -1, -2147483647, -2147483648]
+      },
+      {
+        "op": "coords-vectors.isrchi",
+        "key": 0,
+        "values": [2147483647, 2147483646, 1, 0, -1, -2147483647, -2147483648]
+      },
+      {
+        "op": "coords-vectors.isrchi",
+        "key": 1,
+        "values": [2147483647, 2147483646, 1, 0, -1, -2147483647, -2147483648]
+      },
+      {
+        "op": "coords-vectors.isrchi",
+        "key": 2147483646,
+        "values": [2147483647, 2147483646, 1, 0, -1, -2147483647, -2147483648]
+      },
+      {
+        "op": "coords-vectors.isrchi",
+        "key": 2147483647,
+        "values": [2147483647, 2147483646, 1, 0, -1, -2147483647, -2147483648]
+      },
+      {
+        "op": "coords-vectors.isrchi",
+        "key": -2147483646,
+        "values": [2147483647, 2147483646, 1, 0, -1, -2147483647, -2147483648]
+      },
+      {
+        "op": "coords-vectors.isrchi",
+        "key": 2147483645,
+        "values": [2147483647, 2147483646, 1, 0, -1, -2147483647, -2147483648]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

@@ -1,0 +1,245 @@
+[
+  {
+    "caseId": "kernel-pool-bodvrd-exact-and-oversized",
+    "description": "Read actual cardinality and every numeric value at exact and larger caller capacity.",
+    "workflow": [
+      {
+        "op": "kernel-pool.ldpool",
+        "file": "kernels/audit-pool-operations.tpc"
+      },
+      {
+        "op": "kernel-pool.bodvrd",
+        "body": "earth",
+        "item": "B05",
+        "maxn": 4
+      },
+      {
+        "op": "kernel-pool.bodvrd",
+        "body": "earth",
+        "item": "B05",
+        "maxn": 12
+      },
+      {
+        "op": "kernel-pool.bodvrd",
+        "body": "earth",
+        "item": "b05",
+        "maxn": 2
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "kernel-pool-bodvrd-replacement-and-ownership",
+    "description": "Replace a numeric item with a shorter item and drain the active dimensions again.",
+    "workflow": [
+      {
+        "op": "kernel-pool.ldpool",
+        "file": "kernels/audit-pool-operations.tpc"
+      },
+      {
+        "op": "kernel-pool.bodvrd",
+        "body": "earth",
+        "item": "B05",
+        "maxn": 4
+      },
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "BODY399_B05",
+        "values": [-8.25]
+      },
+      {
+        "op": "kernel-pool.bodvrd",
+        "body": "earth",
+        "item": "B05",
+        "maxn": 4
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "kernel-pool-bodvrd-signed-body",
+    "description": "Fetch the authored item for a negative object code through direct ID or translated body name.",
+    "workflow": [
+      {
+        "op": "kernel-pool.ldpool",
+        "file": "kernels/audit-pool-operations.tpc"
+      },
+      {
+        "op": "kernel-pool.bodvrd",
+        "body": "  PoOl   TeSt  BoDy  ",
+        "item": "B05",
+        "maxn": 2
+      },
+      {
+        "op": "kernel-pool.bodvrd",
+        "body": "-707007",
+        "item": "B05",
+        "maxn": 6
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "kernel-pool-bodvrd-empty-item",
+    "description": "An empty item reaches the canonical input string check.",
+    "workflow": [
+      {
+        "op": "kernel-pool.bodvrd",
+        "body": "earth",
+        "item": "",
+        "maxn": 1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["EMPTYSTRING"]
+    }
+  },
+  {
+    "caseId": "kernel-pool-bodvrd-capacity",
+    "description": "Retain the actual toolkit error for this capacity or pool item.",
+    "workflow": [
+      {
+        "op": "kernel-pool.ldpool",
+        "file": "kernels/audit-pool-operations.tpc"
+      },
+      {
+        "op": "kernel-pool.bodvrd",
+        "body": "earth",
+        "item": "B05",
+        "maxn": 3
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["ARRAYTOOSMALL"]
+    }
+  },
+  {
+    "caseId": "kernel-pool-bodvrd-zero-capacity",
+    "description": "Retain the actual toolkit error for this capacity or pool item.",
+    "workflow": [
+      {
+        "op": "kernel-pool.ldpool",
+        "file": "kernels/audit-pool-operations.tpc"
+      },
+      {
+        "op": "kernel-pool.bodvrd",
+        "body": "earth",
+        "item": "B05",
+        "maxn": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["ARRAYTOOSMALL"]
+    }
+  },
+  {
+    "caseId": "kernel-pool-bodvrd-negative-capacity",
+    "description": "Retain the actual toolkit error for this capacity or pool item.",
+    "workflow": [
+      {
+        "op": "kernel-pool.ldpool",
+        "file": "kernels/audit-pool-operations.tpc"
+      },
+      {
+        "op": "kernel-pool.bodvrd",
+        "body": "earth",
+        "item": "B05",
+        "maxn": -4
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["ARRAYTOOSMALL"]
+    }
+  },
+  {
+    "caseId": "kernel-pool-bodvrd-character-item",
+    "description": "Retain the actual toolkit error for this capacity or pool item.",
+    "workflow": [
+      {
+        "op": "kernel-pool.ldpool",
+        "file": "kernels/audit-pool-operations.tpc"
+      },
+      {
+        "op": "kernel-pool.bodvrd",
+        "body": "earth",
+        "item": "B05_TEXT",
+        "maxn": 4
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["TYPEMISMATCH"]
+    }
+  },
+  {
+    "caseId": "kernel-pool-bodvrd-case-sensitive-miss",
+    "description": "Retain the actual toolkit error for this capacity or pool item.",
+    "workflow": [
+      {
+        "op": "kernel-pool.ldpool",
+        "file": "kernels/audit-pool-operations.tpc"
+      },
+      {
+        "op": "kernel-pool.bodvrd",
+        "body": "earth",
+        "item": "B05_text",
+        "maxn": 8
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["KERNELVARNOTFOUND"]
+    }
+  },
+  {
+    "caseId": "kernel-pool-bodvrd-unknown-body",
+    "description": "An untranslatable body name is diagnosed before item lookup.",
+    "workflow": [
+      {
+        "op": "kernel-pool.ldpool",
+        "file": "kernels/audit-pool-operations.tpc"
+      },
+      {
+        "op": "kernel-pool.bodvrd",
+        "body": "B05 UNTRANSLATABLE",
+        "item": "B05",
+        "maxn": 9
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["NOTRANSLATION"]
+    }
+  },
+  {
+    "caseId": "kernel-pool-bodvrd-missing-body-pair",
+    "description": "An incomplete name/code table reports the canonical mapping error.",
+    "workflow": [
+      {
+        "op": "kernel-pool.pcpool",
+        "name": "NAIF_BODY_NAME",
+        "values": ["B05 INCOMPLETE"]
+      },
+      {
+        "op": "kernel-pool.bodvrd",
+        "body": "B05 INCOMPLETE",
+        "item": "B05",
+        "maxn": 1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["MISSINGKPV"]
+    }
+  }
+]

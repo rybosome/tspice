@@ -1,6 +1,25 @@
 import type { ParityCase } from "../case-types.js";
 
 import cellsWindowsCardCasesRaw from "./cells-windows/card.cases.json" with { type: "json" };
+import cellsWindowsAppndcCasesRaw from "./cells-windows/appndc.cases.json" with { type: "json" };
+import cellsWindowsAppnddCasesRaw from "./cells-windows/appndd.cases.json" with { type: "json" };
+import cellsWindowsAppndiCasesRaw from "./cells-windows/appndi.cases.json" with { type: "json" };
+import cellsWindowsDiffCasesRaw from "./cells-windows/diff.cases.json" with { type: "json" };
+import cellsWindowsInterCasesRaw from "./cells-windows/inter.cases.json" with { type: "json" };
+import cellsWindowsSdiffCasesRaw from "./cells-windows/sdiff.cases.json" with { type: "json" };
+import cellsWindowsUnionCasesRaw from "./cells-windows/union.cases.json" with { type: "json" };
+import cellsWindowsSetCasesRaw from "./cells-windows/set.cases.json" with { type: "json" };
+import cellsWindowsRemovcCasesRaw from "./cells-windows/removc.cases.json" with { type: "json" };
+import cellsWindowsRemovdCasesRaw from "./cells-windows/removd.cases.json" with { type: "json" };
+import cellsWindowsRemoviCasesRaw from "./cells-windows/removi.cases.json" with { type: "json" };
+import cellsWindowsOrdcCasesRaw from "./cells-windows/ordc.cases.json" with { type: "json" };
+import cellsWindowsOrddCasesRaw from "./cells-windows/ordd.cases.json" with { type: "json" };
+import cellsWindowsOrdiCasesRaw from "./cells-windows/ordi.cases.json" with { type: "json" };
+import cellsWindowsCopyCasesRaw from "./cells-windows/copy.cases.json" with { type: "json" };
+import cellsWindowsElemcCasesRaw from "./cells-windows/elemc.cases.json" with { type: "json" };
+import cellsWindowsElemdCasesRaw from "./cells-windows/elemd.cases.json" with { type: "json" };
+import cellsWindowsElemiCasesRaw from "./cells-windows/elemi.cases.json" with { type: "json" };
+import cellsWindowsLparssCasesRaw from "./cells-windows/lparss.cases.json" with { type: "json" };
 import cellsWindowsInsrtcCasesRaw from "./cells-windows/insrtc.cases.json" with { type: "json" };
 import cellsWindowsInsrtdCasesRaw from "./cells-windows/insrtd.cases.json" with { type: "json" };
 import cellsWindowsInsrtiCasesRaw from "./cells-windows/insrti.cases.json" with { type: "json" };
@@ -11,6 +30,19 @@ import cellsWindowsValidCasesRaw from "./cells-windows/valid.cases.json" with { 
 import cellsWindowsWncardCasesRaw from "./cells-windows/wncard.cases.json" with { type: "json" };
 import cellsWindowsWnfetdCasesRaw from "./cells-windows/wnfetd.cases.json" with { type: "json" };
 import cellsWindowsWninsdCasesRaw from "./cells-windows/wninsd.cases.json" with { type: "json" };
+import cellsWindowsWncomdCasesRaw from "./cells-windows/wncomd.cases.json" with { type: "json" };
+import cellsWindowsWncondCasesRaw from "./cells-windows/wncond.cases.json" with { type: "json" };
+import cellsWindowsWndifdCasesRaw from "./cells-windows/wndifd.cases.json" with { type: "json" };
+import cellsWindowsWnelmdCasesRaw from "./cells-windows/wnelmd.cases.json" with { type: "json" };
+import cellsWindowsWnexpdCasesRaw from "./cells-windows/wnexpd.cases.json" with { type: "json" };
+import cellsWindowsWnextdCasesRaw from "./cells-windows/wnextd.cases.json" with { type: "json" };
+import cellsWindowsWnfildCasesRaw from "./cells-windows/wnfild.cases.json" with { type: "json" };
+import cellsWindowsWnfltdCasesRaw from "./cells-windows/wnfltd.cases.json" with { type: "json" };
+import cellsWindowsWnincdCasesRaw from "./cells-windows/wnincd.cases.json" with { type: "json" };
+import cellsWindowsWnintdCasesRaw from "./cells-windows/wnintd.cases.json" with { type: "json" };
+import cellsWindowsWnreldCasesRaw from "./cells-windows/wnreld.cases.json" with { type: "json" };
+import cellsWindowsWnsumdCasesRaw from "./cells-windows/wnsumd.cases.json" with { type: "json" };
+import cellsWindowsWnunidCasesRaw from "./cells-windows/wnunid.cases.json" with { type: "json" };
 import cellsWindowsWnvaldCasesRaw from "./cells-windows/wnvald.cases.json" with { type: "json" };
 import coordsVectorsPiCasesRaw from "./coords-vectors/pi.cases.json" with { type: "json" };
 import coordsVectorsTwopiCasesRaw from "./coords-vectors/twopi.cases.json" with { type: "json" };
@@ -139,12 +171,72 @@ import coordsVectorsDrdlatCasesRaw from "./coords-vectors/drdlat.cases.json" wit
 import coordsVectorsDrdpgrCasesRaw from "./coords-vectors/drdpgr.cases.json" with { type: "json" };
 import coordsVectorsDrdsphCasesRaw from "./coords-vectors/drdsph.cases.json" with { type: "json" };
 import coordsVectorsDsphdrCasesRaw from "./coords-vectors/dsphdr.cases.json" with { type: "json" };
+import coordsVectorsBschocCasesRaw from "./coords-vectors/bschoc.cases.json" with { type: "json" };
+import coordsVectorsBschoiCasesRaw from "./coords-vectors/bschoi.cases.json" with { type: "json" };
+import coordsVectorsBsrchcCasesRaw from "./coords-vectors/bsrchc.cases.json" with { type: "json" };
+import coordsVectorsBsrchdCasesRaw from "./coords-vectors/bsrchd.cases.json" with { type: "json" };
+import coordsVectorsBsrchiCasesRaw from "./coords-vectors/bsrchi.cases.json" with { type: "json" };
+import coordsVectorsIsrchcCasesRaw from "./coords-vectors/isrchc.cases.json" with { type: "json" };
+import coordsVectorsIsrchdCasesRaw from "./coords-vectors/isrchd.cases.json" with { type: "json" };
+import coordsVectorsIsrchiCasesRaw from "./coords-vectors/isrchi.cases.json" with { type: "json" };
+import coordsVectorsIsordvCasesRaw from "./coords-vectors/isordv.cases.json" with { type: "json" };
+import coordsVectorsOrdercCasesRaw from "./coords-vectors/orderc.cases.json" with { type: "json" };
+import coordsVectorsOrderdCasesRaw from "./coords-vectors/orderd.cases.json" with { type: "json" };
+import coordsVectorsOrderiCasesRaw from "./coords-vectors/orderi.cases.json" with { type: "json" };
+import coordsVectorsReordcCasesRaw from "./coords-vectors/reordc.cases.json" with { type: "json" };
+import coordsVectorsReorddCasesRaw from "./coords-vectors/reordd.cases.json" with { type: "json" };
+import coordsVectorsReordiCasesRaw from "./coords-vectors/reordi.cases.json" with { type: "json" };
+import coordsVectorsReordlCasesRaw from "./coords-vectors/reordl.cases.json" with { type: "json" };
+import coordsVectorsShellcCasesRaw from "./coords-vectors/shellc.cases.json" with { type: "json" };
+import coordsVectorsShelldCasesRaw from "./coords-vectors/shelld.cases.json" with { type: "json" };
+import coordsVectorsShelliCasesRaw from "./coords-vectors/shelli.cases.json" with { type: "json" };
+import coordsVectorsLstlecCasesRaw from "./coords-vectors/lstlec.cases.json" with { type: "json" };
+import coordsVectorsLstledCasesRaw from "./coords-vectors/lstled.cases.json" with { type: "json" };
+import coordsVectorsLstleiCasesRaw from "./coords-vectors/lstlei.cases.json" with { type: "json" };
+import coordsVectorsLstltcCasesRaw from "./coords-vectors/lstltc.cases.json" with { type: "json" };
+import coordsVectorsLstltdCasesRaw from "./coords-vectors/lstltd.cases.json" with { type: "json" };
+import coordsVectorsLstltiCasesRaw from "./coords-vectors/lstlti.cases.json" with { type: "json" };
 import coordsVectorsAxisarCasesRaw from "./coords-vectors/axisar.cases.json" with { type: "json" };
 import coordsVectorsGeorecCasesRaw from "./coords-vectors/georec.cases.json" with { type: "json" };
 import coordsVectorsLatrecCasesRaw from "./coords-vectors/latrec.cases.json" with { type: "json" };
 import coordsVectorsMtxvCasesRaw from "./coords-vectors/mtxv.cases.json" with { type: "json" };
 import coordsVectorsMxmCasesRaw from "./coords-vectors/mxm.cases.json" with { type: "json" };
 import coordsVectorsMxvCasesRaw from "./coords-vectors/mxv.cases.json" with { type: "json" };
+import stringDp2hxCases from "./strings/dp2hx.cases.json" with { type: "json" };
+import stringHx2dpCases from "./strings/hx2dp.cases.json" with { type: "json" };
+import stringPrsdpCases from "./strings/prsdp.cases.json" with { type: "json" };
+import stringPrsintCases from "./strings/prsint.cases.json" with { type: "json" };
+import stringRepmcCases from "./strings/repmc.cases.json" with { type: "json" };
+import stringRepmctCases from "./strings/repmct.cases.json" with { type: "json" };
+import stringRepmdCases from "./strings/repmd.cases.json" with { type: "json" };
+import stringRepmfCases from "./strings/repmf.cases.json" with { type: "json" };
+import stringRepmiCases from "./strings/repmi.cases.json" with { type: "json" };
+import stringRepmlCases from "./strings/repml.cases.json" with { type: "json" };
+import stringRepmotCases from "./strings/repmot.cases.json" with { type: "json" };
+import stringNextwdCases from "./strings/nextwd.cases.json" with { type: "json" };
+import stringNthwdCases from "./strings/nthwd.cases.json" with { type: "json" };
+import stringLparseCases from "./strings/lparse.cases.json" with { type: "json" };
+import stringLparsmCases from "./strings/lparsm.cases.json" with { type: "json" };
+import stringLx4decCases from "./strings/lx4dec.cases.json" with { type: "json" };
+import stringLx4numCases from "./strings/lx4num.cases.json" with { type: "json" };
+import stringLx4sgnCases from "./strings/lx4sgn.cases.json" with { type: "json" };
+import stringLx4unsCases from "./strings/lx4uns.cases.json" with { type: "json" };
+import stringLxqstrCases from "./strings/lxqstr.cases.json" with { type: "json" };
+import stringCmprssCases from "./strings/cmprss.cases.json" with { type: "json" };
+import stringEqstrCases from "./strings/eqstr.cases.json" with { type: "json" };
+import stringIswhspCases from "./strings/iswhsp.cases.json" with { type: "json" };
+import stringLastnbCases from "./strings/lastnb.cases.json" with { type: "json" };
+import stringLcaseCases from "./strings/lcase.cases.json" with { type: "json" };
+import stringUcaseCases from "./strings/ucase.cases.json" with { type: "json" };
+import stringMatchiCases from "./strings/matchi.cases.json" with { type: "json" };
+import stringCposCases from "./strings/cpos.cases.json" with { type: "json" };
+import stringCposrCases from "./strings/cposr.cases.json" with { type: "json" };
+import stringNcposCases from "./strings/ncpos.cases.json" with { type: "json" };
+import stringNcposrCases from "./strings/ncposr.cases.json" with { type: "json" };
+import stringPosCases from "./strings/pos.cases.json" with { type: "json" };
+import stringPosrCases from "./strings/posr.cases.json" with { type: "json" };
+import stringEsrchcCases from "./strings/esrchc.cases.json" with { type: "json" };
+import stringMatchwCases from "./strings/matchw.cases.json" with { type: "json" };
 import coordsVectorsReclatCasesRaw from "./coords-vectors/reclat.cases.json" with { type: "json" };
 import coordsVectorsRecgeoCasesRaw from "./coords-vectors/recgeo.cases.json" with { type: "json" };
 import coordsVectorsRecsphCasesRaw from "./coords-vectors/recsph.cases.json" with { type: "json" };
@@ -444,6 +536,32 @@ export const coordsVectorsCases: ParityCase[] = [
   ...(coordsVectorsVzerogCasesRaw as ParityCase[]),
   ...(coordsVectorsUnormgCasesRaw as ParityCase[]),
 
+  ...(coordsVectorsBschocCasesRaw as ParityCase[]),
+  ...(coordsVectorsBschoiCasesRaw as ParityCase[]),
+  ...(coordsVectorsBsrchcCasesRaw as ParityCase[]),
+  ...(coordsVectorsBsrchdCasesRaw as ParityCase[]),
+  ...(coordsVectorsBsrchiCasesRaw as ParityCase[]),
+  ...(coordsVectorsIsrchcCasesRaw as ParityCase[]),
+  ...(coordsVectorsIsrchdCasesRaw as ParityCase[]),
+  ...(coordsVectorsIsrchiCasesRaw as ParityCase[]),
+  ...(coordsVectorsIsordvCasesRaw as ParityCase[]),
+  ...(coordsVectorsOrdercCasesRaw as ParityCase[]),
+  ...(coordsVectorsOrderdCasesRaw as ParityCase[]),
+  ...(coordsVectorsOrderiCasesRaw as ParityCase[]),
+  ...(coordsVectorsReordcCasesRaw as ParityCase[]),
+  ...(coordsVectorsReorddCasesRaw as ParityCase[]),
+  ...(coordsVectorsReordiCasesRaw as ParityCase[]),
+  ...(coordsVectorsReordlCasesRaw as ParityCase[]),
+  ...(coordsVectorsShellcCasesRaw as ParityCase[]),
+  ...(coordsVectorsShelldCasesRaw as ParityCase[]),
+  ...(coordsVectorsShelliCasesRaw as ParityCase[]),
+  ...(coordsVectorsLstlecCasesRaw as ParityCase[]),
+  ...(coordsVectorsLstledCasesRaw as ParityCase[]),
+  ...(coordsVectorsLstleiCasesRaw as ParityCase[]),
+  ...(coordsVectorsLstltcCasesRaw as ParityCase[]),
+  ...(coordsVectorsLstltdCasesRaw as ParityCase[]),
+  ...(coordsVectorsLstltiCasesRaw as ParityCase[]),
+
   ...(coordsVectorsReclatCasesRaw as ParityCase[]),
   ...(coordsVectorsLatrecCasesRaw as ParityCase[]),
   ...(coordsVectorsRecsphCasesRaw as ParityCase[]),
@@ -467,6 +585,25 @@ export const coordsVectorsCases: ParityCase[] = [
 ];
 export const cellsWindowsCases: ParityCase[] = [
   ...(cellsWindowsCardCasesRaw as ParityCase[]),
+  ...(cellsWindowsAppndcCasesRaw as ParityCase[]),
+  ...(cellsWindowsAppnddCasesRaw as ParityCase[]),
+  ...(cellsWindowsAppndiCasesRaw as ParityCase[]),
+  ...(cellsWindowsDiffCasesRaw as ParityCase[]),
+  ...(cellsWindowsInterCasesRaw as ParityCase[]),
+  ...(cellsWindowsSdiffCasesRaw as ParityCase[]),
+  ...(cellsWindowsUnionCasesRaw as ParityCase[]),
+  ...(cellsWindowsSetCasesRaw as ParityCase[]),
+  ...(cellsWindowsRemovcCasesRaw as ParityCase[]),
+  ...(cellsWindowsRemovdCasesRaw as ParityCase[]),
+  ...(cellsWindowsRemoviCasesRaw as ParityCase[]),
+  ...(cellsWindowsOrdcCasesRaw as ParityCase[]),
+  ...(cellsWindowsOrddCasesRaw as ParityCase[]),
+  ...(cellsWindowsOrdiCasesRaw as ParityCase[]),
+  ...(cellsWindowsCopyCasesRaw as ParityCase[]),
+  ...(cellsWindowsElemcCasesRaw as ParityCase[]),
+  ...(cellsWindowsElemdCasesRaw as ParityCase[]),
+  ...(cellsWindowsElemiCasesRaw as ParityCase[]),
+  ...(cellsWindowsLparssCasesRaw as ParityCase[]),
   ...(cellsWindowsInsrtcCasesRaw as ParityCase[]),
   ...(cellsWindowsInsrtdCasesRaw as ParityCase[]),
   ...(cellsWindowsInsrtiCasesRaw as ParityCase[]),
@@ -477,6 +614,19 @@ export const cellsWindowsCases: ParityCase[] = [
   ...(cellsWindowsWncardCasesRaw as ParityCase[]),
   ...(cellsWindowsWninsdCasesRaw as ParityCase[]),
   ...(cellsWindowsWnfetdCasesRaw as ParityCase[]),
+  ...(cellsWindowsWncomdCasesRaw as ParityCase[]),
+  ...(cellsWindowsWncondCasesRaw as ParityCase[]),
+  ...(cellsWindowsWndifdCasesRaw as ParityCase[]),
+  ...(cellsWindowsWnelmdCasesRaw as ParityCase[]),
+  ...(cellsWindowsWnexpdCasesRaw as ParityCase[]),
+  ...(cellsWindowsWnextdCasesRaw as ParityCase[]),
+  ...(cellsWindowsWnfildCasesRaw as ParityCase[]),
+  ...(cellsWindowsWnfltdCasesRaw as ParityCase[]),
+  ...(cellsWindowsWnincdCasesRaw as ParityCase[]),
+  ...(cellsWindowsWnintdCasesRaw as ParityCase[]),
+  ...(cellsWindowsWnreldCasesRaw as ParityCase[]),
+  ...(cellsWindowsWnsumdCasesRaw as ParityCase[]),
+  ...(cellsWindowsWnunidCasesRaw as ParityCase[]),
   ...(cellsWindowsWnvaldCasesRaw as ParityCase[]),
 ];
 
@@ -574,7 +724,46 @@ export const geometryGfCases: ParityCase[] = [
   ...geometryGfGfdistCases,
 ];
 
+export const stringsCases: ParityCase[] = [
+  ...(stringDp2hxCases as ParityCase[]),
+  ...(stringHx2dpCases as ParityCase[]),
+  ...(stringPrsdpCases as ParityCase[]),
+  ...(stringPrsintCases as ParityCase[]),
+  ...(stringRepmcCases as ParityCase[]),
+  ...(stringRepmctCases as ParityCase[]),
+  ...(stringRepmdCases as ParityCase[]),
+  ...(stringRepmfCases as ParityCase[]),
+  ...(stringRepmiCases as ParityCase[]),
+  ...(stringRepmlCases as ParityCase[]),
+  ...(stringRepmotCases as ParityCase[]),
+  ...(stringNextwdCases as ParityCase[]),
+  ...(stringNthwdCases as ParityCase[]),
+  ...(stringLparseCases as ParityCase[]),
+  ...(stringLparsmCases as ParityCase[]),
+  ...(stringLx4decCases as ParityCase[]),
+  ...(stringLx4numCases as ParityCase[]),
+  ...(stringLx4sgnCases as ParityCase[]),
+  ...(stringLx4unsCases as ParityCase[]),
+  ...(stringLxqstrCases as ParityCase[]),
+  ...(stringCmprssCases as ParityCase[]),
+  ...(stringEqstrCases as ParityCase[]),
+  ...(stringIswhspCases as ParityCase[]),
+  ...(stringLastnbCases as ParityCase[]),
+  ...(stringLcaseCases as ParityCase[]),
+  ...(stringUcaseCases as ParityCase[]),
+  ...(stringMatchiCases as ParityCase[]),
+  ...(stringCposCases as ParityCase[]),
+  ...(stringCposrCases as ParityCase[]),
+  ...(stringNcposCases as ParityCase[]),
+  ...(stringNcposrCases as ParityCase[]),
+  ...(stringPosCases as ParityCase[]),
+  ...(stringPosrCases as ParityCase[]),
+  ...(stringEsrchcCases as ParityCase[]),
+  ...(stringMatchwCases as ParityCase[]),
+];
+
 export const allCases: ParityCase[] = [
+  ...stringsCases,
   ...timeCases,
   ...idsNamesCases,
   ...coordsVectorsCases,

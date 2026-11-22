@@ -23,6 +23,231 @@ export type PathRef = {
 /** Preferred path contract (`PathRef`) with string fixture compatibility for existing case JSON. */
 export type PathRefLike = PathRef | string;
 
+export type StepStringsCpos = {
+  op: "strings.cpos";
+  text: string;
+  chars: string;
+  start: number;
+};
+
+export type StepStringsCposr = {
+  op: "strings.cposr";
+  text: string;
+  chars: string;
+  start: number;
+};
+
+export type StepStringsNcpos = {
+  op: "strings.ncpos";
+  text: string;
+  chars: string;
+  start: number;
+};
+
+export type StepStringsNcposr = {
+  op: "strings.ncposr";
+  text: string;
+  chars: string;
+  start: number;
+};
+
+export type StepStringsPos = {
+  op: "strings.pos";
+  text: string;
+  substr: string;
+  start: number;
+};
+
+export type StepStringsPosr = {
+  op: "strings.posr";
+  text: string;
+  substr: string;
+  start: number;
+};
+
+export type StepStringsEsrchc = {
+  op: "strings.esrchc";
+  value: string;
+  values: readonly string[];
+};
+
+export type StepStringsDp2hx = {
+  op: "strings.dp2hx";
+  value: number;
+  lenout?: number;
+};
+export type StepStringsHx2dp = {
+  op: "strings.hx2dp";
+  input: string;
+  lenout?: number;
+};
+export type StepStringsPrsdp = {
+  op: "strings.prsdp";
+  input: string;
+};
+export type StepStringsPrsint = {
+  op: "strings.prsint";
+  input: string;
+};
+export type StepStringsRepmc = {
+  op: "strings.repmc";
+  input: string;
+  marker: string;
+  value: string;
+  lenout?: number;
+};
+export type StepStringsRepmct = {
+  op: "strings.repmct";
+  input: string;
+  marker: string;
+  value: number;
+  rtcase: string;
+  lenout?: number;
+};
+export type StepStringsRepmd = {
+  op: "strings.repmd";
+  input: string;
+  marker: string;
+  value: number;
+  sigdig: number;
+  lenout?: number;
+};
+export type StepStringsRepmf = {
+  op: "strings.repmf";
+  input: string;
+  marker: string;
+  value: number;
+  sigdig: number;
+  format: string;
+  lenout?: number;
+};
+export type StepStringsRepmi = {
+  op: "strings.repmi";
+  input: string;
+  marker: string;
+  value: number;
+  lenout?: number;
+};
+export type StepStringsRepml = {
+  op: "strings.repml";
+  input: string;
+  marker: string;
+  value: boolean;
+  rtcase: string;
+  lenout?: number;
+};
+export type StepStringsRepmot = {
+  op: "strings.repmot";
+  input: string;
+  marker: string;
+  value: number;
+  rtcase: string;
+  lenout?: number;
+};
+export type StepStringsNextwd = {
+  op: "strings.nextwd";
+  input: string;
+  nexlen?: number;
+  reslen?: number;
+};
+export type StepStringsNthwd = {
+  op: "strings.nthwd";
+  input: string;
+  nth: number;
+  worlen?: number;
+};
+export type StepStringsLparse = {
+  op: "strings.lparse";
+  list: string;
+  delim: string;
+  nmax: number;
+  itemln?: number;
+};
+export type StepStringsLparsm = {
+  op: "strings.lparsm";
+  list: string;
+  delims: string;
+  nmax: number;
+  itemln?: number;
+};
+export type StepStringsLx4dec = {
+  op: "strings.lx4dec";
+  input: string;
+  first: number;
+};
+export type StepStringsLx4num = {
+  op: "strings.lx4num";
+  input: string;
+  first: number;
+};
+export type StepStringsLx4sgn = {
+  op: "strings.lx4sgn";
+  input: string;
+  first: number;
+};
+export type StepStringsLx4uns = {
+  op: "strings.lx4uns";
+  input: string;
+  first: number;
+};
+export type StepStringsLxqstr = {
+  op: "strings.lxqstr";
+  input: string;
+  qchar: string;
+  first: number;
+};
+export type StepStringsCmprss = {
+  op: "strings.cmprss";
+  delim: string;
+  n: number;
+  input: string;
+  lenout?: number;
+};
+
+export type StepStringsEqstr = {
+  op: "strings.eqstr";
+  a: string;
+  b: string;
+};
+
+export type StepStringsIswhsp = {
+  op: "strings.iswhsp";
+  input: string;
+};
+
+export type StepStringsLastnb = {
+  op: "strings.lastnb";
+  input: string;
+};
+
+export type StepStringsLcase = {
+  op: "strings.lcase";
+  input: string;
+  lenout?: number;
+};
+
+export type StepStringsUcase = {
+  op: "strings.ucase";
+  input: string;
+  lenout?: number;
+};
+
+export type StepStringsMatchi = {
+  op: "strings.matchi";
+  input: string;
+  template: string;
+  wstr: string;
+  wchr: string;
+};
+
+export type StepStringsMatchw = {
+  op: "strings.matchw";
+  input: string;
+  template: string;
+  wstr: string;
+  wchr: string;
+};
+
 export type StepTimeStr2Et = {
   op: "time.str2et";
   time: string;
@@ -978,6 +1203,140 @@ export type StepCoordsVectorsUnormg = {
   v: number[];
 };
 
+export type StepCoordsVectorsIsordv = {
+  op: "coords-vectors.isordv";
+  order: number[];
+};
+export type StepCoordsVectorsOrderc = {
+  op: "coords-vectors.orderc";
+  values: string[];
+};
+export type StepCoordsVectorsOrderd = {
+  op: "coords-vectors.orderd";
+  values: number[];
+};
+export type StepCoordsVectorsOrderi = {
+  op: "coords-vectors.orderi";
+  values: number[];
+};
+export type StepCoordsVectorsReordc = {
+  op: "coords-vectors.reordc";
+  order: number[];
+  values: string[];
+};
+export type StepCoordsVectorsReordd = {
+  op: "coords-vectors.reordd";
+  order: number[];
+  values: number[];
+};
+export type StepCoordsVectorsReordi = {
+  op: "coords-vectors.reordi";
+  order: number[];
+  values: number[];
+};
+export type StepCoordsVectorsReordl = {
+  op: "coords-vectors.reordl";
+  order: number[];
+  values: boolean[];
+};
+export type StepCoordsVectorsShellc = {
+  op: "coords-vectors.shellc";
+  values: string[];
+};
+export type StepCoordsVectorsShelld = {
+  op: "coords-vectors.shelld";
+  values: number[];
+};
+export type StepCoordsVectorsShelli = {
+  op: "coords-vectors.shelli";
+  values: number[];
+};
+export type StepCoordsVectorsLstlec = {
+  op: "coords-vectors.lstlec";
+  key: string;
+  values: string[];
+};
+
+export type StepCoordsVectorsLstled = {
+  op: "coords-vectors.lstled";
+  key: number;
+  values: number[];
+};
+
+export type StepCoordsVectorsLstlei = {
+  op: "coords-vectors.lstlei";
+  key: number;
+  values: number[];
+};
+
+export type StepCoordsVectorsLstltc = {
+  op: "coords-vectors.lstltc";
+  key: string;
+  values: string[];
+};
+
+export type StepCoordsVectorsLstltd = {
+  op: "coords-vectors.lstltd";
+  key: number;
+  values: number[];
+};
+
+export type StepCoordsVectorsLstlti = {
+  op: "coords-vectors.lstlti";
+  key: number;
+  values: number[];
+};
+
+export type StepCoordsVectorsBschoc = {
+  op: "coords-vectors.bschoc";
+  key: string;
+  values: string[];
+  order: number[];
+};
+
+export type StepCoordsVectorsBschoi = {
+  op: "coords-vectors.bschoi";
+  key: number;
+  values: number[];
+  order: number[];
+};
+
+export type StepCoordsVectorsBsrchc = {
+  op: "coords-vectors.bsrchc";
+  key: string;
+  values: string[];
+};
+
+export type StepCoordsVectorsBsrchd = {
+  op: "coords-vectors.bsrchd";
+  key: number;
+  values: number[];
+};
+
+export type StepCoordsVectorsBsrchi = {
+  op: "coords-vectors.bsrchi";
+  key: number;
+  values: number[];
+};
+
+export type StepCoordsVectorsIsrchc = {
+  op: "coords-vectors.isrchc";
+  key: string;
+  values: string[];
+};
+
+export type StepCoordsVectorsIsrchd = {
+  op: "coords-vectors.isrchd";
+  key: number;
+  values: number[];
+};
+
+export type StepCoordsVectorsIsrchi = {
+  op: "coords-vectors.isrchi";
+  key: number;
+  values: number[];
+};
+
 export type StepCoordsVectorsReclat = {
   op: "coords-vectors.reclat";
   rectan: Vector3;
@@ -1151,6 +1510,134 @@ export type StepCellsWindowsCard = {
   targetId: string;
 };
 
+export type StepCellsWindowsAppndc = {
+  op: "cells-windows.appndc";
+  cellId: string;
+  item: string;
+  maxCardinality?: number;
+  length?: number;
+};
+
+export type StepCellsWindowsAppndd = {
+  op: "cells-windows.appndd";
+  cellId: string;
+  item: number;
+  maxCardinality?: number;
+};
+
+export type StepCellsWindowsAppndi = {
+  op: "cells-windows.appndi";
+  cellId: string;
+  item: number;
+  maxCardinality?: number;
+};
+
+export type StepCellsWindowsSetResult = {
+  op:
+    | "cells-windows.diff"
+    | "cells-windows.inter"
+    | "cells-windows.sdiff"
+    | "cells-windows.union";
+  kind: "char" | "double" | "int";
+  aId: string;
+  bId: string;
+  resultId: string;
+  maxCardinality?: number;
+  length?: number;
+};
+
+export type StepCellsWindowsSet = {
+  op: "cells-windows.set";
+  kind: "char" | "double" | "int";
+  aId: string;
+  relation: string;
+  bId: string;
+};
+
+export type StepCellsWindowsRemovc = {
+  op: "cells-windows.removc";
+  cellId: string;
+  item: string;
+  maxCardinality?: number;
+  length?: number;
+};
+
+export type StepCellsWindowsRemovd = {
+  op: "cells-windows.removd";
+  cellId: string;
+  item: number;
+  maxCardinality?: number;
+};
+
+export type StepCellsWindowsRemovi = {
+  op: "cells-windows.removi";
+  cellId: string;
+  item: number;
+  maxCardinality?: number;
+};
+
+export type StepCellsWindowsOrdc = {
+  op: "cells-windows.ordc";
+  cellId: string;
+  item: string;
+  maxCardinality?: number;
+  length?: number;
+};
+
+export type StepCellsWindowsOrdd = {
+  op: "cells-windows.ordd";
+  cellId: string;
+  item: number;
+  maxCardinality?: number;
+};
+
+export type StepCellsWindowsOrdi = {
+  op: "cells-windows.ordi";
+  cellId: string;
+  item: number;
+  maxCardinality?: number;
+};
+
+export type StepCellsWindowsCopy = {
+  op: "cells-windows.copy";
+  kind: "int" | "double" | "char";
+  sourceId: string;
+  resultId: string;
+  maxCardinality?: number;
+  length?: number;
+};
+
+export type StepCellsWindowsElemc = {
+  op: "cells-windows.elemc";
+  cellId: string;
+  item: string;
+  maxCardinality?: number;
+  length?: number;
+};
+
+export type StepCellsWindowsElemd = {
+  op: "cells-windows.elemd";
+  cellId: string;
+  item: number;
+  maxCardinality?: number;
+};
+
+export type StepCellsWindowsElemi = {
+  op: "cells-windows.elemi";
+  cellId: string;
+  item: number;
+  maxCardinality?: number;
+};
+
+export type StepCellsWindowsLparss = {
+  op: "cells-windows.lparss";
+  cellId: string;
+  list: string;
+  delims: string;
+  maxCardinality?: number;
+  length?: number;
+};
+
 export type StepCellsWindowsInsrtc = {
   op: "cells-windows.insrtc";
   cellId: string;
@@ -1265,11 +1752,157 @@ export type StepCellsWindowsWnfetd = {
   index: number;
 };
 
+export type StepCellsWindowsWncomd = {
+  op: "cells-windows.wncomd";
+  left: number;
+  right: number;
+  windowId: string;
+  resultId: string;
+  maxIntervals: number;
+};
+
+export type StepCellsWindowsWncond = {
+  op: "cells-windows.wncond";
+  left: number;
+  right: number;
+  windowId: string;
+};
+
+export type StepCellsWindowsWndifd = {
+  op: "cells-windows.wndifd";
+  aId: string;
+  bId: string;
+  resultId: string;
+  maxIntervals: number;
+};
+
+export type StepCellsWindowsWnelmd = {
+  op: "cells-windows.wnelmd";
+  point: number;
+  windowId: string;
+};
+
+export type StepCellsWindowsWnexpd = {
+  op: "cells-windows.wnexpd";
+  left: number;
+  right: number;
+  windowId: string;
+};
+
+export type StepCellsWindowsWnextd = {
+  op: "cells-windows.wnextd";
+  side: string;
+  windowId: string;
+};
+
+export type StepCellsWindowsWnfild = {
+  op: "cells-windows.wnfild";
+  small: number;
+  windowId: string;
+};
+
+export type StepCellsWindowsWnfltd = {
+  op: "cells-windows.wnfltd";
+  small: number;
+  windowId: string;
+};
+
+export type StepCellsWindowsWnincd = {
+  op: "cells-windows.wnincd";
+  left: number;
+  right: number;
+  windowId: string;
+};
+
+export type StepCellsWindowsWnintd = {
+  op: "cells-windows.wnintd";
+  aId: string;
+  bId: string;
+  resultId: string;
+  maxIntervals: number;
+};
+
+export type StepCellsWindowsWnreld = {
+  op: "cells-windows.wnreld";
+  aId: string;
+  relation: string;
+  bId: string;
+};
+
+export type StepCellsWindowsWnsumd = {
+  op: "cells-windows.wnsumd";
+  windowId: string;
+};
+
+export type StepCellsWindowsWnunid = {
+  op: "cells-windows.wnunid";
+  aId: string;
+  bId: string;
+  resultId: string;
+  maxIntervals: number;
+};
+
 export type StepCellsWindowsWnvald = {
   op: "cells-windows.wnvald";
   size: number;
   n: number;
   windowId: string;
+};
+
+export type StepKernelPoolBadkpv = {
+  op: "kernel-pool.badkpv";
+  caller: string;
+  name: string;
+  comp: string;
+  size: number;
+  divby: number;
+  type: string;
+};
+
+export type StepKernelPoolBodvcd = {
+  op: "kernel-pool.bodvcd";
+  body: number;
+  item: string;
+  maxn: number;
+};
+
+export type StepKernelPoolBodvrd = {
+  op: "kernel-pool.bodvrd";
+  body: string;
+  item: string;
+  maxn: number;
+};
+
+export type StepKernelPoolClpool = {
+  op: "kernel-pool.clpool";
+};
+
+export type StepKernelPoolDvpool = {
+  op: "kernel-pool.dvpool";
+  name: string;
+};
+
+export type StepKernelPoolLdpool = {
+  op: "kernel-pool.ldpool";
+  file: PathRefLike;
+};
+
+export type StepKernelPoolLmpool = {
+  op: "kernel-pool.lmpool";
+  lines: string[];
+};
+
+export type StepKernelPoolStpool = {
+  op: "kernel-pool.stpool";
+  item: string;
+  nth: number;
+  contin: string;
+  lenout: number;
+};
+
+export type StepKernelPoolSzpool = {
+  op: "kernel-pool.szpool";
+  name: string;
 };
 
 export type StepKernelPoolGdpool = {
@@ -2194,6 +2827,41 @@ export type StepDskDskb02 = {
 };
 
 export type WorkflowStep =
+  | StepStringsCpos
+  | StepStringsCposr
+  | StepStringsNcpos
+  | StepStringsNcposr
+  | StepStringsPos
+  | StepStringsPosr
+  | StepStringsEsrchc
+  | StepStringsDp2hx
+  | StepStringsHx2dp
+  | StepStringsPrsdp
+  | StepStringsPrsint
+  | StepStringsRepmc
+  | StepStringsRepmct
+  | StepStringsRepmd
+  | StepStringsRepmf
+  | StepStringsRepmi
+  | StepStringsRepml
+  | StepStringsRepmot
+  | StepStringsNextwd
+  | StepStringsNthwd
+  | StepStringsLparse
+  | StepStringsLparsm
+  | StepStringsLx4dec
+  | StepStringsLx4num
+  | StepStringsLx4sgn
+  | StepStringsLx4uns
+  | StepStringsLxqstr
+  | StepStringsCmprss
+  | StepStringsEqstr
+  | StepStringsIswhsp
+  | StepStringsLastnb
+  | StepStringsLcase
+  | StepStringsUcase
+  | StepStringsMatchi
+  | StepStringsMatchw
   | StepTimeStr2Et
   | StepTimeEt2Utc
   | StepTimeSpd
@@ -2343,6 +3011,31 @@ export type WorkflowStep =
   | StepCoordsVectorsDrdpgr
   | StepCoordsVectorsDrdsph
   | StepCoordsVectorsDsphdr
+  | StepCoordsVectorsIsordv
+  | StepCoordsVectorsOrderc
+  | StepCoordsVectorsOrderd
+  | StepCoordsVectorsOrderi
+  | StepCoordsVectorsReordc
+  | StepCoordsVectorsReordd
+  | StepCoordsVectorsReordi
+  | StepCoordsVectorsReordl
+  | StepCoordsVectorsShellc
+  | StepCoordsVectorsShelld
+  | StepCoordsVectorsShelli
+  | StepCoordsVectorsLstlec
+  | StepCoordsVectorsLstled
+  | StepCoordsVectorsLstlei
+  | StepCoordsVectorsLstltc
+  | StepCoordsVectorsLstltd
+  | StepCoordsVectorsLstlti
+  | StepCoordsVectorsBschoc
+  | StepCoordsVectorsBschoi
+  | StepCoordsVectorsBsrchc
+  | StepCoordsVectorsBsrchd
+  | StepCoordsVectorsBsrchi
+  | StepCoordsVectorsIsrchc
+  | StepCoordsVectorsIsrchd
+  | StepCoordsVectorsIsrchi
   | StepCoordsVectorsReclat
   | StepCoordsVectorsLatrec
   | StepCoordsVectorsRecsph
@@ -2374,6 +3067,22 @@ export type WorkflowStep =
   | StepCoordsVectorsMxv
   | StepCoordsVectorsMtxv
   | StepCellsWindowsCard
+  | StepCellsWindowsAppndc
+  | StepCellsWindowsAppndd
+  | StepCellsWindowsAppndi
+  | StepCellsWindowsSetResult
+  | StepCellsWindowsSet
+  | StepCellsWindowsRemovc
+  | StepCellsWindowsRemovd
+  | StepCellsWindowsRemovi
+  | StepCellsWindowsOrdc
+  | StepCellsWindowsOrdd
+  | StepCellsWindowsOrdi
+  | StepCellsWindowsCopy
+  | StepCellsWindowsElemc
+  | StepCellsWindowsElemd
+  | StepCellsWindowsElemi
+  | StepCellsWindowsLparss
   | StepCellsWindowsInsrtc
   | StepCellsWindowsInsrtd
   | StepCellsWindowsInsrti
@@ -2384,7 +3093,29 @@ export type WorkflowStep =
   | StepCellsWindowsWncard
   | StepCellsWindowsWninsd
   | StepCellsWindowsWnfetd
+  | StepCellsWindowsWncomd
+  | StepCellsWindowsWncond
+  | StepCellsWindowsWndifd
+  | StepCellsWindowsWnelmd
+  | StepCellsWindowsWnexpd
+  | StepCellsWindowsWnextd
+  | StepCellsWindowsWnfild
+  | StepCellsWindowsWnfltd
+  | StepCellsWindowsWnincd
+  | StepCellsWindowsWnintd
+  | StepCellsWindowsWnreld
+  | StepCellsWindowsWnsumd
+  | StepCellsWindowsWnunid
   | StepCellsWindowsWnvald
+  | StepKernelPoolBadkpv
+  | StepKernelPoolBodvcd
+  | StepKernelPoolBodvrd
+  | StepKernelPoolClpool
+  | StepKernelPoolDvpool
+  | StepKernelPoolLdpool
+  | StepKernelPoolLmpool
+  | StepKernelPoolStpool
+  | StepKernelPoolSzpool
   | StepKernelPoolGdpool
   | StepKernelPoolGipool
   | StepKernelPoolGcpool
@@ -2686,6 +3417,71 @@ export type StepOutput =
   | { op: "coords-vectors.vsubg"; value: number[] }
   | { op: "coords-vectors.vzerog"; value: boolean }
   | { op: "coords-vectors.unormg"; value: { unit: number[]; norm: number } }
+  | { op: "strings.cpos"; value: number }
+  | { op: "strings.cposr"; value: number }
+  | { op: "strings.ncpos"; value: number }
+  | { op: "strings.ncposr"; value: number }
+  | { op: "strings.pos"; value: number }
+  | { op: "strings.posr"; value: number }
+  | { op: "strings.esrchc"; value: number }
+  | { op: "strings.dp2hx"; value: { hxstr: string; hxssiz: number } }
+  | {
+      op: "strings.hx2dp";
+      value:
+        | { error: false; number: number; errmsg: string }
+        | { error: true; errmsg: string };
+    }
+  | { op: "strings.prsdp"; value: number }
+  | { op: "strings.prsint"; value: number }
+  | { op: "strings.repmc"; value: string }
+  | { op: "strings.repmct"; value: string }
+  | { op: "strings.repmd"; value: string }
+  | { op: "strings.repmf"; value: string }
+  | { op: "strings.repmi"; value: string }
+  | { op: "strings.repml"; value: string }
+  | { op: "strings.repmot"; value: string }
+  | { op: "strings.nextwd"; value: { next: string; rest: string } }
+  | { op: "strings.nthwd"; value: { word: string; loc: number } }
+  | { op: "strings.lparse"; value: { n: number; items: string[] } }
+  | { op: "strings.lparsm"; value: { n: number; items: string[] } }
+  | { op: "strings.lx4dec"; value: { last: number; nchar: number } }
+  | { op: "strings.lx4num"; value: { last: number; nchar: number } }
+  | { op: "strings.lx4sgn"; value: { last: number; nchar: number } }
+  | { op: "strings.lx4uns"; value: { last: number; nchar: number } }
+  | { op: "strings.lxqstr"; value: { last: number; nchar: number } }
+  | { op: "strings.cmprss"; value: string }
+  | { op: "strings.eqstr"; value: boolean }
+  | { op: "strings.iswhsp"; value: boolean }
+  | { op: "strings.lastnb"; value: number }
+  | { op: "strings.lcase"; value: string }
+  | { op: "strings.ucase"; value: string }
+  | { op: "strings.matchi"; value: boolean }
+  | { op: "strings.matchw"; value: boolean }
+  | { op: "coords-vectors.bschoc"; value: number }
+  | { op: "coords-vectors.bschoi"; value: number }
+  | { op: "coords-vectors.bsrchc"; value: number }
+  | { op: "coords-vectors.bsrchd"; value: number }
+  | { op: "coords-vectors.bsrchi"; value: number }
+  | { op: "coords-vectors.isrchc"; value: number }
+  | { op: "coords-vectors.isrchd"; value: number }
+  | { op: "coords-vectors.isrchi"; value: number }
+  | { op: "coords-vectors.isordv"; value: boolean }
+  | { op: "coords-vectors.orderc"; value: number[] }
+  | { op: "coords-vectors.orderd"; value: number[] }
+  | { op: "coords-vectors.orderi"; value: number[] }
+  | { op: "coords-vectors.reordc"; value: string[] }
+  | { op: "coords-vectors.reordd"; value: number[] }
+  | { op: "coords-vectors.reordi"; value: number[] }
+  | { op: "coords-vectors.reordl"; value: boolean[] }
+  | { op: "coords-vectors.shellc"; value: string[] }
+  | { op: "coords-vectors.shelld"; value: number[] }
+  | { op: "coords-vectors.shelli"; value: number[] }
+  | { op: "coords-vectors.lstlec"; value: number }
+  | { op: "coords-vectors.lstled"; value: number }
+  | { op: "coords-vectors.lstlei"; value: number }
+  | { op: "coords-vectors.lstltc"; value: number }
+  | { op: "coords-vectors.lstltd"; value: number }
+  | { op: "coords-vectors.lstlti"; value: number }
   | { op: "time.str2et"; value: number }
   | { op: "time.et2utc"; value: string }
   | { op: "time.spd"; value: number }
@@ -2766,6 +3562,25 @@ export type StepOutput =
   | { op: "coords-vectors.mxv"; value: Vector3 }
   | { op: "coords-vectors.mtxv"; value: Vector3 }
   | { op: "cells-windows.card"; value: number }
+  | { op: "cells-windows.appndc"; value: string[] }
+  | { op: "cells-windows.appndd"; value: number[] }
+  | { op: "cells-windows.appndi"; value: number[] }
+  | { op: "cells-windows.diff"; value: number[] | string[] }
+  | { op: "cells-windows.inter"; value: number[] | string[] }
+  | { op: "cells-windows.sdiff"; value: number[] | string[] }
+  | { op: "cells-windows.union"; value: number[] | string[] }
+  | { op: "cells-windows.set"; value: boolean }
+  | { op: "cells-windows.removc"; value: string[] }
+  | { op: "cells-windows.removd"; value: number[] }
+  | { op: "cells-windows.removi"; value: number[] }
+  | { op: "cells-windows.ordc"; value: number }
+  | { op: "cells-windows.ordd"; value: number }
+  | { op: "cells-windows.ordi"; value: number }
+  | { op: "cells-windows.copy"; value: number[] | string[] }
+  | { op: "cells-windows.elemc"; value: boolean }
+  | { op: "cells-windows.elemd"; value: boolean }
+  | { op: "cells-windows.elemi"; value: boolean }
+  | { op: "cells-windows.lparss"; value: string[] }
   | { op: "cells-windows.insrtc"; value: string[] }
   | { op: "cells-windows.insrtd"; value: number[] }
   | { op: "cells-windows.insrti"; value: number[] }
@@ -2776,7 +3591,44 @@ export type StepOutput =
   | { op: "cells-windows.wncard"; value: number }
   | { op: "cells-windows.wninsd"; value: null }
   | { op: "cells-windows.wnfetd"; value: { left: number; right: number } }
+  | { op: "cells-windows.wncomd"; value: { left: number; right: number }[] }
+  | { op: "cells-windows.wncond"; value: { left: number; right: number }[] }
+  | { op: "cells-windows.wndifd"; value: { left: number; right: number }[] }
+  | { op: "cells-windows.wnelmd"; value: boolean }
+  | { op: "cells-windows.wnexpd"; value: { left: number; right: number }[] }
+  | { op: "cells-windows.wnextd"; value: { left: number; right: number }[] }
+  | { op: "cells-windows.wnfild"; value: { left: number; right: number }[] }
+  | { op: "cells-windows.wnfltd"; value: { left: number; right: number }[] }
+  | { op: "cells-windows.wnincd"; value: boolean }
+  | { op: "cells-windows.wnintd"; value: { left: number; right: number }[] }
+  | { op: "cells-windows.wnreld"; value: boolean }
+  | {
+      op: "cells-windows.wnsumd";
+      value: {
+        meas: number;
+        avg: number;
+        stddev: number;
+        shortest: number;
+        longest: number;
+      };
+    }
+  | { op: "cells-windows.wnunid"; value: { left: number; right: number }[] }
   | { op: "cells-windows.wnvald"; value: { left: number; right: number }[] }
+  | { op: "kernel-pool.badkpv"; value: boolean }
+  | { op: "kernel-pool.bodvcd"; value: { dim: number; values: number[] } }
+  | { op: "kernel-pool.bodvrd"; value: { dim: number; values: number[] } }
+  | { op: "kernel-pool.clpool"; value: null }
+  | { op: "kernel-pool.dvpool"; value: null }
+  | { op: "kernel-pool.ldpool"; value: null }
+  | { op: "kernel-pool.lmpool"; value: null }
+  | {
+      op: "kernel-pool.stpool";
+      value: { found: false } | { found: true; nthstr: string; size: number };
+    }
+  | {
+      op: "kernel-pool.szpool";
+      value: { found: false } | { found: true; n: number };
+    }
   | { op: "kernel-pool.gdpool"; value: KernelPoolFoundNumbers }
   | { op: "kernel-pool.gipool"; value: KernelPoolFoundNumbers }
   | { op: "kernel-pool.gcpool"; value: KernelPoolFoundStrings }

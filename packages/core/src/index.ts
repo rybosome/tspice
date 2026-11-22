@@ -1,3 +1,9 @@
+export {
+  poolLineTable,
+  poolTypeChar,
+  poolSourceBytes,
+} from "./spice-runtime/domains/pool-inputs.js";
+
 /** Error thrown when an internal invariant is violated (should never happen in correct usage). */
 export class InvariantError extends Error {
   constructor(message: string) {
@@ -152,6 +158,14 @@ export {
   assertGetmsgWhich,
 } from "./spice-runtime/domains/error.js";
 
+export {
+  snapshotSearchRows,
+  spiceStringByteLength,
+  spiceAsciiChar,
+  spiceTokenTable,
+  spiceStringOutputCapacity,
+} from "./spice-runtime/domains/string-bytes.js";
+
 export { normalizeBodItem } from "./spice-runtime/domains/ids-names-normalize.js";
 
 export {
@@ -182,3 +196,26 @@ export {
   frameStateResult,
   frameMatrixResult,
 } from "./spice-runtime/domains/frame-algebra.js";
+
+export {
+  searchOrderInput,
+  sortedNumericInputs,
+  sortedCharacterInputs,
+  sortedBoundResult,
+} from "./spice-runtime/domains/sorted-bounds.js";
+
+export {
+  assertWindowScalar,
+  windowSideByte,
+  windowOperatorBytes,
+  windowSummaryIndex,
+} from "./spice-runtime/domains/window-algebra.js";
+
+export {
+  orderDoubles,
+  orderIntegers,
+  orderLogicals,
+  orderPermutation,
+  orderRows,
+  readOrderRows,
+} from "./spice-runtime/domains/array-order.js";

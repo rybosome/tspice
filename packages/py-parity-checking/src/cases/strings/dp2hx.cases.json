@@ -1,0 +1,119 @@
+[
+  {
+    "caseId": "strings-dp2hx-normalized",
+    "description": "Compare normalized hexadecimal mantissa/exponent and true encoded length for positive, negative, zero and dyadic fractional inputs.",
+    "workflow": [
+      {
+        "op": "strings.dp2hx",
+        "value": 0
+      },
+      {
+        "op": "strings.dp2hx",
+        "value": 1
+      },
+      {
+        "op": "strings.dp2hx",
+        "value": -1.5
+      },
+      {
+        "op": "strings.dp2hx",
+        "value": 0.0625
+      },
+      {
+        "op": "strings.dp2hx",
+        "value": 255.5
+      },
+      {
+        "op": "strings.dp2hx",
+        "value": 3.141592653589793
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-dp2hx-binary-limits",
+    "description": "Compare every text byte of smallest subnormal, smallest normal and largest normal binary64 encodings.",
+    "workflow": [
+      {
+        "op": "strings.dp2hx",
+        "value": 5e-324
+      },
+      {
+        "op": "strings.dp2hx",
+        "value": 2.2250738585072014e-308
+      },
+      {
+        "op": "strings.dp2hx",
+        "value": 1.7976931348623157e308
+      },
+      {
+        "op": "strings.dp2hx",
+        "value": -1.7976931348623157e308
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-dp2hx-truncation",
+    "description": "Check independent truncation including a one-byte payload while full encoded length remains visible.",
+    "workflow": [
+      {
+        "op": "strings.dp2hx",
+        "value": 15.5,
+        "lenout": 2
+      },
+      {
+        "op": "strings.dp2hx",
+        "value": 15.5,
+        "lenout": 3
+      },
+      {
+        "op": "strings.dp2hx",
+        "value": 15.5,
+        "lenout": 5
+      },
+      {
+        "op": "strings.dp2hx",
+        "value": 15.5,
+        "lenout": 2147483647
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-dp2hx-invalid-room-1",
+    "description": "Too-small room signals the canonical toolkit error.",
+    "workflow": [
+      {
+        "op": "strings.dp2hx",
+        "value": 1,
+        "lenout": 1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["STRINGTOOSHORT"]
+    }
+  },
+  {
+    "caseId": "strings-dp2hx-invalid-room-1neg",
+    "description": "Too-small room signals the canonical toolkit error.",
+    "workflow": [
+      {
+        "op": "strings.dp2hx",
+        "value": 1,
+        "lenout": -1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["STRINGTOOSHORT"]
+    }
+  }
+]

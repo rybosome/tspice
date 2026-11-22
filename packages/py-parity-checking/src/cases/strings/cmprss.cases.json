@@ -1,0 +1,318 @@
+[
+  {
+    "caseId": "strings-cmprss-delimiter-run-lengths",
+    "description": "Observe signed retention counts on leading, interior and terminal delimiter runs.",
+    "workflow": [
+      {
+        "op": "strings.cmprss",
+        "delim": ":",
+        "n": 0,
+        "input": "::A::::B:C:::"
+      },
+      {
+        "op": "strings.cmprss",
+        "delim": ":",
+        "n": 1,
+        "input": "::A::::B:C:::"
+      },
+      {
+        "op": "strings.cmprss",
+        "delim": ":",
+        "n": 2,
+        "input": "::A::::B:C:::"
+      },
+      {
+        "op": "strings.cmprss",
+        "delim": ":",
+        "n": 3,
+        "input": "::A::::B:C:::"
+      },
+      {
+        "op": "strings.cmprss",
+        "delim": ":",
+        "n": 2147483647,
+        "input": "::A::::B:C:::"
+      },
+      {
+        "op": "strings.cmprss",
+        "delim": ":",
+        "n": -2147483648,
+        "input": "::A::::B:C:::"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-cmprss-whitespace-delimiters",
+    "description": "Only the specified byte is compressed, and terminal bytes remain visible.",
+    "workflow": [
+      {
+        "op": "strings.cmprss",
+        "delim": " ",
+        "n": 1,
+        "input": "   A  B   "
+      },
+      {
+        "op": "strings.cmprss",
+        "delim": "\t",
+        "n": 1,
+        "input": "\t\tA\t\t \t"
+      },
+      {
+        "op": "strings.cmprss",
+        "delim": "\n",
+        "n": 2,
+        "input": "A\n\n\nB\n\n\n"
+      },
+      {
+        "op": "strings.cmprss",
+        "delim": ":",
+        "n": 0,
+        "input": "::A::\t "
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-cmprss-empty-all-delimiter-or-absent",
+    "description": "Cover empty, all-delimiter, delimiter-free and isolated delimiters.",
+    "workflow": [
+      {
+        "op": "strings.cmprss",
+        "delim": ".",
+        "n": 2,
+        "input": ""
+      },
+      {
+        "op": "strings.cmprss",
+        "delim": ".",
+        "n": 2,
+        "input": "...."
+      },
+      {
+        "op": "strings.cmprss",
+        "delim": ".",
+        "n": 0,
+        "input": "...."
+      },
+      {
+        "op": "strings.cmprss",
+        "delim": ".",
+        "n": 3,
+        "input": "AB  "
+      },
+      {
+        "op": "strings.cmprss",
+        "delim": ".",
+        "n": 1,
+        "input": "A.B"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-cmprss-utf8-and-bom",
+    "description": "Compress just the chosen single byte and preserve the other UTF-8 bytes.",
+    "workflow": [
+      {
+        "op": "strings.cmprss",
+        "delim": " ",
+        "n": 1,
+        "input": "\ufeff\u00c9  \u96ea   "
+      },
+      {
+        "op": "strings.cmprss",
+        "delim": "-",
+        "n": 1,
+        "input": "\ud83d\ude00---a--\u00e9"
+      },
+      {
+        "op": "strings.cmprss",
+        "delim": "A",
+        "n": 1,
+        "input": "\u00e9AAA\u00c5Aa"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-cmprss-capacity-and-order",
+    "description": "Right truncation applies to the compressed result and reserves one byte for the terminator.",
+    "workflow": [
+      {
+        "op": "strings.cmprss",
+        "delim": ":",
+        "n": 1,
+        "input": "a::::bc:::de",
+        "lenout": 1
+      },
+      {
+        "op": "strings.cmprss",
+        "delim": ":",
+        "n": 1,
+        "input": "a::::bc:::de",
+        "lenout": 2
+      },
+      {
+        "op": "strings.cmprss",
+        "delim": ":",
+        "n": 1,
+        "input": "a::::bc:::de",
+        "lenout": 4
+      },
+      {
+        "op": "strings.cmprss",
+        "delim": ":",
+        "n": 1,
+        "input": "a::::bc:::de",
+        "lenout": 6
+      },
+      {
+        "op": "strings.cmprss",
+        "delim": ":",
+        "n": 1,
+        "input": "a::::bc:::de",
+        "lenout": 8
+      },
+      {
+        "op": "strings.cmprss",
+        "delim": ":",
+        "n": 1,
+        "input": "a::::bc:::de",
+        "lenout": 11
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-cmprss-complete-utf8-boundaries",
+    "description": "Complete scalar boundaries are measured in bytes after compression.",
+    "workflow": [
+      {
+        "op": "strings.cmprss",
+        "delim": ":",
+        "n": 1,
+        "input": "\u00e9::\ud83d\ude00x",
+        "lenout": 1
+      },
+      {
+        "op": "strings.cmprss",
+        "delim": ":",
+        "n": 1,
+        "input": "\u00e9::\ud83d\ude00x",
+        "lenout": 3
+      },
+      {
+        "op": "strings.cmprss",
+        "delim": ":",
+        "n": 1,
+        "input": "\u00e9::\ud83d\ude00x",
+        "lenout": 4
+      },
+      {
+        "op": "strings.cmprss",
+        "delim": ":",
+        "n": 1,
+        "input": "\u00e9::\ud83d\ude00x",
+        "lenout": 8
+      },
+      {
+        "op": "strings.cmprss",
+        "delim": ":",
+        "n": 1,
+        "input": "\u00e9::\ud83d\ude00x",
+        "lenout": 9
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-cmprss-zero-capacity-error",
+    "description": "A nonpositive explicit capacity reaches the actual CSPICE STRINGTOOSHORT error.",
+    "workflow": [
+      {
+        "op": "strings.cmprss",
+        "delim": " ",
+        "n": 1,
+        "input": "abc",
+        "lenout": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["STRINGTOOSHORT"]
+    }
+  },
+  {
+    "caseId": "strings-cmprss-negative-capacity-error",
+    "description": "A nonpositive explicit capacity reaches the actual CSPICE STRINGTOOSHORT error.",
+    "workflow": [
+      {
+        "op": "strings.cmprss",
+        "delim": " ",
+        "n": 1,
+        "input": "abc",
+        "lenout": -1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["STRINGTOOSHORT"]
+    }
+  },
+  {
+    "caseId": "strings-cmprss-nul-delimiter",
+    "description": "A scalar NUL delimiter cannot occur inside a represented input C string.",
+    "workflow": [
+      {
+        "op": "strings.cmprss",
+        "delim": "\u0000",
+        "n": 0,
+        "input": "  AB\t "
+      },
+      {
+        "op": "strings.cmprss",
+        "delim": "\u0000",
+        "n": 2,
+        "input": "\u00e9.A. "
+      },
+      {
+        "op": "strings.cmprss",
+        "delim": "\u0000",
+        "n": 0,
+        "input": ""
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-cmprss-int32-capacity-limits",
+    "description": "A very large declared capacity has no effect once the full result fits in a physically sufficient buffer.",
+    "workflow": [
+      {
+        "op": "strings.cmprss",
+        "delim": " ",
+        "n": 2,
+        "input": "  Ab  ",
+        "lenout": 2147483647
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

@@ -1,0 +1,250 @@
+[
+  {
+    "caseId": "strings-lparse-delimiters",
+    "description": "Leading, consecutive and trailing separators produce exact ordered empty entries.",
+    "workflow": [
+      {
+        "op": "strings.lparse",
+        "list": ",alpha,,b,",
+        "delim": ",",
+        "nmax": 8
+      },
+      {
+        "op": "strings.lparse",
+        "list": "a,,,b,",
+        "delim": ",",
+        "nmax": 4
+      },
+      {
+        "op": "strings.lparse",
+        "list": "alpha",
+        "delim": ",",
+        "nmax": 5
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-lparse-space-semantics",
+    "description": "Compare blank separators and blanks adjacent to punctuation.",
+    "workflow": [
+      {
+        "op": "strings.lparse",
+        "list": "  aa   bb   ",
+        "delim": " ",
+        "nmax": 7
+      },
+      {
+        "op": "strings.lparse",
+        "list": " ,  a , ,b  ,",
+        "delim": ",",
+        "nmax": 8
+      },
+      {
+        "op": "strings.lparse",
+        "list": "  ",
+        "delim": " ",
+        "nmax": 5
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-lparse-separators",
+    "description": "Single initial delimiter byte and set-of-delimiters semantics can select different tokens.",
+    "workflow": [
+      {
+        "op": "strings.lparse",
+        "list": "a,b;c|d",
+        "delim": ",;|",
+        "nmax": 9
+      },
+      {
+        "op": "strings.lparse",
+        "list": "a,b; c,",
+        "delim": ",;",
+        "nmax": 6
+      },
+      {
+        "op": "strings.lparse",
+        "list": "1:2,3;4",
+        "delim": ":,;",
+        "nmax": 9
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-lparse-widths",
+    "description": "Explicit small byte rows preserve count while shortening content and retaining terminal tab.",
+    "workflow": [
+      {
+        "op": "strings.lparse",
+        "list": "abcd,wxyz",
+        "delim": ",",
+        "nmax": 6,
+        "itemln": 2
+      },
+      {
+        "op": "strings.lparse",
+        "list": "甲,乙",
+        "delim": ",",
+        "nmax": 4,
+        "itemln": 4
+      },
+      {
+        "op": "strings.lparse",
+        "list": "a\t,bb\t",
+        "delim": ",",
+        "nmax": 4,
+        "itemln": 5
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-lparse-maximum-count",
+    "description": "nmax truncates an otherwise longer list independently of row width.",
+    "workflow": [
+      {
+        "op": "strings.lparse",
+        "list": "a,b,c,d",
+        "delim": ",",
+        "nmax": 1,
+        "itemln": 5
+      },
+      {
+        "op": "strings.lparse",
+        "list": "a,b,c,d",
+        "delim": ",",
+        "nmax": 2,
+        "itemln": 5
+      },
+      {
+        "op": "strings.lparse",
+        "list": "a,b,c,d",
+        "delim": ",",
+        "nmax": 3,
+        "itemln": 5
+      },
+      {
+        "op": "strings.lparse",
+        "list": "a,b,c,d",
+        "delim": ",",
+        "nmax": 4,
+        "itemln": 5
+      },
+      {
+        "op": "strings.lparse",
+        "list": "a,b,c,d",
+        "delim": ",",
+        "nmax": 6,
+        "itemln": 5
+      },
+      {
+        "op": "strings.lparse",
+        "list": "a,b,c,d",
+        "delim": ",",
+        "nmax": 2147483647,
+        "itemln": 5
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-lparse-no-room",
+    "description": "A nonpositive count returns no rows before input delimiter and row-width checks.",
+    "workflow": [
+      {
+        "op": "strings.lparse",
+        "list": "a,b",
+        "delim": "",
+        "nmax": 0,
+        "itemln": -2
+      },
+      {
+        "op": "strings.lparse",
+        "list": "a,b",
+        "delim": "",
+        "nmax": -1,
+        "itemln": -2
+      },
+      {
+        "op": "strings.lparse",
+        "list": "a,b",
+        "delim": "",
+        "nmax": -2147483648,
+        "itemln": -2
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-lparse-empty",
+    "description": "Empty input with a valid output width returns one empty row before checking delimiters.",
+    "workflow": [
+      {
+        "op": "strings.lparse",
+        "list": "",
+        "delim": ",",
+        "nmax": 7
+      },
+      {
+        "op": "strings.lparse",
+        "list": "",
+        "delim": "",
+        "nmax": 1,
+        "itemln": 2
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-lparse-empty-delimiter",
+    "description": "Nonempty input with room requires a delimiter.",
+    "workflow": [
+      {
+        "op": "strings.lparse",
+        "list": "a,b",
+        "delim": "",
+        "nmax": 7,
+        "itemln": 5
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["EMPTYSTRING"]
+    }
+  },
+  {
+    "caseId": "strings-lparse-too-short-row",
+    "description": "Positive caller capacity validates row width before even empty input.",
+    "workflow": [
+      {
+        "op": "strings.lparse",
+        "list": "",
+        "delim": "",
+        "nmax": 1,
+        "itemln": 1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["STRINGTOOSHORT"]
+    }
+  }
+]

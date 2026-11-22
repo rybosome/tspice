@@ -1,0 +1,162 @@
+[
+  {
+    "caseId": "strings-repmi-first-marker",
+    "description": "Only the first matching marker is replaced after trimming ASCII marker blanks; leading literal whitespace is observable.",
+    "workflow": [
+      {
+        "op": "strings.repmi",
+        "input": "  A # #  ",
+        "marker": " # ",
+        "value": -2147483648
+      },
+      {
+        "op": "strings.repmi",
+        "input": "X#Y#Z",
+        "marker": "#",
+        "value": -2147483648
+      },
+      {
+        "op": "strings.repmi",
+        "input": "Étape à#\t",
+        "marker": "#",
+        "value": -2147483648
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-repmi-miss-and-blank",
+    "description": "Genuine empty input, missing marker, empty and whitespace-only marker, and input containing a literal tab.",
+    "workflow": [
+      {
+        "op": "strings.repmi",
+        "input": "",
+        "marker": "#",
+        "value": -2147483648
+      },
+      {
+        "op": "strings.repmi",
+        "input": "unmarked",
+        "marker": "!",
+        "value": -2147483648
+      },
+      {
+        "op": "strings.repmi",
+        "input": "a b",
+        "marker": "",
+        "value": -2147483648
+      },
+      {
+        "op": "strings.repmi",
+        "input": "a b",
+        "marker": "  ",
+        "value": -2147483648
+      },
+      {
+        "op": "strings.repmi",
+        "input": "t\t",
+        "marker": "#",
+        "value": -2147483648
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-repmi-capacity",
+    "description": "Truncate the complete replacement string at explicit UTF-8 byte capacities, including the minimum accepted room and signed maximum.",
+    "workflow": [
+      {
+        "op": "strings.repmi",
+        "input": "a#z",
+        "marker": "#",
+        "value": -2147483648,
+        "lenout": 1
+      },
+      {
+        "op": "strings.repmi",
+        "input": "a#z",
+        "marker": "#",
+        "value": -2147483648,
+        "lenout": 2
+      },
+      {
+        "op": "strings.repmi",
+        "input": "a#z",
+        "marker": "#",
+        "value": -2147483648,
+        "lenout": 3
+      },
+      {
+        "op": "strings.repmi",
+        "input": "a#z",
+        "marker": "#",
+        "value": -2147483648,
+        "lenout": 7
+      },
+      {
+        "op": "strings.repmi",
+        "input": "a#z",
+        "marker": "#",
+        "value": -2147483648,
+        "lenout": 2147483647
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-repmi-bad-room",
+    "description": "The actual canonical routine receives insufficient caller room.",
+    "workflow": [
+      {
+        "op": "strings.repmi",
+        "input": "#",
+        "marker": "#",
+        "value": -2147483648,
+        "lenout": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["STRINGTOOSHORT"]
+    }
+  },
+  {
+    "caseId": "strings-repmi-integer-endpoints",
+    "description": "Inspect full signed decimal text, signs and both 32-bit boundaries.",
+    "workflow": [
+      {
+        "op": "strings.repmi",
+        "input": "[#]",
+        "marker": "#",
+        "value": -2147483648
+      },
+      {
+        "op": "strings.repmi",
+        "input": "[#]",
+        "marker": "#",
+        "value": -1
+      },
+      {
+        "op": "strings.repmi",
+        "input": "[#]",
+        "marker": "#",
+        "value": 0
+      },
+      {
+        "op": "strings.repmi",
+        "input": "[#]",
+        "marker": "#",
+        "value": 2147483647
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

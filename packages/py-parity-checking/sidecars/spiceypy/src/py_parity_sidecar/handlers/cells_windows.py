@@ -1,12 +1,33 @@
 from __future__ import annotations
 
+import ctypes as ct
 from typing import Any
 
 import spiceypy as sp
-from spiceypy.utils.support_types import SPICECHAR_CELL, SPICEDOUBLE_CELL, SPICEINT_CELL
+from spiceypy.utils.libspicehelper import libspice
+from spiceypy.utils.support_types import SPICECHAR_CELL, SPICEDOUBLE_CELL, SPICEINT_CELL, SpiceCell
 
+from .. import set_algebra_oracle
+from .. import cell_array_oracle
+from .. import window_algebra_oracle
 from ..models import (
     StepCellsWindowsCard,
+    StepCellsWindowsAppndc,
+    StepCellsWindowsAppndd,
+    StepCellsWindowsAppndi,
+    StepCellsWindowsSetResult,
+    StepCellsWindowsSet,
+    StepCellsWindowsRemovc,
+    StepCellsWindowsRemovd,
+    StepCellsWindowsRemovi,
+    StepCellsWindowsOrdc,
+    StepCellsWindowsOrdd,
+    StepCellsWindowsOrdi,
+    StepCellsWindowsCopy,
+    StepCellsWindowsElemc,
+    StepCellsWindowsElemd,
+    StepCellsWindowsElemi,
+    StepCellsWindowsLparss,
     StepCellsWindowsInsrtc,
     StepCellsWindowsInsrtd,
     StepCellsWindowsInsrti,
@@ -17,11 +38,30 @@ from ..models import (
     StepCellsWindowsWncard,
     StepCellsWindowsWnfetd,
     StepCellsWindowsWninsd,
+    StepCellsWindowsWncomd,
+    StepCellsWindowsWncond,
+    StepCellsWindowsWndifd,
+    StepCellsWindowsWnelmd,
+    StepCellsWindowsWnexpd,
+    StepCellsWindowsWnextd,
+    StepCellsWindowsWnfild,
+    StepCellsWindowsWnfltd,
+    StepCellsWindowsWnincd,
+    StepCellsWindowsWnintd,
+    StepCellsWindowsWnreld,
+    StepCellsWindowsWnsumd,
+    StepCellsWindowsWnunid,
     StepCellsWindowsWnvald,
     StepOutput,
     WorkflowStep,
 )
 from ..runtime import SidecarRuntimeContext
+
+
+# Use a private ctypes binding so declaring the ABI does not change SpiceyPy's helper.
+_lparss = ct.CDLL(libspice._name).lparss_c
+_lparss.argtypes = [ct.c_char_p, ct.c_char_p, ct.POINTER(SpiceCell)]
+_lparss.restype = None
 
 
 def _get_or_create_int_cell(
@@ -121,16 +161,13 @@ def _require_char_cell(context: SidecarRuntimeContext, cell_id: str) -> Any:
     return cell
 
 
-def _get_or_create_window(context: SidecarRuntimeContext, window_id: str, *, max_intervals: int) -> Any:
+def _get_or_create_window(context: SidecarRuntimeContext, window_id: str, *, max_intervals: int) -> SpiceCell:
     windows = context.state.cellsWindows.windows
     existing = windows.get(window_id)
     if existing is not None:
         return existing
 
-    if max_intervals < 0:
-        raise ValueError("maxIntervals must be >= 0")
-
-    window = SPICEDOUBLE_CELL(max_intervals * 2)
+    window = window_algebra_oracle.allocate_window(max_intervals)
     windows[window_id] = window
     context.register_finalizer(
         f"cellsWindows.releaseWindow:{window_id}",
@@ -139,7 +176,7 @@ def _get_or_create_window(context: SidecarRuntimeContext, window_id: str, *, max
     return window
 
 
-def _require_window(context: SidecarRuntimeContext, window_id: str) -> Any:
+def _require_window(context: SidecarRuntimeContext, window_id: str) -> SpiceCell:
     windows = context.state.cellsWindows.windows
     window = windows.get(window_id)
     if window is None:
@@ -163,10 +200,132 @@ def _require_target(context: SidecarRuntimeContext, target_kind: str, target_id:
     raise ValueError(f"Unsupported cells-windows targetKind: {target_kind}")
 
 
+def _require_even_window(context: SidecarRuntimeContext, window_id: str) -> SpiceCell:
+    window = _require_window(context, window_id)
+    window_algebra_oracle.validate_input(window)
+    return window
+
+
+def _snapshot_window(window: SpiceCell) -> list[dict[str, float]]:
+    intervals = (sp.wnfetd(window, index) for index in range(sp.wncard(window)))
+    return [{"left": float(left), "right": float(right)} for left, right in intervals]
+
+
 def run_cells_windows_step(step: WorkflowStep, context: SidecarRuntimeContext) -> StepOutput | None:
     if isinstance(step, StepCellsWindowsCard):
         target = _require_target(context, step.targetKind, step.targetId)
         return StepOutput(op=step.op, value=int(sp.card(target)))
+
+    if isinstance(step, StepCellsWindowsAppndc):
+        cell = _get_or_create_char_cell(context, step.cellId, max_cardinality=8 if step.maxCardinality is None else step.maxCardinality, length=32 if step.length is None else step.length)
+        cell_array_oracle.check_text(step.item, cell, append=True)
+        sp.appndc(step.item, cell)
+        return StepOutput(op=step.op, value=list(cell))
+
+    if isinstance(step, StepCellsWindowsAppndd):
+        cell = _get_or_create_double_cell(context, step.cellId, max_cardinality=8 if step.maxCardinality is None else step.maxCardinality)
+        sp.appndd(step.item, cell)
+        return StepOutput(op=step.op, value=list(cell))
+
+    if isinstance(step, StepCellsWindowsAppndi):
+        cell = _get_or_create_int_cell(context, step.cellId, max_cardinality=8 if step.maxCardinality is None else step.maxCardinality)
+        if not -(2**31) <= step.item < 2**31:
+            raise ValueError("cell item exceeds SpiceInt")
+        sp.appndi(step.item, cell)
+        return StepOutput(op=step.op, value=list(cell))
+
+    if isinstance(step, StepCellsWindowsSetResult):
+        a = _require_target(context, step.kind, step.aId)
+        b = _require_target(context, step.kind, step.bId)
+        cap = 8 if step.maxCardinality is None else step.maxCardinality
+        if step.kind == "int":
+            target = _get_or_create_int_cell(context, step.resultId, max_cardinality=cap)
+        elif step.kind == "double":
+            target = _get_or_create_double_cell(context, step.resultId, max_cardinality=cap)
+        else:
+            target = _get_or_create_char_cell(context, step.resultId, max_cardinality=cap, length=32 if step.length is None else step.length)
+        set_algebra_oracle.write_result(step.op, a, b, target)
+        return StepOutput(op=step.op, value=list(target))
+
+    if isinstance(step, StepCellsWindowsSet):
+        a = _require_target(context, step.kind, step.aId)
+        b = _require_target(context, step.kind, step.bId)
+        cell_array_oracle.check_text(step.relation, a)
+        set_algebra_oracle.check_inputs(a, b)
+        return StepOutput(op=step.op, value=bool(sp.set_c(a, step.relation, b)))
+
+    if isinstance(step, StepCellsWindowsRemovc):
+        cell = _get_or_create_char_cell(context, step.cellId, max_cardinality=8 if step.maxCardinality is None else step.maxCardinality, length=32 if step.length is None else step.length)
+        cell_array_oracle.check_text(step.item, cell)
+        sp.removc(step.item, cell)
+        return StepOutput(op=step.op, value=list(cell))
+
+    if isinstance(step, StepCellsWindowsRemovd):
+        cell = _get_or_create_double_cell(context, step.cellId, max_cardinality=8 if step.maxCardinality is None else step.maxCardinality)
+        sp.removd(step.item, cell)
+        return StepOutput(op=step.op, value=list(cell))
+
+    if isinstance(step, StepCellsWindowsRemovi):
+        cell = _get_or_create_int_cell(context, step.cellId, max_cardinality=8 if step.maxCardinality is None else step.maxCardinality)
+        if not -(2**31) <= step.item < 2**31:
+            raise ValueError("cell item exceeds SpiceInt")
+        sp.removi(step.item, cell)
+        return StepOutput(op=step.op, value=list(cell))
+
+    if isinstance(step, StepCellsWindowsOrdc):
+        cell = _get_or_create_char_cell(context, step.cellId, max_cardinality=8 if step.maxCardinality is None else step.maxCardinality, length=32 if step.length is None else step.length)
+        cell_array_oracle.check_text(step.item, cell)
+        return StepOutput(op=step.op, value=int(sp.ordc(step.item, cell)))
+
+    if isinstance(step, StepCellsWindowsOrdd):
+        cell = _get_or_create_double_cell(context, step.cellId, max_cardinality=8 if step.maxCardinality is None else step.maxCardinality)
+        return StepOutput(op=step.op, value=int(sp.ordd(step.item, cell)))
+
+    if isinstance(step, StepCellsWindowsOrdi):
+        cell = _get_or_create_int_cell(context, step.cellId, max_cardinality=8 if step.maxCardinality is None else step.maxCardinality)
+        if not -(2**31) <= step.item < 2**31:
+            raise ValueError("cell item exceeds SpiceInt")
+        return StepOutput(op=step.op, value=int(sp.ordi(step.item, cell)))
+
+    if isinstance(step, StepCellsWindowsCopy):
+        source = _require_target(context, step.kind, step.sourceId)
+        cap = 8 if step.maxCardinality is None else step.maxCardinality
+        if step.kind == "int":
+            target = _get_or_create_int_cell(context, step.resultId, max_cardinality=cap)
+        elif step.kind == "double":
+            target = _get_or_create_double_cell(context, step.resultId, max_cardinality=cap)
+        else:
+            target = _get_or_create_char_cell(context, step.resultId, max_cardinality=cap, length=32 if step.length is None else step.length)
+        cell_array_oracle.copy_cell(source, target)
+        return StepOutput(op=step.op, value=list(target))
+
+    if isinstance(step, StepCellsWindowsElemc):
+        cell = _get_or_create_char_cell(context, step.cellId, max_cardinality=8 if step.maxCardinality is None else step.maxCardinality, length=32 if step.length is None else step.length)
+        cell_array_oracle.check_text(step.item, cell)
+        return StepOutput(op=step.op, value=bool(sp.elemc(step.item, cell)))
+
+    if isinstance(step, StepCellsWindowsElemd):
+        cell = _get_or_create_double_cell(context, step.cellId, max_cardinality=8 if step.maxCardinality is None else step.maxCardinality)
+        return StepOutput(op=step.op, value=bool(sp.elemd(step.item, cell)))
+
+    if isinstance(step, StepCellsWindowsElemi):
+        cell = _get_or_create_int_cell(context, step.cellId, max_cardinality=8 if step.maxCardinality is None else step.maxCardinality)
+        if not -(2**31) <= step.item < 2**31:
+            raise ValueError("cell item exceeds SpiceInt")
+        return StepOutput(op=step.op, value=bool(sp.elemi(step.item, cell)))
+
+    if isinstance(step, StepCellsWindowsLparss):
+        # The locked high-level helper always creates a new cell. Call its
+        # typed canonical symbol on the actual workflow-owned persistent cell.
+        if not 0 <= step.maxCardinality <= 4096 or not 1 <= step.length <= 1024:
+            raise ValueError("LPARSS fixture cell exceeds the oracle workspace range")
+        data, delimiters = step.list.encode("utf-8"), step.delims.encode("utf-8")
+        if b"\x00" in data or b"\x00" in delimiters:
+            raise ValueError("LPARSS text cannot contain an embedded NUL")
+        cell = _get_or_create_char_cell(context, step.cellId, max_cardinality=step.maxCardinality, length=step.length)
+        _lparss(data, delimiters, ct.byref(cell))
+        sp.check_for_spice_error(None)
+        return StepOutput(op=step.op, value=list(cell))
 
     if isinstance(step, StepCellsWindowsInsrtc):
         cell = _get_or_create_char_cell(
@@ -207,6 +366,8 @@ def run_cells_windows_step(step: WorkflowStep, context: SidecarRuntimeContext) -
 
     if isinstance(step, StepCellsWindowsSsize):
         target = _require_target(context, step.targetKind, step.targetId)
+        if isinstance(target, window_algebra_oracle.OracleWindow):
+            window_algebra_oracle.check_resize(target, step.size)
         sp.ssize(step.size, target)
         return StepOutput(op=step.op, value={"size": int(sp.size(target)), "card": int(sp.card(target))})
 
@@ -229,10 +390,86 @@ def run_cells_windows_step(step: WorkflowStep, context: SidecarRuntimeContext) -
         left, right = sp.wnfetd(window, step.index)
         return StepOutput(op=step.op, value={"left": float(left), "right": float(right)})
 
+    if isinstance(step, StepCellsWindowsWncomd):
+        window = _require_window(context, step.windowId)
+        result = _get_or_create_window(context, step.resultId, max_intervals=step.maxIntervals)
+        window_algebra_oracle.wncomd(step.left, step.right, window, result)
+        return StepOutput(op=step.op, value=_snapshot_window(result))
+
+    if isinstance(step, StepCellsWindowsWncond):
+        window = _require_even_window(context, step.windowId)
+        sp.wncond(step.left, step.right, window)
+        return StepOutput(op=step.op, value=_snapshot_window(window))
+
+    if isinstance(step, StepCellsWindowsWndifd):
+        a = _require_window(context, step.aId)
+        b = _require_window(context, step.bId)
+        result = _get_or_create_window(context, step.resultId, max_intervals=step.maxIntervals)
+        window_algebra_oracle.wndifd(a, b, result)
+        return StepOutput(op=step.op, value=_snapshot_window(result))
+
+    if isinstance(step, StepCellsWindowsWnelmd):
+        window = _require_even_window(context, step.windowId)
+        return StepOutput(op=step.op, value=sp.wnelmd(step.point, window))
+
+    if isinstance(step, StepCellsWindowsWnexpd):
+        window = _require_even_window(context, step.windowId)
+        sp.wnexpd(step.left, step.right, window)
+        return StepOutput(op=step.op, value=_snapshot_window(window))
+
+    if isinstance(step, StepCellsWindowsWnextd):
+        window = _require_even_window(context, step.windowId)
+        window_algebra_oracle.wnextd(step.side, window)
+        return StepOutput(op=step.op, value=_snapshot_window(window))
+
+    if isinstance(step, StepCellsWindowsWnfild):
+        window = _require_even_window(context, step.windowId)
+        sp.wnfild(step.small, window)
+        return StepOutput(op=step.op, value=_snapshot_window(window))
+
+    if isinstance(step, StepCellsWindowsWnfltd):
+        window = _require_even_window(context, step.windowId)
+        sp.wnfltd(step.small, window)
+        return StepOutput(op=step.op, value=_snapshot_window(window))
+
+    if isinstance(step, StepCellsWindowsWnincd):
+        window = _require_even_window(context, step.windowId)
+        return StepOutput(op=step.op, value=sp.wnincd(step.left, step.right, window))
+
+    if isinstance(step, StepCellsWindowsWnintd):
+        a = _require_window(context, step.aId)
+        b = _require_window(context, step.bId)
+        result = _get_or_create_window(context, step.resultId, max_intervals=step.maxIntervals)
+        window_algebra_oracle.wnintd(a, b, result)
+        return StepOutput(op=step.op, value=_snapshot_window(result))
+
+    if isinstance(step, StepCellsWindowsWnreld):
+        a = _require_even_window(context, step.aId)
+        b = _require_even_window(context, step.bId)
+        if "\x00" in step.relation:
+            raise ValueError("Relation must be a NUL-free C string")
+        return StepOutput(op=step.op, value=sp.wnreld(a, step.relation, b))
+
+    if isinstance(step, StepCellsWindowsWnsumd):
+        window = _require_window(context, step.windowId)
+        # Odd cardinality has a documented pre-read check in WNSUMD itself.
+        if not sp.card(window) % 2:
+            window_algebra_oracle.validate_input(window)
+        meas, avg, stddev, shortest, longest = sp.wnsumd(window)
+        return StepOutput(op=step.op, value={
+            "meas": meas, "avg": avg, "stddev": stddev, "shortest": shortest, "longest": longest,
+        })
+
+    if isinstance(step, StepCellsWindowsWnunid):
+        a = _require_window(context, step.aId)
+        b = _require_window(context, step.bId)
+        result = _get_or_create_window(context, step.resultId, max_intervals=step.maxIntervals)
+        window_algebra_oracle.wnunid(a, b, result)
+        return StepOutput(op=step.op, value=_snapshot_window(result))
+
     if isinstance(step, StepCellsWindowsWnvald):
         window = _require_window(context, step.windowId)
         sp.wnvald(step.size, step.n, window)
-        intervals = [sp.wnfetd(window, i) for i in range(sp.wncard(window))]
-        return StepOutput(op=step.op, value=[{"left": float(left), "right": float(right)} for left, right in intervals])
+        return StepOutput(op=step.op, value=_snapshot_window(window))
 
     return None

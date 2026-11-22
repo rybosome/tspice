@@ -1,0 +1,430 @@
+[
+  {
+    "caseId": "strings-matchw-literal-case-and-order",
+    "description": "Case-sensitive and insensitive routines see identical literal cases, transpositions and suffix differences.",
+    "workflow": [
+      {
+        "op": "strings.matchw",
+        "input": "Aqua",
+        "template": "aQuA",
+        "wstr": "*",
+        "wchr": "?"
+      },
+      {
+        "op": "strings.matchw",
+        "input": "Aqua",
+        "template": "Aqua",
+        "wstr": "*",
+        "wchr": "?"
+      },
+      {
+        "op": "strings.matchw",
+        "input": "Aqua",
+        "template": "Auqa",
+        "wstr": "*",
+        "wchr": "?"
+      },
+      {
+        "op": "strings.matchw",
+        "input": "Aqua",
+        "template": "Aqua!",
+        "wstr": "*",
+        "wchr": "?"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-matchw-zero-or-many-versus-one",
+    "description": "Distinguish arbitrarily many wildcard bytes from one byte, including zero matches.",
+    "workflow": [
+      {
+        "op": "strings.matchw",
+        "input": "ab",
+        "template": "a*b",
+        "wstr": "*",
+        "wchr": "?"
+      },
+      {
+        "op": "strings.matchw",
+        "input": "ab",
+        "template": "a?b",
+        "wstr": "*",
+        "wchr": "?"
+      },
+      {
+        "op": "strings.matchw",
+        "input": "axb",
+        "template": "a?b",
+        "wstr": "*",
+        "wchr": "?"
+      },
+      {
+        "op": "strings.matchw",
+        "input": "axxb",
+        "template": "a?b",
+        "wstr": "*",
+        "wchr": "?"
+      },
+      {
+        "op": "strings.matchw",
+        "input": "axxb",
+        "template": "a*b",
+        "wstr": "*",
+        "wchr": "?"
+      },
+      {
+        "op": "strings.matchw",
+        "input": "a",
+        "template": "?",
+        "wstr": "*",
+        "wchr": "?"
+      },
+      {
+        "op": "strings.matchw",
+        "input": "ab",
+        "template": "??",
+        "wstr": "*",
+        "wchr": "?"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-matchw-multiple-wildcards-and-anchors",
+    "description": "Backtracking, multiple wildcard runs and enforced end anchors exercise distinct paths.",
+    "workflow": [
+      {
+        "op": "strings.matchw",
+        "input": "ABABAC",
+        "template": "*ABA?",
+        "wstr": "*",
+        "wchr": "?"
+      },
+      {
+        "op": "strings.matchw",
+        "input": "ABABAC",
+        "template": "A**B*A?",
+        "wstr": "*",
+        "wchr": "?"
+      },
+      {
+        "op": "strings.matchw",
+        "input": "ABABAC",
+        "template": "AB*AB",
+        "wstr": "*",
+        "wchr": "?"
+      },
+      {
+        "op": "strings.matchw",
+        "input": "ABABAC",
+        "template": "*B*C",
+        "wstr": "*",
+        "wchr": "?"
+      },
+      {
+        "op": "strings.matchw",
+        "input": "ABABAC",
+        "template": "*A*BC",
+        "wstr": "*",
+        "wchr": "?"
+      },
+      {
+        "op": "strings.matchw",
+        "input": "ABABAC",
+        "template": "**",
+        "wstr": "*",
+        "wchr": "?"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-matchw-blanks-and-controls",
+    "description": "Only leading and trailing ordinary blanks are ignored. Internal blanks, tabs and blank-only nonempty arguments remain observable.",
+    "workflow": [
+      {
+        "op": "strings.matchw",
+        "input": "  A B  ",
+        "template": " A B ",
+        "wstr": "*",
+        "wchr": "?"
+      },
+      {
+        "op": "strings.matchw",
+        "input": "  A B  ",
+        "template": "AB",
+        "wstr": "*",
+        "wchr": "?"
+      },
+      {
+        "op": "strings.matchw",
+        "input": "\tA",
+        "template": "A",
+        "wstr": "*",
+        "wchr": "?"
+      },
+      {
+        "op": "strings.matchw",
+        "input": "A\tB",
+        "template": "A?B",
+        "wstr": "*",
+        "wchr": "?"
+      },
+      {
+        "op": "strings.matchw",
+        "input": "  ",
+        "template": " ",
+        "wstr": "*",
+        "wchr": "?"
+      },
+      {
+        "op": "strings.matchw",
+        "input": " ",
+        "template": "*",
+        "wstr": "*",
+        "wchr": "?"
+      },
+      {
+        "op": "strings.matchw",
+        "input": " ",
+        "template": "?",
+        "wstr": "*",
+        "wchr": "?"
+      },
+      {
+        "op": "strings.matchw",
+        "input": "A",
+        "template": " ",
+        "wstr": "*",
+        "wchr": "?"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-matchw-custom-wildcards",
+    "description": "Custom punctuation, space and alphabetic wildcard tokens are passed to CSPICE as exact bytes.",
+    "workflow": [
+      {
+        "op": "strings.matchw",
+        "input": "a*b?",
+        "template": "a*b?",
+        "wstr": "#",
+        "wchr": "%"
+      },
+      {
+        "op": "strings.matchw",
+        "input": "acxb",
+        "template": "a#b",
+        "wstr": "#",
+        "wchr": "%"
+      },
+      {
+        "op": "strings.matchw",
+        "input": "acxb",
+        "template": "a%b",
+        "wstr": "#",
+        "wchr": "%"
+      },
+      {
+        "op": "strings.matchw",
+        "input": "acb",
+        "template": "a%b",
+        "wstr": "#",
+        "wchr": "%"
+      },
+      {
+        "op": "strings.matchw",
+        "input": "ab",
+        "template": "axb",
+        "wstr": "x",
+        "wchr": "?"
+      },
+      {
+        "op": "strings.matchw",
+        "input": "ab",
+        "template": "aXb",
+        "wstr": "x",
+        "wchr": "?"
+      },
+      {
+        "op": "strings.matchw",
+        "input": "acb",
+        "template": "a b",
+        "wstr": " ",
+        "wchr": "?"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-matchw-coincident-wildcards",
+    "description": "CSPICE receives distinct roles with the same token to observe its real precedence.",
+    "workflow": [
+      {
+        "op": "strings.matchw",
+        "input": "ab",
+        "template": "a?b",
+        "wstr": "?",
+        "wchr": "?"
+      },
+      {
+        "op": "strings.matchw",
+        "input": "acb",
+        "template": "a?b",
+        "wstr": "?",
+        "wchr": "?"
+      },
+      {
+        "op": "strings.matchw",
+        "input": "acccb",
+        "template": "a?b",
+        "wstr": "?",
+        "wchr": "?"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-matchw-empty-input-error",
+    "description": "A zero-length string signals the actual CSPICE EMPTYSTRING diagnostic.",
+    "workflow": [
+      {
+        "op": "strings.matchw",
+        "input": "",
+        "template": "*",
+        "wstr": "*",
+        "wchr": "?"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["EMPTYSTRING"]
+    }
+  },
+  {
+    "caseId": "strings-matchw-empty-template-error",
+    "description": "A zero-length template signals the actual CSPICE EMPTYSTRING diagnostic.",
+    "workflow": [
+      {
+        "op": "strings.matchw",
+        "input": "A",
+        "template": "",
+        "wstr": "*",
+        "wchr": "?"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["EMPTYSTRING"]
+    }
+  },
+  {
+    "caseId": "strings-matchw-utf8-single-byte-wildcard",
+    "description": "Single-character wildcard matches a byte. Non-ASCII equality and literal ASCII case are observed separately.",
+    "workflow": [
+      {
+        "op": "strings.matchw",
+        "input": "\u00e9",
+        "template": "?",
+        "wstr": "*",
+        "wchr": "?"
+      },
+      {
+        "op": "strings.matchw",
+        "input": "\u00e9",
+        "template": "??",
+        "wstr": "*",
+        "wchr": "?"
+      },
+      {
+        "op": "strings.matchw",
+        "input": "\ud83d\ude00",
+        "template": "????",
+        "wstr": "*",
+        "wchr": "?"
+      },
+      {
+        "op": "strings.matchw",
+        "input": "\u00e9",
+        "template": "*",
+        "wstr": "*",
+        "wchr": "?"
+      },
+      {
+        "op": "strings.matchw",
+        "input": "\u96eaa",
+        "template": "\u96eaA",
+        "wstr": "*",
+        "wchr": "?"
+      },
+      {
+        "op": "strings.matchw",
+        "input": "\u00c9",
+        "template": "\u00e9",
+        "wstr": "*",
+        "wchr": "?"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-matchw-nul-wildcards",
+    "description": "A scalar NUL wildcard is an actual SpiceChar and disables that wildcard role in a NUL-terminated template.",
+    "workflow": [
+      {
+        "op": "strings.matchw",
+        "input": "Ab",
+        "template": "A*",
+        "wstr": "\u0000",
+        "wchr": "?"
+      },
+      {
+        "op": "strings.matchw",
+        "input": "Ab",
+        "template": "A?",
+        "wstr": "\u0000",
+        "wchr": "?"
+      },
+      {
+        "op": "strings.matchw",
+        "input": "Ab",
+        "template": "A?",
+        "wstr": "*",
+        "wchr": "\u0000"
+      },
+      {
+        "op": "strings.matchw",
+        "input": "AB",
+        "template": "A*",
+        "wstr": "*",
+        "wchr": "\u0000"
+      },
+      {
+        "op": "strings.matchw",
+        "input": "A?",
+        "template": "A?",
+        "wstr": "\u0000",
+        "wchr": "\u0000"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

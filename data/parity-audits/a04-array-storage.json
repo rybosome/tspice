@@ -270,7 +270,8 @@
       ],
       "id": "local-cp01-17f11884fb5b-node",
       "kind": "local",
-      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 17f11884fb5bdef7cbaf84bd480d4b8edde3d310. The native-required lane completed 3788 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45009595818/job/137168748216"
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 17f11884fb5bdef7cbaf84bd480d4b8edde3d310. The native-required lane completed 3788 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45009595818/job/137168748216",
+      "historical": true
     },
     {
       "backend": "node",
@@ -319,7 +320,8 @@
       "kind": "ci",
       "commit": "2851d19aa900e30c688b0d1c756a35357f10eebc",
       "url": "https://github.com/rybosome/tspice/actions/runs/45012853638/job/137178762153",
-      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 3788 live comparisons without unexpected skips."
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 3788 live comparisons without unexpected skips.",
+      "historical": true
     },
     {
       "backend": "wasm",
@@ -366,7 +368,8 @@
       ],
       "id": "local-cp01-17f11884fb5b-wasm",
       "kind": "local",
-      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 17f11884fb5bdef7cbaf84bd480d4b8edde3d310. The native-required lane completed 3788 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45009595818/job/137168748216"
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 17f11884fb5bdef7cbaf84bd480d4b8edde3d310. The native-required lane completed 3788 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45009595818/job/137168748216",
+      "historical": true
     },
     {
       "backend": "wasm",
@@ -415,7 +418,8 @@
       "kind": "ci",
       "commit": "2851d19aa900e30c688b0d1c756a35357f10eebc",
       "url": "https://github.com/rybosome/tspice/actions/runs/45012853638/job/137178762153",
-      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 3788 live comparisons without unexpected skips."
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 3788 live comparisons without unexpected skips.",
+      "historical": true
     }
   ],
   "routines": [
@@ -505,14 +509,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.clearc -> Node adapter -> registered native addon with initialized owned memory and global SPICE mutex -> shared tspice_clearc -> canonical clearc_c. The independent oracle invokes clearc_c from the locked SpiceyPy library using a typed ctypes binding and guarded initialized storage.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -521,14 +523,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.clearc -> WASM adapter -> checked transactional complete-array allocations -> _tspice_clearc -> shared tspice_clearc -> canonical clearc_c. The independent oracle invokes clearc_c from the locked SpiceyPy library using a typed ctypes binding and guarded initialized storage.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -603,14 +603,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.cleard -> Node adapter -> registered native addon with initialized owned memory and global SPICE mutex -> shared tspice_cleard -> canonical cleard_c. The independent oracle invokes cleard_c from the locked SpiceyPy library using a typed ctypes binding and guarded initialized storage.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -619,14 +617,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.cleard -> WASM adapter -> checked transactional complete-array allocations -> _tspice_cleard -> shared tspice_cleard -> canonical cleard_c. The independent oracle invokes cleard_c from the locked SpiceyPy library using a typed ctypes binding and guarded initialized storage.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -701,14 +697,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.cleari -> Node adapter -> registered native addon with initialized owned memory and global SPICE mutex -> shared tspice_cleari -> canonical cleari_c. The independent oracle invokes cleari_c from the locked SpiceyPy library using a typed ctypes binding and guarded initialized storage.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -717,14 +711,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.cleari -> WASM adapter -> checked transactional complete-array allocations -> _tspice_cleari -> shared tspice_cleari -> canonical cleari_c. The independent oracle invokes cleari_c from the locked SpiceyPy library using a typed ctypes binding and guarded initialized storage.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -804,14 +796,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.filld -> Node adapter -> registered native addon with initialized owned memory and global SPICE mutex -> shared tspice_filld -> canonical filld_c. The independent oracle invokes filld_c from the locked SpiceyPy library using a typed ctypes binding and guarded initialized storage.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -820,14 +810,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.filld -> WASM adapter -> checked transactional complete-array allocations -> _tspice_filld -> shared tspice_filld -> canonical filld_c. The independent oracle invokes filld_c from the locked SpiceyPy library using a typed ctypes binding and guarded initialized storage.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -907,14 +895,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.filli -> Node adapter -> registered native addon with initialized owned memory and global SPICE mutex -> shared tspice_filli -> canonical filli_c. The independent oracle invokes filli_c from the locked SpiceyPy library using a typed ctypes binding and guarded initialized storage.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -923,14 +909,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.filli -> WASM adapter -> checked transactional complete-array allocations -> _tspice_filli -> shared tspice_filli -> canonical filli_c. The independent oracle invokes filli_c from the locked SpiceyPy library using a typed ctypes binding and guarded initialized storage.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1021,14 +1005,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.moved -> Node adapter -> registered native addon with initialized owned memory and global SPICE mutex -> shared tspice_moved -> canonical moved_c. The independent oracle invokes moved_c from the locked SpiceyPy library using a typed ctypes binding and guarded initialized storage.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1037,14 +1019,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.moved -> WASM adapter -> checked transactional complete-array allocations -> _tspice_moved -> shared tspice_moved -> canonical moved_c. The independent oracle invokes moved_c from the locked SpiceyPy library using a typed ctypes binding and guarded initialized storage.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     }

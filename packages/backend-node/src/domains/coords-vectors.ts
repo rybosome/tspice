@@ -6,6 +6,17 @@ import {
   assertSpiceStorageFits,
   copySpiceStorage,
   spiceStorageLength,
+  searchOrderInput,
+  SPICE_INT32_MAX,
+  orderDoubles,
+  orderIntegers,
+  orderLogicals,
+  orderPermutation,
+  orderRows,
+  readOrderRows,
+  sortedNumericInputs,
+  sortedCharacterInputs,
+  sortedBoundResult,
   assertMat3ArrayLike9,
   assertSpiceInt32,
   brandMat3RowMajor,
@@ -607,6 +618,235 @@ function generalVectorOutput(
 /** Create a {@link CoordsVectorsApi} implementation backed by the native Node addon. */
 export function createCoordsVectorsApi(native: NativeAddon): CoordsVectorsApi {
   return {
+    bschoc: (key, values, order) => {
+      const input = sortedCharacterInputs(
+        key,
+        values,
+        SPICE_INT32_MAX,
+        Math.floor(SPICE_INT32_MAX / 4),
+      );
+      const indices = searchOrderInput(order, input.rows.length);
+      return sortedBoundResult(
+        native.bschoc(key, input.rows, indices),
+        input.rows.length,
+      );
+    },
+    bschoi: (key, values, order) => {
+      const input = sortedNumericInputs(
+        key,
+        values,
+        "int",
+        Math.floor(SPICE_INT32_MAX / 4),
+      );
+      const indices = searchOrderInput(order, input.values.length);
+      return sortedBoundResult(
+        native.bschoi(input.key, input.values, indices),
+        input.values.length,
+      );
+    },
+    bsrchc: (key, values) => {
+      const input = sortedCharacterInputs(key, values);
+      return sortedBoundResult(
+        native.bsrchc(key, input.rows),
+        input.rows.length,
+      );
+    },
+    bsrchd: (key, values) => {
+      const input = sortedNumericInputs(
+        key,
+        values,
+        "double",
+        Math.floor(SPICE_INT32_MAX / 2),
+      );
+      return sortedBoundResult(
+        native.bsrchd(input.key, input.values),
+        input.values.length,
+      );
+    },
+    bsrchi: (key, values) => {
+      const input = sortedNumericInputs(
+        key,
+        values,
+        "int",
+        Math.floor(SPICE_INT32_MAX / 2),
+      );
+      return sortedBoundResult(
+        native.bsrchi(input.key, input.values),
+        input.values.length,
+      );
+    },
+    isrchc: (key, values) => {
+      const input = sortedCharacterInputs(key, values);
+      return sortedBoundResult(
+        native.isrchc(key, input.rows),
+        input.rows.length,
+      );
+    },
+    isrchd: (key, values) => {
+      const input = sortedNumericInputs(
+        key,
+        values,
+        "ieee",
+        SPICE_INT32_MAX - 1,
+      );
+      return sortedBoundResult(
+        native.isrchd(input.key, input.values),
+        input.values.length,
+      );
+    },
+    isrchi: (key, values) => {
+      const input = sortedNumericInputs(
+        key,
+        values,
+        "int",
+        SPICE_INT32_MAX - 1,
+      );
+      return sortedBoundResult(
+        native.isrchi(input.key, input.values),
+        input.values.length,
+      );
+    },
+    isordv(order) {
+      const input = orderIntegers(order);
+      const result = native.isordv(input);
+      invariant(typeof result === "boolean", "Invalid order predicate result");
+      return result;
+    },
+    orderc(values) {
+      const { bytes: input, width, count } = orderRows(values, true);
+      const result = native.orderc(width, input);
+      invariant(
+        result instanceof Int32Array && result.length === count,
+        "Invalid native output array",
+      );
+      return Array.from(result);
+    },
+    orderd(values) {
+      const input = orderDoubles(values);
+      const count = input.length;
+      const result = native.orderd(input);
+      invariant(
+        result instanceof Int32Array && result.length === count,
+        "Invalid native output array",
+      );
+      return Array.from(result);
+    },
+    orderi(values) {
+      const input = orderIntegers(values);
+      const count = input.length;
+      const result = native.orderi(input);
+      invariant(
+        result instanceof Int32Array && result.length === count,
+        "Invalid native output array",
+      );
+      return Array.from(result);
+    },
+    reordc(order, values) {
+      const { bytes: input, width, count } = orderRows(values, false);
+      const indices = orderPermutation(order, count);
+      const result = native.reordc(indices, width, input);
+      return readOrderRows(result, width, count);
+    },
+    reordd(order, values) {
+      const input = orderDoubles(values);
+      const count = input.length;
+      const indices = orderPermutation(order, count);
+      const result = native.reordd(indices, input);
+      invariant(
+        result instanceof Float64Array && result.length === count,
+        "Invalid native output array",
+      );
+      return Array.from(result);
+    },
+    reordi(order, values) {
+      const input = orderIntegers(values);
+      const count = input.length;
+      const indices = orderPermutation(order, count);
+      const result = native.reordi(indices, input);
+      invariant(
+        result instanceof Int32Array && result.length === count,
+        "Invalid native output array",
+      );
+      return Array.from(result);
+    },
+    reordl(order, values) {
+      const input = orderLogicals(values);
+      const count = input.length;
+      const indices = orderPermutation(order, count);
+      const result = native.reordl(indices, input);
+      invariant(
+        result instanceof Int32Array && result.length === count,
+        "Invalid native output array",
+      );
+      return Array.from(result, (v) => Boolean(v));
+    },
+    shellc(values) {
+      const { bytes: input, width, count } = orderRows(values, false);
+      const result = native.shellc(width, input);
+      return readOrderRows(result, width, count);
+    },
+    shelld(values) {
+      const input = orderDoubles(values);
+      const count = input.length;
+      const result = native.shelld(input);
+      invariant(
+        result instanceof Float64Array && result.length === count,
+        "Invalid native output array",
+      );
+      return Array.from(result);
+    },
+    shelli(values) {
+      const input = orderIntegers(values);
+      const count = input.length;
+      const result = native.shelli(input);
+      invariant(
+        result instanceof Int32Array && result.length === count,
+        "Invalid native output array",
+      );
+      return Array.from(result);
+    },
+    lstlec: (key, values) => {
+      const input = sortedCharacterInputs(key, values);
+      return sortedBoundResult(
+        native.lstlec(key, input.rows),
+        input.rows.length,
+      );
+    },
+    lstled: (key, values) => {
+      const input = sortedNumericInputs(key, values, "double");
+      return sortedBoundResult(
+        native.lstled(input.key, input.values),
+        input.values.length,
+      );
+    },
+    lstlei: (key, values) => {
+      const input = sortedNumericInputs(key, values, "int");
+      return sortedBoundResult(
+        native.lstlei(input.key, input.values),
+        input.values.length,
+      );
+    },
+    lstltc: (key, values) => {
+      const input = sortedCharacterInputs(key, values);
+      return sortedBoundResult(
+        native.lstltc(key, input.rows),
+        input.rows.length,
+      );
+    },
+    lstltd: (key, values) => {
+      const input = sortedNumericInputs(key, values, "double");
+      return sortedBoundResult(
+        native.lstltd(input.key, input.values),
+        input.values.length,
+      );
+    },
+    lstlti: (key, values) => {
+      const input = sortedNumericInputs(key, values, "int");
+      return sortedBoundResult(
+        native.lstlti(input.key, input.values),
+        input.values.length,
+      );
+    },
     pi: () => {
       const out = native.pi();
       invariant(

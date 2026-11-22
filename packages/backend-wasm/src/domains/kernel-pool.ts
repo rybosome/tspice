@@ -1,13 +1,25 @@
+import { resolveKernelPath } from "../runtime/fs.js";
 import type {
   Found,
   KernelPoolApi,
   KernelPoolVarType,
 } from "@rybosome/tspice-backend-contract";
-import { assertSpiceInt32NonNegative } from "@rybosome/tspice-core";
+import {
+  assertSpiceInt32,
+  assertSpiceInt32NonNegative,
+  poolLineTable,
+  poolTypeChar,
+  poolSourceBytes,
+  spiceStringByteLength,
+} from "@rybosome/tspice-core";
 
 import type { EmscriptenModule } from "../lowlevel/exports.js";
 
-import { withAllocs, WASM_ERR_MAX_BYTES } from "../codec/alloc.js";
+import {
+  withAllocs,
+  WASM_ERR_MAX_BYTES,
+  WASM_MAX_ALLOC_BYTES,
+} from "../codec/alloc.js";
 import { throwWasmSpiceError } from "../codec/errors.js";
 import {
   readFixedWidthCStringArray,
@@ -608,9 +620,282 @@ function tspiceCallExpool(module: EmscriptenModule, name: string): boolean {
   }
 }
 
+const strictPoolDecoder = new TextDecoder("utf-8", {
+  fatal: true,
+  ignoreBOM: true,
+});
+
+function encodedPoolText(value: string, label: string): Uint8Array {
+  spiceStringByteLength(value, label, WASM_MAX_ALLOC_BYTES - 1);
+  return UTF8_ENCODER.encode(value);
+}
+
+function putPoolText(
+  module: EmscriptenModule,
+  ptr: number,
+  bytes: Uint8Array,
+): void {
+  module.HEAPU8.set(bytes, ptr);
+  module.HEAPU8[ptr + bytes.length] = 0;
+}
+
+function checkPoolStatus(
+  module: EmscriptenModule,
+  rc: number,
+  err: number,
+): void {
+  if (rc) throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, rc);
+}
+
+function bodyResult(
+  module: EmscriptenModule,
+  maxn: number,
+  dimPtr: number,
+  valuesPtr: number,
+) {
+  const dim = module.HEAP32[dimPtr / 4];
+  if (dim === undefined || dim < 0 || dim > Math.min(maxn, 400000))
+    throw new Error("Invalid body constant output dimension");
+  const base = valuesPtr / 8;
+  return { dim, values: Array.from(module.HEAPF64.subarray(base, base + dim)) };
+}
+
+function poolLoadPath(module: EmscriptenModule, path: string): void {
+  const bytes = encodedPoolText(path, "ldpool path");
+  withAllocs(module, [WASM_ERR_MAX_BYTES, bytes.length + 1], (err, file) => {
+    putPoolText(module, file, bytes);
+    checkPoolStatus(
+      module,
+      module._tspice_ldpool(file, err, WASM_ERR_MAX_BYTES),
+      err,
+    );
+  });
+}
+
 /** Create a {@link KernelPoolApi} implementation backed by a WASM Emscripten module. */
 export function createKernelPoolApi(module: EmscriptenModule): KernelPoolApi {
+  let nextPoolFile = 0;
   return {
+    badkpv: (caller, name, comp, size, divby, type) => {
+      const c = encodedPoolText(caller, "badkpv caller");
+      const k = encodedPoolText(name, "badkpv name");
+      const op = encodedPoolText(comp, "badkpv comp");
+      assertSpiceInt32(size, "badkpv size");
+      assertSpiceInt32(divby, "badkpv divby");
+      const ch = poolTypeChar(type);
+      return withAllocs(
+        module,
+        [WASM_ERR_MAX_BYTES, c.length + 1, k.length + 1, op.length + 1, 4],
+        (err, cp, kp, optr, out) => {
+          putPoolText(module, cp, c);
+          putPoolText(module, kp, k);
+          putPoolText(module, optr, op);
+          checkPoolStatus(
+            module,
+            module._tspice_badkpv(
+              cp,
+              kp,
+              optr,
+              size,
+              divby,
+              ch,
+              out,
+              err,
+              WASM_ERR_MAX_BYTES,
+            ),
+            err,
+          );
+          return module.HEAP32[out / 4] !== 0;
+        },
+      );
+    },
+    bodvcd: (body, item, maxn) => {
+      assertSpiceInt32(body, "bodvcd body");
+      assertSpiceInt32(maxn, "bodvcd maxn");
+      const b = encodedPoolText(item, "bodvcd item");
+      return withAllocs(
+        module,
+        [
+          WASM_ERR_MAX_BYTES,
+          b.length + 1,
+          4,
+          8 * Math.max(1, Math.min(maxn, 400000)),
+        ],
+        (err, ip, dim, values) => {
+          putPoolText(module, ip, b);
+          checkPoolStatus(
+            module,
+            module._tspice_bodvcd(
+              body,
+              ip,
+              maxn,
+              dim,
+              values,
+              err,
+              WASM_ERR_MAX_BYTES,
+            ),
+            err,
+          );
+          return bodyResult(module, maxn, dim, values);
+        },
+      );
+    },
+    bodvrd: (body, item, maxn) => {
+      assertSpiceInt32(maxn, "bodvrd maxn");
+      const b = encodedPoolText(body, "bodvrd body");
+      const i = encodedPoolText(item, "bodvrd item");
+      return withAllocs(
+        module,
+        [
+          WASM_ERR_MAX_BYTES,
+          b.length + 1,
+          i.length + 1,
+          4,
+          8 * Math.max(1, Math.min(maxn, 400000)),
+        ],
+        (err, bp, ip, dim, values) => {
+          putPoolText(module, bp, b);
+          putPoolText(module, ip, i);
+          checkPoolStatus(
+            module,
+            module._tspice_bodvrd(
+              bp,
+              ip,
+              maxn,
+              dim,
+              values,
+              err,
+              WASM_ERR_MAX_BYTES,
+            ),
+            err,
+          );
+          return bodyResult(module, maxn, dim, values);
+        },
+      );
+    },
+    clpool: () =>
+      withAllocs(module, [WASM_ERR_MAX_BYTES], (err) => {
+        checkPoolStatus(
+          module,
+          module._tspice_clpool(err, WASM_ERR_MAX_BYTES),
+          err,
+        );
+      }),
+    dvpool: (name) => {
+      const b = encodedPoolText(name, "dvpool name");
+      withAllocs(module, [WASM_ERR_MAX_BYTES, b.length + 1], (err, p) => {
+        putPoolText(module, p, b);
+        checkPoolStatus(
+          module,
+          module._tspice_dvpool(p, err, WASM_ERR_MAX_BYTES),
+          err,
+        );
+      });
+    },
+    ldpool: (kernel) => {
+      if (typeof kernel === "string") {
+        spiceStringByteLength(kernel, "ldpool path", WASM_MAX_ALLOC_BYTES - 1);
+        poolLoadPath(
+          module,
+          /^ *$/.test(kernel) ? kernel : resolveKernelPath(kernel),
+        );
+        return;
+      }
+      const source = poolSourceBytes(kernel);
+      resolveKernelPath(source.path);
+      // The public virtual namespace is /kernels. Exclusive creation prevents
+      // a file staged by another caller from being overwritten or removed.
+      const file = `/tmp/tspice-ldpool-${++nextPoolFile}.tpc`;
+      module.FS.create(file, 0o600);
+      try {
+        module.FS.writeFile(file, source.bytes);
+        poolLoadPath(module, file);
+      } finally {
+        module.FS.unlink(file);
+      }
+    },
+    lmpool: (input) => {
+      const { lines, width } = poolLineTable(input, WASM_MAX_ALLOC_BYTES);
+      withAllocs(
+        module,
+        [WASM_ERR_MAX_BYTES, width * Math.max(lines.length, 1)],
+        (err, rows) => {
+          writeFixedWidthUtf8CStringArray(module, rows, width, lines);
+          checkPoolStatus(
+            module,
+            module._tspice_lmpool(
+              rows,
+              width,
+              lines.length,
+              err,
+              WASM_ERR_MAX_BYTES,
+            ),
+            err,
+          );
+        },
+      );
+    },
+    stpool: (item, nth, contin, lenout) => {
+      const i = encodedPoolText(item, "stpool item");
+      const c = encodedPoolText(contin, "stpool contin");
+      assertSpiceInt32(nth, "stpool nth");
+      assertSpiceInt32(lenout, "stpool lenout");
+      const capacity = Math.max(1, Math.min(1200001, lenout));
+      return withAllocs(
+        module,
+        [WASM_ERR_MAX_BYTES, i.length + 1, c.length + 1, capacity, 4, 4],
+        (err, ip, cp, text, size, found) => {
+          putPoolText(module, ip, i);
+          putPoolText(module, cp, c);
+          checkPoolStatus(
+            module,
+            module._tspice_stpool(
+              ip,
+              nth,
+              cp,
+              lenout,
+              text,
+              size,
+              found,
+              err,
+              WASM_ERR_MAX_BYTES,
+            ),
+            err,
+          );
+          if (!module.HEAP32[found / 4]) return { found: false };
+          const out = module.HEAPU8.subarray(text, text + capacity);
+          const end = out.indexOf(0);
+          const full = module.HEAP32[size / 4];
+          if (end < 0 || full === undefined || full < 0 || full > 1200000)
+            throw new Error("Invalid stpool result");
+          return {
+            found: true,
+            nthstr: strictPoolDecoder.decode(out.subarray(0, end)),
+            size: full,
+          };
+        },
+      );
+    },
+    szpool: (name) => {
+      const b = encodedPoolText(name, "szpool name");
+      return withAllocs(
+        module,
+        [WASM_ERR_MAX_BYTES, b.length + 1, 4, 4],
+        (err, p, n, found) => {
+          putPoolText(module, p, b);
+          checkPoolStatus(
+            module,
+            module._tspice_szpool(p, n, found, err, WASM_ERR_MAX_BYTES),
+            err,
+          );
+          if (!module.HEAP32[found / 4]) return { found: false };
+          const value = module.HEAP32[n / 4];
+          if (value === undefined || value < 0)
+            throw new Error("Invalid szpool result");
+          return { found: true, n: value };
+        },
+      );
+    },
     gdpool: (name, start, room) => tspiceCallGdpool(module, name, start, room),
     gipool: (name, start, room) => tspiceCallGipool(module, name, start, room),
     gcpool: (name, start, room) => tspiceCallGcpool(module, name, start, room),

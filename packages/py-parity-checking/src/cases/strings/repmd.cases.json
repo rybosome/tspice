@@ -1,0 +1,194 @@
+[
+  {
+    "caseId": "strings-repmd-first-marker",
+    "description": "Only the first matching marker is replaced after trimming ASCII marker blanks; leading literal whitespace is observable.",
+    "workflow": [
+      {
+        "op": "strings.repmd",
+        "input": "  A # #  ",
+        "marker": " # ",
+        "value": -12.5,
+        "sigdig": 4
+      },
+      {
+        "op": "strings.repmd",
+        "input": "X#Y#Z",
+        "marker": "#",
+        "value": -12.5,
+        "sigdig": 4
+      },
+      {
+        "op": "strings.repmd",
+        "input": "Étape à#\t",
+        "marker": "#",
+        "value": -12.5,
+        "sigdig": 4
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-repmd-miss-and-blank",
+    "description": "Genuine empty input, missing marker, empty and whitespace-only marker, and input containing a literal tab.",
+    "workflow": [
+      {
+        "op": "strings.repmd",
+        "input": "",
+        "marker": "#",
+        "value": -12.5,
+        "sigdig": 4
+      },
+      {
+        "op": "strings.repmd",
+        "input": "unmarked",
+        "marker": "!",
+        "value": -12.5,
+        "sigdig": 4
+      },
+      {
+        "op": "strings.repmd",
+        "input": "a b",
+        "marker": "",
+        "value": -12.5,
+        "sigdig": 4
+      },
+      {
+        "op": "strings.repmd",
+        "input": "a b",
+        "marker": "  ",
+        "value": -12.5,
+        "sigdig": 4
+      },
+      {
+        "op": "strings.repmd",
+        "input": "t\t",
+        "marker": "#",
+        "value": -12.5,
+        "sigdig": 4
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-repmd-capacity",
+    "description": "Truncate the complete replacement string at explicit UTF-8 byte capacities, including the minimum accepted room and signed maximum.",
+    "workflow": [
+      {
+        "op": "strings.repmd",
+        "input": "a#z",
+        "marker": "#",
+        "value": -12.5,
+        "sigdig": 4,
+        "lenout": 1
+      },
+      {
+        "op": "strings.repmd",
+        "input": "a#z",
+        "marker": "#",
+        "value": -12.5,
+        "sigdig": 4,
+        "lenout": 2
+      },
+      {
+        "op": "strings.repmd",
+        "input": "a#z",
+        "marker": "#",
+        "value": -12.5,
+        "sigdig": 4,
+        "lenout": 3
+      },
+      {
+        "op": "strings.repmd",
+        "input": "a#z",
+        "marker": "#",
+        "value": -12.5,
+        "sigdig": 4,
+        "lenout": 7
+      },
+      {
+        "op": "strings.repmd",
+        "input": "a#z",
+        "marker": "#",
+        "value": -12.5,
+        "sigdig": 4,
+        "lenout": 2147483647
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-repmd-bad-room",
+    "description": "The actual canonical routine receives insufficient caller room.",
+    "workflow": [
+      {
+        "op": "strings.repmd",
+        "input": "#",
+        "marker": "#",
+        "value": -12.5,
+        "sigdig": 4,
+        "lenout": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["STRINGTOOSHORT"]
+    }
+  },
+  {
+    "caseId": "strings-repmd-digits",
+    "description": "Compare clamped low/high significant digits and signs across signed 32-bit bounds.",
+    "workflow": [
+      {
+        "op": "strings.repmd",
+        "input": "#",
+        "marker": "#",
+        "value": -0.00125,
+        "sigdig": -2147483648
+      },
+      {
+        "op": "strings.repmd",
+        "input": "#",
+        "marker": "#",
+        "value": -0.00125,
+        "sigdig": 0
+      },
+      {
+        "op": "strings.repmd",
+        "input": "#",
+        "marker": "#",
+        "value": -0.00125,
+        "sigdig": 1
+      },
+      {
+        "op": "strings.repmd",
+        "input": "#",
+        "marker": "#",
+        "value": -0.00125,
+        "sigdig": 4
+      },
+      {
+        "op": "strings.repmd",
+        "input": "#",
+        "marker": "#",
+        "value": -0.00125,
+        "sigdig": 14
+      },
+      {
+        "op": "strings.repmd",
+        "input": "#",
+        "marker": "#",
+        "value": -0.00125,
+        "sigdig": 2147483647
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

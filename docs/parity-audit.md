@@ -1,6 +1,6 @@
 # Existing raw parity audit
 
-Step 7 covers the contract-present baseline recorded at `3f950ae22993aaf9a629263a12388bf56894879c`. The [generated ledger](coverage-ledger.md#maintained-semantic-audit) lists every routine, its batch, dependencies, PRs, next action, and per-backend progress. Expansion remains separate.
+Step 7 covers the contract-present baseline recorded at `3f950ae22993aaf9a629263a12388bf56894879c`. The [generated ledger](coverage-ledger.md#maintained-semantic-audit) lists every routine, its batch, dependencies, PRs, next action, and per-backend progress. The additive expansion table tracks Step 8 separately from the baseline.
 
 ## Maintained inputs
 
@@ -351,3 +351,82 @@ The A15 review covers nine kernel-independent frame construction and state-trans
 ## Coordinate derivatives
 
 A07 covers twelve coordinate Jacobians. The source review records two pinned exception paths, independent directional derivatives, exact buffer ownership and tabulated body conventions. [Scientific and representation evidence](step8-coordinate-jacobians.md) [Per-routine records](../data/parity-audits/a07-coordinate-jacobians.json)
+
+## String transformations and matching
+
+A18 covers eight byte-oriented CSPICE methods. Its 64 registered workflows make
+274 canonical calls, including 12 expected SPICE errors. The independent oracle
+reads exact C buffers for the three string results, retaining trailing whitespace
+and exposing incomplete UTF-8 prefixes. Boolean results and byte indices use
+the installed SpiceyPy wrappers. Each backend judgment progresses from source
+review to verification after fresh required local lanes and observed CI.
+[Primary semantics, byte evidence and boundaries](step8-string-transforms.md)
+
+## String search positions and equivalent rows
+
+A19 adds seven routines on the A18 StringsApi. Its 56 workflows compare 407
+full byte or row indices, including misses, reverse substring start bounds
+and empty versus blank rows. The guarded maximum start and the locked
+ESRCHC row ABI have separate tests. The original A18 and Step 7 executions
+remain historical until the composite source passes the source-bound gates.
+[String search semantics, row layout and oracle](step8-string-search.md)
+
+## Sorted bounds
+
+A24 covers six inclusive or strict last-qualifying-index searches. Its 44
+workflows make 282 canonical calls using the six installed SpiceyPy wrappers.
+Character rows have explicit UTF-8 byte widths, ASCII blank padding and final
+NULs. Numeric cases include ordered double boundaries and signed integers.
+[Sorted-boundary semantics and evidence](step8-sorted-bounds.md)
+
+## Array search
+
+A22 depends on the six A24 sorted bounds and adds eight direct raw operations. The 55 registered workflows make 351 independent canonical calls and cover physical order, duplicate selection, binary and linear search, and numeric and UTF-8 comparison rules. Two additional public tests compare exact live indices for values outside JSON, including NaN and infinities. [Array search semantics and evidence](step8-array-search.md) [Per-routine audit](../data/parity-audits/a22-array-search.json)
+
+## Kernel-pool expansion
+
+B05 adds nine direct kernel-pool operations. The source review covers 69 workflows, 164 calls to the nine new methods and 32 terminal toolkit errors. The routine audit distinguishes two N0067 domain guards and follows KEEPER state, watches, logical continuation records, caller capacities and partial-load effects. [Kernel-pool review](step8-kernel-pool.md) [Per-routine audit](../data/parity-audits/b05-kernel-pool.json)
+
+## Numeric strings and marker replacement
+
+A21 adds eleven direct methods on A18’s string contract. Its conversion flags, buffer truncation and full counts coexist with independently checked scientific errors. Source-derived limits on extreme hexadecimal scaling and minimum integer word conversion apply to the documented calls. [Numeric strings](step8-string-numbers.md) [Per-routine audit](../data/parity-audits/a21-string-numeric.json)
+
+## Window algebra
+
+The B03 audit covers 13 canonical double-window operations in 78 registered workflows, with 207 calls to the new methods and ten genuine CSPICE error outcomes. Mutations and
+result-window operations are compared by reading back the window cardinality
+and every interval through the public API and independent oracle. The audit
+also checks handle lifetimes, output capacity, closed boundaries, genuine
+errors and source-specific summary indices.
+[Window semantics and evidence](step8-window-algebra.md)
+
+## Ordinary cell arrays
+
+B01 extends the B03 cell registry with append and membership for three cell
+types and an order-preserving copy into an existing destination. The 68
+registered workflows compare actual contents, member booleans, recovered
+set state and errors. The supplemental public tests distinguish the C
+descriptor from translated control cardinality after a failed numeric copy.
+[Cell-array semantics and evidence](step8-cell-arrays.md)
+
+B02 exercises the eleven ordinary set-algebra entry points on real character,
+double and integer cells. Its locked oracle supplies existing destination
+storage and records post-error state before resetting and reusing each cell.
+[Set-algebra semantics and evidence](step8-set-algebra.md)
+
+## Array ordering
+
+A23 adds eleven direct raw routines on the A24 array validation and UTF-8 layout. The 63 registered workflows cover source permutations, distinct output values, Shell-sort ties, signed bounds, UTF-8 rows and guarded domain errors. Focused tests compare the exact order and representation of double values outside JSON. [Semantic evidence](step8-array-order.md) [Per-routine audits](../data/parity-audits/a23-array-order.json)
+
+## String tokenization
+
+A20 adds nine parsing and lexical operations on the A18 string domain. Both
+real backends passed the 62 registered workflows after correcting Node's
+validation of the signed leading-dot mantissa count. The audit retains the
+actual index and count, each row or word, and strict byte-capacity diagnostics.
+Parent A18 executions remain historical on their original source.
+[String contracts, assumptions and observed edge values](step8-string-tokenization.md)
+
+## Character list parsing
+
+B04 adds LPARSS on the A20 string parsing prerequisite. The reference shares one independent cell across steps so both replacement and empty-list insertion are observable. [Semantics and evidence](step8-string-set.md)

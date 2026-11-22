@@ -1,0 +1,165 @@
+from __future__ import annotations
+
+from .. import token_oracle
+
+import spiceypy as sp
+
+from .. import numeric_oracle
+from .. import string_oracle
+from ..models import (
+    StepOutput,
+    WorkflowStep,
+    StepStringsCpos,
+    StepStringsCposr,
+    StepStringsNcpos,
+    StepStringsNcposr,
+    StepStringsPos,
+    StepStringsPosr,
+    StepStringsEsrchc,
+    StepStringsDp2hx,
+    StepStringsHx2dp,
+    StepStringsPrsdp,
+    StepStringsPrsint,
+    StepStringsRepmc,
+    StepStringsRepmct,
+    StepStringsRepmd,
+    StepStringsRepmf,
+    StepStringsRepmi,
+    StepStringsRepml,
+    StepStringsRepmot,
+    StepStringsNextwd,
+    StepStringsNthwd,
+    StepStringsLparse,
+    StepStringsLparsm,
+    StepStringsLx4dec,
+    StepStringsLx4num,
+    StepStringsLx4sgn,
+    StepStringsLx4uns,
+    StepStringsLxqstr,
+    StepStringsCmprss,
+    StepStringsEqstr,
+    StepStringsIswhsp,
+    StepStringsLastnb,
+    StepStringsLcase,
+    StepStringsUcase,
+    StepStringsMatchi,
+    StepStringsMatchw,
+)
+
+
+def run_strings_step(step: WorkflowStep) -> StepOutput | None:
+    if isinstance(step, StepStringsCpos):
+        return StepOutput(op=step.op, value=string_oracle.search(sp.cpos, step.text, step.chars, step.start))
+
+    if isinstance(step, StepStringsCposr):
+        return StepOutput(op=step.op, value=string_oracle.search(sp.cposr, step.text, step.chars, step.start))
+
+    if isinstance(step, StepStringsNcpos):
+        return StepOutput(op=step.op, value=string_oracle.search(sp.ncpos, step.text, step.chars, step.start))
+
+    if isinstance(step, StepStringsNcposr):
+        return StepOutput(op=step.op, value=string_oracle.search(sp.ncposr, step.text, step.chars, step.start))
+
+    if isinstance(step, StepStringsPos):
+        return StepOutput(op=step.op, value=string_oracle.search(sp.pos, step.text, step.substr, step.start))
+
+    if isinstance(step, StepStringsPosr):
+        return StepOutput(op=step.op, value=string_oracle.search(sp.posr, step.text, step.substr, step.start))
+
+    if isinstance(step, StepStringsEsrchc):
+        return StepOutput(op=step.op, value=string_oracle.esrchc(step.value, step.values))
+
+    if isinstance(step, StepStringsDp2hx):
+        return StepOutput(op=step.op,value=numeric_oracle.dp2hx(step.value, step.lenout))
+
+    if isinstance(step, StepStringsHx2dp):
+        return StepOutput(op=step.op,value=numeric_oracle.hx2dp(step.input, step.lenout))
+
+    if isinstance(step, StepStringsPrsdp):
+        return StepOutput(op=step.op,value=numeric_oracle.prsdp(step.input))
+
+    if isinstance(step, StepStringsPrsint):
+        return StepOutput(op=step.op,value=numeric_oracle.prsint(step.input))
+
+    if isinstance(step, StepStringsRepmc):
+        return StepOutput(op=step.op,value=numeric_oracle.repmc(step.input, step.marker, step.value, step.lenout))
+
+    if isinstance(step, StepStringsRepmct):
+        return StepOutput(op=step.op,value=numeric_oracle.repmct(step.input, step.marker, step.value, step.rtcase, step.lenout))
+
+    if isinstance(step, StepStringsRepmd):
+        return StepOutput(op=step.op,value=numeric_oracle.repmd(step.input, step.marker, step.value, step.sigdig, step.lenout))
+
+    if isinstance(step, StepStringsRepmf):
+        return StepOutput(op=step.op,value=numeric_oracle.repmf(step.input, step.marker, step.value, step.sigdig, step.format, step.lenout))
+
+    if isinstance(step, StepStringsRepmi):
+        return StepOutput(op=step.op,value=numeric_oracle.repmi(step.input, step.marker, step.value, step.lenout))
+
+    if isinstance(step, StepStringsRepml):
+        return StepOutput(op=step.op,value=numeric_oracle.repml(step.input, step.marker, step.value, step.rtcase, step.lenout))
+
+    if isinstance(step, StepStringsRepmot):
+        return StepOutput(op=step.op,value=numeric_oracle.repmot(step.input, step.marker, step.value, step.rtcase, step.lenout))
+
+    if isinstance(step, StepStringsNextwd):
+        return StepOutput(op=step.op, value=token_oracle.next_word(step.input, step.nexlen, step.reslen))
+
+    if isinstance(step, StepStringsNthwd):
+        return StepOutput(op=step.op, value=token_oracle.nth_word(step.input, step.nth, step.worlen))
+
+    if isinstance(step, StepStringsLparse):
+        return StepOutput(op=step.op, value=token_oracle.parse_items(step.list, step.delim, step.nmax, step.itemln, multiple=False))
+
+    if isinstance(step, StepStringsLparsm):
+        return StepOutput(op=step.op, value=token_oracle.parse_items(step.list, step.delims, step.nmax, step.itemln, multiple=True))
+
+    if isinstance(step, StepStringsLx4dec):
+        return StepOutput(op=step.op, value=token_oracle.scan("lx4dec", step.input, step.first))
+
+    if isinstance(step, StepStringsLx4num):
+        return StepOutput(op=step.op, value=token_oracle.scan("lx4num", step.input, step.first))
+
+    if isinstance(step, StepStringsLx4sgn):
+        return StepOutput(op=step.op, value=token_oracle.scan("lx4sgn", step.input, step.first))
+
+    if isinstance(step, StepStringsLx4uns):
+        return StepOutput(op=step.op, value=token_oracle.scan("lx4uns", step.input, step.first))
+
+    if isinstance(step, StepStringsLxqstr):
+        return StepOutput(op=step.op, value=token_oracle.scan("lxqstr", step.input, step.first, step.qchar))
+
+    if isinstance(step, StepStringsCmprss):
+        return StepOutput(op=step.op, value=string_oracle.cmprss(step.delim, step.n, step.input, step.lenout))
+
+    if isinstance(step, StepStringsEqstr):
+        string_oracle.validate_text(step.a, step.b)
+        return StepOutput(op=step.op, value=sp.eqstr(step.a, step.b))
+
+    if isinstance(step, StepStringsIswhsp):
+        string_oracle.validate_text(step.input)
+        return StepOutput(op=step.op, value=sp.iswhsp(step.input))
+
+    if isinstance(step, StepStringsLastnb):
+        string_oracle.validate_text(step.input)
+        return StepOutput(op=step.op, value=sp.lastnb(step.input))
+
+    if isinstance(step, StepStringsLcase):
+        return StepOutput(op=step.op, value=string_oracle.lcase(step.input, step.lenout))
+
+    if isinstance(step, StepStringsUcase):
+        return StepOutput(op=step.op, value=string_oracle.ucase(step.input, step.lenout))
+
+    if isinstance(step, StepStringsMatchi):
+        string_oracle.validate_text(step.input, step.template)
+        string_oracle.single_byte(step.wstr)
+        string_oracle.single_byte(step.wchr)
+        return StepOutput(op=step.op, value=sp.matchi(step.input, step.template, step.wstr, step.wchr))
+
+    if isinstance(step, StepStringsMatchw):
+        string_oracle.validate_text(step.input, step.template)
+        string_oracle.single_byte(step.wstr)
+        string_oracle.single_byte(step.wchr)
+        return StepOutput(op=step.op, value=sp.matchw(step.input, step.template, step.wstr, step.wchr))
+
+    return None

@@ -338,7 +338,8 @@
       ],
       "id": "local-cp01-17f11884fb5b-node",
       "kind": "local",
-      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 17f11884fb5bdef7cbaf84bd480d4b8edde3d310. The native-required lane completed 3788 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45009595818/job/137168748216"
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 17f11884fb5bdef7cbaf84bd480d4b8edde3d310. The native-required lane completed 3788 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45009595818/job/137168748216",
+      "historical": true
     },
     {
       "backend": "node",
@@ -398,7 +399,8 @@
       "kind": "ci",
       "commit": "2851d19aa900e30c688b0d1c756a35357f10eebc",
       "url": "https://github.com/rybosome/tspice/actions/runs/45012853638/job/137178762153",
-      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 3788 live comparisons without unexpected skips."
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 3788 live comparisons without unexpected skips.",
+      "historical": true
     },
     {
       "backend": "wasm",
@@ -456,7 +458,8 @@
       ],
       "id": "local-cp01-17f11884fb5b-wasm",
       "kind": "local",
-      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 17f11884fb5bdef7cbaf84bd480d4b8edde3d310. The native-required lane completed 3788 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45009595818/job/137168748216"
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 17f11884fb5bdef7cbaf84bd480d4b8edde3d310. The native-required lane completed 3788 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45009595818/job/137168748216",
+      "historical": true
     },
     {
       "backend": "wasm",
@@ -516,7 +519,8 @@
       "kind": "ci",
       "commit": "2851d19aa900e30c688b0d1c756a35357f10eebc",
       "url": "https://github.com/rybosome/tspice/actions/runs/45012853638/job/137178762153",
-      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 3788 live comparisons without unexpected skips."
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 3788 live comparisons without unexpected skips.",
+      "historical": true
     }
   ],
   "routines": [
@@ -599,14 +603,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.chbder -> typed Node adapter -> actual native binding with owned input/work/output storage and global SPICE mutex -> shared tspice_chbder -> canonical chbder_c. Independent Python calls actual locked SpiceyPy chbder with inferred degree in its proper argument position and forwards every output field.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -616,14 +618,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.chbder -> typed WASM adapter -> exported _tspice_chbder with checked coefficient/output/workspace buffers and copied results -> shared tspice_chbder -> canonical chbder_c. Independent Python calls actual locked SpiceyPy chbder with inferred degree in its proper argument position and forwards every output field.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -730,14 +730,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.chbigr -> typed Node adapter -> actual native binding with owned input/work/output storage and global SPICE mutex -> shared tspice_chbigr -> canonical chbigr_c. Independent Python calls actual locked SpiceyPy chbigr with inferred degree in its proper argument position and forwards every output field.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -748,14 +746,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.chbigr -> typed WASM adapter -> exported _tspice_chbigr with checked coefficient/output/workspace buffers and copied results -> shared tspice_chbigr -> canonical chbigr_c. Independent Python calls actual locked SpiceyPy chbigr with inferred degree in its proper argument position and forwards every output field.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -833,14 +829,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.chbint -> typed Node adapter -> actual native binding with owned input/work/output storage and global SPICE mutex -> shared tspice_chbint -> canonical chbint_c. Independent Python calls actual locked SpiceyPy chbint with inferred degree in its proper argument position and forwards every output field.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -850,14 +844,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.chbint -> typed WASM adapter -> exported _tspice_chbint with checked coefficient/output/workspace buffers and copied results -> shared tspice_chbint -> canonical chbint_c. Independent Python calls actual locked SpiceyPy chbint with inferred degree in its proper argument position and forwards every output field.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -935,14 +927,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.chbval -> typed Node adapter -> actual native binding with owned input/work/output storage and global SPICE mutex -> shared tspice_chbval -> canonical chbval_c. Independent Python calls actual locked SpiceyPy chbval with inferred degree in its proper argument position and forwards every output field.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -952,14 +942,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.chbval -> typed WASM adapter -> exported _tspice_chbval with checked coefficient/output/workspace buffers and copied results -> shared tspice_chbval -> canonical chbval_c. Independent Python calls actual locked SpiceyPy chbval with inferred degree in its proper argument position and forwards every output field.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1050,14 +1038,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.polyds -> typed Node adapter -> actual native binding with owned input/work/output storage and global SPICE mutex -> shared tspice_polyds -> canonical polyds_c. Independent Python uses actual locked SpiceyPy for nonnegative order and an exact typed CDLL(libspice._name).polyds_c no-write call for negative order.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1068,14 +1054,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.polyds -> typed WASM adapter -> exported _tspice_polyds with checked coefficient/output/workspace buffers and copied results -> shared tspice_polyds -> canonical polyds_c. Independent Python uses actual locked SpiceyPy for nonnegative order and an exact typed CDLL(libspice._name).polyds_c no-write call for negative order.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1158,14 +1142,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.rquad -> typed Node adapter -> actual native binding with owned input/work/output storage and global SPICE mutex -> shared tspice_rquad -> canonical rquad_c. Independent Python calls actual locked SpiceyPy rquad with actual signed scalar coefficients and forwards every output field.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1174,14 +1156,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.rquad -> typed WASM adapter -> exported _tspice_rquad with checked coefficient/output/workspace buffers and copied results -> shared tspice_rquad -> canonical rquad_c. Independent Python calls actual locked SpiceyPy rquad with actual signed scalar coefficients and forwards every output field.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     }

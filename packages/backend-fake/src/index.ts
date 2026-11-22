@@ -1243,6 +1243,33 @@ export function createFakeBackend(
       } satisfies Found<KernelData>;
     },
 
+    badkpv: () => {
+      throw new Error("Fake backend: badkpv() is not implemented");
+    },
+    bodvcd: () => {
+      throw new Error("Fake backend: bodvcd() is not implemented");
+    },
+    bodvrd: () => {
+      throw new Error("Fake backend: bodvrd() is not implemented");
+    },
+    clpool: () => {
+      throw new Error("Fake backend: clpool() is not implemented");
+    },
+    dvpool: () => {
+      throw new Error("Fake backend: dvpool() is not implemented");
+    },
+    ldpool: () => {
+      throw new Error("Fake backend: ldpool() is not implemented");
+    },
+    lmpool: () => {
+      throw new Error("Fake backend: lmpool() is not implemented");
+    },
+    stpool: () => {
+      throw new Error("Fake backend: stpool() is not implemented");
+    },
+    szpool: () => {
+      throw new Error("Fake backend: szpool() is not implemented");
+    },
     gdpool: (name, start, room) => {
       assertNonEmptyString("gdpool", "name", name);
       assertPoolRange("gdpool", start, room);
@@ -2520,6 +2547,60 @@ export function createFakeBackend(
     insrtd: (_item, _cell) => {
       throw new Error(spiceCellUnsupported);
     },
+    appndc: () => {
+      throw new Error(spiceCellUnsupported);
+    },
+    appndd: () => {
+      throw new Error(spiceCellUnsupported);
+    },
+    appndi: () => {
+      throw new Error(spiceCellUnsupported);
+    },
+    elemc: () => {
+      throw new Error(spiceCellUnsupported);
+    },
+    elemd: () => {
+      throw new Error(spiceCellUnsupported);
+    },
+    elemi: () => {
+      throw new Error(spiceCellUnsupported);
+    },
+    diff: () => {
+      throw new Error(spiceCellUnsupported);
+    },
+    inter: () => {
+      throw new Error(spiceCellUnsupported);
+    },
+    sdiff: () => {
+      throw new Error(spiceCellUnsupported);
+    },
+    union: () => {
+      throw new Error(spiceCellUnsupported);
+    },
+    set: () => {
+      throw new Error(spiceCellUnsupported);
+    },
+    removc: () => {
+      throw new Error(spiceCellUnsupported);
+    },
+    removd: () => {
+      throw new Error(spiceCellUnsupported);
+    },
+    removi: () => {
+      throw new Error(spiceCellUnsupported);
+    },
+    ordc: () => {
+      throw new Error(spiceCellUnsupported);
+    },
+    ordd: () => {
+      throw new Error(spiceCellUnsupported);
+    },
+    ordi: () => {
+      throw new Error(spiceCellUnsupported);
+    },
+    copy: () => {
+      throw new Error(spiceCellUnsupported);
+    },
     insrtc: (_item, _cell) => {
       throw new Error(spiceCellUnsupported);
     },
@@ -2532,6 +2613,46 @@ export function createFakeBackend(
     cellGetc: (_cell, _index) => {
       throw new Error(spiceCellUnsupported);
     },
+    wncomd: () => {
+      throw new Error("Fake backend does not model wncomd()");
+    },
+    wncond: () => {
+      throw new Error("Fake backend does not model wncond()");
+    },
+    wndifd: () => {
+      throw new Error("Fake backend does not model wndifd()");
+    },
+    wnelmd: () => {
+      throw new Error("Fake backend does not model wnelmd()");
+    },
+    wnexpd: () => {
+      throw new Error("Fake backend does not model wnexpd()");
+    },
+    wnextd: () => {
+      throw new Error("Fake backend does not model wnextd()");
+    },
+    wnfild: () => {
+      throw new Error("Fake backend does not model wnfild()");
+    },
+    wnfltd: () => {
+      throw new Error("Fake backend does not model wnfltd()");
+    },
+    wnincd: () => {
+      throw new Error("Fake backend does not model wnincd()");
+    },
+    wnintd: () => {
+      throw new Error("Fake backend does not model wnintd()");
+    },
+    wnreld: () => {
+      throw new Error("Fake backend does not model wnreld()");
+    },
+    wnsumd: () => {
+      throw new Error("Fake backend does not model wnsumd()");
+    },
+    wnunid: () => {
+      throw new Error("Fake backend does not model wnunid()");
+    },
+
     wninsd: (_left, _right, _window) => {
       throw new Error(spiceCellUnsupported);
     },
@@ -3055,6 +3176,192 @@ export function createFakeBackend(
     unormg: (v) => {
       const norm = fakeGeneralNorm(v);
       return { unit: v.map((value) => (norm === 0 ? 0 : value / norm)), norm };
+    },
+
+    // This fake does not model CSPICE string and wildcard semantics.
+    cpos: () => {
+      throw new Error("Fake backend does not model cpos()");
+    },
+    cposr: () => {
+      throw new Error("Fake backend does not model cposr()");
+    },
+    ncpos: () => {
+      throw new Error("Fake backend does not model ncpos()");
+    },
+    ncposr: () => {
+      throw new Error("Fake backend does not model ncposr()");
+    },
+    pos: () => {
+      throw new Error("Fake backend does not model pos()");
+    },
+    posr: () => {
+      throw new Error("Fake backend does not model posr()");
+    },
+    esrchc: () => {
+      throw new Error("Fake backend does not model esrchc()");
+    },
+    dp2hx: () => {
+      throw new Error("Fake backend does not model dp2hx()");
+    },
+    hx2dp: () => {
+      throw new Error("Fake backend does not model hx2dp()");
+    },
+    prsdp: () => {
+      throw new Error("Fake backend does not model prsdp()");
+    },
+    prsint: () => {
+      throw new Error("Fake backend does not model prsint()");
+    },
+    repmc: () => {
+      throw new Error("Fake backend does not model repmc()");
+    },
+    repmct: () => {
+      throw new Error("Fake backend does not model repmct()");
+    },
+    repmd: () => {
+      throw new Error("Fake backend does not model repmd()");
+    },
+    repmf: () => {
+      throw new Error("Fake backend does not model repmf()");
+    },
+    repmi: () => {
+      throw new Error("Fake backend does not model repmi()");
+    },
+    repml: () => {
+      throw new Error("Fake backend does not model repml()");
+    },
+    repmot: () => {
+      throw new Error("Fake backend does not model repmot()");
+    },
+    nextwd: () => {
+      throw new Error("Fake backend does not model nextwd()");
+    },
+    nthwd: () => {
+      throw new Error("Fake backend does not model nthwd()");
+    },
+    lparse: () => {
+      throw new Error("Fake backend does not model lparse()");
+    },
+    lparss: () => {
+      throw new Error("Fake backend does not model lparss()");
+    },
+    lparsm: () => {
+      throw new Error("Fake backend does not model lparsm()");
+    },
+    lx4dec: () => {
+      throw new Error("Fake backend does not model lx4dec()");
+    },
+    lx4num: () => {
+      throw new Error("Fake backend does not model lx4num()");
+    },
+    lx4sgn: () => {
+      throw new Error("Fake backend does not model lx4sgn()");
+    },
+    lx4uns: () => {
+      throw new Error("Fake backend does not model lx4uns()");
+    },
+    lxqstr: () => {
+      throw new Error("Fake backend does not model lxqstr()");
+    },
+    cmprss: () => {
+      throw new Error("Fake backend does not model cmprss()");
+    },
+    eqstr: () => {
+      throw new Error("Fake backend does not model eqstr()");
+    },
+    iswhsp: () => {
+      throw new Error("Fake backend does not model iswhsp()");
+    },
+    lastnb: () => {
+      throw new Error("Fake backend does not model lastnb()");
+    },
+    lcase: () => {
+      throw new Error("Fake backend does not model lcase()");
+    },
+    ucase: () => {
+      throw new Error("Fake backend does not model ucase()");
+    },
+    matchi: () => {
+      throw new Error("Fake backend does not model matchi()");
+    },
+    matchw: () => {
+      throw new Error("Fake backend does not model matchw()");
+    },
+
+    bschoc: () => {
+      throw new Error("Fake backend does not model bschoc()");
+    },
+    bschoi: () => {
+      throw new Error("Fake backend does not model bschoi()");
+    },
+    bsrchc: () => {
+      throw new Error("Fake backend does not model bsrchc()");
+    },
+    bsrchd: () => {
+      throw new Error("Fake backend does not model bsrchd()");
+    },
+    bsrchi: () => {
+      throw new Error("Fake backend does not model bsrchi()");
+    },
+    isrchc: () => {
+      throw new Error("Fake backend does not model isrchc()");
+    },
+    isrchd: () => {
+      throw new Error("Fake backend does not model isrchd()");
+    },
+    isrchi: () => {
+      throw new Error("Fake backend does not model isrchi()");
+    },
+    isordv: () => {
+      throw new Error("Fake backend does not model isordv()");
+    },
+    orderc: () => {
+      throw new Error("Fake backend does not model orderc()");
+    },
+    orderd: () => {
+      throw new Error("Fake backend does not model orderd()");
+    },
+    orderi: () => {
+      throw new Error("Fake backend does not model orderi()");
+    },
+    reordc: () => {
+      throw new Error("Fake backend does not model reordc()");
+    },
+    reordd: () => {
+      throw new Error("Fake backend does not model reordd()");
+    },
+    reordi: () => {
+      throw new Error("Fake backend does not model reordi()");
+    },
+    reordl: () => {
+      throw new Error("Fake backend does not model reordl()");
+    },
+    shellc: () => {
+      throw new Error("Fake backend does not model shellc()");
+    },
+    shelld: () => {
+      throw new Error("Fake backend does not model shelld()");
+    },
+    shelli: () => {
+      throw new Error("Fake backend does not model shelli()");
+    },
+    lstlec: () => {
+      throw new Error("Fake backend does not model lstlec()");
+    },
+    lstled: () => {
+      throw new Error("Fake backend does not model lstled()");
+    },
+    lstlei: () => {
+      throw new Error("Fake backend does not model lstlei()");
+    },
+    lstltc: () => {
+      throw new Error("Fake backend does not model lstltc()");
+    },
+    lstltd: () => {
+      throw new Error("Fake backend does not model lstltd()");
+    },
+    lstlti: () => {
+      throw new Error("Fake backend does not model lstlti()");
     },
 
     reclat: (rect) => {

@@ -6,6 +6,22 @@ from typing import Any, Mapping
 from .models import (
     CaseRequest,
     StepCellsWindowsCard,
+    StepCellsWindowsAppndc,
+    StepCellsWindowsAppndd,
+    StepCellsWindowsAppndi,
+    StepCellsWindowsSetResult,
+    StepCellsWindowsSet,
+    StepCellsWindowsRemovc,
+    StepCellsWindowsRemovd,
+    StepCellsWindowsRemovi,
+    StepCellsWindowsOrdc,
+    StepCellsWindowsOrdd,
+    StepCellsWindowsOrdi,
+    StepCellsWindowsCopy,
+    StepCellsWindowsElemc,
+    StepCellsWindowsElemd,
+    StepCellsWindowsElemi,
+    StepCellsWindowsLparss,
     StepCellsWindowsInsrtc,
     StepCellsWindowsInsrtd,
     StepCellsWindowsInsrti,
@@ -16,6 +32,19 @@ from .models import (
     StepCellsWindowsWncard,
     StepCellsWindowsWnfetd,
     StepCellsWindowsWninsd,
+    StepCellsWindowsWncomd,
+    StepCellsWindowsWncond,
+    StepCellsWindowsWndifd,
+    StepCellsWindowsWnelmd,
+    StepCellsWindowsWnexpd,
+    StepCellsWindowsWnextd,
+    StepCellsWindowsWnfild,
+    StepCellsWindowsWnfltd,
+    StepCellsWindowsWnincd,
+    StepCellsWindowsWnintd,
+    StepCellsWindowsWnreld,
+    StepCellsWindowsWnsumd,
+    StepCellsWindowsWnunid,
     StepCellsWindowsWnvald,
     StepCoordsVectorsAxisar,
     StepCoordsVectorsGeorec,
@@ -140,6 +169,31 @@ from .models import (
     StepCoordsVectorsDrdpgr,
     StepCoordsVectorsDrdsph,
     StepCoordsVectorsDsphdr,
+    StepCoordsVectorsIsordv,
+    StepCoordsVectorsOrderc,
+    StepCoordsVectorsOrderd,
+    StepCoordsVectorsOrderi,
+    StepCoordsVectorsReordc,
+    StepCoordsVectorsReordd,
+    StepCoordsVectorsReordi,
+    StepCoordsVectorsReordl,
+    StepCoordsVectorsShellc,
+    StepCoordsVectorsShelld,
+    StepCoordsVectorsShelli,
+    StepCoordsVectorsLstlec,
+    StepCoordsVectorsLstled,
+    StepCoordsVectorsLstlei,
+    StepCoordsVectorsLstltc,
+    StepCoordsVectorsLstltd,
+    StepCoordsVectorsLstlti,
+    StepCoordsVectorsBschoc,
+    StepCoordsVectorsBschoi,
+    StepCoordsVectorsBsrchc,
+    StepCoordsVectorsBsrchd,
+    StepCoordsVectorsBsrchi,
+    StepCoordsVectorsIsrchc,
+    StepCoordsVectorsIsrchd,
+    StepCoordsVectorsIsrchi,
     StepCoordsVectorsReclat,
     StepCoordsVectorsRecgeo,
     StepCoordsVectorsRecsph,
@@ -279,6 +333,15 @@ from .models import (
     StepKernelPoolDtpool,
     StepKernelPoolExpool,
     StepKernelPoolGcpool,
+    StepKernelPoolBadkpv,
+    StepKernelPoolBodvcd,
+    StepKernelPoolBodvrd,
+    StepKernelPoolClpool,
+    StepKernelPoolDvpool,
+    StepKernelPoolLdpool,
+    StepKernelPoolLmpool,
+    StepKernelPoolStpool,
+    StepKernelPoolSzpool,
     StepKernelPoolGdpool,
     StepKernelPoolGipool,
     StepKernelPoolGnpool,
@@ -305,6 +368,41 @@ from .models import (
     StepTimeSce2s,
     StepTimeScs2e,
     StepTimeSct2e,
+    StepStringsCpos,
+    StepStringsCposr,
+    StepStringsNcpos,
+    StepStringsNcposr,
+    StepStringsPos,
+    StepStringsPosr,
+    StepStringsEsrchc,
+    StepStringsDp2hx,
+    StepStringsHx2dp,
+    StepStringsPrsdp,
+    StepStringsPrsint,
+    StepStringsRepmc,
+    StepStringsRepmct,
+    StepStringsRepmd,
+    StepStringsRepmf,
+    StepStringsRepmi,
+    StepStringsRepml,
+    StepStringsRepmot,
+    StepStringsNextwd,
+    StepStringsNthwd,
+    StepStringsLparse,
+    StepStringsLparsm,
+    StepStringsLx4dec,
+    StepStringsLx4num,
+    StepStringsLx4sgn,
+    StepStringsLx4uns,
+    StepStringsLxqstr,
+    StepStringsCmprss,
+    StepStringsEqstr,
+    StepStringsIswhsp,
+    StepStringsLastnb,
+    StepStringsLcase,
+    StepStringsUcase,
+    StepStringsMatchi,
+    StepStringsMatchw,
     StepTimeStr2Et,
     StepTimeTimout,
     StepTimeSpd,
@@ -526,6 +624,275 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
     op = _expect_string(step.get("op"), label="workflow step.op")
 
     match op:
+        case "strings.cpos":
+            return StepStringsCpos(
+                op=op,
+                text=_expect_string(step.get("text"), label="strings.cpos.text"),
+                chars=_expect_string(step.get("chars"), label="strings.cpos.chars"),
+                start=_expect_int(step.get("start"), label="strings.cpos.start"),
+            )
+
+        case "strings.cposr":
+            return StepStringsCposr(
+                op=op,
+                text=_expect_string(step.get("text"), label="strings.cposr.text"),
+                chars=_expect_string(step.get("chars"), label="strings.cposr.chars"),
+                start=_expect_int(step.get("start"), label="strings.cposr.start"),
+            )
+
+        case "strings.ncpos":
+            return StepStringsNcpos(
+                op=op,
+                text=_expect_string(step.get("text"), label="strings.ncpos.text"),
+                chars=_expect_string(step.get("chars"), label="strings.ncpos.chars"),
+                start=_expect_int(step.get("start"), label="strings.ncpos.start"),
+            )
+
+        case "strings.ncposr":
+            return StepStringsNcposr(
+                op=op,
+                text=_expect_string(step.get("text"), label="strings.ncposr.text"),
+                chars=_expect_string(step.get("chars"), label="strings.ncposr.chars"),
+                start=_expect_int(step.get("start"), label="strings.ncposr.start"),
+            )
+
+        case "strings.pos":
+            return StepStringsPos(
+                op=op,
+                text=_expect_string(step.get("text"), label="strings.pos.text"),
+                substr=_expect_string(step.get("substr"), label="strings.pos.substr"),
+                start=_expect_int(step.get("start"), label="strings.pos.start"),
+            )
+
+        case "strings.posr":
+            return StepStringsPosr(
+                op=op,
+                text=_expect_string(step.get("text"), label="strings.posr.text"),
+                substr=_expect_string(step.get("substr"), label="strings.posr.substr"),
+                start=_expect_int(step.get("start"), label="strings.posr.start"),
+            )
+
+        case "strings.esrchc":
+            return StepStringsEsrchc(
+                op=op,
+                value=_expect_string(step.get("value"), label="strings.esrchc.value"),
+                values=_expect_string_list(step.get("values"), label="strings.esrchc.values"),
+            )
+
+        case "strings.dp2hx":
+            return StepStringsDp2hx(
+                op=op,
+                value=_expect_number(step.get("value"), label="strings.dp2hx.value"),
+                lenout=_expect_int(step.get("lenout"), label="strings.dp2hx.lenout") if "lenout" in step else None,
+            )
+        case "strings.hx2dp":
+            return StepStringsHx2dp(
+                op=op,
+                input=_expect_string(step.get("input"), label="strings.hx2dp.input"),
+                lenout=_expect_int(step.get("lenout"), label="strings.hx2dp.lenout") if "lenout" in step else None,
+            )
+        case "strings.prsdp":
+            return StepStringsPrsdp(
+                op=op,
+                input=_expect_string(step.get("input"), label="strings.prsdp.input"),
+            )
+        case "strings.prsint":
+            return StepStringsPrsint(
+                op=op,
+                input=_expect_string(step.get("input"), label="strings.prsint.input"),
+            )
+        case "strings.repmc":
+            return StepStringsRepmc(
+                op=op,
+                input=_expect_string(step.get("input"), label="strings.repmc.input"),
+                marker=_expect_string(step.get("marker"), label="strings.repmc.marker"),
+                value=_expect_string(step.get("value"), label="strings.repmc.value"),
+                lenout=_expect_int(step.get("lenout"), label="strings.repmc.lenout") if "lenout" in step else None,
+            )
+        case "strings.repmct":
+            return StepStringsRepmct(
+                op=op,
+                input=_expect_string(step.get("input"), label="strings.repmct.input"),
+                marker=_expect_string(step.get("marker"), label="strings.repmct.marker"),
+                value=_expect_int(step.get("value"), label="strings.repmct.value"),
+                rtcase=_expect_string(step.get("rtcase"), label="strings.repmct.rtcase"),
+                lenout=_expect_int(step.get("lenout"), label="strings.repmct.lenout") if "lenout" in step else None,
+            )
+        case "strings.repmd":
+            return StepStringsRepmd(
+                op=op,
+                input=_expect_string(step.get("input"), label="strings.repmd.input"),
+                marker=_expect_string(step.get("marker"), label="strings.repmd.marker"),
+                value=_expect_number(step.get("value"), label="strings.repmd.value"),
+                sigdig=_expect_int(step.get("sigdig"), label="strings.repmd.sigdig"),
+                lenout=_expect_int(step.get("lenout"), label="strings.repmd.lenout") if "lenout" in step else None,
+            )
+        case "strings.repmf":
+            return StepStringsRepmf(
+                op=op,
+                input=_expect_string(step.get("input"), label="strings.repmf.input"),
+                marker=_expect_string(step.get("marker"), label="strings.repmf.marker"),
+                value=_expect_number(step.get("value"), label="strings.repmf.value"),
+                sigdig=_expect_int(step.get("sigdig"), label="strings.repmf.sigdig"),
+                format=_expect_string(step.get("format"), label="strings.repmf.format"),
+                lenout=_expect_int(step.get("lenout"), label="strings.repmf.lenout") if "lenout" in step else None,
+            )
+        case "strings.repmi":
+            return StepStringsRepmi(
+                op=op,
+                input=_expect_string(step.get("input"), label="strings.repmi.input"),
+                marker=_expect_string(step.get("marker"), label="strings.repmi.marker"),
+                value=_expect_int(step.get("value"), label="strings.repmi.value"),
+                lenout=_expect_int(step.get("lenout"), label="strings.repmi.lenout") if "lenout" in step else None,
+            )
+        case "strings.repml":
+            return StepStringsRepml(
+                op=op,
+                input=_expect_string(step.get("input"), label="strings.repml.input"),
+                marker=_expect_string(step.get("marker"), label="strings.repml.marker"),
+                value=_expect_bool(step.get("value"), label="strings.repml.value"),
+                rtcase=_expect_string(step.get("rtcase"), label="strings.repml.rtcase"),
+                lenout=_expect_int(step.get("lenout"), label="strings.repml.lenout") if "lenout" in step else None,
+            )
+        case "strings.repmot":
+            return StepStringsRepmot(
+                op=op,
+                input=_expect_string(step.get("input"), label="strings.repmot.input"),
+                marker=_expect_string(step.get("marker"), label="strings.repmot.marker"),
+                value=_expect_int(step.get("value"), label="strings.repmot.value"),
+                rtcase=_expect_string(step.get("rtcase"), label="strings.repmot.rtcase"),
+                lenout=_expect_int(step.get("lenout"), label="strings.repmot.lenout") if "lenout" in step else None,
+            )
+        case "strings.nextwd":
+            return StepStringsNextwd(
+                op=op,
+                input=_expect_string(step.get("input"), label="strings.nextwd.input"),
+                nexlen=_expect_int(step.get("nexlen"), label="strings.nextwd.nexlen") if "nexlen" in step else None,
+                reslen=_expect_int(step.get("reslen"), label="strings.nextwd.reslen") if "reslen" in step else None,
+            )
+
+        case "strings.nthwd":
+            return StepStringsNthwd(
+                op=op,
+                input=_expect_string(step.get("input"), label="strings.nthwd.input"),
+                nth=_expect_int(step.get("nth"), label="strings.nthwd.nth"),
+                worlen=_expect_int(step.get("worlen"), label="strings.nthwd.worlen") if "worlen" in step else None,
+            )
+
+        case "strings.lparse":
+            return StepStringsLparse(
+                op=op,
+                list=_expect_string(step.get("list"), label="strings.lparse.list"),
+                delim=_expect_string(step.get("delim"), label="strings.lparse.delim"),
+                nmax=_expect_int(step.get("nmax"), label="strings.lparse.nmax"),
+                itemln=_expect_int(step.get("itemln"), label="strings.lparse.itemln") if "itemln" in step else None,
+            )
+
+        case "strings.lparsm":
+            return StepStringsLparsm(
+                op=op,
+                list=_expect_string(step.get("list"), label="strings.lparsm.list"),
+                delims=_expect_string(step.get("delims"), label="strings.lparsm.delims"),
+                nmax=_expect_int(step.get("nmax"), label="strings.lparsm.nmax"),
+                itemln=_expect_int(step.get("itemln"), label="strings.lparsm.itemln") if "itemln" in step else None,
+            )
+
+        case "strings.lx4dec":
+            return StepStringsLx4dec(
+                op=op,
+                input=_expect_string(step.get("input"), label="strings.lx4dec.input"),
+                first=_expect_int(step.get("first"), label="strings.lx4dec.first"),
+            )
+
+        case "strings.lx4num":
+            return StepStringsLx4num(
+                op=op,
+                input=_expect_string(step.get("input"), label="strings.lx4num.input"),
+                first=_expect_int(step.get("first"), label="strings.lx4num.first"),
+            )
+
+        case "strings.lx4sgn":
+            return StepStringsLx4sgn(
+                op=op,
+                input=_expect_string(step.get("input"), label="strings.lx4sgn.input"),
+                first=_expect_int(step.get("first"), label="strings.lx4sgn.first"),
+            )
+
+        case "strings.lx4uns":
+            return StepStringsLx4uns(
+                op=op,
+                input=_expect_string(step.get("input"), label="strings.lx4uns.input"),
+                first=_expect_int(step.get("first"), label="strings.lx4uns.first"),
+            )
+
+        case "strings.lxqstr":
+            return StepStringsLxqstr(
+                op=op,
+                input=_expect_string(step.get("input"), label="strings.lxqstr.input"),
+                qchar=_expect_string(step.get("qchar"), label="strings.lxqstr.qchar"),
+                first=_expect_int(step.get("first"), label="strings.lxqstr.first"),
+            )
+
+        case "strings.cmprss":
+            return StepStringsCmprss(
+                op=op,
+                delim=_expect_string(step.get("delim"), label="strings.cmprss.delim"),
+                n=_expect_int(step.get("n"), label="strings.cmprss.n"),
+                input=_expect_string(step.get("input"), label="strings.cmprss.input"),
+                lenout=_expect_int(step.get("lenout"), label="strings.cmprss.lenout") if "lenout" in step else None,
+            )
+
+        case "strings.eqstr":
+            return StepStringsEqstr(
+                op=op,
+                a=_expect_string(step.get("a"), label="strings.eqstr.a"),
+                b=_expect_string(step.get("b"), label="strings.eqstr.b"),
+            )
+
+        case "strings.iswhsp":
+            return StepStringsIswhsp(
+                op=op,
+                input=_expect_string(step.get("input"), label="strings.iswhsp.input"),
+            )
+
+        case "strings.lastnb":
+            return StepStringsLastnb(
+                op=op,
+                input=_expect_string(step.get("input"), label="strings.lastnb.input"),
+            )
+
+        case "strings.lcase":
+            return StepStringsLcase(
+                op=op,
+                input=_expect_string(step.get("input"), label="strings.lcase.input"),
+                lenout=_expect_int(step.get("lenout"), label="strings.lcase.lenout") if "lenout" in step else None,
+            )
+
+        case "strings.ucase":
+            return StepStringsUcase(
+                op=op,
+                input=_expect_string(step.get("input"), label="strings.ucase.input"),
+                lenout=_expect_int(step.get("lenout"), label="strings.ucase.lenout") if "lenout" in step else None,
+            )
+
+        case "strings.matchi":
+            return StepStringsMatchi(
+                op=op,
+                input=_expect_string(step.get("input"), label="strings.matchi.input"),
+                template=_expect_string(step.get("template"), label="strings.matchi.template"),
+                wstr=_expect_string(step.get("wstr"), label="strings.matchi.wstr"),
+                wchr=_expect_string(step.get("wchr"), label="strings.matchi.wchr"),
+            )
+
+        case "strings.matchw":
+            return StepStringsMatchw(
+                op=op,
+                input=_expect_string(step.get("input"), label="strings.matchw.input"),
+                template=_expect_string(step.get("template"), label="strings.matchw.template"),
+                wstr=_expect_string(step.get("wstr"), label="strings.matchw.wstr"),
+                wchr=_expect_string(step.get("wchr"), label="strings.matchw.wchr"),
+            )
+
         case "time.str2et":
             return StepTimeStr2Et(op=op, time=_expect_string(step.get("time"), label="time.str2et.time"))
 
@@ -693,6 +1060,154 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
                 op=op,
                 body=_expect_int(step.get("body"), label="ids-names.bodvar.body"),
                 item=_expect_string(step.get("item"), label="ids-names.bodvar.item"),
+            )
+
+        case "coords-vectors.isordv":
+            return StepCoordsVectorsIsordv(op=op,
+                order=_expect_int_list(step.get("order"), label="coords-vectors.isordv.order"),
+            )
+        case "coords-vectors.orderc":
+            return StepCoordsVectorsOrderc(op=op,
+                values=_expect_string_list(step.get("values"), label="coords-vectors.orderc.values"),
+            )
+        case "coords-vectors.orderd":
+            return StepCoordsVectorsOrderd(op=op,
+                values=_expect_number_list(step.get("values"), label="coords-vectors.orderd.values"),
+            )
+        case "coords-vectors.orderi":
+            return StepCoordsVectorsOrderi(op=op,
+                values=_expect_int_list(step.get("values"), label="coords-vectors.orderi.values"),
+            )
+        case "coords-vectors.reordc":
+            return StepCoordsVectorsReordc(op=op,
+                order=_expect_int_list(step.get("order"), label="coords-vectors.reordc.order"),
+                values=_expect_string_list(step.get("values"), label="coords-vectors.reordc.values"),
+            )
+        case "coords-vectors.reordd":
+            return StepCoordsVectorsReordd(op=op,
+                order=_expect_int_list(step.get("order"), label="coords-vectors.reordd.order"),
+                values=_expect_number_list(step.get("values"), label="coords-vectors.reordd.values"),
+            )
+        case "coords-vectors.reordi":
+            return StepCoordsVectorsReordi(op=op,
+                order=_expect_int_list(step.get("order"), label="coords-vectors.reordi.order"),
+                values=_expect_int_list(step.get("values"), label="coords-vectors.reordi.values"),
+            )
+        case "coords-vectors.reordl":
+            return StepCoordsVectorsReordl(op=op,
+                order=_expect_int_list(step.get("order"), label="coords-vectors.reordl.order"),
+                values=_expect_bool_list(step.get("values"), label="coords-vectors.reordl.values"),
+            )
+        case "coords-vectors.shellc":
+            return StepCoordsVectorsShellc(op=op,
+                values=_expect_string_list(step.get("values"), label="coords-vectors.shellc.values"),
+            )
+        case "coords-vectors.shelld":
+            return StepCoordsVectorsShelld(op=op,
+                values=_expect_number_list(step.get("values"), label="coords-vectors.shelld.values"),
+            )
+        case "coords-vectors.shelli":
+            return StepCoordsVectorsShelli(op=op,
+                values=_expect_int_list(step.get("values"), label="coords-vectors.shelli.values"),
+            )
+        case "coords-vectors.lstlec":
+            return StepCoordsVectorsLstlec(
+                op=op,
+                key=_expect_string(step.get("key"), label="coords-vectors.lstlec.key"),
+                values=_expect_string_list(step.get("values"), label="coords-vectors.lstlec.values"),
+            )
+
+        case "coords-vectors.lstled":
+            return StepCoordsVectorsLstled(
+                op=op,
+                key=_expect_number(step.get("key"), label="coords-vectors.lstled.key"),
+                values=_expect_number_list(step.get("values"), label="coords-vectors.lstled.values"),
+            )
+
+        case "coords-vectors.lstlei":
+            return StepCoordsVectorsLstlei(
+                op=op,
+                key=_expect_int(step.get("key"), label="coords-vectors.lstlei.key"),
+                values=_expect_int_list(step.get("values"), label="coords-vectors.lstlei.values"),
+            )
+
+        case "coords-vectors.lstltc":
+            return StepCoordsVectorsLstltc(
+                op=op,
+                key=_expect_string(step.get("key"), label="coords-vectors.lstltc.key"),
+                values=_expect_string_list(step.get("values"), label="coords-vectors.lstltc.values"),
+            )
+
+        case "coords-vectors.lstltd":
+            return StepCoordsVectorsLstltd(
+                op=op,
+                key=_expect_number(step.get("key"), label="coords-vectors.lstltd.key"),
+                values=_expect_number_list(step.get("values"), label="coords-vectors.lstltd.values"),
+            )
+
+        case "coords-vectors.lstlti":
+            return StepCoordsVectorsLstlti(
+                op=op,
+                key=_expect_int(step.get("key"), label="coords-vectors.lstlti.key"),
+                values=_expect_int_list(step.get("values"), label="coords-vectors.lstlti.values"),
+            )
+
+        case "coords-vectors.bschoc":
+            return StepCoordsVectorsBschoc(
+                op=op,
+                key=_expect_string(step.get("key"), label="coords-vectors.bschoc.key"),
+                values=_expect_string_list(step.get("values"), label="coords-vectors.bschoc.values"),
+                order=_expect_int_list(step.get("order"), label="coords-vectors.bschoc.order"),
+            )
+
+        case "coords-vectors.bschoi":
+            return StepCoordsVectorsBschoi(
+                op=op,
+                key=_expect_int(step.get("key"), label="coords-vectors.bschoi.key"),
+                values=_expect_int_list(step.get("values"), label="coords-vectors.bschoi.values"),
+                order=_expect_int_list(step.get("order"), label="coords-vectors.bschoi.order"),
+            )
+
+        case "coords-vectors.bsrchc":
+            return StepCoordsVectorsBsrchc(
+                op=op,
+                key=_expect_string(step.get("key"), label="coords-vectors.bsrchc.key"),
+                values=_expect_string_list(step.get("values"), label="coords-vectors.bsrchc.values"),
+            )
+
+        case "coords-vectors.bsrchd":
+            return StepCoordsVectorsBsrchd(
+                op=op,
+                key=_expect_number(step.get("key"), label="coords-vectors.bsrchd.key"),
+                values=_expect_number_list(step.get("values"), label="coords-vectors.bsrchd.values"),
+            )
+
+        case "coords-vectors.bsrchi":
+            return StepCoordsVectorsBsrchi(
+                op=op,
+                key=_expect_int(step.get("key"), label="coords-vectors.bsrchi.key"),
+                values=_expect_int_list(step.get("values"), label="coords-vectors.bsrchi.values"),
+            )
+
+        case "coords-vectors.isrchc":
+            return StepCoordsVectorsIsrchc(
+                op=op,
+                key=_expect_string(step.get("key"), label="coords-vectors.isrchc.key"),
+                values=_expect_string_list(step.get("values"), label="coords-vectors.isrchc.values"),
+            )
+
+        case "coords-vectors.isrchd":
+            return StepCoordsVectorsIsrchd(
+                op=op,
+                key=_expect_number(step.get("key"), label="coords-vectors.isrchd.key"),
+                values=_expect_number_list(step.get("values"), label="coords-vectors.isrchd.values"),
+            )
+
+        case "coords-vectors.isrchi":
+            return StepCoordsVectorsIsrchi(
+                op=op,
+                key=_expect_int(step.get("key"), label="coords-vectors.isrchi.key"),
+                values=_expect_int_list(step.get("values"), label="coords-vectors.isrchi.values"),
             )
 
         case "coords-vectors.mequg":
@@ -1749,6 +2264,154 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
                 targetId=_expect_string(step.get("targetId"), label="cells-windows.card.targetId"),
             )
 
+        case "cells-windows.appndc":
+            return StepCellsWindowsAppndc(
+                op=op,
+                cellId=_expect_string(step.get("cellId"), label="cells-windows.appndc.cellId"),
+                item=_expect_string(step.get("item"), label="cells-windows.appndc.item"),
+                maxCardinality=_expect_int(step.get("maxCardinality"), label="cells-windows.appndc.maxCardinality") if "maxCardinality" in step else None,
+                length=_expect_int(step.get("length"), label="cells-windows.appndc.length") if "length" in step else None,
+            )
+
+        case "cells-windows.appndd":
+            return StepCellsWindowsAppndd(
+                op=op,
+                cellId=_expect_string(step.get("cellId"), label="cells-windows.appndd.cellId"),
+                item=_expect_number(step.get("item"), label="cells-windows.appndd.item"),
+                maxCardinality=_expect_int(step.get("maxCardinality"), label="cells-windows.appndd.maxCardinality") if "maxCardinality" in step else None,
+            )
+
+        case "cells-windows.appndi":
+            return StepCellsWindowsAppndi(
+                op=op,
+                cellId=_expect_string(step.get("cellId"), label="cells-windows.appndi.cellId"),
+                item=_expect_int(step.get("item"), label="cells-windows.appndi.item"),
+                maxCardinality=_expect_int(step.get("maxCardinality"), label="cells-windows.appndi.maxCardinality") if "maxCardinality" in step else None,
+            )
+
+        case "cells-windows.diff" | "cells-windows.inter" | "cells-windows.sdiff" | "cells-windows.union":
+            kind = step.get("kind")
+            if kind not in ("char", "double", "int"):
+                raise ValueError("Expected an ordinary set kind")
+            return StepCellsWindowsSetResult(
+                op=op,
+                kind=kind,
+                aId=_expect_string(step.get("aId"), label=f"{op}.aId"),
+                bId=_expect_string(step.get("bId"), label=f"{op}.bId"),
+                resultId=_expect_string(step.get("resultId"), label=f"{op}.resultId"),
+                maxCardinality=_expect_int(step.get("maxCardinality"), label=f"{op}.maxCardinality") if "maxCardinality" in step else None,
+                length=_expect_int(step.get("length"), label=f"{op}.length") if "length" in step else None,
+            )
+
+        case "cells-windows.set":
+            kind = step.get("kind")
+            if kind not in ("char", "double", "int"):
+                raise ValueError("Expected an ordinary set kind")
+            return StepCellsWindowsSet(
+                op=op,
+                kind=kind,
+                aId=_expect_string(step.get("aId"), label=f"{op}.aId"),
+                relation=_expect_string(step.get("relation"), label=f"{op}.relation"),
+                bId=_expect_string(step.get("bId"), label=f"{op}.bId"),
+            )
+
+        case "cells-windows.removc":
+            return StepCellsWindowsRemovc(
+                op=op,
+                cellId=_expect_string(step.get("cellId"), label=f"{op}.cellId"),
+                item=_expect_string(step.get("item"), label=f"{op}.item"),
+                maxCardinality=_expect_int(step.get("maxCardinality"), label=f"{op}.maxCardinality") if "maxCardinality" in step else None,
+                length=_expect_int(step.get("length"), label=f"{op}.length") if "length" in step else None,
+            )
+
+        case "cells-windows.removd":
+            return StepCellsWindowsRemovd(
+                op=op,
+                cellId=_expect_string(step.get("cellId"), label=f"{op}.cellId"),
+                item=_expect_number(step.get("item"), label=f"{op}.item"),
+                maxCardinality=_expect_int(step.get("maxCardinality"), label=f"{op}.maxCardinality") if "maxCardinality" in step else None,
+            )
+
+        case "cells-windows.removi":
+            return StepCellsWindowsRemovi(
+                op=op,
+                cellId=_expect_string(step.get("cellId"), label=f"{op}.cellId"),
+                item=_expect_int(step.get("item"), label=f"{op}.item"),
+                maxCardinality=_expect_int(step.get("maxCardinality"), label=f"{op}.maxCardinality") if "maxCardinality" in step else None,
+            )
+
+        case "cells-windows.ordc":
+            return StepCellsWindowsOrdc(
+                op=op,
+                cellId=_expect_string(step.get("cellId"), label=f"{op}.cellId"),
+                item=_expect_string(step.get("item"), label=f"{op}.item"),
+                maxCardinality=_expect_int(step.get("maxCardinality"), label=f"{op}.maxCardinality") if "maxCardinality" in step else None,
+                length=_expect_int(step.get("length"), label=f"{op}.length") if "length" in step else None,
+            )
+
+        case "cells-windows.ordd":
+            return StepCellsWindowsOrdd(
+                op=op,
+                cellId=_expect_string(step.get("cellId"), label=f"{op}.cellId"),
+                item=_expect_number(step.get("item"), label=f"{op}.item"),
+                maxCardinality=_expect_int(step.get("maxCardinality"), label=f"{op}.maxCardinality") if "maxCardinality" in step else None,
+            )
+
+        case "cells-windows.ordi":
+            return StepCellsWindowsOrdi(
+                op=op,
+                cellId=_expect_string(step.get("cellId"), label=f"{op}.cellId"),
+                item=_expect_int(step.get("item"), label=f"{op}.item"),
+                maxCardinality=_expect_int(step.get("maxCardinality"), label=f"{op}.maxCardinality") if "maxCardinality" in step else None,
+            )
+
+        case "cells-windows.copy":
+            kind = step.get("kind")
+            if kind not in ("char", "double", "int"):
+                raise ValueError("copy requires an ordinary cell kind")
+            return StepCellsWindowsCopy(
+                op=op,
+                kind=kind,
+                sourceId=_expect_string(step.get("sourceId"), label="cells-windows.copy.sourceId"),
+                resultId=_expect_string(step.get("resultId"), label="cells-windows.copy.resultId"),
+                maxCardinality=_expect_int(step.get("maxCardinality"), label="cells-windows.copy.maxCardinality") if "maxCardinality" in step else None,
+                length=_expect_int(step.get("length"), label="cells-windows.copy.length") if "length" in step else None,
+            )
+
+        case "cells-windows.elemc":
+            return StepCellsWindowsElemc(
+                op=op,
+                cellId=_expect_string(step.get("cellId"), label="cells-windows.elemc.cellId"),
+                item=_expect_string(step.get("item"), label="cells-windows.elemc.item"),
+                maxCardinality=_expect_int(step.get("maxCardinality"), label="cells-windows.elemc.maxCardinality") if "maxCardinality" in step else None,
+                length=_expect_int(step.get("length"), label="cells-windows.elemc.length") if "length" in step else None,
+            )
+
+        case "cells-windows.elemd":
+            return StepCellsWindowsElemd(
+                op=op,
+                cellId=_expect_string(step.get("cellId"), label="cells-windows.elemd.cellId"),
+                item=_expect_number(step.get("item"), label="cells-windows.elemd.item"),
+                maxCardinality=_expect_int(step.get("maxCardinality"), label="cells-windows.elemd.maxCardinality") if "maxCardinality" in step else None,
+            )
+
+        case "cells-windows.elemi":
+            return StepCellsWindowsElemi(
+                op=op,
+                cellId=_expect_string(step.get("cellId"), label="cells-windows.elemi.cellId"),
+                item=_expect_int(step.get("item"), label="cells-windows.elemi.item"),
+                maxCardinality=_expect_int(step.get("maxCardinality"), label="cells-windows.elemi.maxCardinality") if "maxCardinality" in step else None,
+            )
+
+        case "cells-windows.lparss":
+            return StepCellsWindowsLparss(
+                op=op, cellId=_expect_string(step.get("cellId"), label="lparss.cellId"),
+                list=_expect_string(step.get("list"), label="lparss.list"),
+                delims=_expect_string(step.get("delims"), label="lparss.delims"),
+                maxCardinality=_expect_int(step.get("maxCardinality", 8), label="lparss.maxCardinality"),
+                length=_expect_int(step.get("length", 32), label="lparss.length"),
+            )
+
         case "cells-windows.insrtc":
             max_cardinality_raw = step.get("maxCardinality")
             max_cardinality = None
@@ -1861,6 +2524,109 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
                 index=_expect_int(step.get("index"), label="cells-windows.wnfetd.index"),
             )
 
+        case "cells-windows.wncomd":
+            return StepCellsWindowsWncomd(
+                op=op,
+                left=_expect_number(step.get("left"), label="cells-windows.wncomd.left"),
+                right=_expect_number(step.get("right"), label="cells-windows.wncomd.right"),
+                windowId=_expect_string(step.get("windowId"), label="cells-windows.wncomd.windowId"),
+                resultId=_expect_string(step.get("resultId"), label="cells-windows.wncomd.resultId"),
+                maxIntervals=_expect_int(step.get("maxIntervals"), label="cells-windows.wncomd.maxIntervals"),
+            )
+
+        case "cells-windows.wncond":
+            return StepCellsWindowsWncond(
+                op=op,
+                left=_expect_number(step.get("left"), label="cells-windows.wncond.left"),
+                right=_expect_number(step.get("right"), label="cells-windows.wncond.right"),
+                windowId=_expect_string(step.get("windowId"), label="cells-windows.wncond.windowId"),
+            )
+
+        case "cells-windows.wndifd":
+            return StepCellsWindowsWndifd(
+                op=op,
+                aId=_expect_string(step.get("aId"), label="cells-windows.wndifd.aId"),
+                bId=_expect_string(step.get("bId"), label="cells-windows.wndifd.bId"),
+                resultId=_expect_string(step.get("resultId"), label="cells-windows.wndifd.resultId"),
+                maxIntervals=_expect_int(step.get("maxIntervals"), label="cells-windows.wndifd.maxIntervals"),
+            )
+
+        case "cells-windows.wnelmd":
+            return StepCellsWindowsWnelmd(
+                op=op,
+                point=_expect_number(step.get("point"), label="cells-windows.wnelmd.point"),
+                windowId=_expect_string(step.get("windowId"), label="cells-windows.wnelmd.windowId"),
+            )
+
+        case "cells-windows.wnexpd":
+            return StepCellsWindowsWnexpd(
+                op=op,
+                left=_expect_number(step.get("left"), label="cells-windows.wnexpd.left"),
+                right=_expect_number(step.get("right"), label="cells-windows.wnexpd.right"),
+                windowId=_expect_string(step.get("windowId"), label="cells-windows.wnexpd.windowId"),
+            )
+
+        case "cells-windows.wnextd":
+            return StepCellsWindowsWnextd(
+                op=op,
+                side=_expect_string(step.get("side"), label="cells-windows.wnextd.side"),
+                windowId=_expect_string(step.get("windowId"), label="cells-windows.wnextd.windowId"),
+            )
+
+        case "cells-windows.wnfild":
+            return StepCellsWindowsWnfild(
+                op=op,
+                small=_expect_number(step.get("small"), label="cells-windows.wnfild.small"),
+                windowId=_expect_string(step.get("windowId"), label="cells-windows.wnfild.windowId"),
+            )
+
+        case "cells-windows.wnfltd":
+            return StepCellsWindowsWnfltd(
+                op=op,
+                small=_expect_number(step.get("small"), label="cells-windows.wnfltd.small"),
+                windowId=_expect_string(step.get("windowId"), label="cells-windows.wnfltd.windowId"),
+            )
+
+        case "cells-windows.wnincd":
+            return StepCellsWindowsWnincd(
+                op=op,
+                left=_expect_number(step.get("left"), label="cells-windows.wnincd.left"),
+                right=_expect_number(step.get("right"), label="cells-windows.wnincd.right"),
+                windowId=_expect_string(step.get("windowId"), label="cells-windows.wnincd.windowId"),
+            )
+
+        case "cells-windows.wnintd":
+            return StepCellsWindowsWnintd(
+                op=op,
+                aId=_expect_string(step.get("aId"), label="cells-windows.wnintd.aId"),
+                bId=_expect_string(step.get("bId"), label="cells-windows.wnintd.bId"),
+                resultId=_expect_string(step.get("resultId"), label="cells-windows.wnintd.resultId"),
+                maxIntervals=_expect_int(step.get("maxIntervals"), label="cells-windows.wnintd.maxIntervals"),
+            )
+
+        case "cells-windows.wnreld":
+            return StepCellsWindowsWnreld(
+                op=op,
+                aId=_expect_string(step.get("aId"), label="cells-windows.wnreld.aId"),
+                relation=_expect_string(step.get("relation"), label="cells-windows.wnreld.relation"),
+                bId=_expect_string(step.get("bId"), label="cells-windows.wnreld.bId"),
+            )
+
+        case "cells-windows.wnsumd":
+            return StepCellsWindowsWnsumd(
+                op=op,
+                windowId=_expect_string(step.get("windowId"), label="cells-windows.wnsumd.windowId"),
+            )
+
+        case "cells-windows.wnunid":
+            return StepCellsWindowsWnunid(
+                op=op,
+                aId=_expect_string(step.get("aId"), label="cells-windows.wnunid.aId"),
+                bId=_expect_string(step.get("bId"), label="cells-windows.wnunid.bId"),
+                resultId=_expect_string(step.get("resultId"), label="cells-windows.wnunid.resultId"),
+                maxIntervals=_expect_int(step.get("maxIntervals"), label="cells-windows.wnunid.maxIntervals"),
+            )
+
         case "cells-windows.wnvald":
             return StepCellsWindowsWnvald(
                 op=op,
@@ -1869,6 +2635,60 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
                 windowId=_expect_string(step.get("windowId"), label="cells-windows.wnvald.windowId"),
             )
 
+        case "kernel-pool.badkpv":
+            return StepKernelPoolBadkpv(
+                op=op,
+                caller=_expect_string(step.get("caller"), label="kernel-pool.badkpv.caller"),
+                name=_expect_string(step.get("name"), label="kernel-pool.badkpv.name"),
+                comp=_expect_string(step.get("comp"), label="kernel-pool.badkpv.comp"),
+                size=_expect_int(step.get("size"), label="kernel-pool.badkpv.size"),
+                divby=_expect_int(step.get("divby"), label="kernel-pool.badkpv.divby"),
+                type=_expect_string(step.get("type"), label="kernel-pool.badkpv.type"),
+            )
+        case "kernel-pool.bodvcd":
+            return StepKernelPoolBodvcd(
+                op=op,
+                body=_expect_int(step.get("body"), label="kernel-pool.bodvcd.body"),
+                item=_expect_string(step.get("item"), label="kernel-pool.bodvcd.item"),
+                maxn=_expect_int(step.get("maxn"), label="kernel-pool.bodvcd.maxn"),
+            )
+        case "kernel-pool.bodvrd":
+            return StepKernelPoolBodvrd(
+                op=op,
+                body=_expect_string(step.get("body"), label="kernel-pool.bodvrd.body"),
+                item=_expect_string(step.get("item"), label="kernel-pool.bodvrd.item"),
+                maxn=_expect_int(step.get("maxn"), label="kernel-pool.bodvrd.maxn"),
+            )
+        case "kernel-pool.clpool":
+            return StepKernelPoolClpool(op=op)
+        case "kernel-pool.dvpool":
+            return StepKernelPoolDvpool(
+                op=op,
+                name=_expect_string(step.get("name"), label="kernel-pool.dvpool.name"),
+            )
+        case "kernel-pool.ldpool":
+            return StepKernelPoolLdpool(
+                op=op,
+                file=_decode_path_ref(step.get("file"), label="kernel-pool.ldpool.file"),
+            )
+        case "kernel-pool.lmpool":
+            return StepKernelPoolLmpool(
+                op=op,
+                lines=_expect_string_list(step.get("lines"), label="kernel-pool.lmpool.lines"),
+            )
+        case "kernel-pool.stpool":
+            return StepKernelPoolStpool(
+                op=op,
+                item=_expect_string(step.get("item"), label="kernel-pool.stpool.item"),
+                nth=_expect_int(step.get("nth"), label="kernel-pool.stpool.nth"),
+                contin=_expect_string(step.get("contin"), label="kernel-pool.stpool.contin"),
+                lenout=_expect_int(step.get("lenout"), label="kernel-pool.stpool.lenout"),
+            )
+        case "kernel-pool.szpool":
+            return StepKernelPoolSzpool(
+                op=op,
+                name=_expect_string(step.get("name"), label="kernel-pool.szpool.name"),
+            )
         case "kernel-pool.gdpool":
             return StepKernelPoolGdpool(
                 op=op,

@@ -4,6 +4,22 @@ from typing import TypeAlias
 
 from .cells_windows import (
     StepCellsWindowsCard,
+    StepCellsWindowsAppndc,
+    StepCellsWindowsAppndd,
+    StepCellsWindowsAppndi,
+    StepCellsWindowsSetResult,
+    StepCellsWindowsSet,
+    StepCellsWindowsRemovc,
+    StepCellsWindowsRemovd,
+    StepCellsWindowsRemovi,
+    StepCellsWindowsOrdc,
+    StepCellsWindowsOrdd,
+    StepCellsWindowsOrdi,
+    StepCellsWindowsCopy,
+    StepCellsWindowsElemc,
+    StepCellsWindowsElemd,
+    StepCellsWindowsElemi,
+    StepCellsWindowsLparss,
     StepCellsWindowsInsrtc,
     StepCellsWindowsInsrtd,
     StepCellsWindowsInsrti,
@@ -14,6 +30,19 @@ from .cells_windows import (
     StepCellsWindowsWncard,
     StepCellsWindowsWnfetd,
     StepCellsWindowsWninsd,
+    StepCellsWindowsWncomd,
+    StepCellsWindowsWncond,
+    StepCellsWindowsWndifd,
+    StepCellsWindowsWnelmd,
+    StepCellsWindowsWnexpd,
+    StepCellsWindowsWnextd,
+    StepCellsWindowsWnfild,
+    StepCellsWindowsWnfltd,
+    StepCellsWindowsWnincd,
+    StepCellsWindowsWnintd,
+    StepCellsWindowsWnreld,
+    StepCellsWindowsWnsumd,
+    StepCellsWindowsWnunid,
     StepCellsWindowsWnvald,
 )
 from .coords_vectors import (
@@ -140,6 +169,31 @@ from .coords_vectors import (
     StepCoordsVectorsDrdpgr,
     StepCoordsVectorsDrdsph,
     StepCoordsVectorsDsphdr,
+    StepCoordsVectorsIsordv,
+    StepCoordsVectorsOrderc,
+    StepCoordsVectorsOrderd,
+    StepCoordsVectorsOrderi,
+    StepCoordsVectorsReordc,
+    StepCoordsVectorsReordd,
+    StepCoordsVectorsReordi,
+    StepCoordsVectorsReordl,
+    StepCoordsVectorsShellc,
+    StepCoordsVectorsShelld,
+    StepCoordsVectorsShelli,
+    StepCoordsVectorsLstlec,
+    StepCoordsVectorsLstled,
+    StepCoordsVectorsLstlei,
+    StepCoordsVectorsLstltc,
+    StepCoordsVectorsLstltd,
+    StepCoordsVectorsLstlti,
+    StepCoordsVectorsBschoc,
+    StepCoordsVectorsBschoi,
+    StepCoordsVectorsBsrchc,
+    StepCoordsVectorsBsrchd,
+    StepCoordsVectorsBsrchi,
+    StepCoordsVectorsIsrchc,
+    StepCoordsVectorsIsrchd,
+    StepCoordsVectorsIsrchi,
     StepCoordsVectorsReclat,
     StepCoordsVectorsRecgeo,
     StepCoordsVectorsRecsph,
@@ -299,6 +353,15 @@ from .kernel_pool import (
     StepKernelPoolDtpool,
     StepKernelPoolExpool,
     StepKernelPoolGcpool,
+    StepKernelPoolBadkpv,
+    StepKernelPoolBodvcd,
+    StepKernelPoolBodvrd,
+    StepKernelPoolClpool,
+    StepKernelPoolDvpool,
+    StepKernelPoolLdpool,
+    StepKernelPoolLmpool,
+    StepKernelPoolStpool,
+    StepKernelPoolSzpool,
     StepKernelPoolGdpool,
     StepKernelPoolGipool,
     StepKernelPoolGnpool,
@@ -316,6 +379,43 @@ from .kernels import (
     StepKernelsKtotal,
     StepKernelsKxtrct,
     StepKernelsUnload,
+)
+from .strings import (
+    StepStringsCpos,
+    StepStringsCposr,
+    StepStringsNcpos,
+    StepStringsNcposr,
+    StepStringsPos,
+    StepStringsPosr,
+    StepStringsEsrchc,
+    StepStringsDp2hx,
+    StepStringsHx2dp,
+    StepStringsPrsdp,
+    StepStringsPrsint,
+    StepStringsRepmc,
+    StepStringsRepmct,
+    StepStringsRepmd,
+    StepStringsRepmf,
+    StepStringsRepmi,
+    StepStringsRepml,
+    StepStringsRepmot,
+    StepStringsNextwd,
+    StepStringsNthwd,
+    StepStringsLparse,
+    StepStringsLparsm,
+    StepStringsLx4dec,
+    StepStringsLx4num,
+    StepStringsLx4sgn,
+    StepStringsLx4uns,
+    StepStringsLxqstr,
+    StepStringsCmprss,
+    StepStringsEqstr,
+    StepStringsIswhsp,
+    StepStringsLastnb,
+    StepStringsLcase,
+    StepStringsUcase,
+    StepStringsMatchi,
+    StepStringsMatchw,
 )
 from .time import (
     StepTimeDeltet,
@@ -347,6 +447,41 @@ from .time import (
 
 WorkflowStep: TypeAlias = (
     StepTimeStr2Et
+    | StepStringsCpos
+    | StepStringsCposr
+    | StepStringsNcpos
+    | StepStringsNcposr
+    | StepStringsPos
+    | StepStringsPosr
+    | StepStringsEsrchc
+    | StepStringsDp2hx
+    | StepStringsHx2dp
+    | StepStringsPrsdp
+    | StepStringsPrsint
+    | StepStringsRepmc
+    | StepStringsRepmct
+    | StepStringsRepmd
+    | StepStringsRepmf
+    | StepStringsRepmi
+    | StepStringsRepml
+    | StepStringsRepmot
+    | StepStringsNextwd
+    | StepStringsNthwd
+    | StepStringsLparse
+    | StepStringsLparsm
+    | StepStringsLx4dec
+    | StepStringsLx4num
+    | StepStringsLx4sgn
+    | StepStringsLx4uns
+    | StepStringsLxqstr
+    | StepStringsCmprss
+    | StepStringsEqstr
+    | StepStringsIswhsp
+    | StepStringsLastnb
+    | StepStringsLcase
+    | StepStringsUcase
+    | StepStringsMatchi
+    | StepStringsMatchw
     | StepTimeEt2Utc
     | StepTimeSpd
     | StepTimeJ2000
@@ -495,6 +630,31 @@ WorkflowStep: TypeAlias = (
     | StepCoordsVectorsDrdpgr
     | StepCoordsVectorsDrdsph
     | StepCoordsVectorsDsphdr
+    | StepCoordsVectorsIsordv
+    | StepCoordsVectorsOrderc
+    | StepCoordsVectorsOrderd
+    | StepCoordsVectorsOrderi
+    | StepCoordsVectorsReordc
+    | StepCoordsVectorsReordd
+    | StepCoordsVectorsReordi
+    | StepCoordsVectorsReordl
+    | StepCoordsVectorsShellc
+    | StepCoordsVectorsShelld
+    | StepCoordsVectorsShelli
+    | StepCoordsVectorsLstlec
+    | StepCoordsVectorsLstled
+    | StepCoordsVectorsLstlei
+    | StepCoordsVectorsLstltc
+    | StepCoordsVectorsLstltd
+    | StepCoordsVectorsLstlti
+    | StepCoordsVectorsBschoc
+    | StepCoordsVectorsBschoi
+    | StepCoordsVectorsBsrchc
+    | StepCoordsVectorsBsrchd
+    | StepCoordsVectorsBsrchi
+    | StepCoordsVectorsIsrchc
+    | StepCoordsVectorsIsrchd
+    | StepCoordsVectorsIsrchi
     | StepCoordsVectorsReclat
     | StepCoordsVectorsLatrec
     | StepCoordsVectorsRecsph
@@ -526,6 +686,22 @@ WorkflowStep: TypeAlias = (
     | StepCoordsVectorsMxv
     | StepCoordsVectorsMtxv
     | StepCellsWindowsCard
+    | StepCellsWindowsAppndc
+    | StepCellsWindowsAppndd
+    | StepCellsWindowsAppndi
+    | StepCellsWindowsSetResult
+    | StepCellsWindowsSet
+    | StepCellsWindowsRemovc
+    | StepCellsWindowsRemovd
+    | StepCellsWindowsRemovi
+    | StepCellsWindowsOrdc
+    | StepCellsWindowsOrdd
+    | StepCellsWindowsOrdi
+    | StepCellsWindowsCopy
+    | StepCellsWindowsElemc
+    | StepCellsWindowsElemd
+    | StepCellsWindowsElemi
+    | StepCellsWindowsLparss
     | StepCellsWindowsInsrtc
     | StepCellsWindowsInsrtd
     | StepCellsWindowsInsrti
@@ -536,7 +712,29 @@ WorkflowStep: TypeAlias = (
     | StepCellsWindowsWncard
     | StepCellsWindowsWninsd
     | StepCellsWindowsWnfetd
+    | StepCellsWindowsWncomd
+    | StepCellsWindowsWncond
+    | StepCellsWindowsWndifd
+    | StepCellsWindowsWnelmd
+    | StepCellsWindowsWnexpd
+    | StepCellsWindowsWnextd
+    | StepCellsWindowsWnfild
+    | StepCellsWindowsWnfltd
+    | StepCellsWindowsWnincd
+    | StepCellsWindowsWnintd
+    | StepCellsWindowsWnreld
+    | StepCellsWindowsWnsumd
+    | StepCellsWindowsWnunid
     | StepCellsWindowsWnvald
+    | StepKernelPoolBadkpv
+    | StepKernelPoolBodvcd
+    | StepKernelPoolBodvrd
+    | StepKernelPoolClpool
+    | StepKernelPoolDvpool
+    | StepKernelPoolLdpool
+    | StepKernelPoolLmpool
+    | StepKernelPoolStpool
+    | StepKernelPoolSzpool
     | StepKernelPoolGdpool
     | StepKernelPoolGipool
     | StepKernelPoolGcpool

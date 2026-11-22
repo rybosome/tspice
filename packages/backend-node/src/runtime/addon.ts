@@ -5,6 +5,7 @@ import { createRequire } from "node:module";
 import { fileURLToPath } from "node:url";
 
 import type {
+  Found,
   SpiceIntCell,
   SpiceWindow,
 } from "@rybosome/tspice-backend-contract";
@@ -74,6 +75,36 @@ export type NativeAddon = {
   kplfrm(frmcls: number, idset: number): void;
 
   // --- kernel pool ---
+  badkpv(
+    caller: string,
+    name: string,
+    comp: string,
+    size: number,
+    divby: number,
+    type: string,
+  ): boolean;
+  bodvcd(
+    body: number,
+    item: string,
+    maxn: number,
+  ): { dim: number; values: number[] };
+  bodvrd(
+    body: string,
+    item: string,
+    maxn: number,
+  ): { dim: number; values: number[] };
+  clpool(): void;
+  dvpool(name: string): void;
+  ldpool(path: string): void;
+  lmpool(lines: readonly string[]): void;
+  stpool(
+    item: string,
+    nth: number,
+    contin: string,
+    lenout: number,
+  ): Found<{ nthstr: string; size: number }>;
+  szpool(name: string): Found<{ n: number }>;
+
   gdpool(
     name: string,
     start: number,
@@ -897,6 +928,134 @@ export type NativeAddon = {
   vzerog(v: readonly number[]): boolean;
   unormg(v: readonly number[]): { unit: number[]; norm: number };
 
+  cpos(text: string, chars: string, start: number): number;
+  cposr(text: string, chars: string, start: number): number;
+  ncpos(text: string, chars: string, start: number): number;
+  ncposr(text: string, chars: string, start: number): number;
+  pos(text: string, substr: string, start: number): number;
+  posr(text: string, substr: string, start: number): number;
+  esrchc(value: string, values: readonly string[]): number;
+  dp2hx(value: number, lenout: number): { hxstr: string; hxssiz: number };
+  hx2dp(
+    input: string,
+    lenout: number,
+  ):
+    | { error: false; number: number; errmsg: string }
+    | { error: true; errmsg: string };
+  prsdp(input: string): number;
+  prsint(input: string): number;
+  repmc(input: string, marker: string, value: string, lenout: number): string;
+  repmct(
+    input: string,
+    marker: string,
+    value: number,
+    rtcase: string,
+    lenout: number,
+  ): string;
+  repmd(
+    input: string,
+    marker: string,
+    value: number,
+    sigdig: number,
+    lenout: number,
+  ): string;
+  repmf(
+    input: string,
+    marker: string,
+    value: number,
+    sigdig: number,
+    format: string,
+    lenout: number,
+  ): string;
+  repmi(input: string, marker: string, value: number, lenout: number): string;
+  repml(
+    input: string,
+    marker: string,
+    value: boolean,
+    rtcase: string,
+    lenout: number,
+  ): string;
+  repmot(
+    input: string,
+    marker: string,
+    value: number,
+    rtcase: string,
+    lenout: number,
+  ): string;
+  nextwd(
+    input: string,
+    nexlen: number,
+    reslen: number,
+  ): { next: string; rest: string };
+  nthwd(
+    input: string,
+    nth: number,
+    worlen: number,
+  ): { word: string; loc: number };
+  lparse(
+    list: string,
+    delim: string,
+    nmax: number,
+    itemln: number,
+  ): { n: number; items: string[] };
+  lparsm(
+    list: string,
+    delims: string,
+    nmax: number,
+    itemln: number,
+  ): { n: number; items: string[] };
+  lx4dec(input: string, first: number): { last: number; nchar: number };
+  lx4num(input: string, first: number): { last: number; nchar: number };
+  lx4sgn(input: string, first: number): { last: number; nchar: number };
+  lx4uns(input: string, first: number): { last: number; nchar: number };
+  lxqstr(
+    input: string,
+    qchar: string,
+    first: number,
+  ): { last: number; nchar: number };
+  cmprss(delim: string, n: number, input: string, lenout: number): string;
+  eqstr(a: string, b: string): boolean;
+  iswhsp(input: string): boolean;
+  lastnb(input: string): number;
+  lcase(input: string, lenout: number): string;
+  ucase(input: string, lenout: number): string;
+  matchi(input: string, templ: string, wstr: string, wchr: string): boolean;
+  matchw(input: string, templ: string, wstr: string, wchr: string): boolean;
+
+  bschoc(
+    key: string,
+    values: readonly string[],
+    order: readonly number[],
+  ): number;
+  bschoi(
+    key: number,
+    values: readonly number[],
+    order: readonly number[],
+  ): number;
+  bsrchc(key: string, values: readonly string[]): number;
+  bsrchd(key: number, values: readonly number[]): number;
+  bsrchi(key: number, values: readonly number[]): number;
+  isrchc(key: string, values: readonly string[]): number;
+  isrchd(key: number, values: readonly number[]): number;
+  isrchi(key: number, values: readonly number[]): number;
+  isordv(values: Int32Array): boolean;
+  orderc(width: number, values: Uint8Array): Int32Array;
+  orderd(values: Float64Array): Int32Array;
+  orderi(values: Int32Array): Int32Array;
+  reordc(order: Int32Array, width: number, values: Uint8Array): Uint8Array;
+  reordd(order: Int32Array, values: Float64Array): Float64Array;
+  reordi(order: Int32Array, values: Int32Array): Int32Array;
+  reordl(order: Int32Array, values: Int32Array): Int32Array;
+  shellc(width: number, values: Uint8Array): Uint8Array;
+  shelld(values: Float64Array): Float64Array;
+  shelli(values: Int32Array): Int32Array;
+  lstlec(key: string, values: readonly string[]): number;
+  lstled(key: number, values: readonly number[]): number;
+  lstlei(key: number, values: readonly number[]): number;
+  lstltc(key: string, values: readonly string[]): number;
+  lstltd(key: number, values: readonly number[]): number;
+  lstlti(key: number, values: readonly number[]): number;
+
   reclat(rect: number[]): { radius: number; lon: number; lat: number };
   latrec(radius: number, lon: number, lat: number): number[];
   recsph(rect: number[]): { radius: number; colat: number; lon: number };
@@ -949,11 +1108,50 @@ export type NativeAddon = {
 
   insrti(item: number, cell: number): void;
   insrtd(item: number, cell: number): void;
+  appndc(item: string, cell: number): void;
+  appndd(item: number, cell: number): void;
+  appndi(item: number, cell: number): void;
+  elemc(item: string, cell: number): boolean;
+  elemd(item: number, cell: number): boolean;
+  elemi(item: number, cell: number): boolean;
+  diff(a: number, b: number, result: number): void;
+  inter(a: number, b: number, result: number): void;
+  sdiff(a: number, b: number, result: number): void;
+  union(a: number, b: number, result: number): void;
+  set(a: number, op: string, b: number): boolean;
+  removc(item: string, cell: number): void;
+  removd(item: number, cell: number): void;
+  removi(item: number, cell: number): void;
+  ordc(item: string, cell: number): number;
+  ordd(item: number, cell: number): number;
+  ordi(item: number, cell: number): number;
+  copy(source: number, destination: number): void;
+  lparss(list: string, delims: string, set: number): void;
   insrtc(item: string, cell: number): void;
 
   cellGeti(cell: number, index: number): number;
   cellGetd(cell: number, index: number): number;
   cellGetc(cell: number, index: number): string;
+
+  wncomd(left: number, right: number, window: number, result: number): void;
+  wncond(left: number, right: number, window: number): void;
+  wndifd(a: number, b: number, result: number): void;
+  wnelmd(point: number, window: number): boolean;
+  wnexpd(left: number, right: number, window: number): void;
+  wnextd(side: string, window: number): void;
+  wnfild(small: number, window: number): void;
+  wnfltd(small: number, window: number): void;
+  wnincd(left: number, right: number, window: number): boolean;
+  wnintd(a: number, b: number, result: number): void;
+  wnreld(a: number, op: string, b: number): boolean;
+  wnsumd(window: number): {
+    meas: number;
+    avg: number;
+    stddev: number;
+    shortest: number;
+    longest: number;
+  };
+  wnunid(a: number, b: number, result: number): void;
 
   wninsd(left: number, right: number, window: number): void;
   wncard(window: number): number;

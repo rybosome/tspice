@@ -1,0 +1,263 @@
+[
+  {
+    "caseId": "strings-repmf-first-marker",
+    "description": "Only the first matching marker is replaced after trimming ASCII marker blanks; leading literal whitespace is observable.",
+    "workflow": [
+      {
+        "op": "strings.repmf",
+        "input": "  A # #  ",
+        "marker": " # ",
+        "value": -12.5,
+        "sigdig": 4,
+        "format": "F"
+      },
+      {
+        "op": "strings.repmf",
+        "input": "X#Y#Z",
+        "marker": "#",
+        "value": -12.5,
+        "sigdig": 4,
+        "format": "F"
+      },
+      {
+        "op": "strings.repmf",
+        "input": "Étape à#\t",
+        "marker": "#",
+        "value": -12.5,
+        "sigdig": 4,
+        "format": "F"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-repmf-miss-and-blank",
+    "description": "Genuine empty input, missing marker, empty and whitespace-only marker, and input containing a literal tab.",
+    "workflow": [
+      {
+        "op": "strings.repmf",
+        "input": "",
+        "marker": "#",
+        "value": -12.5,
+        "sigdig": 4,
+        "format": "F"
+      },
+      {
+        "op": "strings.repmf",
+        "input": "unmarked",
+        "marker": "!",
+        "value": -12.5,
+        "sigdig": 4,
+        "format": "F"
+      },
+      {
+        "op": "strings.repmf",
+        "input": "a b",
+        "marker": "",
+        "value": -12.5,
+        "sigdig": 4,
+        "format": "F"
+      },
+      {
+        "op": "strings.repmf",
+        "input": "a b",
+        "marker": "  ",
+        "value": -12.5,
+        "sigdig": 4,
+        "format": "F"
+      },
+      {
+        "op": "strings.repmf",
+        "input": "t\t",
+        "marker": "#",
+        "value": -12.5,
+        "sigdig": 4,
+        "format": "F"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-repmf-capacity",
+    "description": "Truncate the complete replacement string at explicit UTF-8 byte capacities, including the minimum accepted room and signed maximum.",
+    "workflow": [
+      {
+        "op": "strings.repmf",
+        "input": "a#z",
+        "marker": "#",
+        "value": -12.5,
+        "sigdig": 4,
+        "format": "F",
+        "lenout": 1
+      },
+      {
+        "op": "strings.repmf",
+        "input": "a#z",
+        "marker": "#",
+        "value": -12.5,
+        "sigdig": 4,
+        "format": "F",
+        "lenout": 2
+      },
+      {
+        "op": "strings.repmf",
+        "input": "a#z",
+        "marker": "#",
+        "value": -12.5,
+        "sigdig": 4,
+        "format": "F",
+        "lenout": 3
+      },
+      {
+        "op": "strings.repmf",
+        "input": "a#z",
+        "marker": "#",
+        "value": -12.5,
+        "sigdig": 4,
+        "format": "F",
+        "lenout": 7
+      },
+      {
+        "op": "strings.repmf",
+        "input": "a#z",
+        "marker": "#",
+        "value": -12.5,
+        "sigdig": 4,
+        "format": "F",
+        "lenout": 2147483647
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-repmf-bad-room",
+    "description": "The actual canonical routine receives insufficient caller room.",
+    "workflow": [
+      {
+        "op": "strings.repmf",
+        "input": "#",
+        "marker": "#",
+        "value": -12.5,
+        "sigdig": 4,
+        "format": "F",
+        "lenout": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["STRINGTOOSHORT"]
+    }
+  },
+  {
+    "caseId": "strings-repmf-digits",
+    "description": "Compare clamped low/high significant digits and signs across signed 32-bit bounds.",
+    "workflow": [
+      {
+        "op": "strings.repmf",
+        "input": "#",
+        "marker": "#",
+        "value": -0.00125,
+        "sigdig": -2147483648,
+        "format": "E"
+      },
+      {
+        "op": "strings.repmf",
+        "input": "#",
+        "marker": "#",
+        "value": -0.00125,
+        "sigdig": 0,
+        "format": "E"
+      },
+      {
+        "op": "strings.repmf",
+        "input": "#",
+        "marker": "#",
+        "value": -0.00125,
+        "sigdig": 1,
+        "format": "E"
+      },
+      {
+        "op": "strings.repmf",
+        "input": "#",
+        "marker": "#",
+        "value": -0.00125,
+        "sigdig": 4,
+        "format": "E"
+      },
+      {
+        "op": "strings.repmf",
+        "input": "#",
+        "marker": "#",
+        "value": -0.00125,
+        "sigdig": 14,
+        "format": "E"
+      },
+      {
+        "op": "strings.repmf",
+        "input": "#",
+        "marker": "#",
+        "value": -0.00125,
+        "sigdig": 2147483647,
+        "format": "E"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-repmf-format",
+    "description": "Compare upper/lower scientific and fixed forms and the pinned fixed-format default for unknown single-byte selectors.",
+    "workflow": [
+      {
+        "op": "strings.repmf",
+        "input": "<#>",
+        "marker": "#",
+        "value": 105.125,
+        "sigdig": 6,
+        "format": "E"
+      },
+      {
+        "op": "strings.repmf",
+        "input": "<#>",
+        "marker": "#",
+        "value": 105.125,
+        "sigdig": 6,
+        "format": "e"
+      },
+      {
+        "op": "strings.repmf",
+        "input": "<#>",
+        "marker": "#",
+        "value": 105.125,
+        "sigdig": 6,
+        "format": "F"
+      },
+      {
+        "op": "strings.repmf",
+        "input": "<#>",
+        "marker": "#",
+        "value": 105.125,
+        "sigdig": 6,
+        "format": "f"
+      },
+      {
+        "op": "strings.repmf",
+        "input": "<#>",
+        "marker": "#",
+        "value": 105.125,
+        "sigdig": 6,
+        "format": "?"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

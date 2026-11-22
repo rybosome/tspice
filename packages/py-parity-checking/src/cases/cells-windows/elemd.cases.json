@@ -1,0 +1,286 @@
+[
+  {
+    "caseId": "cells-windows-elemd-ordered-and-missing",
+    "description": "Ordered cell; inspect each new value and each membership result.",
+    "workflow": [
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "S",
+        "item": -1e100
+      },
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "S",
+        "item": -0.25
+      },
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "S",
+        "item": 0
+      },
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "S",
+        "item": 1e-6
+      },
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "S",
+        "item": 1e100
+      },
+      {
+        "op": "cells-windows.elemd",
+        "cellId": "S",
+        "item": -1e100
+      },
+      {
+        "op": "cells-windows.elemd",
+        "cellId": "S",
+        "item": -0.25
+      },
+      {
+        "op": "cells-windows.elemd",
+        "cellId": "S",
+        "item": 0
+      },
+      {
+        "op": "cells-windows.elemd",
+        "cellId": "S",
+        "item": 1e-6
+      },
+      {
+        "op": "cells-windows.elemd",
+        "cellId": "S",
+        "item": 1e100
+      },
+      {
+        "op": "cells-windows.elemd",
+        "cellId": "S",
+        "item": -0.125
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-elemd-independent-handles",
+    "description": "Interleave two independent typed cells; queries must honor the addressed storage.",
+    "workflow": [
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "T",
+        "item": -0.25
+      },
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "S",
+        "item": 1e100
+      },
+      {
+        "op": "cells-windows.elemd",
+        "cellId": "S",
+        "item": -0.25
+      },
+      {
+        "op": "cells-windows.elemd",
+        "cellId": "T",
+        "item": 1e100
+      },
+      {
+        "op": "cells-windows.elemd",
+        "cellId": "T",
+        "item": -0.25
+      },
+      {
+        "op": "cells-windows.elemd",
+        "cellId": "S",
+        "item": 1e100
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-elemd-equal-repeat",
+    "description": "Preserve duplicate data but signal NOTASET when membership requires a set.",
+    "workflow": [
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "S",
+        "item": -0.25
+      },
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "S",
+        "item": -0.25
+      },
+      {
+        "op": "cells-windows.elemd",
+        "cellId": "S",
+        "item": -0.25
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["NOTASET"]
+    }
+  },
+  {
+    "caseId": "cells-windows-elemd-descending-then-valid",
+    "description": "Revalidate unsorted appended data and duplicates before testing membership.",
+    "workflow": [
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "S",
+        "item": 1e100
+      },
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "S",
+        "item": -1e100
+      },
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "S",
+        "item": -1e100
+      },
+      {
+        "op": "cells-windows.valid",
+        "size": 8,
+        "n": 3,
+        "targetKind": "double",
+        "targetId": "S"
+      },
+      {
+        "op": "cells-windows.elemd",
+        "cellId": "S",
+        "item": -1e100
+      },
+      {
+        "op": "cells-windows.elemd",
+        "cellId": "S",
+        "item": 0
+      },
+      {
+        "op": "cells-windows.elemd",
+        "cellId": "S",
+        "item": 1e100
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-elemd-empty",
+    "description": "Legitimate absence on an empty allocated cell with no insert.",
+    "workflow": [
+      {
+        "op": "cells-windows.elemd",
+        "cellId": "S",
+        "item": -1e100,
+        "maxCardinality": 0
+      },
+      {
+        "op": "cells-windows.elemd",
+        "cellId": "S",
+        "item": 1e100
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-elemd-descending-reject",
+    "description": "Distinct out-of-order values clear the flag even without a duplicate.",
+    "workflow": [
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "S",
+        "item": 1e100
+      },
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "S",
+        "item": -0.25
+      },
+      {
+        "op": "cells-windows.elemd",
+        "cellId": "S",
+        "item": 1e100
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["NOTASET"]
+    }
+  },
+  {
+    "caseId": "cells-windows-elemd-singleton",
+    "description": "Compare equal, smaller and greater values on a single element.",
+    "workflow": [
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "S",
+        "item": 0
+      },
+      {
+        "op": "cells-windows.elemd",
+        "cellId": "S",
+        "item": -0.25
+      },
+      {
+        "op": "cells-windows.elemd",
+        "cellId": "S",
+        "item": 0
+      },
+      {
+        "op": "cells-windows.elemd",
+        "cellId": "S",
+        "item": 1e100
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-elemd-signed-zero",
+    "description": "Toolkit equality treats signed zero values as duplicates; observation follows revalidation.",
+    "workflow": [
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "S",
+        "item": -0.0
+      },
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "S",
+        "item": 0.0
+      },
+      {
+        "op": "cells-windows.valid",
+        "size": 8,
+        "n": 2,
+        "targetKind": "double",
+        "targetId": "S"
+      },
+      {
+        "op": "cells-windows.elemd",
+        "cellId": "S",
+        "item": -0.0
+      },
+      {
+        "op": "cells-windows.elemd",
+        "cellId": "S",
+        "item": 0.0
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

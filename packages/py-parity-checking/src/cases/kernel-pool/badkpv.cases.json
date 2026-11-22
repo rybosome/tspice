@@ -1,0 +1,357 @@
+[
+  {
+    "caseId": "kernel-pool-badkpv-comparison-operators",
+    "description": "Test all five canonical dimension comparisons, case-insensitive type and signed divisors.",
+    "workflow": [
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "B05_NUM",
+        "values": [3, -2.25, 4.125, 0]
+      },
+      {
+        "op": "kernel-pool.badkpv",
+        "caller": "B05_CALLER",
+        "name": "B05_NUM",
+        "comp": "=",
+        "size": 4,
+        "divby": 2,
+        "type": "N"
+      },
+      {
+        "op": "kernel-pool.badkpv",
+        "caller": "B05_CALLER",
+        "name": "B05_NUM",
+        "comp": "<",
+        "size": 5,
+        "divby": -2,
+        "type": "n"
+      },
+      {
+        "op": "kernel-pool.badkpv",
+        "caller": "B05_CALLER",
+        "name": "B05_NUM",
+        "comp": ">",
+        "size": 3,
+        "divby": 4,
+        "type": "N"
+      },
+      {
+        "op": "kernel-pool.badkpv",
+        "caller": "B05_CALLER",
+        "name": "B05_NUM",
+        "comp": "<=",
+        "size": 4,
+        "divby": 1,
+        "type": "n"
+      },
+      {
+        "op": "kernel-pool.badkpv",
+        "caller": "B05_CALLER",
+        "name": "B05_NUM",
+        "comp": "=>",
+        "size": 4,
+        "divby": 2,
+        "type": "N"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "kernel-pool-badkpv-changing-pool-type",
+    "description": "Validate successive independent numeric and character definitions of the same variable.",
+    "workflow": [
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "B05_NUM",
+        "values": [3, -2.25, 4.125, 0]
+      },
+      {
+        "op": "kernel-pool.badkpv",
+        "caller": "B05_CALLER",
+        "name": "B05_NUM",
+        "comp": "=",
+        "size": 4,
+        "divby": 1,
+        "type": "N"
+      },
+      {
+        "op": "kernel-pool.pcpool",
+        "name": "B05_NUM",
+        "values": ["blue", "green"]
+      },
+      {
+        "op": "kernel-pool.badkpv",
+        "caller": "B05_CALLER",
+        "name": "B05_NUM",
+        "comp": "=",
+        "size": 2,
+        "divby": 1,
+        "type": "c"
+      },
+      {
+        "op": "kernel-pool.dtpool",
+        "name": "B05_NUM"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "kernel-pool-badkpv-missing",
+    "description": "Observe the diagnostic on real pool metadata after a successful validation.",
+    "workflow": [
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "B05_NUM",
+        "values": [3, -2.25, 4.125, 0]
+      },
+      {
+        "op": "kernel-pool.badkpv",
+        "caller": "B05_CALLER",
+        "name": "B05_NUM",
+        "comp": "=",
+        "size": 4,
+        "divby": 1,
+        "type": "N"
+      },
+      {
+        "op": "kernel-pool.badkpv",
+        "caller": "B05_CALLER",
+        "name": "B05_ABSENT",
+        "comp": "=",
+        "size": 4,
+        "divby": 1,
+        "type": "N"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["VARIABLENOTFOUND"]
+    }
+  },
+  {
+    "caseId": "kernel-pool-badkpv-operator",
+    "description": "Observe the diagnostic on real pool metadata after a successful validation.",
+    "workflow": [
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "B05_NUM",
+        "values": [3, -2.25, 4.125, 0]
+      },
+      {
+        "op": "kernel-pool.badkpv",
+        "caller": "B05_CALLER",
+        "name": "B05_NUM",
+        "comp": "=",
+        "size": 4,
+        "divby": 1,
+        "type": "N"
+      },
+      {
+        "op": "kernel-pool.badkpv",
+        "caller": "B05_CALLER",
+        "name": "B05_NUM",
+        "comp": ">=",
+        "size": 4,
+        "divby": 1,
+        "type": "N"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["UNKNOWNCOMPARE"]
+    }
+  },
+  {
+    "caseId": "kernel-pool-badkpv-wrong-size",
+    "description": "Observe the diagnostic on real pool metadata after a successful validation.",
+    "workflow": [
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "B05_NUM",
+        "values": [3, -2.25, 4.125, 0]
+      },
+      {
+        "op": "kernel-pool.badkpv",
+        "caller": "B05_CALLER",
+        "name": "B05_NUM",
+        "comp": "=",
+        "size": 4,
+        "divby": 1,
+        "type": "N"
+      },
+      {
+        "op": "kernel-pool.badkpv",
+        "caller": "B05_CALLER",
+        "name": "B05_NUM",
+        "comp": "<",
+        "size": 4,
+        "divby": 1,
+        "type": "N"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["BADVARIABLESIZE"]
+    }
+  },
+  {
+    "caseId": "kernel-pool-badkpv-indivisible",
+    "description": "Observe the diagnostic on real pool metadata after a successful validation.",
+    "workflow": [
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "B05_NUM",
+        "values": [3, -2.25, 4.125, 0]
+      },
+      {
+        "op": "kernel-pool.badkpv",
+        "caller": "B05_CALLER",
+        "name": "B05_NUM",
+        "comp": "=",
+        "size": 4,
+        "divby": 1,
+        "type": "N"
+      },
+      {
+        "op": "kernel-pool.badkpv",
+        "caller": "B05_CALLER",
+        "name": "B05_NUM",
+        "comp": "=",
+        "size": 4,
+        "divby": 3,
+        "type": "N"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["BADVARIABLESIZE"]
+    }
+  },
+  {
+    "caseId": "kernel-pool-badkpv-zero-divisor",
+    "description": "Observe the diagnostic on real pool metadata after a successful validation.",
+    "workflow": [
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "B05_NUM",
+        "values": [3, -2.25, 4.125, 0]
+      },
+      {
+        "op": "kernel-pool.badkpv",
+        "caller": "B05_CALLER",
+        "name": "B05_NUM",
+        "comp": "=",
+        "size": 4,
+        "divby": 1,
+        "type": "N"
+      },
+      {
+        "op": "kernel-pool.badkpv",
+        "caller": "B05_CALLER",
+        "name": "B05_NUM",
+        "comp": "=",
+        "size": 4,
+        "divby": 0,
+        "type": "N"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["BADVARIABLESIZE"]
+    }
+  },
+  {
+    "caseId": "kernel-pool-badkpv-wrong-type",
+    "description": "Observe the diagnostic on real pool metadata after a successful validation.",
+    "workflow": [
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "B05_NUM",
+        "values": [3, -2.25, 4.125, 0]
+      },
+      {
+        "op": "kernel-pool.badkpv",
+        "caller": "B05_CALLER",
+        "name": "B05_NUM",
+        "comp": "=",
+        "size": 4,
+        "divby": 1,
+        "type": "N"
+      },
+      {
+        "op": "kernel-pool.badkpv",
+        "caller": "B05_CALLER",
+        "name": "B05_NUM",
+        "comp": "=",
+        "size": 4,
+        "divby": 2,
+        "type": "C"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["BADVARIABLETYPE"]
+    }
+  },
+  {
+    "caseId": "kernel-pool-badkpv-unknown-type",
+    "description": "Observe the diagnostic on real pool metadata after a successful validation.",
+    "workflow": [
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "B05_NUM",
+        "values": [3, -2.25, 4.125, 0]
+      },
+      {
+        "op": "kernel-pool.badkpv",
+        "caller": "B05_CALLER",
+        "name": "B05_NUM",
+        "comp": "=",
+        "size": 4,
+        "divby": 1,
+        "type": "N"
+      },
+      {
+        "op": "kernel-pool.badkpv",
+        "caller": "B05_CALLER",
+        "name": "B05_NUM",
+        "comp": "=",
+        "size": 4,
+        "divby": 2,
+        "type": "X"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDTYPE"]
+    }
+  },
+  {
+    "caseId": "kernel-pool-badkpv-empty-caller",
+    "description": "Empty caller is checked at the C wrapper before the variable lookup.",
+    "workflow": [
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "B05_NUM",
+        "values": [3, -2.25, 4.125, 0]
+      },
+      {
+        "op": "kernel-pool.badkpv",
+        "caller": "",
+        "name": "B05_NUM",
+        "comp": "=",
+        "size": 4,
+        "divby": 1,
+        "type": "N"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["EMPTYSTRING"]
+    }
+  }
+]

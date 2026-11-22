@@ -1,0 +1,274 @@
+[
+  {
+    "caseId": "cells-windows-appndd-ordered-and-missing",
+    "description": "Ordered cell; inspect each new value and each membership result.",
+    "workflow": [
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "S",
+        "item": -1e100
+      },
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "S",
+        "item": -0.25
+      },
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "S",
+        "item": 0
+      },
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "S",
+        "item": 1e-6
+      },
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "S",
+        "item": 1e100
+      },
+      {
+        "op": "cells-windows.elemd",
+        "cellId": "S",
+        "item": -1e100
+      },
+      {
+        "op": "cells-windows.elemd",
+        "cellId": "S",
+        "item": -0.25
+      },
+      {
+        "op": "cells-windows.elemd",
+        "cellId": "S",
+        "item": 0
+      },
+      {
+        "op": "cells-windows.elemd",
+        "cellId": "S",
+        "item": 1e-6
+      },
+      {
+        "op": "cells-windows.elemd",
+        "cellId": "S",
+        "item": 1e100
+      },
+      {
+        "op": "cells-windows.elemd",
+        "cellId": "S",
+        "item": -0.125
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-appndd-independent-handles",
+    "description": "Interleave two independent typed cells; queries must honor the addressed storage.",
+    "workflow": [
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "T",
+        "item": -0.25
+      },
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "S",
+        "item": 1e100
+      },
+      {
+        "op": "cells-windows.elemd",
+        "cellId": "S",
+        "item": -0.25
+      },
+      {
+        "op": "cells-windows.elemd",
+        "cellId": "T",
+        "item": 1e100
+      },
+      {
+        "op": "cells-windows.elemd",
+        "cellId": "T",
+        "item": -0.25
+      },
+      {
+        "op": "cells-windows.elemd",
+        "cellId": "S",
+        "item": 1e100
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-appndd-equal-repeat",
+    "description": "Preserve duplicate data but signal NOTASET when membership requires a set.",
+    "workflow": [
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "S",
+        "item": -0.25
+      },
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "S",
+        "item": -0.25
+      },
+      {
+        "op": "cells-windows.elemd",
+        "cellId": "S",
+        "item": -0.25
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["NOTASET"]
+    }
+  },
+  {
+    "caseId": "cells-windows-appndd-descending-then-valid",
+    "description": "Revalidate unsorted appended data and duplicates before testing membership.",
+    "workflow": [
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "S",
+        "item": 1e100
+      },
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "S",
+        "item": -1e100
+      },
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "S",
+        "item": -1e100
+      },
+      {
+        "op": "cells-windows.valid",
+        "size": 8,
+        "n": 3,
+        "targetKind": "double",
+        "targetId": "S"
+      },
+      {
+        "op": "cells-windows.elemd",
+        "cellId": "S",
+        "item": -1e100
+      },
+      {
+        "op": "cells-windows.elemd",
+        "cellId": "S",
+        "item": 0
+      },
+      {
+        "op": "cells-windows.elemd",
+        "cellId": "S",
+        "item": 1e100
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-appndd-exact-capacity",
+    "description": "Use every storage slot, inspect ordered and repeated physical values.",
+    "workflow": [
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "S",
+        "item": 0,
+        "maxCardinality": 2
+      },
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "S",
+        "item": -1e100
+      },
+      {
+        "op": "cells-windows.card",
+        "targetKind": "double",
+        "targetId": "S"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-appndd-full",
+    "description": "Overflow after successful mutation reports the toolkit capacity error.",
+    "workflow": [
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "S",
+        "item": -1e100,
+        "maxCardinality": 1
+      },
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "S",
+        "item": 1e100
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["CELLTOOSMALL"]
+    }
+  },
+  {
+    "caseId": "cells-windows-appndd-zero-capacity",
+    "description": "An ordinary zero-capacity cell cannot accept an element.",
+    "workflow": [
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "S",
+        "item": -0.25,
+        "maxCardinality": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["CELLTOOSMALL"]
+    }
+  },
+  {
+    "caseId": "cells-windows-appndd-signed-zero",
+    "description": "Toolkit equality treats signed zero values as duplicates; observation follows revalidation.",
+    "workflow": [
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "S",
+        "item": -0.0
+      },
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "S",
+        "item": 0.0
+      },
+      {
+        "op": "cells-windows.valid",
+        "size": 8,
+        "n": 2,
+        "targetKind": "double",
+        "targetId": "S"
+      },
+      {
+        "op": "cells-windows.elemd",
+        "cellId": "S",
+        "item": -0.0
+      },
+      {
+        "op": "cells-windows.elemd",
+        "cellId": "S",
+        "item": 0.0
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

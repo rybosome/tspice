@@ -359,7 +359,8 @@
       ],
       "id": "local-cp01-17f11884fb5b-node",
       "kind": "local",
-      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 17f11884fb5bdef7cbaf84bd480d4b8edde3d310. The native-required lane completed 3788 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45009595818/job/137168748216"
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 17f11884fb5bdef7cbaf84bd480d4b8edde3d310. The native-required lane completed 3788 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45009595818/job/137168748216",
+      "historical": true
     },
     {
       "backend": "node",
@@ -426,7 +427,8 @@
       "kind": "ci",
       "commit": "2851d19aa900e30c688b0d1c756a35357f10eebc",
       "url": "https://github.com/rybosome/tspice/actions/runs/45012853638/job/137178762153",
-      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 3788 live comparisons without unexpected skips."
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 3788 live comparisons without unexpected skips.",
+      "historical": true
     },
     {
       "backend": "wasm",
@@ -491,7 +493,8 @@
       ],
       "id": "local-cp01-17f11884fb5b-wasm",
       "kind": "local",
-      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 17f11884fb5bdef7cbaf84bd480d4b8edde3d310. The native-required lane completed 3788 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45009595818/job/137168748216"
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 17f11884fb5bdef7cbaf84bd480d4b8edde3d310. The native-required lane completed 3788 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45009595818/job/137168748216",
+      "historical": true
     },
     {
       "backend": "wasm",
@@ -558,7 +561,8 @@
       "kind": "ci",
       "commit": "2851d19aa900e30c688b0d1c756a35357f10eebc",
       "url": "https://github.com/rybosome/tspice/actions/runs/45012853638/job/137178762153",
-      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 3788 live comparisons without unexpected skips."
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 3788 live comparisons without unexpected skips.",
+      "historical": true
     }
   ],
   "routines": [
@@ -628,14 +632,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.hrmesp -> typed Node adapter -> registered native binding with validated counts and owned buffers -> shared tspice_hrmesp -> actual hrmesp_c. Independent sidecar validates dimensions/finite inputs then calls locked SpiceyPy hrmesp, whose wrapper calls the corresponding canonical symbol; all returned fields reach comparison.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -643,14 +645,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.hrmesp -> typed WASM adapter -> checked buffers -> exported _tspice_hrmesp -> shared tspice_hrmesp -> actual hrmesp_c. Independent sidecar validates dimensions/finite inputs then calls locked SpiceyPy hrmesp, whose wrapper calls the corresponding canonical symbol; all returned fields reach comparison.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -739,14 +739,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.hrmint -> typed Node adapter -> registered native binding with validated counts and owned buffers -> shared tspice_hrmint -> actual hrmint_c. Independent sidecar validates dimensions/finite inputs then calls locked SpiceyPy hrmint, whose wrapper calls the corresponding canonical symbol; all returned fields reach comparison.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -754,14 +752,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.hrmint -> typed WASM adapter -> checked buffers -> exported _tspice_hrmint -> shared tspice_hrmint -> actual hrmint_c. Independent sidecar validates dimensions/finite inputs then calls locked SpiceyPy hrmint, whose wrapper calls the corresponding canonical symbol; all returned fields reach comparison.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -831,14 +827,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.lgresp -> typed Node adapter -> registered native binding with validated counts and owned buffers -> shared tspice_lgresp -> actual lgresp_c. Independent sidecar validates dimensions/finite inputs then calls locked SpiceyPy lgresp, whose wrapper calls the corresponding canonical symbol; all returned fields reach comparison.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -846,14 +840,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.lgresp -> typed WASM adapter -> checked buffers -> exported _tspice_lgresp -> shared tspice_lgresp -> actual lgresp_c. Independent sidecar validates dimensions/finite inputs then calls locked SpiceyPy lgresp, whose wrapper calls the corresponding canonical symbol; all returned fields reach comparison.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -937,14 +929,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.lgrind -> typed Node adapter -> registered native binding with validated counts and owned buffers -> shared tspice_lgrind -> actual lgrind_c. Independent sidecar validates dimensions/finite inputs then calls locked SpiceyPy lgrind, whose wrapper calls the corresponding canonical symbol; all returned fields reach comparison.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -952,14 +942,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.lgrind -> typed WASM adapter -> checked buffers -> exported _tspice_lgrind -> shared tspice_lgrind -> actual lgrind_c. Independent sidecar validates dimensions/finite inputs then calls locked SpiceyPy lgrind, whose wrapper calls the corresponding canonical symbol; all returned fields reach comparison.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1043,14 +1031,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.lgrint -> typed Node adapter -> registered native binding with validated counts and owned buffers -> shared tspice_lgrint -> actual lgrint_c. Independent sidecar validates dimensions/finite inputs then calls locked SpiceyPy lgrint, whose wrapper calls the corresponding canonical symbol; all returned fields reach comparison.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1058,14 +1044,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.lgrint -> typed WASM adapter -> checked buffers -> exported _tspice_lgrint -> shared tspice_lgrint -> actual lgrint_c. Independent sidecar validates dimensions/finite inputs then calls locked SpiceyPy lgrint, whose wrapper calls the corresponding canonical symbol; all returned fields reach comparison.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1139,14 +1123,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.qderiv -> typed Node adapter -> registered native binding with validated counts and owned buffers -> shared tspice_qderiv -> actual qderiv_c. Independent sidecar validates dimensions/finite inputs then calls locked SpiceyPy qderiv, whose wrapper calls the corresponding canonical symbol; all returned fields reach comparison.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1154,14 +1136,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.qderiv -> typed WASM adapter -> checked buffers -> exported _tspice_qderiv -> shared tspice_qderiv -> actual qderiv_c. Independent sidecar validates dimensions/finite inputs then calls locked SpiceyPy qderiv, whose wrapper calls the corresponding canonical symbol; all returned fields reach comparison.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     }

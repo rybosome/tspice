@@ -4,6 +4,7 @@
 #include <array>
 #include <cmath>
 #include <cstring>
+#include <limits>
 #include <string>
 #include <string_view>
 #include <vector>
@@ -72,6 +73,312 @@ inline bool ValidateNonEmptyString(
 }
 
 }  // namespace
+
+static bool ReadText(Napi::Env env, const Napi::Value& value, std::string* text,
+                     size_t maxBytes = std::numeric_limits<int>::max() - 1) {
+  if (!value.IsString()) {
+    ThrowSpiceError(Napi::TypeError::New(env, "Expected a string"));
+    return false;
+  }
+  size_t bytes = 0;
+  if (napi_get_value_string_utf8(env, value, nullptr, 0, &bytes) != napi_ok || bytes > maxBytes) {
+    ThrowSpiceError(Napi::RangeError::New(env, "String exceeds its UTF-8 byte limit"));
+    return false;
+  }
+  const Napi::String input = value.As<Napi::String>();
+  // N-API replaces unpaired surrogates when encoding UTF-8. Validate the
+  // original UTF-16 units before making the C string.
+  const std::u16string units = input.Utf16Value();
+  for (size_t i = 0; i < units.size(); i++) {
+    const char16_t c = units[i];
+    if (c == 0) {
+      ThrowSpiceError(Napi::TypeError::New(env, "Input contains an embedded NUL"));
+      return false;
+    }
+    if (c >= 0xd800 && c <= 0xdfff) {
+      if (c > 0xdbff || i + 1 == units.size() || units[i+1] < 0xdc00 || units[i+1] > 0xdfff) {
+        ThrowSpiceError(Napi::TypeError::New(env, "Input contains an unpaired UTF-16 surrogate"));
+        return false;
+      }
+      i++;
+    }
+  }
+  *text = input.Utf8Value();
+  return true;
+}
+
+static bool ReadChar(Napi::Env env, const Napi::Value& value, int* out) {
+  size_t units = 0;
+  if (value.IsString() && napi_get_value_string_utf16(env, value, nullptr, 0, &units) == napi_ok && units == 1) {
+    const auto text = value.As<Napi::String>().Utf16Value();
+    if (text.size() == 1 && text[0] <= 127) { *out = text[0]; return true; }
+  }
+  ThrowSpiceError(Napi::TypeError::New(env, "Expected one ASCII byte"));
+  return false;
+}
+
+static bool ReadInt(Napi::Env env, const Napi::Value& value, int* out) {
+  if (value.IsNumber()) {
+    const double n = value.As<Napi::Number>().DoubleValue();
+    if (std::isfinite(n) && std::trunc(n) == n && n >= -2147483648.0 && n <= 2147483647.0) {
+      *out = static_cast<int>(n);
+      return true;
+    }
+  }
+  ThrowSpiceError(Napi::TypeError::New(env, "Expected a signed32 integer"));
+  return false;
+}
+
+static Napi::Value StringResult(Napi::Env env, const std::vector<char>& out) {
+  const auto end = std::find(out.begin(), out.end(), '\0');
+  if (end == out.end()) {
+    ThrowSpiceError(Napi::Error::New(env, "CSPICE string result has no NUL terminator"));
+    return env.Undefined();
+  }
+  const size_t length = static_cast<size_t>(end - out.begin());
+  const auto result = Napi::String::New(env, out.data(), length);
+  // N-API decodes invalid UTF-8 with replacement. A round trip must preserve
+  // every byte, including a leading BOM and trailing whitespace.
+  const std::string decoded = result.Utf8Value();
+  if (decoded.size() != length || std::memcmp(decoded.data(), out.data(), length) != 0) {
+    ThrowSpiceError(Napi::TypeError::New(env, "CSPICE string result is not valid UTF-8"));
+    return env.Undefined();
+  }
+  return result;
+}
+
+static Napi::Value Badkpv(const Napi::CallbackInfo& info) {
+  const Napi::Env env = info.Env();
+  if (info.Length() != 6) {
+    ThrowSpiceError(Napi::TypeError::New(env, "badkpv() expects 6 arguments"));
+    return env.Undefined();
+  }
+  std::string caller;
+  if (!ReadText(env, info[0], &caller)) return env.Undefined();
+  std::string name;
+  if (!ReadText(env, info[1], &name)) return env.Undefined();
+  std::string comp;
+  if (!ReadText(env, info[2], &comp)) return env.Undefined();
+  int size = 0;
+  if (!ReadInt(env, info[3], &size)) return env.Undefined();
+  int divby = 0;
+  if (!ReadInt(env, info[4], &divby)) return env.Undefined();
+  int type = 0;
+  if (!ReadChar(env, info[5], &type)) return env.Undefined();
+  int bad = 0;
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  if (tspice_badkpv(caller.c_str(), name.c_str(), comp.c_str(), size, divby, type, &bad, err, sizeof(err)) != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling badkpv()", err);
+    return env.Undefined();
+  }
+  return Napi::Boolean::New(env, bad != 0);
+}
+
+static Napi::Value Bodvcd(const Napi::CallbackInfo& info) {
+  const Napi::Env env = info.Env();
+  if (info.Length() != 3) {
+    ThrowSpiceError(Napi::TypeError::New(env, "bodvcd() expects 3 arguments"));
+    return env.Undefined();
+  }
+  int body = 0;
+  if (!ReadInt(env, info[0], &body)) return env.Undefined();
+  std::string item;
+  if (!ReadText(env, info[1], &item)) return env.Undefined();
+  int maxn = 0;
+  if (!ReadInt(env, info[2], &maxn)) return env.Undefined();
+  const int capacity = std::max(1, std::min(maxn, TSPICE_POOL_MAX_VALUES));
+  int dim = 0;
+  std::vector<double> values(static_cast<size_t>(capacity));
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  if (tspice_bodvcd(body, item.c_str(), maxn, &dim, values.data(), err, sizeof(err)) != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling bodvcd()", err);
+    return env.Undefined();
+  }
+  if (dim < 0 || dim > maxn || dim > capacity) {
+    ThrowSpiceError(Napi::Error::New(env, "Invalid body constant output dimension"));
+    return env.Undefined();
+  }
+  auto result = Napi::Object::New(env);
+  result.Set("dim", dim);
+  result.Set("values", MakeNumberArray(env, values.data(), static_cast<size_t>(dim)));
+  return result;
+}
+
+static Napi::Value Bodvrd(const Napi::CallbackInfo& info) {
+  const Napi::Env env = info.Env();
+  if (info.Length() != 3) {
+    ThrowSpiceError(Napi::TypeError::New(env, "bodvrd() expects 3 arguments"));
+    return env.Undefined();
+  }
+  std::string body;
+  if (!ReadText(env, info[0], &body)) return env.Undefined();
+  std::string item;
+  if (!ReadText(env, info[1], &item)) return env.Undefined();
+  int maxn = 0;
+  if (!ReadInt(env, info[2], &maxn)) return env.Undefined();
+  const int capacity = std::max(1, std::min(maxn, TSPICE_POOL_MAX_VALUES));
+  int dim = 0;
+  std::vector<double> values(static_cast<size_t>(capacity));
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  if (tspice_bodvrd(body.c_str(), item.c_str(), maxn, &dim, values.data(), err, sizeof(err)) != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling bodvrd()", err);
+    return env.Undefined();
+  }
+  if (dim < 0 || dim > maxn || dim > capacity) {
+    ThrowSpiceError(Napi::Error::New(env, "Invalid body constant output dimension"));
+    return env.Undefined();
+  }
+  auto result = Napi::Object::New(env);
+  result.Set("dim", dim);
+  result.Set("values", MakeNumberArray(env, values.data(), static_cast<size_t>(dim)));
+  return result;
+}
+
+static Napi::Value Clpool(const Napi::CallbackInfo& info) {
+  const Napi::Env env = info.Env();
+  if (info.Length() != 0) {
+    ThrowSpiceError(Napi::TypeError::New(env, "clpool() expects 0 arguments"));
+    return env.Undefined();
+  }
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  if (tspice_clpool(err, sizeof(err)) != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling clpool()", err);
+    return env.Undefined();
+  }
+  return env.Undefined();
+}
+
+static Napi::Value Dvpool(const Napi::CallbackInfo& info) {
+  const Napi::Env env = info.Env();
+  if (info.Length() != 1) {
+    ThrowSpiceError(Napi::TypeError::New(env, "dvpool() expects 1 arguments"));
+    return env.Undefined();
+  }
+  std::string name;
+  if (!ReadText(env, info[0], &name)) return env.Undefined();
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  if (tspice_dvpool(name.c_str(), err, sizeof(err)) != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling dvpool()", err);
+    return env.Undefined();
+  }
+  return env.Undefined();
+}
+
+static Napi::Value Ldpool(const Napi::CallbackInfo& info) {
+  const Napi::Env env = info.Env();
+  if (info.Length() != 1) {
+    ThrowSpiceError(Napi::TypeError::New(env, "ldpool() expects 1 arguments"));
+    return env.Undefined();
+  }
+  std::string path;
+  if (!ReadText(env, info[0], &path)) return env.Undefined();
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  if (tspice_ldpool(path.c_str(), err, sizeof(err)) != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling ldpool()", err);
+    return env.Undefined();
+  }
+  return env.Undefined();
+}
+
+static Napi::Value Lmpool(const Napi::CallbackInfo& info) {
+  const Napi::Env env = info.Env();
+  if (info.Length() != 1) {
+    ThrowSpiceError(Napi::TypeError::New(env, "lmpool() expects 1 arguments"));
+    return env.Undefined();
+  }
+  if (!info[0].IsArray()) {
+    ThrowSpiceError(Napi::TypeError::New(env, "lmpool lines must be an array"));
+    return env.Undefined();
+  }
+  const auto input = info[0].As<Napi::Array>();
+  const uint32_t count = input.Length();
+  constexpr size_t maxBytes = std::numeric_limits<int>::max();
+  if (count > maxBytes / 2) {
+    ThrowSpiceError(Napi::RangeError::New(env, "lmpool table is too large"));
+    return env.Undefined();
+  }
+  size_t stride = 2;
+  std::vector<std::string> lines;
+  for (uint32_t i = 0; i < count; ++i) {
+    const auto value = input.Get(i);
+    std::string line;
+    if (env.IsExceptionPending() || !ReadText(env, value, &line, maxBytes / count - 1)) return env.Undefined();
+    stride = std::max(stride, line.size() + 1);
+    lines.push_back(std::move(line));
+  }
+  std::vector<char> rows(std::max<size_t>(1, count) * stride, 0);
+  for (size_t i = 0; i < lines.size(); ++i) {
+    std::memcpy(rows.data() + i * stride, lines[i].data(), lines[i].size());
+  }
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  if (tspice_lmpool(rows.data(), static_cast<int>(stride), static_cast<int>(count), err, sizeof(err)) != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling lmpool()", err);
+    return env.Undefined();
+  }
+  return env.Undefined();
+}
+
+static Napi::Value Stpool(const Napi::CallbackInfo& info) {
+  const Napi::Env env = info.Env();
+  if (info.Length() != 4) {
+    ThrowSpiceError(Napi::TypeError::New(env, "stpool() expects 4 arguments"));
+    return env.Undefined();
+  }
+  std::string item;
+  if (!ReadText(env, info[0], &item)) return env.Undefined();
+  int nth = 0;
+  if (!ReadInt(env, info[1], &nth)) return env.Undefined();
+  std::string contin;
+  if (!ReadText(env, info[2], &contin)) return env.Undefined();
+  int lenout = 0;
+  if (!ReadInt(env, info[3], &lenout)) return env.Undefined();
+  const int capacity = std::max(1, std::min(lenout, TSPICE_POOL_TEXT_CAPACITY));
+  std::vector<char> text(static_cast<size_t>(capacity));
+  int size = 0, found = 0;
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  if (tspice_stpool(item.c_str(), nth, contin.c_str(), lenout, text.data(), &size, &found, err, sizeof(err)) != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling stpool()", err);
+    return env.Undefined();
+  }
+  if (!found) return MakeNotFound(env);
+  auto result = Napi::Object::New(env);
+  result.Set("found", true);
+  const Napi::Value value = StringResult(env, text);
+  if (env.IsExceptionPending()) return env.Undefined();
+  result.Set("nthstr", value);
+  result.Set("size", size);
+  return result;
+}
+
+static Napi::Value Szpool(const Napi::CallbackInfo& info) {
+  const Napi::Env env = info.Env();
+  if (info.Length() != 1) {
+    ThrowSpiceError(Napi::TypeError::New(env, "szpool() expects 1 arguments"));
+    return env.Undefined();
+  }
+  std::string name;
+  if (!ReadText(env, info[0], &name)) return env.Undefined();
+  int n = 0, found = 0;
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  if (tspice_szpool(name.c_str(), &n, &found, err, sizeof(err)) != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling szpool()", err);
+    return env.Undefined();
+  }
+  if (!found) return MakeNotFound(env);
+  auto result = Napi::Object::New(env);
+  result.Set("found", true);
+  result.Set("n", n);
+  return result;
+}
 
 static Napi::Object Gdpool(const Napi::CallbackInfo& info) {
   Napi::Env env = info.Env();
@@ -662,6 +969,15 @@ static Napi::Boolean Expool(const Napi::CallbackInfo& info) {
 namespace tspice_backend_node {
 
 void RegisterKernelPool(Napi::Env env, Napi::Object exports) {
+  if (!SetExportChecked(env, exports, "badkpv", Napi::Function::New(env, Badkpv), __func__)) return;
+  if (!SetExportChecked(env, exports, "bodvcd", Napi::Function::New(env, Bodvcd), __func__)) return;
+  if (!SetExportChecked(env, exports, "bodvrd", Napi::Function::New(env, Bodvrd), __func__)) return;
+  if (!SetExportChecked(env, exports, "clpool", Napi::Function::New(env, Clpool), __func__)) return;
+  if (!SetExportChecked(env, exports, "dvpool", Napi::Function::New(env, Dvpool), __func__)) return;
+  if (!SetExportChecked(env, exports, "ldpool", Napi::Function::New(env, Ldpool), __func__)) return;
+  if (!SetExportChecked(env, exports, "lmpool", Napi::Function::New(env, Lmpool), __func__)) return;
+  if (!SetExportChecked(env, exports, "stpool", Napi::Function::New(env, Stpool), __func__)) return;
+  if (!SetExportChecked(env, exports, "szpool", Napi::Function::New(env, Szpool), __func__)) return;
   if (!SetExportChecked(env, exports, "gdpool", Napi::Function::New(env, Gdpool), __func__)) return;
   if (!SetExportChecked(env, exports, "gipool", Napi::Function::New(env, Gipool), __func__)) return;
   if (!SetExportChecked(env, exports, "gcpool", Napi::Function::New(env, Gcpool), __func__)) return;

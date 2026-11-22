@@ -1,0 +1,2718 @@
+[
+  {
+    "caseId": "cells-windows-set-int-subset",
+    "description": "Compare every relational operator in both directions and retain cardinality and operand ordering.",
+    "workflow": [
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "A",
+        "item": -2147483648
+      },
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "A",
+        "item": 6
+      },
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "B",
+        "item": -2147483648
+      },
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "B",
+        "item": 0
+      },
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "B",
+        "item": 6
+      },
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "C",
+        "item": -3
+      },
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "C",
+        "item": 2147483647
+      },
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "D",
+        "item": -2147483648
+      },
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "D",
+        "item": 2147483647
+      },
+      {
+        "op": "cells-windows.ordi",
+        "cellId": "E",
+        "item": 0
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "int",
+        "aId": "A",
+        "bId": "B",
+        "relation": "<"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "int",
+        "aId": "B",
+        "bId": "A",
+        "relation": "<"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "int",
+        "aId": "A",
+        "bId": "B",
+        "relation": "<="
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "int",
+        "aId": "B",
+        "bId": "A",
+        "relation": "<="
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "int",
+        "aId": "A",
+        "bId": "B",
+        "relation": "="
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "int",
+        "aId": "B",
+        "bId": "A",
+        "relation": "="
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "int",
+        "aId": "A",
+        "bId": "B",
+        "relation": "<>"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "int",
+        "aId": "B",
+        "bId": "A",
+        "relation": "<>"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "int",
+        "aId": "A",
+        "bId": "B",
+        "relation": ">"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "int",
+        "aId": "B",
+        "bId": "A",
+        "relation": ">"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "int",
+        "aId": "A",
+        "bId": "B",
+        "relation": ">="
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "int",
+        "aId": "B",
+        "bId": "A",
+        "relation": ">="
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "int",
+        "aId": "A",
+        "bId": "B",
+        "relation": "&"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "int",
+        "aId": "B",
+        "bId": "A",
+        "relation": "&"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "int",
+        "aId": "A",
+        "bId": "B",
+        "relation": "~"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "int",
+        "aId": "B",
+        "bId": "A",
+        "relation": "~"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-set-int-equal",
+    "description": "Compare every relational operator in both directions and retain cardinality and operand ordering.",
+    "workflow": [
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "A",
+        "item": -2147483648
+      },
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "A",
+        "item": 6
+      },
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "B",
+        "item": -2147483648
+      },
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "B",
+        "item": 0
+      },
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "B",
+        "item": 6
+      },
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "C",
+        "item": -3
+      },
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "C",
+        "item": 2147483647
+      },
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "D",
+        "item": -2147483648
+      },
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "D",
+        "item": 2147483647
+      },
+      {
+        "op": "cells-windows.ordi",
+        "cellId": "E",
+        "item": 0
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "int",
+        "aId": "A",
+        "bId": "A",
+        "relation": "<"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "int",
+        "aId": "A",
+        "bId": "A",
+        "relation": "<"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "int",
+        "aId": "A",
+        "bId": "A",
+        "relation": "<="
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "int",
+        "aId": "A",
+        "bId": "A",
+        "relation": "<="
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "int",
+        "aId": "A",
+        "bId": "A",
+        "relation": "="
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "int",
+        "aId": "A",
+        "bId": "A",
+        "relation": "="
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "int",
+        "aId": "A",
+        "bId": "A",
+        "relation": "<>"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "int",
+        "aId": "A",
+        "bId": "A",
+        "relation": "<>"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "int",
+        "aId": "A",
+        "bId": "A",
+        "relation": ">"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "int",
+        "aId": "A",
+        "bId": "A",
+        "relation": ">"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "int",
+        "aId": "A",
+        "bId": "A",
+        "relation": ">="
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "int",
+        "aId": "A",
+        "bId": "A",
+        "relation": ">="
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "int",
+        "aId": "A",
+        "bId": "A",
+        "relation": "&"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "int",
+        "aId": "A",
+        "bId": "A",
+        "relation": "&"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "int",
+        "aId": "A",
+        "bId": "A",
+        "relation": "~"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "int",
+        "aId": "A",
+        "bId": "A",
+        "relation": "~"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-set-int-disjoint",
+    "description": "Compare every relational operator in both directions and retain cardinality and operand ordering.",
+    "workflow": [
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "A",
+        "item": -2147483648
+      },
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "A",
+        "item": 6
+      },
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "B",
+        "item": -2147483648
+      },
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "B",
+        "item": 0
+      },
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "B",
+        "item": 6
+      },
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "C",
+        "item": -3
+      },
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "C",
+        "item": 2147483647
+      },
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "D",
+        "item": -2147483648
+      },
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "D",
+        "item": 2147483647
+      },
+      {
+        "op": "cells-windows.ordi",
+        "cellId": "E",
+        "item": 0
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "int",
+        "aId": "C",
+        "bId": "A",
+        "relation": "<"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "int",
+        "aId": "A",
+        "bId": "C",
+        "relation": "<"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "int",
+        "aId": "C",
+        "bId": "A",
+        "relation": "<="
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "int",
+        "aId": "A",
+        "bId": "C",
+        "relation": "<="
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "int",
+        "aId": "C",
+        "bId": "A",
+        "relation": "="
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "int",
+        "aId": "A",
+        "bId": "C",
+        "relation": "="
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "int",
+        "aId": "C",
+        "bId": "A",
+        "relation": "<>"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "int",
+        "aId": "A",
+        "bId": "C",
+        "relation": "<>"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "int",
+        "aId": "C",
+        "bId": "A",
+        "relation": ">"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "int",
+        "aId": "A",
+        "bId": "C",
+        "relation": ">"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "int",
+        "aId": "C",
+        "bId": "A",
+        "relation": ">="
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "int",
+        "aId": "A",
+        "bId": "C",
+        "relation": ">="
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "int",
+        "aId": "C",
+        "bId": "A",
+        "relation": "&"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "int",
+        "aId": "A",
+        "bId": "C",
+        "relation": "&"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "int",
+        "aId": "C",
+        "bId": "A",
+        "relation": "~"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "int",
+        "aId": "A",
+        "bId": "C",
+        "relation": "~"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-set-int-partial",
+    "description": "Compare every relational operator in both directions and retain cardinality and operand ordering.",
+    "workflow": [
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "A",
+        "item": -2147483648
+      },
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "A",
+        "item": 6
+      },
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "B",
+        "item": -2147483648
+      },
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "B",
+        "item": 0
+      },
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "B",
+        "item": 6
+      },
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "C",
+        "item": -3
+      },
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "C",
+        "item": 2147483647
+      },
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "D",
+        "item": -2147483648
+      },
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "D",
+        "item": 2147483647
+      },
+      {
+        "op": "cells-windows.ordi",
+        "cellId": "E",
+        "item": 0
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "int",
+        "aId": "D",
+        "bId": "A",
+        "relation": "<"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "int",
+        "aId": "A",
+        "bId": "D",
+        "relation": "<"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "int",
+        "aId": "D",
+        "bId": "A",
+        "relation": "<="
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "int",
+        "aId": "A",
+        "bId": "D",
+        "relation": "<="
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "int",
+        "aId": "D",
+        "bId": "A",
+        "relation": "="
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "int",
+        "aId": "A",
+        "bId": "D",
+        "relation": "="
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "int",
+        "aId": "D",
+        "bId": "A",
+        "relation": "<>"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "int",
+        "aId": "A",
+        "bId": "D",
+        "relation": "<>"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "int",
+        "aId": "D",
+        "bId": "A",
+        "relation": ">"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "int",
+        "aId": "A",
+        "bId": "D",
+        "relation": ">"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "int",
+        "aId": "D",
+        "bId": "A",
+        "relation": ">="
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "int",
+        "aId": "A",
+        "bId": "D",
+        "relation": ">="
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "int",
+        "aId": "D",
+        "bId": "A",
+        "relation": "&"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "int",
+        "aId": "A",
+        "bId": "D",
+        "relation": "&"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "int",
+        "aId": "D",
+        "bId": "A",
+        "relation": "~"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "int",
+        "aId": "A",
+        "bId": "D",
+        "relation": "~"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-set-int-empty",
+    "description": "Compare every relational operator in both directions and retain cardinality and operand ordering.",
+    "workflow": [
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "A",
+        "item": -2147483648
+      },
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "A",
+        "item": 6
+      },
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "B",
+        "item": -2147483648
+      },
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "B",
+        "item": 0
+      },
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "B",
+        "item": 6
+      },
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "C",
+        "item": -3
+      },
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "C",
+        "item": 2147483647
+      },
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "D",
+        "item": -2147483648
+      },
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "D",
+        "item": 2147483647
+      },
+      {
+        "op": "cells-windows.ordi",
+        "cellId": "E",
+        "item": 0
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "int",
+        "aId": "E",
+        "bId": "A",
+        "relation": "<"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "int",
+        "aId": "A",
+        "bId": "E",
+        "relation": "<"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "int",
+        "aId": "E",
+        "bId": "A",
+        "relation": "<="
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "int",
+        "aId": "A",
+        "bId": "E",
+        "relation": "<="
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "int",
+        "aId": "E",
+        "bId": "A",
+        "relation": "="
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "int",
+        "aId": "A",
+        "bId": "E",
+        "relation": "="
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "int",
+        "aId": "E",
+        "bId": "A",
+        "relation": "<>"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "int",
+        "aId": "A",
+        "bId": "E",
+        "relation": "<>"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "int",
+        "aId": "E",
+        "bId": "A",
+        "relation": ">"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "int",
+        "aId": "A",
+        "bId": "E",
+        "relation": ">"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "int",
+        "aId": "E",
+        "bId": "A",
+        "relation": ">="
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "int",
+        "aId": "A",
+        "bId": "E",
+        "relation": ">="
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "int",
+        "aId": "E",
+        "bId": "A",
+        "relation": "&"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "int",
+        "aId": "A",
+        "bId": "E",
+        "relation": "&"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "int",
+        "aId": "E",
+        "bId": "A",
+        "relation": "~"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "int",
+        "aId": "A",
+        "bId": "E",
+        "relation": "~"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-set-double-subset",
+    "description": "Compare every relational operator in both directions and retain cardinality and operand ordering.",
+    "workflow": [
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "A",
+        "item": -16.5
+      },
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "A",
+        "item": 2.125
+      },
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "B",
+        "item": -16.5
+      },
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "B",
+        "item": 0
+      },
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "B",
+        "item": 2.125
+      },
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "C",
+        "item": -0.25
+      },
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "C",
+        "item": 1e180
+      },
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "D",
+        "item": -16.5
+      },
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "D",
+        "item": 1e180
+      },
+      {
+        "op": "cells-windows.ordd",
+        "cellId": "E",
+        "item": 0
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "double",
+        "aId": "A",
+        "bId": "B",
+        "relation": "<"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "double",
+        "aId": "B",
+        "bId": "A",
+        "relation": "<"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "double",
+        "aId": "A",
+        "bId": "B",
+        "relation": "<="
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "double",
+        "aId": "B",
+        "bId": "A",
+        "relation": "<="
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "double",
+        "aId": "A",
+        "bId": "B",
+        "relation": "="
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "double",
+        "aId": "B",
+        "bId": "A",
+        "relation": "="
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "double",
+        "aId": "A",
+        "bId": "B",
+        "relation": "<>"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "double",
+        "aId": "B",
+        "bId": "A",
+        "relation": "<>"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "double",
+        "aId": "A",
+        "bId": "B",
+        "relation": ">"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "double",
+        "aId": "B",
+        "bId": "A",
+        "relation": ">"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "double",
+        "aId": "A",
+        "bId": "B",
+        "relation": ">="
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "double",
+        "aId": "B",
+        "bId": "A",
+        "relation": ">="
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "double",
+        "aId": "A",
+        "bId": "B",
+        "relation": "&"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "double",
+        "aId": "B",
+        "bId": "A",
+        "relation": "&"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "double",
+        "aId": "A",
+        "bId": "B",
+        "relation": "~"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "double",
+        "aId": "B",
+        "bId": "A",
+        "relation": "~"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-set-double-equal",
+    "description": "Compare every relational operator in both directions and retain cardinality and operand ordering.",
+    "workflow": [
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "A",
+        "item": -16.5
+      },
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "A",
+        "item": 2.125
+      },
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "B",
+        "item": -16.5
+      },
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "B",
+        "item": 0
+      },
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "B",
+        "item": 2.125
+      },
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "C",
+        "item": -0.25
+      },
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "C",
+        "item": 1e180
+      },
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "D",
+        "item": -16.5
+      },
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "D",
+        "item": 1e180
+      },
+      {
+        "op": "cells-windows.ordd",
+        "cellId": "E",
+        "item": 0
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "double",
+        "aId": "A",
+        "bId": "A",
+        "relation": "<"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "double",
+        "aId": "A",
+        "bId": "A",
+        "relation": "<"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "double",
+        "aId": "A",
+        "bId": "A",
+        "relation": "<="
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "double",
+        "aId": "A",
+        "bId": "A",
+        "relation": "<="
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "double",
+        "aId": "A",
+        "bId": "A",
+        "relation": "="
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "double",
+        "aId": "A",
+        "bId": "A",
+        "relation": "="
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "double",
+        "aId": "A",
+        "bId": "A",
+        "relation": "<>"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "double",
+        "aId": "A",
+        "bId": "A",
+        "relation": "<>"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "double",
+        "aId": "A",
+        "bId": "A",
+        "relation": ">"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "double",
+        "aId": "A",
+        "bId": "A",
+        "relation": ">"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "double",
+        "aId": "A",
+        "bId": "A",
+        "relation": ">="
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "double",
+        "aId": "A",
+        "bId": "A",
+        "relation": ">="
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "double",
+        "aId": "A",
+        "bId": "A",
+        "relation": "&"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "double",
+        "aId": "A",
+        "bId": "A",
+        "relation": "&"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "double",
+        "aId": "A",
+        "bId": "A",
+        "relation": "~"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "double",
+        "aId": "A",
+        "bId": "A",
+        "relation": "~"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-set-double-disjoint",
+    "description": "Compare every relational operator in both directions and retain cardinality and operand ordering.",
+    "workflow": [
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "A",
+        "item": -16.5
+      },
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "A",
+        "item": 2.125
+      },
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "B",
+        "item": -16.5
+      },
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "B",
+        "item": 0
+      },
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "B",
+        "item": 2.125
+      },
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "C",
+        "item": -0.25
+      },
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "C",
+        "item": 1e180
+      },
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "D",
+        "item": -16.5
+      },
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "D",
+        "item": 1e180
+      },
+      {
+        "op": "cells-windows.ordd",
+        "cellId": "E",
+        "item": 0
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "double",
+        "aId": "C",
+        "bId": "A",
+        "relation": "<"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "double",
+        "aId": "A",
+        "bId": "C",
+        "relation": "<"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "double",
+        "aId": "C",
+        "bId": "A",
+        "relation": "<="
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "double",
+        "aId": "A",
+        "bId": "C",
+        "relation": "<="
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "double",
+        "aId": "C",
+        "bId": "A",
+        "relation": "="
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "double",
+        "aId": "A",
+        "bId": "C",
+        "relation": "="
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "double",
+        "aId": "C",
+        "bId": "A",
+        "relation": "<>"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "double",
+        "aId": "A",
+        "bId": "C",
+        "relation": "<>"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "double",
+        "aId": "C",
+        "bId": "A",
+        "relation": ">"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "double",
+        "aId": "A",
+        "bId": "C",
+        "relation": ">"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "double",
+        "aId": "C",
+        "bId": "A",
+        "relation": ">="
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "double",
+        "aId": "A",
+        "bId": "C",
+        "relation": ">="
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "double",
+        "aId": "C",
+        "bId": "A",
+        "relation": "&"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "double",
+        "aId": "A",
+        "bId": "C",
+        "relation": "&"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "double",
+        "aId": "C",
+        "bId": "A",
+        "relation": "~"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "double",
+        "aId": "A",
+        "bId": "C",
+        "relation": "~"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-set-double-partial",
+    "description": "Compare every relational operator in both directions and retain cardinality and operand ordering.",
+    "workflow": [
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "A",
+        "item": -16.5
+      },
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "A",
+        "item": 2.125
+      },
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "B",
+        "item": -16.5
+      },
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "B",
+        "item": 0
+      },
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "B",
+        "item": 2.125
+      },
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "C",
+        "item": -0.25
+      },
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "C",
+        "item": 1e180
+      },
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "D",
+        "item": -16.5
+      },
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "D",
+        "item": 1e180
+      },
+      {
+        "op": "cells-windows.ordd",
+        "cellId": "E",
+        "item": 0
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "double",
+        "aId": "D",
+        "bId": "A",
+        "relation": "<"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "double",
+        "aId": "A",
+        "bId": "D",
+        "relation": "<"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "double",
+        "aId": "D",
+        "bId": "A",
+        "relation": "<="
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "double",
+        "aId": "A",
+        "bId": "D",
+        "relation": "<="
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "double",
+        "aId": "D",
+        "bId": "A",
+        "relation": "="
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "double",
+        "aId": "A",
+        "bId": "D",
+        "relation": "="
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "double",
+        "aId": "D",
+        "bId": "A",
+        "relation": "<>"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "double",
+        "aId": "A",
+        "bId": "D",
+        "relation": "<>"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "double",
+        "aId": "D",
+        "bId": "A",
+        "relation": ">"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "double",
+        "aId": "A",
+        "bId": "D",
+        "relation": ">"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "double",
+        "aId": "D",
+        "bId": "A",
+        "relation": ">="
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "double",
+        "aId": "A",
+        "bId": "D",
+        "relation": ">="
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "double",
+        "aId": "D",
+        "bId": "A",
+        "relation": "&"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "double",
+        "aId": "A",
+        "bId": "D",
+        "relation": "&"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "double",
+        "aId": "D",
+        "bId": "A",
+        "relation": "~"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "double",
+        "aId": "A",
+        "bId": "D",
+        "relation": "~"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-set-double-empty",
+    "description": "Compare every relational operator in both directions and retain cardinality and operand ordering.",
+    "workflow": [
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "A",
+        "item": -16.5
+      },
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "A",
+        "item": 2.125
+      },
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "B",
+        "item": -16.5
+      },
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "B",
+        "item": 0
+      },
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "B",
+        "item": 2.125
+      },
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "C",
+        "item": -0.25
+      },
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "C",
+        "item": 1e180
+      },
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "D",
+        "item": -16.5
+      },
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "D",
+        "item": 1e180
+      },
+      {
+        "op": "cells-windows.ordd",
+        "cellId": "E",
+        "item": 0
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "double",
+        "aId": "E",
+        "bId": "A",
+        "relation": "<"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "double",
+        "aId": "A",
+        "bId": "E",
+        "relation": "<"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "double",
+        "aId": "E",
+        "bId": "A",
+        "relation": "<="
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "double",
+        "aId": "A",
+        "bId": "E",
+        "relation": "<="
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "double",
+        "aId": "E",
+        "bId": "A",
+        "relation": "="
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "double",
+        "aId": "A",
+        "bId": "E",
+        "relation": "="
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "double",
+        "aId": "E",
+        "bId": "A",
+        "relation": "<>"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "double",
+        "aId": "A",
+        "bId": "E",
+        "relation": "<>"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "double",
+        "aId": "E",
+        "bId": "A",
+        "relation": ">"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "double",
+        "aId": "A",
+        "bId": "E",
+        "relation": ">"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "double",
+        "aId": "E",
+        "bId": "A",
+        "relation": ">="
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "double",
+        "aId": "A",
+        "bId": "E",
+        "relation": ">="
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "double",
+        "aId": "E",
+        "bId": "A",
+        "relation": "&"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "double",
+        "aId": "A",
+        "bId": "E",
+        "relation": "&"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "double",
+        "aId": "E",
+        "bId": "A",
+        "relation": "~"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "double",
+        "aId": "A",
+        "bId": "E",
+        "relation": "~"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-set-char-subset",
+    "description": "Compare every relational operator in both directions and retain cardinality and operand ordering.",
+    "workflow": [
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "A",
+        "item": " A"
+      },
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "A",
+        "item": "Z"
+      },
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "B",
+        "item": " A"
+      },
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "B",
+        "item": "B\t"
+      },
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "B",
+        "item": "Z"
+      },
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "C",
+        "item": "A"
+      },
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "C",
+        "item": "z"
+      },
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "D",
+        "item": " A"
+      },
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "D",
+        "item": "z"
+      },
+      {
+        "op": "cells-windows.ordc",
+        "cellId": "E",
+        "item": ""
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "char",
+        "aId": "A",
+        "bId": "B",
+        "relation": "<"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "char",
+        "aId": "B",
+        "bId": "A",
+        "relation": "<"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "char",
+        "aId": "A",
+        "bId": "B",
+        "relation": "<="
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "char",
+        "aId": "B",
+        "bId": "A",
+        "relation": "<="
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "char",
+        "aId": "A",
+        "bId": "B",
+        "relation": "="
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "char",
+        "aId": "B",
+        "bId": "A",
+        "relation": "="
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "char",
+        "aId": "A",
+        "bId": "B",
+        "relation": "<>"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "char",
+        "aId": "B",
+        "bId": "A",
+        "relation": "<>"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "char",
+        "aId": "A",
+        "bId": "B",
+        "relation": ">"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "char",
+        "aId": "B",
+        "bId": "A",
+        "relation": ">"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "char",
+        "aId": "A",
+        "bId": "B",
+        "relation": ">="
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "char",
+        "aId": "B",
+        "bId": "A",
+        "relation": ">="
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "char",
+        "aId": "A",
+        "bId": "B",
+        "relation": "&"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "char",
+        "aId": "B",
+        "bId": "A",
+        "relation": "&"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "char",
+        "aId": "A",
+        "bId": "B",
+        "relation": "~"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "char",
+        "aId": "B",
+        "bId": "A",
+        "relation": "~"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-set-char-equal",
+    "description": "Compare every relational operator in both directions and retain cardinality and operand ordering.",
+    "workflow": [
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "A",
+        "item": " A"
+      },
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "A",
+        "item": "Z"
+      },
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "B",
+        "item": " A"
+      },
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "B",
+        "item": "B\t"
+      },
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "B",
+        "item": "Z"
+      },
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "C",
+        "item": "A"
+      },
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "C",
+        "item": "z"
+      },
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "D",
+        "item": " A"
+      },
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "D",
+        "item": "z"
+      },
+      {
+        "op": "cells-windows.ordc",
+        "cellId": "E",
+        "item": ""
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "char",
+        "aId": "A",
+        "bId": "A",
+        "relation": "<"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "char",
+        "aId": "A",
+        "bId": "A",
+        "relation": "<"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "char",
+        "aId": "A",
+        "bId": "A",
+        "relation": "<="
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "char",
+        "aId": "A",
+        "bId": "A",
+        "relation": "<="
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "char",
+        "aId": "A",
+        "bId": "A",
+        "relation": "="
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "char",
+        "aId": "A",
+        "bId": "A",
+        "relation": "="
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "char",
+        "aId": "A",
+        "bId": "A",
+        "relation": "<>"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "char",
+        "aId": "A",
+        "bId": "A",
+        "relation": "<>"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "char",
+        "aId": "A",
+        "bId": "A",
+        "relation": ">"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "char",
+        "aId": "A",
+        "bId": "A",
+        "relation": ">"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "char",
+        "aId": "A",
+        "bId": "A",
+        "relation": ">="
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "char",
+        "aId": "A",
+        "bId": "A",
+        "relation": ">="
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "char",
+        "aId": "A",
+        "bId": "A",
+        "relation": "&"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "char",
+        "aId": "A",
+        "bId": "A",
+        "relation": "&"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "char",
+        "aId": "A",
+        "bId": "A",
+        "relation": "~"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "char",
+        "aId": "A",
+        "bId": "A",
+        "relation": "~"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-set-char-disjoint",
+    "description": "Compare every relational operator in both directions and retain cardinality and operand ordering.",
+    "workflow": [
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "A",
+        "item": " A"
+      },
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "A",
+        "item": "Z"
+      },
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "B",
+        "item": " A"
+      },
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "B",
+        "item": "B\t"
+      },
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "B",
+        "item": "Z"
+      },
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "C",
+        "item": "A"
+      },
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "C",
+        "item": "z"
+      },
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "D",
+        "item": " A"
+      },
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "D",
+        "item": "z"
+      },
+      {
+        "op": "cells-windows.ordc",
+        "cellId": "E",
+        "item": ""
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "char",
+        "aId": "C",
+        "bId": "A",
+        "relation": "<"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "char",
+        "aId": "A",
+        "bId": "C",
+        "relation": "<"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "char",
+        "aId": "C",
+        "bId": "A",
+        "relation": "<="
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "char",
+        "aId": "A",
+        "bId": "C",
+        "relation": "<="
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "char",
+        "aId": "C",
+        "bId": "A",
+        "relation": "="
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "char",
+        "aId": "A",
+        "bId": "C",
+        "relation": "="
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "char",
+        "aId": "C",
+        "bId": "A",
+        "relation": "<>"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "char",
+        "aId": "A",
+        "bId": "C",
+        "relation": "<>"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "char",
+        "aId": "C",
+        "bId": "A",
+        "relation": ">"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "char",
+        "aId": "A",
+        "bId": "C",
+        "relation": ">"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "char",
+        "aId": "C",
+        "bId": "A",
+        "relation": ">="
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "char",
+        "aId": "A",
+        "bId": "C",
+        "relation": ">="
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "char",
+        "aId": "C",
+        "bId": "A",
+        "relation": "&"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "char",
+        "aId": "A",
+        "bId": "C",
+        "relation": "&"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "char",
+        "aId": "C",
+        "bId": "A",
+        "relation": "~"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "char",
+        "aId": "A",
+        "bId": "C",
+        "relation": "~"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-set-char-partial",
+    "description": "Compare every relational operator in both directions and retain cardinality and operand ordering.",
+    "workflow": [
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "A",
+        "item": " A"
+      },
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "A",
+        "item": "Z"
+      },
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "B",
+        "item": " A"
+      },
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "B",
+        "item": "B\t"
+      },
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "B",
+        "item": "Z"
+      },
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "C",
+        "item": "A"
+      },
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "C",
+        "item": "z"
+      },
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "D",
+        "item": " A"
+      },
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "D",
+        "item": "z"
+      },
+      {
+        "op": "cells-windows.ordc",
+        "cellId": "E",
+        "item": ""
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "char",
+        "aId": "D",
+        "bId": "A",
+        "relation": "<"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "char",
+        "aId": "A",
+        "bId": "D",
+        "relation": "<"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "char",
+        "aId": "D",
+        "bId": "A",
+        "relation": "<="
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "char",
+        "aId": "A",
+        "bId": "D",
+        "relation": "<="
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "char",
+        "aId": "D",
+        "bId": "A",
+        "relation": "="
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "char",
+        "aId": "A",
+        "bId": "D",
+        "relation": "="
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "char",
+        "aId": "D",
+        "bId": "A",
+        "relation": "<>"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "char",
+        "aId": "A",
+        "bId": "D",
+        "relation": "<>"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "char",
+        "aId": "D",
+        "bId": "A",
+        "relation": ">"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "char",
+        "aId": "A",
+        "bId": "D",
+        "relation": ">"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "char",
+        "aId": "D",
+        "bId": "A",
+        "relation": ">="
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "char",
+        "aId": "A",
+        "bId": "D",
+        "relation": ">="
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "char",
+        "aId": "D",
+        "bId": "A",
+        "relation": "&"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "char",
+        "aId": "A",
+        "bId": "D",
+        "relation": "&"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "char",
+        "aId": "D",
+        "bId": "A",
+        "relation": "~"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "char",
+        "aId": "A",
+        "bId": "D",
+        "relation": "~"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-set-char-empty",
+    "description": "Compare every relational operator in both directions and retain cardinality and operand ordering.",
+    "workflow": [
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "A",
+        "item": " A"
+      },
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "A",
+        "item": "Z"
+      },
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "B",
+        "item": " A"
+      },
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "B",
+        "item": "B\t"
+      },
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "B",
+        "item": "Z"
+      },
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "C",
+        "item": "A"
+      },
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "C",
+        "item": "z"
+      },
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "D",
+        "item": " A"
+      },
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "D",
+        "item": "z"
+      },
+      {
+        "op": "cells-windows.ordc",
+        "cellId": "E",
+        "item": ""
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "char",
+        "aId": "E",
+        "bId": "A",
+        "relation": "<"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "char",
+        "aId": "A",
+        "bId": "E",
+        "relation": "<"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "char",
+        "aId": "E",
+        "bId": "A",
+        "relation": "<="
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "char",
+        "aId": "A",
+        "bId": "E",
+        "relation": "<="
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "char",
+        "aId": "E",
+        "bId": "A",
+        "relation": "="
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "char",
+        "aId": "A",
+        "bId": "E",
+        "relation": "="
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "char",
+        "aId": "E",
+        "bId": "A",
+        "relation": "<>"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "char",
+        "aId": "A",
+        "bId": "E",
+        "relation": "<>"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "char",
+        "aId": "E",
+        "bId": "A",
+        "relation": ">"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "char",
+        "aId": "A",
+        "bId": "E",
+        "relation": ">"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "char",
+        "aId": "E",
+        "bId": "A",
+        "relation": ">="
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "char",
+        "aId": "A",
+        "bId": "E",
+        "relation": ">="
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "char",
+        "aId": "E",
+        "bId": "A",
+        "relation": "&"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "char",
+        "aId": "A",
+        "bId": "E",
+        "relation": "&"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "char",
+        "aId": "E",
+        "bId": "A",
+        "relation": "~"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "char",
+        "aId": "A",
+        "bId": "E",
+        "relation": "~"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-set-operator-padding",
+    "description": "Right-padded relation strings reach the actual comparison.",
+    "workflow": [
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "A",
+        "item": 1
+      },
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "B",
+        "item": 1
+      },
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "B",
+        "item": 2
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "int",
+        "aId": "A",
+        "bId": "B",
+        "relation": "<=  "
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "int",
+        "aId": "A",
+        "bId": "B",
+        "relation": "& "
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-set-operator-empty",
+    "description": "Observe the toolkit diagnostic for an invalid relational operator.",
+    "workflow": [
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "A",
+        "item": 1
+      },
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "B",
+        "item": 2
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "int",
+        "aId": "A",
+        "bId": "B",
+        "relation": ""
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["EMPTYSTRING"]
+    }
+  },
+  {
+    "caseId": "cells-windows-set-operator-unknown",
+    "description": "Observe the toolkit diagnostic for an invalid relational operator.",
+    "workflow": [
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "A",
+        "item": 1
+      },
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "B",
+        "item": 2
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "int",
+        "aId": "A",
+        "bId": "B",
+        "relation": "!="
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDOPERATION"]
+    }
+  },
+  {
+    "caseId": "cells-windows-set-operator-leading-space",
+    "description": "Observe the toolkit diagnostic for an invalid relational operator.",
+    "workflow": [
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "A",
+        "item": 1
+      },
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "B",
+        "item": 2
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "int",
+        "aId": "A",
+        "bId": "B",
+        "relation": " <"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDOPERATION"]
+    }
+  },
+  {
+    "caseId": "cells-windows-set-unset-input",
+    "description": "An ordinary cell with duplicate appends has a cleared set flag.",
+    "workflow": [
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "A",
+        "item": 2
+      },
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "A",
+        "item": 2
+      },
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "B",
+        "item": 2
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "double",
+        "aId": "A",
+        "bId": "B",
+        "relation": "="
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["NOTASET"]
+    }
+  }
+]

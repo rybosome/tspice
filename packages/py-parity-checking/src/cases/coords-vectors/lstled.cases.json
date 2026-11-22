@@ -1,0 +1,288 @@
+[
+  {
+    "caseId": "coords-vectors-lstled-empty-array",
+    "description": "The actual numeric search returns minus one on zero elements.",
+    "workflow": [
+      {
+        "op": "coords-vectors.lstled",
+        "key": -27,
+        "values": []
+      },
+      {
+        "op": "coords-vectors.lstled",
+        "key": 0,
+        "values": []
+      },
+      {
+        "op": "coords-vectors.lstled",
+        "key": 11,
+        "values": []
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-lstled-singleton",
+    "description": "A one-element input distinguishes below, equal and above its value.",
+    "workflow": [
+      {
+        "op": "coords-vectors.lstled",
+        "key": -4,
+        "values": [-3]
+      },
+      {
+        "op": "coords-vectors.lstled",
+        "key": -3,
+        "values": [-3]
+      },
+      {
+        "op": "coords-vectors.lstled",
+        "key": -2,
+        "values": [-3]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-lstled-duplicates-at-beginning-interior-and-end",
+    "description": "Before-first sentinel, duplicate runs, insertion gaps and final-index behavior are independently observed.",
+    "workflow": [
+      {
+        "op": "coords-vectors.lstled",
+        "key": -6,
+        "values": [-5, -5, -1, 2, 2, 2, 7, 11, 11]
+      },
+      {
+        "op": "coords-vectors.lstled",
+        "key": -5,
+        "values": [-5, -5, -1, 2, 2, 2, 7, 11, 11]
+      },
+      {
+        "op": "coords-vectors.lstled",
+        "key": -4,
+        "values": [-5, -5, -1, 2, 2, 2, 7, 11, 11]
+      },
+      {
+        "op": "coords-vectors.lstled",
+        "key": -1,
+        "values": [-5, -5, -1, 2, 2, 2, 7, 11, 11]
+      },
+      {
+        "op": "coords-vectors.lstled",
+        "key": 0,
+        "values": [-5, -5, -1, 2, 2, 2, 7, 11, 11]
+      },
+      {
+        "op": "coords-vectors.lstled",
+        "key": 2,
+        "values": [-5, -5, -1, 2, 2, 2, 7, 11, 11]
+      },
+      {
+        "op": "coords-vectors.lstled",
+        "key": 6,
+        "values": [-5, -5, -1, 2, 2, 2, 7, 11, 11]
+      },
+      {
+        "op": "coords-vectors.lstled",
+        "key": 7,
+        "values": [-5, -5, -1, 2, 2, 2, 7, 11, 11]
+      },
+      {
+        "op": "coords-vectors.lstled",
+        "key": 10,
+        "values": [-5, -5, -1, 2, 2, 2, 7, 11, 11]
+      },
+      {
+        "op": "coords-vectors.lstled",
+        "key": 11,
+        "values": [-5, -5, -1, 2, 2, 2, 7, 11, 11]
+      },
+      {
+        "op": "coords-vectors.lstled",
+        "key": 12,
+        "values": [-5, -5, -1, 2, 2, 2, 7, 11, 11]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-lstled-all-equal",
+    "description": "Seven equal elements distinguish the highest inclusive index and strict exclusion of equals.",
+    "workflow": [
+      {
+        "op": "coords-vectors.lstled",
+        "key": 1,
+        "values": [2, 2, 2, 2, 2, 2, 2]
+      },
+      {
+        "op": "coords-vectors.lstled",
+        "key": 2,
+        "values": [2, 2, 2, 2, 2, 2, 2]
+      },
+      {
+        "op": "coords-vectors.lstled",
+        "key": 3,
+        "values": [2, 2, 2, 2, 2, 2, 2]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-lstled-odd-even-and-inner-gaps",
+    "description": "Even-length inputs probe binary-search gaps on both sides of the midpoint.",
+    "workflow": [
+      {
+        "op": "coords-vectors.lstled",
+        "key": -30,
+        "values": [-31, -13, -7, 0, 2, 4, 8, 13, 21, 34]
+      },
+      {
+        "op": "coords-vectors.lstled",
+        "key": -14,
+        "values": [-31, -13, -7, 0, 2, 4, 8, 13, 21, 34]
+      },
+      {
+        "op": "coords-vectors.lstled",
+        "key": -8,
+        "values": [-31, -13, -7, 0, 2, 4, 8, 13, 21, 34]
+      },
+      {
+        "op": "coords-vectors.lstled",
+        "key": -1,
+        "values": [-31, -13, -7, 0, 2, 4, 8, 13, 21, 34]
+      },
+      {
+        "op": "coords-vectors.lstled",
+        "key": 1,
+        "values": [-31, -13, -7, 0, 2, 4, 8, 13, 21, 34]
+      },
+      {
+        "op": "coords-vectors.lstled",
+        "key": 3,
+        "values": [-31, -13, -7, 0, 2, 4, 8, 13, 21, 34]
+      },
+      {
+        "op": "coords-vectors.lstled",
+        "key": 8,
+        "values": [-31, -13, -7, 0, 2, 4, 8, 13, 21, 34]
+      },
+      {
+        "op": "coords-vectors.lstled",
+        "key": 12,
+        "values": [-31, -13, -7, 0, 2, 4, 8, 13, 21, 34]
+      },
+      {
+        "op": "coords-vectors.lstled",
+        "key": 20,
+        "values": [-31, -13, -7, 0, 2, 4, 8, 13, 21, 34]
+      },
+      {
+        "op": "coords-vectors.lstled",
+        "key": 33,
+        "values": [-31, -13, -7, 0, 2, 4, 8, 13, 21, 34]
+      },
+      {
+        "op": "coords-vectors.lstled",
+        "key": 35,
+        "values": [-31, -13, -7, 0, 2, 4, 8, 13, 21, 34]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-lstled-binary64-neighbors",
+    "description": "Neighboring representable values must not collapse to a tolerance bucket.",
+    "workflow": [
+      {
+        "op": "coords-vectors.lstled",
+        "key": 0.9999999999999999,
+        "values": [0.5, 1, 1, 1.0000000000000002, 1.0000000000000004, 2]
+      },
+      {
+        "op": "coords-vectors.lstled",
+        "key": 1,
+        "values": [0.5, 1, 1, 1.0000000000000002, 1.0000000000000004, 2]
+      },
+      {
+        "op": "coords-vectors.lstled",
+        "key": 1.0000000000000002,
+        "values": [0.5, 1, 1, 1.0000000000000002, 1.0000000000000004, 2]
+      },
+      {
+        "op": "coords-vectors.lstled",
+        "key": 1.0000000000000004,
+        "values": [0.5, 1, 1, 1.0000000000000002, 1.0000000000000004, 2]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-lstled-finite-extremes-and-subnormals",
+    "description": "Keep both least subnormals and finite maxima ordered; each exact integer index is observable.",
+    "workflow": [
+      {
+        "op": "coords-vectors.lstled",
+        "key": -1.7976931348623157e308,
+        "values": [
+          -1.7976931348623157e308, -5e-324, 0, 5e-324, 5e-324,
+          1.7976931348623157e308
+        ]
+      },
+      {
+        "op": "coords-vectors.lstled",
+        "key": -5e-324,
+        "values": [
+          -1.7976931348623157e308, -5e-324, 0, 5e-324, 5e-324,
+          1.7976931348623157e308
+        ]
+      },
+      {
+        "op": "coords-vectors.lstled",
+        "key": 0,
+        "values": [
+          -1.7976931348623157e308, -5e-324, 0, 5e-324, 5e-324,
+          1.7976931348623157e308
+        ]
+      },
+      {
+        "op": "coords-vectors.lstled",
+        "key": 5e-324,
+        "values": [
+          -1.7976931348623157e308, -5e-324, 0, 5e-324, 5e-324,
+          1.7976931348623157e308
+        ]
+      },
+      {
+        "op": "coords-vectors.lstled",
+        "key": 1e-323,
+        "values": [
+          -1.7976931348623157e308, -5e-324, 0, 5e-324, 5e-324,
+          1.7976931348623157e308
+        ]
+      },
+      {
+        "op": "coords-vectors.lstled",
+        "key": 1.7976931348623157e308,
+        "values": [
+          -1.7976931348623157e308, -5e-324, 0, 5e-324, 5e-324,
+          1.7976931348623157e308
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

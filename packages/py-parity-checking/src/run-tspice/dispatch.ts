@@ -13,6 +13,7 @@ import { runGeometryGfStep } from "./domains/geometry-gf.js";
 import { runIdsNamesStep } from "./domains/ids-names.js";
 import { runKernelPoolStep } from "./domains/kernel-pool.js";
 import { runKernelsStep } from "./domains/kernels.js";
+import { runStringsStep } from "./domains/strings.js";
 import { runTimeStep } from "./domains/time.js";
 
 /** Dispatch one workflow step to its corresponding tspice domain handler. */
@@ -21,6 +22,43 @@ export function dispatchStep(
   step: WorkflowStep,
 ): StepOutput {
   switch (step.op) {
+    case "strings.cpos":
+    case "strings.cposr":
+    case "strings.ncpos":
+    case "strings.ncposr":
+    case "strings.pos":
+    case "strings.posr":
+    case "strings.esrchc":
+    case "strings.dp2hx":
+    case "strings.hx2dp":
+    case "strings.prsdp":
+    case "strings.prsint":
+    case "strings.repmc":
+    case "strings.repmct":
+    case "strings.repmd":
+    case "strings.repmf":
+    case "strings.repmi":
+    case "strings.repml":
+    case "strings.repmot":
+    case "strings.nextwd":
+    case "strings.nthwd":
+    case "strings.lparse":
+    case "strings.lparsm":
+    case "strings.lx4dec":
+    case "strings.lx4num":
+    case "strings.lx4sgn":
+    case "strings.lx4uns":
+    case "strings.lxqstr":
+    case "strings.cmprss":
+    case "strings.eqstr":
+    case "strings.iswhsp":
+    case "strings.lastnb":
+    case "strings.lcase":
+    case "strings.ucase":
+    case "strings.matchi":
+    case "strings.matchw":
+      return runStringsStep(context, step);
+
     case "time.str2et":
     case "time.et2utc":
     case "time.spd":
@@ -173,6 +211,31 @@ export function dispatchStep(
     case "coords-vectors.drdpgr":
     case "coords-vectors.drdsph":
     case "coords-vectors.dsphdr":
+    case "coords-vectors.isordv":
+    case "coords-vectors.orderc":
+    case "coords-vectors.orderd":
+    case "coords-vectors.orderi":
+    case "coords-vectors.reordc":
+    case "coords-vectors.reordd":
+    case "coords-vectors.reordi":
+    case "coords-vectors.reordl":
+    case "coords-vectors.shellc":
+    case "coords-vectors.shelld":
+    case "coords-vectors.shelli":
+    case "coords-vectors.lstlec":
+    case "coords-vectors.lstled":
+    case "coords-vectors.lstlei":
+    case "coords-vectors.lstltc":
+    case "coords-vectors.lstltd":
+    case "coords-vectors.lstlti":
+    case "coords-vectors.bschoc":
+    case "coords-vectors.bschoi":
+    case "coords-vectors.bsrchc":
+    case "coords-vectors.bsrchd":
+    case "coords-vectors.bsrchi":
+    case "coords-vectors.isrchc":
+    case "coords-vectors.isrchd":
+    case "coords-vectors.isrchi":
     case "coords-vectors.reclat":
     case "coords-vectors.latrec":
     case "coords-vectors.recsph":
@@ -206,6 +269,25 @@ export function dispatchStep(
       return runCoordsVectorsStep(context, step);
 
     case "cells-windows.card":
+    case "cells-windows.appndc":
+    case "cells-windows.appndd":
+    case "cells-windows.appndi":
+    case "cells-windows.diff":
+    case "cells-windows.inter":
+    case "cells-windows.sdiff":
+    case "cells-windows.union":
+    case "cells-windows.set":
+    case "cells-windows.removc":
+    case "cells-windows.removd":
+    case "cells-windows.removi":
+    case "cells-windows.ordc":
+    case "cells-windows.ordd":
+    case "cells-windows.ordi":
+    case "cells-windows.copy":
+    case "cells-windows.elemc":
+    case "cells-windows.elemd":
+    case "cells-windows.elemi":
+    case "cells-windows.lparss":
     case "cells-windows.insrtc":
     case "cells-windows.insrtd":
     case "cells-windows.insrti":
@@ -216,9 +298,31 @@ export function dispatchStep(
     case "cells-windows.wncard":
     case "cells-windows.wninsd":
     case "cells-windows.wnfetd":
+    case "cells-windows.wncomd":
+    case "cells-windows.wncond":
+    case "cells-windows.wndifd":
+    case "cells-windows.wnelmd":
+    case "cells-windows.wnexpd":
+    case "cells-windows.wnextd":
+    case "cells-windows.wnfild":
+    case "cells-windows.wnfltd":
+    case "cells-windows.wnincd":
+    case "cells-windows.wnintd":
+    case "cells-windows.wnreld":
+    case "cells-windows.wnsumd":
+    case "cells-windows.wnunid":
     case "cells-windows.wnvald":
       return runCellsWindowsStep(context, step);
 
+    case "kernel-pool.badkpv":
+    case "kernel-pool.bodvcd":
+    case "kernel-pool.bodvrd":
+    case "kernel-pool.clpool":
+    case "kernel-pool.dvpool":
+    case "kernel-pool.ldpool":
+    case "kernel-pool.lmpool":
+    case "kernel-pool.stpool":
+    case "kernel-pool.szpool":
     case "kernel-pool.gdpool":
     case "kernel-pool.gipool":
     case "kernel-pool.gcpool":

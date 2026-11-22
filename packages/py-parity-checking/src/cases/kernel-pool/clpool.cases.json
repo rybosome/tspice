@@ -1,0 +1,206 @@
+[
+  {
+    "caseId": "kernel-pool-clpool-clear-all-types",
+    "description": "Observe numeric and character membership before and after clearing, twice.",
+    "workflow": [
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "B05_NUM",
+        "values": [3, -2.25, 4.125, 0]
+      },
+      {
+        "op": "kernel-pool.pcpool",
+        "name": "B05_CHAR",
+        "values": ["a", "b"]
+      },
+      {
+        "op": "kernel-pool.dtpool",
+        "name": "B05_NUM"
+      },
+      {
+        "op": "kernel-pool.dtpool",
+        "name": "B05_CHAR"
+      },
+      {
+        "op": "kernel-pool.clpool"
+      },
+      {
+        "op": "kernel-pool.dtpool",
+        "name": "B05_NUM"
+      },
+      {
+        "op": "kernel-pool.dtpool",
+        "name": "B05_CHAR"
+      },
+      {
+        "op": "kernel-pool.clpool"
+      },
+      {
+        "op": "kernel-pool.expool",
+        "name": "B05_CHAR"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "kernel-pool-clpool-retained-watches",
+    "description": "Each watcher drains its clear notification independently and remains subscribed on insertion.",
+    "workflow": [
+      {
+        "op": "kernel-pool.swpool",
+        "agent": "B05_CW1",
+        "names": ["B05_TRACK"]
+      },
+      {
+        "op": "kernel-pool.swpool",
+        "agent": "B05_CW2",
+        "names": ["B05_OTHER"]
+      },
+      {
+        "op": "kernel-pool.cvpool",
+        "agent": "B05_CW1"
+      },
+      {
+        "op": "kernel-pool.cvpool",
+        "agent": "B05_CW2"
+      },
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "B05_TRACK",
+        "values": [1]
+      },
+      {
+        "op": "kernel-pool.cvpool",
+        "agent": "B05_CW1"
+      },
+      {
+        "op": "kernel-pool.clpool"
+      },
+      {
+        "op": "kernel-pool.cvpool",
+        "agent": "B05_CW1"
+      },
+      {
+        "op": "kernel-pool.cvpool",
+        "agent": "B05_CW1"
+      },
+      {
+        "op": "kernel-pool.cvpool",
+        "agent": "B05_CW2"
+      },
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "B05_TRACK",
+        "values": [2]
+      },
+      {
+        "op": "kernel-pool.cvpool",
+        "agent": "B05_CW1"
+      },
+      {
+        "op": "kernel-pool.cvpool",
+        "agent": "B05_CW2"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "kernel-pool-clpool-keeper-and-pool",
+    "description": "Observe loaded kernel metadata, cleared contents, then explicit KEEPER cleanup.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-pool-operations.tpc"
+      },
+      {
+        "op": "kernels.ktotal"
+      },
+      {
+        "op": "kernels.kinfo",
+        "path": "kernels/audit-pool-operations.tpc"
+      },
+      {
+        "op": "kernel-pool.gdpool",
+        "name": "B05_TRACK",
+        "start": 0,
+        "room": 20
+      },
+      {
+        "op": "kernel-pool.clpool"
+      },
+      {
+        "op": "kernels.ktotal"
+      },
+      {
+        "op": "kernels.kinfo",
+        "path": "kernels/audit-pool-operations.tpc"
+      },
+      {
+        "op": "kernel-pool.dtpool",
+        "name": "B05_TRACK"
+      },
+      {
+        "op": "kernels.kclear"
+      },
+      {
+        "op": "kernels.ktotal"
+      },
+      {
+        "op": "kernels.kinfo",
+        "path": "kernels/audit-pool-operations.tpc"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "kernel-pool-clpool-reload-and-replace",
+    "description": "Direct file load after clear starts the appended item anew and repopulates other items.",
+    "workflow": [
+      {
+        "op": "kernel-pool.ldpool",
+        "file": "kernels/audit-pool-operations.tpc"
+      },
+      {
+        "op": "kernel-pool.ldpool",
+        "file": "kernels/audit-pool-operations.tpc"
+      },
+      {
+        "op": "kernel-pool.gdpool",
+        "name": "B05_APPEND",
+        "start": 0,
+        "room": 20
+      },
+      {
+        "op": "kernel-pool.clpool"
+      },
+      {
+        "op": "kernel-pool.ldpool",
+        "file": "kernels/audit-pool-operations.tpc"
+      },
+      {
+        "op": "kernel-pool.gdpool",
+        "name": "B05_APPEND",
+        "start": 0,
+        "room": 20
+      },
+      {
+        "op": "kernel-pool.gcpool",
+        "name": "B05_JOIN",
+        "start": 0,
+        "room": 20
+      },
+      {
+        "op": "kernels.ktotal"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

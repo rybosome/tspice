@@ -1,0 +1,235 @@
+[
+  {
+    "caseId": "kernel-pool-bodvcd-exact-and-oversized",
+    "description": "Read actual cardinality and every numeric value at exact and larger caller capacity.",
+    "workflow": [
+      {
+        "op": "kernel-pool.ldpool",
+        "file": "kernels/audit-pool-operations.tpc"
+      },
+      {
+        "op": "kernel-pool.bodvcd",
+        "body": 399,
+        "item": "B05",
+        "maxn": 4
+      },
+      {
+        "op": "kernel-pool.bodvcd",
+        "body": 399,
+        "item": "B05",
+        "maxn": 12
+      },
+      {
+        "op": "kernel-pool.bodvcd",
+        "body": 399,
+        "item": "b05",
+        "maxn": 2
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "kernel-pool-bodvcd-replacement-and-ownership",
+    "description": "Replace a numeric item with a shorter item and drain the active dimensions again.",
+    "workflow": [
+      {
+        "op": "kernel-pool.ldpool",
+        "file": "kernels/audit-pool-operations.tpc"
+      },
+      {
+        "op": "kernel-pool.bodvcd",
+        "body": 399,
+        "item": "B05",
+        "maxn": 4
+      },
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "BODY399_B05",
+        "values": [-8.25]
+      },
+      {
+        "op": "kernel-pool.bodvcd",
+        "body": 399,
+        "item": "B05",
+        "maxn": 4
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "kernel-pool-bodvcd-signed-body",
+    "description": "Fetch the authored item for a negative object code through direct ID or translated body name.",
+    "workflow": [
+      {
+        "op": "kernel-pool.ldpool",
+        "file": "kernels/audit-pool-operations.tpc"
+      },
+      {
+        "op": "kernel-pool.bodvcd",
+        "body": -707007,
+        "item": "B05",
+        "maxn": 2
+      },
+      {
+        "op": "kernel-pool.bodvcd",
+        "body": -707007,
+        "item": "B05",
+        "maxn": 6
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "kernel-pool-bodvcd-empty-item",
+    "description": "An empty item reaches the canonical input string check.",
+    "workflow": [
+      {
+        "op": "kernel-pool.bodvcd",
+        "body": 399,
+        "item": "",
+        "maxn": 1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["EMPTYSTRING"]
+    }
+  },
+  {
+    "caseId": "kernel-pool-bodvcd-capacity",
+    "description": "Retain the actual toolkit error for this capacity or pool item.",
+    "workflow": [
+      {
+        "op": "kernel-pool.ldpool",
+        "file": "kernels/audit-pool-operations.tpc"
+      },
+      {
+        "op": "kernel-pool.bodvcd",
+        "body": 399,
+        "item": "B05",
+        "maxn": 3
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["ARRAYTOOSMALL"]
+    }
+  },
+  {
+    "caseId": "kernel-pool-bodvcd-zero-capacity",
+    "description": "Retain the actual toolkit error for this capacity or pool item.",
+    "workflow": [
+      {
+        "op": "kernel-pool.ldpool",
+        "file": "kernels/audit-pool-operations.tpc"
+      },
+      {
+        "op": "kernel-pool.bodvcd",
+        "body": 399,
+        "item": "B05",
+        "maxn": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["ARRAYTOOSMALL"]
+    }
+  },
+  {
+    "caseId": "kernel-pool-bodvcd-negative-capacity",
+    "description": "Retain the actual toolkit error for this capacity or pool item.",
+    "workflow": [
+      {
+        "op": "kernel-pool.ldpool",
+        "file": "kernels/audit-pool-operations.tpc"
+      },
+      {
+        "op": "kernel-pool.bodvcd",
+        "body": 399,
+        "item": "B05",
+        "maxn": -4
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["ARRAYTOOSMALL"]
+    }
+  },
+  {
+    "caseId": "kernel-pool-bodvcd-character-item",
+    "description": "Retain the actual toolkit error for this capacity or pool item.",
+    "workflow": [
+      {
+        "op": "kernel-pool.ldpool",
+        "file": "kernels/audit-pool-operations.tpc"
+      },
+      {
+        "op": "kernel-pool.bodvcd",
+        "body": 399,
+        "item": "B05_TEXT",
+        "maxn": 4
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["TYPEMISMATCH"]
+    }
+  },
+  {
+    "caseId": "kernel-pool-bodvcd-case-sensitive-miss",
+    "description": "Retain the actual toolkit error for this capacity or pool item.",
+    "workflow": [
+      {
+        "op": "kernel-pool.ldpool",
+        "file": "kernels/audit-pool-operations.tpc"
+      },
+      {
+        "op": "kernel-pool.bodvcd",
+        "body": 399,
+        "item": "B05_text",
+        "maxn": 8
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["KERNELVARNOTFOUND"]
+    }
+  },
+  {
+    "caseId": "kernel-pool-bodvcd-signed-id-limits",
+    "description": "INTSTR resolves exact minimum and maximum signed identifiers to distinct numeric pool variables.",
+    "workflow": [
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "BODY-2147483648_A",
+        "values": [1.25]
+      },
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "BODY2147483647_A",
+        "values": [-8.75]
+      },
+      {
+        "op": "kernel-pool.bodvcd",
+        "body": -2147483648,
+        "item": "A",
+        "maxn": 1
+      },
+      {
+        "op": "kernel-pool.bodvcd",
+        "body": 2147483647,
+        "item": "A",
+        "maxn": 2
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

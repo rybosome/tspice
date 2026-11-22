@@ -1,0 +1,461 @@
+[
+  {
+    "caseId": "coords-vectors-lstlec-empty-array",
+    "description": "An inferred dimension of zero returns the canonical absence sentinel.",
+    "workflow": [
+      {
+        "op": "coords-vectors.lstlec",
+        "key": "",
+        "values": []
+      },
+      {
+        "op": "coords-vectors.lstlec",
+        "key": " ",
+        "values": []
+      },
+      {
+        "op": "coords-vectors.lstlec",
+        "key": "A",
+        "values": []
+      },
+      {
+        "op": "coords-vectors.lstlec",
+        "key": "\u96ea",
+        "values": []
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-lstlec-singleton",
+    "description": "Test both sides of a sole element, including exact and blank-equivalent keys.",
+    "workflow": [
+      {
+        "op": "coords-vectors.lstlec",
+        "key": "",
+        "values": ["A"]
+      },
+      {
+        "op": "coords-vectors.lstlec",
+        "key": "@",
+        "values": ["A"]
+      },
+      {
+        "op": "coords-vectors.lstlec",
+        "key": "A",
+        "values": ["A"]
+      },
+      {
+        "op": "coords-vectors.lstlec",
+        "key": "A ",
+        "values": ["A"]
+      },
+      {
+        "op": "coords-vectors.lstlec",
+        "key": "Aa",
+        "values": ["A"]
+      },
+      {
+        "op": "coords-vectors.lstlec",
+        "key": "Z",
+        "values": ["A"]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-lstlec-duplicates-at-beginning-interior-and-end",
+    "description": "Highest eligible index changes across each duplicate group and insertion gap.",
+    "workflow": [
+      {
+        "op": "coords-vectors.lstlec",
+        "key": "@",
+        "values": ["A", "A", "C", "E", "E", "E", "G", "Z", "Z"]
+      },
+      {
+        "op": "coords-vectors.lstlec",
+        "key": "A",
+        "values": ["A", "A", "C", "E", "E", "E", "G", "Z", "Z"]
+      },
+      {
+        "op": "coords-vectors.lstlec",
+        "key": "B",
+        "values": ["A", "A", "C", "E", "E", "E", "G", "Z", "Z"]
+      },
+      {
+        "op": "coords-vectors.lstlec",
+        "key": "C",
+        "values": ["A", "A", "C", "E", "E", "E", "G", "Z", "Z"]
+      },
+      {
+        "op": "coords-vectors.lstlec",
+        "key": "D",
+        "values": ["A", "A", "C", "E", "E", "E", "G", "Z", "Z"]
+      },
+      {
+        "op": "coords-vectors.lstlec",
+        "key": "E",
+        "values": ["A", "A", "C", "E", "E", "E", "G", "Z", "Z"]
+      },
+      {
+        "op": "coords-vectors.lstlec",
+        "key": "F",
+        "values": ["A", "A", "C", "E", "E", "E", "G", "Z", "Z"]
+      },
+      {
+        "op": "coords-vectors.lstlec",
+        "key": "Z",
+        "values": ["A", "A", "C", "E", "E", "E", "G", "Z", "Z"]
+      },
+      {
+        "op": "coords-vectors.lstlec",
+        "key": "ZZ",
+        "values": ["A", "A", "C", "E", "E", "E", "G", "Z", "Z"]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-lstlec-all-equal-with-trailing-blanks",
+    "description": "Different physical lengths represent one equivalence class after blank padding.",
+    "workflow": [
+      {
+        "op": "coords-vectors.lstlec",
+        "key": "@",
+        "values": ["A", "A ", "A  ", "A   ", "A"]
+      },
+      {
+        "op": "coords-vectors.lstlec",
+        "key": "A",
+        "values": ["A", "A ", "A  ", "A   ", "A"]
+      },
+      {
+        "op": "coords-vectors.lstlec",
+        "key": "A  ",
+        "values": ["A", "A ", "A  ", "A   ", "A"]
+      },
+      {
+        "op": "coords-vectors.lstlec",
+        "key": "A     ",
+        "values": ["A", "A ", "A  ", "A   ", "A"]
+      },
+      {
+        "op": "coords-vectors.lstlec",
+        "key": "A!",
+        "values": ["A", "A ", "A  ", "A   ", "A"]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-lstlec-empty-rows-and-blank-keys",
+    "description": "Empty rows and all-space rows are equivalent under Fortran blank comparison.",
+    "workflow": [
+      {
+        "op": "coords-vectors.lstlec",
+        "key": "\t",
+        "values": ["", "", " ", "  ", "A", "Z"]
+      },
+      {
+        "op": "coords-vectors.lstlec",
+        "key": "",
+        "values": ["", "", " ", "  ", "A", "Z"]
+      },
+      {
+        "op": "coords-vectors.lstlec",
+        "key": " ",
+        "values": ["", "", " ", "  ", "A", "Z"]
+      },
+      {
+        "op": "coords-vectors.lstlec",
+        "key": "   ",
+        "values": ["", "", " ", "  ", "A", "Z"]
+      },
+      {
+        "op": "coords-vectors.lstlec",
+        "key": "!",
+        "values": ["", "", " ", "  ", "A", "Z"]
+      },
+      {
+        "op": "coords-vectors.lstlec",
+        "key": "A",
+        "values": ["", "", " ", "  ", "A", "Z"]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-lstlec-control-byte-before-padding",
+    "description": "An implicit trailing blank is greater than a tab. Interior fixed-width rows distinguish space padding from early null bytes.",
+    "workflow": [
+      {
+        "op": "coords-vectors.lstlec",
+        "key": "A",
+        "values": ["A", "B\t", "B", "Z"]
+      },
+      {
+        "op": "coords-vectors.lstlec",
+        "key": "B\b",
+        "values": ["A", "B\t", "B", "Z"]
+      },
+      {
+        "op": "coords-vectors.lstlec",
+        "key": "B\t",
+        "values": ["A", "B\t", "B", "Z"]
+      },
+      {
+        "op": "coords-vectors.lstlec",
+        "key": "B\n",
+        "values": ["A", "B\t", "B", "Z"]
+      },
+      {
+        "op": "coords-vectors.lstlec",
+        "key": "B",
+        "values": ["A", "B\t", "B", "Z"]
+      },
+      {
+        "op": "coords-vectors.lstlec",
+        "key": "B ",
+        "values": ["A", "B\t", "B", "Z"]
+      },
+      {
+        "op": "coords-vectors.lstlec",
+        "key": "B!",
+        "values": ["A", "B\t", "B", "Z"]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-lstlec-punctuation-and-case",
+    "description": "Compare case and punctuation using ordered bytes, with no case folding.",
+    "workflow": [
+      {
+        "op": "coords-vectors.lstlec",
+        "key": " ",
+        "values": ["!", "9", "A", "Aa", "B", "Z", "_", "a", "z"]
+      },
+      {
+        "op": "coords-vectors.lstlec",
+        "key": "!",
+        "values": ["!", "9", "A", "Aa", "B", "Z", "_", "a", "z"]
+      },
+      {
+        "op": "coords-vectors.lstlec",
+        "key": "@",
+        "values": ["!", "9", "A", "Aa", "B", "Z", "_", "a", "z"]
+      },
+      {
+        "op": "coords-vectors.lstlec",
+        "key": "A",
+        "values": ["!", "9", "A", "Aa", "B", "Z", "_", "a", "z"]
+      },
+      {
+        "op": "coords-vectors.lstlec",
+        "key": "Aa",
+        "values": ["!", "9", "A", "Aa", "B", "Z", "_", "a", "z"]
+      },
+      {
+        "op": "coords-vectors.lstlec",
+        "key": "B",
+        "values": ["!", "9", "A", "Aa", "B", "Z", "_", "a", "z"]
+      },
+      {
+        "op": "coords-vectors.lstlec",
+        "key": "Z",
+        "values": ["!", "9", "A", "Aa", "B", "Z", "_", "a", "z"]
+      },
+      {
+        "op": "coords-vectors.lstlec",
+        "key": "[",
+        "values": ["!", "9", "A", "Aa", "B", "Z", "_", "a", "z"]
+      },
+      {
+        "op": "coords-vectors.lstlec",
+        "key": "a",
+        "values": ["!", "9", "A", "Aa", "B", "Z", "_", "a", "z"]
+      },
+      {
+        "op": "coords-vectors.lstlec",
+        "key": "z",
+        "values": ["!", "9", "A", "Aa", "B", "Z", "_", "a", "z"]
+      },
+      {
+        "op": "coords-vectors.lstlec",
+        "key": "zz",
+        "values": ["!", "9", "A", "Aa", "B", "Z", "_", "a", "z"]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-lstlec-utf8-byte-order",
+    "description": "UTF-8 byte ordering includes BMP and supplementary scalars whose JavaScript UTF-16 ordering differs.",
+    "workflow": [
+      {
+        "op": "coords-vectors.lstlec",
+        "key": "@",
+        "values": [
+          "A",
+          "\u00e9",
+          "\u96ea",
+          "\ue000",
+          "\ud800\udc00",
+          "\ud83d\ude00"
+        ]
+      },
+      {
+        "op": "coords-vectors.lstlec",
+        "key": "\u00e9",
+        "values": [
+          "A",
+          "\u00e9",
+          "\u96ea",
+          "\ue000",
+          "\ud800\udc00",
+          "\ud83d\ude00"
+        ]
+      },
+      {
+        "op": "coords-vectors.lstlec",
+        "key": "\u00e9 ",
+        "values": [
+          "A",
+          "\u00e9",
+          "\u96ea",
+          "\ue000",
+          "\ud800\udc00",
+          "\ud83d\ude00"
+        ]
+      },
+      {
+        "op": "coords-vectors.lstlec",
+        "key": "\u00e9A",
+        "values": [
+          "A",
+          "\u00e9",
+          "\u96ea",
+          "\ue000",
+          "\ud800\udc00",
+          "\ud83d\ude00"
+        ]
+      },
+      {
+        "op": "coords-vectors.lstlec",
+        "key": "\u96ea",
+        "values": [
+          "A",
+          "\u00e9",
+          "\u96ea",
+          "\ue000",
+          "\ud800\udc00",
+          "\ud83d\ude00"
+        ]
+      },
+      {
+        "op": "coords-vectors.lstlec",
+        "key": "\ue000",
+        "values": [
+          "A",
+          "\u00e9",
+          "\u96ea",
+          "\ue000",
+          "\ud800\udc00",
+          "\ud83d\ude00"
+        ]
+      },
+      {
+        "op": "coords-vectors.lstlec",
+        "key": "\ud800\udc00",
+        "values": [
+          "A",
+          "\u00e9",
+          "\u96ea",
+          "\ue000",
+          "\ud800\udc00",
+          "\ud83d\ude00"
+        ]
+      },
+      {
+        "op": "coords-vectors.lstlec",
+        "key": "\ud83d\ude00",
+        "values": [
+          "A",
+          "\u00e9",
+          "\u96ea",
+          "\ue000",
+          "\ud800\udc00",
+          "\ud83d\ude00"
+        ]
+      },
+      {
+        "op": "coords-vectors.lstlec",
+        "key": "\ud83d\ude01",
+        "values": [
+          "A",
+          "\u00e9",
+          "\u96ea",
+          "\ue000",
+          "\ud800\udc00",
+          "\ud83d\ude00"
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-lstlec-long-keys-and-prefixes",
+    "description": "Key byte length is independent of the maximum row width. Shorter values are logically extended with ASCII space.",
+    "workflow": [
+      {
+        "op": "coords-vectors.lstlec",
+        "key": "AB",
+        "values": ["ABC", "ABD", "ACE", "AZ"]
+      },
+      {
+        "op": "coords-vectors.lstlec",
+        "key": "ABC               ",
+        "values": ["ABC", "ABD", "ACE", "AZ"]
+      },
+      {
+        "op": "coords-vectors.lstlec",
+        "key": "ABC\t",
+        "values": ["ABC", "ABD", "ACE", "AZ"]
+      },
+      {
+        "op": "coords-vectors.lstlec",
+        "key": "ABCD",
+        "values": ["ABC", "ABD", "ACE", "AZ"]
+      },
+      {
+        "op": "coords-vectors.lstlec",
+        "key": "ACE!",
+        "values": ["ABC", "ABD", "ACE", "AZ"]
+      },
+      {
+        "op": "coords-vectors.lstlec",
+        "key": "AZZZ",
+        "values": ["ABC", "ABD", "ACE", "AZ"]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

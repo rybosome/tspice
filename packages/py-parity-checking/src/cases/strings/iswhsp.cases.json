@@ -1,0 +1,130 @@
+[
+  {
+    "caseId": "strings-iswhsp-empty-and-control-whitespace",
+    "description": "Empty input and the six C whitespace characters each produce their own observation.",
+    "workflow": [
+      {
+        "op": "strings.iswhsp",
+        "input": ""
+      },
+      {
+        "op": "strings.iswhsp",
+        "input": " "
+      },
+      {
+        "op": "strings.iswhsp",
+        "input": "\t"
+      },
+      {
+        "op": "strings.iswhsp",
+        "input": "\n"
+      },
+      {
+        "op": "strings.iswhsp",
+        "input": "\r"
+      },
+      {
+        "op": "strings.iswhsp",
+        "input": "\u000b"
+      },
+      {
+        "op": "strings.iswhsp",
+        "input": "\f"
+      },
+      {
+        "op": "strings.iswhsp",
+        "input": "\r\n\t \u000b\f"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-iswhsp-nonwhite-controls",
+    "description": "ASCII control characters outside the whitespace set remain observable.",
+    "workflow": [
+      {
+        "op": "strings.iswhsp",
+        "input": "\u0001"
+      },
+      {
+        "op": "strings.iswhsp",
+        "input": "\b"
+      },
+      {
+        "op": "strings.iswhsp",
+        "input": "\u001b"
+      },
+      {
+        "op": "strings.iswhsp",
+        "input": "\u007f"
+      },
+      {
+        "op": "strings.iswhsp",
+        "input": "\t\b\n"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-iswhsp-visible-amid-whitespace",
+    "description": "A visible letter, digit or punctuation anywhere changes the classification.",
+    "workflow": [
+      {
+        "op": "strings.iswhsp",
+        "input": " A"
+      },
+      {
+        "op": "strings.iswhsp",
+        "input": "\t9\n"
+      },
+      {
+        "op": "strings.iswhsp",
+        "input": " \f-\u000b"
+      },
+      {
+        "op": "strings.iswhsp",
+        "input": "\r\na\t"
+      },
+      {
+        "op": "strings.iswhsp",
+        "input": "  "
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-iswhsp-nonascii-space-and-visible",
+    "description": "Pinned C whitespace classification is byte-oriented, including UTF-8 encodings of Unicode spaces.",
+    "workflow": [
+      {
+        "op": "strings.iswhsp",
+        "input": "\u00a0"
+      },
+      {
+        "op": "strings.iswhsp",
+        "input": "\u2003"
+      },
+      {
+        "op": "strings.iswhsp",
+        "input": "\u96ea"
+      },
+      {
+        "op": "strings.iswhsp",
+        "input": "\ud83d\ude00"
+      },
+      {
+        "op": "strings.iswhsp",
+        "input": "\ufeff"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

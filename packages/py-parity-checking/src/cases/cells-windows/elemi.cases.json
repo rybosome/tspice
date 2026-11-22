@@ -1,0 +1,250 @@
+[
+  {
+    "caseId": "cells-windows-elemi-ordered-and-missing",
+    "description": "Ordered cell; inspect each new value and each membership result.",
+    "workflow": [
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "S",
+        "item": -2147483648
+      },
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "S",
+        "item": -17
+      },
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "S",
+        "item": 0
+      },
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "S",
+        "item": 2
+      },
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "S",
+        "item": 2147483647
+      },
+      {
+        "op": "cells-windows.elemi",
+        "cellId": "S",
+        "item": -2147483648
+      },
+      {
+        "op": "cells-windows.elemi",
+        "cellId": "S",
+        "item": -17
+      },
+      {
+        "op": "cells-windows.elemi",
+        "cellId": "S",
+        "item": 0
+      },
+      {
+        "op": "cells-windows.elemi",
+        "cellId": "S",
+        "item": 2
+      },
+      {
+        "op": "cells-windows.elemi",
+        "cellId": "S",
+        "item": 2147483647
+      },
+      {
+        "op": "cells-windows.elemi",
+        "cellId": "S",
+        "item": 8
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-elemi-independent-handles",
+    "description": "Interleave two independent typed cells; queries must honor the addressed storage.",
+    "workflow": [
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "T",
+        "item": -17
+      },
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "S",
+        "item": 2147483647
+      },
+      {
+        "op": "cells-windows.elemi",
+        "cellId": "S",
+        "item": -17
+      },
+      {
+        "op": "cells-windows.elemi",
+        "cellId": "T",
+        "item": 2147483647
+      },
+      {
+        "op": "cells-windows.elemi",
+        "cellId": "T",
+        "item": -17
+      },
+      {
+        "op": "cells-windows.elemi",
+        "cellId": "S",
+        "item": 2147483647
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-elemi-equal-repeat",
+    "description": "Preserve duplicate data but signal NOTASET when membership requires a set.",
+    "workflow": [
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "S",
+        "item": -17
+      },
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "S",
+        "item": -17
+      },
+      {
+        "op": "cells-windows.elemi",
+        "cellId": "S",
+        "item": -17
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["NOTASET"]
+    }
+  },
+  {
+    "caseId": "cells-windows-elemi-descending-then-valid",
+    "description": "Revalidate unsorted appended data and duplicates before testing membership.",
+    "workflow": [
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "S",
+        "item": 2147483647
+      },
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "S",
+        "item": -2147483648
+      },
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "S",
+        "item": -2147483648
+      },
+      {
+        "op": "cells-windows.valid",
+        "size": 8,
+        "n": 3,
+        "targetKind": "int",
+        "targetId": "S"
+      },
+      {
+        "op": "cells-windows.elemi",
+        "cellId": "S",
+        "item": -2147483648
+      },
+      {
+        "op": "cells-windows.elemi",
+        "cellId": "S",
+        "item": 0
+      },
+      {
+        "op": "cells-windows.elemi",
+        "cellId": "S",
+        "item": 2147483647
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-elemi-empty",
+    "description": "Legitimate absence on an empty allocated cell with no insert.",
+    "workflow": [
+      {
+        "op": "cells-windows.elemi",
+        "cellId": "S",
+        "item": -2147483648,
+        "maxCardinality": 0
+      },
+      {
+        "op": "cells-windows.elemi",
+        "cellId": "S",
+        "item": 2147483647
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-elemi-descending-reject",
+    "description": "Distinct out-of-order values clear the flag even without a duplicate.",
+    "workflow": [
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "S",
+        "item": 2147483647
+      },
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "S",
+        "item": -17
+      },
+      {
+        "op": "cells-windows.elemi",
+        "cellId": "S",
+        "item": 2147483647
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["NOTASET"]
+    }
+  },
+  {
+    "caseId": "cells-windows-elemi-singleton",
+    "description": "Compare equal, smaller and greater values on a single element.",
+    "workflow": [
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "S",
+        "item": 0
+      },
+      {
+        "op": "cells-windows.elemi",
+        "cellId": "S",
+        "item": -17
+      },
+      {
+        "op": "cells-windows.elemi",
+        "cellId": "S",
+        "item": 0
+      },
+      {
+        "op": "cells-windows.elemi",
+        "cellId": "S",
+        "item": 2147483647
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

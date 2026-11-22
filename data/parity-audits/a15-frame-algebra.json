@@ -333,7 +333,8 @@
       ],
       "id": "local-cp01-17f11884fb5b-node",
       "kind": "local",
-      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 17f11884fb5bdef7cbaf84bd480d4b8edde3d310. The native-required lane completed 3788 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45009595818/job/137168748216"
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 17f11884fb5bdef7cbaf84bd480d4b8edde3d310. The native-required lane completed 3788 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45009595818/job/137168748216",
+      "historical": true
     },
     {
       "backend": "node",
@@ -394,7 +395,8 @@
       "kind": "ci",
       "commit": "2851d19aa900e30c688b0d1c756a35357f10eebc",
       "url": "https://github.com/rybosome/tspice/actions/runs/45012853638/job/137178762153",
-      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 3788 live comparisons without unexpected skips."
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 3788 live comparisons without unexpected skips.",
+      "historical": true
     },
     {
       "backend": "wasm",
@@ -453,7 +455,8 @@
       ],
       "id": "local-cp01-17f11884fb5b-wasm",
       "kind": "local",
-      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 17f11884fb5bdef7cbaf84bd480d4b8edde3d310. The native-required lane completed 3788 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45009595818/job/137168748216"
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 17f11884fb5bdef7cbaf84bd480d4b8edde3d310. The native-required lane completed 3788 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45009595818/job/137168748216",
+      "historical": true
     },
     {
       "backend": "wasm",
@@ -514,7 +517,8 @@
       "kind": "ci",
       "commit": "2851d19aa900e30c688b0d1c756a35357f10eebc",
       "url": "https://github.com/rybosome/tspice/actions/runs/45012853638/job/137178762153",
-      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 3788 live comparisons without unexpected skips."
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 3788 live comparisons without unexpected skips.",
+      "historical": true
     }
   ],
   "routines": [
@@ -559,14 +563,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.frame uses the WASM adapter, fixed-size allocations and compiled export and reaches tspice_frame then frame_c on success. Independent live handler calls SpiceyPy frame on the same input.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         },
         "node": {
           "history": [
@@ -574,14 +576,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.frame uses the Node adapter, registered native method and CSPICE mutex and reaches tspice_frame then frame_c on success. Independent live handler calls SpiceyPy frame on the same input.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         }
       }
     },
@@ -660,14 +660,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.twovec uses the WASM adapter, fixed-size allocations and compiled export and reaches tspice_twovec then twovec_c on success. Independent live handler calls SpiceyPy twovec on the same input.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         },
         "node": {
           "history": [
@@ -676,14 +674,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.twovec uses the Node adapter, registered native method and CSPICE mutex and reaches tspice_twovec then twovec_c on success. Independent live handler calls SpiceyPy twovec on the same input.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         }
       }
     },
@@ -776,14 +772,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.twovxf uses the WASM adapter, fixed-size allocations and compiled export and reaches tspice_twovxf then twovxf_c on success. The independent sidecar checks locked zztwovxf_ and then obtains the successful public result from sp.twovxf.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         },
         "node": {
           "history": [
@@ -792,14 +786,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.twovxf uses the Node adapter, registered native method and CSPICE mutex and reaches tspice_twovxf then twovxf_c on success. The independent sidecar checks locked zztwovxf_ and then obtains the successful public result from sp.twovxf.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         }
       }
     },
@@ -883,14 +875,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.eul2xf uses the WASM adapter, fixed-size allocations and compiled export and reaches tspice_eul2xf then eul2xf_c on success. The independent sidecar calls sp.eul2xf on the ordinary domain and traced, initialized locked eul2m_ on the invalid leading-axis lookup domain.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         },
         "node": {
           "history": [
@@ -899,14 +889,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.eul2xf uses the Node adapter, registered native method and CSPICE mutex and reaches tspice_eul2xf then eul2xf_c on success. The independent sidecar calls sp.eul2xf on the ordinary domain and traced, initialized locked eul2m_ on the invalid leading-axis lookup domain.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         }
       }
     },
@@ -985,14 +973,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.xf2eul uses the WASM adapter, fixed-size allocations and compiled export and reaches tspice_xf2eul then xf2eul_c on success. The independent sidecar checks the typed locked xf2eul_ ABI in column-major order before returning a successful sp.xf2eul result.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         },
         "node": {
           "history": [
@@ -1001,14 +987,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.xf2eul uses the Node adapter, registered native method and CSPICE mutex and reaches tspice_xf2eul then xf2eul_c on success. The independent sidecar checks the typed locked xf2eul_ ABI in column-major order before returning a successful sp.xf2eul result.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         }
       }
     },
@@ -1048,14 +1032,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.xf2rav uses the WASM adapter, fixed-size allocations and compiled export and reaches tspice_xf2rav then xf2rav_c on success. Independent live handler calls SpiceyPy xf2rav on the same input.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         },
         "node": {
           "history": [
@@ -1063,14 +1045,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.xf2rav uses the Node adapter, registered native method and CSPICE mutex and reaches tspice_xf2rav then xf2rav_c on success. Independent live handler calls SpiceyPy xf2rav on the same input.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         }
       }
     },
@@ -1110,14 +1090,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.rav2xf uses the WASM adapter, fixed-size allocations and compiled export and reaches tspice_rav2xf then rav2xf_c on success. Independent live handler calls SpiceyPy rav2xf on the same input.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         },
         "node": {
           "history": [
@@ -1125,14 +1103,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.rav2xf uses the Node adapter, registered native method and CSPICE mutex and reaches tspice_rav2xf then rav2xf_c on success. Independent live handler calls SpiceyPy rav2xf on the same input.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         }
       }
     },
@@ -1172,14 +1148,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.invstm uses the WASM adapter, fixed-size allocations and compiled export and reaches tspice_invstm then invstm_c on success. Independent live handler calls SpiceyPy invstm on the same input.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         },
         "node": {
           "history": [
@@ -1187,14 +1161,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.invstm uses the Node adapter, registered native method and CSPICE mutex and reaches tspice_invstm then invstm_c on success. Independent live handler calls SpiceyPy invstm on the same input.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         }
       }
     },
@@ -1234,14 +1206,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.xpose6 uses the WASM adapter, fixed-size allocations and compiled export and reaches tspice_xpose6 then xpose6_c on success. Independent live handler calls SpiceyPy xpose6 on the same input.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         },
         "node": {
           "history": [
@@ -1249,14 +1219,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.xpose6 uses the Node adapter, registered native method and CSPICE mutex and reaches tspice_xpose6 then xpose6_c on success. Independent live handler calls SpiceyPy xpose6 on the same input.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         }
       }
     }

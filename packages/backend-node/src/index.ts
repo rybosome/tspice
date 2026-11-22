@@ -12,6 +12,7 @@ import { createKernelStager } from "./runtime/kernel-staging.js";
 import { createVirtualOutputStager } from "./runtime/virtual-output-staging.js";
 import { createSpiceHandleRegistry } from "./runtime/spice-handles.js";
 
+import { createStringsApi } from "./domains/strings.js";
 import { createCoordsVectorsApi } from "./domains/coords-vectors.js";
 import { createEphemerisApi } from "./domains/ephemeris.js";
 import { createFramesApi } from "./domains/frames.js";
@@ -45,6 +46,7 @@ export function createNodeBackend(): SpiceBackend & { kind: "node" } {
   const native = getNodeBinding();
   const stager = createKernelStager();
   const spiceHandles = createSpiceHandleRegistry();
+  const charCells = new Set<number>();
   const outputs = createVirtualOutputStager();
   const timeApi = createTimeApi(native);
   const fileIoApi = createFileIoApi(native, spiceHandles, stager);
@@ -54,23 +56,24 @@ export function createNodeBackend(): SpiceBackend & { kind: "node" } {
     raw: {
       ...timeApi,
       ...createKernelsApi(native, stager),
-      ...createKernelPoolApi(native),
+      ...createKernelPoolApi(native, stager),
       ...createIdsNamesApi(native),
       ...createFramesApi(native, stager),
       ...createEphemerisApi(native, spiceHandles, stager, outputs),
       ...createGeometryApi(native),
       ...createGeometryGfApi(native),
+      ...createStringsApi(native),
       ...createCoordsVectorsApi(native),
       ...fileIoApi,
       ...createErrorApi(native),
-      ...createCellsWindowsApi(native),
+      ...createCellsWindowsApi(native, charCells),
       ...createEkApi(native, spiceHandles, stager),
       ...createDskApi(native, spiceHandles, stager),
     },
     kit: {
       ...createTimeKitApi(native),
       ...createFileIoKitApi(outputs),
-      ...createCellsWindowsKitApi(native),
+      ...createCellsWindowsKitApi(native, charCells),
     },
   };
 

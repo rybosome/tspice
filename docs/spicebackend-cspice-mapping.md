@@ -14,6 +14,7 @@ Included domains (from `packages/backend-contract/src/domains/`):
 - `ephemeris`
 - `geometry`
 - `coords-vectors`
+- `strings`
 
 > Note: This mapping is intended to be complete (method-level) for all domains listed here.
 > Follow-up work is primarily around parity tests, fixtures for kernel-heavy routines (CK/FK/IK), and per-routine edge-case semantics.
@@ -207,6 +208,22 @@ Notes:
 
 ---
 
+## Kernel-pool validation, loading and continued strings
+
+| Raw method | Matching CSPICE routine | Result or effect                                                                                                                                                                          |
+| ---------- | ----------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `badkpv`   | `badkpv_c`              | Validate a pool variable’s type, comparison with expected dimension and dimension divisibility. A valid variable returns false. A failed check signals a toolkit error naming the caller. |
+| `bodvcd`   | `bodvcd_c`              | Find the numeric pool constant BODY<id>_<item> by signed body ID, reporting its exact dimension and stored units.                                                                         |
+| `bodvrd`   | `bodvrd_c`              | Resolve a body name or decimal ID string, then return owned ordered body-constant values and their actual dimension.                                                                      |
+| `clpool`   | `clpool_c`              | Clear all kernel-pool variables and signal registered watchers while retaining KEEPER inventory.                                                                                          |
+| `dvpool`   | `dvpool_c`              | Delete a named variable and notify its watchers when an existing variable is deleted.                                                                                                     |
+| `ldpool`   | `ldpool_c`              | Load file-based text-kernel assignments directly into the pool, without KEEPER registration.                                                                                              |
+| `lmpool`   | `lmpool_c`              | Load ordered text-kernel records through the canonical rectangular C buffer.                                                                                                              |
+| `stpool`   | `stpool_c`              | Fetch a continued logical string by zero-based ordinal, carrying the exact C text and pre-truncation size in bytes, or found false.                                                       |
+| `szpool`   | `szpool_c`              | Read a named implementation limit as a found integer, preserving legitimate absent names.                                                                                                 |
+
+The public contract and batch review describe native and WASM buffer limits, file staging, error precedence, source-derived guards and independent oracle routes. [Kernel-pool review](step8-kernel-pool.md)
+
 ## Domain: `error` (`ErrorApi`)
 
 | domain.method           | CSPICE entrypoint(s) | Args (TS shape)                                   | Returns (TS shape) | Comparison notes (tolerance/normalization) | Statefulness / required kernels                                                                                                                                            |
@@ -247,6 +264,58 @@ Notes:
 | `geometry.occult(targ1, shape1, frame1, targ2, shape2, frame2, abcorr, observer, et)` | `occult_c`           | `(targ1: string, shape1: string, frame1: string, targ2: string, shape2: string, frame2: string, abcorr: AbCorr \| string, observer: string, et: number): number`    | `number`                                                                                  | exact integer match (occultation code)           | **stateful**: requires SPK (all bodies) + shape kernels (PCK/DSK) + any referenced frames; output is an integer condition code defined by CSPICE `occult_c`                |
 
 ---
+
+## Domain: `strings` (`StringsApi`)
+
+Each operation is available as a flat raw method on Node and WASM. Complete
+well-formed UTF-8 inputs may include whitespace and an initial BOM. Text
+arguments reject embedded NUL. Single-byte delimiter and wildcard arguments
+accept ASCII including the NUL scalar. All rows use authored text fixtures.
+[Byte semantics and independent oracle](step8-string-transforms.md)
+
+| Raw method                                                         | Canonical routine | Complete result                                                            |
+| ------------------------------------------------------------------ | ----------------- | -------------------------------------------------------------------------- |
+| `cmprss(delim: string, n: number, input: string, lenout?: number)` | `cmprss_c`        | Compressed string. Capacity includes the terminator, minimum 1.            |
+| `eqstr(a: string, b: string)`                                      | `eqstr_c`         | Exact boolean for whitespace-insensitive, ASCII case-insensitive equality. |
+| `iswhsp(input: string)`                                            | `iswhsp_c`        | Exact boolean for C whitespace or an empty input.                          |
+| `lastnb(input: string)`                                            | `lastnb_c`        | Zero-based last non-space byte index or −1.                                |
+| `lcase(input: string, lenout?: number)`                            | `lcase_c`         | ASCII-lowercased string. Capacity includes the terminator, minimum 2.      |
+| `ucase(input: string, lenout?: number)`                            | `ucase_c`         | ASCII-uppercased string. Capacity includes the terminator, minimum 2.      |
+| `matchi(input: string, templ: string, wstr: string, wchr: string)` | `matchi_c`        | Exact boolean for an ASCII case-insensitive, byte-oriented wildcard match. |
+| `matchw(input: string, templ: string, wstr: string, wchr: string)` | `matchw_c`        | Exact boolean for a case-sensitive, byte-oriented wildcard match.          |
+| `cpos(text, chars, start)`                                         | `cpos_c`          | First matching byte from the inclusive start, or −1.                       |
+| `cposr(text, chars, start)`                                        | `cposr_c`         | Last matching byte through the inclusive start, or −1.                     |
+| `ncpos(text, chars, start)`                                        | `ncpos_c`         | First byte outside the set from the inclusive start, or −1.                |
+| `ncposr(text, chars, start)`                                       | `ncposr_c`        | Last byte outside the set through the inclusive start, or −1.              |
+| `pos(text, substr, start)`                                         | `pos_c`           | First exact substring start, or −1.                                        |
+| `posr(text, substr, start)`                                        | `posr_c`          | Last exact substring start, or −1.                                         |
+| `esrchc(value, values)`                                            | `esrchc_c`        | First equivalent row, or −1.                                               |
+
+All six position results use UTF-8 byte indices. ESRCHC returns an array index
+and applies the whitespace and ASCII-case rules of EQSTR to each terminated
+row. The independent oracle exercises empty, all-empty, ASCII and multibyte rows.
+[Byte positions, signed bounds and row ABI](step8-string-search.md)
+
+### Tokenization and lexical spans
+
+All nine methods dispatch through their same-named CSPICE routine. A20 reuses
+the A18 string validation and strict byte decoding on both real backends.
+
+| Raw method | CSPICE     | Complete public result                                                     |
+| ---------- | ---------- | -------------------------------------------------------------------------- |
+| `nextwd`   | `nextwd_c` | Next word and left-justified remainder, with independent capacities        |
+| `nthwd`    | `nthwd_c`  | Word and zero-based UTF-8 start location                                   |
+| `lparse`   | `lparse_c` | Item count and ordered rows using one delimiter byte                       |
+| `lparsm`   | `lparsm_c` | Item count and ordered rows using a delimiter byte set                     |
+| `lx4dec`   | `lx4dec_c` | Inclusive last byte and character count of a decimal mantissa              |
+| `lx4num`   | `lx4num_c` | Inclusive last byte and character count of a number with optional exponent |
+| `lx4sgn`   | `lx4sgn_c` | Inclusive last byte and character count of an optionally signed integer    |
+| `lx4uns`   | `lx4uns_c` | Inclusive last byte and character count of unsigned digits                 |
+| `lxqstr`   | `lxqstr_c` | Inclusive last byte and character count of a quoted token                  |
+
+The independent oracle retains byte capacities, complete UTF-8 text, signed
+miss positions and the toolkit's separate decimal location/count fields.
+[Bounds, oracle adaptations and scientific observations](step8-string-tokenization.md)
 
 ## Domain: `coords-vectors` (`CoordsVectorsApi`)
 
@@ -293,6 +362,49 @@ matrix owns its storage. Backend results retain numeric `NaN` and infinities;
 the finite-only matrix input validators still reject those values if reused as
 input. `invert`, `invort`, and `isrot` preserve their distinct CSPICE threshold,
 column-scaling, and tolerance semantics.
+
+The following eight methods accept a key and a readonly array. Each returns a physical zero-based index or −1. CSPICE performs the search after both adapters validate and snapshot the arguments. [Search domain, indices and verified examples](step8-array-search.md)
+
+| Raw method                   | Canonical routine | Search order                                             |
+| ---------------------------- | ----------------- | -------------------------------------------------------- |
+| `bschoc(key, values, order)` | `bschoc_c`        | Nondecreasing order given by the zero-based permutation. |
+| `bschoi(key, values, order)` | `bschoi_c`        | Nondecreasing order given by the zero-based permutation. |
+| `bsrchc(key, values)`        | `bsrchc_c`        | Nondecreasing physical order.                            |
+| `bsrchd(key, values)`        | `bsrchd_c`        | Nondecreasing physical order.                            |
+| `bsrchi(key, values)`        | `bsrchi_c`        | Nondecreasing physical order.                            |
+| `isrchc(key, values)`        | `isrchc_c`        | Physical order, first matching entry.                    |
+| `isrchd(key, values)`        | `isrchd_c`        | Physical order, first matching entry.                    |
+| `isrchi(key, values)`        | `isrchi_c`        | Physical order, first matching entry.                    |
+
+Each sorted-boundary method accepts a key and a readonly array of the same
+element type. It returns the zero-based index of the last qualifying entry
+or −1. The caller supplies the values in nondecreasing order.
+[Character layout and exact index semantics](step8-sorted-bounds.md)
+
+| Raw method                                       | Canonical routine | Qualifying relation                                 |
+| ------------------------------------------------ | ----------------- | --------------------------------------------------- |
+| `lstlec(key: string, values: readonly string[])` | `lstlec_c`        | Blank-extended byte comparison, less than or equal. |
+| `lstled(key: number, values: readonly number[])` | `lstled_c`        | Ordered double, less than or equal.                 |
+| `lstlei(key: number, values: readonly number[])` | `lstlei_c`        | Signed 32-bit integer, less than or equal.          |
+| `lstltc(key: string, values: readonly string[])` | `lstltc_c`        | Blank-extended byte comparison, strictly less than. |
+| `lstltd(key: number, values: readonly number[])` | `lstltd_c`        | Ordered double, strictly less than.                 |
+| `lstlti(key: number, values: readonly number[])` | `lstlti_c`        | Signed 32-bit integer, strictly less than.          |
+
+All eleven array-ordering methods use the canonical routine in both backends. The public arrays are readonly inputs and each returned array is owned. [Ordering and permutation details](step8-array-order.md)
+
+| Raw method              | Canonical routine | Returned result                             |
+| ----------------------- | ----------------- | ------------------------------------------- |
+| `isordv(order)`         | `isordv_c`        | Boolean permutation predicate.              |
+| `orderc(values)`        | `orderc_c`        | Array of zero-based source indices.         |
+| `orderd(values)`        | `orderd_c`        | Array of zero-based source indices.         |
+| `orderi(values)`        | `orderi_c`        | Array of zero-based source indices.         |
+| `reordc(order, values)` | `reordc_c`        | Values in the specified source-index order. |
+| `reordd(order, values)` | `reordd_c`        | Values in the specified source-index order. |
+| `reordi(order, values)` | `reordi_c`        | Values in the specified source-index order. |
+| `reordl(order, values)` | `reordl_c`        | Values in the specified source-index order. |
+| `shellc(values)`        | `shellc_c`        | Sorted values.                              |
+| `shelld(values)`        | `shelld_c`        | Sorted values.                              |
+| `shelli(values)`        | `shelli_c`        | Sorted values.                              |
 
 | domain.method                                         | CSPICE entrypoint(s) | Args (TS shape)                                                                                                         | Returns (TS shape)                                                                     | Comparison notes (tolerance/normalization)                                                                                                                                       | Statefulness / required kernels                                                                        |
 | ----------------------------------------------------- | -------------------- | ----------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
@@ -411,6 +523,10 @@ column-scaling, and tolerance semantics.
 | `coords-vectors.vzerog(v)`                            | `vzerog_c`           | `(v: readonly number[])`                                                                                                | `boolean`                                                                              | Exact all-zero for nonempty vector; empty false                                                                                                                                  | none; signed32 dimension, WASM 256 MiB per vector buffer                                               |
 | `coords-vectors.unormg(v)`                            | `unormg_c`           | `(v: readonly number[])`                                                                                                | `{ unit: number[]; norm: number }`                                                     | Both actual outputs; empty {unit:[],norm:0}; max dimension 2147483646                                                                                                            | none; signed32 dimension, WASM 256 MiB per vector buffer                                               |
 
+### Character list parsing
+
+`raw.lparss(list, delims, set)` calls `lparss_c` on the live caller-owned character set. [Byte widths, empty-list insertion and partial mutation](step8-string-set.md)
+
 ### Cell backing bounds
 
 `ssize`, `valid`, and `wnvald` may change logical sizes only within the originally allocated cell capacity. The shared registry retains that original bound independently of mutable descriptors; requests beyond it throw before CSPICE runs. NAIF documents that CSPICE cannot detect an oversized backing declaration. `ssize` clears cardinality; `valid` sorts/deduplicates stored elements; `wnvald` sorts/merges endpoint pairs. The audit compares these observable effects and uses safe direct regressions for allocation-precondition violations rather than asking SpiceyPy to access invalid storage.
@@ -516,6 +632,50 @@ The unchanged live comparator remains 1e-12 absolute-or-relative.
 ### Cell/window observations
 
 `card` and `size` count elements (window endpoints); `wncard` counts intervals and `wnfetd` uses zero-based interval indices. `scard` changes cardinality without clearing or initializing stored bytes. Set insertion compares complete ordered contents with live SpiceyPy, including duplicate insertion into a full set, explicit zero capacity, and character truncation/trailing-blank equivalence. `insrtc` requires a string at runtime on both backends. Window cases observe every selected endpoint after touching, contained, bridging and singleton insertions; named overflow/bounds errors and separate same-instance recovery tests preserve error distinctions and lifecycle behavior. Missing-target workflow errors remain harness preflight and do not establish raw CSPICE error parity.
+
+#### Window algebra
+
+These flat raw methods take existing `SpiceWindow` handles from the same
+backend. Each destination is caller-owned and distinct from every input.
+The double scalar arguments are finite. `kit.newWindow(maxIntervals)`
+allocates capacity in intervals, each of which occupies two endpoint slots.
+
+| Raw call                              | CSPICE     | Return and observable state                                                           |
+| ------------------------------------- | ---------- | ------------------------------------------------------------------------------------- |
+| `wncomd(left, right, window, result)` | `wncomd_c` | Write the closed complement within the supplied interval.                             |
+| `wncond(left, right, window)`         | `wncond_c` | Contract the window in place using signed left and right adjustments.                 |
+| `wndifd(a, b, result)`                | `wndifd_c` | Write the closure of A minus B.                                                       |
+| `wnelmd(point, window)`               | `wnelmd_c` | Boolean point membership, including closed endpoints.                                 |
+| `wnexpd(left, right, window)`         | `wnexpd_c` | Expand in place, with signed adjustments and coalescing.                              |
+| `wnextd(side, window)`                | `wnextd_c` | Replace intervals in place with selected endpoint singletons.                         |
+| `wnfild(small, window)`               | `wnfild_c` | Fill gaps of measure at most the threshold.                                           |
+| `wnfltd(small, window)`               | `wnfltd_c` | Remove intervals of measure at most the threshold.                                    |
+| `wnincd(left, right, window)`         | `wnincd_c` | Boolean inclusion of the supplied interval in one stored interval.                    |
+| `wnintd(a, b, result)`                | `wnintd_c` | Write the intersection, including touching singletons.                                |
+| `wnreld(a, op, b)`                    | `wnreld_c` | Boolean set comparison with the supplied relation.                                    |
+| `wnsumd(window)`                      | `wnsumd_c` | Owned object with `meas`, `avg`, `stddev`, `shortest` and `longest`.                  |
+| `wnunid(a, b, result)`                | `wnunid_c` | Write the union using the supplied capacity, including pinned full-capacity behavior. |
+
+Mutators and destination writers return void. Read their results with
+`wncard` and `wnfetd`. A capacity error can leave a visible partial
+interval. The complete status and readback checks include the actual
+N0067 full-capacity union, first-tie summary indices and empty sentinels.
+[Window algebra and failure state](step8-window-algebra.md)
+
+### Ordinary cell arrays
+
+| Raw method                  | Canonical routine | Behavior                                                           |
+| --------------------------- | ----------------- | ------------------------------------------------------------------ |
+| `appndc(item, cell)`        | `appndc_c`        | Append to a fixed-width character row, retaining significant tabs. |
+| `appndd(item, cell)`        | `appndd_c`        | Append a binary64 value, including infinity and signed zero.       |
+| `appndi(item, cell)`        | `appndi_c`        | Append a signed32 integer in caller order.                         |
+| `elemc(item, cell)`         | `elemc_c`         | Determine full-key membership, ignoring trailing ASCII spaces.     |
+| `elemd(item, cell)`         | `elemd_c`         | Test exact membership of an ordered binary64 value.                |
+| `elemi(item, cell)`         | `elemi_c`         | Test exact signed32 membership.                                    |
+| `copy(source, destination)` | `copy_c`          | Copy ordered rows into the caller's same-type ordinary cell.       |
+
+Append can clear the cell's set flag. Copy retains the destination flag and
+can leave a partial numeric prefix on capacity error. [State, errors and exact membership observations](step8-cell-arrays.md)
 
 ### Kernel-pool observations and boundaries
 
@@ -886,3 +1046,40 @@ Each public method uses the canonical spelling without `_c` and returns the owne
 | [`drdpgr_c`](https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/drdpgr_c.html) | Cartesian (x, y, z) from (planetographic longitude, latitude, altitude) |
 | [`drdsph_c`](https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/drdsph_c.html) | Cartesian (x, y, z) from spherical (radius, colatitude, longitude)      |
 | [`dsphdr_c`](https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dsphdr_c.html) | (radius, colatitude, longitude) from Cartesian (x, y, z)                |
+
+## Numeric string conversion and marker replacement
+
+| Raw method | CSPICE     | Scientific effect                                                                                                                                                 |
+| ---------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `dp2hx`    | `dp2hx_c`  | Encode a finite binary64 number in CSPICE normalized hex with its complete pre-truncation size.                                                                   |
+| `hx2dp`    | `hx2dp_c`  | Parse a normalized hexadecimal mantissa and base-16 exponent, preserving the scientific conversion flag, full returned error prefix and successful numeric value. |
+| `prsdp`    | `prsdp_c`  | Parse the CSPICE decimal grammar and PI mnemonic as a double.                                                                                                     |
+| `prsint`   | `prsint_c` | Parse the CSPICE decimal grammar and truncate the result toward zero into a signed integer.                                                                       |
+| `repmc`    | `repmc_c`  | Replace the first marker with a character value, trimming only significant ASCII-space padding in the scientific string operation.                                |
+| `repmct`   | `repmct_c` | Replace the first marker with English cardinal words for a signed integer, preserving requested case.                                                             |
+| `repmd`    | `repmd_c`  | Replace the first marker with a scientific-formatted double, honoring the pinned significant-digit range.                                                         |
+| `repmf`    | `repmf_c`  | Replace the first marker with a scientific or fixed representation, retaining pinned formatting and scoped 56-byte internal width.                                |
+| `repmi`    | `repmi_c`  | Replace the first marker with signed decimal integer text, including exact endpoints.                                                                             |
+| `repml`    | `repml_c`  | Replace the first marker with a logical value in upper, lower or initial-capital case.                                                                            |
+| `repmot`   | `repmot_c` | Replace the first marker with English ordinal words for a signed integer, preserving hyphenation and case.                                                        |
+
+Caller buffer bounds, direct typed oracle signatures and binary64 saturation are described in the batch audit. [Numeric strings and marker replacement](step8-string-numbers.md)
+
+## Ordinary set algebra
+
+| Public raw method     | Direct toolkit entry point | Observation                                 |
+| --------------------- | -------------------------- | ------------------------------------------- |
+| `diff(a, b, result)`  | `diff_c`                   | Ordered difference in caller-owned storage. |
+| `inter(a, b, result)` | `inter_c`                  | Complete ordered intersection.              |
+| `sdiff(a, b, result)` | `sdiff_c`                  | Symmetric difference.                       |
+| `union(a, b, result)` | `union_c`                  | Ordered union.                              |
+| `set(a, op, b)`       | `set_c`                    | Boolean result for one of eight relations.  |
+| `removc(item, cell)`  | `removc_c`                 | Remove a character member in place.         |
+| `removd(item, cell)`  | `removd_c`                 | Remove an ordered double in place.          |
+| `removi(item, cell)`  | `removi_c`                 | Remove a signed integer in place.           |
+| `ordc(item, cell)`    | `ordc_c`                   | Character ordinal or −1.                    |
+| `ordd(item, cell)`    | `ordd_c`                   | Double ordinal or −1.                       |
+| `ordi(item, cell)`    | `ordi_c`                   | Integer ordinal or −1.                      |
+
+Typed ordinary cell handles remain caller-owned. Capacity failures can write
+a prefix while leaving the descriptor cardinality unchanged. [Cardinality, width and byte-level evidence](step8-set-algebra.md)

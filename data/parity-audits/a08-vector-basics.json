@@ -436,7 +436,8 @@
       ],
       "id": "local-cp01-17f11884fb5b-node",
       "kind": "local",
-      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 17f11884fb5bdef7cbaf84bd480d4b8edde3d310. The native-required lane completed 3788 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45009595818/job/137168748216"
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 17f11884fb5bdef7cbaf84bd480d4b8edde3d310. The native-required lane completed 3788 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45009595818/job/137168748216",
+      "historical": true
     },
     {
       "backend": "node",
@@ -482,7 +483,8 @@
       "kind": "ci",
       "commit": "2851d19aa900e30c688b0d1c756a35357f10eebc",
       "url": "https://github.com/rybosome/tspice/actions/runs/45012853638/job/137178762153",
-      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 3788 live comparisons without unexpected skips."
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 3788 live comparisons without unexpected skips.",
+      "historical": true
     },
     {
       "backend": "wasm",
@@ -526,7 +528,8 @@
       ],
       "id": "local-cp01-17f11884fb5b-wasm",
       "kind": "local",
-      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 17f11884fb5bdef7cbaf84bd480d4b8edde3d310. The native-required lane completed 3788 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45009595818/job/137168748216"
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 17f11884fb5bdef7cbaf84bd480d4b8edde3d310. The native-required lane completed 3788 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45009595818/job/137168748216",
+      "historical": true
     },
     {
       "backend": "wasm",
@@ -572,7 +575,8 @@
       "kind": "ci",
       "commit": "2851d19aa900e30c688b0d1c756a35357f10eebc",
       "url": "https://github.com/rybosome/tspice/actions/runs/45012853638/job/137178762153",
-      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 3788 live comparisons without unexpected skips."
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 3788 live comparisons without unexpected skips.",
+      "historical": true
     }
   ],
   "routines": [
@@ -634,14 +638,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vdist -> Node typed adapter -> registered native handler under global CSPICE mutex -> tspice_vdist shared C shim -> vdist_c; complete scalar/vector/object result copied and propagated.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -652,14 +654,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vdist -> WASM typed adapter -> configured _tspice_vdist export -> tspice_vdist shared C shim -> vdist_c; all result components copied from typed heap storage before withAllocs cleanup. Binary regeneration/export and execution verification remain required.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -716,14 +716,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vequ -> Node typed adapter -> registered native handler under global CSPICE mutex -> tspice_vequ shared C shim -> vequ_c; complete scalar/vector/object result copied and propagated.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -734,14 +732,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vequ -> WASM typed adapter -> configured _tspice_vequ export -> tspice_vequ shared C shim -> vequ_c; all result components copied from typed heap storage before withAllocs cleanup. Binary regeneration/export and execution verification remain required.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -783,14 +779,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vpack -> Node typed adapter -> registered native handler under global CSPICE mutex -> tspice_vpack shared C shim -> vpack_c; complete scalar/vector/object result copied and propagated.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -800,14 +794,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vpack -> WASM typed adapter -> configured _tspice_vpack export -> tspice_vpack shared C shim -> vpack_c; all result components copied from typed heap storage before withAllocs cleanup. Binary regeneration/export and execution verification remain required.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -864,14 +856,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vupack -> Node typed adapter -> registered native handler under global CSPICE mutex -> tspice_vupack shared C shim -> vupack_c; complete scalar/vector/object result copied and propagated.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -882,14 +872,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vupack -> WASM typed adapter -> configured _tspice_vupack export -> tspice_vupack shared C shim -> vupack_c; all result components copied from typed heap storage before withAllocs cleanup. Binary regeneration/export and execution verification remain required.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -951,14 +939,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vzero -> Node typed adapter -> registered native handler under global CSPICE mutex -> tspice_vzero shared C shim -> vzero_c; complete scalar/vector/object result copied and propagated.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -969,14 +955,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vzero -> WASM typed adapter -> configured _tspice_vzero export -> tspice_vzero shared C shim -> vzero_c; all result components copied from typed heap storage before withAllocs cleanup. Binary regeneration/export and execution verification remain required.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1038,14 +1022,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.unorm -> Node typed adapter -> registered native handler under global CSPICE mutex -> tspice_unorm shared C shim -> unorm_c; complete scalar/vector/object result copied and propagated.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1056,14 +1038,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.unorm -> WASM typed adapter -> configured _tspice_unorm export -> tspice_unorm shared C shim -> unorm_c; all result components copied from typed heap storage before withAllocs cleanup. Binary regeneration/export and execution verification remain required.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1149,14 +1129,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.ucrss -> Node typed adapter -> registered native handler under global CSPICE mutex -> tspice_ucrss shared C shim -> ucrss_c; complete scalar/vector/object result copied and propagated.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1168,14 +1146,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.ucrss -> WASM typed adapter -> configured _tspice_ucrss export -> tspice_ucrss shared C shim -> ucrss_c; all result components copied from typed heap storage before withAllocs cleanup. Binary regeneration/export and execution verification remain required.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1247,14 +1223,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vsep -> Node typed adapter -> registered native handler under global CSPICE mutex -> tspice_vsep shared C shim -> vsep_c; complete scalar/vector/object result copied and propagated.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1265,14 +1239,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vsep -> WASM typed adapter -> configured _tspice_vsep export -> tspice_vsep shared C shim -> vsep_c; all result components copied from typed heap storage before withAllocs cleanup. Binary regeneration/export and execution verification remain required.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     }

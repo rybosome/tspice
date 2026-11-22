@@ -673,7 +673,8 @@
       ],
       "id": "local-cp01-17f11884fb5b-node",
       "kind": "local",
-      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 17f11884fb5bdef7cbaf84bd480d4b8edde3d310. The native-required lane completed 3788 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45009595818/job/137168748216"
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 17f11884fb5bdef7cbaf84bd480d4b8edde3d310. The native-required lane completed 3788 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45009595818/job/137168748216",
+      "historical": true
     },
     {
       "backend": "node",
@@ -744,7 +745,8 @@
       "kind": "ci",
       "commit": "2851d19aa900e30c688b0d1c756a35357f10eebc",
       "url": "https://github.com/rybosome/tspice/actions/runs/45012853638/job/137178762153",
-      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 3788 live comparisons without unexpected skips."
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 3788 live comparisons without unexpected skips.",
+      "historical": true
     },
     {
       "backend": "wasm",
@@ -813,7 +815,8 @@
       ],
       "id": "local-cp01-17f11884fb5b-wasm",
       "kind": "local",
-      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 17f11884fb5bdef7cbaf84bd480d4b8edde3d310. The native-required lane completed 3788 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45009595818/job/137168748216"
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 17f11884fb5bdef7cbaf84bd480d4b8edde3d310. The native-required lane completed 3788 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45009595818/job/137168748216",
+      "historical": true
     },
     {
       "backend": "wasm",
@@ -884,7 +887,8 @@
       "kind": "ci",
       "commit": "2851d19aa900e30c688b0d1c756a35357f10eebc",
       "url": "https://github.com/rybosome/tspice/actions/runs/45012853638/job/137178762153",
-      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 3788 live comparisons without unexpected skips."
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 3788 live comparisons without unexpected skips.",
+      "historical": true
     }
   ],
   "routines": [
@@ -931,14 +935,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.azlrec -> typed Node coords-vectors adapter -> native binding azlrec in native/src/domains/coords_vectors.cc (validated inputs, global SPICE mutex) -> tspice_azlrec shared shim -> azlrec_c. Workflow dispatch invokes this actual raw method; Python decode/model/handler invokes locked SpiceyPy azlrec and preserves matching output field order. No test substitute or harness science implementation is used.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -948,14 +950,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.azlrec -> typed WASM coords-vectors adapter -> exported _tspice_azlrec (boolean flags encoded 0/1; current buffers copied) -> shared shim -> azlrec_c. Outputs copied before transactional cleanup. Workflow dispatch invokes this actual raw method; Python decode/model/handler invokes locked SpiceyPy azlrec and preserves matching output field order. No test substitute or harness science implementation is used.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1016,14 +1016,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.recazl -> typed Node coords-vectors adapter -> native binding recazl in native/src/domains/coords_vectors.cc (validated inputs, global SPICE mutex) -> tspice_recazl shared shim -> recazl_c. Workflow dispatch invokes this actual raw method; Python decode/model/handler invokes locked SpiceyPy recazl and preserves matching output field order. No test substitute or harness science implementation is used.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1034,14 +1032,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.recazl -> typed WASM coords-vectors adapter -> exported _tspice_recazl (boolean flags encoded 0/1; current buffers copied) -> shared shim -> recazl_c. Outputs copied before transactional cleanup. Workflow dispatch invokes this actual raw method; Python decode/model/handler invokes locked SpiceyPy recazl and preserves matching output field order. No test substitute or harness science implementation is used.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1144,14 +1140,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.pgrrec -> typed Node coords-vectors adapter -> native binding pgrrec in native/src/domains/coords_vectors.cc (validated inputs, global SPICE mutex) -> tspice_pgrrec shared shim -> pgrrec_c. Workflow dispatch invokes this actual raw method; Python decode/model/handler invokes locked SpiceyPy pgrrec and preserves matching output field order. No test substitute or harness science implementation is used.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1161,14 +1155,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.pgrrec -> typed WASM coords-vectors adapter -> exported _tspice_pgrrec (boolean flags encoded 0/1; current buffers copied) -> shared shim -> pgrrec_c. Outputs copied before transactional cleanup. Workflow dispatch invokes this actual raw method; Python decode/model/handler invokes locked SpiceyPy pgrrec and preserves matching output field order. No test substitute or harness science implementation is used.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1290,14 +1282,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.recpgr -> typed Node coords-vectors adapter -> native binding recpgr in native/src/domains/coords_vectors.cc (validated inputs, global SPICE mutex) -> tspice_recpgr shared shim -> recpgr_c. Workflow dispatch invokes this actual raw method; Python decode/model/handler invokes locked SpiceyPy recpgr and preserves matching output field order. No test substitute or harness science implementation is used.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1308,14 +1298,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.recpgr -> typed WASM coords-vectors adapter -> exported _tspice_recpgr (boolean flags encoded 0/1; current buffers copied) -> shared shim -> recpgr_c. Outputs copied before transactional cleanup. Workflow dispatch invokes this actual raw method; Python decode/model/handler invokes locked SpiceyPy recpgr and preserves matching output field order. No test substitute or harness science implementation is used.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1362,14 +1350,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.radrec -> typed Node coords-vectors adapter -> native binding radrec in native/src/domains/coords_vectors.cc (validated inputs, global SPICE mutex) -> tspice_radrec shared shim -> radrec_c. Workflow dispatch invokes this actual raw method; Python decode/model/handler invokes locked SpiceyPy radrec and preserves matching output field order. No test substitute or harness science implementation is used.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1379,14 +1365,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.radrec -> typed WASM coords-vectors adapter -> exported _tspice_radrec (boolean flags encoded 0/1; current buffers copied) -> shared shim -> radrec_c. Outputs copied before transactional cleanup. Workflow dispatch invokes this actual raw method; Python decode/model/handler invokes locked SpiceyPy radrec and preserves matching output field order. No test substitute or harness science implementation is used.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1447,14 +1431,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.recrad -> typed Node coords-vectors adapter -> native binding recrad in native/src/domains/coords_vectors.cc (validated inputs, global SPICE mutex) -> tspice_recrad shared shim -> recrad_c. Workflow dispatch invokes this actual raw method; Python decode/model/handler invokes locked SpiceyPy recrad and preserves matching output field order. No test substitute or harness science implementation is used.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1465,14 +1447,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.recrad -> typed WASM coords-vectors adapter -> exported _tspice_recrad (boolean flags encoded 0/1; current buffers copied) -> shared shim -> recrad_c. Outputs copied before transactional cleanup. Workflow dispatch invokes this actual raw method; Python decode/model/handler invokes locked SpiceyPy recrad and preserves matching output field order. No test substitute or harness science implementation is used.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1579,14 +1559,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.srfrec -> typed Node coords-vectors adapter -> native binding srfrec in native/src/domains/coords_vectors.cc (validated inputs, global SPICE mutex) -> tspice_srfrec shared shim -> srfrec_c. Workflow dispatch invokes this actual raw method; Python decode/model/handler invokes locked SpiceyPy srfrec and preserves matching output field order. No test substitute or harness science implementation is used.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1597,14 +1575,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.srfrec -> typed WASM coords-vectors adapter -> exported _tspice_srfrec (boolean flags encoded 0/1; current buffers copied) -> shared shim -> srfrec_c. Outputs copied before transactional cleanup. Workflow dispatch invokes this actual raw method; Python decode/model/handler invokes locked SpiceyPy srfrec and preserves matching output field order. No test substitute or harness science implementation is used.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     }

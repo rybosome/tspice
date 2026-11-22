@@ -8,6 +8,11 @@ import type {
 } from "@rybosome/tspice-backend-contract";
 import {
   issueOpaqueSpiceHandle,
+  spiceStringByteLength,
+  assertWindowScalar,
+  windowSideByte,
+  windowOperatorBytes,
+  windowSummaryIndex,
   assertSpiceInt32,
   assertSpiceInt32NonNegative,
 } from "@rybosome/tspice-core";
@@ -15,9 +20,30 @@ import {
 import type { EmscriptenModule } from "../lowlevel/exports.js";
 import * as emscriptenExports from "../lowlevel/exports.js";
 
-import { withAllocs, withMalloc, WASM_ERR_MAX_BYTES } from "../codec/alloc.js";
+import {
+  withAllocs,
+  withMalloc,
+  WASM_ERR_MAX_BYTES,
+  WASM_MAX_ALLOC_BYTES,
+} from "../codec/alloc.js";
 import { throwWasmSpiceError } from "../codec/errors.js";
 import { writeUtf8CString } from "../codec/strings.js";
+
+const listEncoder = new TextEncoder();
+
+function writeCellItem(
+  module: EmscriptenModule,
+  ptr: number,
+  bytes: number,
+  text: string,
+): void {
+  const start = ptr >>> 0;
+  new TextEncoder().encodeInto(
+    text,
+    module.HEAPU8.subarray(start, start + bytes),
+  );
+  module.HEAPU8[start + bytes] = 0;
+}
 
 function tspiceCallNewIntCell(module: EmscriptenModule, size: number): number {
   return withAllocs(module, [WASM_ERR_MAX_BYTES, 4], (errPtr, outCellPtr) => {
@@ -594,6 +620,33 @@ export function createCellsWindowsApi(
   }
 
   return {
+    lparss: (list, delims, set) => {
+      const listBytes = spiceStringByteLength(list, "lparss(list)", 2147483645);
+      const delimBytes = spiceStringByteLength(delims, "lparss(delims)");
+      const cell = wasmCellPointer(module, set, "lparss()");
+      withAllocs(
+        module,
+        [WASM_ERR_MAX_BYTES, listBytes + 1, delimBytes + 1],
+        (err, input, sep) => {
+          const heap = module.HEAPU8;
+          const p = input >>> 0,
+            q = sep >>> 0;
+          listEncoder.encodeInto(list, heap.subarray(p, p + listBytes));
+          listEncoder.encodeInto(delims, heap.subarray(q, q + delimBytes));
+          heap[p + listBytes] = 0;
+          heap[q + delimBytes] = 0;
+          const status = module._tspice_lparss(
+            input,
+            sep,
+            cell,
+            err,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, status);
+        },
+      );
+    },
     ssize: (size, cell) => {
       assertSpiceInt32NonNegative(size, "ssize(size)");
       assertKnownCellOrWindow(cell, "ssize()");
@@ -619,6 +672,360 @@ export function createCellsWindowsApi(
       tspiceCallValid(module, size, n, cell);
     },
 
+    appndc: (item, cell) => {
+      const bytes = spiceStringByteLength(
+        item,
+        "appndc(item)",
+        WASM_MAX_ALLOC_BYTES - 1,
+      );
+      const cellPtr = wasmCellPointer(module, cell, "appndc()");
+      return withAllocs(
+        module,
+        [WASM_ERR_MAX_BYTES, bytes + 1],
+        (errPtr, itemPtr) => {
+          writeCellItem(module, itemPtr, bytes, item);
+          const status = module._tspice_appndc(
+            itemPtr,
+            cellPtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+        },
+      );
+    },
+    appndd: (item, cell) => {
+      if (typeof item !== "number" || Number.isNaN(item))
+        throw new TypeError("appndd(item) must be an ordered number");
+      const cellPtr = wasmCellPointer(module, cell, "appndd()");
+      return withAllocs(module, [WASM_ERR_MAX_BYTES], (errPtr) => {
+        const status = module._tspice_appndd(
+          item,
+          cellPtr,
+          errPtr,
+          WASM_ERR_MAX_BYTES,
+        );
+        if (status !== 0)
+          throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+      });
+    },
+    appndi: (item, cell) => {
+      assertSpiceInt32(item, "appndi(item)");
+      const cellPtr = wasmCellPointer(module, cell, "appndi()");
+      return withAllocs(module, [WASM_ERR_MAX_BYTES], (errPtr) => {
+        const status = module._tspice_appndi(
+          item,
+          cellPtr,
+          errPtr,
+          WASM_ERR_MAX_BYTES,
+        );
+        if (status !== 0)
+          throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+      });
+    },
+    elemc: (item, cell) => {
+      const bytes = spiceStringByteLength(
+        item,
+        "elemc(item)",
+        WASM_MAX_ALLOC_BYTES - 1,
+      );
+      const cellPtr = wasmCellPointer(module, cell, "elemc()");
+      return withAllocs(
+        module,
+        [WASM_ERR_MAX_BYTES, bytes + 1, 4],
+        (errPtr, itemPtr, outPtr) => {
+          writeCellItem(module, itemPtr, bytes, item);
+          const status = module._tspice_elemc(
+            itemPtr,
+            cellPtr,
+            outPtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+          const result = module.HEAP32[outPtr >>> 2];
+          if (result !== 0 && result !== 1)
+            throw new TypeError("Invalid cell membership result");
+          return result === 1;
+        },
+      );
+    },
+    elemd: (item, cell) => {
+      if (typeof item !== "number" || Number.isNaN(item))
+        throw new TypeError("elemd(item) must be an ordered number");
+      const cellPtr = wasmCellPointer(module, cell, "elemd()");
+      return withAllocs(module, [WASM_ERR_MAX_BYTES, 4], (errPtr, outPtr) => {
+        const status = module._tspice_elemd(
+          item,
+          cellPtr,
+          outPtr,
+          errPtr,
+          WASM_ERR_MAX_BYTES,
+        );
+        if (status !== 0)
+          throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+        const result = module.HEAP32[outPtr >>> 2];
+        if (result !== 0 && result !== 1)
+          throw new TypeError("Invalid cell membership result");
+        return result === 1;
+      });
+    },
+    elemi: (item, cell) => {
+      assertSpiceInt32(item, "elemi(item)");
+      const cellPtr = wasmCellPointer(module, cell, "elemi()");
+      return withAllocs(module, [WASM_ERR_MAX_BYTES, 4], (errPtr, outPtr) => {
+        const status = module._tspice_elemi(
+          item,
+          cellPtr,
+          outPtr,
+          errPtr,
+          WASM_ERR_MAX_BYTES,
+        );
+        if (status !== 0)
+          throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+        const result = module.HEAP32[outPtr >>> 2];
+        if (result !== 0 && result !== 1)
+          throw new TypeError("Invalid cell membership result");
+        return result === 1;
+      });
+    },
+    diff: (a, b, result) => {
+      const aPtr = wasmCellPointer(module, a, "diff()");
+      const bPtr = wasmCellPointer(module, b, "diff()");
+      const resultPtr = wasmCellPointer(module, result, "diff()");
+      if (result === a || result === b)
+        throw new RangeError("Result set must be distinct from each input");
+      return withAllocs(module, [WASM_ERR_MAX_BYTES], (errPtr) => {
+        const status = module._tspice_diff(
+          aPtr,
+          bPtr,
+          resultPtr,
+          errPtr,
+          WASM_ERR_MAX_BYTES,
+        );
+        if (status !== 0)
+          throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+      });
+    },
+    inter: (a, b, result) => {
+      const aPtr = wasmCellPointer(module, a, "inter()");
+      const bPtr = wasmCellPointer(module, b, "inter()");
+      const resultPtr = wasmCellPointer(module, result, "inter()");
+      if (result === a || result === b)
+        throw new RangeError("Result set must be distinct from each input");
+      return withAllocs(module, [WASM_ERR_MAX_BYTES], (errPtr) => {
+        const status = module._tspice_inter(
+          aPtr,
+          bPtr,
+          resultPtr,
+          errPtr,
+          WASM_ERR_MAX_BYTES,
+        );
+        if (status !== 0)
+          throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+      });
+    },
+    sdiff: (a, b, result) => {
+      const aPtr = wasmCellPointer(module, a, "sdiff()");
+      const bPtr = wasmCellPointer(module, b, "sdiff()");
+      const resultPtr = wasmCellPointer(module, result, "sdiff()");
+      if (result === a || result === b)
+        throw new RangeError("Result set must be distinct from each input");
+      return withAllocs(module, [WASM_ERR_MAX_BYTES], (errPtr) => {
+        const status = module._tspice_sdiff(
+          aPtr,
+          bPtr,
+          resultPtr,
+          errPtr,
+          WASM_ERR_MAX_BYTES,
+        );
+        if (status !== 0)
+          throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+      });
+    },
+    union: (a, b, result) => {
+      const aPtr = wasmCellPointer(module, a, "union()");
+      const bPtr = wasmCellPointer(module, b, "union()");
+      const resultPtr = wasmCellPointer(module, result, "union()");
+      if (result === a || result === b)
+        throw new RangeError("Result set must be distinct from each input");
+      return withAllocs(module, [WASM_ERR_MAX_BYTES], (errPtr) => {
+        const status = module._tspice_union(
+          aPtr,
+          bPtr,
+          resultPtr,
+          errPtr,
+          WASM_ERR_MAX_BYTES,
+        );
+        if (status !== 0)
+          throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+      });
+    },
+    set: (a, op, b) => {
+      const aPtr = wasmCellPointer(module, a, "set()");
+      const bytes = spiceStringByteLength(
+        op,
+        "set(op)",
+        WASM_MAX_ALLOC_BYTES - 1,
+      );
+      const bPtr = wasmCellPointer(module, b, "set()");
+      return withAllocs(
+        module,
+        [WASM_ERR_MAX_BYTES, bytes + 1, 4],
+        (errPtr, opPtr, outPtr) => {
+          writeCellItem(module, opPtr, bytes, op);
+          const status = module._tspice_set(
+            aPtr,
+            opPtr,
+            bPtr,
+            outPtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+          const out = module.HEAP32[outPtr >>> 2];
+          if (out !== 0 && out !== 1)
+            throw new TypeError("Invalid set relation result");
+          return out === 1;
+        },
+      );
+    },
+    removc: (item, cell) => {
+      const bytes = spiceStringByteLength(
+        item,
+        "removc(item)",
+        WASM_MAX_ALLOC_BYTES - 1,
+      );
+      const cellPtr = wasmCellPointer(module, cell, "removc()");
+      return withAllocs(
+        module,
+        [WASM_ERR_MAX_BYTES, bytes + 1],
+        (errPtr, itemPtr) => {
+          writeCellItem(module, itemPtr, bytes, item);
+          const status = module._tspice_removc(
+            itemPtr,
+            cellPtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+        },
+      );
+    },
+    removd: (item, cell) => {
+      if (typeof item !== "number" || Number.isNaN(item))
+        throw new TypeError("removd(item) must be an ordered number");
+      const cellPtr = wasmCellPointer(module, cell, "removd()");
+      return withAllocs(module, [WASM_ERR_MAX_BYTES], (errPtr) => {
+        const status = module._tspice_removd(
+          item,
+          cellPtr,
+          errPtr,
+          WASM_ERR_MAX_BYTES,
+        );
+        if (status !== 0)
+          throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+      });
+    },
+    removi: (item, cell) => {
+      assertSpiceInt32(item, "removi(item)");
+      const cellPtr = wasmCellPointer(module, cell, "removi()");
+      return withAllocs(module, [WASM_ERR_MAX_BYTES], (errPtr) => {
+        const status = module._tspice_removi(
+          item,
+          cellPtr,
+          errPtr,
+          WASM_ERR_MAX_BYTES,
+        );
+        if (status !== 0)
+          throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+      });
+    },
+    ordc: (item, cell) => {
+      const bytes = spiceStringByteLength(
+        item,
+        "ordc(item)",
+        WASM_MAX_ALLOC_BYTES - 1,
+      );
+      const cellPtr = wasmCellPointer(module, cell, "ordc()");
+      return withAllocs(
+        module,
+        [WASM_ERR_MAX_BYTES, bytes + 1, 4],
+        (errPtr, itemPtr, outPtr) => {
+          writeCellItem(module, itemPtr, bytes, item);
+          const status = module._tspice_ordc(
+            itemPtr,
+            cellPtr,
+            outPtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+          const result = module.HEAP32[outPtr >>> 2];
+          if (result === undefined || result < -1)
+            throw new TypeError("Invalid set ordinal");
+          return result;
+        },
+      );
+    },
+    ordd: (item, cell) => {
+      if (typeof item !== "number" || Number.isNaN(item))
+        throw new TypeError("ordd(item) must be an ordered number");
+      const cellPtr = wasmCellPointer(module, cell, "ordd()");
+      return withAllocs(module, [WASM_ERR_MAX_BYTES, 4], (errPtr, outPtr) => {
+        const status = module._tspice_ordd(
+          item,
+          cellPtr,
+          outPtr,
+          errPtr,
+          WASM_ERR_MAX_BYTES,
+        );
+        if (status !== 0)
+          throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+        const result = module.HEAP32[outPtr >>> 2];
+        if (result === undefined || result < -1)
+          throw new TypeError("Invalid set ordinal");
+        return result;
+      });
+    },
+    ordi: (item, cell) => {
+      assertSpiceInt32(item, "ordi(item)");
+      const cellPtr = wasmCellPointer(module, cell, "ordi()");
+      return withAllocs(module, [WASM_ERR_MAX_BYTES, 4], (errPtr, outPtr) => {
+        const status = module._tspice_ordi(
+          item,
+          cellPtr,
+          outPtr,
+          errPtr,
+          WASM_ERR_MAX_BYTES,
+        );
+        if (status !== 0)
+          throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+        const result = module.HEAP32[outPtr >>> 2];
+        if (result === undefined || result < -1)
+          throw new TypeError("Invalid set ordinal");
+        return result;
+      });
+    },
+    copy: (source, destination) => {
+      const sourcePtr = wasmCellPointer(module, source, "copy()");
+      const destinationPtr = wasmCellPointer(module, destination, "copy()");
+      return withAllocs(module, [WASM_ERR_MAX_BYTES], (errPtr) => {
+        const status = module._tspice_copy(
+          sourcePtr,
+          destinationPtr,
+          errPtr,
+          WASM_ERR_MAX_BYTES,
+        );
+        if (status !== 0)
+          throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+      });
+    },
     insrti: (item, cell) => {
       assertSpiceInt32(item, "insrti(item)");
       assertKnownCell(cell, "insrti()");
@@ -633,6 +1040,253 @@ export function createCellsWindowsApi(
         throw new TypeError("insrtc(item): expected a string");
       assertKnownCell(cell, "insrtc()");
       tspiceCallInsrtc(module, item, cell);
+    },
+    wncomd: (left, right, window, result) => {
+      assertWindowScalar(left, "wncomd(left)");
+      assertWindowScalar(right, "wncomd(right)");
+      const windowPtr = wasmWindowPointer(module, window, "wncomd()");
+      const resultPtr = wasmWindowPointer(module, result, "wncomd()");
+      if (result === window)
+        throw new RangeError("Result window must be distinct from each input");
+      return withAllocs(module, [WASM_ERR_MAX_BYTES], (errPtr) => {
+        const status = module._tspice_wncomd(
+          left,
+          right,
+          windowPtr,
+          resultPtr,
+          errPtr,
+          WASM_ERR_MAX_BYTES,
+        );
+        if (status !== 0)
+          throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+      });
+    },
+    wncond: (left, right, window) => {
+      assertWindowScalar(left, "wncond(left)");
+      assertWindowScalar(right, "wncond(right)");
+      const windowPtr = wasmWindowPointer(module, window, "wncond()");
+      return withAllocs(module, [WASM_ERR_MAX_BYTES], (errPtr) => {
+        const status = module._tspice_wncond(
+          left,
+          right,
+          windowPtr,
+          errPtr,
+          WASM_ERR_MAX_BYTES,
+        );
+        if (status !== 0)
+          throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+      });
+    },
+    wndifd: (a, b, result) => {
+      const aPtr = wasmWindowPointer(module, a, "wndifd()");
+      const bPtr = wasmWindowPointer(module, b, "wndifd()");
+      const resultPtr = wasmWindowPointer(module, result, "wndifd()");
+      if (result === a || result === b)
+        throw new RangeError("Result window must be distinct from each input");
+      return withAllocs(module, [WASM_ERR_MAX_BYTES], (errPtr) => {
+        const status = module._tspice_wndifd(
+          aPtr,
+          bPtr,
+          resultPtr,
+          errPtr,
+          WASM_ERR_MAX_BYTES,
+        );
+        if (status !== 0)
+          throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+      });
+    },
+    wnelmd: (point, window) => {
+      assertWindowScalar(point, "wnelmd(point)");
+      const windowPtr = wasmWindowPointer(module, window, "wnelmd()");
+      return withAllocs(module, [WASM_ERR_MAX_BYTES, 4], (errPtr, outPtr) => {
+        const status = module._tspice_wnelmd(
+          point,
+          windowPtr,
+          outPtr,
+          errPtr,
+          WASM_ERR_MAX_BYTES,
+        );
+        if (status !== 0)
+          throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+        const out = module.HEAP32[outPtr >>> 2];
+        if (out !== 0 && out !== 1)
+          throw new TypeError("Invalid window predicate result");
+        return out === 1;
+      });
+    },
+    wnexpd: (left, right, window) => {
+      assertWindowScalar(left, "wnexpd(left)");
+      assertWindowScalar(right, "wnexpd(right)");
+      const windowPtr = wasmWindowPointer(module, window, "wnexpd()");
+      return withAllocs(module, [WASM_ERR_MAX_BYTES], (errPtr) => {
+        const status = module._tspice_wnexpd(
+          left,
+          right,
+          windowPtr,
+          errPtr,
+          WASM_ERR_MAX_BYTES,
+        );
+        if (status !== 0)
+          throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+      });
+    },
+    wnextd: (side, window) => {
+      const sideByte = windowSideByte(side);
+      const windowPtr = wasmWindowPointer(module, window, "wnextd()");
+      return withAllocs(module, [WASM_ERR_MAX_BYTES], (errPtr) => {
+        const status = module._tspice_wnextd(
+          sideByte,
+          windowPtr,
+          errPtr,
+          WASM_ERR_MAX_BYTES,
+        );
+        if (status !== 0)
+          throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+      });
+    },
+    wnfild: (small, window) => {
+      assertWindowScalar(small, "wnfild(small)");
+      const windowPtr = wasmWindowPointer(module, window, "wnfild()");
+      return withAllocs(module, [WASM_ERR_MAX_BYTES], (errPtr) => {
+        const status = module._tspice_wnfild(
+          small,
+          windowPtr,
+          errPtr,
+          WASM_ERR_MAX_BYTES,
+        );
+        if (status !== 0)
+          throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+      });
+    },
+    wnfltd: (small, window) => {
+      assertWindowScalar(small, "wnfltd(small)");
+      const windowPtr = wasmWindowPointer(module, window, "wnfltd()");
+      return withAllocs(module, [WASM_ERR_MAX_BYTES], (errPtr) => {
+        const status = module._tspice_wnfltd(
+          small,
+          windowPtr,
+          errPtr,
+          WASM_ERR_MAX_BYTES,
+        );
+        if (status !== 0)
+          throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+      });
+    },
+    wnincd: (left, right, window) => {
+      assertWindowScalar(left, "wnincd(left)");
+      assertWindowScalar(right, "wnincd(right)");
+      const windowPtr = wasmWindowPointer(module, window, "wnincd()");
+      return withAllocs(module, [WASM_ERR_MAX_BYTES, 4], (errPtr, outPtr) => {
+        const status = module._tspice_wnincd(
+          left,
+          right,
+          windowPtr,
+          outPtr,
+          errPtr,
+          WASM_ERR_MAX_BYTES,
+        );
+        if (status !== 0)
+          throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+        const out = module.HEAP32[outPtr >>> 2];
+        if (out !== 0 && out !== 1)
+          throw new TypeError("Invalid window predicate result");
+        return out === 1;
+      });
+    },
+    wnintd: (a, b, result) => {
+      const aPtr = wasmWindowPointer(module, a, "wnintd()");
+      const bPtr = wasmWindowPointer(module, b, "wnintd()");
+      const resultPtr = wasmWindowPointer(module, result, "wnintd()");
+      if (result === a || result === b)
+        throw new RangeError("Result window must be distinct from each input");
+      return withAllocs(module, [WASM_ERR_MAX_BYTES], (errPtr) => {
+        const status = module._tspice_wnintd(
+          aPtr,
+          bPtr,
+          resultPtr,
+          errPtr,
+          WASM_ERR_MAX_BYTES,
+        );
+        if (status !== 0)
+          throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+      });
+    },
+    wnreld: (a, op, b) => {
+      const aPtr = wasmWindowPointer(module, a, "wnreld()");
+      const bytes = windowOperatorBytes(op, WASM_MAX_ALLOC_BYTES - 1);
+      const bPtr = wasmWindowPointer(module, b, "wnreld()");
+      return withAllocs(
+        module,
+        [WASM_ERR_MAX_BYTES, bytes + 1, 4],
+        (errPtr, opPtr, outPtr) => {
+          const start = opPtr >>> 0;
+          new TextEncoder().encodeInto(
+            op,
+            module.HEAPU8.subarray(start, start + bytes),
+          );
+          module.HEAPU8[start + bytes] = 0;
+          const status = module._tspice_wnreld(
+            aPtr,
+            opPtr,
+            bPtr,
+            outPtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+          const out = module.HEAP32[outPtr >>> 2];
+          if (out !== 0 && out !== 1)
+            throw new TypeError("Invalid window predicate result");
+          return out === 1;
+        },
+      );
+    },
+    wnsumd: (window) => {
+      const windowPtr = wasmWindowPointer(module, window, "wnsumd()");
+      return withAllocs(
+        module,
+        [WASM_ERR_MAX_BYTES, 8, 8, 8, 4, 4],
+        (errPtr, measPtr, avgPtr, stddevPtr, shortestPtr, longestPtr) => {
+          const status = module._tspice_wnsumd(
+            windowPtr,
+            measPtr,
+            avgPtr,
+            stddevPtr,
+            shortestPtr,
+            longestPtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+          return {
+            meas: module.HEAPF64[measPtr >>> 3]!,
+            avg: module.HEAPF64[avgPtr >>> 3]!,
+            stddev: module.HEAPF64[stddevPtr >>> 3]!,
+            shortest: windowSummaryIndex(module.HEAP32[shortestPtr >>> 2]),
+            longest: windowSummaryIndex(module.HEAP32[longestPtr >>> 2]),
+          };
+        },
+      );
+    },
+    wnunid: (a, b, result) => {
+      const aPtr = wasmWindowPointer(module, a, "wnunid()");
+      const bPtr = wasmWindowPointer(module, b, "wnunid()");
+      const resultPtr = wasmWindowPointer(module, result, "wnunid()");
+      if (result === a || result === b)
+        throw new RangeError("Result window must be distinct from each input");
+      return withAllocs(module, [WASM_ERR_MAX_BYTES], (errPtr) => {
+        const status = module._tspice_wnunid(
+          aPtr,
+          bPtr,
+          resultPtr,
+          errPtr,
+          WASM_ERR_MAX_BYTES,
+        );
+        if (status !== 0)
+          throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+      });
     },
     wninsd: (left, right, window) => {
       assertKnownWindow(window, "wninsd()");

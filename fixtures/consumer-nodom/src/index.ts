@@ -456,3 +456,444 @@ export function coordinateJacobianTypes(sync: Spice, async: SpiceAsync): void {
     dsphdr,
   ];
 }
+
+/** Check raw CSPICE string methods and byte-capacity overloads in a consumer without DOM types. */
+export async function stringConsumer(
+  spice: Spice,
+  asyncSpice: SpiceAsync,
+): Promise<void> {
+  const compress: string = spice.raw.cmprss(" ", 1, " a  B ");
+  const equal: boolean = spice.raw.eqstr("a b", "AB");
+  const whitespace: boolean = spice.raw.iswhsp("\t");
+  const last: number = spice.raw.lastnb("é ");
+  const lower: string = spice.raw.lcase("ABC", 3);
+  const upper: string = spice.raw.ucase("abc");
+  const insensitive: boolean = spice.raw.matchi("ABC", "a*", "*", "?");
+  const sensitive: boolean = spice.raw.matchw("ABC", "A?C", "*", "?");
+  const asyncCompress: string = await asyncSpice.raw.cmprss(" ", 2, "a  b", 5);
+  const asyncEqual: boolean = await asyncSpice.raw.eqstr("ab", "AB");
+  const asyncWhitespace: boolean = await asyncSpice.raw.iswhsp("");
+  const asyncLast: number = await asyncSpice.raw.lastnb("");
+  const asyncLower: string = await asyncSpice.raw.lcase("ABC");
+  const asyncUpper: string = await asyncSpice.raw.ucase("abc", 2);
+  const asyncInsensitive: boolean = await asyncSpice.raw.matchi(
+    "ABC",
+    "a*",
+    "*",
+    "?",
+  );
+  const asyncSensitive: boolean = await asyncSpice.raw.matchw(
+    "ABC",
+    "A?C",
+    "*",
+    "?",
+  );
+  void [
+    compress,
+    equal,
+    whitespace,
+    last,
+    lower,
+    upper,
+    insensitive,
+    sensitive,
+    asyncCompress,
+    asyncEqual,
+    asyncWhitespace,
+    asyncLast,
+    asyncLower,
+    asyncUpper,
+    asyncInsensitive,
+    asyncSensitive,
+  ];
+}
+
+/** Check UTF-8 search positions and readonly search arrays for sync and async callers. */
+export async function searchConsumer(
+  spice: Spice,
+  asyncSpice: SpiceAsync,
+): Promise<void> {
+  const values: readonly string[] = ["Earth", "Moon"];
+  const indices: number[] = [
+    spice.raw.cpos("Earth", "r", 0),
+    spice.raw.cposr("Earth", "t", 4),
+    spice.raw.ncpos("Earth", "a", 0),
+    spice.raw.ncposr("Earth", "h", 4),
+    spice.raw.pos("Earth", "ar", 0),
+    spice.raw.posr("Earth", "th", 4),
+    spice.raw.esrchc("moon", values),
+    await asyncSpice.raw.cpos("Earth", "r", 0),
+    await asyncSpice.raw.cposr("Earth", "t", 4),
+    await asyncSpice.raw.ncpos("Earth", "a", 0),
+    await asyncSpice.raw.ncposr("Earth", "h", 4),
+    await asyncSpice.raw.pos("Earth", "ar", 0),
+    await asyncSpice.raw.posr("Earth", "th", 4),
+    await asyncSpice.raw.esrchc("moon", values),
+  ];
+  void indices;
+}
+
+/** Check the six readonly sorted-bound operations on both public facades without DOM types. */
+export async function sortedBoundsConsumer(
+  spice: Spice,
+  asyncSpice: SpiceAsync,
+): Promise<void> {
+  const strings = Object.freeze(["", "A", "A "]);
+  const numbers = Object.freeze([-1, 0, 1]);
+  const sync: number[] = [
+    spice.raw.lstlec("A", strings),
+    spice.raw.lstltc("A", strings),
+    spice.raw.lstled(0, numbers),
+    spice.raw.lstltd(0, numbers),
+    spice.raw.lstlei(0, numbers),
+    spice.raw.lstlti(0, numbers),
+  ];
+  const asyncResults: number[] = await Promise.all([
+    asyncSpice.raw.lstlec("A", strings),
+    asyncSpice.raw.lstltc("A", strings),
+    asyncSpice.raw.lstled(0, numbers),
+    asyncSpice.raw.lstltd(0, numbers),
+    asyncSpice.raw.lstlei(0, numbers),
+    asyncSpice.raw.lstlti(0, numbers),
+  ]);
+  void [sync, asyncResults];
+}
+
+/** Check the readonly array-search signatures on the synchronous and transported facades. */
+export async function arraySearchConsumer(
+  spice: Spice,
+  asyncSpice: SpiceAsync,
+): Promise<void> {
+  const strings = Object.freeze(["A", "B"]);
+  const numbers = Object.freeze([1, 2]);
+  const order = Object.freeze([0, 1]);
+  const sync: number[] = [
+    spice.raw.bschoc("B", strings, order),
+    spice.raw.bschoi(2, numbers, order),
+    spice.raw.bsrchc("B", strings),
+    spice.raw.bsrchd(2, numbers),
+    spice.raw.bsrchi(2, numbers),
+    spice.raw.isrchc("B", strings),
+    spice.raw.isrchd(2, numbers),
+    spice.raw.isrchi(2, numbers),
+  ];
+  const asyncResults: number[] = await Promise.all([
+    asyncSpice.raw.bschoc("B", strings, order),
+    asyncSpice.raw.bschoi(2, numbers, order),
+    asyncSpice.raw.bsrchc("B", strings),
+    asyncSpice.raw.bsrchd(2, numbers),
+    asyncSpice.raw.bsrchi(2, numbers),
+    asyncSpice.raw.isrchc("B", strings),
+    asyncSpice.raw.isrchd(2, numbers),
+    asyncSpice.raw.isrchi(2, numbers),
+  ]);
+  void [sync, asyncResults];
+}
+
+/** Check the kernel pool’s owned values, found text, direct load and control methods on both facades. */
+export async function kernelPoolConsumer(
+  spice: Spice,
+  client: SpiceAsync,
+  lines: readonly string[],
+): Promise<void> {
+  spice.raw.lmpool(lines);
+  spice.raw.ldpool({ path: "pool.tpc", bytes: new Uint8Array() });
+  const bad: boolean = spice.raw.badkpv(
+    "consumer",
+    "BODY399_X",
+    "=",
+    1,
+    1,
+    "N",
+  );
+  const body = spice.raw.bodvcd(399, "X", 1);
+  const named = await client.raw.bodvrd("earth", "X", 1);
+  const text = await client.raw.stpool("TEXT", 0, "//", 16);
+  const limit = spice.raw.szpool("MAXVAL");
+  const size: number = text.found ? text.size : 0;
+  const output: string = text.found ? text.nthstr : "";
+  await client.raw.dvpool("BODY399_X");
+  await client.raw.clpool();
+  void [bad, body.dim, named.values, limit.found && limit.n, size, output];
+}
+
+/** Check all numeric string results through the public synchronous and asynchronous contracts. */
+export async function stringNumberConsumer(
+  spice: Spice,
+  asyncSpice: SpiceAsync,
+): Promise<void> {
+  const { hxstr, hxssiz } = spice.raw.dp2hx(1.5);
+  const parsed = await asyncSpice.raw.hx2dp(hxstr, 80);
+  const message: string = parsed.errmsg;
+  const value: number = parsed.error ? 0 : parsed.number;
+  spice.raw.prsdp("PI");
+  await asyncSpice.raw.prsint("1.5");
+  spice.raw.repmc("#", "#", "x");
+  spice.raw.repmct("#", "#", 2, "L");
+  spice.raw.repmd("#", "#", 2, 4);
+  await asyncSpice.raw.repmf("#", "#", 2, 4, "F");
+  spice.raw.repmi("#", "#", -1);
+  spice.raw.repml("#", "#", true, "C");
+  spice.raw.repmot("#", "#", 3, "U");
+  void [hxssiz, message, value];
+}
+
+/** Exercise caller-owned window handles, mutation, predicates and summary fields on both facades. */
+export async function windowAlgebraConsumer(
+  spice: Spice,
+  asyncSpice: SpiceAsync,
+): Promise<void> {
+  {
+    const a = spice.kit.newWindow(4);
+    const b = spice.kit.newWindow(4);
+    const result = spice.kit.newWindow(8);
+    try {
+      spice.raw.wncomd(0, 1, a, result);
+      spice.raw.wncond(0, 1, a);
+      spice.raw.wndifd(a, b, result);
+      const wnelmd: boolean = spice.raw.wnelmd(0, a);
+      spice.raw.wnexpd(0, 1, a);
+      spice.raw.wnextd("L", a);
+      spice.raw.wnfild(0, a);
+      spice.raw.wnfltd(0, a);
+      const wnincd: boolean = spice.raw.wnincd(0, 1, a);
+      spice.raw.wnintd(a, b, result);
+      const wnreld: boolean = spice.raw.wnreld(a, "<=", b);
+      const summary = spice.raw.wnsumd(a);
+      spice.raw.wnunid(a, b, result);
+      const measures: number[] = [
+        summary.meas,
+        summary.avg,
+        summary.stddev,
+        summary.shortest,
+        summary.longest,
+      ];
+      void [wnincd, wnelmd, wnreld, measures];
+    } finally {
+      spice.kit.freeWindow(result);
+      spice.kit.freeWindow(b);
+      spice.kit.freeWindow(a);
+    }
+  }
+  {
+    const a = await asyncSpice.kit.newWindow(4);
+    const b = await asyncSpice.kit.newWindow(4);
+    const result = await asyncSpice.kit.newWindow(8);
+    try {
+      await asyncSpice.raw.wncomd(0, 1, a, result);
+      await asyncSpice.raw.wncond(0, 1, a);
+      await asyncSpice.raw.wndifd(a, b, result);
+      const wnelmd: boolean = await asyncSpice.raw.wnelmd(0, a);
+      await asyncSpice.raw.wnexpd(0, 1, a);
+      await asyncSpice.raw.wnextd("L", a);
+      await asyncSpice.raw.wnfild(0, a);
+      await asyncSpice.raw.wnfltd(0, a);
+      const wnincd: boolean = await asyncSpice.raw.wnincd(0, 1, a);
+      await asyncSpice.raw.wnintd(a, b, result);
+      const wnreld: boolean = await asyncSpice.raw.wnreld(a, "<=", b);
+      const summary = await asyncSpice.raw.wnsumd(a);
+      await asyncSpice.raw.wnunid(a, b, result);
+      const measures: number[] = [
+        summary.meas,
+        summary.avg,
+        summary.stddev,
+        summary.shortest,
+        summary.longest,
+      ];
+      void [wnincd, wnelmd, wnreld, measures];
+    } finally {
+      await asyncSpice.kit.freeWindow(result);
+      await asyncSpice.kit.freeWindow(b);
+      await asyncSpice.kit.freeWindow(a);
+    }
+  }
+}
+
+/** Exercise ordinary cell mutation, same-kind copies and membership on both public facades. */
+export async function cellArrayConsumer(
+  spice: Spice,
+  asyncSpice: SpiceAsync,
+): Promise<void> {
+  {
+    const c = spice.kit.newCharCell(2, 8);
+    const i = spice.kit.newIntCell(2);
+    const d = spice.kit.newDoubleCell(2);
+    try {
+      spice.raw.appndc("x", c);
+      spice.raw.copy(c, c);
+      const hasC: boolean = spice.raw.elemc("x", c);
+      spice.raw.appndi(-2, i);
+      spice.raw.copy(i, i);
+      const hasI: boolean = spice.raw.elemi(-2, i);
+      spice.raw.appndd(0.5, d);
+      spice.raw.copy(d, d);
+      const hasD: boolean = spice.raw.elemd(0.5, d);
+      void [hasC, hasI, hasD];
+    } finally {
+      spice.kit.freeCell(d);
+      spice.kit.freeCell(i);
+      spice.kit.freeCell(c);
+    }
+  }
+  {
+    const c = await asyncSpice.kit.newCharCell(2, 8);
+    const i = await asyncSpice.kit.newIntCell(2);
+    const d = await asyncSpice.kit.newDoubleCell(2);
+    try {
+      await asyncSpice.raw.appndc("x", c);
+      await asyncSpice.raw.copy(c, c);
+      const hasC: boolean = await asyncSpice.raw.elemc("x", c);
+      await asyncSpice.raw.appndi(-2, i);
+      await asyncSpice.raw.copy(i, i);
+      const hasI: boolean = await asyncSpice.raw.elemi(-2, i);
+      await asyncSpice.raw.appndd(0.5, d);
+      await asyncSpice.raw.copy(d, d);
+      const hasD: boolean = await asyncSpice.raw.elemd(0.5, d);
+      void [hasC, hasI, hasD];
+    } finally {
+      await asyncSpice.kit.freeCell(d);
+      await asyncSpice.kit.freeCell(i);
+      await asyncSpice.kit.freeCell(c);
+    }
+  }
+}
+
+/** Static contract coverage through public sync/async clients in a DOM-free project. */
+export async function setAlgebraConsumer(
+  spice: Spice,
+  asyncSpice: SpiceAsync,
+): Promise<void> {
+  {
+    const a = spice.kit.newIntCell(4);
+    const b = spice.kit.newIntCell(4);
+    const out = spice.kit.newIntCell(8);
+    const d = spice.kit.newDoubleCell(4);
+    const c = spice.kit.newCharCell(4, 12);
+    try {
+      spice.raw.diff(a, b, out);
+      spice.raw.inter(a, b, out);
+      spice.raw.sdiff(a, b, out);
+      spice.raw.union(a, b, out);
+      const related: boolean = spice.raw.set(a, "=", b);
+      spice.raw.removc("x", c);
+      spice.raw.removd(0.5, d);
+      spice.raw.removi(2, a);
+      const ordc: number = spice.raw.ordc("x", c);
+      const ordd: number = spice.raw.ordd(0.5, d);
+      const ordi: number = spice.raw.ordi(2, a);
+      void [related, ordc, ordd, ordi];
+    } finally {
+      spice.kit.freeCell(c);
+      spice.kit.freeCell(d);
+      spice.kit.freeCell(out);
+      spice.kit.freeCell(b);
+      spice.kit.freeCell(a);
+    }
+  }
+  {
+    const a = await asyncSpice.kit.newIntCell(4);
+    const b = await asyncSpice.kit.newIntCell(4);
+    const out = await asyncSpice.kit.newIntCell(8);
+    const d = await asyncSpice.kit.newDoubleCell(4);
+    const c = await asyncSpice.kit.newCharCell(4, 12);
+    try {
+      await asyncSpice.raw.diff(a, b, out);
+      await asyncSpice.raw.inter(a, b, out);
+      await asyncSpice.raw.sdiff(a, b, out);
+      await asyncSpice.raw.union(a, b, out);
+      const related: boolean = await asyncSpice.raw.set(a, "=", b);
+      await asyncSpice.raw.removc("x", c);
+      await asyncSpice.raw.removd(0.5, d);
+      await asyncSpice.raw.removi(2, a);
+      const ordc: number = await asyncSpice.raw.ordc("x", c);
+      const ordd: number = await asyncSpice.raw.ordd(0.5, d);
+      const ordi: number = await asyncSpice.raw.ordi(2, a);
+      void [related, ordc, ordd, ordi];
+    } finally {
+      await asyncSpice.kit.freeCell(c);
+      await asyncSpice.kit.freeCell(d);
+      await asyncSpice.kit.freeCell(out);
+      await asyncSpice.kit.freeCell(b);
+      await asyncSpice.kit.freeCell(a);
+    }
+  }
+}
+
+/** Ordering returns owned indices or typed values on both the sync and transported raw API. */
+export async function orderConsumer(
+  spice: Spice,
+  remote: SpiceAsync,
+): Promise<void> {
+  const rows = ["b", "a"] as const,
+    ints = [2, 1] as const;
+  const order: number[] = spice.raw.orderc(rows);
+  const valid: boolean = spice.raw.isordv(order);
+  const texts: string[] = spice.raw.reordc(order, rows);
+  const logicals: boolean[] = spice.raw.reordl(order, [true, false] as const);
+  const integers: number[] = spice.raw.reordi(spice.raw.orderi(ints), ints);
+  const doubles: number[] = await remote.raw.reordd(
+    await remote.raw.orderd(ints),
+    ints,
+  );
+  const sortedTexts: string[] = await remote.raw.shellc(rows);
+  const sortedIntegers: number[] = spice.raw.shelli(ints);
+  const sortedDoubles: number[] = spice.raw.shelld(ints);
+  void [
+    valid,
+    texts,
+    logicals,
+    integers,
+    doubles,
+    sortedTexts,
+    sortedIntegers,
+    sortedDoubles,
+  ];
+}
+
+/** Token results retain byte offsets in both local and transported public declarations. */
+export async function tokenConsumer(
+  spice: Spice,
+  remote: SpiceAsync,
+): Promise<void> {
+  const next: { next: string; rest: string } = spice.raw.nextwd(" alpha beta");
+  const nth: { word: string; loc: number } = await remote.raw.nthwd(
+    "α beta",
+    1,
+    4,
+  );
+  const single: { n: number; items: string[] } = spice.raw.lparse(
+    "a,b",
+    ",",
+    4,
+  );
+  const multiple: { n: number; items: string[] } = await remote.raw.lparsm(
+    "a;b c",
+    "; ",
+    4,
+    3,
+  );
+  const spans: { last: number; nchar: number }[] = [
+    spice.raw.lx4dec(".25", 0),
+    await remote.raw.lx4num("1E+3", 0),
+    spice.raw.lx4sgn("-3", 0),
+    await remote.raw.lx4uns("27", 0),
+    spice.raw.lxqstr("'q'", "'", 0),
+  ];
+  void [next, nth, single, multiple, spans];
+}
+
+async function charSetParser(spice: Spice, worker: SpiceAsync): Promise<void> {
+  const output = spice.kit.newCharCell(4, 16);
+  try {
+    spice.raw.lparss("blue,red,blue", ",", output);
+  } finally {
+    spice.kit.freeCell(output);
+  }
+  const remote = await worker.kit.newCharCell(4, 16);
+  try {
+    await worker.raw.lparss("blue,red,blue", ",", remote);
+  } finally {
+    await worker.kit.freeCell(remote);
+  }
+}
+void charSetParser;
