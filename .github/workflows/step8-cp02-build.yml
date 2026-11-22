@@ -1,0 +1,115 @@
+name: Step 8 checkpoint 02 build and validation
+on:
+  push:
+    branches: [codex/step8-cp02-build]
+permissions:
+  contents: write
+concurrency:
+  group: step8-checkpoint-02-build
+  cancel-in-progress: false
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: astral-sh/setup-uv@v5
+      - name: Import the exact combined checkpoint input
+        env:
+          INTAKE: 75482e37935a06fa5c970326e7cda7b0a7d232d6
+          ARCHIVE_DIGEST: f43b160c640d80546ee6b1863541913e5c0a9ac8e39a55239e9f151401527081
+        run: |
+          set -euo pipefail
+          cp -r .step8-cp02 "$RUNNER_TEMP/step8-input"
+          cat "$RUNNER_TEMP"/step8-input/intake.bundle.b64.* | base64 --decode > "$RUNNER_TEMP/intake.bundle"
+          printf '%s  %s\n' "$ARCHIVE_DIGEST" "$RUNNER_TEMP/intake.bundle" | sha256sum --check
+          git bundle verify "$RUNNER_TEMP/intake.bundle"
+          git fetch "$RUNNER_TEMP/intake.bundle" refs/heads/codex/integrate-step8
+          test "$(git rev-parse FETCH_HEAD)" = "$INTAKE"
+          git checkout --detach "$INTAKE"
+          while read -r pr source; do
+            git merge-base --is-ancestor "$source" HEAD
+            printf 'Source #%s %s is an ancestor\n' "$pr" "$source"
+          done < "$RUNNER_TEMP/step8-input/pinned-sources.txt"
+          git status --short
+          git log -1 --format='%H %T %s'
+      - name: Format and rebuild the combined WASM and generated files
+        run: |
+          set -euo pipefail
+          ./scripts/ci/ensure-uncompress.sh
+          git clone --depth 1 --branch 3.1.74 https://github.com/emscripten-core/emsdk.git "$RUNNER_TEMP/emsdk"
+          cd "$RUNNER_TEMP/emsdk"
+          ./emsdk install 3.1.74
+          ./emsdk activate 3.1.74
+          source ./emsdk_env.sh
+          cd "$GITHUB_WORKSPACE"
+          emcc --version
+          node --version
+          pnpm --version
+          pnpm install --frozen-lockfile
+          pnpm format
+          node scripts/build-backend-wasm.mjs
+          node scripts/generate-cspice-inventory.mjs
+          pnpm generate:llm
+          pnpm format
+          pnpm generate:coverage-ledger
+          git diff --check
+          git status --short
+          git add -A
+          test -z "$(git ls-files -u)"
+          git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' commit -m 'Rebuild Step 8 checkpoint 02 artifacts'
+          git log -1 --format='%H %T %s'
+          test -z "$(git status --porcelain)"
+      - name: Validate the combined ledger and docs
+        run: |
+          set -euo pipefail
+          node scripts/generate-cspice-inventory.mjs
+          pnpm generate:llm
+          pnpm generate:coverage-ledger
+          pnpm test:coverage-ledger
+          pnpm check:coverage-ledger
+          git diff --exit-code
+          pnpm docs:build
+      - name: Execute the required JavaScript lane
+        run: |
+          set -euo pipefail
+          pnpm fetch:cspice
+          pnpm run check:js:required
+      - name: Execute the required native lane
+        env:
+          TSPICE_EXPECT_NATIVE: "true"
+        run: |
+          set -euo pipefail
+          pnpm run check:native:required
+      - name: Exercise representative raw methods in a real Chromium worker
+        run: |
+          set -euo pipefail
+          probe=packages/tspice/.step8-browser-probe
+          mkdir -p "$probe"
+          cp "$RUNNER_TEMP/step8-input/probe.mjs" "$probe/probe.mjs"
+          printf '<!doctype html><meta charset="utf-8"><pre id="result">running</pre><script type="module" src="/bundle.mjs"></script>\n' > "$probe/index.html"
+          cp packages/backend-wasm/emscripten/tspice_backend_wasm.wasm "$probe/"
+          ./packages/tspice/node_modules/.bin/esbuild "$probe/probe.mjs" --bundle --platform=browser --format=esm --conditions=browser --outfile="$probe/bundle.mjs"
+          python3 -m http.server 8328 --bind 127.0.0.1 --directory "$probe" &
+          trap 'kill "$!" 2>/dev/null || true' EXIT
+          node "$RUNNER_TEMP/step8-input/chrome.mjs"
+      - name: Preserve the validated source history on an isolated candidate branch
+        run: |
+          set -euo pipefail
+          git log -1 --format='%H %T %s'
+          git diff --exit-code
+          git push origin HEAD:refs/heads/codex/step8-cp02-candidate
+          git bundle create "$RUNNER_TEMP/step8-cp02-validated.bundle" HEAD "^75482e37935a06fa5c970326e7cda7b0a7d232d6"
+          sha256sum "$RUNNER_TEMP/step8-cp02-validated.bundle" | tee "$RUNNER_TEMP/step8-cp02-validated.sha256"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: step8-cp02-validated
+          path: |
+            ${{runner.temp}}/step8-cp02-validated.bundle
+            ${{runner.temp}}/step8-cp02-validated.sha256
