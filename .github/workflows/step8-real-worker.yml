@@ -1,0 +1,99 @@
+name: Step 8 real worker and recovery assets
+on:
+  push:
+    branches: [codex/step8-e24-worker-check]
+permissions:
+  contents: write
+jobs:
+  browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Run the configured search in a real browser worker
+        shell: bash
+        run: |
+          set -euo pipefail
+          pnpm install --frozen-lockfile
+          pnpm build:js
+          probe="$RUNNER_TEMP/step8-probe"
+          mkdir -p "$probe/kernels"
+          pnpm -C packages/tspice exec esbuild "$GITHUB_WORKSPACE/.github/step8-browser/browser-probe.mjs" --bundle --platform=browser --format=esm --outfile="$probe/browser-probe.js"
+          cp packages/backend-wasm/emscripten/tspice_backend_wasm.wasm "$probe/"
+          for profile in audit-geometry.bsp audit-geometry.tf audit-fov.ti; do
+            cp "packages/py-parity-checking/fixtures/kernels/$profile" "$probe/kernels/"
+          done
+          cat > "$probe/index.html" <<'HTML'
+          <!doctype html>
+          <meta charset="utf-8">
+          <pre id="result">Probe pending</pre>
+          <script type="module" src="/browser-probe.js"></script>
+          HTML
+          python3 -m http.server --bind 127.0.0.1 --directory "$probe" 8877 > "$RUNNER_TEMP/step8-http.log" 2>&1 &
+          http_id=$!
+          chrome_bin=$(command -v google-chrome || command -v chromium)
+          "$chrome_bin" --headless --disable-gpu --disable-dev-shm-usage --remote-debugging-port=9222 --user-data-dir="$RUNNER_TEMP/step8-chrome" http://127.0.0.1:8877/ > "$RUNNER_TEMP/step8-chrome.log" 2>&1 &
+          chrome_id=$!
+          trap 'kill "$chrome_id" "$http_id" 2>/dev/null || true' EXIT
+          node --input-type=module <<'JS'
+          import assert from 'node:assert/strict';
+          import { setTimeout as wait } from 'node:timers/promises';
+          let page;
+          for (let i=0; i<40; i++) {
+            try {
+              const targets=await (await fetch('http://127.0.0.1:9222/json/list')).json();
+              page=targets.find(t=>t.type==='page'&&t.url.includes(':8877'));
+              if(page)break;
+            } catch {}
+            await wait(250);
+          }
+          assert.ok(page,'Chrome page did not start');
+          const socket=new WebSocket(page.webSocketDebuggerUrl);
+          await new Promise((resolve,reject)=>{
+            socket.addEventListener('open',resolve,{once:true});
+            socket.addEventListener('error',reject,{once:true});
+          });
+          try {
+            for(let id=1;id<=100;id++) {
+              const response=new Promise((resolve,reject)=>{
+                const listener=e=>{
+                  const msg=JSON.parse(e.data);
+                  if(msg.id!==id)return;
+                  socket.removeEventListener('message',listener);
+                  if(msg.error)reject(new Error(msg.error.message));
+                  else resolve(msg.result.result.value);
+                };
+                socket.addEventListener('message',listener);
+              });
+              socket.send(JSON.stringify({id,method:'Runtime.evaluate',params:{
+                expression:"document.querySelector('#result')?.textContent",
+                returnByValue:true,
+              }}));
+              const state=await response;
+              if(state?.startsWith('PASS ')){console.log(state);break;}
+              if(state?.startsWith('FAIL ')||id===100)throw new Error(state??'No browser result');
+              await wait(250);
+            }
+          } finally { socket.close(); }
+          JS
+      - name: Preserve portable copies of the two generated WASM blobs
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REF_NAME" = codex/step8-e24-worker-check
+          git fetch origin 682964075f61626fc060c21b7ea36642d43dca0a
+          mkdir -p .step8-transfer
+          for spec in e24:47910886b43d07eb7cb1d0bf1803f2d4653b20c8 b08:682964075f61626fc060c21b7ea36642d43dca0a; do
+            name=${spec%%:*}
+            commit=${spec#*:}
+            git show "$commit:packages/backend-wasm/emscripten/tspice_backend_wasm.wasm" |
+              base64 | split -d -l 8000 - ".step8-transfer/$name.wasm.b64."
+          done
+          git add -- .step8-transfer
+          git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' commit -m 'Preserve pinned Step 8 WASM recovery blobs'
+          git push origin "HEAD:refs/heads/$GITHUB_REF_NAME"
