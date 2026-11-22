@@ -51,6 +51,12 @@ import type {
   StepCoordsVectorsDvhat,
   StepCoordsVectorsDvnorm,
   StepCoordsVectorsDvsep,
+  StepCoordsVectorsChbder,
+  StepCoordsVectorsChbigr,
+  StepCoordsVectorsChbint,
+  StepCoordsVectorsChbval,
+  StepCoordsVectorsPolyds,
+  StepCoordsVectorsRquad,
   StepCoordsVectorsReclat,
   StepCoordsVectorsRecgeo,
   StepCoordsVectorsRecsph,
@@ -128,6 +134,12 @@ type CoordsVectorsStep =
   | StepCoordsVectorsDvhat
   | StepCoordsVectorsDvnorm
   | StepCoordsVectorsDvsep
+  | StepCoordsVectorsChbder
+  | StepCoordsVectorsChbigr
+  | StepCoordsVectorsChbint
+  | StepCoordsVectorsChbval
+  | StepCoordsVectorsPolyds
+  | StepCoordsVectorsRquad
   | StepCoordsVectorsReclat
   | StepCoordsVectorsLatrec
   | StepCoordsVectorsRecsph
@@ -476,6 +488,41 @@ export function runCoordsVectorsStep(
 
     case "coords-vectors.dvsep": {
       const out = context.spice.raw.dvsep(step.a, step.b);
+      return { op: step.op, value: out };
+    }
+
+    case "coords-vectors.chbder": {
+      const out = context.spice.raw.chbder(
+        step.cp,
+        step.x2s,
+        step.x,
+        step.nderiv,
+      );
+      return { op: step.op, value: out };
+    }
+
+    case "coords-vectors.chbigr": {
+      const out = context.spice.raw.chbigr(step.cp, step.x2s, step.x);
+      return { op: step.op, value: out };
+    }
+
+    case "coords-vectors.chbint": {
+      const out = context.spice.raw.chbint(step.cp, step.x2s, step.x);
+      return { op: step.op, value: out };
+    }
+
+    case "coords-vectors.chbval": {
+      const out = context.spice.raw.chbval(step.cp, step.x2s, step.x);
+      return { op: step.op, value: out };
+    }
+
+    case "coords-vectors.polyds": {
+      const out = context.spice.raw.polyds(step.coeffs, step.nderiv, step.t);
+      return { op: step.op, value: out };
+    }
+
+    case "coords-vectors.rquad": {
+      const out = context.spice.raw.rquad(step.a, step.b, step.c);
       return { op: step.op, value: out };
     }
 

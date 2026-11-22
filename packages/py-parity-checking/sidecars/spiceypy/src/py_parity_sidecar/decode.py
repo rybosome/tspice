@@ -69,6 +69,12 @@ from .models import (
     StepCoordsVectorsDvhat,
     StepCoordsVectorsDvnorm,
     StepCoordsVectorsDvsep,
+    StepCoordsVectorsChbder,
+    StepCoordsVectorsChbigr,
+    StepCoordsVectorsChbint,
+    StepCoordsVectorsChbval,
+    StepCoordsVectorsPolyds,
+    StepCoordsVectorsRquad,
     StepCoordsVectorsReclat,
     StepCoordsVectorsRecgeo,
     StepCoordsVectorsRecsph,
@@ -342,6 +348,12 @@ def _expect_vec6(value: Any, *, label: str) -> tuple[float, float, float, float,
     return (values[0], values[1], values[2], values[3], values[4], values[5])
 
 
+def _expect_vec2(value: Any, *, label: str) -> tuple[float, float]:
+    if not isinstance(value, list) or len(value) != 2:
+        raise TypeError(f"{label} must be a length-2 number array")
+    return (_expect_number(value[0], label=f"{label}[0]"), _expect_number(value[1], label=f"{label}[1]"))
+
+
 def _expect_vec3(value: Any, *, label: str) -> tuple[float, float, float]:
     if not isinstance(value, list) or len(value) != 3:
         raise TypeError(f"{label} must be a length-3 number array")
@@ -596,6 +608,55 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
                 op=op,
                 body=_expect_int(step.get("body"), label="ids-names.bodvar.body"),
                 item=_expect_string(step.get("item"), label="ids-names.bodvar.item"),
+            )
+
+        case "coords-vectors.chbder":
+            return StepCoordsVectorsChbder(
+                op=op,
+                cp=_expect_number_list(step.get("cp"), label="coords-vectors.chbder.cp"),
+                x2s=_expect_vec2(step.get("x2s"), label="coords-vectors.chbder.x2s"),
+                x=_expect_number(step.get("x"), label="coords-vectors.chbder.x"),
+                nderiv=_expect_int(step.get("nderiv"), label="coords-vectors.chbder.nderiv"),
+            )
+
+        case "coords-vectors.chbigr":
+            return StepCoordsVectorsChbigr(
+                op=op,
+                cp=_expect_number_list(step.get("cp"), label="coords-vectors.chbigr.cp"),
+                x2s=_expect_vec2(step.get("x2s"), label="coords-vectors.chbigr.x2s"),
+                x=_expect_number(step.get("x"), label="coords-vectors.chbigr.x"),
+            )
+
+        case "coords-vectors.chbint":
+            return StepCoordsVectorsChbint(
+                op=op,
+                cp=_expect_number_list(step.get("cp"), label="coords-vectors.chbint.cp"),
+                x2s=_expect_vec2(step.get("x2s"), label="coords-vectors.chbint.x2s"),
+                x=_expect_number(step.get("x"), label="coords-vectors.chbint.x"),
+            )
+
+        case "coords-vectors.chbval":
+            return StepCoordsVectorsChbval(
+                op=op,
+                cp=_expect_number_list(step.get("cp"), label="coords-vectors.chbval.cp"),
+                x2s=_expect_vec2(step.get("x2s"), label="coords-vectors.chbval.x2s"),
+                x=_expect_number(step.get("x"), label="coords-vectors.chbval.x"),
+            )
+
+        case "coords-vectors.polyds":
+            return StepCoordsVectorsPolyds(
+                op=op,
+                coeffs=_expect_number_list(step.get("coeffs"), label="coords-vectors.polyds.coeffs"),
+                nderiv=_expect_int(step.get("nderiv"), label="coords-vectors.polyds.nderiv"),
+                t=_expect_number(step.get("t"), label="coords-vectors.polyds.t"),
+            )
+
+        case "coords-vectors.rquad":
+            return StepCoordsVectorsRquad(
+                op=op,
+                a=_expect_number(step.get("a"), label="coords-vectors.rquad.a"),
+                b=_expect_number(step.get("b"), label="coords-vectors.rquad.b"),
+                c=_expect_number(step.get("c"), label="coords-vectors.rquad.c"),
             )
 
         case "coords-vectors.ducrss":

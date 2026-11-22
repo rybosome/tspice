@@ -666,6 +666,34 @@ export type NativeAddon = {
   dvnorm(state: readonly number[]): number;
   dvsep(a: readonly number[], b: readonly number[]): number;
 
+  chbder(
+    cp: readonly number[],
+    x2s: readonly [number, number],
+    x: number,
+    nderiv: number,
+  ): number[];
+  chbigr(
+    cp: readonly number[],
+    x2s: readonly [number, number],
+    x: number,
+  ): { p: number; itgrlp: number };
+  chbint(
+    cp: readonly number[],
+    x2s: readonly [number, number],
+    x: number,
+  ): { p: number; dpdx: number };
+  chbval(
+    cp: readonly number[],
+    x2s: readonly [number, number],
+    x: number,
+  ): number;
+  polyds(coeffs: readonly number[], nderiv: number, t: number): number[];
+  rquad(
+    a: number,
+    b: number,
+    c: number,
+  ): { root1: [number, number]; root2: [number, number] };
+
   reclat(rect: number[]): { radius: number; lon: number; lat: number };
   latrec(radius: number, lon: number, lat: number): number[];
   recsph(rect: number[]): { radius: number; colat: number; lon: number };

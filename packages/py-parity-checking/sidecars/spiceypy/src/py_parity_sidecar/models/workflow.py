@@ -69,6 +69,12 @@ from .coords_vectors import (
     StepCoordsVectorsDvhat,
     StepCoordsVectorsDvnorm,
     StepCoordsVectorsDvsep,
+    StepCoordsVectorsChbder,
+    StepCoordsVectorsChbigr,
+    StepCoordsVectorsChbint,
+    StepCoordsVectorsChbval,
+    StepCoordsVectorsPolyds,
+    StepCoordsVectorsRquad,
     StepCoordsVectorsReclat,
     StepCoordsVectorsRecgeo,
     StepCoordsVectorsRecsph,
@@ -344,6 +350,12 @@ WorkflowStep: TypeAlias = (
     | StepCoordsVectorsDvhat
     | StepCoordsVectorsDvnorm
     | StepCoordsVectorsDvsep
+    | StepCoordsVectorsChbder
+    | StepCoordsVectorsChbigr
+    | StepCoordsVectorsChbint
+    | StepCoordsVectorsChbval
+    | StepCoordsVectorsPolyds
+    | StepCoordsVectorsRquad
     | StepCoordsVectorsReclat
     | StepCoordsVectorsLatrec
     | StepCoordsVectorsRecsph

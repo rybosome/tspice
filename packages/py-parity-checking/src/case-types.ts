@@ -208,6 +208,8 @@ export type Matrix6x6 = [
 
 export type Vector6 = [number, number, number, number, number, number];
 
+export type Vector2 = [number, number];
+
 export type Vector3 = [number, number, number];
 
 export type StepCoordsVectorsDucrss = {
@@ -502,6 +504,49 @@ export type StepCoordsVectorsSphlat = {
   radius: number;
   colat: number;
   lon: number;
+};
+
+export type StepCoordsVectorsChbder = {
+  op: "coords-vectors.chbder";
+  cp: number[];
+  x2s: Vector2;
+  x: number;
+  nderiv: number;
+};
+
+export type StepCoordsVectorsChbigr = {
+  op: "coords-vectors.chbigr";
+  cp: number[];
+  x2s: Vector2;
+  x: number;
+};
+
+export type StepCoordsVectorsChbint = {
+  op: "coords-vectors.chbint";
+  cp: number[];
+  x2s: Vector2;
+  x: number;
+};
+
+export type StepCoordsVectorsChbval = {
+  op: "coords-vectors.chbval";
+  cp: number[];
+  x2s: Vector2;
+  x: number;
+};
+
+export type StepCoordsVectorsPolyds = {
+  op: "coords-vectors.polyds";
+  coeffs: number[];
+  nderiv: number;
+  t: number;
+};
+
+export type StepCoordsVectorsRquad = {
+  op: "coords-vectors.rquad";
+  a: number;
+  b: number;
+  c: number;
 };
 
 export type StepCoordsVectorsReclat = {
@@ -1740,6 +1785,12 @@ export type WorkflowStep =
   | StepCoordsVectorsDvhat
   | StepCoordsVectorsDvnorm
   | StepCoordsVectorsDvsep
+  | StepCoordsVectorsChbder
+  | StepCoordsVectorsChbigr
+  | StepCoordsVectorsChbint
+  | StepCoordsVectorsChbval
+  | StepCoordsVectorsPolyds
+  | StepCoordsVectorsRquad
   | StepCoordsVectorsReclat
   | StepCoordsVectorsLatrec
   | StepCoordsVectorsRecsph
@@ -1997,6 +2048,12 @@ export type StepOutput =
   | { op: "coords-vectors.dvhat"; value: Vector6 }
   | { op: "coords-vectors.dvnorm"; value: number }
   | { op: "coords-vectors.dvsep"; value: number }
+  | { op: "coords-vectors.chbder"; value: number[] }
+  | { op: "coords-vectors.chbigr"; value: { p: number; itgrlp: number } }
+  | { op: "coords-vectors.chbint"; value: { p: number; dpdx: number } }
+  | { op: "coords-vectors.chbval"; value: number }
+  | { op: "coords-vectors.polyds"; value: number[] }
+  | { op: "coords-vectors.rquad"; value: { root1: Vector2; root2: Vector2 } }
   | { op: "time.str2et"; value: number }
   | { op: "time.et2utc"; value: string }
   | { op: "time.spd"; value: number }

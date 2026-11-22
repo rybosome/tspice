@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from typing import Literal, TypeAlias
 
 Vec6: TypeAlias = tuple[float, float, float, float, float, float]
+Vec2: TypeAlias = tuple[float, float]
 Vec3: TypeAlias = tuple[float, float, float]
 Matrix3x3: TypeAlias = list[list[float]]
 
@@ -346,6 +347,55 @@ class StepCoordsVectorsDvsep:
     op: Literal["coords-vectors.dvsep"]
     a: Vec6
     b: Vec6
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsChbder:
+    op: Literal["coords-vectors.chbder"]
+    cp: list[float]
+    x2s: Vec2
+    x: float
+    nderiv: int
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsChbigr:
+    op: Literal["coords-vectors.chbigr"]
+    cp: list[float]
+    x2s: Vec2
+    x: float
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsChbint:
+    op: Literal["coords-vectors.chbint"]
+    cp: list[float]
+    x2s: Vec2
+    x: float
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsChbval:
+    op: Literal["coords-vectors.chbval"]
+    cp: list[float]
+    x2s: Vec2
+    x: float
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsPolyds:
+    op: Literal["coords-vectors.polyds"]
+    coeffs: list[float]
+    nderiv: int
+    t: float
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsRquad:
+    op: Literal["coords-vectors.rquad"]
+    a: float
+    b: float
+    c: float
 
 
 @dataclass(frozen=True)

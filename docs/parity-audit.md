@@ -134,6 +134,33 @@ are added as this branch's expansion. All earlier executions are historical and
 all judgments remain `reviewed` until fresh required local and observed canonical
 CI evidence is recorded against the final source digest.
 
+## Polynomial expansions
+
+A16 reviews `chbder`, `chbigr`, `chbint`, `chbval`, `polyds` and `rquad`.
+Their 46 registered scenarios contain 131 actual routine calls, including five
+genuine degree/radius/degenerate-equation errors. Inferred degree preserves the
+full readonly coefficient array; every derivative, integral and ordered complex
+root field reaches comparison. No kernels or external fixtures are needed.
+
+[Polynomial evidence](step8-polynomial-expansions.md) records normalized
+reliable-use domains, source-derived count/workspace bounds, complete numerical
+outputs and the narrow negative-order `polyds` oracle binding. That independent
+route invokes the actual locked symbol with guarded no-write storage; other
+calls stay on SpiceyPy. The actual `INVALIDDEGREE` error spelling is retained
+despite the header typo. Sixteen tagged observations per backend preserve
+nonfinite outputs and signed zeros within normalized Chebyshev domains, with
+finite controls and focused rescaling; no global tolerance change is made.
+The pinned `rquad_c` checkout-name typo can also print a device-dependent
+diagnostic. Dedicated repeated primary-error/caller-stack observations close
+that evidence gap while documenting the unchanged upstream output limitation.
+Allocation, ownership, error recovery and actual codec/structured-clone checks
+are distinct from scientific and browser-startup evidence.
+
+The original 162-routine assignment remains immutable; only these six routines
+are added on this branch. Earlier executions remain historical and all judgments
+remain `reviewed` until fresh required local and observed canonical CI evidence
+is recorded against the final source digest.
+
 ## Recording verification
 
 Execution records are maintained observations, not inferred from CI configuration or scenario registration. Record the command, backend, native-required flag where applicable, successful scenario IDs, result summary, and SHA-256 source digest. CI observations also need the actual successful job URL and tested commit. Inspect logs for executed cases and absence of unexpected skips before recording success. Local observations describe the run result; durable CI links provide independently inspectable execution evidence.
@@ -210,3 +237,9 @@ Regression evidence: [owned-numeric-inputs.test.ts](../packages/py-parity-checki
 the independent scientific workflows. Earlier executions remain historical on
 their recorded fingerprints; both required local lanes and observed canonical CI
 must run on the corrected source before current verification.
+
+The five polynomial array-input methods now marshal validated owned snapshots.
+Their [boundary regressions](step8-polynomial-expansions.md#stable-coefficient-and-transformation-inputs)
+are separate from the unchanged scientific observations. Earlier executions
+remain historical; the corrected source needs fresh required local and CI
+records before either backend can be called verified.
