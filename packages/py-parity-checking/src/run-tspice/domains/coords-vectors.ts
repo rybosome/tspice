@@ -57,6 +57,12 @@ import type {
   StepCoordsVectorsChbval,
   StepCoordsVectorsPolyds,
   StepCoordsVectorsRquad,
+  StepCoordsVectorsHrmesp,
+  StepCoordsVectorsHrmint,
+  StepCoordsVectorsLgresp,
+  StepCoordsVectorsLgrind,
+  StepCoordsVectorsLgrint,
+  StepCoordsVectorsQderiv,
   StepCoordsVectorsReclat,
   StepCoordsVectorsRecgeo,
   StepCoordsVectorsRecsph,
@@ -140,6 +146,12 @@ type CoordsVectorsStep =
   | StepCoordsVectorsChbval
   | StepCoordsVectorsPolyds
   | StepCoordsVectorsRquad
+  | StepCoordsVectorsHrmesp
+  | StepCoordsVectorsHrmint
+  | StepCoordsVectorsLgresp
+  | StepCoordsVectorsLgrind
+  | StepCoordsVectorsLgrint
+  | StepCoordsVectorsQderiv
   | StepCoordsVectorsReclat
   | StepCoordsVectorsLatrec
   | StepCoordsVectorsRecsph
@@ -523,6 +535,46 @@ export function runCoordsVectorsStep(
 
     case "coords-vectors.rquad": {
       const out = context.spice.raw.rquad(step.a, step.b, step.c);
+      return { op: step.op, value: out };
+    }
+
+    case "coords-vectors.hrmesp": {
+      const out = context.spice.raw.hrmesp(
+        step.first,
+        step.step,
+        step.yvals,
+        step.x,
+      );
+      return { op: step.op, value: out };
+    }
+
+    case "coords-vectors.hrmint": {
+      const out = context.spice.raw.hrmint(step.xvals, step.yvals, step.x);
+      return { op: step.op, value: out };
+    }
+
+    case "coords-vectors.lgresp": {
+      const out = context.spice.raw.lgresp(
+        step.first,
+        step.step,
+        step.yvals,
+        step.x,
+      );
+      return { op: step.op, value: out };
+    }
+
+    case "coords-vectors.lgrind": {
+      const out = context.spice.raw.lgrind(step.xvals, step.yvals, step.x);
+      return { op: step.op, value: out };
+    }
+
+    case "coords-vectors.lgrint": {
+      const out = context.spice.raw.lgrint(step.xvals, step.yvals, step.x);
+      return { op: step.op, value: out };
+    }
+
+    case "coords-vectors.qderiv": {
+      const out = context.spice.raw.qderiv(step.f0, step.f2, step.delta);
       return { op: step.op, value: out };
     }
 

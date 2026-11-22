@@ -1,0 +1,246 @@
+[
+  {
+    "caseId": "coords-vectors-hrmesp-single-point",
+    "description": "One point gives its tangent line for Hermite or a constant for Lagrange, including evaluations off the node.",
+    "workflow": [
+      {
+        "op": "coords-vectors.hrmesp",
+        "first": 10,
+        "step": 1,
+        "yvals": [7, -3],
+        "x": 9
+      },
+      {
+        "op": "coords-vectors.hrmesp",
+        "first": 10,
+        "step": 1,
+        "yvals": [7, -3],
+        "x": 10
+      },
+      {
+        "op": "coords-vectors.hrmesp",
+        "first": 10,
+        "step": 1,
+        "yvals": [7, -3],
+        "x": 12
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-hrmesp-cubic-at-nodes",
+    "description": "Evaluate at every authored node; preserve each returned value and derivative.",
+    "workflow": [
+      {
+        "op": "coords-vectors.hrmesp",
+        "first": 0,
+        "step": 2,
+        "yvals": [2, -3, -40, -67],
+        "x": 0
+      },
+      {
+        "op": "coords-vectors.hrmesp",
+        "first": 0,
+        "step": 2,
+        "yvals": [2, -3, -40, -67],
+        "x": 2
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-hrmesp-cubic-interior-and-extrapolation",
+    "description": "Mixed cubic data distinguish component order, interpolation and evaluation beyond the last node.",
+    "workflow": [
+      {
+        "op": "coords-vectors.hrmesp",
+        "first": 0,
+        "step": 2,
+        "yvals": [2, -3, -40, -67],
+        "x": 0.25
+      },
+      {
+        "op": "coords-vectors.hrmesp",
+        "first": 0,
+        "step": 2,
+        "yvals": [2, -3, -40, -67],
+        "x": 0.5
+      },
+      {
+        "op": "coords-vectors.hrmesp",
+        "first": 0,
+        "step": 2,
+        "yvals": [2, -3, -40, -67],
+        "x": 1.25
+      },
+      {
+        "op": "coords-vectors.hrmesp",
+        "first": 0,
+        "step": 2,
+        "yvals": [2, -3, -40, -67],
+        "x": 3
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-hrmesp-zero-and-constant",
+    "description": "Zero and constant data preserve the ordinate and any zero derivatives.",
+    "workflow": [
+      {
+        "op": "coords-vectors.hrmesp",
+        "first": 0,
+        "step": 2,
+        "yvals": [0, 0, 0, 0],
+        "x": 0.5
+      },
+      {
+        "op": "coords-vectors.hrmesp",
+        "first": 0,
+        "step": 2,
+        "yvals": [7, 0, 7, 0],
+        "x": 1.25
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-hrmesp-scaled-ordinates",
+    "description": "All value and slope inputs are rescaled together; focused tests compare every normalized output field to live CSPICE.",
+    "workflow": [
+      {
+        "op": "coords-vectors.hrmesp",
+        "first": 0,
+        "step": 2,
+        "yvals": [2e100, -3.0000000000000002e100, -4e101, -6.7e101],
+        "x": 0.5
+      },
+      {
+        "op": "coords-vectors.hrmesp",
+        "first": 0,
+        "step": 2,
+        "yvals": [2e-100, -3e-100, -4e-99, -6.7e-99],
+        "x": 0.5
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-hrmesp-scaled-abscissas",
+    "description": "Changing abscissa units rescales derivatives inversely; focused checks restore their original units.",
+    "workflow": [
+      {
+        "op": "coords-vectors.hrmesp",
+        "first": 0.0,
+        "step": 2e100,
+        "yvals": [2, -3e-100, -40, -6.7e-99],
+        "x": 5e99
+      },
+      {
+        "op": "coords-vectors.hrmesp",
+        "first": 0.0,
+        "step": 2e-100,
+        "yvals": [2, -3e100, -40, -6.7e101],
+        "x": 5e-101
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-hrmesp-shifted-forward-and-reversed-grid",
+    "description": "Physically identical samples are traversed on shifted increasing and decreasing grids; derivative units follow x, not the grid index.",
+    "workflow": [
+      {
+        "op": "coords-vectors.hrmesp",
+        "first": 10,
+        "step": 2,
+        "yvals": [2, -1.5, -3, -7],
+        "x": 10
+      },
+      {
+        "op": "coords-vectors.hrmesp",
+        "first": 10,
+        "step": 2,
+        "yvals": [2, -1.5, -3, -7],
+        "x": 11
+      },
+      {
+        "op": "coords-vectors.hrmesp",
+        "first": 10,
+        "step": 2,
+        "yvals": [2, -1.5, -3, -7],
+        "x": 12
+      },
+      {
+        "op": "coords-vectors.hrmesp",
+        "first": 12,
+        "step": -2,
+        "yvals": [-3, -7, 2, -1.5],
+        "x": 10
+      },
+      {
+        "op": "coords-vectors.hrmesp",
+        "first": 12,
+        "step": -2,
+        "yvals": [-3, -7, 2, -1.5],
+        "x": 11
+      },
+      {
+        "op": "coords-vectors.hrmesp",
+        "first": 12,
+        "step": -2,
+        "yvals": [-3, -7, 2, -1.5],
+        "x": 12
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-hrmesp-zero-step-error",
+    "description": "A nonempty table with zero spacing signals an actual CSPICE interpolation error.",
+    "workflow": [
+      {
+        "op": "coords-vectors.hrmesp",
+        "first": 10,
+        "step": 0,
+        "yvals": [2, -1.5, -3, -7],
+        "x": 11
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDSTEPSIZE"]
+    }
+  },
+  {
+    "caseId": "coords-vectors-hrmesp-empty-table-error",
+    "description": "The documented zero-node table reaches the actual CSPICE INVALIDSIZE error.",
+    "workflow": [
+      {
+        "op": "coords-vectors.hrmesp",
+        "first": 0,
+        "step": 1,
+        "yvals": [],
+        "x": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDSIZE"]
+    }
+  }
+]

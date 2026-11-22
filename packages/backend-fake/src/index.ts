@@ -2746,6 +2746,26 @@ export function createFakeBackend(
       throw new Error("Fake backend does not model rquad()");
     },
 
+    // This fake intentionally does not model interpolation numerics.
+    hrmesp: () => {
+      throw new Error("Fake backend does not model hrmesp()");
+    },
+    hrmint: () => {
+      throw new Error("Fake backend does not model hrmint()");
+    },
+    lgresp: () => {
+      throw new Error("Fake backend does not model lgresp()");
+    },
+    lgrind: () => {
+      throw new Error("Fake backend does not model lgrind()");
+    },
+    lgrint: () => {
+      throw new Error("Fake backend does not model lgrint()");
+    },
+    qderiv: () => {
+      throw new Error("Fake backend does not model qderiv()");
+    },
+
     reclat: (rect) => {
       const x = rect[0];
       const y = rect[1];

@@ -634,6 +634,30 @@ export function getNodeBinding(): NativeAddon {
   );
   invariant(typeof native.rquad === "function", "Native addon missing rquad()");
   invariant(
+    typeof native.hrmesp === "function",
+    "Native addon missing hrmesp()",
+  );
+  invariant(
+    typeof native.hrmint === "function",
+    "Native addon missing hrmint()",
+  );
+  invariant(
+    typeof native.lgresp === "function",
+    "Native addon missing lgresp()",
+  );
+  invariant(
+    typeof native.lgrind === "function",
+    "Native addon missing lgrind()",
+  );
+  invariant(
+    typeof native.lgrint === "function",
+    "Native addon missing lgrint()",
+  );
+  invariant(
+    typeof native.qderiv === "function",
+    "Native addon missing qderiv()",
+  );
+  invariant(
     typeof native.reclat === "function",
     "Expected native addon to export reclat(rect)",
   );

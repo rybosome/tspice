@@ -1199,6 +1199,19 @@ int tspice_polyds(const double *coeffs, int ncoeff, int nderiv, double t, double
 // rquad_c: adapters infer degree from ncoeff; empty buffers remain non-NULL.
 int tspice_rquad(double a, double b, double c, double root1[2], double root2[2], char *err, int errMaxBytes);
 
+// hrmesp_c: inferred count, non-NULL buffers, guarded toolkit workspace/index sizes.
+int tspice_hrmesp(int n, double first, double step, const double *yvals, double x, double *outF, double *outDerivative, char *err, int errMaxBytes);
+// hrmint_c: inferred count, non-NULL buffers, guarded toolkit workspace/index sizes.
+int tspice_hrmint(int n, const double *xvals, const double *yvals, double x, double *work, double *outF, double *outDerivative, char *err, int errMaxBytes);
+// lgresp_c: inferred count, non-NULL buffers, guarded toolkit workspace/index sizes.
+int tspice_lgresp(int n, double first, double step, const double *yvals, double x, double *out, char *err, int errMaxBytes);
+// lgrind_c: inferred count, non-NULL buffers, guarded toolkit workspace/index sizes.
+int tspice_lgrind(int n, const double *xvals, const double *yvals, double *work, double x, double *outP, double *outDerivative, char *err, int errMaxBytes);
+// lgrint_c: inferred count, non-NULL buffers, guarded toolkit workspace/index sizes.
+int tspice_lgrint(int n, const double *xvals, const double *yvals, double x, double *out, char *err, int errMaxBytes);
+// qderiv_c: inferred count, non-NULL buffers, guarded toolkit workspace/index sizes.
+int tspice_qderiv(int n, const double *f0, const double *f2, double delta, double *out, char *err, int errMaxBytes);
+
 // reclat_c: rectangular -> latitudinal coordinates.
 int tspice_reclat(
     const double *rect3,

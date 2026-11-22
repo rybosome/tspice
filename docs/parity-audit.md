@@ -243,3 +243,13 @@ Their [boundary regressions](step8-polynomial-expansions.md#stable-coefficient-a
 are separate from the unchanged scientific observations. Earlier executions
 remain historical; the corrected source needs fresh required local and CI
 records before either backend can be called verified.
+
+## Interpolation
+
+The [A17 source review](step8-interpolation.md) covers Hermite and Lagrange
+sample layouts, derivative units, midpoint endpoint-vector estimates, hidden
+workspace limits and scientific error recovery. Its six direct raw routes add
+53 registered scenarios / 132 canonical calls (11 genuine errors) to the
+unchanged 162-routine baseline. The review records the native validated-count
+copy repair. Prior-baseline executions are historical; final verification
+requires fresh required local lanes and observed CI for the current source.

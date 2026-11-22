@@ -108,6 +108,12 @@ export function dispatchStep(
     case "coords-vectors.chbval":
     case "coords-vectors.polyds":
     case "coords-vectors.rquad":
+    case "coords-vectors.hrmesp":
+    case "coords-vectors.hrmint":
+    case "coords-vectors.lgresp":
+    case "coords-vectors.lgrind":
+    case "coords-vectors.lgrint":
+    case "coords-vectors.qderiv":
     case "coords-vectors.reclat":
     case "coords-vectors.latrec":
     case "coords-vectors.recsph":
