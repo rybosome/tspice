@@ -260,6 +260,222 @@
       "url": "https://github.com/rybosome/tspice/actions/runs/43556467747/job/132330319914",
       "observation": "Inspected successful Linux Node 22 native-required job 132330319914 on ade1137c994fa0b109304417807cdc099b0ce234: 2,400 registered Node/WASM live comparisons; 2,631 parity-package tests with no skips, including the native-required guard; 143 native wrapper, 705 WASM, 34 core and 152 facade tests passed.",
       "historical": true
+    },
+    {
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "8b892e7b040d818e125491ab9a3cc8d6ea2c66e56acb07a99b81bc70e0c69e14",
+      "caseIds": [
+        "coords-vectors-eul2m-all-axis-families",
+        "coords-vectors-eul2m-invalid-axis-0",
+        "coords-vectors-eul2m-invalid-axis-1",
+        "coords-vectors-eul2m-invalid-axis-2",
+        "coords-vectors-eul2m-repeated-axes",
+        "coords-vectors-eul2m-signed-quarter-turns",
+        "coords-vectors-eul2m-wrapped-and-small",
+        "coords-vectors-m2eul-all-axis-families",
+        "coords-vectors-m2eul-bad-axes-021",
+        "coords-vectors-m2eul-bad-axes-122",
+        "coords-vectors-m2eul-bad-axes-331",
+        "coords-vectors-m2eul-reflection",
+        "coords-vectors-m2eul-sign-of-rotation",
+        "coords-vectors-m2eul-singular-angle-choices",
+        "coords-vectors-m2q-half-turn",
+        "coords-vectors-m2q-identity",
+        "coords-vectors-m2q-mixed-axis",
+        "coords-vectors-m2q-reflection",
+        "coords-vectors-m2q-signed-quarter-turns",
+        "coords-vectors-m2q-zero",
+        "coords-vectors-q2m-identity-and-zero",
+        "coords-vectors-q2m-off-diagonal-orientation",
+        "coords-vectors-q2m-principal-half-turns",
+        "coords-vectors-q2m-sign-and-scale",
+        "coords-vectors-q2m-small-and-large-products",
+        "coords-vectors-qdq2av-complex-components",
+        "coords-vectors-qdq2av-degenerate",
+        "coords-vectors-qdq2av-order",
+        "coords-vectors-qdq2av-scale-and-sign",
+        "coords-vectors-qdq2av-scaled-products",
+        "coords-vectors-qxq-complex-components",
+        "coords-vectors-qxq-degenerate",
+        "coords-vectors-qxq-order",
+        "coords-vectors-qxq-scale-and-sign",
+        "coords-vectors-qxq-scaled-products",
+        "coords-vectors-raxisa-half-turn",
+        "coords-vectors-raxisa-identity",
+        "coords-vectors-raxisa-mixed-axis",
+        "coords-vectors-raxisa-reflection",
+        "coords-vectors-raxisa-signed-quarter-turns",
+        "coords-vectors-raxisa-zero"
+      ],
+      "id": "local-cp01-17f11884fb5b-node",
+      "kind": "local",
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 17f11884fb5bdef7cbaf84bd480d4b8edde3d310. The native-required lane completed 3788 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45009595818/job/137168748216"
+    },
+    {
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "8b892e7b040d818e125491ab9a3cc8d6ea2c66e56acb07a99b81bc70e0c69e14",
+      "caseIds": [
+        "coords-vectors-eul2m-all-axis-families",
+        "coords-vectors-eul2m-invalid-axis-0",
+        "coords-vectors-eul2m-invalid-axis-1",
+        "coords-vectors-eul2m-invalid-axis-2",
+        "coords-vectors-eul2m-repeated-axes",
+        "coords-vectors-eul2m-signed-quarter-turns",
+        "coords-vectors-eul2m-wrapped-and-small",
+        "coords-vectors-m2eul-all-axis-families",
+        "coords-vectors-m2eul-bad-axes-021",
+        "coords-vectors-m2eul-bad-axes-122",
+        "coords-vectors-m2eul-bad-axes-331",
+        "coords-vectors-m2eul-reflection",
+        "coords-vectors-m2eul-sign-of-rotation",
+        "coords-vectors-m2eul-singular-angle-choices",
+        "coords-vectors-m2q-half-turn",
+        "coords-vectors-m2q-identity",
+        "coords-vectors-m2q-mixed-axis",
+        "coords-vectors-m2q-reflection",
+        "coords-vectors-m2q-signed-quarter-turns",
+        "coords-vectors-m2q-zero",
+        "coords-vectors-q2m-identity-and-zero",
+        "coords-vectors-q2m-off-diagonal-orientation",
+        "coords-vectors-q2m-principal-half-turns",
+        "coords-vectors-q2m-sign-and-scale",
+        "coords-vectors-q2m-small-and-large-products",
+        "coords-vectors-qdq2av-complex-components",
+        "coords-vectors-qdq2av-degenerate",
+        "coords-vectors-qdq2av-order",
+        "coords-vectors-qdq2av-scale-and-sign",
+        "coords-vectors-qdq2av-scaled-products",
+        "coords-vectors-qxq-complex-components",
+        "coords-vectors-qxq-degenerate",
+        "coords-vectors-qxq-order",
+        "coords-vectors-qxq-scale-and-sign",
+        "coords-vectors-qxq-scaled-products",
+        "coords-vectors-raxisa-half-turn",
+        "coords-vectors-raxisa-identity",
+        "coords-vectors-raxisa-mixed-axis",
+        "coords-vectors-raxisa-reflection",
+        "coords-vectors-raxisa-signed-quarter-turns",
+        "coords-vectors-raxisa-zero"
+      ],
+      "id": "ci-cp01-17f11884fb5b-node",
+      "kind": "ci",
+      "commit": "2851d19aa900e30c688b0d1c756a35357f10eebc",
+      "url": "https://github.com/rybosome/tspice/actions/runs/45012853638/job/137178762153",
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 3788 live comparisons without unexpected skips."
+    },
+    {
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "8b892e7b040d818e125491ab9a3cc8d6ea2c66e56acb07a99b81bc70e0c69e14",
+      "caseIds": [
+        "coords-vectors-eul2m-all-axis-families",
+        "coords-vectors-eul2m-invalid-axis-0",
+        "coords-vectors-eul2m-invalid-axis-1",
+        "coords-vectors-eul2m-invalid-axis-2",
+        "coords-vectors-eul2m-repeated-axes",
+        "coords-vectors-eul2m-signed-quarter-turns",
+        "coords-vectors-eul2m-wrapped-and-small",
+        "coords-vectors-m2eul-all-axis-families",
+        "coords-vectors-m2eul-bad-axes-021",
+        "coords-vectors-m2eul-bad-axes-122",
+        "coords-vectors-m2eul-bad-axes-331",
+        "coords-vectors-m2eul-reflection",
+        "coords-vectors-m2eul-sign-of-rotation",
+        "coords-vectors-m2eul-singular-angle-choices",
+        "coords-vectors-m2q-half-turn",
+        "coords-vectors-m2q-identity",
+        "coords-vectors-m2q-mixed-axis",
+        "coords-vectors-m2q-reflection",
+        "coords-vectors-m2q-signed-quarter-turns",
+        "coords-vectors-m2q-zero",
+        "coords-vectors-q2m-identity-and-zero",
+        "coords-vectors-q2m-off-diagonal-orientation",
+        "coords-vectors-q2m-principal-half-turns",
+        "coords-vectors-q2m-sign-and-scale",
+        "coords-vectors-q2m-small-and-large-products",
+        "coords-vectors-qdq2av-complex-components",
+        "coords-vectors-qdq2av-degenerate",
+        "coords-vectors-qdq2av-order",
+        "coords-vectors-qdq2av-scale-and-sign",
+        "coords-vectors-qdq2av-scaled-products",
+        "coords-vectors-qxq-complex-components",
+        "coords-vectors-qxq-degenerate",
+        "coords-vectors-qxq-order",
+        "coords-vectors-qxq-scale-and-sign",
+        "coords-vectors-qxq-scaled-products",
+        "coords-vectors-raxisa-half-turn",
+        "coords-vectors-raxisa-identity",
+        "coords-vectors-raxisa-mixed-axis",
+        "coords-vectors-raxisa-reflection",
+        "coords-vectors-raxisa-signed-quarter-turns",
+        "coords-vectors-raxisa-zero"
+      ],
+      "id": "local-cp01-17f11884fb5b-wasm",
+      "kind": "local",
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 17f11884fb5bdef7cbaf84bd480d4b8edde3d310. The native-required lane completed 3788 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45009595818/job/137168748216"
+    },
+    {
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "8b892e7b040d818e125491ab9a3cc8d6ea2c66e56acb07a99b81bc70e0c69e14",
+      "caseIds": [
+        "coords-vectors-eul2m-all-axis-families",
+        "coords-vectors-eul2m-invalid-axis-0",
+        "coords-vectors-eul2m-invalid-axis-1",
+        "coords-vectors-eul2m-invalid-axis-2",
+        "coords-vectors-eul2m-repeated-axes",
+        "coords-vectors-eul2m-signed-quarter-turns",
+        "coords-vectors-eul2m-wrapped-and-small",
+        "coords-vectors-m2eul-all-axis-families",
+        "coords-vectors-m2eul-bad-axes-021",
+        "coords-vectors-m2eul-bad-axes-122",
+        "coords-vectors-m2eul-bad-axes-331",
+        "coords-vectors-m2eul-reflection",
+        "coords-vectors-m2eul-sign-of-rotation",
+        "coords-vectors-m2eul-singular-angle-choices",
+        "coords-vectors-m2q-half-turn",
+        "coords-vectors-m2q-identity",
+        "coords-vectors-m2q-mixed-axis",
+        "coords-vectors-m2q-reflection",
+        "coords-vectors-m2q-signed-quarter-turns",
+        "coords-vectors-m2q-zero",
+        "coords-vectors-q2m-identity-and-zero",
+        "coords-vectors-q2m-off-diagonal-orientation",
+        "coords-vectors-q2m-principal-half-turns",
+        "coords-vectors-q2m-sign-and-scale",
+        "coords-vectors-q2m-small-and-large-products",
+        "coords-vectors-qdq2av-complex-components",
+        "coords-vectors-qdq2av-degenerate",
+        "coords-vectors-qdq2av-order",
+        "coords-vectors-qdq2av-scale-and-sign",
+        "coords-vectors-qdq2av-scaled-products",
+        "coords-vectors-qxq-complex-components",
+        "coords-vectors-qxq-degenerate",
+        "coords-vectors-qxq-order",
+        "coords-vectors-qxq-scale-and-sign",
+        "coords-vectors-qxq-scaled-products",
+        "coords-vectors-raxisa-half-turn",
+        "coords-vectors-raxisa-identity",
+        "coords-vectors-raxisa-mixed-axis",
+        "coords-vectors-raxisa-reflection",
+        "coords-vectors-raxisa-signed-quarter-turns",
+        "coords-vectors-raxisa-zero"
+      ],
+      "id": "ci-cp01-17f11884fb5b-wasm",
+      "kind": "ci",
+      "commit": "2851d19aa900e30c688b0d1c756a35357f10eebc",
+      "url": "https://github.com/rybosome/tspice/actions/runs/45012853638/job/137178762153",
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 3788 live comparisons without unexpected skips."
     }
   ],
   "routines": [
@@ -339,11 +555,15 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "alias",
           "trace": "raw.eul2m -> Node wrapper -> native addon -> shared tspice_eul2m -> trace frame plus external eul2m_ via declared SpiceZfc.h ABI, initialized oriented matrix and success-only transpose; independent locked SPICELIB error path and ordinary public success comparisons.",
-          "executions": []
+          "executions": [
+            "local-cp01-17f11884fb5b-node",
+            "ci-cp01-17f11884fb5b-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -351,11 +571,15 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "alias",
           "trace": "raw.eul2m -> WASM wrapper -> exported bounded shim -> shared tspice_eul2m -> trace frame plus external eul2m_ via declared SpiceZfc.h ABI, initialized oriented matrix and success-only transpose; independent locked SPICELIB error path and ordinary public success comparisons.",
-          "executions": []
+          "executions": [
+            "local-cp01-17f11884fb5b-wasm",
+            "ci-cp01-17f11884fb5b-wasm"
+          ]
         }
       }
     },
@@ -410,16 +634,34 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "raw.m2eul -> Node wrapper -> native addon -> shared tspice_m2eul -> m2eul_c; independent locked SpiceyPy m2eul wrapper.",
-          "executions": []
+          "executions": [
+            "local-cp01-17f11884fb5b-node",
+            "ci-cp01-17f11884fb5b-node"
+          ]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "raw.m2eul -> WASM wrapper -> exported bounded shim -> shared tspice_m2eul -> m2eul_c; independent locked SpiceyPy m2eul wrapper.",
-          "executions": []
+          "executions": [
+            "local-cp01-17f11884fb5b-wasm",
+            "ci-cp01-17f11884fb5b-wasm"
+          ]
         }
       }
     },
@@ -469,16 +711,34 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "raw.m2q -> Node wrapper -> native addon -> shared tspice_m2q -> m2q_c; independent locked SpiceyPy m2q wrapper.",
-          "executions": []
+          "executions": [
+            "local-cp01-17f11884fb5b-node",
+            "ci-cp01-17f11884fb5b-node"
+          ]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "raw.m2q -> WASM wrapper -> exported bounded shim -> shared tspice_m2q -> m2q_c; independent locked SpiceyPy m2q wrapper.",
-          "executions": []
+          "executions": [
+            "local-cp01-17f11884fb5b-wasm",
+            "ci-cp01-17f11884fb5b-wasm"
+          ]
         }
       }
     },
@@ -543,11 +803,15 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.q2m -> Node wrapper -> native addon -> shared tspice_q2m -> q2m_c; independent locked SpiceyPy q2m wrapper.",
-          "executions": []
+          "executions": [
+            "local-cp01-17f11884fb5b-node",
+            "ci-cp01-17f11884fb5b-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -555,11 +819,15 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.q2m -> WASM wrapper -> exported bounded shim -> shared tspice_q2m -> q2m_c; independent locked SpiceyPy q2m wrapper.",
-          "executions": []
+          "executions": [
+            "local-cp01-17f11884fb5b-wasm",
+            "ci-cp01-17f11884fb5b-wasm"
+          ]
         }
       }
     },
@@ -604,16 +872,34 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "raw.qxq -> Node wrapper -> native addon -> shared tspice_qxq -> qxq_c; independent locked SpiceyPy qxq wrapper.",
-          "executions": []
+          "executions": [
+            "local-cp01-17f11884fb5b-node",
+            "ci-cp01-17f11884fb5b-node"
+          ]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "raw.qxq -> WASM wrapper -> exported bounded shim -> shared tspice_qxq -> qxq_c; independent locked SpiceyPy qxq wrapper.",
-          "executions": []
+          "executions": [
+            "local-cp01-17f11884fb5b-wasm",
+            "ci-cp01-17f11884fb5b-wasm"
+          ]
         }
       }
     },
@@ -658,16 +944,34 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "raw.qdq2av -> Node wrapper -> native addon -> shared tspice_qdq2av -> qdq2av_c; independent locked SpiceyPy qdq2av wrapper.",
-          "executions": []
+          "executions": [
+            "local-cp01-17f11884fb5b-node",
+            "ci-cp01-17f11884fb5b-node"
+          ]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "raw.qdq2av -> WASM wrapper -> exported bounded shim -> shared tspice_qdq2av -> qdq2av_c; independent locked SpiceyPy qdq2av wrapper.",
-          "executions": []
+          "executions": [
+            "local-cp01-17f11884fb5b-wasm",
+            "ci-cp01-17f11884fb5b-wasm"
+          ]
         }
       }
     },
@@ -717,16 +1021,34 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "raw.raxisa -> Node wrapper -> native addon -> shared tspice_raxisa -> raxisa_c; independent locked SpiceyPy raxisa wrapper.",
-          "executions": []
+          "executions": [
+            "local-cp01-17f11884fb5b-node",
+            "ci-cp01-17f11884fb5b-node"
+          ]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "raw.raxisa -> WASM wrapper -> exported bounded shim -> shared tspice_raxisa -> raxisa_c; independent locked SpiceyPy raxisa wrapper.",
-          "executions": []
+          "executions": [
+            "local-cp01-17f11884fb5b-wasm",
+            "ci-cp01-17f11884fb5b-wasm"
+          ]
         }
       }
     }

@@ -224,6 +224,198 @@
       "url": "https://github.com/rybosome/tspice/actions/runs/43552572404/job/132318104654",
       "observation": "Inspected successful Linux Node 22 native-required job 132318104654 on dd9e6ebab37e8cfa06acced90e23d9ea3057fc67: 2,288 registered Node/WASM live comparisons; 2,512 parity-package tests with no skips, including the native-required guard; 100 native wrapper, 624 WASM, 28 core and 150 facade tests passed.",
       "historical": true
+    },
+    {
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "8b81b34b9b3282d1d68cdd866d29f859b5b0601efb31be5c98bbe0ae2f377e18",
+      "caseIds": [
+        "coords-vectors-clearc-empty-storage-no-write",
+        "coords-vectors-clearc-exact-capacity-and-leading-nuls",
+        "coords-vectors-clearc-negative-width-error",
+        "coords-vectors-clearc-nonzero-rows-and-unchanged-tail",
+        "coords-vectors-clearc-one-width-error",
+        "coords-vectors-clearc-stride-includes-terminator",
+        "coords-vectors-clearc-zero-negative-counts",
+        "coords-vectors-clearc-zero-width-error",
+        "coords-vectors-cleard-empty-storage",
+        "coords-vectors-cleard-extreme-finite-storage",
+        "coords-vectors-cleard-prefix-and-unchanged-tail",
+        "coords-vectors-cleard-single-and-full-buffer",
+        "coords-vectors-cleard-zero-and-negative-count",
+        "coords-vectors-cleari-empty-storage",
+        "coords-vectors-cleari-prefix-and-unchanged-tail",
+        "coords-vectors-cleari-signed-int32-limits",
+        "coords-vectors-cleari-single-and-full-buffer",
+        "coords-vectors-cleari-zero-and-negative-count",
+        "coords-vectors-filld-distinct-fill-values",
+        "coords-vectors-filld-empty-storage",
+        "coords-vectors-filld-extreme-finite-storage",
+        "coords-vectors-filld-prefix-and-unchanged-tail",
+        "coords-vectors-filld-single-and-full-buffer",
+        "coords-vectors-filld-zero-and-negative-count",
+        "coords-vectors-filli-distinct-fill-values",
+        "coords-vectors-filli-empty-storage",
+        "coords-vectors-filli-prefix-and-unchanged-tail",
+        "coords-vectors-filli-signed-int32-limits",
+        "coords-vectors-filli-single-and-full-buffer",
+        "coords-vectors-filli-zero-and-negative-count",
+        "coords-vectors-moved-disjoint-source-and-destination",
+        "coords-vectors-moved-distinguishing-order",
+        "coords-vectors-moved-extreme-finite-storage",
+        "coords-vectors-moved-unequal-lengths",
+        "coords-vectors-moved-zero-with-empty-or-nonempty"
+      ],
+      "id": "local-cp01-17f11884fb5b-node",
+      "kind": "local",
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 17f11884fb5bdef7cbaf84bd480d4b8edde3d310. The native-required lane completed 3788 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45009595818/job/137168748216"
+    },
+    {
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "8b81b34b9b3282d1d68cdd866d29f859b5b0601efb31be5c98bbe0ae2f377e18",
+      "caseIds": [
+        "coords-vectors-clearc-empty-storage-no-write",
+        "coords-vectors-clearc-exact-capacity-and-leading-nuls",
+        "coords-vectors-clearc-negative-width-error",
+        "coords-vectors-clearc-nonzero-rows-and-unchanged-tail",
+        "coords-vectors-clearc-one-width-error",
+        "coords-vectors-clearc-stride-includes-terminator",
+        "coords-vectors-clearc-zero-negative-counts",
+        "coords-vectors-clearc-zero-width-error",
+        "coords-vectors-cleard-empty-storage",
+        "coords-vectors-cleard-extreme-finite-storage",
+        "coords-vectors-cleard-prefix-and-unchanged-tail",
+        "coords-vectors-cleard-single-and-full-buffer",
+        "coords-vectors-cleard-zero-and-negative-count",
+        "coords-vectors-cleari-empty-storage",
+        "coords-vectors-cleari-prefix-and-unchanged-tail",
+        "coords-vectors-cleari-signed-int32-limits",
+        "coords-vectors-cleari-single-and-full-buffer",
+        "coords-vectors-cleari-zero-and-negative-count",
+        "coords-vectors-filld-distinct-fill-values",
+        "coords-vectors-filld-empty-storage",
+        "coords-vectors-filld-extreme-finite-storage",
+        "coords-vectors-filld-prefix-and-unchanged-tail",
+        "coords-vectors-filld-single-and-full-buffer",
+        "coords-vectors-filld-zero-and-negative-count",
+        "coords-vectors-filli-distinct-fill-values",
+        "coords-vectors-filli-empty-storage",
+        "coords-vectors-filli-prefix-and-unchanged-tail",
+        "coords-vectors-filli-signed-int32-limits",
+        "coords-vectors-filli-single-and-full-buffer",
+        "coords-vectors-filli-zero-and-negative-count",
+        "coords-vectors-moved-disjoint-source-and-destination",
+        "coords-vectors-moved-distinguishing-order",
+        "coords-vectors-moved-extreme-finite-storage",
+        "coords-vectors-moved-unequal-lengths",
+        "coords-vectors-moved-zero-with-empty-or-nonempty"
+      ],
+      "id": "ci-cp01-17f11884fb5b-node",
+      "kind": "ci",
+      "commit": "2851d19aa900e30c688b0d1c756a35357f10eebc",
+      "url": "https://github.com/rybosome/tspice/actions/runs/45012853638/job/137178762153",
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 3788 live comparisons without unexpected skips."
+    },
+    {
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "8b81b34b9b3282d1d68cdd866d29f859b5b0601efb31be5c98bbe0ae2f377e18",
+      "caseIds": [
+        "coords-vectors-clearc-empty-storage-no-write",
+        "coords-vectors-clearc-exact-capacity-and-leading-nuls",
+        "coords-vectors-clearc-negative-width-error",
+        "coords-vectors-clearc-nonzero-rows-and-unchanged-tail",
+        "coords-vectors-clearc-one-width-error",
+        "coords-vectors-clearc-stride-includes-terminator",
+        "coords-vectors-clearc-zero-negative-counts",
+        "coords-vectors-clearc-zero-width-error",
+        "coords-vectors-cleard-empty-storage",
+        "coords-vectors-cleard-extreme-finite-storage",
+        "coords-vectors-cleard-prefix-and-unchanged-tail",
+        "coords-vectors-cleard-single-and-full-buffer",
+        "coords-vectors-cleard-zero-and-negative-count",
+        "coords-vectors-cleari-empty-storage",
+        "coords-vectors-cleari-prefix-and-unchanged-tail",
+        "coords-vectors-cleari-signed-int32-limits",
+        "coords-vectors-cleari-single-and-full-buffer",
+        "coords-vectors-cleari-zero-and-negative-count",
+        "coords-vectors-filld-distinct-fill-values",
+        "coords-vectors-filld-empty-storage",
+        "coords-vectors-filld-extreme-finite-storage",
+        "coords-vectors-filld-prefix-and-unchanged-tail",
+        "coords-vectors-filld-single-and-full-buffer",
+        "coords-vectors-filld-zero-and-negative-count",
+        "coords-vectors-filli-distinct-fill-values",
+        "coords-vectors-filli-empty-storage",
+        "coords-vectors-filli-prefix-and-unchanged-tail",
+        "coords-vectors-filli-signed-int32-limits",
+        "coords-vectors-filli-single-and-full-buffer",
+        "coords-vectors-filli-zero-and-negative-count",
+        "coords-vectors-moved-disjoint-source-and-destination",
+        "coords-vectors-moved-distinguishing-order",
+        "coords-vectors-moved-extreme-finite-storage",
+        "coords-vectors-moved-unequal-lengths",
+        "coords-vectors-moved-zero-with-empty-or-nonempty"
+      ],
+      "id": "local-cp01-17f11884fb5b-wasm",
+      "kind": "local",
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 17f11884fb5bdef7cbaf84bd480d4b8edde3d310. The native-required lane completed 3788 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45009595818/job/137168748216"
+    },
+    {
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "8b81b34b9b3282d1d68cdd866d29f859b5b0601efb31be5c98bbe0ae2f377e18",
+      "caseIds": [
+        "coords-vectors-clearc-empty-storage-no-write",
+        "coords-vectors-clearc-exact-capacity-and-leading-nuls",
+        "coords-vectors-clearc-negative-width-error",
+        "coords-vectors-clearc-nonzero-rows-and-unchanged-tail",
+        "coords-vectors-clearc-one-width-error",
+        "coords-vectors-clearc-stride-includes-terminator",
+        "coords-vectors-clearc-zero-negative-counts",
+        "coords-vectors-clearc-zero-width-error",
+        "coords-vectors-cleard-empty-storage",
+        "coords-vectors-cleard-extreme-finite-storage",
+        "coords-vectors-cleard-prefix-and-unchanged-tail",
+        "coords-vectors-cleard-single-and-full-buffer",
+        "coords-vectors-cleard-zero-and-negative-count",
+        "coords-vectors-cleari-empty-storage",
+        "coords-vectors-cleari-prefix-and-unchanged-tail",
+        "coords-vectors-cleari-signed-int32-limits",
+        "coords-vectors-cleari-single-and-full-buffer",
+        "coords-vectors-cleari-zero-and-negative-count",
+        "coords-vectors-filld-distinct-fill-values",
+        "coords-vectors-filld-empty-storage",
+        "coords-vectors-filld-extreme-finite-storage",
+        "coords-vectors-filld-prefix-and-unchanged-tail",
+        "coords-vectors-filld-single-and-full-buffer",
+        "coords-vectors-filld-zero-and-negative-count",
+        "coords-vectors-filli-distinct-fill-values",
+        "coords-vectors-filli-empty-storage",
+        "coords-vectors-filli-prefix-and-unchanged-tail",
+        "coords-vectors-filli-signed-int32-limits",
+        "coords-vectors-filli-single-and-full-buffer",
+        "coords-vectors-filli-zero-and-negative-count",
+        "coords-vectors-moved-disjoint-source-and-destination",
+        "coords-vectors-moved-distinguishing-order",
+        "coords-vectors-moved-extreme-finite-storage",
+        "coords-vectors-moved-unequal-lengths",
+        "coords-vectors-moved-zero-with-empty-or-nonempty"
+      ],
+      "id": "ci-cp01-17f11884fb5b-wasm",
+      "kind": "ci",
+      "commit": "2851d19aa900e30c688b0d1c756a35357f10eebc",
+      "url": "https://github.com/rybosome/tspice/actions/runs/45012853638/job/137178762153",
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 3788 live comparisons without unexpected skips."
     }
   ],
   "routines": [
@@ -312,11 +504,15 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.clearc -> Node adapter -> registered native addon with initialized owned memory and global SPICE mutex -> shared tspice_clearc -> canonical clearc_c. The independent oracle invokes clearc_c from the locked SpiceyPy library using a typed ctypes binding and guarded initialized storage.",
-          "executions": []
+          "executions": [
+            "local-cp01-17f11884fb5b-node",
+            "ci-cp01-17f11884fb5b-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -324,11 +520,15 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.clearc -> WASM adapter -> checked transactional complete-array allocations -> _tspice_clearc -> shared tspice_clearc -> canonical clearc_c. The independent oracle invokes clearc_c from the locked SpiceyPy library using a typed ctypes binding and guarded initialized storage.",
-          "executions": []
+          "executions": [
+            "local-cp01-17f11884fb5b-wasm",
+            "ci-cp01-17f11884fb5b-wasm"
+          ]
         }
       }
     },
@@ -402,11 +602,15 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.cleard -> Node adapter -> registered native addon with initialized owned memory and global SPICE mutex -> shared tspice_cleard -> canonical cleard_c. The independent oracle invokes cleard_c from the locked SpiceyPy library using a typed ctypes binding and guarded initialized storage.",
-          "executions": []
+          "executions": [
+            "local-cp01-17f11884fb5b-node",
+            "ci-cp01-17f11884fb5b-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -414,11 +618,15 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.cleard -> WASM adapter -> checked transactional complete-array allocations -> _tspice_cleard -> shared tspice_cleard -> canonical cleard_c. The independent oracle invokes cleard_c from the locked SpiceyPy library using a typed ctypes binding and guarded initialized storage.",
-          "executions": []
+          "executions": [
+            "local-cp01-17f11884fb5b-wasm",
+            "ci-cp01-17f11884fb5b-wasm"
+          ]
         }
       }
     },
@@ -492,11 +700,15 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.cleari -> Node adapter -> registered native addon with initialized owned memory and global SPICE mutex -> shared tspice_cleari -> canonical cleari_c. The independent oracle invokes cleari_c from the locked SpiceyPy library using a typed ctypes binding and guarded initialized storage.",
-          "executions": []
+          "executions": [
+            "local-cp01-17f11884fb5b-node",
+            "ci-cp01-17f11884fb5b-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -504,11 +716,15 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.cleari -> WASM adapter -> checked transactional complete-array allocations -> _tspice_cleari -> shared tspice_cleari -> canonical cleari_c. The independent oracle invokes cleari_c from the locked SpiceyPy library using a typed ctypes binding and guarded initialized storage.",
-          "executions": []
+          "executions": [
+            "local-cp01-17f11884fb5b-wasm",
+            "ci-cp01-17f11884fb5b-wasm"
+          ]
         }
       }
     },
@@ -587,11 +803,15 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.filld -> Node adapter -> registered native addon with initialized owned memory and global SPICE mutex -> shared tspice_filld -> canonical filld_c. The independent oracle invokes filld_c from the locked SpiceyPy library using a typed ctypes binding and guarded initialized storage.",
-          "executions": []
+          "executions": [
+            "local-cp01-17f11884fb5b-node",
+            "ci-cp01-17f11884fb5b-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -599,11 +819,15 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.filld -> WASM adapter -> checked transactional complete-array allocations -> _tspice_filld -> shared tspice_filld -> canonical filld_c. The independent oracle invokes filld_c from the locked SpiceyPy library using a typed ctypes binding and guarded initialized storage.",
-          "executions": []
+          "executions": [
+            "local-cp01-17f11884fb5b-wasm",
+            "ci-cp01-17f11884fb5b-wasm"
+          ]
         }
       }
     },
@@ -682,11 +906,15 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.filli -> Node adapter -> registered native addon with initialized owned memory and global SPICE mutex -> shared tspice_filli -> canonical filli_c. The independent oracle invokes filli_c from the locked SpiceyPy library using a typed ctypes binding and guarded initialized storage.",
-          "executions": []
+          "executions": [
+            "local-cp01-17f11884fb5b-node",
+            "ci-cp01-17f11884fb5b-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -694,11 +922,15 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.filli -> WASM adapter -> checked transactional complete-array allocations -> _tspice_filli -> shared tspice_filli -> canonical filli_c. The independent oracle invokes filli_c from the locked SpiceyPy library using a typed ctypes binding and guarded initialized storage.",
-          "executions": []
+          "executions": [
+            "local-cp01-17f11884fb5b-wasm",
+            "ci-cp01-17f11884fb5b-wasm"
+          ]
         }
       }
     },
@@ -788,11 +1020,15 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.moved -> Node adapter -> registered native addon with initialized owned memory and global SPICE mutex -> shared tspice_moved -> canonical moved_c. The independent oracle invokes moved_c from the locked SpiceyPy library using a typed ctypes binding and guarded initialized storage.",
-          "executions": []
+          "executions": [
+            "local-cp01-17f11884fb5b-node",
+            "ci-cp01-17f11884fb5b-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -800,11 +1036,15 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.moved -> WASM adapter -> checked transactional complete-array allocations -> _tspice_moved -> shared tspice_moved -> canonical moved_c. The independent oracle invokes moved_c from the locked SpiceyPy library using a typed ctypes binding and guarded initialized storage.",
-          "executions": []
+          "executions": [
+            "local-cp01-17f11884fb5b-wasm",
+            "ci-cp01-17f11884fb5b-wasm"
+          ]
         }
       }
     }
