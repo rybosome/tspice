@@ -253,3 +253,12 @@ workspace limits and scientific error recovery. Its six direct raw routes add
 unchanged 162-routine baseline. The review records the native validated-count
 copy repair. Prior-baseline executions are historical; final verification
 requires fresh required local lanes and observed CI for the current source.
+
+## Array storage
+
+A04 adds six direct canonical array clear, fill and move routines. Its 35
+registered workflows make 92 calls to the independent pinned library,
+including three expected character-row size errors. The audit covers the
+complete returned destination, unchanged storage outside the written prefix,
+typed memory, scoped IEEE comparisons and the caller precondition on the
+pinned move implementation. [Array-storage evidence](step8-array-storage.md)

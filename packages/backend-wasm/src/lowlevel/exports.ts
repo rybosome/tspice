@@ -1392,6 +1392,54 @@ export type EmscriptenModule = {
     errMaxBytes: number,
   ): number;
 
+  _tspice_clearc(
+    ndim: number,
+    arrlen: number,
+    bytesPtr: number,
+    length: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_cleard(
+    ndim: number,
+    valuesPtr: number,
+    length: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_cleari(
+    ndim: number,
+    valuesPtr: number,
+    length: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_filld(
+    value: number,
+    ndim: number,
+    valuesPtr: number,
+    length: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_filli(
+    value: number,
+    ndim: number,
+    valuesPtr: number,
+    length: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_moved(
+    sourcePtr: number,
+    sourceLength: number,
+    ndim: number,
+    destinationPtr: number,
+    destinationLength: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
   _tspice_reclat(
     rect3Ptr: number,
     outRadiusPtr: number,
@@ -2696,6 +2744,54 @@ export type EmscriptenModule = {
     errMaxBytes: number,
   ): number;
 
+  _tspice_clearc(
+    ndim: number,
+    arrlen: number,
+    bytesPtr: number,
+    length: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_cleard(
+    ndim: number,
+    valuesPtr: number,
+    length: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_cleari(
+    ndim: number,
+    valuesPtr: number,
+    length: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_filld(
+    value: number,
+    ndim: number,
+    valuesPtr: number,
+    length: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_filli(
+    value: number,
+    ndim: number,
+    valuesPtr: number,
+    length: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_moved(
+    sourcePtr: number,
+    sourceLength: number,
+    ndim: number,
+    destinationPtr: number,
+    destinationLength: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
   _tspice_reclat(
     rect3Ptr: number,
     outRadiusPtr: number,
@@ -3157,6 +3253,12 @@ const REQUIRED_FUNCTION_EXPORTS = [
   "_tspice_lgrind",
   "_tspice_lgrint",
   "_tspice_qderiv",
+  "_tspice_clearc",
+  "_tspice_cleard",
+  "_tspice_cleari",
+  "_tspice_filld",
+  "_tspice_filli",
+  "_tspice_moved",
   "_tspice_reclat",
   "_tspice_latrec",
   "_tspice_recsph",

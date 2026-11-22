@@ -625,5 +625,21 @@
       "prs": ["https://github.com/rybosome/tspice/pull/718"],
       "nextAction": "Source-bound local and canonical Linux Node 22 native-required executions observed. Await final complete PR matrix and confirm rebaseability."
     }
+  ],
+  "expansionBatches": [
+    {
+      "id": "a04-array-storage",
+      "routines": [
+        "clearc_c",
+        "cleard_c",
+        "cleari_c",
+        "filld_c",
+        "filli_c",
+        "moved_c"
+      ],
+      "dependsOn": [],
+      "prs": ["https://github.com/rybosome/tspice/pull/720"],
+      "nextAction": "Source-bound local and canonical Linux Node 22 native-required executions observed. Await final complete PR matrix and confirm rebaseability."
+    }
   ]
 }

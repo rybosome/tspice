@@ -63,6 +63,12 @@ import type {
   StepCoordsVectorsLgrind,
   StepCoordsVectorsLgrint,
   StepCoordsVectorsQderiv,
+  StepCoordsVectorsClearc,
+  StepCoordsVectorsCleard,
+  StepCoordsVectorsCleari,
+  StepCoordsVectorsFilld,
+  StepCoordsVectorsFilli,
+  StepCoordsVectorsMoved,
   StepCoordsVectorsReclat,
   StepCoordsVectorsRecgeo,
   StepCoordsVectorsRecsph,
@@ -152,6 +158,12 @@ type CoordsVectorsStep =
   | StepCoordsVectorsLgrind
   | StepCoordsVectorsLgrint
   | StepCoordsVectorsQderiv
+  | StepCoordsVectorsClearc
+  | StepCoordsVectorsCleard
+  | StepCoordsVectorsCleari
+  | StepCoordsVectorsFilld
+  | StepCoordsVectorsFilli
+  | StepCoordsVectorsMoved
   | StepCoordsVectorsReclat
   | StepCoordsVectorsLatrec
   | StepCoordsVectorsRecsph
@@ -575,6 +587,40 @@ export function runCoordsVectorsStep(
 
     case "coords-vectors.qderiv": {
       const out = context.spice.raw.qderiv(step.f0, step.f2, step.delta);
+      return { op: step.op, value: out };
+    }
+
+    case "coords-vectors.clearc": {
+      const out = context.spice.raw.clearc(step.ndim, step.arrlen, step.bytes);
+      return { op: step.op, value: out };
+    }
+
+    case "coords-vectors.cleard": {
+      const out = context.spice.raw.cleard(step.ndim, step.values);
+      return { op: step.op, value: out };
+    }
+
+    case "coords-vectors.cleari": {
+      const out = context.spice.raw.cleari(step.ndim, step.values);
+      return { op: step.op, value: out };
+    }
+
+    case "coords-vectors.filld": {
+      const out = context.spice.raw.filld(step.value, step.ndim, step.values);
+      return { op: step.op, value: out };
+    }
+
+    case "coords-vectors.filli": {
+      const out = context.spice.raw.filli(step.value, step.ndim, step.values);
+      return { op: step.op, value: out };
+    }
+
+    case "coords-vectors.moved": {
+      const out = context.spice.raw.moved(
+        step.source,
+        step.ndim,
+        step.destination,
+      );
       return { op: step.op, value: out };
     }
 

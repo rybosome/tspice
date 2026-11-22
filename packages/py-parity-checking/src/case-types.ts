@@ -593,6 +593,46 @@ export type StepCoordsVectorsQderiv = {
   delta: number;
 };
 
+export type StepCoordsVectorsClearc = {
+  op: "coords-vectors.clearc";
+  ndim: number;
+  arrlen: number;
+  bytes: number[];
+};
+
+export type StepCoordsVectorsCleard = {
+  op: "coords-vectors.cleard";
+  ndim: number;
+  values: number[];
+};
+
+export type StepCoordsVectorsCleari = {
+  op: "coords-vectors.cleari";
+  ndim: number;
+  values: number[];
+};
+
+export type StepCoordsVectorsFilld = {
+  op: "coords-vectors.filld";
+  value: number;
+  ndim: number;
+  values: number[];
+};
+
+export type StepCoordsVectorsFilli = {
+  op: "coords-vectors.filli";
+  value: number;
+  ndim: number;
+  values: number[];
+};
+
+export type StepCoordsVectorsMoved = {
+  op: "coords-vectors.moved";
+  source: number[];
+  ndim: number;
+  destination: number[];
+};
+
 export type StepCoordsVectorsReclat = {
   op: "coords-vectors.reclat";
   rectan: Vector3;
@@ -1841,6 +1881,12 @@ export type WorkflowStep =
   | StepCoordsVectorsLgrind
   | StepCoordsVectorsLgrint
   | StepCoordsVectorsQderiv
+  | StepCoordsVectorsClearc
+  | StepCoordsVectorsCleard
+  | StepCoordsVectorsCleari
+  | StepCoordsVectorsFilld
+  | StepCoordsVectorsFilli
+  | StepCoordsVectorsMoved
   | StepCoordsVectorsReclat
   | StepCoordsVectorsLatrec
   | StepCoordsVectorsRecsph
@@ -2110,6 +2156,12 @@ export type StepOutput =
   | { op: "coords-vectors.lgrind"; value: { p: number; dp: number } }
   | { op: "coords-vectors.lgrint"; value: number }
   | { op: "coords-vectors.qderiv"; value: number[] }
+  | { op: "coords-vectors.clearc"; value: number[] }
+  | { op: "coords-vectors.cleard"; value: number[] }
+  | { op: "coords-vectors.cleari"; value: number[] }
+  | { op: "coords-vectors.filld"; value: number[] }
+  | { op: "coords-vectors.filli"; value: number[] }
+  | { op: "coords-vectors.moved"; value: number[] }
   | { op: "time.str2et"; value: number }
   | { op: "time.et2utc"; value: string }
   | { op: "time.spd"; value: number }

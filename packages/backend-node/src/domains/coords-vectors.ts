@@ -4,6 +4,9 @@ import type {
   SpiceStateVector,
 } from "@rybosome/tspice-backend-contract";
 import {
+  assertSpiceStorageFits,
+  copySpiceStorage,
+  spiceStorageLength,
   assertMat3ArrayLike9,
   assertSpiceInt32,
   brandMat3RowMajor,
@@ -442,6 +445,19 @@ function interpolationOutputArray(
   for (let i = 0; i < length; i++)
     result.push(interpolationOutputNumber(value[i], `${label}[${i}]`));
   return result;
+}
+
+function storageResult(
+  value: unknown,
+  expectedLength: number,
+  kind: "byte" | "int" | "double",
+  label: string,
+): number[] {
+  if (!Array.isArray(value) || value.length !== expectedLength)
+    throw new TypeError(
+      `${label} must be an array of length ${expectedLength}`,
+    );
+  return copySpiceStorage(value, expectedLength, kind, label);
 }
 
 /** Create a {@link CoordsVectorsApi} implementation backed by the native Node addon. */
@@ -1105,6 +1121,106 @@ export function createCoordsVectorsApi(native: NativeAddon): CoordsVectorsApi {
       assertInterpolationNumber(delta, "qderiv(delta)");
       const out: unknown = native.qderiv(f0Copy, f2Copy, delta);
       return interpolationOutputArray(out, count, "qderiv result");
+    },
+    clearc: (ndim, arrlen, bytes) => {
+      assertSpiceInt32(ndim, "clearc(ndim)");
+      assertSpiceInt32(arrlen, "clearc(arrlen)");
+      const bytesLength = spiceStorageLength(bytes, "clearc(bytes)");
+      // CSPICE handles widths below two before accessing the buffer.
+      if (arrlen >= 2)
+        assertSpiceStorageFits(ndim, bytesLength, "clearc()", arrlen);
+      const bytesCopy = copySpiceStorage(
+        bytes,
+        bytesLength,
+        "byte",
+        "clearc(bytes)",
+      );
+      const out: unknown = native.clearc(ndim, arrlen, bytesCopy);
+      return storageResult(out, bytesCopy.length, "byte", "clearc result");
+    },
+    cleard: (ndim, values) => {
+      assertSpiceInt32(ndim, "cleard(ndim)");
+      const valuesLength = spiceStorageLength(values, "cleard(values)");
+      assertSpiceStorageFits(ndim, valuesLength, "cleard(values)");
+      const valuesCopy = copySpiceStorage(
+        values,
+        valuesLength,
+        "double",
+        "cleard(values)",
+      );
+      const out: unknown = native.cleard(ndim, valuesCopy);
+      return storageResult(out, valuesCopy.length, "double", "cleard result");
+    },
+    cleari: (ndim, values) => {
+      assertSpiceInt32(ndim, "cleari(ndim)");
+      const valuesLength = spiceStorageLength(values, "cleari(values)");
+      assertSpiceStorageFits(ndim, valuesLength, "cleari(values)");
+      const valuesCopy = copySpiceStorage(
+        values,
+        valuesLength,
+        "int",
+        "cleari(values)",
+      );
+      const out: unknown = native.cleari(ndim, valuesCopy);
+      return storageResult(out, valuesCopy.length, "int", "cleari result");
+    },
+    filld: (value, ndim, values) => {
+      if (typeof value !== "number")
+        throw new TypeError("filld(value) must be a number");
+      assertSpiceInt32(ndim, "filld(ndim)");
+      const valuesLength = spiceStorageLength(values, "filld(values)");
+      assertSpiceStorageFits(ndim, valuesLength, "filld(values)");
+      const valuesCopy = copySpiceStorage(
+        values,
+        valuesLength,
+        "double",
+        "filld(values)",
+      );
+      const out: unknown = native.filld(value, ndim, valuesCopy);
+      return storageResult(out, valuesCopy.length, "double", "filld result");
+    },
+    filli: (value, ndim, values) => {
+      assertSpiceInt32(value, "filli(value)");
+      assertSpiceInt32(ndim, "filli(ndim)");
+      const valuesLength = spiceStorageLength(values, "filli(values)");
+      assertSpiceStorageFits(ndim, valuesLength, "filli(values)");
+      const valuesCopy = copySpiceStorage(
+        values,
+        valuesLength,
+        "int",
+        "filli(values)",
+      );
+      const out: unknown = native.filli(value, ndim, valuesCopy);
+      return storageResult(out, valuesCopy.length, "int", "filli result");
+    },
+    moved: (source, ndim, destination) => {
+      assertSpiceInt32(ndim, "moved(ndim)", { min: 0 });
+      const sourceLength = spiceStorageLength(source, "moved(source)");
+      const destinationLength = spiceStorageLength(
+        destination,
+        "moved(destination)",
+      );
+      assertSpiceStorageFits(ndim, sourceLength, "moved(source)");
+      assertSpiceStorageFits(ndim, destinationLength, "moved(destination)");
+      const sourceCopy = copySpiceStorage(
+        source,
+        sourceLength,
+        "double",
+        "moved(source)",
+      );
+      const destinationCopy = copySpiceStorage(
+        destination,
+        destinationLength,
+        "double",
+        "moved(destination)",
+      );
+      const out: unknown = native.moved(sourceCopy, ndim, destinationCopy);
+      return storageResult(
+        out,
+        destinationCopy.length,
+        "double",
+        "moved result",
+      );
     },
     reclat: (rect) => {
       const out = native.reclat(rect);

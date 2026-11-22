@@ -658,6 +658,21 @@ export function getNodeBinding(): NativeAddon {
     "Native addon missing qderiv()",
   );
   invariant(
+    typeof native.clearc === "function",
+    "Native addon missing clearc()",
+  );
+  invariant(
+    typeof native.cleard === "function",
+    "Native addon missing cleard()",
+  );
+  invariant(
+    typeof native.cleari === "function",
+    "Native addon missing cleari()",
+  );
+  invariant(typeof native.filld === "function", "Native addon missing filld()");
+  invariant(typeof native.filli === "function", "Native addon missing filli()");
+  invariant(typeof native.moved === "function", "Native addon missing moved()");
+  invariant(
     typeof native.reclat === "function",
     "Expected native addon to export reclat(rect)",
   );

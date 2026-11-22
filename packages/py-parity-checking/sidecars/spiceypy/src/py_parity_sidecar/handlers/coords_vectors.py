@@ -8,6 +8,8 @@ from .. import polynomial_oracle
 
 from .. import interpolation_oracle
 
+from .. import array_storage_oracle
+
 from ..models import (
     StepCoordsVectorsAxisar,
     StepCoordsVectorsGeorec,
@@ -73,6 +75,12 @@ from ..models import (
     StepCoordsVectorsLgrind,
     StepCoordsVectorsLgrint,
     StepCoordsVectorsQderiv,
+    StepCoordsVectorsClearc,
+    StepCoordsVectorsCleard,
+    StepCoordsVectorsCleari,
+    StepCoordsVectorsFilld,
+    StepCoordsVectorsFilli,
+    StepCoordsVectorsMoved,
     StepCoordsVectorsReclat,
     StepCoordsVectorsRecgeo,
     StepCoordsVectorsRecsph,
@@ -387,6 +395,30 @@ def run_coords_vectors_step(step: WorkflowStep, _context: SidecarRuntimeContext)
         interpolation_oracle.quadratic(step.f0, step.f2, step.delta)
         result = sp.qderiv(step.f0, step.f2, step.delta)
         return StepOutput(op=step.op, value=_to_number_array(result, len(step.f0)))
+
+    if isinstance(step, StepCoordsVectorsClearc):
+        value = array_storage_oracle.clearc(step.ndim, step.arrlen, step.bytes)
+        return StepOutput(op=step.op, value=value)
+
+    if isinstance(step, StepCoordsVectorsCleard):
+        value = array_storage_oracle.cleard(step.ndim, step.values)
+        return StepOutput(op=step.op, value=value)
+
+    if isinstance(step, StepCoordsVectorsCleari):
+        value = array_storage_oracle.cleari(step.ndim, step.values)
+        return StepOutput(op=step.op, value=value)
+
+    if isinstance(step, StepCoordsVectorsFilld):
+        value = array_storage_oracle.filld(step.value, step.ndim, step.values)
+        return StepOutput(op=step.op, value=value)
+
+    if isinstance(step, StepCoordsVectorsFilli):
+        value = array_storage_oracle.filli(step.value, step.ndim, step.values)
+        return StepOutput(op=step.op, value=value)
+
+    if isinstance(step, StepCoordsVectorsMoved):
+        value = array_storage_oracle.moved(step.source, step.ndim, step.destination)
+        return StepOutput(op=step.op, value=value)
 
     if isinstance(step, StepCoordsVectorsReclat):
         radius, lon, lat = sp.reclat(step.rectan)
