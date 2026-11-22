@@ -80,6 +80,13 @@ export function dispatchStep(
     case "coords-vectors.vrotv":
     case "coords-vectors.rotvec":
     case "coords-vectors.vtmv":
+    case "coords-vectors.azlrec":
+    case "coords-vectors.recazl":
+    case "coords-vectors.pgrrec":
+    case "coords-vectors.recpgr":
+    case "coords-vectors.radrec":
+    case "coords-vectors.recrad":
+    case "coords-vectors.srfrec":
     case "coords-vectors.reclat":
     case "coords-vectors.latrec":
     case "coords-vectors.recsph":

@@ -541,5 +541,22 @@
       "prs": ["https://github.com/rybosome/tspice/pull/711"],
       "nextAction": "Both required local lanes and inspected Linux Node 22 CI job 132310685814 verified corrected source bdb51dc6536adef891bde221f3caad79bea6ef7d. Observe the complete CI matrix on the final evidence head and confirm explicit rebaseability against current main before PR-ready. Await authorization before merge."
     }
+  ],
+  "expansionBatches": [
+    {
+      "id": "a06-coordinate-conventions",
+      "routines": [
+        "azlrec_c",
+        "recazl_c",
+        "pgrrec_c",
+        "recpgr_c",
+        "radrec_c",
+        "recrad_c",
+        "srfrec_c"
+      ],
+      "dependsOn": [],
+      "prs": ["https://github.com/rybosome/tspice/pull/713"],
+      "nextAction": "Source-bound local and canonical Linux Node 22 native-required executions observed. Await final complete PR matrix and confirm rebaseability."
+    }
   ]
 }

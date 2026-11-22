@@ -1102,6 +1102,67 @@ export type EmscriptenModule = {
     errMaxBytes: number,
   ): number;
 
+  _tspice_azlrec(
+    range: number,
+    az: number,
+    el: number,
+    azccw: number,
+    elplsz: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_recazl(
+    rectPtr: number,
+    azccw: number,
+    elplsz: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_pgrrec(
+    bodyPtr: number,
+    lon: number,
+    lat: number,
+    alt: number,
+    re: number,
+    f: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_recpgr(
+    bodyPtr: number,
+    rectPtr: number,
+    re: number,
+    f: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_radrec(
+    range: number,
+    ra: number,
+    dec: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_recrad(
+    rectPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_srfrec(
+    body: number,
+    lon: number,
+    lat: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
   _tspice_reclat(
     rect3Ptr: number,
     outRadiusPtr: number,
@@ -2116,6 +2177,67 @@ export type EmscriptenModule = {
     errMaxBytes: number,
   ): number;
 
+  _tspice_azlrec(
+    range: number,
+    az: number,
+    el: number,
+    azccw: number,
+    elplsz: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_recazl(
+    rectPtr: number,
+    azccw: number,
+    elplsz: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_pgrrec(
+    bodyPtr: number,
+    lon: number,
+    lat: number,
+    alt: number,
+    re: number,
+    f: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_recpgr(
+    bodyPtr: number,
+    rectPtr: number,
+    re: number,
+    f: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_radrec(
+    range: number,
+    ra: number,
+    dec: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_recrad(
+    rectPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_srfrec(
+    body: number,
+    lon: number,
+    lat: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
   _tspice_reclat(
     rect3Ptr: number,
     outRadiusPtr: number,
@@ -2543,6 +2665,13 @@ const REQUIRED_FUNCTION_EXPORTS = [
   "_tspice_vrotv",
   "_tspice_rotvec",
   "_tspice_vtmv",
+  "_tspice_azlrec",
+  "_tspice_recazl",
+  "_tspice_pgrrec",
+  "_tspice_recpgr",
+  "_tspice_radrec",
+  "_tspice_recrad",
+  "_tspice_srfrec",
   "_tspice_reclat",
   "_tspice_latrec",
   "_tspice_recsph",

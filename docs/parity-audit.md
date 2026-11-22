@@ -75,6 +75,23 @@ substituted, and no routine is excluded. The audit remains `reviewed` pending
 fresh source-bound local and observed canonical CI evidence. Prior Step 7
 executions remain historical on this branch.
 
+## Coordinate conventions expansion
+
+A06 adds seven routines without changing the immutable 162-routine Step 7
+baseline. Its 57 registered scenarios contain 152 new-routine calls and 36
+existing state-control steps. Independent angle flags, RA branches, body aliases,
+PM/longitude overrides, signed flattening, planetocentric radii and genuine SPICE
+errors receive routine-specific observations. All prior executions are historical
+until source-bound required local and canonical CI evidence is recorded.
+
+The [coordinate review](step8-coordinate-conventions.md) records the pinned
+Moon/Sun PM lookup prerequisite, authored fixture provenance and cleanup, and
+ten scoped finite-input extreme observations. Tiny distance/RA comparisons are
+rescaled in focused live tests; global tolerance remains unchanged. The
+[batch audit](../data/parity-audits/a06-coordinate-conventions.json) traces both
+actual raw backends, independent oracle decode/dispatch, native wrapper and WASM
+allocation tests, and state lifecycle code. Reviews alone do not claim verification.
+
 ## Recording verification
 
 Execution records are maintained observations, not inferred from CI configuration or scenario registration. Record the command, backend, native-required flag where applicable, successful scenario IDs, result summary, and SHA-256 source digest. CI observations also need the actual successful job URL and tested commit. Inspect logs for executed cases and absence of unexpected skips before recording success. Local observations describe the run result; durable CI links provide independently inspectable execution evidence.
@@ -136,7 +153,12 @@ Regression evidence: [vector-basics-domain.test.ts](../packages/backend-node/tes
 `vlcom_c`, `vlcom3_c`, `vperp_c`, `vproj_c`, `vrel_c`, `vrotv_c`, `rotvec_c`, `vtmv_c` now marshal the same entries that the typed adapters validated.
 Capture each three-vector and, for vtmv, all nine row-major matrix entries into owned inputs. Both native delegation and WASM marshaling use the validated snapshot. Bounded entry-read and ownership regressions check this adapter property independently of unchanged scientific cases.
 
-Regression evidence: [vector-combinations-domain.test.ts](../packages/backend-node/test/vector-combinations-domain.test.ts), [vector-combinations-allocations.test.ts](../packages/backend-wasm/test/vector-combinations-allocations.test.ts). These adapter checks do not replace
+Regression evidence: [vector-combinations-domain.test.ts](../packages/backend-node/test/vector-combinations-domain.test.ts), [vector-combinations-allocations.test.ts](../packages/backend-wasm/test/vector-combinations-allocations.test.ts).
+
+`recazl_c`, `recpgr_c`, `recrad_c` now marshal the same entries that the typed adapters validated.
+Copy each validated rectangular coordinate once into an owned three-vector and dispatch only that vector. Keep flag, body-name and ellipsoid semantics unchanged. The focused public boundary regression compares single-read inputs with ordinary arrays on both real backends; unchanged registered cases retain the independent scientific oracle.
+
+Regression evidence: [owned-numeric-inputs.test.ts](../packages/py-parity-checking/test/owned-numeric-inputs.test.ts). These adapter checks do not replace
 the independent scientific workflows. Earlier executions remain historical on
 their recorded fingerprints; both required local lanes and observed canonical CI
 must run on the corrected source before current verification.

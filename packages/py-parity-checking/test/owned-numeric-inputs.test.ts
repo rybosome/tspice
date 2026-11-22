@@ -28,6 +28,13 @@ for (const backend of ["node", "wasm"] as const) {
       const raw = spice.raw;
       try {
         expect(raw.reccyl(readOnce(3, 4, 5))).toEqual(raw.reccyl([3, 4, 5]));
+        expect(raw.recazl(readOnce(3, 4, 5), true, false)).toEqual(
+          raw.recazl([3, 4, 5], true, false),
+        );
+        expect(raw.recpgr("EARTH", readOnce(3, 4, 5), 1, 0)).toEqual(
+          raw.recpgr("EARTH", [3, 4, 5], 1, 0),
+        );
+        expect(raw.recrad(readOnce(3, 4, 5))).toEqual(raw.recrad([3, 4, 5]));
         expect(raw.failed()).toBe(false);
       } finally {
         await dispose();

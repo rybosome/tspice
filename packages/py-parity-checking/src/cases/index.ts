@@ -46,6 +46,13 @@ import coordsVectorsVrelCasesRaw from "./coords-vectors/vrel.cases.json" with { 
 import coordsVectorsVrotvCasesRaw from "./coords-vectors/vrotv.cases.json" with { type: "json" };
 import coordsVectorsRotvecCasesRaw from "./coords-vectors/rotvec.cases.json" with { type: "json" };
 import coordsVectorsVtmvCasesRaw from "./coords-vectors/vtmv.cases.json" with { type: "json" };
+import coordsVectorsAzlrecCasesRaw from "./coords-vectors/azlrec.cases.json" with { type: "json" };
+import coordsVectorsRecazlCasesRaw from "./coords-vectors/recazl.cases.json" with { type: "json" };
+import coordsVectorsPgrrecCasesRaw from "./coords-vectors/pgrrec.cases.json" with { type: "json" };
+import coordsVectorsRecpgrCasesRaw from "./coords-vectors/recpgr.cases.json" with { type: "json" };
+import coordsVectorsRadrecCasesRaw from "./coords-vectors/radrec.cases.json" with { type: "json" };
+import coordsVectorsRecradCasesRaw from "./coords-vectors/recrad.cases.json" with { type: "json" };
+import coordsVectorsSrfrecCasesRaw from "./coords-vectors/srfrec.cases.json" with { type: "json" };
 import coordsVectorsAxisarCasesRaw from "./coords-vectors/axisar.cases.json" with { type: "json" };
 import coordsVectorsGeorecCasesRaw from "./coords-vectors/georec.cases.json" with { type: "json" };
 import coordsVectorsLatrecCasesRaw from "./coords-vectors/latrec.cases.json" with { type: "json" };
@@ -248,6 +255,14 @@ export const coordsVectorsCases: ParityCase[] = [
   ...(coordsVectorsVrotvCasesRaw as ParityCase[]),
   ...(coordsVectorsRotvecCasesRaw as ParityCase[]),
   ...(coordsVectorsVtmvCasesRaw as ParityCase[]),
+
+  ...(coordsVectorsAzlrecCasesRaw as ParityCase[]),
+  ...(coordsVectorsRecazlCasesRaw as ParityCase[]),
+  ...(coordsVectorsPgrrecCasesRaw as ParityCase[]),
+  ...(coordsVectorsRecpgrCasesRaw as ParityCase[]),
+  ...(coordsVectorsRadrecCasesRaw as ParityCase[]),
+  ...(coordsVectorsRecradCasesRaw as ParityCase[]),
+  ...(coordsVectorsSrfrecCasesRaw as ParityCase[]),
 
   ...(coordsVectorsReclatCasesRaw as ParityCase[]),
   ...(coordsVectorsLatrecCasesRaw as ParityCase[]),

@@ -1,0 +1,140 @@
+[
+  {
+    "caseId": "coords-vectors-recazl-all-direction-flags",
+    "description": "recazl: all-direction-flags; observe every actual returned component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.recazl",
+        "rect": [3, 4, -12],
+        "azccw": true,
+        "elplsz": true
+      },
+      {
+        "op": "coords-vectors.recazl",
+        "rect": [3, 4, -12],
+        "azccw": true,
+        "elplsz": false
+      },
+      {
+        "op": "coords-vectors.recazl",
+        "rect": [3, 4, -12],
+        "azccw": false,
+        "elplsz": true
+      },
+      {
+        "op": "coords-vectors.recazl",
+        "rect": [3, 4, -12],
+        "azccw": false,
+        "elplsz": false
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-recazl-mixed-quadrants",
+    "description": "recazl: mixed-quadrants; observe every actual returned component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.recazl",
+        "rect": [3, 4, 12],
+        "azccw": false,
+        "elplsz": false
+      },
+      {
+        "op": "coords-vectors.recazl",
+        "rect": [-3, 4, -12],
+        "azccw": false,
+        "elplsz": false
+      },
+      {
+        "op": "coords-vectors.recazl",
+        "rect": [-3, -4, 12],
+        "azccw": false,
+        "elplsz": false
+      },
+      {
+        "op": "coords-vectors.recazl",
+        "rect": [3, -4, -12],
+        "azccw": false,
+        "elplsz": false
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-recazl-zero-and-axes",
+    "description": "recazl: zero-and-axes; observe every actual returned component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.recazl",
+        "rect": [0, 0, 0],
+        "azccw": false,
+        "elplsz": false
+      },
+      {
+        "op": "coords-vectors.recazl",
+        "rect": [3, 0, 0],
+        "azccw": false,
+        "elplsz": false
+      },
+      {
+        "op": "coords-vectors.recazl",
+        "rect": [0, 4, 0],
+        "azccw": false,
+        "elplsz": false
+      },
+      {
+        "op": "coords-vectors.recazl",
+        "rect": [-3, 0, 0],
+        "azccw": false,
+        "elplsz": false
+      },
+      {
+        "op": "coords-vectors.recazl",
+        "rect": [0, -4, 0],
+        "azccw": false,
+        "elplsz": false
+      },
+      {
+        "op": "coords-vectors.recazl",
+        "rect": [0, 0, 12],
+        "azccw": false,
+        "elplsz": false
+      },
+      {
+        "op": "coords-vectors.recazl",
+        "rect": [0, 0, -12],
+        "azccw": false,
+        "elplsz": false
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-recazl-scaled-magnitudes",
+    "description": "recazl: scaled-magnitudes; observe every actual returned component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.recazl",
+        "rect": [3e200, -4e200, 1.2e201],
+        "azccw": true,
+        "elplsz": true
+      },
+      {
+        "op": "coords-vectors.recazl",
+        "rect": [3e-200, -4e-200, 1.2e-199],
+        "azccw": true,
+        "elplsz": true
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

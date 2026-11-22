@@ -29,6 +29,13 @@ import type {
   StepCoordsVectorsVrotv,
   StepCoordsVectorsRotvec,
   StepCoordsVectorsVtmv,
+  StepCoordsVectorsAzlrec,
+  StepCoordsVectorsRecazl,
+  StepCoordsVectorsPgrrec,
+  StepCoordsVectorsRecpgr,
+  StepCoordsVectorsRadrec,
+  StepCoordsVectorsRecrad,
+  StepCoordsVectorsSrfrec,
   StepCoordsVectorsReclat,
   StepCoordsVectorsRecgeo,
   StepCoordsVectorsRecsph,
@@ -84,6 +91,13 @@ type CoordsVectorsStep =
   | StepCoordsVectorsVrotv
   | StepCoordsVectorsRotvec
   | StepCoordsVectorsVtmv
+  | StepCoordsVectorsAzlrec
+  | StepCoordsVectorsRecazl
+  | StepCoordsVectorsPgrrec
+  | StepCoordsVectorsRecpgr
+  | StepCoordsVectorsRadrec
+  | StepCoordsVectorsRecrad
+  | StepCoordsVectorsSrfrec
   | StepCoordsVectorsReclat
   | StepCoordsVectorsLatrec
   | StepCoordsVectorsRecsph
@@ -301,6 +315,59 @@ export function runCoordsVectorsStep(
         step.v2,
       );
       return { op: step.op, value: out };
+    }
+
+    case "coords-vectors.azlrec": {
+      const out = context.spice.raw.azlrec(
+        step.range,
+        step.az,
+        step.el,
+        step.azccw,
+        step.elplsz,
+      );
+      return { op: step.op, value: toVector3(out) };
+    }
+
+    case "coords-vectors.recazl": {
+      const out = context.spice.raw.recazl(step.rect, step.azccw, step.elplsz);
+      return { op: step.op, value: out };
+    }
+
+    case "coords-vectors.pgrrec": {
+      const out = context.spice.raw.pgrrec(
+        step.body,
+        step.lon,
+        step.lat,
+        step.alt,
+        step.re,
+        step.f,
+      );
+      return { op: step.op, value: toVector3(out) };
+    }
+
+    case "coords-vectors.recpgr": {
+      const out = context.spice.raw.recpgr(
+        step.body,
+        step.rect,
+        step.re,
+        step.f,
+      );
+      return { op: step.op, value: out };
+    }
+
+    case "coords-vectors.radrec": {
+      const out = context.spice.raw.radrec(step.range, step.ra, step.dec);
+      return { op: step.op, value: toVector3(out) };
+    }
+
+    case "coords-vectors.recrad": {
+      const out = context.spice.raw.recrad(step.rect);
+      return { op: step.op, value: out };
+    }
+
+    case "coords-vectors.srfrec": {
+      const out = context.spice.raw.srfrec(step.body, step.lon, step.lat);
+      return { op: step.op, value: toVector3(out) };
     }
 
     case "coords-vectors.reclat": {
