@@ -1381,7 +1381,8 @@
       ],
       "id": "local-cp01-17f11884fb5b-node",
       "kind": "local",
-      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 17f11884fb5bdef7cbaf84bd480d4b8edde3d310. The native-required lane completed 3788 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45009595818/job/137168748216"
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 17f11884fb5bdef7cbaf84bd480d4b8edde3d310. The native-required lane completed 3788 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45009595818/job/137168748216",
+      "historical": true
     },
     {
       "backend": "node",
@@ -1445,7 +1446,8 @@
       "kind": "ci",
       "commit": "2851d19aa900e30c688b0d1c756a35357f10eebc",
       "url": "https://github.com/rybosome/tspice/actions/runs/45012853638/job/137178762153",
-      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 3788 live comparisons without unexpected skips."
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 3788 live comparisons without unexpected skips.",
+      "historical": true
     },
     {
       "backend": "wasm",
@@ -1507,7 +1509,8 @@
       ],
       "id": "local-cp01-17f11884fb5b-wasm",
       "kind": "local",
-      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 17f11884fb5bdef7cbaf84bd480d4b8edde3d310. The native-required lane completed 3788 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45009595818/job/137168748216"
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 17f11884fb5bdef7cbaf84bd480d4b8edde3d310. The native-required lane completed 3788 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45009595818/job/137168748216",
+      "historical": true
     },
     {
       "backend": "wasm",
@@ -1571,7 +1574,8 @@
       "kind": "ci",
       "commit": "2851d19aa900e30c688b0d1c756a35357f10eebc",
       "url": "https://github.com/rybosome/tspice/actions/runs/45012853638/job/137178762153",
-      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 3788 live comparisons without unexpected skips."
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 3788 live comparisons without unexpected skips.",
+      "historical": true
     }
   ],
   "routines": [
@@ -1583,22 +1587,33 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-det-asymmetric-and-transpose",
-          "coverage": ["success"],
+          "coverage": [
+            "success"
+          ],
           "observes": "Observe the scalar determinant of a nonsymmetric matrix and its transpose. Equality is a determinant invariant; these observations do not claim to distinguish a global input transpose. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
         },
         {
           "caseId": "coords-vectors-det-signed-and-singular",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe positive/negative determinant signs, a dependent-row singular matrix, and zero matrix. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
         },
         {
           "caseId": "coords-vectors-det-scaled-magnitudes",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe tiny and huge finite determinants; separate live scale-normalized assertions distinguish tiny nonzero values from zero. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
         },
         {
           "caseId": "coords-vectors-det-triangular-distinct",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe the product of distinct signed diagonal entries in a triangular matrix despite nonzero off-diagonal entries. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
         }
       ],
@@ -1620,7 +1635,9 @@
             "packages/backend-node/test/fixed-matrices-domain.test.ts",
             "packages/backend-wasm/test/fixed-matrices-allocations.test.ts"
           ],
-          "caseIds": ["coords-vectors-det-asymmetric-and-transpose"]
+          "caseIds": [
+            "coords-vectors-det-asymmetric-and-transpose"
+          ]
         }
       ],
       "backends": {
@@ -1635,14 +1652,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.det -> typed Node adapter -> registered native handler under CSPICE mutex -> tspice_det shared C shim -> det_c; complete scalar/boolean/matrix output copied and propagated.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1655,14 +1670,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.det -> typed WASM adapter -> configured _tspice_det export -> tspice_det shared C shim -> det_c; every result entry copied before withAllocs cleanup. Artifact/export verification and source-bound execution remain required.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1674,27 +1687,41 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-diags2-distinct-eigenvalues-and-signs",
-          "coverage": ["success"],
+          "coverage": [
+            "success"
+          ],
           "observes": "Observe all four diag entries and all four rotate entries for positive/negative off-diagonal signs and swapped diagonal magnitudes; retain the chosen orientation and ordering. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
         },
         {
           "caseId": "coords-vectors-diags2-diagonal-zero-and-repeated",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe zero, repeated eigenvalues, and signed diagonal entries, including identity rotate and preserved diagonal order. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
         },
         {
           "caseId": "coords-vectors-diags2-ignored-lower-triangle",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Vary only the ignored lower-left element through a negative value and maximum double; observe unchanged outputs, including the upper-off-diagonal-zero shortcut. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
         },
         {
           "caseId": "coords-vectors-diags2-negative-and-indefinite",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe both output matrices for negative and mixed-sign eigenvalues, without imposing positive definiteness. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
         },
         {
           "caseId": "coords-vectors-diags2-scaled-magnitudes",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe all eigenvalue and rotation entries for 1e200/1e-200 scalings; rescaled diagonal comparisons and unchanged order-one rotate comparisons remain separate. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
         }
       ],
@@ -1716,7 +1743,9 @@
             "packages/backend-node/test/fixed-matrices-domain.test.ts",
             "packages/backend-wasm/test/fixed-matrices-allocations.test.ts"
           ],
-          "caseIds": ["coords-vectors-diags2-distinct-eigenvalues-and-signs"]
+          "caseIds": [
+            "coords-vectors-diags2-distinct-eigenvalues-and-signs"
+          ]
         }
       ],
       "backends": {
@@ -1731,14 +1760,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.diags2 -> typed Node adapter -> registered native handler under CSPICE mutex -> tspice_diags2 shared C shim -> diags2_c; complete scalar/boolean/matrix output copied and propagated.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1751,14 +1778,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.diags2 -> typed WASM adapter -> configured _tspice_diags2 export -> tspice_diags2 shared C shim -> diags2_c; every result entry copied before withAllocs cleanup. Artifact/export verification and source-bound execution remain required.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1770,12 +1795,17 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-ident-exact",
-          "coverage": ["success"],
+          "coverage": [
+            "success"
+          ],
           "observes": "Observe all nine exact identity values through the real raw method and independent oracle; focused comparison is exact. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
         },
         {
           "caseId": "coords-vectors-ident-repeat-after-reset",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe distinct identity calls around an actual error.reset control. There are three identity calls across the two scenarios plus one reset control, not four new-routine calls. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
         }
       ],
@@ -1797,14 +1827,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.ident -> typed Node adapter -> registered native handler under CSPICE mutex -> tspice_ident shared C shim -> ident_c; complete scalar/boolean/matrix output copied and propagated.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1816,14 +1844,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.ident -> typed WASM adapter -> configured _tspice_ident export -> tspice_ident shared C shim -> ident_c; every result entry copied before withAllocs cleanup. Artifact/export verification and source-bound execution remain required.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1835,32 +1861,49 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-invert-nonsymmetric-positive-negative",
-          "coverage": ["success"],
+          "coverage": [
+            "success"
+          ],
           "observes": "Observe every inverse entry for nonsymmetric matrices with positive/negative determinants; a transpose or wrong cofactor sign changes distinguishing entries. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
         },
         {
           "caseId": "coords-vectors-invert-singular-zero-and-dependent",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe all-zero results for a zero matrix and a dependent-row matrix; these are successful calls. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
         },
         {
           "caseId": "coords-vectors-invert-determinant-below-threshold",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe all-zero results at determinant ±5e-17, distinguishing the magnitude-based threshold from a signed or exact-zero-only test. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
         },
         {
           "caseId": "coords-vectors-invert-determinant-at-threshold",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe actual inverse entries at determinant ±1e-16; the comparison is strict, so these inputs must not return the zero shortcut. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
         },
         {
           "caseId": "coords-vectors-invert-determinant-above-threshold",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe inverses at determinant ±2e-16 as controls immediately above the cutoff. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
         },
         {
           "caseId": "coords-vectors-invert-finite-large-small-inverse",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe finite inverse entries from large and small diagonal inputs; separate scale-normalized live checks prevent tiny inverse values being accepted as zero. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
         }
       ],
@@ -1918,7 +1961,9 @@
             "packages/backend-node/test/fixed-matrices-domain.test.ts",
             "packages/backend-wasm/test/fixed-matrices-allocations.test.ts"
           ],
-          "caseIds": ["coords-vectors-invert-nonsymmetric-positive-negative"]
+          "caseIds": [
+            "coords-vectors-invert-nonsymmetric-positive-negative"
+          ]
         }
       ],
       "backends": {
@@ -1934,14 +1979,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.invert -> typed Node adapter -> registered native handler under CSPICE mutex -> tspice_invert shared C shim -> invert_c; complete scalar/boolean/matrix output copied and propagated.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1955,14 +1998,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.invert -> typed WASM adapter -> configured _tspice_invert export -> tspice_invert shared C shim -> invert_c; every result entry copied before withAllocs cleanup. Artifact/export verification and source-bound execution remain required.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1974,52 +2015,75 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-invort-orthogonal-scaled-columns",
-          "coverage": ["success"],
+          "coverage": [
+            "success"
+          ],
           "observes": "Observe every scaled-transpose entry for orthogonal columns with distinct signed lengths, plus a unit rotation. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
         },
         {
           "caseId": "coords-vectors-invort-nonorthogonal-contract",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe the actual scaled transpose of a nonsymmetric, nonorthogonal matrix; a focused literal check distinguishes it from general inversion. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
         },
         {
           "caseId": "coords-vectors-invort-scaled-magnitudes",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe all entries for huge/tiny signed diagonal columns, with separate result scaling to make small reciprocal entries observable. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
         },
         {
           "caseId": "coords-vectors-invort-small-reciprocal-finite",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe a finite reciprocal near 1e308 for a 1e-308 column, distinguishing valid small columns from the error boundary. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
         },
         {
           "caseId": "coords-vectors-invort-zero-column-1",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Observe ZEROLENGTHCOLUMN for the first zero column. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
         },
         {
           "caseId": "coords-vectors-invort-too-small-column-1",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Observe COLUMNTOOSMALL for a first-column minimum subnormal whose reciprocal overflows. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
         },
         {
           "caseId": "coords-vectors-invort-zero-column-2",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Observe ZEROLENGTHCOLUMN for the second zero column. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
         },
         {
           "caseId": "coords-vectors-invort-too-small-column-2",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Observe COLUMNTOOSMALL for the second-column minimum subnormal. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
         },
         {
           "caseId": "coords-vectors-invort-zero-column-3",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Observe ZEROLENGTHCOLUMN for the third zero column. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
         },
         {
           "caseId": "coords-vectors-invort-too-small-column-3",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Observe COLUMNTOOSMALL for the third-column minimum subnormal. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
         }
       ],
@@ -2041,7 +2105,9 @@
             "packages/backend-node/test/fixed-matrices-domain.test.ts",
             "packages/backend-wasm/test/fixed-matrices-allocations.test.ts"
           ],
-          "caseIds": ["coords-vectors-invort-orthogonal-scaled-columns"]
+          "caseIds": [
+            "coords-vectors-invort-orthogonal-scaled-columns"
+          ]
         }
       ],
       "backends": {
@@ -2056,14 +2122,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.invort -> typed Node adapter -> registered native handler under CSPICE mutex -> tspice_invort shared C shim -> invort_c; complete scalar/boolean/matrix output copied and propagated.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -2076,14 +2140,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.invort -> typed WASM adapter -> configured _tspice_invort export -> tspice_invort shared C shim -> invort_c; every result entry copied before withAllocs cleanup. Artifact/export verification and source-bound execution remain required.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -2095,32 +2157,47 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-isrot-proper-reflection-singular",
-          "coverage": ["success"],
+          "coverage": [
+            "success"
+          ],
           "observes": "Observe exact booleans for identity, a proper signed-axis rotation, reflection and zero matrix under tight tolerances. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
         },
         {
           "caseId": "coords-vectors-isrot-column-norm-tolerance",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe acceptance at the inclusive 0.125 column-norm boundary and rejection with 0.124 tolerance. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
         },
         {
           "caseId": "coords-vectors-isrot-unitized-determinant-tolerance",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe different acceptance for the same unit-column, nonorthogonal matrix under two determinant tolerances; distinguish column normalization and tolerance argument order. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
         },
         {
           "caseId": "coords-vectors-isrot-loose-tolerances",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe the actual true results for zero matrix at ntol=dtol=1 and reflection at ntol=0,dtol=2. No stricter orthogonality policy is substituted. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
         },
         {
           "caseId": "coords-vectors-isrot-negative-ntol",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Observe VALUEOUTOFRANGE from an actual negative finite norm tolerance. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
         },
         {
           "caseId": "coords-vectors-isrot-negative-dtol",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Observe VALUEOUTOFRANGE from an actual negative finite determinant tolerance. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
         }
       ],
@@ -2142,7 +2219,9 @@
             "packages/backend-node/test/fixed-matrices-domain.test.ts",
             "packages/backend-wasm/test/fixed-matrices-allocations.test.ts"
           ],
-          "caseIds": ["coords-vectors-isrot-proper-reflection-singular"]
+          "caseIds": [
+            "coords-vectors-isrot-proper-reflection-singular"
+          ]
         }
       ],
       "backends": {
@@ -2157,14 +2236,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.isrot -> typed Node adapter -> registered native handler under CSPICE mutex -> tspice_isrot shared C shim -> isrot_c; complete scalar/boolean/matrix output copied and propagated.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -2177,14 +2254,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.isrot -> typed WASM adapter -> configured _tspice_isrot export -> tspice_isrot shared C shim -> isrot_c; every result entry copied before withAllocs cleanup. Artifact/export verification and source-bound execution remain required.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -2196,17 +2271,25 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-mequ-ordered-asymmetric",
-          "coverage": ["success"],
+          "coverage": [
+            "success"
+          ],
           "observes": "Observe every copied entry of two nonsymmetric mixed-sign matrices in row-major position. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
         },
         {
           "caseId": "coords-vectors-mequ-zero-and-identity",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe complete zero and identity copies through the actual routine. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
         },
         {
           "caseId": "coords-vectors-mequ-finite-extremes",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe maximum values, a minimum subnormal and mixed scales in their original positions; focused exact live comparison supplements ordinary tolerance. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
         }
       ],
@@ -2228,7 +2311,9 @@
             "packages/backend-node/test/fixed-matrices-domain.test.ts",
             "packages/backend-wasm/test/fixed-matrices-allocations.test.ts"
           ],
-          "caseIds": ["coords-vectors-mequ-ordered-asymmetric"]
+          "caseIds": [
+            "coords-vectors-mequ-ordered-asymmetric"
+          ]
         }
       ],
       "backends": {
@@ -2243,14 +2328,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.mequ -> typed Node adapter -> registered native handler under CSPICE mutex -> tspice_mequ shared C shim -> mequ_c; complete scalar/boolean/matrix output copied and propagated.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -2263,14 +2346,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.mequ -> typed WASM adapter -> configured _tspice_mequ export -> tspice_mequ shared C shim -> mequ_c; every result entry copied before withAllocs cleanup. Artifact/export verification and source-bound execution remain required.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -2282,22 +2363,33 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-mtxm-asymmetric-operand-order",
-          "coverage": ["success"],
+          "coverage": [
+            "success"
+          ],
           "observes": "Observe all nine entries of transpose(a)*b and transpose(b)*a for distinct nonsymmetric matrices. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
         },
         {
           "caseId": "coords-vectors-mtxm-identity-and-zero",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe both identity operand positions and either zero operand, distinguishing which input is transposed. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
         },
         {
           "caseId": "coords-vectors-mtxm-gram-matrix",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe the full column Gram matrix transpose(a)*a; it differs from a*transpose(a) for this input. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
         },
         {
           "caseId": "coords-vectors-mtxm-balanced-scales",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe ordinary-sized full results from reciprocal large/tiny operand scales in either position. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
         }
       ],
@@ -2339,7 +2431,9 @@
             "packages/backend-node/test/fixed-matrices-domain.test.ts",
             "packages/backend-wasm/test/fixed-matrices-allocations.test.ts"
           ],
-          "caseIds": ["coords-vectors-mtxm-asymmetric-operand-order"]
+          "caseIds": [
+            "coords-vectors-mtxm-asymmetric-operand-order"
+          ]
         }
       ],
       "backends": {
@@ -2355,14 +2449,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.mtxm -> typed Node adapter -> registered native handler under CSPICE mutex -> tspice_mtxm shared C shim -> mtxm_c; complete scalar/boolean/matrix output copied and propagated.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -2376,14 +2468,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.mtxm -> typed WASM adapter -> configured _tspice_mtxm export -> tspice_mtxm shared C shim -> mtxm_c; every result entry copied before withAllocs cleanup. Artifact/export verification and source-bound execution remain required.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -2395,22 +2485,33 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-mxmt-asymmetric-operand-order",
-          "coverage": ["success"],
+          "coverage": [
+            "success"
+          ],
           "observes": "Observe all nine entries of a*transpose(b) and b*transpose(a) for distinct nonsymmetric matrices. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
         },
         {
           "caseId": "coords-vectors-mxmt-identity-and-zero",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe both identity operand positions and either zero operand, distinguishing the second-input transpose. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
         },
         {
           "caseId": "coords-vectors-mxmt-gram-matrix",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe the full row Gram matrix a*transpose(a); it differs from transpose(a)*a for this input. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
         },
         {
           "caseId": "coords-vectors-mxmt-balanced-scales",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe all ordinary-sized output entries with reciprocal large/tiny operand scales in either position. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
         }
       ],
@@ -2452,7 +2553,9 @@
             "packages/backend-node/test/fixed-matrices-domain.test.ts",
             "packages/backend-wasm/test/fixed-matrices-allocations.test.ts"
           ],
-          "caseIds": ["coords-vectors-mxmt-asymmetric-operand-order"]
+          "caseIds": [
+            "coords-vectors-mxmt-asymmetric-operand-order"
+          ]
         }
       ],
       "backends": {
@@ -2468,14 +2571,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.mxmt -> typed Node adapter -> registered native handler under CSPICE mutex -> tspice_mxmt shared C shim -> mxmt_c; complete scalar/boolean/matrix output copied and propagated.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -2489,14 +2590,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.mxmt -> typed WASM adapter -> configured _tspice_mxmt export -> tspice_mxmt shared C shim -> mxmt_c; every result entry copied before withAllocs cleanup. Artifact/export verification and source-bound execution remain required.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -2508,17 +2607,25 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-trace-diagonal-selection",
-          "coverage": ["success"],
+          "coverage": [
+            "success"
+          ],
           "observes": "Keep the diagonal fixed while changing every off-diagonal entry; observe unchanged scalar trace. This does not claim to distinguish a global transpose, which leaves the trace invariant. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
         },
         {
           "caseId": "coords-vectors-trace-zero-and-cancellation",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe zero matrix and exactly representable diagonal cancellation. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
         },
         {
           "caseId": "coords-vectors-trace-scaled-magnitudes",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe tiny and huge trace values; a separate live result scaling distinguishes tiny nonzero sums. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
         }
       ],
@@ -2540,7 +2647,9 @@
             "packages/backend-node/test/fixed-matrices-domain.test.ts",
             "packages/backend-wasm/test/fixed-matrices-allocations.test.ts"
           ],
-          "caseIds": ["coords-vectors-trace-diagonal-selection"]
+          "caseIds": [
+            "coords-vectors-trace-diagonal-selection"
+          ]
         }
       ],
       "backends": {
@@ -2555,14 +2664,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.trace -> typed Node adapter -> registered native handler under CSPICE mutex -> tspice_trace shared C shim -> trace_c; complete scalar/boolean/matrix output copied and propagated.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -2575,14 +2682,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.trace -> typed WASM adapter -> configured _tspice_trace export -> tspice_trace shared C shim -> trace_c; every result entry copied before withAllocs cleanup. Artifact/export verification and source-bound execution remain required.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -2594,17 +2699,25 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-xpose-ordered-asymmetric",
-          "coverage": ["success"],
+          "coverage": [
+            "success"
+          ],
           "observes": "Observe all off-diagonal swaps and unchanged diagonal entries for two nonsymmetric mixed-sign inputs. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
         },
         {
           "caseId": "coords-vectors-xpose-zero-and-identity",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe complete transposes of zero and identity matrices. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
         },
         {
           "caseId": "coords-vectors-xpose-finite-extremes",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe maximum/subnormal/mixed-scale values in transposed positions; focused exact live comparison supplements tolerance. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
         }
       ],
@@ -2626,7 +2739,9 @@
             "packages/backend-node/test/fixed-matrices-domain.test.ts",
             "packages/backend-wasm/test/fixed-matrices-allocations.test.ts"
           ],
-          "caseIds": ["coords-vectors-xpose-ordered-asymmetric"]
+          "caseIds": [
+            "coords-vectors-xpose-ordered-asymmetric"
+          ]
         }
       ],
       "backends": {
@@ -2641,14 +2756,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.xpose -> typed Node adapter -> registered native handler under CSPICE mutex -> tspice_xpose shared C shim -> xpose_c; complete scalar/boolean/matrix output copied and propagated.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -2661,14 +2774,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.xpose -> typed WASM adapter -> configured _tspice_xpose export -> tspice_xpose shared C shim -> xpose_c; every result entry copied before withAllocs cleanup. Artifact/export verification and source-bound execution remain required.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     }

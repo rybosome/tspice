@@ -109,7 +109,8 @@
         "strings-posr-signed-starts",
         "strings-posr-utf8-byte-starts"
       ],
-      "observation": "Both complete required lanes passed locally on a2b5705aed96003d4ed95f584a0bd677c73c32b0. JavaScript: 2,688 parity tests and one expected guard skip. Native-required: 2,458 registered Node/WASM live comparisons; 2,689 parity-package tests with no skips, including the native-required guard; 131 native wrapper, 676 WASM, 28 core and 151 facade tests passed."
+      "observation": "Both complete required lanes passed locally on a2b5705aed96003d4ed95f584a0bd677c73c32b0. JavaScript: 2,688 parity tests and one expected guard skip. Native-required: 2,458 registered Node/WASM live comparisons; 2,689 parity-package tests with no skips, including the native-required guard; 131 native wrapper, 676 WASM, 28 core and 151 facade tests passed.",
+      "historical": true
     },
     {
       "id": "local-a19-a2b5705a-wasm",
@@ -177,7 +178,8 @@
         "strings-posr-signed-starts",
         "strings-posr-utf8-byte-starts"
       ],
-      "observation": "Both complete required lanes passed locally on a2b5705aed96003d4ed95f584a0bd677c73c32b0. JavaScript: 2,688 parity tests and one expected guard skip. Native-required: 2,458 registered Node/WASM live comparisons; 2,689 parity-package tests with no skips, including the native-required guard; 131 native wrapper, 676 WASM, 28 core and 151 facade tests passed."
+      "observation": "Both complete required lanes passed locally on a2b5705aed96003d4ed95f584a0bd677c73c32b0. JavaScript: 2,688 parity tests and one expected guard skip. Native-required: 2,458 registered Node/WASM live comparisons; 2,689 parity-package tests with no skips, including the native-required guard; 131 native wrapper, 676 WASM, 28 core and 151 facade tests passed.",
+      "historical": true
     },
     {
       "id": "ci-a19-a2b5705a-node",
@@ -247,7 +249,8 @@
       ],
       "commit": "a2b5705aed96003d4ed95f584a0bd677c73c32b0",
       "url": "https://github.com/rybosome/tspice/actions/runs/43557194435/job/132332605253",
-      "observation": "Inspected successful Linux Node 22 native-required job 132332605253 on a2b5705aed96003d4ed95f584a0bd677c73c32b0: 2,458 registered Node/WASM live comparisons; 2,689 parity-package tests with no skips, including the native-required guard; 131 native wrapper, 676 WASM, 28 core and 151 facade tests passed."
+      "observation": "Inspected successful Linux Node 22 native-required job 132332605253 on a2b5705aed96003d4ed95f584a0bd677c73c32b0: 2,458 registered Node/WASM live comparisons; 2,689 parity-package tests with no skips, including the native-required guard; 131 native wrapper, 676 WASM, 28 core and 151 facade tests passed.",
+      "historical": true
     },
     {
       "id": "ci-a19-a2b5705a-wasm",
@@ -317,7 +320,8 @@
       ],
       "commit": "a2b5705aed96003d4ed95f584a0bd677c73c32b0",
       "url": "https://github.com/rybosome/tspice/actions/runs/43557194435/job/132332605253",
-      "observation": "Inspected successful Linux Node 22 native-required job 132332605253 on a2b5705aed96003d4ed95f584a0bd677c73c32b0: 2,458 registered Node/WASM live comparisons; 2,689 parity-package tests with no skips, including the native-required guard; 131 native wrapper, 676 WASM, 28 core and 151 facade tests passed."
+      "observation": "Inspected successful Linux Node 22 native-required job 132332605253 on a2b5705aed96003d4ed95f584a0bd677c73c32b0: 2,458 registered Node/WASM live comparisons; 2,689 parity-package tests with no skips, including the native-required guard; 131 native wrapper, 676 WASM, 28 core and 151 facade tests passed.",
+      "historical": true
     }
   ],
   "routines": [
@@ -329,42 +333,66 @@
       "scenarios": [
         {
           "caseId": "strings-cpos-inclusive-positions",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Compare the exact index at every candidate and beyond both ends for each workflow output against the independent canonical routine."
         },
         {
           "caseId": "strings-cpos-signed-starts",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Compare the directional result for signed minimum and the safe near-maximum start for each workflow output against the independent canonical routine."
         },
         {
           "caseId": "strings-cpos-empty-operands",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Compare the −1 miss with empty text, an empty search argument and both empty for each workflow output against the independent canonical routine."
         },
         {
           "caseId": "strings-cpos-utf8-byte-starts",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Compare indices from inside each byte of repeated multibyte input for each workflow output against the independent canonical routine."
         },
         {
           "caseId": "strings-cpos-literal-whitespace",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Compare exact indices for leading, embedded and trailing tab, space and newline bytes for each workflow output against the independent canonical routine."
         },
         {
           "caseId": "strings-cpos-bom-composed-and-decomposed",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Compare preservation of a leading BOM and distinct encoded forms of accented text for each workflow output against the independent canonical routine."
         },
         {
           "caseId": "strings-cpos-set-membership",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Compare membership with duplicate bytes, unordered input, ASCII case and misses for each workflow output against the independent canonical routine."
         },
         {
           "caseId": "strings-cpos-shared-utf8-byte",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Compare membership at a shared UTF-8 lead or continuation byte across different Unicode scalars for each workflow output against the independent canonical routine."
         }
       ],
@@ -387,22 +415,36 @@
             "packages/py-parity-checking/test/string-search.test.ts",
             "docs/step8-string-search.md"
           ],
-          "caseIds": ["strings-cpos-signed-starts"],
+          "caseIds": [
+            "strings-cpos-signed-starts"
+          ],
           "status": "repaired"
         }
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.cpos -> validated Node adapter and mutex-serialized native handler -> tspice_cpos -> cpos_c. Oracle: independent locked SpiceyPy cpos, calling the canonical entrypoint only with representable one-based starts.",
-          "executions": ["local-a19-a2b5705a-node", "ci-a19-a2b5705a-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.cpos -> WASM adapter, transactional allocations and typed module export -> tspice_cpos -> cpos_c. Oracle: independent locked SpiceyPy cpos, calling the canonical entrypoint only with representable one-based starts.",
-          "executions": ["local-a19-a2b5705a-wasm", "ci-a19-a2b5705a-wasm"]
+          "executions": []
         }
       }
     },
@@ -414,42 +456,66 @@
       "scenarios": [
         {
           "caseId": "strings-cposr-inclusive-positions",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Compare the exact index at every candidate and beyond both ends for each workflow output against the independent canonical routine."
         },
         {
           "caseId": "strings-cposr-signed-starts",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Compare the directional result for signed minimum and the safe near-maximum start for each workflow output against the independent canonical routine."
         },
         {
           "caseId": "strings-cposr-empty-operands",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Compare the −1 miss with empty text, an empty search argument and both empty for each workflow output against the independent canonical routine."
         },
         {
           "caseId": "strings-cposr-utf8-byte-starts",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Compare indices from inside each byte of repeated multibyte input for each workflow output against the independent canonical routine."
         },
         {
           "caseId": "strings-cposr-literal-whitespace",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Compare exact indices for leading, embedded and trailing tab, space and newline bytes for each workflow output against the independent canonical routine."
         },
         {
           "caseId": "strings-cposr-bom-composed-and-decomposed",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Compare preservation of a leading BOM and distinct encoded forms of accented text for each workflow output against the independent canonical routine."
         },
         {
           "caseId": "strings-cposr-set-membership",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Compare membership with duplicate bytes, unordered input, ASCII case and misses for each workflow output against the independent canonical routine."
         },
         {
           "caseId": "strings-cposr-shared-utf8-byte",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Compare membership at a shared UTF-8 lead or continuation byte across different Unicode scalars for each workflow output against the independent canonical routine."
         }
       ],
@@ -472,22 +538,36 @@
             "packages/py-parity-checking/test/string-search.test.ts",
             "docs/step8-string-search.md"
           ],
-          "caseIds": ["strings-cposr-signed-starts"],
+          "caseIds": [
+            "strings-cposr-signed-starts"
+          ],
           "status": "repaired"
         }
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.cposr -> validated Node adapter and mutex-serialized native handler -> tspice_cposr -> cposr_c. Oracle: independent locked SpiceyPy cposr, calling the canonical entrypoint only with representable one-based starts.",
-          "executions": ["local-a19-a2b5705a-node", "ci-a19-a2b5705a-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.cposr -> WASM adapter, transactional allocations and typed module export -> tspice_cposr -> cposr_c. Oracle: independent locked SpiceyPy cposr, calling the canonical entrypoint only with representable one-based starts.",
-          "executions": ["local-a19-a2b5705a-wasm", "ci-a19-a2b5705a-wasm"]
+          "executions": []
         }
       }
     },
@@ -499,42 +579,66 @@
       "scenarios": [
         {
           "caseId": "strings-ncpos-inclusive-positions",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Compare the exact index at every candidate and beyond both ends for each workflow output against the independent canonical routine."
         },
         {
           "caseId": "strings-ncpos-signed-starts",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Compare the directional result for signed minimum and the safe near-maximum start for each workflow output against the independent canonical routine."
         },
         {
           "caseId": "strings-ncpos-empty-operands",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Compare the −1 miss with empty text, an empty search argument and both empty for each workflow output against the independent canonical routine."
         },
         {
           "caseId": "strings-ncpos-utf8-byte-starts",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Compare indices from inside each byte of repeated multibyte input for each workflow output against the independent canonical routine."
         },
         {
           "caseId": "strings-ncpos-literal-whitespace",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Compare exact indices for leading, embedded and trailing tab, space and newline bytes for each workflow output against the independent canonical routine."
         },
         {
           "caseId": "strings-ncpos-bom-composed-and-decomposed",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Compare preservation of a leading BOM and distinct encoded forms of accented text for each workflow output against the independent canonical routine."
         },
         {
           "caseId": "strings-ncpos-set-membership",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Compare membership with duplicate bytes, unordered input, ASCII case and misses for each workflow output against the independent canonical routine."
         },
         {
           "caseId": "strings-ncpos-shared-utf8-byte",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Compare membership at a shared UTF-8 lead or continuation byte across different Unicode scalars for each workflow output against the independent canonical routine."
         }
       ],
@@ -557,22 +661,36 @@
             "packages/py-parity-checking/test/string-search.test.ts",
             "docs/step8-string-search.md"
           ],
-          "caseIds": ["strings-ncpos-signed-starts"],
+          "caseIds": [
+            "strings-ncpos-signed-starts"
+          ],
           "status": "repaired"
         }
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.ncpos -> validated Node adapter and mutex-serialized native handler -> tspice_ncpos -> ncpos_c. Oracle: independent locked SpiceyPy ncpos, calling the canonical entrypoint only with representable one-based starts.",
-          "executions": ["local-a19-a2b5705a-node", "ci-a19-a2b5705a-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.ncpos -> WASM adapter, transactional allocations and typed module export -> tspice_ncpos -> ncpos_c. Oracle: independent locked SpiceyPy ncpos, calling the canonical entrypoint only with representable one-based starts.",
-          "executions": ["local-a19-a2b5705a-wasm", "ci-a19-a2b5705a-wasm"]
+          "executions": []
         }
       }
     },
@@ -584,42 +702,66 @@
       "scenarios": [
         {
           "caseId": "strings-ncposr-inclusive-positions",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Compare the exact index at every candidate and beyond both ends for each workflow output against the independent canonical routine."
         },
         {
           "caseId": "strings-ncposr-signed-starts",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Compare the directional result for signed minimum and the safe near-maximum start for each workflow output against the independent canonical routine."
         },
         {
           "caseId": "strings-ncposr-empty-operands",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Compare the −1 miss with empty text, an empty search argument and both empty for each workflow output against the independent canonical routine."
         },
         {
           "caseId": "strings-ncposr-utf8-byte-starts",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Compare indices from inside each byte of repeated multibyte input for each workflow output against the independent canonical routine."
         },
         {
           "caseId": "strings-ncposr-literal-whitespace",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Compare exact indices for leading, embedded and trailing tab, space and newline bytes for each workflow output against the independent canonical routine."
         },
         {
           "caseId": "strings-ncposr-bom-composed-and-decomposed",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Compare preservation of a leading BOM and distinct encoded forms of accented text for each workflow output against the independent canonical routine."
         },
         {
           "caseId": "strings-ncposr-set-membership",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Compare membership with duplicate bytes, unordered input, ASCII case and misses for each workflow output against the independent canonical routine."
         },
         {
           "caseId": "strings-ncposr-shared-utf8-byte",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Compare membership at a shared UTF-8 lead or continuation byte across different Unicode scalars for each workflow output against the independent canonical routine."
         }
       ],
@@ -642,22 +784,36 @@
             "packages/py-parity-checking/test/string-search.test.ts",
             "docs/step8-string-search.md"
           ],
-          "caseIds": ["strings-ncposr-signed-starts"],
+          "caseIds": [
+            "strings-ncposr-signed-starts"
+          ],
           "status": "repaired"
         }
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.ncposr -> validated Node adapter and mutex-serialized native handler -> tspice_ncposr -> ncposr_c. Oracle: independent locked SpiceyPy ncposr, calling the canonical entrypoint only with representable one-based starts.",
-          "executions": ["local-a19-a2b5705a-node", "ci-a19-a2b5705a-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.ncposr -> WASM adapter, transactional allocations and typed module export -> tspice_ncposr -> ncposr_c. Oracle: independent locked SpiceyPy ncposr, calling the canonical entrypoint only with representable one-based starts.",
-          "executions": ["local-a19-a2b5705a-wasm", "ci-a19-a2b5705a-wasm"]
+          "executions": []
         }
       }
     },
@@ -669,42 +825,66 @@
       "scenarios": [
         {
           "caseId": "strings-pos-inclusive-positions",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Compare the exact index at every candidate and beyond both ends for each workflow output against the independent canonical routine."
         },
         {
           "caseId": "strings-pos-signed-starts",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Compare the directional result for signed minimum and the safe near-maximum start for each workflow output against the independent canonical routine."
         },
         {
           "caseId": "strings-pos-empty-operands",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Compare the −1 miss with empty text, an empty search argument and both empty for each workflow output against the independent canonical routine."
         },
         {
           "caseId": "strings-pos-utf8-byte-starts",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Compare indices from inside each byte of repeated multibyte input for each workflow output against the independent canonical routine."
         },
         {
           "caseId": "strings-pos-literal-whitespace",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Compare exact indices for leading, embedded and trailing tab, space and newline bytes for each workflow output against the independent canonical routine."
         },
         {
           "caseId": "strings-pos-bom-composed-and-decomposed",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Compare preservation of a leading BOM and distinct encoded forms of accented text for each workflow output against the independent canonical routine."
         },
         {
           "caseId": "strings-pos-overlap-and-last-start",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Compare the starting index of overlapping substrings and the last candidate that can fit for each workflow output against the independent canonical routine."
         },
         {
           "caseId": "strings-pos-literal-case-and-spaces",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Compare case-sensitive complete substring matches including trailing blanks for each workflow output against the independent canonical routine."
         }
       ],
@@ -727,22 +907,36 @@
             "packages/py-parity-checking/test/string-search.test.ts",
             "docs/step8-string-search.md"
           ],
-          "caseIds": ["strings-pos-signed-starts"],
+          "caseIds": [
+            "strings-pos-signed-starts"
+          ],
           "status": "repaired"
         }
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.pos -> validated Node adapter and mutex-serialized native handler -> tspice_pos -> pos_c. Oracle: independent locked SpiceyPy pos, calling the canonical entrypoint only with representable one-based starts.",
-          "executions": ["local-a19-a2b5705a-node", "ci-a19-a2b5705a-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.pos -> WASM adapter, transactional allocations and typed module export -> tspice_pos -> pos_c. Oracle: independent locked SpiceyPy pos, calling the canonical entrypoint only with representable one-based starts.",
-          "executions": ["local-a19-a2b5705a-wasm", "ci-a19-a2b5705a-wasm"]
+          "executions": []
         }
       }
     },
@@ -754,42 +948,66 @@
       "scenarios": [
         {
           "caseId": "strings-posr-inclusive-positions",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Compare the exact index at every candidate and beyond both ends for each workflow output against the independent canonical routine."
         },
         {
           "caseId": "strings-posr-signed-starts",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Compare the directional result for signed minimum and the safe near-maximum start for each workflow output against the independent canonical routine."
         },
         {
           "caseId": "strings-posr-empty-operands",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Compare the −1 miss with empty text, an empty search argument and both empty for each workflow output against the independent canonical routine."
         },
         {
           "caseId": "strings-posr-utf8-byte-starts",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Compare indices from inside each byte of repeated multibyte input for each workflow output against the independent canonical routine."
         },
         {
           "caseId": "strings-posr-literal-whitespace",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Compare exact indices for leading, embedded and trailing tab, space and newline bytes for each workflow output against the independent canonical routine."
         },
         {
           "caseId": "strings-posr-bom-composed-and-decomposed",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Compare preservation of a leading BOM and distinct encoded forms of accented text for each workflow output against the independent canonical routine."
         },
         {
           "caseId": "strings-posr-overlap-and-last-start",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Compare the starting index of overlapping substrings and the last candidate that can fit for each workflow output against the independent canonical routine."
         },
         {
           "caseId": "strings-posr-literal-case-and-spaces",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Compare case-sensitive complete substring matches including trailing blanks for each workflow output against the independent canonical routine."
         }
       ],
@@ -812,22 +1030,36 @@
             "packages/py-parity-checking/test/string-search.test.ts",
             "docs/step8-string-search.md"
           ],
-          "caseIds": ["strings-posr-signed-starts"],
+          "caseIds": [
+            "strings-posr-signed-starts"
+          ],
           "status": "repaired"
         }
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.posr -> validated Node adapter and mutex-serialized native handler -> tspice_posr -> posr_c. Oracle: independent locked SpiceyPy posr, calling the canonical entrypoint only with representable one-based starts.",
-          "executions": ["local-a19-a2b5705a-node", "ci-a19-a2b5705a-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.posr -> WASM adapter, transactional allocations and typed module export -> tspice_posr -> posr_c. Oracle: independent locked SpiceyPy posr, calling the canonical entrypoint only with representable one-based starts.",
-          "executions": ["local-a19-a2b5705a-wasm", "ci-a19-a2b5705a-wasm"]
+          "executions": []
         }
       }
     },
@@ -839,42 +1071,66 @@
       "scenarios": [
         {
           "caseId": "strings-esrchc-first-equivalent-row",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Compare the first index among duplicate-equivalent unsorted rows for each workflow output against the independent canonical routine."
         },
         {
           "caseId": "strings-esrchc-empty-and-all-empty-tables",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Compare the zero-row −1 sentinel and first equivalent empty row for each workflow output against the independent canonical routine."
         },
         {
           "caseId": "strings-esrchc-empty-versus-blank",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Compare the difference between empty and nonempty whitespace-only rows for each workflow output against the independent canonical routine."
         },
         {
           "caseId": "strings-esrchc-portable-c-whitespace",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Compare equivalence across the six portable C whitespace bytes inside nonempty names for each workflow output against the independent canonical routine."
         },
         {
           "caseId": "strings-esrchc-wide-utf8-rows",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Compare the complete row index with unequal multibyte row widths for each workflow output against the independent canonical routine."
         },
         {
           "caseId": "strings-esrchc-bom-and-no-unicode-casefold",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Compare significant BOM, distinct normalization forms and accented letter cases for each workflow output against the independent canonical routine."
         },
         {
           "caseId": "strings-esrchc-literal-punctuation-and-trailing-rows",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Compare punctuation, row boundaries and whitespace in the final row for each workflow output against the independent canonical routine."
         },
         {
           "caseId": "strings-esrchc-growing-and-shrinking-width",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Compare fresh dimensions and row indices over successive differently sized searches for each workflow output against the independent canonical routine."
         }
       ],
@@ -907,16 +1163,28 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.esrchc -> validated Node adapter and mutex-serialized native handler -> tspice_esrchc -> esrchc_c. Oracle: independent pinned esrchc_c with typed NUL-terminated row table; eligible nonempty ASCII rows also cross-checked with SpiceyPy esrchc.",
-          "executions": ["local-a19-a2b5705a-node", "ci-a19-a2b5705a-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.esrchc -> WASM adapter, transactional allocations and typed module export -> tspice_esrchc -> esrchc_c. Oracle: independent pinned esrchc_c with typed NUL-terminated row table; eligible nonempty ASCII rows also cross-checked with SpiceyPy esrchc.",
-          "executions": ["local-a19-a2b5705a-wasm", "ci-a19-a2b5705a-wasm"]
+          "executions": []
         }
       }
     }

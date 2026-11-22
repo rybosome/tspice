@@ -457,7 +457,6 @@ export function coordinateJacobianTypes(sync: Spice, async: SpiceAsync): void {
   ];
 }
 
-import type { Spice, SpiceAsync } from "@rybosome/tspice";
 
 /** Check raw CSPICE string methods and byte-capacity overloads in a consumer without DOM types. */
 export async function stringConsumer(

@@ -1280,7 +1280,8 @@
       ],
       "id": "local-cp01-17f11884fb5b-node",
       "kind": "local",
-      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 17f11884fb5bdef7cbaf84bd480d4b8edde3d310. The native-required lane completed 3788 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45009595818/job/137168748216"
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 17f11884fb5bdef7cbaf84bd480d4b8edde3d310. The native-required lane completed 3788 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45009595818/job/137168748216",
+      "historical": true
     },
     {
       "backend": "node",
@@ -1376,7 +1377,8 @@
       "kind": "ci",
       "commit": "2851d19aa900e30c688b0d1c756a35357f10eebc",
       "url": "https://github.com/rybosome/tspice/actions/runs/45012853638/job/137178762153",
-      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 3788 live comparisons without unexpected skips."
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 3788 live comparisons without unexpected skips.",
+      "historical": true
     },
     {
       "backend": "wasm",
@@ -1470,7 +1472,8 @@
       ],
       "id": "local-cp01-17f11884fb5b-wasm",
       "kind": "local",
-      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 17f11884fb5bdef7cbaf84bd480d4b8edde3d310. The native-required lane completed 3788 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45009595818/job/137168748216"
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 17f11884fb5bdef7cbaf84bd480d4b8edde3d310. The native-required lane completed 3788 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45009595818/job/137168748216",
+      "historical": true
     },
     {
       "backend": "wasm",
@@ -1566,7 +1569,8 @@
       "kind": "ci",
       "commit": "2851d19aa900e30c688b0d1c756a35357f10eebc",
       "url": "https://github.com/rybosome/tspice/actions/runs/45012853638/job/137178762153",
-      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 3788 live comparisons without unexpected skips."
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 3788 live comparisons without unexpected skips.",
+      "historical": true
     }
   ],
   "routines": [
@@ -1578,27 +1582,42 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-vaddg-dimension-zero",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe an actual canonical empty-only C call with guarded non-null storage and no vector writes; empty output shape reaches comparison."
         },
         {
           "caseId": "coords-vectors-vaddg-dimension-one",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe positive/negative/zero or mixed singleton inputs through actual vaddg, distinguishing dimension one from a fixed three-component path."
         },
         {
           "caseId": "coords-vectors-vaddg-mixed-dimensions-and-order",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe complete array output at dimensions 2,4,7 with signed entries beyond the third position. Swapped input observations retain the routine's actual symmetry or ordered result."
         },
         {
           "caseId": "coords-vectors-vaddg-zero-and-axis-boundaries",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe either zero operand, parallel/opposed and orthogonal axes; compare every component of the sums."
         },
         {
           "caseId": "coords-vectors-vaddg-scaled-magnitudes",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe both 1e100 and 1e-100 input scales through actual vaddg. Focused live rescaling makes each tiny output component or scalar observable."
         }
       ],
@@ -1621,7 +1640,9 @@
             "packages/py-parity-checking/test/general-vectors-extremes.test.ts",
             "docs/step8-general-vectors.md"
           ],
-          "caseIds": ["coords-vectors-vaddg-dimension-zero"]
+          "caseIds": [
+            "coords-vectors-vaddg-dimension-zero"
+          ]
         },
         {
           "id": "validated-input-snapshot",
@@ -1635,7 +1656,9 @@
             "packages/backend-wasm/test/general-vectors-allocations.test.ts",
             "packages/backend-wasm/test/general-vector-input-snapshots.test.ts"
           ],
-          "caseIds": ["coords-vectors-vaddg-mixed-dimensions-and-order"]
+          "caseIds": [
+            "coords-vectors-vaddg-mixed-dimensions-and-order"
+          ]
         }
       ],
       "backends": {
@@ -1651,14 +1674,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vaddg -> typed Node adapter -> actual native binding with owned input/output buffers and global SPICE mutex -> shared tspice_vaddg -> actual vaddg_c. Independent Python validates dimensions and invokes the exact typed canonical symbol from CDLL(libspice._name) only for empty vector results, otherwise the actual locked SpiceyPy wrapper.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1672,14 +1693,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vaddg -> typed WASM adapter -> exported _tspice_vaddg with checked buffers/dimension and copied output -> shared tspice_vaddg -> actual vaddg_c. Independent Python validates dimensions and invokes the exact typed canonical symbol from CDLL(libspice._name) only for empty vector results, otherwise the actual locked SpiceyPy wrapper.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1691,27 +1710,42 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-vdistg-dimension-zero",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe the actual empty-input SpiceyPy/C call; scalar zero reaches comparison."
         },
         {
           "caseId": "coords-vectors-vdistg-dimension-one",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe positive/negative/zero or mixed singleton inputs through actual vdistg, distinguishing dimension one from a fixed three-component path."
         },
         {
           "caseId": "coords-vectors-vdistg-mixed-dimensions-and-order",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe complete scalar result at dimensions 2,4,7 with signed entries beyond the third position. Swapped input observations retain the routine's actual symmetry or ordered result."
         },
         {
           "caseId": "coords-vectors-vdistg-zero-and-axis-boundaries",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe distance from/to zero and parallel/opposed/orthogonal axes; the last coordinate contributes to the norm."
         },
         {
           "caseId": "coords-vectors-vdistg-scaled-magnitudes",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe both 1e100 and 1e-100 input scales through actual vdistg. Focused live rescaling makes each tiny output component or scalar observable."
         }
       ],
@@ -1734,7 +1768,9 @@
             "packages/backend-wasm/test/general-vectors-allocations.test.ts",
             "packages/backend-wasm/test/general-vector-input-snapshots.test.ts"
           ],
-          "caseIds": ["coords-vectors-vdistg-mixed-dimensions-and-order"]
+          "caseIds": [
+            "coords-vectors-vdistg-mixed-dimensions-and-order"
+          ]
         }
       ],
       "backends": {
@@ -1749,14 +1785,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vdistg -> typed Node adapter -> actual native binding with owned input/output buffers and global SPICE mutex -> shared tspice_vdistg -> actual vdistg_c. Independent Python validates dimensions and invokes the actual locked SpiceyPy wrapper including empty scalar input.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1769,14 +1803,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vdistg -> typed WASM adapter -> exported _tspice_vdistg with checked buffers/dimension and copied output -> shared tspice_vdistg -> actual vdistg_c. Independent Python validates dimensions and invokes the actual locked SpiceyPy wrapper including empty scalar input.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1788,32 +1820,50 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-vdotg-dimension-zero",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe the actual empty-input SpiceyPy/C call; scalar zero reaches comparison."
         },
         {
           "caseId": "coords-vectors-vdotg-dimension-one",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe positive/negative/zero or mixed singleton inputs through actual vdotg, distinguishing dimension one from a fixed three-component path."
         },
         {
           "caseId": "coords-vectors-vdotg-mixed-dimensions-and-order",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe complete scalar result at dimensions 2,4,7 with signed entries beyond the third position. Swapped input observations retain the routine's actual symmetry or ordered result."
         },
         {
           "caseId": "coords-vectors-vdotg-zero-and-axis-boundaries",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe zero for either zero operand and orthogonal axes, and distinguish positive/negative collinear dot products."
         },
         {
           "caseId": "coords-vectors-vdotg-scaled-magnitudes",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe both 1e100 and 1e-100 input scales through actual vdotg. Focused live rescaling makes tiny dot products observable."
         },
         {
           "caseId": "coords-vectors-vdotg-ordered-cancellation",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe ordered component products producing zero versus one when [1e16,1,-1e16] is reordered; actual dot accumulation must not be reassociated."
         }
       ],
@@ -1836,7 +1886,9 @@
             "packages/backend-wasm/test/general-vectors-allocations.test.ts",
             "packages/backend-wasm/test/general-vector-input-snapshots.test.ts"
           ],
-          "caseIds": ["coords-vectors-vdotg-mixed-dimensions-and-order"]
+          "caseIds": [
+            "coords-vectors-vdotg-mixed-dimensions-and-order"
+          ]
         }
       ],
       "backends": {
@@ -1851,14 +1903,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vdotg -> typed Node adapter -> actual native binding with owned input/output buffers and global SPICE mutex -> shared tspice_vdotg -> actual vdotg_c. Independent Python validates dimensions and invokes the actual locked SpiceyPy wrapper including empty scalar input.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1871,14 +1921,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vdotg -> typed WASM adapter -> exported _tspice_vdotg with checked buffers/dimension and copied output -> shared tspice_vdotg -> actual vdotg_c. Independent Python validates dimensions and invokes the actual locked SpiceyPy wrapper including empty scalar input.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1890,32 +1938,50 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-vequg-dimension-zero",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe an actual canonical empty-only C call with guarded non-null storage and no vector writes; empty output shape reaches comparison."
         },
         {
           "caseId": "coords-vectors-vequg-dimension-one",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe positive/negative/zero or mixed singleton inputs through actual vequg, distinguishing dimension one from a fixed three-component path."
         },
         {
           "caseId": "coords-vectors-vequg-mixed-dimensions",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe complete array output at dimensions 2,4,7 with signed entries beyond the third position."
         },
         {
           "caseId": "coords-vectors-vequg-zero-and-last-component",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe a four-component zero vector and a seven-component vector with only its final entry nonzero; every result must include the tail contribution."
         },
         {
           "caseId": "coords-vectors-vequg-scaled-magnitudes",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe both 1e100 and 1e-100 input scales through actual vequg. Focused live rescaling makes each tiny output component or scalar observable."
         },
         {
           "caseId": "coords-vectors-vequg-finite-extrema",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe all maximum-finite, minimum-subnormal and zero components in their original positions through copying/negation; focused live comparisons are exact."
         }
       ],
@@ -1938,7 +2004,9 @@
             "packages/py-parity-checking/test/general-vectors-extremes.test.ts",
             "docs/step8-general-vectors.md"
           ],
-          "caseIds": ["coords-vectors-vequg-dimension-zero"]
+          "caseIds": [
+            "coords-vectors-vequg-dimension-zero"
+          ]
         },
         {
           "id": "validated-input-snapshot",
@@ -1952,7 +2020,9 @@
             "packages/backend-wasm/test/general-vectors-allocations.test.ts",
             "packages/backend-wasm/test/general-vector-input-snapshots.test.ts"
           ],
-          "caseIds": ["coords-vectors-vequg-mixed-dimensions"]
+          "caseIds": [
+            "coords-vectors-vequg-mixed-dimensions"
+          ]
         }
       ],
       "backends": {
@@ -1968,14 +2038,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vequg -> typed Node adapter -> actual native binding with owned input/output buffers and global SPICE mutex -> shared tspice_vequg -> actual vequg_c. Independent Python validates dimensions and invokes the exact typed canonical symbol from CDLL(libspice._name) only for empty vector results, otherwise the actual locked SpiceyPy wrapper.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1989,14 +2057,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vequg -> typed WASM adapter -> exported _tspice_vequg with checked buffers/dimension and copied output -> shared tspice_vequg -> actual vequg_c. Independent Python validates dimensions and invokes the exact typed canonical symbol from CDLL(libspice._name) only for empty vector results, otherwise the actual locked SpiceyPy wrapper.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -2008,27 +2074,42 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-vhatg-dimension-zero",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe an actual canonical empty-only C call with guarded non-null storage and no vector writes; empty output shape reaches comparison."
         },
         {
           "caseId": "coords-vectors-vhatg-dimension-one",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe positive/negative/zero or mixed singleton inputs through actual vhatg, distinguishing dimension one from a fixed three-component path."
         },
         {
           "caseId": "coords-vectors-vhatg-mixed-dimensions",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe complete array output at dimensions 2,4,7 with signed entries beyond the third position."
         },
         {
           "caseId": "coords-vectors-vhatg-zero-and-last-component",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe a four-component zero vector and a seven-component vector with only its final entry nonzero; every result must include the tail contribution."
         },
         {
           "caseId": "coords-vectors-vhatg-scaled-magnitudes",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe both 1e100 and 1e-100 input scales through actual vhatg. Dimensionless outputs are compared directly."
         }
       ],
@@ -2051,7 +2132,9 @@
             "packages/py-parity-checking/test/general-vectors-extremes.test.ts",
             "docs/step8-general-vectors.md"
           ],
-          "caseIds": ["coords-vectors-vhatg-dimension-zero"]
+          "caseIds": [
+            "coords-vectors-vhatg-dimension-zero"
+          ]
         },
         {
           "id": "validated-input-snapshot",
@@ -2065,7 +2148,9 @@
             "packages/backend-wasm/test/general-vectors-allocations.test.ts",
             "packages/backend-wasm/test/general-vector-input-snapshots.test.ts"
           ],
-          "caseIds": ["coords-vectors-vhatg-mixed-dimensions"]
+          "caseIds": [
+            "coords-vectors-vhatg-mixed-dimensions"
+          ]
         }
       ],
       "backends": {
@@ -2081,14 +2166,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vhatg -> typed Node adapter -> actual native binding with owned input/output buffers and global SPICE mutex -> shared tspice_vhatg -> actual vhatg_c. Independent Python validates dimensions and invokes the exact typed canonical symbol from CDLL(libspice._name) only for empty vector results, otherwise the actual locked SpiceyPy wrapper.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -2102,14 +2185,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vhatg -> typed WASM adapter -> exported _tspice_vhatg with checked buffers/dimension and copied output -> shared tspice_vhatg -> actual vhatg_c. Independent Python validates dimensions and invokes the exact typed canonical symbol from CDLL(libspice._name) only for empty vector results, otherwise the actual locked SpiceyPy wrapper.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -2121,27 +2202,42 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-vlcomg-dimension-zero",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe an actual canonical empty-only C call with guarded non-null storage and no vector writes; empty output shape reaches comparison."
         },
         {
           "caseId": "coords-vectors-vlcomg-dimension-one",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe positive/negative/zero or mixed singleton inputs through actual vlcomg, distinguishing dimension one from a fixed three-component path."
         },
         {
           "caseId": "coords-vectors-vlcomg-distinct-coefficients-and-dimensions",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe 2-, 4- and 7-component linear combinations with distinct nonunit coefficients; distinguish coefficient/vector order and all tail entries."
         },
         {
           "caseId": "coords-vectors-vlcomg-zero-identity-and-cancellation",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe both zero coefficients, each identity operand separately, and exact cancellation across four components."
         },
         {
           "caseId": "coords-vectors-vlcomg-scaled-magnitudes",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe both 1e100 and 1e-100 input scales through actual vlcomg. Focused live rescaling makes each tiny output component or scalar observable."
         }
       ],
@@ -2164,7 +2260,9 @@
             "packages/py-parity-checking/test/general-vectors-extremes.test.ts",
             "docs/step8-general-vectors.md"
           ],
-          "caseIds": ["coords-vectors-vlcomg-dimension-zero"]
+          "caseIds": [
+            "coords-vectors-vlcomg-dimension-zero"
+          ]
         },
         {
           "id": "validated-input-snapshot",
@@ -2196,14 +2294,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vlcomg -> typed Node adapter -> actual native binding with owned input/output buffers and global SPICE mutex -> shared tspice_vlcomg -> actual vlcomg_c. Independent Python validates dimensions and invokes the exact typed canonical symbol from CDLL(libspice._name) only for empty vector results, otherwise the actual locked SpiceyPy wrapper. The inferred dimension is passed first at both C/oracle boundaries, with coefficients and vectors in their defined order.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -2217,14 +2313,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vlcomg -> typed WASM adapter -> exported _tspice_vlcomg with checked buffers/dimension and copied output -> shared tspice_vlcomg -> actual vlcomg_c. Independent Python validates dimensions and invokes the exact typed canonical symbol from CDLL(libspice._name) only for empty vector results, otherwise the actual locked SpiceyPy wrapper. The inferred dimension is passed first at both C/oracle boundaries, with coefficients and vectors in their defined order.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -2236,32 +2330,50 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-vminug-dimension-zero",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe an actual canonical empty-only C call with guarded non-null storage and no vector writes; empty output shape reaches comparison."
         },
         {
           "caseId": "coords-vectors-vminug-dimension-one",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe positive/negative/zero or mixed singleton inputs through actual vminug, distinguishing dimension one from a fixed three-component path."
         },
         {
           "caseId": "coords-vectors-vminug-mixed-dimensions",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe complete array output at dimensions 2,4,7 with signed entries beyond the third position."
         },
         {
           "caseId": "coords-vectors-vminug-zero-and-last-component",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe a four-component zero vector and a seven-component vector with only its final entry nonzero; every result must include the tail contribution."
         },
         {
           "caseId": "coords-vectors-vminug-scaled-magnitudes",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe both 1e100 and 1e-100 input scales through actual vminug. Focused live rescaling makes each tiny output component or scalar observable."
         },
         {
           "caseId": "coords-vectors-vminug-finite-extrema",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe all maximum-finite, minimum-subnormal and zero components in their original positions through copying/negation; focused live comparisons are exact."
         }
       ],
@@ -2284,7 +2396,9 @@
             "packages/py-parity-checking/test/general-vectors-extremes.test.ts",
             "docs/step8-general-vectors.md"
           ],
-          "caseIds": ["coords-vectors-vminug-dimension-zero"]
+          "caseIds": [
+            "coords-vectors-vminug-dimension-zero"
+          ]
         },
         {
           "id": "validated-input-snapshot",
@@ -2298,7 +2412,9 @@
             "packages/backend-wasm/test/general-vectors-allocations.test.ts",
             "packages/backend-wasm/test/general-vector-input-snapshots.test.ts"
           ],
-          "caseIds": ["coords-vectors-vminug-mixed-dimensions"]
+          "caseIds": [
+            "coords-vectors-vminug-mixed-dimensions"
+          ]
         }
       ],
       "backends": {
@@ -2314,14 +2430,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vminug -> typed Node adapter -> actual native binding with owned input/output buffers and global SPICE mutex -> shared tspice_vminug -> actual vminug_c. Independent Python validates dimensions and invokes the exact typed canonical symbol from CDLL(libspice._name) only for empty vector results, otherwise the actual locked SpiceyPy wrapper.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -2335,14 +2449,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vminug -> typed WASM adapter -> exported _tspice_vminug with checked buffers/dimension and copied output -> shared tspice_vminug -> actual vminug_c. Independent Python validates dimensions and invokes the exact typed canonical symbol from CDLL(libspice._name) only for empty vector results, otherwise the actual locked SpiceyPy wrapper.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -2354,27 +2466,42 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-vnormg-dimension-zero",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe the actual empty-input SpiceyPy/C call; scalar zero reaches comparison."
         },
         {
           "caseId": "coords-vectors-vnormg-dimension-one",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe positive/negative/zero or mixed singleton inputs through actual vnormg, distinguishing dimension one from a fixed three-component path."
         },
         {
           "caseId": "coords-vectors-vnormg-mixed-dimensions",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe complete scalar result at dimensions 2,4,7 with signed entries beyond the third position."
         },
         {
           "caseId": "coords-vectors-vnormg-zero-and-last-component",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe a four-component zero vector and a seven-component vector with only its final entry nonzero; every result must include the tail contribution."
         },
         {
           "caseId": "coords-vectors-vnormg-scaled-magnitudes",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe both 1e100 and 1e-100 input scales through actual vnormg. Focused live rescaling makes each tiny output component or scalar observable."
         }
       ],
@@ -2397,7 +2524,9 @@
             "packages/backend-wasm/test/general-vectors-allocations.test.ts",
             "packages/backend-wasm/test/general-vector-input-snapshots.test.ts"
           ],
-          "caseIds": ["coords-vectors-vnormg-mixed-dimensions"]
+          "caseIds": [
+            "coords-vectors-vnormg-mixed-dimensions"
+          ]
         }
       ],
       "backends": {
@@ -2412,14 +2541,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vnormg -> typed Node adapter -> actual native binding with owned input/output buffers and global SPICE mutex -> shared tspice_vnormg -> actual vnormg_c. Independent Python validates dimensions and invokes the actual locked SpiceyPy wrapper including empty scalar input.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -2432,14 +2559,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vnormg -> typed WASM adapter -> exported _tspice_vnormg with checked buffers/dimension and copied output -> shared tspice_vnormg -> actual vnormg_c. Independent Python validates dimensions and invokes the actual locked SpiceyPy wrapper including empty scalar input.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -2451,32 +2576,50 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-vprojg-dimension-zero",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe an actual canonical empty-only C call with guarded non-null storage and no vector writes; empty output shape reaches comparison."
         },
         {
           "caseId": "coords-vectors-vprojg-dimension-one",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe positive/negative/zero or mixed singleton inputs through actual vprojg, distinguishing dimension one from a fixed three-component path."
         },
         {
           "caseId": "coords-vectors-vprojg-mixed-dimensions-and-order",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe complete array output at dimensions 2,4,7 with signed entries beyond the third position. Swapped input observations retain the routine's actual symmetry or ordered result."
         },
         {
           "caseId": "coords-vectors-vprojg-zero-and-axis-boundaries",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe zero source/reference, collinear and opposed reference axes, and orthogonal projection; compare every output component."
         },
         {
           "caseId": "coords-vectors-vprojg-scaled-magnitudes",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe both 1e100 and 1e-100 input scales through actual vprojg. Focused live rescaling makes each tiny output component or scalar observable."
         },
         {
           "caseId": "coords-vectors-vprojg-subnormal-source-and-reference",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe [MIN_VALUE,0] projected onto [1,0] retaining the subnormal, then reversed inputs producing zero when the denominator underflows. Exact live comparison distinguishes these paths."
         }
       ],
@@ -2499,7 +2642,9 @@
             "packages/py-parity-checking/test/general-vectors-extremes.test.ts",
             "docs/step8-general-vectors.md"
           ],
-          "caseIds": ["coords-vectors-vprojg-dimension-zero"]
+          "caseIds": [
+            "coords-vectors-vprojg-dimension-zero"
+          ]
         },
         {
           "id": "validated-input-snapshot",
@@ -2513,7 +2658,9 @@
             "packages/backend-wasm/test/general-vectors-allocations.test.ts",
             "packages/backend-wasm/test/general-vector-input-snapshots.test.ts"
           ],
-          "caseIds": ["coords-vectors-vprojg-mixed-dimensions-and-order"]
+          "caseIds": [
+            "coords-vectors-vprojg-mixed-dimensions-and-order"
+          ]
         }
       ],
       "backends": {
@@ -2529,14 +2676,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vprojg -> typed Node adapter -> actual native binding with owned input/output buffers and global SPICE mutex -> shared tspice_vprojg -> actual vprojg_c. Independent Python validates dimensions and invokes the exact typed canonical symbol from CDLL(libspice._name) only for empty vector results, otherwise the actual locked SpiceyPy wrapper.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -2550,14 +2695,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vprojg -> typed WASM adapter -> exported _tspice_vprojg with checked buffers/dimension and copied output -> shared tspice_vprojg -> actual vprojg_c. Independent Python validates dimensions and invokes the exact typed canonical symbol from CDLL(libspice._name) only for empty vector results, otherwise the actual locked SpiceyPy wrapper.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -2569,32 +2712,50 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-vrelg-dimension-zero",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe the actual empty-input SpiceyPy/C call; scalar zero reaches comparison."
         },
         {
           "caseId": "coords-vectors-vrelg-dimension-one",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe positive/negative/zero or mixed singleton inputs through actual vrelg, distinguishing dimension one from a fixed three-component path."
         },
         {
           "caseId": "coords-vectors-vrelg-mixed-dimensions-and-order",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe complete scalar result at dimensions 2,4,7 with signed entries beyond the third position. Swapped input observations retain the routine's actual symmetry or ordered result."
         },
         {
           "caseId": "coords-vectors-vrelg-zero-and-axis-boundaries",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe relative difference with either zero operand, same/opposite directions of different lengths and orthogonal axes."
         },
         {
           "caseId": "coords-vectors-vrelg-scaled-magnitudes",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe both 1e100 and 1e-100 input scales through actual vrelg. Dimensionless outputs are compared directly."
         },
         {
           "caseId": "coords-vectors-vrelg-nearby-large-components",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe the small nonzero relative difference between nearby large vectors; focused live result scaling distinguishes it from zero."
         }
       ],
@@ -2617,7 +2778,9 @@
             "packages/backend-wasm/test/general-vectors-allocations.test.ts",
             "packages/backend-wasm/test/general-vector-input-snapshots.test.ts"
           ],
-          "caseIds": ["coords-vectors-vrelg-mixed-dimensions-and-order"]
+          "caseIds": [
+            "coords-vectors-vrelg-mixed-dimensions-and-order"
+          ]
         }
       ],
       "backends": {
@@ -2632,14 +2795,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vrelg -> typed Node adapter -> actual native binding with owned input/output buffers and global SPICE mutex -> shared tspice_vrelg -> actual vrelg_c. Independent Python validates dimensions and invokes the actual locked SpiceyPy wrapper including empty scalar input.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -2652,14 +2813,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vrelg -> typed WASM adapter -> exported _tspice_vrelg with checked buffers/dimension and copied output -> shared tspice_vrelg -> actual vrelg_c. Independent Python validates dimensions and invokes the actual locked SpiceyPy wrapper including empty scalar input.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -2671,27 +2830,42 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-vsclg-dimension-zero",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe an actual canonical empty-only C call with guarded non-null storage and no vector writes; empty output shape reaches comparison."
         },
         {
           "caseId": "coords-vectors-vsclg-dimension-one",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe positive/negative/zero or mixed singleton inputs through actual vsclg, distinguishing dimension one from a fixed three-component path."
         },
         {
           "caseId": "coords-vectors-vsclg-distinct-coefficient-and-dimensions",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe negative/fractional scales across 2-, 4- and 7-component vectors, including the tail entries."
         },
         {
           "caseId": "coords-vectors-vsclg-zero-and-identity-coefficients",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe zero, positive identity and negative identity scaling of every seven-component entry."
         },
         {
           "caseId": "coords-vectors-vsclg-scaled-magnitudes",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe both 1e100 and 1e-100 input scales through actual vsclg. Focused live rescaling makes each tiny output component or scalar observable."
         }
       ],
@@ -2714,7 +2888,9 @@
             "packages/py-parity-checking/test/general-vectors-extremes.test.ts",
             "docs/step8-general-vectors.md"
           ],
-          "caseIds": ["coords-vectors-vsclg-dimension-zero"]
+          "caseIds": [
+            "coords-vectors-vsclg-dimension-zero"
+          ]
         },
         {
           "id": "validated-input-snapshot",
@@ -2746,14 +2922,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vsclg -> typed Node adapter -> actual native binding with owned input/output buffers and global SPICE mutex -> shared tspice_vsclg -> actual vsclg_c. Independent Python validates dimensions and invokes the exact typed canonical symbol from CDLL(libspice._name) only for empty vector results, otherwise the actual locked SpiceyPy wrapper.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -2767,14 +2941,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vsclg -> typed WASM adapter -> exported _tspice_vsclg with checked buffers/dimension and copied output -> shared tspice_vsclg -> actual vsclg_c. Independent Python validates dimensions and invokes the exact typed canonical symbol from CDLL(libspice._name) only for empty vector results, otherwise the actual locked SpiceyPy wrapper.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -2786,37 +2958,58 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-vsepg-dimension-zero",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe the actual empty-input SpiceyPy/C call; scalar zero reaches comparison."
         },
         {
           "caseId": "coords-vectors-vsepg-dimension-one",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe positive/negative/zero or mixed singleton inputs through actual vsepg, distinguishing dimension one from a fixed three-component path."
         },
         {
           "caseId": "coords-vectors-vsepg-mixed-dimensions-and-order",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe complete scalar result at dimensions 2,4,7 with signed entries beyond the third position. Swapped input observations retain the routine's actual symmetry or ordered result."
         },
         {
           "caseId": "coords-vectors-vsepg-zero-and-axis-boundaries",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe zero with either zero operand and actual 0/pi/pi/2 axis separation boundaries."
         },
         {
           "caseId": "coords-vectors-vsepg-scaled-magnitudes",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe both 1e100 and 1e-100 input scales through actual vsepg. Dimensionless outputs are compared directly."
         },
         {
           "caseId": "coords-vectors-vsepg-near-parallel-axis",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe both near-parallel and near-opposed axes with 0.01 off-axis component through the actual general routine, without imposing three-vector numerical behavior."
         },
         {
           "caseId": "coords-vectors-vsepg-raw-dot-underflow",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe pi/2 for parallel and opposed nonzero 1e-200 axis vectors because their raw dot products underflow to zero."
         }
       ],
@@ -2839,7 +3032,9 @@
             "packages/backend-wasm/test/general-vectors-allocations.test.ts",
             "packages/backend-wasm/test/general-vector-input-snapshots.test.ts"
           ],
-          "caseIds": ["coords-vectors-vsepg-mixed-dimensions-and-order"]
+          "caseIds": [
+            "coords-vectors-vsepg-mixed-dimensions-and-order"
+          ]
         }
       ],
       "backends": {
@@ -2854,14 +3049,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vsepg -> typed Node adapter -> actual native binding with owned input/output buffers and global SPICE mutex -> shared tspice_vsepg -> actual vsepg_c. Independent Python validates dimensions and invokes the actual locked SpiceyPy wrapper including empty scalar input.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -2874,14 +3067,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vsepg -> typed WASM adapter -> exported _tspice_vsepg with checked buffers/dimension and copied output -> shared tspice_vsepg -> actual vsepg_c. Independent Python validates dimensions and invokes the actual locked SpiceyPy wrapper including empty scalar input.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -2893,27 +3084,42 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-vsubg-dimension-zero",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe an actual canonical empty-only C call with guarded non-null storage and no vector writes; empty output shape reaches comparison."
         },
         {
           "caseId": "coords-vectors-vsubg-dimension-one",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe positive/negative/zero or mixed singleton inputs through actual vsubg, distinguishing dimension one from a fixed three-component path."
         },
         {
           "caseId": "coords-vectors-vsubg-mixed-dimensions-and-order",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe complete array output at dimensions 2,4,7 with signed entries beyond the third position. Swapped input observations retain the routine's actual symmetry or ordered result."
         },
         {
           "caseId": "coords-vectors-vsubg-zero-and-axis-boundaries",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe zero in either operand, collinear/opposed and orthogonal axes; subtraction order changes the vector."
         },
         {
           "caseId": "coords-vectors-vsubg-scaled-magnitudes",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe both 1e100 and 1e-100 input scales through actual vsubg. Focused live rescaling makes each tiny output component or scalar observable."
         }
       ],
@@ -2936,7 +3142,9 @@
             "packages/py-parity-checking/test/general-vectors-extremes.test.ts",
             "docs/step8-general-vectors.md"
           ],
-          "caseIds": ["coords-vectors-vsubg-dimension-zero"]
+          "caseIds": [
+            "coords-vectors-vsubg-dimension-zero"
+          ]
         },
         {
           "id": "validated-input-snapshot",
@@ -2950,7 +3158,9 @@
             "packages/backend-wasm/test/general-vectors-allocations.test.ts",
             "packages/backend-wasm/test/general-vector-input-snapshots.test.ts"
           ],
-          "caseIds": ["coords-vectors-vsubg-mixed-dimensions-and-order"]
+          "caseIds": [
+            "coords-vectors-vsubg-mixed-dimensions-and-order"
+          ]
         }
       ],
       "backends": {
@@ -2966,14 +3176,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vsubg -> typed Node adapter -> actual native binding with owned input/output buffers and global SPICE mutex -> shared tspice_vsubg -> actual vsubg_c. Independent Python validates dimensions and invokes the exact typed canonical symbol from CDLL(libspice._name) only for empty vector results, otherwise the actual locked SpiceyPy wrapper.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -2987,14 +3195,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vsubg -> typed WASM adapter -> exported _tspice_vsubg with checked buffers/dimension and copied output -> shared tspice_vsubg -> actual vsubg_c. Independent Python validates dimensions and invokes the exact typed canonical symbol from CDLL(libspice._name) only for empty vector results, otherwise the actual locked SpiceyPy wrapper.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -3006,27 +3212,42 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-vzerog-dimension-zero",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe the actual empty-input SpiceyPy/C call; false reaches exact boolean comparison."
         },
         {
           "caseId": "coords-vectors-vzerog-dimension-one",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe positive/negative/zero or mixed singleton inputs through actual vzerog, distinguishing dimension one from a fixed three-component path."
         },
         {
           "caseId": "coords-vectors-vzerog-mixed-dimensions",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe complete boolean predicate at dimensions 2,4,7 with signed entries beyond the third position."
         },
         {
           "caseId": "coords-vectors-vzerog-zero-and-last-component",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe a four-component zero vector and a seven-component vector with only its final entry nonzero; the exact boolean distinguishes them."
         },
         {
           "caseId": "coords-vectors-vzerog-last-component-subnormal",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe false when only the seventh component is a positive/negative minimum subnormal; exact predicate must inspect beyond three entries and must not use a tolerance."
         }
       ],
@@ -3049,7 +3270,9 @@
             "packages/backend-wasm/test/general-vectors-allocations.test.ts",
             "packages/backend-wasm/test/general-vector-input-snapshots.test.ts"
           ],
-          "caseIds": ["coords-vectors-vzerog-mixed-dimensions"]
+          "caseIds": [
+            "coords-vectors-vzerog-mixed-dimensions"
+          ]
         }
       ],
       "backends": {
@@ -3064,14 +3287,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vzerog -> typed Node adapter -> actual native binding with owned input/output buffers and global SPICE mutex -> shared tspice_vzerog -> actual vzerog_c. Independent Python validates dimensions and invokes the actual locked SpiceyPy wrapper including empty scalar input.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -3084,14 +3305,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vzerog -> typed WASM adapter -> exported _tspice_vzerog with checked buffers/dimension and copied output -> shared tspice_vzerog -> actual vzerog_c. Independent Python validates dimensions and invokes the actual locked SpiceyPy wrapper including empty scalar input.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -3103,27 +3322,42 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-unormg-dimension-zero",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe an actual canonical empty-only C call with guarded non-null storage and no vector writes; both empty unit array and returned norm zero reach comparison."
         },
         {
           "caseId": "coords-vectors-unormg-dimension-one",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe positive/negative/zero or mixed singleton inputs through actual unormg, distinguishing dimension one from a fixed three-component path."
         },
         {
           "caseId": "coords-vectors-unormg-mixed-dimensions",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe complete unit array and norm at dimensions 2,4,7 with signed entries beyond the third position."
         },
         {
           "caseId": "coords-vectors-unormg-zero-and-last-component",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe a four-component zero vector and a seven-component vector with only its final entry nonzero; both unit and norm must reflect the tail."
         },
         {
           "caseId": "coords-vectors-unormg-scaled-magnitudes",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe both 1e100 and 1e-100 input scales through actual unormg. Both unit and norm are compared, with only norm rescaled in focused tests."
         }
       ],
@@ -3146,7 +3380,9 @@
             "packages/py-parity-checking/test/general-vectors-extremes.test.ts",
             "docs/step8-general-vectors.md"
           ],
-          "caseIds": ["coords-vectors-unormg-dimension-zero"]
+          "caseIds": [
+            "coords-vectors-unormg-dimension-zero"
+          ]
         },
         {
           "id": "validated-input-snapshot",
@@ -3160,7 +3396,9 @@
             "packages/backend-wasm/test/general-vectors-allocations.test.ts",
             "packages/backend-wasm/test/general-vector-input-snapshots.test.ts"
           ],
-          "caseIds": ["coords-vectors-unormg-mixed-dimensions"]
+          "caseIds": [
+            "coords-vectors-unormg-mixed-dimensions"
+          ]
         }
       ],
       "backends": {
@@ -3176,14 +3414,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.unormg -> typed Node adapter -> actual native binding with owned input/output buffers and global SPICE mutex -> shared tspice_unormg -> actual unormg_c. Independent Python validates dimensions and invokes the exact typed canonical symbol from CDLL(libspice._name) only for empty vector results, otherwise the actual locked SpiceyPy wrapper. Both canonical unit output and norm output are returned without recomputation.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -3197,14 +3433,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.unormg -> typed WASM adapter -> exported _tspice_unormg with checked buffers/dimension and copied output -> shared tspice_unormg -> actual unormg_c. Independent Python validates dimensions and invokes the exact typed canonical symbol from CDLL(libspice._name) only for empty vector results, otherwise the actual locked SpiceyPy wrapper. Both canonical unit output and norm output are returned without recomputation.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     }

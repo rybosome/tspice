@@ -127,7 +127,8 @@
         "strings-repmot-invalid-case",
         "strings-repmot-miss-and-blank"
       ],
-      "observation": "Both complete required lanes passed locally on d53e2c8aa001cd5b343c8f3c73da546def15d75b. JavaScript: 2,706 parity tests and one expected guard skip. Native-required: 2,476 registered Node/WASM live comparisons; 2,707 parity-package tests with no skips, including the native-required guard; 118 native wrapper, 692 WASM, 28 core and 151 facade tests passed."
+      "observation": "Both complete required lanes passed locally on d53e2c8aa001cd5b343c8f3c73da546def15d75b. JavaScript: 2,706 parity tests and one expected guard skip. Native-required: 2,476 registered Node/WASM live comparisons; 2,707 parity-package tests with no skips, including the native-required guard; 118 native wrapper, 692 WASM, 28 core and 151 facade tests passed.",
+      "historical": true
     },
     {
       "id": "local-a21-d53e2c8a-wasm",
@@ -204,7 +205,8 @@
         "strings-repmot-invalid-case",
         "strings-repmot-miss-and-blank"
       ],
-      "observation": "Both complete required lanes passed locally on d53e2c8aa001cd5b343c8f3c73da546def15d75b. JavaScript: 2,706 parity tests and one expected guard skip. Native-required: 2,476 registered Node/WASM live comparisons; 2,707 parity-package tests with no skips, including the native-required guard; 118 native wrapper, 692 WASM, 28 core and 151 facade tests passed."
+      "observation": "Both complete required lanes passed locally on d53e2c8aa001cd5b343c8f3c73da546def15d75b. JavaScript: 2,706 parity tests and one expected guard skip. Native-required: 2,476 registered Node/WASM live comparisons; 2,707 parity-package tests with no skips, including the native-required guard; 118 native wrapper, 692 WASM, 28 core and 151 facade tests passed.",
+      "historical": true
     },
     {
       "id": "ci-a21-d53e2c8a-node",
@@ -283,7 +285,8 @@
       ],
       "commit": "d53e2c8aa001cd5b343c8f3c73da546def15d75b",
       "url": "https://github.com/rybosome/tspice/actions/runs/43566870555/job/132362525304",
-      "observation": "Inspected successful Linux Node 22 native-required job 132362525304 on d53e2c8aa001cd5b343c8f3c73da546def15d75b: 2,476 registered Node/WASM live comparisons; 2,707 parity-package tests with no skips, including the native-required guard; 118 native wrapper, 692 WASM, 28 core and 151 facade tests passed."
+      "observation": "Inspected successful Linux Node 22 native-required job 132362525304 on d53e2c8aa001cd5b343c8f3c73da546def15d75b: 2,476 registered Node/WASM live comparisons; 2,707 parity-package tests with no skips, including the native-required guard; 118 native wrapper, 692 WASM, 28 core and 151 facade tests passed.",
+      "historical": true
     },
     {
       "id": "ci-a21-d53e2c8a-wasm",
@@ -362,7 +365,8 @@
       ],
       "commit": "d53e2c8aa001cd5b343c8f3c73da546def15d75b",
       "url": "https://github.com/rybosome/tspice/actions/runs/43566870555/job/132362525304",
-      "observation": "Inspected successful Linux Node 22 native-required job 132362525304 on d53e2c8aa001cd5b343c8f3c73da546def15d75b: 2,476 registered Node/WASM live comparisons; 2,707 parity-package tests with no skips, including the native-required guard; 118 native wrapper, 692 WASM, 28 core and 151 facade tests passed."
+      "observation": "Inspected successful Linux Node 22 native-required job 132362525304 on d53e2c8aa001cd5b343c8f3c73da546def15d75b: 2,476 registered Node/WASM live comparisons; 2,707 parity-package tests with no skips, including the native-required guard; 118 native wrapper, 692 WASM, 28 core and 151 facade tests passed.",
+      "historical": true
     }
   ],
   "routines": [
@@ -374,27 +378,42 @@
       "scenarios": [
         {
           "caseId": "strings-dp2hx-normalized",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Compare normalized hexadecimal mantissa/exponent and true encoded length for positive, negative, zero and dyadic fractional inputs. Compare each returned field with the independent library."
         },
         {
           "caseId": "strings-dp2hx-binary-limits",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Compare every text byte of smallest subnormal, smallest normal and largest normal binary64 encodings. Compare each returned field with the independent library."
         },
         {
           "caseId": "strings-dp2hx-truncation",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Check independent truncation including a one-byte payload while full encoded length remains visible. Compare each returned field with the independent library."
         },
         {
           "caseId": "strings-dp2hx-invalid-room-1",
-          "coverage": ["error", "edge"],
+          "coverage": [
+            "error",
+            "edge"
+          ],
           "observes": "Too-small room signals the canonical toolkit error. Require the registered SPICE diagnostic."
         },
         {
           "caseId": "strings-dp2hx-invalid-room-1neg",
-          "coverage": ["error", "edge"],
+          "coverage": [
+            "error",
+            "edge"
+          ],
           "observes": "Too-small room signals the canonical toolkit error. Require the registered SPICE diagnostic."
         }
       ],
@@ -407,16 +426,26 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.dp2hx → StringsApi serialized native addon → tspice_dp2hx → dp2hx_c. Independent locked library canonical typed C symbol.",
-          "executions": ["local-a21-d53e2c8a-node", "ci-a21-d53e2c8a-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.dp2hx → StringsApi WASM adapter with owned call-scoped buffers → tspice_dp2hx → dp2hx_c. Independent locked library canonical typed C symbol.",
-          "executions": ["local-a21-d53e2c8a-wasm", "ci-a21-d53e2c8a-wasm"]
+          "executions": []
         }
       }
     },
@@ -428,32 +457,50 @@
       "scenarios": [
         {
           "caseId": "strings-hx2dp-normalized",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Read leading/trailing blanks, signs, lower-case mantissas and signed base-16 exponents. Compare each returned field with the independent library."
         },
         {
           "caseId": "strings-hx2dp-returned-diagnostics",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Distinguish returned conversion errors from successful zero, including blank, missing, illegal and overlong mantissas. Compare each returned field with the independent library."
         },
         {
           "caseId": "strings-hx2dp-exponent-range",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Independent canonical outputs at signed exponent parse overflow and defined binary64 exponent boundaries. Compare each returned field with the independent library."
         },
         {
           "caseId": "strings-hx2dp-message-room",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Preserve diagnostic prefix truncation and successful empty message for ordinary scientific output. Compare each returned field with the independent library."
         },
         {
           "caseId": "strings-hx2dp-empty",
-          "coverage": ["error", "edge"],
+          "coverage": [
+            "error",
+            "edge"
+          ],
           "observes": "C string validation runs before the Fortran conversion. Require the registered SPICE diagnostic."
         },
         {
           "caseId": "strings-hx2dp-capacity",
-          "coverage": ["error", "edge"],
+          "coverage": [
+            "error",
+            "edge"
+          ],
           "observes": "Canonical fixed-minimum diagnostic buffer validation. Require the registered SPICE diagnostic."
         }
       ],
@@ -475,21 +522,35 @@
             "packages/py-parity-checking/test/string-numbers.test.ts",
             "docs/step8-string-numbers.md"
           ],
-          "caseIds": ["strings-hx2dp-exponent-range"]
+          "caseIds": [
+            "strings-hx2dp-exponent-range"
+          ]
         }
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.hx2dp → StringsApi serialized native addon → tspice_hx2dp → hx2dp_c. Independent locked library canonical typed C symbol.",
-          "executions": ["local-a21-d53e2c8a-node", "ci-a21-d53e2c8a-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.hx2dp → StringsApi WASM adapter with owned call-scoped buffers → tspice_hx2dp → hx2dp_c. Independent locked library canonical typed C symbol.",
-          "executions": ["local-a21-d53e2c8a-wasm", "ci-a21-d53e2c8a-wasm"]
+          "executions": []
         }
       }
     },
@@ -501,37 +562,58 @@
       "scenarios": [
         {
           "caseId": "strings-prsdp-grammar",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Check decimal punctuation, exponent notation and implicit mantissa, including signed results. Compare each returned field with the independent library."
         },
         {
           "caseId": "strings-prsdp-pi",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Check mixed-case PI mnemonic and signed forms. Compare each returned field with the independent library."
         },
         {
           "caseId": "strings-prsdp-limits",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Preserve defined numeric behavior at source-relevant magnitude limits. Compare each returned field with the independent library."
         },
         {
           "caseId": "strings-prsdp-invalid",
-          "coverage": ["error", "edge"],
+          "coverage": [
+            "error",
+            "edge"
+          ],
           "observes": "Check the actual parser diagnostic and traced scientific failure. Require the registered SPICE diagnostic."
         },
         {
           "caseId": "strings-prsdp-range",
-          "coverage": ["error", "edge"],
+          "coverage": [
+            "error",
+            "edge"
+          ],
           "observes": "Check the actual parser diagnostic and traced scientific failure. Require the registered SPICE diagnostic."
         },
         {
           "caseId": "strings-prsdp-blank",
-          "coverage": ["error", "edge"],
+          "coverage": [
+            "error",
+            "edge"
+          ],
           "observes": "Check the actual parser diagnostic and traced scientific failure. Require the registered SPICE diagnostic."
         },
         {
           "caseId": "strings-prsdp-empty",
-          "coverage": ["error", "edge"],
+          "coverage": [
+            "error",
+            "edge"
+          ],
           "observes": "Check the actual parser diagnostic and traced scientific failure. Require the registered SPICE diagnostic."
         }
       ],
@@ -544,16 +626,26 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.prsdp → StringsApi serialized native addon → tspice_prsdp → prsdp_c. Independent locked library checked high-level wrapper.",
-          "executions": ["local-a21-d53e2c8a-node", "ci-a21-d53e2c8a-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.prsdp → StringsApi WASM adapter with owned call-scoped buffers → tspice_prsdp → prsdp_c. Independent locked library checked high-level wrapper.",
-          "executions": ["local-a21-d53e2c8a-wasm", "ci-a21-d53e2c8a-wasm"]
+          "executions": []
         }
       }
     },
@@ -565,42 +657,66 @@
       "scenarios": [
         {
           "caseId": "strings-prsint-grammar",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Check decimal punctuation, exponent notation and implicit mantissa, including signed results. Compare each returned field with the independent library."
         },
         {
           "caseId": "strings-prsint-pi",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Check mixed-case PI mnemonic and signed forms. Compare each returned field with the independent library."
         },
         {
           "caseId": "strings-prsint-limits",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Preserve defined numeric behavior at source-relevant magnitude limits. Compare each returned field with the independent library."
         },
         {
           "caseId": "strings-prsint-invalid",
-          "coverage": ["error", "edge"],
+          "coverage": [
+            "error",
+            "edge"
+          ],
           "observes": "Check the actual parser diagnostic and traced scientific failure. Require the registered SPICE diagnostic."
         },
         {
           "caseId": "strings-prsint-range",
-          "coverage": ["error", "edge"],
+          "coverage": [
+            "error",
+            "edge"
+          ],
           "observes": "Check the actual parser diagnostic and traced scientific failure. Require the registered SPICE diagnostic."
         },
         {
           "caseId": "strings-prsint-blank",
-          "coverage": ["error", "edge"],
+          "coverage": [
+            "error",
+            "edge"
+          ],
           "observes": "Check the actual parser diagnostic and traced scientific failure. Require the registered SPICE diagnostic."
         },
         {
           "caseId": "strings-prsint-empty",
-          "coverage": ["error", "edge"],
+          "coverage": [
+            "error",
+            "edge"
+          ],
           "observes": "Check the actual parser diagnostic and traced scientific failure. Require the registered SPICE diagnostic."
         },
         {
           "caseId": "strings-prsint-bounds",
-          "coverage": ["error", "edge"],
+          "coverage": [
+            "error",
+            "edge"
+          ],
           "observes": "Truncation outside the representable integer range is an error. Require the registered SPICE diagnostic."
         }
       ],
@@ -613,16 +729,26 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.prsint → StringsApi serialized native addon → tspice_prsint → prsint_c. Independent locked library checked high-level wrapper.",
-          "executions": ["local-a21-d53e2c8a-node", "ci-a21-d53e2c8a-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.prsint → StringsApi WASM adapter with owned call-scoped buffers → tspice_prsint → prsint_c. Independent locked library checked high-level wrapper.",
-          "executions": ["local-a21-d53e2c8a-wasm", "ci-a21-d53e2c8a-wasm"]
+          "executions": []
         }
       }
     },
@@ -634,27 +760,42 @@
       "scenarios": [
         {
           "caseId": "strings-repmc-first-marker",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Only the first matching marker is replaced after trimming ASCII marker blanks; leading literal whitespace is observable. Compare each returned field with the independent library."
         },
         {
           "caseId": "strings-repmc-miss-and-blank",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Genuine empty input, missing marker, empty and whitespace-only marker, and input containing a literal tab. Compare each returned field with the independent library."
         },
         {
           "caseId": "strings-repmc-capacity",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Truncate the complete replacement string at explicit UTF-8 byte capacities, including the minimum accepted room and signed maximum. Compare each returned field with the independent library."
         },
         {
           "caseId": "strings-repmc-bad-room",
-          "coverage": ["error", "edge"],
+          "coverage": [
+            "error",
+            "edge"
+          ],
           "observes": "The actual canonical routine receives insufficient caller room. Require the registered SPICE diagnostic."
         },
         {
           "caseId": "strings-repmc-values",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Leading/trailing ASCII padding removed from replacement, one blank retained for an empty or blank replacement; UTF-8 and tab values preserved. Compare each returned field with the independent library."
         }
       ],
@@ -667,16 +808,26 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.repmc → StringsApi serialized native addon → tspice_repmc → repmc_c. Independent locked library canonical typed C symbol.",
-          "executions": ["local-a21-d53e2c8a-node", "ci-a21-d53e2c8a-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.repmc → StringsApi WASM adapter with owned call-scoped buffers → tspice_repmc → repmc_c. Independent locked library canonical typed C symbol.",
-          "executions": ["local-a21-d53e2c8a-wasm", "ci-a21-d53e2c8a-wasm"]
+          "executions": []
         }
       }
     },
@@ -688,32 +839,50 @@
       "scenarios": [
         {
           "caseId": "strings-repmct-first-marker",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Only the first matching marker is replaced after trimming ASCII marker blanks; leading literal whitespace is observable. Compare each returned field with the independent library."
         },
         {
           "caseId": "strings-repmct-miss-and-blank",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Genuine empty input, missing marker, empty and whitespace-only marker, and input containing a literal tab. Compare each returned field with the independent library."
         },
         {
           "caseId": "strings-repmct-capacity",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Truncate the complete replacement string at explicit UTF-8 byte capacities, including the minimum accepted room and signed maximum. Compare each returned field with the independent library."
         },
         {
           "caseId": "strings-repmct-bad-room",
-          "coverage": ["error", "edge"],
+          "coverage": [
+            "error",
+            "edge"
+          ],
           "observes": "The actual canonical routine receives insufficient caller room. Require the registered SPICE diagnostic."
         },
         {
           "caseId": "strings-repmct-case-folding",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Compare U/L/C forms, lower-case case selectors, signed words or logical forms and full longest-value output. Compare each returned field with the independent library."
         },
         {
           "caseId": "strings-repmct-invalid-case",
-          "coverage": ["error", "edge"],
+          "coverage": [
+            "error",
+            "edge"
+          ],
           "observes": "The invalid case code signals even when the marker would not match. Require the registered SPICE diagnostic."
         }
       ],
@@ -743,16 +912,28 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.repmct → StringsApi serialized native addon → tspice_repmct → repmct_c. Independent locked library canonical typed C symbol.",
-          "executions": ["local-a21-d53e2c8a-node", "ci-a21-d53e2c8a-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.repmct → StringsApi WASM adapter with owned call-scoped buffers → tspice_repmct → repmct_c. Independent locked library canonical typed C symbol.",
-          "executions": ["local-a21-d53e2c8a-wasm", "ci-a21-d53e2c8a-wasm"]
+          "executions": []
         }
       }
     },
@@ -764,27 +945,42 @@
       "scenarios": [
         {
           "caseId": "strings-repmd-first-marker",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Only the first matching marker is replaced after trimming ASCII marker blanks; leading literal whitespace is observable. Compare each returned field with the independent library."
         },
         {
           "caseId": "strings-repmd-miss-and-blank",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Genuine empty input, missing marker, empty and whitespace-only marker, and input containing a literal tab. Compare each returned field with the independent library."
         },
         {
           "caseId": "strings-repmd-capacity",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Truncate the complete replacement string at explicit UTF-8 byte capacities, including the minimum accepted room and signed maximum. Compare each returned field with the independent library."
         },
         {
           "caseId": "strings-repmd-bad-room",
-          "coverage": ["error", "edge"],
+          "coverage": [
+            "error",
+            "edge"
+          ],
           "observes": "The actual canonical routine receives insufficient caller room. Require the registered SPICE diagnostic."
         },
         {
           "caseId": "strings-repmd-digits",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Compare clamped low/high significant digits and signs across signed 32-bit bounds. Compare each returned field with the independent library."
         }
       ],
@@ -797,16 +993,26 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.repmd → StringsApi serialized native addon → tspice_repmd → repmd_c. Independent locked library canonical typed C symbol.",
-          "executions": ["local-a21-d53e2c8a-node", "ci-a21-d53e2c8a-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.repmd → StringsApi WASM adapter with owned call-scoped buffers → tspice_repmd → repmd_c. Independent locked library canonical typed C symbol.",
-          "executions": ["local-a21-d53e2c8a-wasm", "ci-a21-d53e2c8a-wasm"]
+          "executions": []
         }
       }
     },
@@ -818,32 +1024,50 @@
       "scenarios": [
         {
           "caseId": "strings-repmf-first-marker",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Only the first matching marker is replaced after trimming ASCII marker blanks; leading literal whitespace is observable. Compare each returned field with the independent library."
         },
         {
           "caseId": "strings-repmf-miss-and-blank",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Genuine empty input, missing marker, empty and whitespace-only marker, and input containing a literal tab. Compare each returned field with the independent library."
         },
         {
           "caseId": "strings-repmf-capacity",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Truncate the complete replacement string at explicit UTF-8 byte capacities, including the minimum accepted room and signed maximum. Compare each returned field with the independent library."
         },
         {
           "caseId": "strings-repmf-bad-room",
-          "coverage": ["error", "edge"],
+          "coverage": [
+            "error",
+            "edge"
+          ],
           "observes": "The actual canonical routine receives insufficient caller room. Require the registered SPICE diagnostic."
         },
         {
           "caseId": "strings-repmf-digits",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Compare clamped low/high significant digits and signs across signed 32-bit bounds. Compare each returned field with the independent library."
         },
         {
           "caseId": "strings-repmf-format",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Compare upper/lower scientific and fixed forms and the pinned fixed-format default for unknown single-byte selectors. Compare each returned field with the independent library."
         }
       ],
@@ -856,16 +1080,26 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.repmf → StringsApi serialized native addon → tspice_repmf → repmf_c. Independent locked library canonical typed C symbol.",
-          "executions": ["local-a21-d53e2c8a-node", "ci-a21-d53e2c8a-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.repmf → StringsApi WASM adapter with owned call-scoped buffers → tspice_repmf → repmf_c. Independent locked library canonical typed C symbol.",
-          "executions": ["local-a21-d53e2c8a-wasm", "ci-a21-d53e2c8a-wasm"]
+          "executions": []
         }
       }
     },
@@ -877,27 +1111,42 @@
       "scenarios": [
         {
           "caseId": "strings-repmi-first-marker",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Only the first matching marker is replaced after trimming ASCII marker blanks; leading literal whitespace is observable. Compare each returned field with the independent library."
         },
         {
           "caseId": "strings-repmi-miss-and-blank",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Genuine empty input, missing marker, empty and whitespace-only marker, and input containing a literal tab. Compare each returned field with the independent library."
         },
         {
           "caseId": "strings-repmi-capacity",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Truncate the complete replacement string at explicit UTF-8 byte capacities, including the minimum accepted room and signed maximum. Compare each returned field with the independent library."
         },
         {
           "caseId": "strings-repmi-bad-room",
-          "coverage": ["error", "edge"],
+          "coverage": [
+            "error",
+            "edge"
+          ],
           "observes": "The actual canonical routine receives insufficient caller room. Require the registered SPICE diagnostic."
         },
         {
           "caseId": "strings-repmi-integer-endpoints",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Inspect full signed decimal text, signs and both 32-bit boundaries. Compare each returned field with the independent library."
         }
       ],
@@ -910,16 +1159,26 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.repmi → StringsApi serialized native addon → tspice_repmi → repmi_c. Independent locked library canonical typed C symbol.",
-          "executions": ["local-a21-d53e2c8a-node", "ci-a21-d53e2c8a-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.repmi → StringsApi WASM adapter with owned call-scoped buffers → tspice_repmi → repmi_c. Independent locked library canonical typed C symbol.",
-          "executions": ["local-a21-d53e2c8a-wasm", "ci-a21-d53e2c8a-wasm"]
+          "executions": []
         }
       }
     },
@@ -931,32 +1190,50 @@
       "scenarios": [
         {
           "caseId": "strings-repml-first-marker",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Only the first matching marker is replaced after trimming ASCII marker blanks; leading literal whitespace is observable. Compare each returned field with the independent library."
         },
         {
           "caseId": "strings-repml-miss-and-blank",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Genuine empty input, missing marker, empty and whitespace-only marker, and input containing a literal tab. Compare each returned field with the independent library."
         },
         {
           "caseId": "strings-repml-capacity",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Truncate the complete replacement string at explicit UTF-8 byte capacities, including the minimum accepted room and signed maximum. Compare each returned field with the independent library."
         },
         {
           "caseId": "strings-repml-bad-room",
-          "coverage": ["error", "edge"],
+          "coverage": [
+            "error",
+            "edge"
+          ],
           "observes": "The actual canonical routine receives insufficient caller room. Require the registered SPICE diagnostic."
         },
         {
           "caseId": "strings-repml-case-folding",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Compare U/L/C forms, lower-case case selectors, signed words or logical forms and full longest-value output. Compare each returned field with the independent library."
         },
         {
           "caseId": "strings-repml-invalid-case",
-          "coverage": ["error", "edge"],
+          "coverage": [
+            "error",
+            "edge"
+          ],
           "observes": "The invalid case code signals even when the marker would not match. Require the registered SPICE diagnostic."
         }
       ],
@@ -985,16 +1262,28 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.repml → StringsApi serialized native addon → tspice_repml → repml_c. Independent locked library canonical typed C symbol.",
-          "executions": ["local-a21-d53e2c8a-node", "ci-a21-d53e2c8a-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.repml → StringsApi WASM adapter with owned call-scoped buffers → tspice_repml → repml_c. Independent locked library canonical typed C symbol.",
-          "executions": ["local-a21-d53e2c8a-wasm", "ci-a21-d53e2c8a-wasm"]
+          "executions": []
         }
       }
     },
@@ -1006,32 +1295,50 @@
       "scenarios": [
         {
           "caseId": "strings-repmot-first-marker",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Only the first matching marker is replaced after trimming ASCII marker blanks; leading literal whitespace is observable. Compare each returned field with the independent library."
         },
         {
           "caseId": "strings-repmot-miss-and-blank",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Genuine empty input, missing marker, empty and whitespace-only marker, and input containing a literal tab. Compare each returned field with the independent library."
         },
         {
           "caseId": "strings-repmot-capacity",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Truncate the complete replacement string at explicit UTF-8 byte capacities, including the minimum accepted room and signed maximum. Compare each returned field with the independent library."
         },
         {
           "caseId": "strings-repmot-bad-room",
-          "coverage": ["error", "edge"],
+          "coverage": [
+            "error",
+            "edge"
+          ],
           "observes": "The actual canonical routine receives insufficient caller room. Require the registered SPICE diagnostic."
         },
         {
           "caseId": "strings-repmot-case-folding",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Compare U/L/C forms, lower-case case selectors, signed words or logical forms and full longest-value output. Compare each returned field with the independent library."
         },
         {
           "caseId": "strings-repmot-invalid-case",
-          "coverage": ["error", "edge"],
+          "coverage": [
+            "error",
+            "edge"
+          ],
           "observes": "The invalid case code signals even when the marker would not match. Require the registered SPICE diagnostic."
         }
       ],
@@ -1061,16 +1368,28 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.repmot → StringsApi serialized native addon → tspice_repmot → repmot_c. Independent locked library canonical typed C symbol.",
-          "executions": ["local-a21-d53e2c8a-node", "ci-a21-d53e2c8a-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.repmot → StringsApi WASM adapter with owned call-scoped buffers → tspice_repmot → repmot_c. Independent locked library canonical typed C symbol.",
-          "executions": ["local-a21-d53e2c8a-wasm", "ci-a21-d53e2c8a-wasm"]
+          "executions": []
         }
       }
     }

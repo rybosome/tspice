@@ -21,9 +21,13 @@ anything lands on main; never report that increase as merged coverage.
 
 ## Checkpoint delivery
 
-The 76 pinned source PRs cover all 487 expansion routines and passed CI at their accepted heads. The queue records the exact source heads, bases, and CI runs. Checkpoint 01 combines 17 of those PRs through 15 ancestry-preserving merges. It adds 145 routines to the 162-routine baseline. Its combined artifact build, parity, and review determine when these routines can land. Subsequent checkpoints follow in order.
+The 76 pinned source PRs cover all 487 expansion routines and passed CI at their accepted heads. The queue records the exact source heads, bases and CI runs.
+
+[Checkpoint 01](https://github.com/rybosome/tspice/pull/783) landed as `85375ed988b0a003247454f48a02a8173e06d53f` and passed [main CI](https://github.com/rybosome/tspice/actions/runs/45039222575). Its validated tree adds 145 routines to the baseline for a total of 307. The squash commit carries the implementation tree. Checkpoint 02 carries the 17 original source histories and adds 101 routines for an expected total of 408. Source review and validation for checkpoint 02 are pending.
 
 ## Initial ownership and deliveries
+
+The following entries describe the original source-PR planning state.
 
 `Codex Step 8 (/root)` owns all four active batches and their integration. The first
 batch uses `/private/tmp/tspice-step8-constants`, branch `codex/expand-constants`.

@@ -455,7 +455,8 @@
         "cells-windows-elemi-ordered-and-missing",
         "cells-windows-elemi-singleton"
       ],
-      "observation": "Both complete required lanes passed locally on 1b3e4370ffaa1e32066df1195c0fb9853da2c56b. JavaScript: 2,939 parity tests and one expected guard skip. Native-required: 2,702 registered Node/WASM live comparisons; 2,940 parity-package tests with no skips, including the native-required guard; 150 native wrapper, 688 WASM, 28 core and 150 facade tests passed."
+      "observation": "Both complete required lanes passed locally on 1b3e4370ffaa1e32066df1195c0fb9853da2c56b. JavaScript: 2,939 parity tests and one expected guard skip. Native-required: 2,702 registered Node/WASM live comparisons; 2,940 parity-package tests with no skips, including the native-required guard; 150 native wrapper, 688 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "local-b02-1b3e4370-wasm",
@@ -535,7 +536,8 @@
         "cells-windows-elemi-ordered-and-missing",
         "cells-windows-elemi-singleton"
       ],
-      "observation": "Both complete required lanes passed locally on 1b3e4370ffaa1e32066df1195c0fb9853da2c56b. JavaScript: 2,939 parity tests and one expected guard skip. Native-required: 2,702 registered Node/WASM live comparisons; 2,940 parity-package tests with no skips, including the native-required guard; 150 native wrapper, 688 WASM, 28 core and 150 facade tests passed."
+      "observation": "Both complete required lanes passed locally on 1b3e4370ffaa1e32066df1195c0fb9853da2c56b. JavaScript: 2,939 parity tests and one expected guard skip. Native-required: 2,702 registered Node/WASM live comparisons; 2,940 parity-package tests with no skips, including the native-required guard; 150 native wrapper, 688 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "ci-b02-1b3e4370-node",
@@ -617,7 +619,8 @@
       ],
       "commit": "1b3e4370ffaa1e32066df1195c0fb9853da2c56b",
       "url": "https://github.com/rybosome/tspice/actions/runs/43570201253/job/132372707159",
-      "observation": "Inspected successful Linux Node 22 native-required job 132372707159 on 1b3e4370ffaa1e32066df1195c0fb9853da2c56b: 2,702 registered Node/WASM live comparisons; 2,940 parity-package tests with no skips, including the native-required guard; 150 native wrapper, 688 WASM, 28 core and 150 facade tests passed."
+      "observation": "Inspected successful Linux Node 22 native-required job 132372707159 on 1b3e4370ffaa1e32066df1195c0fb9853da2c56b: 2,702 registered Node/WASM live comparisons; 2,940 parity-package tests with no skips, including the native-required guard; 150 native wrapper, 688 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "ci-b02-1b3e4370-wasm",
@@ -699,7 +702,8 @@
       ],
       "commit": "1b3e4370ffaa1e32066df1195c0fb9853da2c56b",
       "url": "https://github.com/rybosome/tspice/actions/runs/43570201253/job/132372707159",
-      "observation": "Inspected successful Linux Node 22 native-required job 132372707159 on 1b3e4370ffaa1e32066df1195c0fb9853da2c56b: 2,702 registered Node/WASM live comparisons; 2,940 parity-package tests with no skips, including the native-required guard; 150 native wrapper, 688 WASM, 28 core and 150 facade tests passed."
+      "observation": "Inspected successful Linux Node 22 native-required job 132372707159 on 1b3e4370ffaa1e32066df1195c0fb9853da2c56b: 2,702 registered Node/WASM live comparisons; 2,940 parity-package tests with no skips, including the native-required guard; 150 native wrapper, 688 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     }
   ],
   "routines": [
@@ -711,52 +715,92 @@
       "scenarios": [
         {
           "caseId": "cells-windows-appndc-ordered-and-missing",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Ordered cell; inspect each new value and each membership result."
         },
         {
           "caseId": "cells-windows-appndc-independent-handles",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Interleave two independent typed cells; queries must honor the addressed storage."
         },
         {
           "caseId": "cells-windows-appndc-equal-repeat",
-          "coverage": ["error", "edge", "state"],
+          "coverage": [
+            "error",
+            "edge",
+            "state"
+          ],
           "observes": "Preserve duplicate data but signal NOTASET when membership requires a set. Observe the actual toolkit diagnostic SPICE(NOTASET)."
         },
         {
           "caseId": "cells-windows-appndc-descending-then-valid",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Revalidate unsorted appended data and duplicates before testing membership."
         },
         {
           "caseId": "cells-windows-appndc-exact-capacity",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Use every storage slot, inspect ordered and repeated physical values."
         },
         {
           "caseId": "cells-windows-appndc-full",
-          "coverage": ["error", "edge", "state"],
+          "coverage": [
+            "error",
+            "edge",
+            "state"
+          ],
           "observes": "Overflow after successful mutation reports the toolkit capacity error. Observe the actual toolkit diagnostic SPICE(CELLTOOSMALL)."
         },
         {
           "caseId": "cells-windows-appndc-zero-capacity",
-          "coverage": ["error", "edge", "state"],
+          "coverage": [
+            "error",
+            "edge",
+            "state"
+          ],
           "observes": "An ordinary zero-capacity cell cannot accept an element. Observe the actual toolkit diagnostic SPICE(CELLTOOSMALL)."
         },
         {
           "caseId": "cells-windows-appndc-complete-bytes",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Observe fitting multibyte scalar, truncation after whole scalar and exact stored byte membership."
         },
         {
           "caseId": "cells-windows-appndc-terminal-tab",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Public kit snapshot normalizes trailing whitespace; compare tabbed and untabbed probes on the actual stored cell."
         },
         {
           "caseId": "cells-windows-appndc-fortran-blanks",
-          "coverage": ["error", "edge", "state"],
+          "coverage": [
+            "error",
+            "edge",
+            "state"
+          ],
           "observes": "A padded item compares equal in orderedness, clearing set status on duplicate. Observe the actual toolkit diagnostic SPICE(NOTASET)."
         }
       ],
@@ -792,11 +836,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.appndc -> Node local handle lookup and mutex-serialized native addon -> shared tspice_appndc -> appndc_c. Independent oracle: locked sp.appndc invoking its matching public CSPICE routine.",
-          "executions": ["local-b02-1b3e4370-node", "ci-b02-1b3e4370-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -805,11 +850,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.appndc -> WASM module-owned pointer lookup, scoped buffers and compiled export -> shared tspice_appndc -> appndc_c. Independent oracle: locked sp.appndc invoking its matching public CSPICE routine.",
-          "executions": ["local-b02-1b3e4370-wasm", "ci-b02-1b3e4370-wasm"]
+          "executions": []
         }
       }
     },
@@ -821,42 +867,74 @@
       "scenarios": [
         {
           "caseId": "cells-windows-appndd-ordered-and-missing",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Ordered cell; inspect each new value and each membership result."
         },
         {
           "caseId": "cells-windows-appndd-independent-handles",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Interleave two independent typed cells; queries must honor the addressed storage."
         },
         {
           "caseId": "cells-windows-appndd-equal-repeat",
-          "coverage": ["error", "edge", "state"],
+          "coverage": [
+            "error",
+            "edge",
+            "state"
+          ],
           "observes": "Preserve duplicate data but signal NOTASET when membership requires a set. Observe the actual toolkit diagnostic SPICE(NOTASET)."
         },
         {
           "caseId": "cells-windows-appndd-descending-then-valid",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Revalidate unsorted appended data and duplicates before testing membership."
         },
         {
           "caseId": "cells-windows-appndd-exact-capacity",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Use every storage slot, inspect ordered and repeated physical values."
         },
         {
           "caseId": "cells-windows-appndd-full",
-          "coverage": ["error", "edge", "state"],
+          "coverage": [
+            "error",
+            "edge",
+            "state"
+          ],
           "observes": "Overflow after successful mutation reports the toolkit capacity error. Observe the actual toolkit diagnostic SPICE(CELLTOOSMALL)."
         },
         {
           "caseId": "cells-windows-appndd-zero-capacity",
-          "coverage": ["error", "edge", "state"],
+          "coverage": [
+            "error",
+            "edge",
+            "state"
+          ],
           "observes": "An ordinary zero-capacity cell cannot accept an element. Observe the actual toolkit diagnostic SPICE(CELLTOOSMALL)."
         },
         {
           "caseId": "cells-windows-appndd-signed-zero",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Toolkit equality treats signed zero values as duplicates; observation follows revalidation."
         }
       ],
@@ -874,11 +952,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.appndd -> Node local handle lookup and mutex-serialized native addon -> shared tspice_appndd -> appndd_c. Independent oracle: locked sp.appndd invoking its matching public CSPICE routine.",
-          "executions": ["local-b02-1b3e4370-node", "ci-b02-1b3e4370-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -886,11 +965,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.appndd -> WASM module-owned pointer lookup, scoped buffers and compiled export -> shared tspice_appndd -> appndd_c. Independent oracle: locked sp.appndd invoking its matching public CSPICE routine.",
-          "executions": ["local-b02-1b3e4370-wasm", "ci-b02-1b3e4370-wasm"]
+          "executions": []
         }
       }
     },
@@ -902,37 +982,65 @@
       "scenarios": [
         {
           "caseId": "cells-windows-appndi-ordered-and-missing",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Ordered cell; inspect each new value and each membership result."
         },
         {
           "caseId": "cells-windows-appndi-independent-handles",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Interleave two independent typed cells; queries must honor the addressed storage."
         },
         {
           "caseId": "cells-windows-appndi-equal-repeat",
-          "coverage": ["error", "edge", "state"],
+          "coverage": [
+            "error",
+            "edge",
+            "state"
+          ],
           "observes": "Preserve duplicate data but signal NOTASET when membership requires a set. Observe the actual toolkit diagnostic SPICE(NOTASET)."
         },
         {
           "caseId": "cells-windows-appndi-descending-then-valid",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Revalidate unsorted appended data and duplicates before testing membership."
         },
         {
           "caseId": "cells-windows-appndi-exact-capacity",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Use every storage slot, inspect ordered and repeated physical values."
         },
         {
           "caseId": "cells-windows-appndi-full",
-          "coverage": ["error", "edge", "state"],
+          "coverage": [
+            "error",
+            "edge",
+            "state"
+          ],
           "observes": "Overflow after successful mutation reports the toolkit capacity error. Observe the actual toolkit diagnostic SPICE(CELLTOOSMALL)."
         },
         {
           "caseId": "cells-windows-appndi-zero-capacity",
-          "coverage": ["error", "edge", "state"],
+          "coverage": [
+            "error",
+            "edge",
+            "state"
+          ],
           "observes": "An ordinary zero-capacity cell cannot accept an element. Observe the actual toolkit diagnostic SPICE(CELLTOOSMALL)."
         }
       ],
@@ -950,11 +1058,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.appndi -> Node local handle lookup and mutex-serialized native addon -> shared tspice_appndi -> appndi_c. Independent oracle: locked sp.appndi invoking its matching public CSPICE routine.",
-          "executions": ["local-b02-1b3e4370-node", "ci-b02-1b3e4370-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -962,11 +1071,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.appndi -> WASM module-owned pointer lookup, scoped buffers and compiled export -> shared tspice_appndi -> appndi_c. Independent oracle: locked sp.appndi invoking its matching public CSPICE routine.",
-          "executions": ["local-b02-1b3e4370-wasm", "ci-b02-1b3e4370-wasm"]
+          "executions": []
         }
       }
     },
@@ -978,92 +1088,164 @@
       "scenarios": [
         {
           "caseId": "cells-windows-copy-char-overwrite",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Copy replaces the destination contents but retains its capacity; both cells remain independent."
         },
         {
           "caseId": "cells-windows-copy-char-self",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Self-copy on initialized data retains canonical contents and membership."
         },
         {
           "caseId": "cells-windows-copy-char-small",
-          "coverage": ["error", "edge", "state"],
+          "coverage": [
+            "error",
+            "edge",
+            "state"
+          ],
           "observes": "Target cannot hold all source values. Observe the actual toolkit diagnostic SPICE(CELLTOOSMALL)."
         },
         {
           "caseId": "cells-windows-copy-char-empty",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Empty source clears the target cardinality without changing its capacity."
         },
         {
           "caseId": "cells-windows-copy-char-target-not-a-set",
-          "coverage": ["error", "edge", "state"],
+          "coverage": [
+            "error",
+            "edge",
+            "state"
+          ],
           "observes": "Target set flag remains false even when source data was sorted. Observe the actual toolkit diagnostic SPICE(NOTASET)."
         },
         {
           "caseId": "cells-windows-copy-double-overwrite",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Copy replaces the destination contents but retains its capacity; both cells remain independent."
         },
         {
           "caseId": "cells-windows-copy-double-self",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Self-copy on initialized data retains canonical contents and membership."
         },
         {
           "caseId": "cells-windows-copy-double-small",
-          "coverage": ["error", "edge", "state"],
+          "coverage": [
+            "error",
+            "edge",
+            "state"
+          ],
           "observes": "Target cannot hold all source values. Observe the actual toolkit diagnostic SPICE(CELLTOOSMALL)."
         },
         {
           "caseId": "cells-windows-copy-double-empty",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Empty source clears the target cardinality without changing its capacity."
         },
         {
           "caseId": "cells-windows-copy-double-target-not-a-set",
-          "coverage": ["error", "edge", "state"],
+          "coverage": [
+            "error",
+            "edge",
+            "state"
+          ],
           "observes": "Target set flag remains false even when source data was sorted. Observe the actual toolkit diagnostic SPICE(NOTASET)."
         },
         {
           "caseId": "cells-windows-copy-int-overwrite",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Copy replaces the destination contents but retains its capacity; both cells remain independent."
         },
         {
           "caseId": "cells-windows-copy-int-self",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Self-copy on initialized data retains canonical contents and membership."
         },
         {
           "caseId": "cells-windows-copy-int-small",
-          "coverage": ["error", "edge", "state"],
+          "coverage": [
+            "error",
+            "edge",
+            "state"
+          ],
           "observes": "Target cannot hold all source values. Observe the actual toolkit diagnostic SPICE(CELLTOOSMALL)."
         },
         {
           "caseId": "cells-windows-copy-int-empty",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Empty source clears the target cardinality without changing its capacity."
         },
         {
           "caseId": "cells-windows-copy-int-target-not-a-set",
-          "coverage": ["error", "edge", "state"],
+          "coverage": [
+            "error",
+            "edge",
+            "state"
+          ],
           "observes": "Target set flag remains false even when source data was sorted. Observe the actual toolkit diagnostic SPICE(NOTASET)."
         },
         {
           "caseId": "cells-windows-copy-char-short-row",
-          "coverage": ["error", "edge", "state"],
+          "coverage": [
+            "error",
+            "edge",
+            "state"
+          ],
           "observes": "Widths differ and significant source data cannot fit. Observe the actual toolkit diagnostic SPICE(ELEMENTSTOOSHORT)."
         },
         {
           "caseId": "cells-windows-copy-char-small-control-width",
-          "coverage": ["error", "edge", "state"],
+          "coverage": [
+            "error",
+            "edge",
+            "state"
+          ],
           "observes": "Fortran character-cell controls require five physical text characters; a four-byte C row cannot represent them. Observe the actual toolkit diagnostic SPICE(INSUFFLEN)."
         },
         {
           "caseId": "cells-windows-copy-char-blank-tail",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "A narrower target can still represent significant bytes when remaining bytes are only spaces."
         }
       ],
@@ -1104,11 +1286,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.copy -> Node local handle lookup and mutex-serialized native addon -> shared tspice_copy -> copy_c. Independent oracle: typed copy_c from the locked SpiceyPy library on the caller’s existing source and destination.",
-          "executions": ["local-b02-1b3e4370-node", "ci-b02-1b3e4370-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1117,11 +1300,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.copy -> WASM module-owned pointer lookup, scoped buffers and compiled export -> shared tspice_copy -> copy_c. Independent oracle: typed copy_c from the locked SpiceyPy library on the caller’s existing source and destination.",
-          "executions": ["local-b02-1b3e4370-wasm", "ci-b02-1b3e4370-wasm"]
+          "executions": []
         }
       }
     },
@@ -1133,52 +1317,92 @@
       "scenarios": [
         {
           "caseId": "cells-windows-elemc-ordered-and-missing",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Ordered cell; inspect each new value and each membership result."
         },
         {
           "caseId": "cells-windows-elemc-independent-handles",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Interleave two independent typed cells; queries must honor the addressed storage."
         },
         {
           "caseId": "cells-windows-elemc-equal-repeat",
-          "coverage": ["error", "edge", "state"],
+          "coverage": [
+            "error",
+            "edge",
+            "state"
+          ],
           "observes": "Preserve duplicate data but signal NOTASET when membership requires a set. Observe the actual toolkit diagnostic SPICE(NOTASET)."
         },
         {
           "caseId": "cells-windows-elemc-descending-then-valid",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Revalidate unsorted appended data and duplicates before testing membership."
         },
         {
           "caseId": "cells-windows-elemc-empty",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Legitimate absence on an empty allocated cell with no insert."
         },
         {
           "caseId": "cells-windows-elemc-descending-reject",
-          "coverage": ["error", "edge", "state"],
+          "coverage": [
+            "error",
+            "edge",
+            "state"
+          ],
           "observes": "Distinct out-of-order values clear the flag even without a duplicate. Observe the actual toolkit diagnostic SPICE(NOTASET)."
         },
         {
           "caseId": "cells-windows-elemc-singleton",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Compare equal, smaller and greater values on a single element."
         },
         {
           "caseId": "cells-windows-elemc-complete-bytes",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Observe fitting multibyte scalar, truncation after whole scalar and exact stored byte membership."
         },
         {
           "caseId": "cells-windows-elemc-terminal-tab",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Public kit snapshot normalizes trailing whitespace; compare tabbed and untabbed probes on the actual stored cell."
         },
         {
           "caseId": "cells-windows-elemc-fortran-blanks",
-          "coverage": ["error", "edge", "state"],
+          "coverage": [
+            "error",
+            "edge",
+            "state"
+          ],
           "observes": "A padded item compares equal in orderedness, clearing set status on duplicate. Observe the actual toolkit diagnostic SPICE(NOTASET)."
         }
       ],
@@ -1214,11 +1438,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.elemc -> Node local handle lookup and mutex-serialized native addon -> shared tspice_elemc -> elemc_c. Independent oracle: locked sp.elemc invoking its matching public CSPICE routine.",
-          "executions": ["local-b02-1b3e4370-node", "ci-b02-1b3e4370-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1227,11 +1452,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.elemc -> WASM module-owned pointer lookup, scoped buffers and compiled export -> shared tspice_elemc -> elemc_c. Independent oracle: locked sp.elemc invoking its matching public CSPICE routine.",
-          "executions": ["local-b02-1b3e4370-wasm", "ci-b02-1b3e4370-wasm"]
+          "executions": []
         }
       }
     },
@@ -1243,42 +1469,74 @@
       "scenarios": [
         {
           "caseId": "cells-windows-elemd-ordered-and-missing",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Ordered cell; inspect each new value and each membership result."
         },
         {
           "caseId": "cells-windows-elemd-independent-handles",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Interleave two independent typed cells; queries must honor the addressed storage."
         },
         {
           "caseId": "cells-windows-elemd-equal-repeat",
-          "coverage": ["error", "edge", "state"],
+          "coverage": [
+            "error",
+            "edge",
+            "state"
+          ],
           "observes": "Preserve duplicate data but signal NOTASET when membership requires a set. Observe the actual toolkit diagnostic SPICE(NOTASET)."
         },
         {
           "caseId": "cells-windows-elemd-descending-then-valid",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Revalidate unsorted appended data and duplicates before testing membership."
         },
         {
           "caseId": "cells-windows-elemd-empty",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Legitimate absence on an empty allocated cell with no insert."
         },
         {
           "caseId": "cells-windows-elemd-descending-reject",
-          "coverage": ["error", "edge", "state"],
+          "coverage": [
+            "error",
+            "edge",
+            "state"
+          ],
           "observes": "Distinct out-of-order values clear the flag even without a duplicate. Observe the actual toolkit diagnostic SPICE(NOTASET)."
         },
         {
           "caseId": "cells-windows-elemd-singleton",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Compare equal, smaller and greater values on a single element."
         },
         {
           "caseId": "cells-windows-elemd-signed-zero",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Toolkit equality treats signed zero values as duplicates; observation follows revalidation."
         }
       ],
@@ -1296,11 +1554,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.elemd -> Node local handle lookup and mutex-serialized native addon -> shared tspice_elemd -> elemd_c. Independent oracle: locked sp.elemd invoking its matching public CSPICE routine.",
-          "executions": ["local-b02-1b3e4370-node", "ci-b02-1b3e4370-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1308,11 +1567,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.elemd -> WASM module-owned pointer lookup, scoped buffers and compiled export -> shared tspice_elemd -> elemd_c. Independent oracle: locked sp.elemd invoking its matching public CSPICE routine.",
-          "executions": ["local-b02-1b3e4370-wasm", "ci-b02-1b3e4370-wasm"]
+          "executions": []
         }
       }
     },
@@ -1324,37 +1584,65 @@
       "scenarios": [
         {
           "caseId": "cells-windows-elemi-ordered-and-missing",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Ordered cell; inspect each new value and each membership result."
         },
         {
           "caseId": "cells-windows-elemi-independent-handles",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Interleave two independent typed cells; queries must honor the addressed storage."
         },
         {
           "caseId": "cells-windows-elemi-equal-repeat",
-          "coverage": ["error", "edge", "state"],
+          "coverage": [
+            "error",
+            "edge",
+            "state"
+          ],
           "observes": "Preserve duplicate data but signal NOTASET when membership requires a set. Observe the actual toolkit diagnostic SPICE(NOTASET)."
         },
         {
           "caseId": "cells-windows-elemi-descending-then-valid",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Revalidate unsorted appended data and duplicates before testing membership."
         },
         {
           "caseId": "cells-windows-elemi-empty",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Legitimate absence on an empty allocated cell with no insert."
         },
         {
           "caseId": "cells-windows-elemi-descending-reject",
-          "coverage": ["error", "edge", "state"],
+          "coverage": [
+            "error",
+            "edge",
+            "state"
+          ],
           "observes": "Distinct out-of-order values clear the flag even without a duplicate. Observe the actual toolkit diagnostic SPICE(NOTASET)."
         },
         {
           "caseId": "cells-windows-elemi-singleton",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Compare equal, smaller and greater values on a single element."
         }
       ],
@@ -1372,11 +1660,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.elemi -> Node local handle lookup and mutex-serialized native addon -> shared tspice_elemi -> elemi_c. Independent oracle: locked sp.elemi invoking its matching public CSPICE routine.",
-          "executions": ["local-b02-1b3e4370-node", "ci-b02-1b3e4370-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1384,11 +1673,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.elemi -> WASM module-owned pointer lookup, scoped buffers and compiled export -> shared tspice_elemi -> elemi_c. Independent oracle: locked sp.elemi invoking its matching public CSPICE routine.",
-          "executions": ["local-b02-1b3e4370-wasm", "ci-b02-1b3e4370-wasm"]
+          "executions": []
         }
       }
     }

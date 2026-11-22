@@ -188,7 +188,8 @@
       ],
       "id": "local-cp01-17f11884fb5b-node",
       "kind": "local",
-      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 17f11884fb5bdef7cbaf84bd480d4b8edde3d310. The native-required lane completed 3788 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45009595818/job/137168748216"
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 17f11884fb5bdef7cbaf84bd480d4b8edde3d310. The native-required lane completed 3788 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45009595818/job/137168748216",
+      "historical": true
     },
     {
       "backend": "node",
@@ -222,7 +223,8 @@
       "kind": "ci",
       "commit": "2851d19aa900e30c688b0d1c756a35357f10eebc",
       "url": "https://github.com/rybosome/tspice/actions/runs/45012853638/job/137178762153",
-      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 3788 live comparisons without unexpected skips."
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 3788 live comparisons without unexpected skips.",
+      "historical": true
     },
     {
       "backend": "wasm",
@@ -254,7 +256,8 @@
       ],
       "id": "local-cp01-17f11884fb5b-wasm",
       "kind": "local",
-      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 17f11884fb5bdef7cbaf84bd480d4b8edde3d310. The native-required lane completed 3788 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45009595818/job/137168748216"
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 17f11884fb5bdef7cbaf84bd480d4b8edde3d310. The native-required lane completed 3788 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45009595818/job/137168748216",
+      "historical": true
     },
     {
       "backend": "wasm",
@@ -288,7 +291,8 @@
       "kind": "ci",
       "commit": "2851d19aa900e30c688b0d1c756a35357f10eebc",
       "url": "https://github.com/rybosome/tspice/actions/runs/45012853638/job/137178762153",
-      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 3788 live comparisons without unexpected skips."
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 3788 live comparisons without unexpected skips.",
+      "historical": true
     }
   ],
   "routines": [
@@ -300,12 +304,17 @@
       "scenarios": [
         {
           "caseId": "time-b1900-constant-value",
-          "coverage": ["success"],
+          "coverage": [
+            "success"
+          ],
           "observes": "Actual raw.b1900 scalar reaches StepOutput.value unchanged and is compared with the matching direct locked SpiceyPy operation; repeated calls observe unchanged result across kernel clear and error reset."
         },
         {
           "caseId": "time-b1900-constant-repeat-after-reset",
-          "coverage": ["success", "state"],
+          "coverage": [
+            "success",
+            "state"
+          ],
           "observes": "Actual raw.b1900 scalar reaches StepOutput.value unchanged and is compared with the matching direct locked SpiceyPy operation; repeated calls observe unchanged result across kernel clear and error reset."
         }
       ],
@@ -323,14 +332,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.b1900 -> Node adapter -> registered native handler under g_cspice_mutex -> tspice_b1900 shared shim -> b1900_c; scalar returned unchanged.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -338,14 +345,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.b1900 -> WASM adapter -> typed/build-configured/binary _tspice_b1900 -> tspice_b1900 shared shim -> b1900_c; scalar returned unchanged.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -357,12 +362,17 @@
       "scenarios": [
         {
           "caseId": "time-j1950-constant-value",
-          "coverage": ["success"],
+          "coverage": [
+            "success"
+          ],
           "observes": "Actual raw.j1950 scalar reaches StepOutput.value unchanged and is compared with the matching direct locked SpiceyPy operation; repeated calls observe unchanged result across kernel clear and error reset."
         },
         {
           "caseId": "time-j1950-constant-repeat-after-reset",
-          "coverage": ["success", "state"],
+          "coverage": [
+            "success",
+            "state"
+          ],
           "observes": "Actual raw.j1950 scalar reaches StepOutput.value unchanged and is compared with the matching direct locked SpiceyPy operation; repeated calls observe unchanged result across kernel clear and error reset."
         }
       ],
@@ -380,14 +390,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.j1950 -> Node adapter -> registered native handler under g_cspice_mutex -> tspice_j1950 shared shim -> j1950_c; scalar returned unchanged.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -395,14 +403,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.j1950 -> WASM adapter -> typed/build-configured/binary _tspice_j1950 -> tspice_j1950 shared shim -> j1950_c; scalar returned unchanged.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -414,12 +420,17 @@
       "scenarios": [
         {
           "caseId": "time-j2100-constant-value",
-          "coverage": ["success"],
+          "coverage": [
+            "success"
+          ],
           "observes": "Actual raw.j2100 scalar reaches StepOutput.value unchanged and is compared with the matching direct locked SpiceyPy operation; repeated calls observe unchanged result across kernel clear and error reset."
         },
         {
           "caseId": "time-j2100-constant-repeat-after-reset",
-          "coverage": ["success", "state"],
+          "coverage": [
+            "success",
+            "state"
+          ],
           "observes": "Actual raw.j2100 scalar reaches StepOutput.value unchanged and is compared with the matching direct locked SpiceyPy operation; repeated calls observe unchanged result across kernel clear and error reset."
         }
       ],
@@ -437,14 +448,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.j2100 -> Node adapter -> registered native handler under g_cspice_mutex -> tspice_j2100 shared shim -> j2100_c; scalar returned unchanged.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -452,14 +461,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.j2100 -> WASM adapter -> typed/build-configured/binary _tspice_j2100 -> tspice_j2100 shared shim -> j2100_c; scalar returned unchanged.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -471,12 +478,17 @@
       "scenarios": [
         {
           "caseId": "time-jyear-constant-value",
-          "coverage": ["success"],
+          "coverage": [
+            "success"
+          ],
           "observes": "Actual raw.jyear scalar reaches StepOutput.value unchanged and is compared with the matching direct locked SpiceyPy operation; repeated calls observe unchanged result across kernel clear and error reset."
         },
         {
           "caseId": "time-jyear-constant-repeat-after-reset",
-          "coverage": ["success", "state"],
+          "coverage": [
+            "success",
+            "state"
+          ],
           "observes": "Actual raw.jyear scalar reaches StepOutput.value unchanged and is compared with the matching direct locked SpiceyPy operation; repeated calls observe unchanged result across kernel clear and error reset."
         }
       ],
@@ -494,14 +506,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.jyear -> Node adapter -> registered native handler under g_cspice_mutex -> tspice_jyear shared shim -> jyear_c; scalar returned unchanged.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -509,14 +519,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.jyear -> WASM adapter -> typed/build-configured/binary _tspice_jyear -> tspice_jyear shared shim -> jyear_c; scalar returned unchanged.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -528,12 +536,17 @@
       "scenarios": [
         {
           "caseId": "time-tyear-constant-value",
-          "coverage": ["success"],
+          "coverage": [
+            "success"
+          ],
           "observes": "Actual raw.tyear scalar reaches StepOutput.value unchanged and is compared with the matching direct locked SpiceyPy operation; repeated calls observe unchanged result across kernel clear and error reset."
         },
         {
           "caseId": "time-tyear-constant-repeat-after-reset",
-          "coverage": ["success", "state"],
+          "coverage": [
+            "success",
+            "state"
+          ],
           "observes": "Actual raw.tyear scalar reaches StepOutput.value unchanged and is compared with the matching direct locked SpiceyPy operation; repeated calls observe unchanged result across kernel clear and error reset."
         }
       ],
@@ -551,14 +564,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.tyear -> Node adapter -> registered native handler under g_cspice_mutex -> tspice_tyear shared shim -> tyear_c; scalar returned unchanged.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -566,14 +577,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.tyear -> WASM adapter -> typed/build-configured/binary _tspice_tyear -> tspice_tyear shared shim -> tyear_c; scalar returned unchanged.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -585,12 +594,17 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-clight-constant-value",
-          "coverage": ["success"],
+          "coverage": [
+            "success"
+          ],
           "observes": "Actual raw.clight scalar reaches StepOutput.value unchanged and is compared with the matching direct locked SpiceyPy operation; repeated calls observe unchanged result across kernel clear and error reset."
         },
         {
           "caseId": "coords-vectors-clight-constant-repeat-after-reset",
-          "coverage": ["success", "state"],
+          "coverage": [
+            "success",
+            "state"
+          ],
           "observes": "Actual raw.clight scalar reaches StepOutput.value unchanged and is compared with the matching direct locked SpiceyPy operation; repeated calls observe unchanged result across kernel clear and error reset."
         }
       ],
@@ -608,14 +622,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.clight -> Node adapter -> registered native handler under g_cspice_mutex -> tspice_clight shared shim -> clight_c; scalar returned unchanged.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -623,14 +635,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.clight -> WASM adapter -> typed/build-configured/binary _tspice_clight -> tspice_clight shared shim -> clight_c; scalar returned unchanged.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -642,12 +652,17 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-dpmax-constant-value",
-          "coverage": ["success"],
+          "coverage": [
+            "success"
+          ],
           "observes": "Actual raw.dpmax scalar reaches StepOutput.value unchanged and is compared with the matching direct locked SpiceyPy operation; repeated calls observe unchanged result across kernel clear and error reset."
         },
         {
           "caseId": "coords-vectors-dpmax-constant-repeat-after-reset",
-          "coverage": ["success", "state"],
+          "coverage": [
+            "success",
+            "state"
+          ],
           "observes": "Actual raw.dpmax scalar reaches StepOutput.value unchanged and is compared with the matching direct locked SpiceyPy operation; repeated calls observe unchanged result across kernel clear and error reset."
         }
       ],
@@ -665,14 +680,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.dpmax -> Node adapter -> registered native handler under g_cspice_mutex -> tspice_dpmax shared shim -> dpmax_c; scalar returned unchanged.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -680,14 +693,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.dpmax -> WASM adapter -> typed/build-configured/binary _tspice_dpmax -> tspice_dpmax shared shim -> dpmax_c; scalar returned unchanged.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -699,12 +710,17 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-dpmin-constant-value",
-          "coverage": ["success"],
+          "coverage": [
+            "success"
+          ],
           "observes": "Actual raw.dpmin scalar reaches StepOutput.value unchanged and is compared with the matching direct locked SpiceyPy operation; repeated calls observe unchanged result across kernel clear and error reset."
         },
         {
           "caseId": "coords-vectors-dpmin-constant-repeat-after-reset",
-          "coverage": ["success", "state"],
+          "coverage": [
+            "success",
+            "state"
+          ],
           "observes": "Actual raw.dpmin scalar reaches StepOutput.value unchanged and is compared with the matching direct locked SpiceyPy operation; repeated calls observe unchanged result across kernel clear and error reset."
         }
       ],
@@ -722,14 +738,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.dpmin -> Node adapter -> registered native handler under g_cspice_mutex -> tspice_dpmin shared shim -> dpmin_c; scalar returned unchanged.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -737,14 +751,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.dpmin -> WASM adapter -> typed/build-configured/binary _tspice_dpmin -> tspice_dpmin shared shim -> dpmin_c; scalar returned unchanged.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -756,12 +768,17 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-intmax-constant-value",
-          "coverage": ["success"],
+          "coverage": [
+            "success"
+          ],
           "observes": "Actual raw.intmax scalar reaches StepOutput.value unchanged and is compared with the matching direct locked SpiceyPy operation; repeated calls observe unchanged result across kernel clear and error reset."
         },
         {
           "caseId": "coords-vectors-intmax-constant-repeat-after-reset",
-          "coverage": ["success", "state"],
+          "coverage": [
+            "success",
+            "state"
+          ],
           "observes": "Actual raw.intmax scalar reaches StepOutput.value unchanged and is compared with the matching direct locked SpiceyPy operation; repeated calls observe unchanged result across kernel clear and error reset."
         }
       ],
@@ -779,14 +796,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.intmax -> Node adapter -> registered native handler under g_cspice_mutex -> tspice_intmax shared shim -> intmax_c; scalar returned unchanged.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -794,14 +809,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.intmax -> WASM adapter -> typed/build-configured/binary _tspice_intmax -> tspice_intmax shared shim -> intmax_c; scalar returned unchanged.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -813,12 +826,17 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-intmin-constant-value",
-          "coverage": ["success"],
+          "coverage": [
+            "success"
+          ],
           "observes": "Actual raw.intmin scalar reaches StepOutput.value unchanged and is compared with the matching direct locked SpiceyPy operation; repeated calls observe unchanged result across kernel clear and error reset."
         },
         {
           "caseId": "coords-vectors-intmin-constant-repeat-after-reset",
-          "coverage": ["success", "state"],
+          "coverage": [
+            "success",
+            "state"
+          ],
           "observes": "Actual raw.intmin scalar reaches StepOutput.value unchanged and is compared with the matching direct locked SpiceyPy operation; repeated calls observe unchanged result across kernel clear and error reset."
         }
       ],
@@ -836,14 +854,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.intmin -> Node adapter -> registered native handler under g_cspice_mutex -> tspice_intmin shared shim -> intmin_c; scalar returned unchanged.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -851,14 +867,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.intmin -> WASM adapter -> typed/build-configured/binary _tspice_intmin -> tspice_intmin shared shim -> intmin_c; scalar returned unchanged.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     }

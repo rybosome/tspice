@@ -492,7 +492,8 @@
       ],
       "id": "local-cp01-17f11884fb5b-node",
       "kind": "local",
-      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 17f11884fb5bdef7cbaf84bd480d4b8edde3d310. The native-required lane completed 3788 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45009595818/job/137168748216"
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 17f11884fb5bdef7cbaf84bd480d4b8edde3d310. The native-required lane completed 3788 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45009595818/job/137168748216",
+      "historical": true
     },
     {
       "backend": "node",
@@ -544,7 +545,8 @@
       "kind": "ci",
       "commit": "2851d19aa900e30c688b0d1c756a35357f10eebc",
       "url": "https://github.com/rybosome/tspice/actions/runs/45012853638/job/137178762153",
-      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 3788 live comparisons without unexpected skips."
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 3788 live comparisons without unexpected skips.",
+      "historical": true
     },
     {
       "backend": "wasm",
@@ -594,7 +596,8 @@
       ],
       "id": "local-cp01-17f11884fb5b-wasm",
       "kind": "local",
-      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 17f11884fb5bdef7cbaf84bd480d4b8edde3d310. The native-required lane completed 3788 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45009595818/job/137168748216"
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 17f11884fb5bdef7cbaf84bd480d4b8edde3d310. The native-required lane completed 3788 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45009595818/job/137168748216",
+      "historical": true
     },
     {
       "backend": "wasm",
@@ -646,7 +649,8 @@
       "kind": "ci",
       "commit": "2851d19aa900e30c688b0d1c756a35357f10eebc",
       "url": "https://github.com/rybosome/tspice/actions/runs/45012853638/job/137178762153",
-      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 3788 live comparisons without unexpected skips."
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 3788 live comparisons without unexpected skips.",
+      "historical": true
     }
   ],
   "routines": [
@@ -658,22 +662,33 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-vlcom-distinct-coefficients",
-          "coverage": ["success"],
+          "coverage": [
+            "success"
+          ],
           "observes": "Observe all three signed components for unequal coefficients and vectors; fractional/negative coefficients distinguish swapped or omitted arguments. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; every output field is retained."
         },
         {
           "caseId": "coords-vectors-vlcom-zero-and-identity-coefficients",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe both-zero output and each separate identity coefficient, distinguishing which vector is selected. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; every output field is retained."
         },
         {
           "caseId": "coords-vectors-vlcom-dyadic-cancellation",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe exact cancellation with exactly representable coefficients/products; this is not a universal cancellation claim across compiler builds. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; every output field is retained."
         },
         {
           "caseId": "coords-vectors-vlcom-scaled-magnitudes",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe all components for 1e200 and 1e-200 vector magnitudes with the same mixed coefficients; focused scale-normalized checks distinguish tiny nonzero outputs from zero. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; every output field is retained."
         }
       ],
@@ -695,7 +710,9 @@
             "packages/backend-node/test/vector-combinations-domain.test.ts",
             "packages/backend-wasm/test/vector-combinations-allocations.test.ts"
           ],
-          "caseIds": ["coords-vectors-vlcom-distinct-coefficients"]
+          "caseIds": [
+            "coords-vectors-vlcom-distinct-coefficients"
+          ]
         }
       ],
       "backends": {
@@ -708,14 +725,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vlcom -> Node typed adapter -> registered native handler under global CSPICE mutex -> tspice_vlcom shared C shim -> vlcom_c; complete scalar/vector result copied and propagated.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -726,14 +741,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vlcom -> WASM typed adapter -> configured _tspice_vlcom export -> tspice_vlcom shared C shim -> vlcom_c; complete result copied from heap before withAllocs cleanup. Regenerated artifact/export and execution evidence remain required.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -745,22 +758,33 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-vlcom3-distinct-coefficients",
-          "coverage": ["success"],
+          "coverage": [
+            "success"
+          ],
           "observes": "Observe every component of a three-term combination with unequal coefficients and all three distinct vectors; omitting or mispairing the third term changes the result. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; every output field is retained."
         },
         {
           "caseId": "coords-vectors-vlcom3-each-coefficient-slot",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Select each of the three vector arguments separately through unit/zero coefficients. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; every output field is retained."
         },
         {
           "caseId": "coords-vectors-vlcom3-zero-and-dyadic-cancellation",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe both all-zero coefficients and a three-term cancellation with exactly representable products; no universal cross-build cancellation equality is claimed. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; every output field is retained."
         },
         {
           "caseId": "coords-vectors-vlcom3-scaled-magnitudes",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe each output component at tiny/huge input scales; focused per-component scale-normalized assertions supplement the ordinary comparator. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; every output field is retained."
         }
       ],
@@ -782,7 +806,9 @@
             "packages/backend-node/test/vector-combinations-domain.test.ts",
             "packages/backend-wasm/test/vector-combinations-allocations.test.ts"
           ],
-          "caseIds": ["coords-vectors-vlcom3-distinct-coefficients"]
+          "caseIds": [
+            "coords-vectors-vlcom3-distinct-coefficients"
+          ]
         }
       ],
       "backends": {
@@ -795,14 +821,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vlcom3 -> Node typed adapter -> registered native handler under global CSPICE mutex -> tspice_vlcom3 shared C shim -> vlcom3_c; complete scalar/vector result copied and propagated.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -813,14 +837,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vlcom3 -> WASM typed adapter -> configured _tspice_vlcom3 export -> tspice_vlcom3 shared C shim -> vlcom3_c; complete result copied from heap before withAllocs cleanup. Regenerated artifact/export and execution evidence remain required.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -832,27 +854,41 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-vperp-mixed-and-reversed",
-          "coverage": ["success"],
+          "coverage": [
+            "success"
+          ],
           "observes": "Observe all components of a perpendicular to b and b perpendicular to a; asymmetric signed vectors distinguish reversed arguments. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; every output field is retained."
         },
         {
           "caseId": "coords-vectors-vperp-zero-input-and-zero-reference",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe the actual zero result for a zero source, a nonzero source with zero reference, and two zero vectors. The zero-reference result agrees with the pinned source and live oracle, and its conflict with NAIF prose is documented. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; every output field is retained."
         },
         {
           "caseId": "coords-vectors-vperp-parallel-opposed-orthogonal",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe zero for dyadic parallel/opposed vectors and the unchanged ordinary perpendicular component for an orthogonal pair. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; every output field is retained."
         },
         {
           "caseId": "coords-vectors-vperp-reference-scale-and-sign",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe the full result when the reference is huge, tiny or sign-reversed; this checks direction rather than a required unit-length reference. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; every output field is retained."
         },
         {
           "caseId": "coords-vectors-vperp-input-scaled-magnitudes",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe large/tiny perpendicular components with a fixed mixed reference; focused scale-normalized checks prevent absolute tolerance from hiding tiny output. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; every output field is retained."
         }
       ],
@@ -890,7 +926,9 @@
             "packages/backend-node/test/vector-combinations-domain.test.ts",
             "packages/backend-wasm/test/vector-combinations-allocations.test.ts"
           ],
-          "caseIds": ["coords-vectors-vperp-mixed-and-reversed"]
+          "caseIds": [
+            "coords-vectors-vperp-mixed-and-reversed"
+          ]
         }
       ],
       "backends": {
@@ -904,14 +942,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vperp -> Node typed adapter -> registered native handler under global CSPICE mutex -> tspice_vperp shared C shim -> vperp_c; complete scalar/vector result copied and propagated.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -923,14 +959,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vperp -> WASM typed adapter -> configured _tspice_vperp export -> tspice_vperp shared C shim -> vperp_c; complete result copied from heap before withAllocs cleanup. Regenerated artifact/export and execution evidence remain required.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -942,27 +976,41 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-vproj-mixed-and-reversed",
-          "coverage": ["success"],
+          "coverage": [
+            "success"
+          ],
           "observes": "Observe all components of projecting a onto b and b onto a; unequal signed vectors distinguish direction and argument order. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; every output field is retained."
         },
         {
           "caseId": "coords-vectors-vproj-zero-input-and-zero-reference",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe the zero output when source or receiving reference is zero, including both-zero. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; every output field is retained."
         },
         {
           "caseId": "coords-vectors-vproj-parallel-opposed-orthogonal",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe full projection for parallel/opposed directions and zero for the orthogonal pair. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; every output field is retained."
         },
         {
           "caseId": "coords-vectors-vproj-reference-scale-and-sign",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe projection invariance to the tested finite magnitude/sign changes of the receiving reference, without imposing a unit-vector precondition. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; every output field is retained."
         },
         {
           "caseId": "coords-vectors-vproj-input-scaled-magnitudes",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe all large/tiny projection components; focused scale-normalized checks distinguish small nonzero projections. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; every output field is retained."
         }
       ],
@@ -984,7 +1032,9 @@
             "packages/backend-node/test/vector-combinations-domain.test.ts",
             "packages/backend-wasm/test/vector-combinations-allocations.test.ts"
           ],
-          "caseIds": ["coords-vectors-vproj-mixed-and-reversed"]
+          "caseIds": [
+            "coords-vectors-vproj-mixed-and-reversed"
+          ]
         }
       ],
       "backends": {
@@ -997,14 +1047,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vproj -> Node typed adapter -> registered native handler under global CSPICE mutex -> tspice_vproj shared C shim -> vproj_c; complete scalar/vector result copied and propagated.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1015,14 +1063,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vproj -> WASM typed adapter -> configured _tspice_vproj export -> tspice_vproj shared C shim -> vproj_c; complete result copied from heap before withAllocs cleanup. Regenerated artifact/export and execution evidence remain required.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1034,27 +1080,41 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-vrel-mixed-and-reversed",
-          "coverage": ["success"],
+          "coverage": [
+            "success"
+          ],
           "observes": "Observe the scalar relative difference for unequal signed vectors in both orders. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; every output field is retained."
         },
         {
           "caseId": "coords-vectors-vrel-zero-and-identical",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe zero for both-zero and equal nonzero inputs, and one when exactly one ordinary input is zero. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; every output field is retained."
         },
         {
           "caseId": "coords-vectors-vrel-parallel-and-opposed",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe unequal parallel magnitudes and equal-magnitude opposition, distinguishing relative scale from separation angle. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; every output field is retained."
         },
         {
           "caseId": "coords-vectors-vrel-scaled-magnitudes",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe the dimensionless ratio for matching tiny/huge scalings of the same unequal vectors. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; every output field is retained."
         },
         {
           "caseId": "coords-vectors-vrel-nearby-large-components",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe a small nonzero relative difference between vectors near 1e15; a focused result-times-1e15 assertion separately prevents zero passing the shared absolute tolerance. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; every output field is retained."
         }
       ],
@@ -1076,7 +1136,9 @@
             "packages/backend-node/test/vector-combinations-domain.test.ts",
             "packages/backend-wasm/test/vector-combinations-allocations.test.ts"
           ],
-          "caseIds": ["coords-vectors-vrel-mixed-and-reversed"]
+          "caseIds": [
+            "coords-vectors-vrel-mixed-and-reversed"
+          ]
         }
       ],
       "backends": {
@@ -1089,14 +1151,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vrel -> Node typed adapter -> registered native handler under global CSPICE mutex -> tspice_vrel shared C shim -> vrel_c; complete scalar/vector result copied and propagated.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1107,14 +1167,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vrel -> WASM typed adapter -> configured _tspice_vrel export -> tspice_vrel shared C shim -> vrel_c; complete result copied from heap before withAllocs cleanup. Regenerated artifact/export and execution evidence remain required.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1126,32 +1184,49 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-vrotv-right-handed-basis",
-          "coverage": ["success"],
+          "coverage": [
+            "success"
+          ],
           "observes": "Observe rotations about all three positive coordinate axes at pi/2; component signs distinguish active from passive rotation. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; every output field is retained."
         },
         {
           "caseId": "coords-vectors-vrotv-mixed-axis-and-reversed-angle",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe all components for a nonunit mixed axis and opposite signed angles. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; every output field is retained."
         },
         {
           "caseId": "coords-vectors-vrotv-zero-vector-and-zero-axis",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe zero-vector rotation and owned input copies for zero axis, including maximum and subnormal components; exact focused comparison preserves all copy values. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; every output field is retained."
         },
         {
           "caseId": "coords-vectors-vrotv-axis-scale-and-sign",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe normalization of tiny/huge axes and reversed axis direction at fixed angle. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; every output field is retained."
         },
         {
           "caseId": "coords-vectors-vrotv-zero-and-unwrapped-angle",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe zero angle and signed angles outside a full turn without replacing the CSPICE angle input. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; every output field is retained."
         },
         {
           "caseId": "coords-vectors-vrotv-parallel-axis",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe a dyadic vector aligned with its axis under a nonzero rotation angle. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; every output field is retained."
         }
       ],
@@ -1173,7 +1248,9 @@
             "packages/backend-node/test/vector-combinations-domain.test.ts",
             "packages/backend-wasm/test/vector-combinations-allocations.test.ts"
           ],
-          "caseIds": ["coords-vectors-vrotv-right-handed-basis"]
+          "caseIds": [
+            "coords-vectors-vrotv-right-handed-basis"
+          ]
         }
       ],
       "backends": {
@@ -1186,14 +1263,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vrotv -> Node typed adapter -> registered native handler under global CSPICE mutex -> tspice_vrotv shared C shim -> vrotv_c; complete scalar/vector result copied and propagated.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1204,14 +1279,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vrotv -> WASM typed adapter -> configured _tspice_vrotv export -> tspice_vrotv shared C shim -> vrotv_c; complete result copied from heap before withAllocs cleanup. Regenerated artifact/export and execution evidence remain required.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1223,27 +1296,41 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-rotvec-coordinate-rotation-basis",
-          "coverage": ["success"],
+          "coverage": [
+            "success"
+          ],
           "observes": "Observe all vector components under each of the three coordinate rotations; positive angle signs distinguish the passive convention. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; every output field is retained."
         },
         {
           "caseId": "coords-vectors-rotvec-mixed-negative-angle",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe mixed vector components and signed angles on distinct axes. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; every output field is retained."
         },
         {
           "caseId": "coords-vectors-rotvec-wrapped-axis-indices",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe zero, positive wrapped, negative wrapped and signed-int32 endpoint axes through actual CSPICE modulo mapping. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; every output field is retained."
         },
         {
           "caseId": "coords-vectors-rotvec-zero-vector-and-zero-angle",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe zero input and an unchanged mixed input at zero angle. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; every output field is retained."
         },
         {
           "caseId": "coords-vectors-rotvec-unwrapped-angle",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe signed angles beyond one full revolution without pre-wrapping them in the adapter. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; every output field is retained."
         }
       ],
@@ -1265,7 +1352,9 @@
             "packages/backend-node/test/vector-combinations-domain.test.ts",
             "packages/backend-wasm/test/vector-combinations-allocations.test.ts"
           ],
-          "caseIds": ["coords-vectors-rotvec-coordinate-rotation-basis"]
+          "caseIds": [
+            "coords-vectors-rotvec-coordinate-rotation-basis"
+          ]
         }
       ],
       "backends": {
@@ -1278,14 +1367,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.rotvec -> Node typed adapter -> registered native handler under global CSPICE mutex -> tspice_rotvec shared C shim -> rotvec_c; complete scalar/vector result copied and propagated.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1296,14 +1383,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.rotvec -> WASM typed adapter -> configured _tspice_rotvec export -> tspice_rotvec shared C shim -> rotvec_c; complete result copied from heap before withAllocs cleanup. Regenerated artifact/export and execution evidence remain required.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1315,22 +1400,33 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-vtmv-nonsymmetric-matrix",
-          "coverage": ["success"],
+          "coverage": [
+            "success"
+          ],
           "observes": "Observe the scalar for a nonsymmetric matrix, swapped unequal vectors and the explicitly transposed matrix; transpose/order defects produce distinguishable values. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; every output field is retained."
         },
         {
           "caseId": "coords-vectors-vtmv-row-column-basis",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Select distinct off-diagonal row/column entries through basis vectors to expose matrix flattening or transpose errors. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; every output field is retained."
         },
         {
           "caseId": "coords-vectors-vtmv-zero-and-identity",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe each zero vector and the identity-matrix product without requiring a symmetric general matrix. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; every output field is retained."
         },
         {
           "caseId": "coords-vectors-vtmv-balanced-scales",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe an ordinary-sized scalar with reciprocal 1e200 and 1e-200 vector magnitudes in either position; no norm-only surrogate is compared. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; every output field is retained."
         }
       ],
@@ -1352,7 +1448,9 @@
             "packages/backend-node/test/vector-combinations-domain.test.ts",
             "packages/backend-wasm/test/vector-combinations-allocations.test.ts"
           ],
-          "caseIds": ["coords-vectors-vtmv-nonsymmetric-matrix"]
+          "caseIds": [
+            "coords-vectors-vtmv-nonsymmetric-matrix"
+          ]
         }
       ],
       "backends": {
@@ -1365,14 +1463,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vtmv -> Node typed adapter -> registered native handler under global CSPICE mutex -> tspice_vtmv shared C shim -> vtmv_c; complete scalar/vector result copied and propagated.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1383,14 +1479,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vtmv -> WASM typed adapter -> configured _tspice_vtmv export -> tspice_vtmv shared C shim -> vtmv_c; complete result copied from heap before withAllocs cleanup. Regenerated artifact/export and execution evidence remain required.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     }

@@ -156,7 +156,8 @@
         "cells-windows-union-unequal-character-widths",
         "cells-windows-union-unset-input"
       ],
-      "observation": "Both complete required lanes passed locally on 1b3e4370ffaa1e32066df1195c0fb9853da2c56b. JavaScript: 2,939 parity tests and one expected guard skip. Native-required: 2,702 registered Node/WASM live comparisons; 2,940 parity-package tests with no skips, including the native-required guard; 150 native wrapper, 688 WASM, 28 core and 150 facade tests passed."
+      "observation": "Both complete required lanes passed locally on 1b3e4370ffaa1e32066df1195c0fb9853da2c56b. JavaScript: 2,939 parity tests and one expected guard skip. Native-required: 2,702 registered Node/WASM live comparisons; 2,940 parity-package tests with no skips, including the native-required guard; 150 native wrapper, 688 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "local-b02-1b3e4370-wasm",
@@ -264,7 +265,8 @@
         "cells-windows-union-unequal-character-widths",
         "cells-windows-union-unset-input"
       ],
-      "observation": "Both complete required lanes passed locally on 1b3e4370ffaa1e32066df1195c0fb9853da2c56b. JavaScript: 2,939 parity tests and one expected guard skip. Native-required: 2,702 registered Node/WASM live comparisons; 2,940 parity-package tests with no skips, including the native-required guard; 150 native wrapper, 688 WASM, 28 core and 150 facade tests passed."
+      "observation": "Both complete required lanes passed locally on 1b3e4370ffaa1e32066df1195c0fb9853da2c56b. JavaScript: 2,939 parity tests and one expected guard skip. Native-required: 2,702 registered Node/WASM live comparisons; 2,940 parity-package tests with no skips, including the native-required guard; 150 native wrapper, 688 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "ci-b02-1b3e4370-node",
@@ -374,7 +376,8 @@
       ],
       "commit": "1b3e4370ffaa1e32066df1195c0fb9853da2c56b",
       "url": "https://github.com/rybosome/tspice/actions/runs/43570201253/job/132372707159",
-      "observation": "Inspected successful Linux Node 22 native-required job 132372707159 on 1b3e4370ffaa1e32066df1195c0fb9853da2c56b: 2,702 registered Node/WASM live comparisons; 2,940 parity-package tests with no skips, including the native-required guard; 150 native wrapper, 688 WASM, 28 core and 150 facade tests passed."
+      "observation": "Inspected successful Linux Node 22 native-required job 132372707159 on 1b3e4370ffaa1e32066df1195c0fb9853da2c56b: 2,702 registered Node/WASM live comparisons; 2,940 parity-package tests with no skips, including the native-required guard; 150 native wrapper, 688 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "ci-b02-1b3e4370-wasm",
@@ -484,7 +487,8 @@
       ],
       "commit": "1b3e4370ffaa1e32066df1195c0fb9853da2c56b",
       "url": "https://github.com/rybosome/tspice/actions/runs/43570201253/job/132372707159",
-      "observation": "Inspected successful Linux Node 22 native-required job 132372707159 on 1b3e4370ffaa1e32066df1195c0fb9853da2c56b: 2,702 registered Node/WASM live comparisons; 2,940 parity-package tests with no skips, including the native-required guard; 150 native wrapper, 688 WASM, 28 core and 150 facade tests passed."
+      "observation": "Inspected successful Linux Node 22 native-required job 132372707159 on 1b3e4370ffaa1e32066df1195c0fb9853da2c56b: 2,702 registered Node/WASM live comparisons; 2,940 parity-package tests with no skips, including the native-required guard; 150 native wrapper, 688 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     }
   ],
   "routines": [
@@ -496,62 +500,110 @@
       "scenarios": [
         {
           "caseId": "cells-windows-diff-int-both-orders",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Overwrite an unset destination, compare every result member in both operand orders, and inspect the retained inputs."
         },
         {
           "caseId": "cells-windows-diff-int-empty-identities",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Check each empty operand, equal contents in distinct cells, and overwriting a populated result with the empty answer."
         },
         {
           "caseId": "cells-windows-diff-int-capacity",
-          "coverage": ["error", "edge", "state"],
+          "coverage": [
+            "error",
+            "edge",
+            "state"
+          ],
           "observes": "Use a seeded result whose capacity is smaller than the actual result. Check the toolkit status SPICE(SETEXCESS)."
         },
         {
           "caseId": "cells-windows-diff-double-both-orders",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Overwrite an unset destination, compare every result member in both operand orders, and inspect the retained inputs."
         },
         {
           "caseId": "cells-windows-diff-double-empty-identities",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Check each empty operand, equal contents in distinct cells, and overwriting a populated result with the empty answer."
         },
         {
           "caseId": "cells-windows-diff-double-capacity",
-          "coverage": ["error", "edge", "state"],
+          "coverage": [
+            "error",
+            "edge",
+            "state"
+          ],
           "observes": "Use a seeded result whose capacity is smaller than the actual result. Check the toolkit status SPICE(SETEXCESS)."
         },
         {
           "caseId": "cells-windows-diff-char-both-orders",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Overwrite an unset destination, compare every result member in both operand orders, and inspect the retained inputs."
         },
         {
           "caseId": "cells-windows-diff-char-empty-identities",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Check each empty operand, equal contents in distinct cells, and overwriting a populated result with the empty answer."
         },
         {
           "caseId": "cells-windows-diff-char-capacity",
-          "coverage": ["error", "edge", "state"],
+          "coverage": [
+            "error",
+            "edge",
+            "state"
+          ],
           "observes": "Use a seeded result whose capacity is smaller than the actual result. Check the toolkit status SPICE(SETEXCESS)."
         },
         {
           "caseId": "cells-windows-diff-unset-input",
-          "coverage": ["error", "edge", "state"],
+          "coverage": [
+            "error",
+            "edge",
+            "state"
+          ],
           "observes": "An out-of-order append clears the set flag and the algebra routine diagnoses the invalid input. Check the toolkit status SPICE(NOTASET)."
         },
         {
           "caseId": "cells-windows-diff-unequal-character-widths",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Use a wider second input, short actual values and a result only as wide as the first input."
         },
         {
           "caseId": "cells-windows-diff-short-control-encoding",
-          "coverage": ["error", "edge", "state"],
+          "coverage": [
+            "error",
+            "edge",
+            "state"
+          ],
           "observes": "Reach the character cell conversion with rows too narrow for the Fortran control encoding. Check the toolkit status SPICE(INSUFFLEN)."
         }
       ],
@@ -585,16 +637,28 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.diff → mutex-serialized native addon with ordinary-cell registry → tspice_diff → diff_c. Independent oracle uses typed caller-allocated diff_c symbol from locked SpiceyPy 6.0.3.",
-          "executions": ["local-b02-1b3e4370-node", "ci-b02-1b3e4370-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.diff → compiled WASM export with module-owned ordinary handles → tspice_diff → diff_c. Independent oracle uses typed caller-allocated diff_c symbol from locked SpiceyPy 6.0.3.",
-          "executions": ["local-b02-1b3e4370-wasm", "ci-b02-1b3e4370-wasm"]
+          "executions": []
         }
       }
     },
@@ -606,62 +670,110 @@
       "scenarios": [
         {
           "caseId": "cells-windows-inter-int-both-orders",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Overwrite an unset destination, compare every result member in both operand orders, and inspect the retained inputs."
         },
         {
           "caseId": "cells-windows-inter-int-empty-identities",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Check each empty operand, equal contents in distinct cells, and overwriting a populated result with the empty answer."
         },
         {
           "caseId": "cells-windows-inter-int-capacity",
-          "coverage": ["error", "edge", "state"],
+          "coverage": [
+            "error",
+            "edge",
+            "state"
+          ],
           "observes": "Use a seeded result whose capacity is smaller than the actual result. Check the toolkit status SPICE(SETEXCESS)."
         },
         {
           "caseId": "cells-windows-inter-double-both-orders",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Overwrite an unset destination, compare every result member in both operand orders, and inspect the retained inputs."
         },
         {
           "caseId": "cells-windows-inter-double-empty-identities",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Check each empty operand, equal contents in distinct cells, and overwriting a populated result with the empty answer."
         },
         {
           "caseId": "cells-windows-inter-double-capacity",
-          "coverage": ["error", "edge", "state"],
+          "coverage": [
+            "error",
+            "edge",
+            "state"
+          ],
           "observes": "Use a seeded result whose capacity is smaller than the actual result. Check the toolkit status SPICE(SETEXCESS)."
         },
         {
           "caseId": "cells-windows-inter-char-both-orders",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Overwrite an unset destination, compare every result member in both operand orders, and inspect the retained inputs."
         },
         {
           "caseId": "cells-windows-inter-char-empty-identities",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Check each empty operand, equal contents in distinct cells, and overwriting a populated result with the empty answer."
         },
         {
           "caseId": "cells-windows-inter-char-capacity",
-          "coverage": ["error", "edge", "state"],
+          "coverage": [
+            "error",
+            "edge",
+            "state"
+          ],
           "observes": "Use a seeded result whose capacity is smaller than the actual result. Check the toolkit status SPICE(SETEXCESS)."
         },
         {
           "caseId": "cells-windows-inter-unset-input",
-          "coverage": ["error", "edge", "state"],
+          "coverage": [
+            "error",
+            "edge",
+            "state"
+          ],
           "observes": "An out-of-order append clears the set flag and the algebra routine diagnoses the invalid input. Check the toolkit status SPICE(NOTASET)."
         },
         {
           "caseId": "cells-windows-inter-unequal-character-widths",
-          "coverage": ["error", "edge", "state"],
+          "coverage": [
+            "error",
+            "edge",
+            "state"
+          ],
           "observes": "Use a wider second input, short actual values and a result only as wide as the first input. Check the toolkit status SPICE(ELEMENTSTOOSHORT)."
         },
         {
           "caseId": "cells-windows-inter-short-control-encoding",
-          "coverage": ["error", "edge", "state"],
+          "coverage": [
+            "error",
+            "edge",
+            "state"
+          ],
           "observes": "Reach the character cell conversion with rows too narrow for the Fortran control encoding. Check the toolkit status SPICE(INSUFFLEN)."
         }
       ],
@@ -695,16 +807,28 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.inter → mutex-serialized native addon with ordinary-cell registry → tspice_inter → inter_c. Independent oracle uses typed caller-allocated inter_c symbol from locked SpiceyPy 6.0.3.",
-          "executions": ["local-b02-1b3e4370-node", "ci-b02-1b3e4370-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.inter → compiled WASM export with module-owned ordinary handles → tspice_inter → inter_c. Independent oracle uses typed caller-allocated inter_c symbol from locked SpiceyPy 6.0.3.",
-          "executions": ["local-b02-1b3e4370-wasm", "ci-b02-1b3e4370-wasm"]
+          "executions": []
         }
       }
     },
@@ -716,62 +840,110 @@
       "scenarios": [
         {
           "caseId": "cells-windows-sdiff-int-both-orders",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Overwrite an unset destination, compare every result member in both operand orders, and inspect the retained inputs."
         },
         {
           "caseId": "cells-windows-sdiff-int-empty-identities",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Check each empty operand, equal contents in distinct cells, and overwriting a populated result with the empty answer."
         },
         {
           "caseId": "cells-windows-sdiff-int-capacity",
-          "coverage": ["error", "edge", "state"],
+          "coverage": [
+            "error",
+            "edge",
+            "state"
+          ],
           "observes": "Use a seeded result whose capacity is smaller than the actual result. Check the toolkit status SPICE(SETEXCESS)."
         },
         {
           "caseId": "cells-windows-sdiff-double-both-orders",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Overwrite an unset destination, compare every result member in both operand orders, and inspect the retained inputs."
         },
         {
           "caseId": "cells-windows-sdiff-double-empty-identities",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Check each empty operand, equal contents in distinct cells, and overwriting a populated result with the empty answer."
         },
         {
           "caseId": "cells-windows-sdiff-double-capacity",
-          "coverage": ["error", "edge", "state"],
+          "coverage": [
+            "error",
+            "edge",
+            "state"
+          ],
           "observes": "Use a seeded result whose capacity is smaller than the actual result. Check the toolkit status SPICE(SETEXCESS)."
         },
         {
           "caseId": "cells-windows-sdiff-char-both-orders",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Overwrite an unset destination, compare every result member in both operand orders, and inspect the retained inputs."
         },
         {
           "caseId": "cells-windows-sdiff-char-empty-identities",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Check each empty operand, equal contents in distinct cells, and overwriting a populated result with the empty answer."
         },
         {
           "caseId": "cells-windows-sdiff-char-capacity",
-          "coverage": ["error", "edge", "state"],
+          "coverage": [
+            "error",
+            "edge",
+            "state"
+          ],
           "observes": "Use a seeded result whose capacity is smaller than the actual result. Check the toolkit status SPICE(SETEXCESS)."
         },
         {
           "caseId": "cells-windows-sdiff-unset-input",
-          "coverage": ["error", "edge", "state"],
+          "coverage": [
+            "error",
+            "edge",
+            "state"
+          ],
           "observes": "An out-of-order append clears the set flag and the algebra routine diagnoses the invalid input. Check the toolkit status SPICE(NOTASET)."
         },
         {
           "caseId": "cells-windows-sdiff-unequal-character-widths",
-          "coverage": ["error", "edge", "state"],
+          "coverage": [
+            "error",
+            "edge",
+            "state"
+          ],
           "observes": "Use a wider second input, short actual values and a result only as wide as the first input. Check the toolkit status SPICE(ELEMENTSTOOSHORT)."
         },
         {
           "caseId": "cells-windows-sdiff-short-control-encoding",
-          "coverage": ["error", "edge", "state"],
+          "coverage": [
+            "error",
+            "edge",
+            "state"
+          ],
           "observes": "Reach the character cell conversion with rows too narrow for the Fortran control encoding. Check the toolkit status SPICE(INSUFFLEN)."
         }
       ],
@@ -805,16 +977,28 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.sdiff → mutex-serialized native addon with ordinary-cell registry → tspice_sdiff → sdiff_c. Independent oracle uses typed caller-allocated sdiff_c symbol from locked SpiceyPy 6.0.3.",
-          "executions": ["local-b02-1b3e4370-node", "ci-b02-1b3e4370-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.sdiff → compiled WASM export with module-owned ordinary handles → tspice_sdiff → sdiff_c. Independent oracle uses typed caller-allocated sdiff_c symbol from locked SpiceyPy 6.0.3.",
-          "executions": ["local-b02-1b3e4370-wasm", "ci-b02-1b3e4370-wasm"]
+          "executions": []
         }
       }
     },
@@ -826,102 +1010,182 @@
       "scenarios": [
         {
           "caseId": "cells-windows-set-int-subset",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Compare every relational operator in both directions and retain cardinality and operand ordering."
         },
         {
           "caseId": "cells-windows-set-int-equal",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Compare every relational operator in both directions and retain cardinality and operand ordering."
         },
         {
           "caseId": "cells-windows-set-int-disjoint",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Compare every relational operator in both directions and retain cardinality and operand ordering."
         },
         {
           "caseId": "cells-windows-set-int-partial",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Compare every relational operator in both directions and retain cardinality and operand ordering."
         },
         {
           "caseId": "cells-windows-set-int-empty",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Compare every relational operator in both directions and retain cardinality and operand ordering."
         },
         {
           "caseId": "cells-windows-set-double-subset",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Compare every relational operator in both directions and retain cardinality and operand ordering."
         },
         {
           "caseId": "cells-windows-set-double-equal",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Compare every relational operator in both directions and retain cardinality and operand ordering."
         },
         {
           "caseId": "cells-windows-set-double-disjoint",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Compare every relational operator in both directions and retain cardinality and operand ordering."
         },
         {
           "caseId": "cells-windows-set-double-partial",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Compare every relational operator in both directions and retain cardinality and operand ordering."
         },
         {
           "caseId": "cells-windows-set-double-empty",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Compare every relational operator in both directions and retain cardinality and operand ordering."
         },
         {
           "caseId": "cells-windows-set-char-subset",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Compare every relational operator in both directions and retain cardinality and operand ordering."
         },
         {
           "caseId": "cells-windows-set-char-equal",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Compare every relational operator in both directions and retain cardinality and operand ordering."
         },
         {
           "caseId": "cells-windows-set-char-disjoint",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Compare every relational operator in both directions and retain cardinality and operand ordering."
         },
         {
           "caseId": "cells-windows-set-char-partial",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Compare every relational operator in both directions and retain cardinality and operand ordering."
         },
         {
           "caseId": "cells-windows-set-char-empty",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Compare every relational operator in both directions and retain cardinality and operand ordering."
         },
         {
           "caseId": "cells-windows-set-operator-padding",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Right-padded relation strings reach the actual comparison."
         },
         {
           "caseId": "cells-windows-set-operator-empty",
-          "coverage": ["error", "edge", "state"],
+          "coverage": [
+            "error",
+            "edge",
+            "state"
+          ],
           "observes": "Observe the toolkit diagnostic for an invalid relational operator. Check the toolkit status SPICE(EMPTYSTRING)."
         },
         {
           "caseId": "cells-windows-set-operator-unknown",
-          "coverage": ["error", "edge", "state"],
+          "coverage": [
+            "error",
+            "edge",
+            "state"
+          ],
           "observes": "Observe the toolkit diagnostic for an invalid relational operator. Check the toolkit status SPICE(INVALIDOPERATION)."
         },
         {
           "caseId": "cells-windows-set-operator-leading-space",
-          "coverage": ["error", "edge", "state"],
+          "coverage": [
+            "error",
+            "edge",
+            "state"
+          ],
           "observes": "Observe the toolkit diagnostic for an invalid relational operator. Check the toolkit status SPICE(INVALIDOPERATION)."
         },
         {
           "caseId": "cells-windows-set-unset-input",
-          "coverage": ["error", "edge", "state"],
+          "coverage": [
+            "error",
+            "edge",
+            "state"
+          ],
           "observes": "An ordinary cell with duplicate appends has a cleared set flag. Check the toolkit status SPICE(NOTASET)."
         }
       ],
@@ -934,16 +1198,26 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.set → mutex-serialized native addon with ordinary-cell registry → tspice_set → set_c. Independent oracle uses sp.set_c wrapper from locked SpiceyPy 6.0.3.",
-          "executions": ["local-b02-1b3e4370-node", "ci-b02-1b3e4370-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.set → compiled WASM export with module-owned ordinary handles → tspice_set → set_c. Independent oracle uses sp.set_c wrapper from locked SpiceyPy 6.0.3.",
-          "executions": ["local-b02-1b3e4370-wasm", "ci-b02-1b3e4370-wasm"]
+          "executions": []
         }
       }
     },
@@ -955,62 +1229,110 @@
       "scenarios": [
         {
           "caseId": "cells-windows-union-int-both-orders",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Overwrite an unset destination, compare every result member in both operand orders, and inspect the retained inputs."
         },
         {
           "caseId": "cells-windows-union-int-empty-identities",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Check each empty operand, equal contents in distinct cells, and overwriting a populated result with the empty answer."
         },
         {
           "caseId": "cells-windows-union-int-capacity",
-          "coverage": ["error", "edge", "state"],
+          "coverage": [
+            "error",
+            "edge",
+            "state"
+          ],
           "observes": "Use a seeded result whose capacity is smaller than the actual result. Check the toolkit status SPICE(SETEXCESS)."
         },
         {
           "caseId": "cells-windows-union-double-both-orders",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Overwrite an unset destination, compare every result member in both operand orders, and inspect the retained inputs."
         },
         {
           "caseId": "cells-windows-union-double-empty-identities",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Check each empty operand, equal contents in distinct cells, and overwriting a populated result with the empty answer."
         },
         {
           "caseId": "cells-windows-union-double-capacity",
-          "coverage": ["error", "edge", "state"],
+          "coverage": [
+            "error",
+            "edge",
+            "state"
+          ],
           "observes": "Use a seeded result whose capacity is smaller than the actual result. Check the toolkit status SPICE(SETEXCESS)."
         },
         {
           "caseId": "cells-windows-union-char-both-orders",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Overwrite an unset destination, compare every result member in both operand orders, and inspect the retained inputs."
         },
         {
           "caseId": "cells-windows-union-char-empty-identities",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Check each empty operand, equal contents in distinct cells, and overwriting a populated result with the empty answer."
         },
         {
           "caseId": "cells-windows-union-char-capacity",
-          "coverage": ["error", "edge", "state"],
+          "coverage": [
+            "error",
+            "edge",
+            "state"
+          ],
           "observes": "Use a seeded result whose capacity is smaller than the actual result. Check the toolkit status SPICE(SETEXCESS)."
         },
         {
           "caseId": "cells-windows-union-unset-input",
-          "coverage": ["error", "edge", "state"],
+          "coverage": [
+            "error",
+            "edge",
+            "state"
+          ],
           "observes": "An out-of-order append clears the set flag and the algebra routine diagnoses the invalid input. Check the toolkit status SPICE(NOTASET)."
         },
         {
           "caseId": "cells-windows-union-unequal-character-widths",
-          "coverage": ["error", "edge", "state"],
+          "coverage": [
+            "error",
+            "edge",
+            "state"
+          ],
           "observes": "Use a wider second input, short actual values and a result only as wide as the first input. Check the toolkit status SPICE(ELEMENTSTOOSHORT)."
         },
         {
           "caseId": "cells-windows-union-short-control-encoding",
-          "coverage": ["error", "edge", "state"],
+          "coverage": [
+            "error",
+            "edge",
+            "state"
+          ],
           "observes": "Reach the character cell conversion with rows too narrow for the Fortran control encoding. Check the toolkit status SPICE(INSUFFLEN)."
         }
       ],
@@ -1044,16 +1366,28 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.union → mutex-serialized native addon with ordinary-cell registry → tspice_union → union_c. Independent oracle uses typed caller-allocated union_c symbol from locked SpiceyPy 6.0.3.",
-          "executions": ["local-b02-1b3e4370-node", "ci-b02-1b3e4370-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.union → compiled WASM export with module-owned ordinary handles → tspice_union → union_c. Independent oracle uses typed caller-allocated union_c symbol from locked SpiceyPy 6.0.3.",
-          "executions": ["local-b02-1b3e4370-wasm", "ci-b02-1b3e4370-wasm"]
+          "executions": []
         }
       }
     },
@@ -1065,27 +1399,47 @@
       "scenarios": [
         {
           "caseId": "cells-windows-removc-empty",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Query or remove from a newly allocated empty cell."
         },
         {
           "caseId": "cells-windows-removc-ordered-members",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Visit interior and boundary members in different orders. Check every output and the shifted ordinal after removal."
         },
         {
           "caseId": "cells-windows-removc-misses",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Search gaps, end ranges and independent live storage."
         },
         {
           "caseId": "cells-windows-removc-unset",
-          "coverage": ["error", "edge", "state"],
+          "coverage": [
+            "error",
+            "edge",
+            "state"
+          ],
           "observes": "A duplicate append makes the cell an invalid set; the actual toolkit reports NOTASET. Check the toolkit status SPICE(NOTASET)."
         },
         {
           "caseId": "cells-windows-removc-blanks-and-tabs",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Retain actual byte-sensitive comparisons for interior and endpoint rows, empty keys, trailing ASCII spaces and significant tabs."
         }
       ],
@@ -1101,7 +1455,9 @@
           "status": "repaired",
           "summary": "The cell display getters trim trailing whitespace and would hide a comparison or removal bug on a stored terminal tab.",
           "repair": "Compare actual raw ordinal probes on each written result and before/after removal against the independently installed toolkit; also inspect the complete displayed rows and retained result after clearing the inputs.",
-          "caseIds": ["cells-windows-removc-blanks-and-tabs"],
+          "caseIds": [
+            "cells-windows-removc-blanks-and-tabs"
+          ],
           "evidence": [
             "packages/py-parity-checking/test/set-algebra-behavior.test.ts",
             "docs/step8-set-algebra.md"
@@ -1110,16 +1466,28 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.removc → mutex-serialized native addon with ordinary-cell registry → tspice_removc → removc_c. Independent oracle uses sp.removc wrapper from locked SpiceyPy 6.0.3.",
-          "executions": ["local-b02-1b3e4370-node", "ci-b02-1b3e4370-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.removc → compiled WASM export with module-owned ordinary handles → tspice_removc → removc_c. Independent oracle uses sp.removc wrapper from locked SpiceyPy 6.0.3.",
-          "executions": ["local-b02-1b3e4370-wasm", "ci-b02-1b3e4370-wasm"]
+          "executions": []
         }
       }
     },
@@ -1131,27 +1499,47 @@
       "scenarios": [
         {
           "caseId": "cells-windows-removd-empty",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Query or remove from a newly allocated empty cell."
         },
         {
           "caseId": "cells-windows-removd-ordered-members",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Visit interior and boundary members in different orders. Check every output and the shifted ordinal after removal."
         },
         {
           "caseId": "cells-windows-removd-misses",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Search gaps, end ranges and independent live storage."
         },
         {
           "caseId": "cells-windows-removd-unset",
-          "coverage": ["error", "edge", "state"],
+          "coverage": [
+            "error",
+            "edge",
+            "state"
+          ],
           "observes": "A duplicate append makes the cell an invalid set; the actual toolkit reports NOTASET. Check the toolkit status SPICE(NOTASET)."
         },
         {
           "caseId": "cells-windows-removd-adjacent-values",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Use adjacent distinct binary64 values and a subnormal member; exact matching is visible through ordinals and cardinality."
         }
       ],
@@ -1164,16 +1552,26 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.removd → mutex-serialized native addon with ordinary-cell registry → tspice_removd → removd_c. Independent oracle uses sp.removd wrapper from locked SpiceyPy 6.0.3.",
-          "executions": ["local-b02-1b3e4370-node", "ci-b02-1b3e4370-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.removd → compiled WASM export with module-owned ordinary handles → tspice_removd → removd_c. Independent oracle uses sp.removd wrapper from locked SpiceyPy 6.0.3.",
-          "executions": ["local-b02-1b3e4370-wasm", "ci-b02-1b3e4370-wasm"]
+          "executions": []
         }
       }
     },
@@ -1185,22 +1583,38 @@
       "scenarios": [
         {
           "caseId": "cells-windows-removi-empty",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Query or remove from a newly allocated empty cell."
         },
         {
           "caseId": "cells-windows-removi-ordered-members",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Visit interior and boundary members in different orders. Check every output and the shifted ordinal after removal."
         },
         {
           "caseId": "cells-windows-removi-misses",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Search gaps, end ranges and independent live storage."
         },
         {
           "caseId": "cells-windows-removi-unset",
-          "coverage": ["error", "edge", "state"],
+          "coverage": [
+            "error",
+            "edge",
+            "state"
+          ],
           "observes": "A duplicate append makes the cell an invalid set; the actual toolkit reports NOTASET. Check the toolkit status SPICE(NOTASET)."
         }
       ],
@@ -1213,16 +1627,26 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.removi → mutex-serialized native addon with ordinary-cell registry → tspice_removi → removi_c. Independent oracle uses sp.removi wrapper from locked SpiceyPy 6.0.3.",
-          "executions": ["local-b02-1b3e4370-node", "ci-b02-1b3e4370-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.removi → compiled WASM export with module-owned ordinary handles → tspice_removi → removi_c. Independent oracle uses sp.removi wrapper from locked SpiceyPy 6.0.3.",
-          "executions": ["local-b02-1b3e4370-wasm", "ci-b02-1b3e4370-wasm"]
+          "executions": []
         }
       }
     },
@@ -1234,27 +1658,47 @@
       "scenarios": [
         {
           "caseId": "cells-windows-ordc-empty",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Query or remove from a newly allocated empty cell."
         },
         {
           "caseId": "cells-windows-ordc-ordered-members",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Visit interior and boundary members in different orders. Check every output and the shifted ordinal after removal."
         },
         {
           "caseId": "cells-windows-ordc-misses",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Search gaps, end ranges and independent live storage."
         },
         {
           "caseId": "cells-windows-ordc-unset",
-          "coverage": ["error", "edge", "state"],
+          "coverage": [
+            "error",
+            "edge",
+            "state"
+          ],
           "observes": "A duplicate append makes the cell an invalid set; the actual toolkit reports NOTASET. Check the toolkit status SPICE(NOTASET)."
         },
         {
           "caseId": "cells-windows-ordc-blanks-and-tabs",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Retain actual byte-sensitive comparisons for interior and endpoint rows, empty keys, trailing ASCII spaces and significant tabs."
         }
       ],
@@ -1270,7 +1714,9 @@
           "status": "repaired",
           "summary": "The cell display getters trim trailing whitespace and would hide a comparison or removal bug on a stored terminal tab.",
           "repair": "Compare actual raw ordinal probes on each written result and before/after removal against the independently installed toolkit; also inspect the complete displayed rows and retained result after clearing the inputs.",
-          "caseIds": ["cells-windows-ordc-blanks-and-tabs"],
+          "caseIds": [
+            "cells-windows-ordc-blanks-and-tabs"
+          ],
           "evidence": [
             "packages/py-parity-checking/test/set-algebra-behavior.test.ts",
             "docs/step8-set-algebra.md"
@@ -1279,16 +1725,28 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.ordc → mutex-serialized native addon with ordinary-cell registry → tspice_ordc → ordc_c. Independent oracle uses sp.ordc wrapper from locked SpiceyPy 6.0.3.",
-          "executions": ["local-b02-1b3e4370-node", "ci-b02-1b3e4370-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.ordc → compiled WASM export with module-owned ordinary handles → tspice_ordc → ordc_c. Independent oracle uses sp.ordc wrapper from locked SpiceyPy 6.0.3.",
-          "executions": ["local-b02-1b3e4370-wasm", "ci-b02-1b3e4370-wasm"]
+          "executions": []
         }
       }
     },
@@ -1300,27 +1758,47 @@
       "scenarios": [
         {
           "caseId": "cells-windows-ordd-empty",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Query or remove from a newly allocated empty cell."
         },
         {
           "caseId": "cells-windows-ordd-ordered-members",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Visit interior and boundary members in different orders. Check every output and the shifted ordinal after removal."
         },
         {
           "caseId": "cells-windows-ordd-misses",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Search gaps, end ranges and independent live storage."
         },
         {
           "caseId": "cells-windows-ordd-unset",
-          "coverage": ["error", "edge", "state"],
+          "coverage": [
+            "error",
+            "edge",
+            "state"
+          ],
           "observes": "A duplicate append makes the cell an invalid set; the actual toolkit reports NOTASET. Check the toolkit status SPICE(NOTASET)."
         },
         {
           "caseId": "cells-windows-ordd-adjacent-values",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Use adjacent distinct binary64 values and a subnormal member; exact matching is visible through ordinals and cardinality."
         }
       ],
@@ -1333,16 +1811,26 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.ordd → mutex-serialized native addon with ordinary-cell registry → tspice_ordd → ordd_c. Independent oracle uses sp.ordd wrapper from locked SpiceyPy 6.0.3.",
-          "executions": ["local-b02-1b3e4370-node", "ci-b02-1b3e4370-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.ordd → compiled WASM export with module-owned ordinary handles → tspice_ordd → ordd_c. Independent oracle uses sp.ordd wrapper from locked SpiceyPy 6.0.3.",
-          "executions": ["local-b02-1b3e4370-wasm", "ci-b02-1b3e4370-wasm"]
+          "executions": []
         }
       }
     },
@@ -1354,22 +1842,38 @@
       "scenarios": [
         {
           "caseId": "cells-windows-ordi-empty",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Query or remove from a newly allocated empty cell."
         },
         {
           "caseId": "cells-windows-ordi-ordered-members",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Visit interior and boundary members in different orders. Check every output and the shifted ordinal after removal."
         },
         {
           "caseId": "cells-windows-ordi-misses",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Search gaps, end ranges and independent live storage."
         },
         {
           "caseId": "cells-windows-ordi-unset",
-          "coverage": ["error", "edge", "state"],
+          "coverage": [
+            "error",
+            "edge",
+            "state"
+          ],
           "observes": "A duplicate append makes the cell an invalid set; the actual toolkit reports NOTASET. Check the toolkit status SPICE(NOTASET)."
         }
       ],
@@ -1382,16 +1886,26 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.ordi → mutex-serialized native addon with ordinary-cell registry → tspice_ordi → ordi_c. Independent oracle uses sp.ordi wrapper from locked SpiceyPy 6.0.3.",
-          "executions": ["local-b02-1b3e4370-node", "ci-b02-1b3e4370-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.ordi → compiled WASM export with module-owned ordinary handles → tspice_ordi → ordi_c. Independent oracle uses sp.ordi wrapper from locked SpiceyPy 6.0.3.",
-          "executions": ["local-b02-1b3e4370-wasm", "ci-b02-1b3e4370-wasm"]
+          "executions": []
         }
       }
     }
