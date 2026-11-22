@@ -65,6 +65,69 @@ class StepFramesCkgpav:
 
 
 @dataclass(frozen=True)
+class StepFramesPckcls:
+    op: Literal["frames.pckcls"]
+    handleId: str
+
+
+@dataclass(frozen=True)
+class StepFramesPckcov:
+    op: Literal["frames.pckcov"]
+    path: PathRefInput
+    classId: int
+    coverId: str
+    maxIntervals: int
+    reset: bool
+
+
+@dataclass(frozen=True)
+class StepFramesPckfrm:
+    op: Literal["frames.pckfrm"]
+    path: PathRefInput
+    idsId: str
+    maxCard: int
+    reset: bool
+
+
+@dataclass(frozen=True)
+class StepFramesPcklof:
+    op: Literal["frames.pcklof"]
+    handleId: str
+    path: PathRefInput
+
+
+@dataclass(frozen=True)
+class StepFramesPckopn:
+    op: Literal["frames.pckopn"]
+    handleId: str
+    path: PathRefInput
+    ifname: str
+    ncomch: int
+
+
+@dataclass(frozen=True)
+class StepFramesPckuof:
+    op: Literal["frames.pckuof"]
+    handleId: str
+
+
+@dataclass(frozen=True)
+class StepFramesPckw02:
+    op: Literal["frames.pckw02"]
+    handleId: str
+    classId: int
+    frame: str
+    first: float
+    last: float
+    segid: str
+    intlen: float
+    n: int
+    degree: int
+    coefficients: list[float]
+    btime: float
+
+
+@dataclass(frozen=True)
 class StepFramesCklpf:
     op: Literal["frames.cklpf"]
     ck: PathRefInput

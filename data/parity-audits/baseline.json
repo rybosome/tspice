@@ -1191,6 +1191,25 @@
         "https://github.com/rybosome/tspice/pull/758"
       ],
       "nextAction": "Verify the combined source on both required lanes and canonical CI."
+    },
+    {
+      "id": "c11-pck-binary",
+      "routines": [
+        "pckcls_c",
+        "pckcov_c",
+        "pckfrm_c",
+        "pcklof_c",
+        "pckopn_c",
+        "pckuof_c",
+        "pckw02_c"
+      ],
+      "dependsOn": [
+        "b03-window-algebra"
+      ],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/759"
+      ],
+      "nextAction": "Verify the combined source on both required lanes and canonical CI."
     }
   ]
 }

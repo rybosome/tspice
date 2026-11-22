@@ -199,3 +199,7 @@ uses the pinned SPICELIB DAFRN routine to give a DAF array name a terminal tab,
 which the high-level Python string converter removes but the C function returns.
 Each backend receives its own copy; the scratch writer and reader close before
 cleanup. Only the MIT-licensed generator is checked in.
+
+## Binary orientation fixture
+
+`kernels/audit-orientation.bpc` contains project-authored synthetic type 2 orientation segments. The locked SpiceyPy generator writes two class 3000 segments in J2000 with different angular rates and an intervening gap, and one constant class 301 segment relative to B1950. Epochs are TDB seconds past J2000. These values exercise data layout and frame selection. They have no observational interpretation. The distributed 4096-byte fixture has SHA-256 `63afada27964265890dfd4c9846ba1dbd781edac6fd2d5aac319727333659dba`. [Generator](generate-audit-pck.py)

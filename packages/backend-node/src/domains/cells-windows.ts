@@ -307,7 +307,7 @@ export function createCellsWindowsApi(
 export function createCellsWindowsKitApi(
   native: NativeAddon,
   charCells: Set<number> = new Set(),
-  ownedIntCells: Set<number> = new Set(),
+  pckDestinations?: { ids: Set<number>; windows: Set<number> },
 ): CellsWindowsKitApi {
   return {
     newIntCell: (size) => {
@@ -317,7 +317,7 @@ export function createCellsWindowsKitApi(
         typeof handle === "number",
         "Expected newIntCell() to return a number handle",
       );
-      ownedIntCells.add(handle);
+      pckDestinations?.ids.add(handle);
       return handle as SpiceIntCell;
     },
     newDoubleCell: (size) => {
@@ -347,6 +347,7 @@ export function createCellsWindowsKitApi(
         typeof handle === "number",
         "Expected newWindow() to return a number handle",
       );
+      pckDestinations?.windows.add(handle);
       return handle as SpiceWindow;
     },
 
@@ -354,7 +355,8 @@ export function createCellsWindowsKitApi(
       assertSpiceInt32NonNegative(cell as unknown as number, "freeCell(cell)");
       native.freeCell(cell);
       charCells.delete(cell);
-      ownedIntCells.delete(cell);
+      pckDestinations?.ids.delete(cell);
+      pckDestinations?.windows.delete(cell);
     },
     freeWindow: (window) => {
       assertSpiceInt32NonNegative(
@@ -362,6 +364,8 @@ export function createCellsWindowsKitApi(
         "freeWindow(window)",
       );
       native.freeWindow(window);
+      pckDestinations?.windows.delete(window);
+      pckDestinations?.ids.delete(window);
     },
 
     cellGeti: (cell, index) => {

@@ -484,3 +484,7 @@ C05 adds nine routines on the C04 file lifecycle. All 54 registered workflows co
 ## DLA linked segments
 
 C07 uses the C04 lifecycle and C05 typed component writers to construct generic, independent multi-segment DLAs. Both writer and reader directions compare every descriptor word and constituent value. [Segment layout, errors and runtime evidence](step8-dla-segments.md) [Routine audit](../data/parity-audits/c07-dla-segments.json)
+
+## Binary PCK orientation files
+
+The seven C11 routines use independent binary fixtures and writers. Both compiled backends export physical DAF records for an independent reader and evaluate complete state and rotation matrices. [Binary PCK behavior and scoped observations](step8-pck-binary.md) [Per-routine audit](../data/parity-audits/c11-pck-binary.json)

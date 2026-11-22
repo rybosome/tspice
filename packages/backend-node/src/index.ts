@@ -45,10 +45,13 @@ export function spiceVersion(): string {
 export function createNodeBackend(): SpiceBackend & { kind: "node" } {
   const native = getNodeBinding();
   const stager = createKernelStager();
-  const ownedIntCells = new Set<number>();
   const spiceHandles = createSpiceHandleRegistry();
   const charCells = new Set<number>();
   const outputs = createVirtualOutputStager();
+  const pckDestinations = {
+    ids: new Set<number>(),
+    windows: new Set<number>(),
+  };
   const timeApi = createTimeApi(native);
   const fileIoApi = createFileIoApi(native, spiceHandles, stager, outputs);
 
@@ -59,7 +62,14 @@ export function createNodeBackend(): SpiceBackend & { kind: "node" } {
       ...createKernelsApi(native, stager),
       ...createKernelPoolApi(native, stager),
       ...createIdsNamesApi(native),
-      ...createFramesApi(native, stager, ownedIntCells),
+      ...createFramesApi(
+        native,
+        stager,
+        pckDestinations.ids,
+        spiceHandles,
+        outputs,
+        pckDestinations,
+      ),
       ...createEphemerisApi(native, spiceHandles, stager, outputs),
       ...createGeometryApi(native),
       ...createGeometryGfApi(native),
@@ -74,7 +84,7 @@ export function createNodeBackend(): SpiceBackend & { kind: "node" } {
     kit: {
       ...createTimeKitApi(native),
       ...createFileIoKitApi(outputs),
-      ...createCellsWindowsKitApi(native, charCells, ownedIntCells),
+      ...createCellsWindowsKitApi(native, charCells, pckDestinations),
     },
   };
 
@@ -98,10 +108,15 @@ export function createNodeBackend(): SpiceBackend & { kind: "node" } {
 
       for (const [handle, entry] of entries) {
         try {
-          if (entry.kind === "SPK") {
+          if (entry.kind === "PCK-LOADED") {
+            backend.raw.pckuof(handle);
+            continue;
+          }
+          if (entry.kind === "SPK" || entry.kind === "PCK-WRITER") {
             // Ensure VirtualOutputStager bookkeeping stays consistent.
             try {
-              backend.raw.spkcls(handle);
+              if (entry.kind === "SPK") backend.raw.spkcls(handle);
+              else backend.raw.pckcls(handle);
             } catch (error) {
               if (
                 typeof error !== "object" ||
@@ -116,7 +131,7 @@ export function createNodeBackend(): SpiceBackend & { kind: "node" } {
               // still release its underlying DAF without manufacturing data.
               spiceHandles.close(
                 handle,
-                ["SPK"],
+                [entry.kind],
                 (e) => native.dafcls(e.nativeHandle),
                 "disposeAll:dafcls-empty-spk",
               );
