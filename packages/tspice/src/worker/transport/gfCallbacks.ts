@@ -18,6 +18,10 @@ function positions(op: string): readonly number[] {
     case "raw.gfudb":
     case "raw.gfuds":
       return [0, 1];
+    case "raw.gfevnt":
+    case "raw.gffove":
+    case "raw.gfocce":
+      return [3];
     default:
       return [];
   }

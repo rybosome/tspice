@@ -1022,6 +1022,9 @@ export type EmscriptenModule = {
     err: number,
     cap: number,
   ): number;
+  _tspice_gfevnt(...args: number[]): number;
+  _tspice_gffove(...args: number[]): number;
+  _tspice_gfocce(...args: number[]): number;
   _tspice_gfudb(
     callback: number,
     id: number,
@@ -2490,6 +2493,9 @@ const REQUIRED_FUNCTION_EXPORTS = [
   "_tspice_udf",
   "_tspice_uddf",
   "_tspice_uddc",
+  "_tspice_gfevnt",
+  "_tspice_gffove",
+  "_tspice_gfocce",
   "_tspice_gfudb",
   "_tspice_gfuds",
   "_tspice_gfsep",

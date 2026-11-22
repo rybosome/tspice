@@ -167,3 +167,9 @@ export {
   fovWorkspace,
 } from "./spice-runtime/domains/field-of-view.js";
 export { spiceStringByteLength } from "./spice-runtime/domains/string-bytes.js";
+
+export { bindConfiguredGfControl } from "./spice-runtime/domains/configured-gf.js";
+export type {
+  GfControl,
+  GfControlEvent,
+} from "./spice-runtime/domains/configured-gf.js";

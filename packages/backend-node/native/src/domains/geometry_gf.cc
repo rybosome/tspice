@@ -1,6 +1,8 @@
 #include "geometry_gf.h"
 #include "geometry_text.h"
+#include <algorithm>
 #include <cmath>
+#include <vector>
 
 #include <string>
 
@@ -290,6 +292,193 @@ static void Gfuds(const Napi::CallbackInfo &info) {
   FinishUserCall(callbacks, status, err);
 }
 
+static int CallConfiguredGf(void *context, int slot, const double *values, int count,
+    const char *prefix, const char *suffix, double *out) {
+  auto &callback = *static_cast<UserCallbacks *>(context);
+  if (callback.failed) return 1;
+  auto env = callback.env;
+  Napi::EscapableHandleScope scope(env);
+  auto args = Napi::Array::New(env, slot == 2 ? 3 : count);
+  if (slot == 2) {
+    auto endpoints = Napi::Array::New(env, count);
+    for (int i = 0; i < count; ++i) endpoints.Set(static_cast<uint32_t>(i), Napi::Number::New(env, values[i]));
+    args.Set(0u, endpoints);
+    args.Set(1u, Napi::String::New(env, prefix));
+    args.Set(2u, Napi::String::New(env, suffix));
+  } else {
+    for (int i = 0; i < count; ++i) args.Set(static_cast<uint32_t>(i), Napi::Number::New(env, values[i]));
+  }
+  const auto value = callback.scalar.Call({Napi::Number::New(env, slot), args});
+  if (env.IsExceptionPending()) {
+    napi_value thrown = nullptr;
+    napi_get_and_clear_last_exception(env, &thrown);
+    callback.error = scope.Escape(Napi::Value(env, thrown));
+    callback.failed = true;
+    return 1;
+  }
+  if (!value.IsNumber() || !std::isfinite(value.As<Napi::Number>().DoubleValue())) {
+    callback.error = scope.Escape(Napi::TypeError::New(env, "Expected a finite configurable GF callback result").Value());
+    callback.failed = true;
+    return 1;
+  }
+  *out = value.As<Napi::Number>().DoubleValue();
+  return 0;
+}
+
+static bool ReadGfNumber(Napi::Env env, const Napi::Value &value, double *output) {
+  if (value.IsNumber()) {
+    const double number = value.As<Napi::Number>().DoubleValue();
+    if (std::isfinite(number)) { *output = number; return true; }
+  }
+  ThrowSpiceError(Napi::TypeError::New(env, "Expected a finite Geometry Finder number"));
+  return false;
+}
+
+static bool ReadGfInteger(Napi::Env env, const Napi::Value &value, int *output) {
+  double number;
+  if (!ReadGfNumber(env, value, &number)) return false;
+  if (number < -2147483648. || number > 2147483647. || std::trunc(number) != number) {
+    ThrowSpiceError(Napi::RangeError::New(env, "Expected a signed32 Geometry Finder parameter"));
+    return false;
+  }
+  *output = static_cast<int>(number);
+  return true;
+}
+
+static bool ReadGfFlag(Napi::Env env, const Napi::Value &value, int *output) {
+  if (value.IsUndefined()) { *output = 0; return true; }
+  if (!value.IsBoolean()) {
+    ThrowSpiceError(Napi::TypeError::New(env, "Expected a Geometry Finder boolean flag"));
+    return false;
+  }
+  *output = value.As<Napi::Boolean>().Value();
+  return true;
+}
+
+static bool ReadConfiguredGf(const Napi::CallbackInfo &info, Napi::Object *search,
+    double *tolerance, int *report, int *bail) {
+  auto env = info.Env();
+  if (info.Length() != 4 || !info[0].IsObject() || !info[3].IsFunction()) {
+    ThrowSpiceError(Napi::TypeError::New(env, "Expected a GF search specification, two windows, and a control callback"));
+    return false;
+  }
+  *search = info[0].As<Napi::Object>();
+  return ReadGfNumber(env, search->Get("tolerance"), tolerance) &&
+      ReadGfFlag(env, search->Get("report"), report) && ReadGfFlag(env, search->Get("bail"), bail);
+}
+
+static bool ReadGfTexts(Napi::Object search, const char *const *fields, int count, std::string *out) {
+  for (int i = 0; i < count; ++i) {
+    if (!tspice_napi::ReadGeometryString(search.Env(), search.Get(fields[i]), out + i)) return false;
+  }
+  return true;
+}
+
+static void Gfevnt(const Napi::CallbackInfo &info) {
+  auto env = info.Env();
+  Napi::Object search;
+  double tolerance, reference, adjustment;
+  int report, bail, workspace;
+  if (!ReadConfiguredGf(info, &search, &tolerance, &report, &bail) ||
+      !ReadGfNumber(env, search.Get("reference"), &reference) ||
+      !ReadGfNumber(env, search.Get("adjustment"), &adjustment) ||
+      !ReadGfInteger(env, search.Get("workspaceIntervals"), &workspace)) return;
+  const char *const text_fields[] = {"quantity", "relation"};
+  std::string text[2];
+  if (!ReadGfTexts(search, text_fields, 2, text)) return;
+  const auto param = search.Get("parameters");
+  if (!param.IsArray() || param.As<Napi::Array>().Length() > 128) {
+    ThrowSpiceError(Napi::RangeError::New(env, "Invalid Geometry Finder parameter table"));
+    return;
+  }
+  const auto rows = param.As<Napi::Array>();
+  const uint32_t count = rows.Length();
+  const auto allocated = std::max(1u, count);
+  std::vector<std::string> names(allocated), texts(allocated);
+  std::vector<double> reals(allocated);
+  std::vector<int> integers(allocated), flags(allocated);
+  size_t width = 2;
+  for (uint32_t i = 0; i < count; ++i) {
+    const auto value = rows.Get(i);
+    if (!value.IsObject()) {
+      ThrowSpiceError(Napi::TypeError::New(env, "Expected a Geometry Finder parameter row"));
+      return;
+    }
+    const auto row = value.As<Napi::Object>();
+    const auto text_value = row.Get("text"), real = row.Get("real"), integer = row.Get("integer");
+    if (!tspice_napi::ReadGeometryString(env, row.Get("name"), &names[i]) ||
+        (!text_value.IsUndefined() && !tspice_napi::ReadGeometryString(env, text_value, &texts[i])) ||
+        (!real.IsUndefined() && !ReadGfNumber(env, real, &reals[i])) ||
+        (!integer.IsUndefined() && !ReadGfInteger(env, integer, &integers[i])) ||
+        !ReadGfFlag(env, row.Get("logical"), &flags[i])) return;
+    width = std::max(width, std::max(names[i].size(), texts[i].size()) + 1);
+  }
+  if (width > 8192) {
+    ThrowSpiceError(Napi::RangeError::New(env, "Geometry Finder parameter row is too long"));
+    return;
+  }
+  std::vector<char> name_column(allocated * width), text_column(allocated * width);
+  for (uint32_t i = 0; i < count; ++i) {
+    std::copy(names[i].begin(), names[i].end(), name_column.begin() + i * width);
+    std::copy(texts[i].begin(), texts[i].end(), text_column.begin() + i * width);
+  }
+  auto fn = info[3].As<Napi::Function>();
+  UserCallbacks callback{env, fn, fn, env.Undefined()};
+  tspice_backend_node::CspiceLock lock;
+  uintptr_t input = 0, output = 0;
+  if (!VisibilityWindowPointers(lock, info, 1, &input, &output)) return;
+  char error[tspice_backend_node::kErrMaxBytes] = {};
+  const int status = tspice_gfevnt(CallConfiguredGf, &callback, text[0].c_str(),
+      static_cast<int>(count), static_cast<int>(width), name_column.data(), text_column.data(),
+      reals.data(), integers.data(), flags.data(), text[1].c_str(), reference, tolerance,
+      adjustment, workspace, report, bail, input, output, error, sizeof(error));
+  FinishUserCall(callback, status, error);
+}
+
+static void Gffove(const Napi::CallbackInfo &info) {
+  auto env = info.Env();
+  Napi::Object search;
+  double tolerance;
+  int report, bail;
+  if (!ReadConfiguredGf(info, &search, &tolerance, &report, &bail)) return;
+  const char *const names[] = {"instrument", "shape", "target", "frame", "aberration", "observer"};
+  std::string text[6];
+  double ray[3];
+  if (!ReadGfTexts(search, names, 6, text) ||
+      !tspice_backend_node::ReadNumberArrayFixed(env, search.Get("ray"), 3, ray, "ray")) return;
+  auto fn = info[3].As<Napi::Function>();
+  UserCallbacks callback{env, fn, fn, env.Undefined()};
+  tspice_backend_node::CspiceLock lock;
+  uintptr_t input = 0, output = 0;
+  if (!VisibilityWindowPointers(lock, info, 1, &input, &output)) return;
+  char error[tspice_backend_node::kErrMaxBytes] = {};
+  const int status = tspice_gffove(CallConfiguredGf, &callback, text[0].c_str(), text[1].c_str(),
+      ray, text[2].c_str(), text[3].c_str(), text[4].c_str(), text[5].c_str(),
+      tolerance, report, bail, input, output, error, sizeof(error));
+  FinishUserCall(callback, status, error);
+}
+
+static void Gfocce(const Napi::CallbackInfo &info) {
+  auto env = info.Env();
+  Napi::Object search;
+  double tolerance;
+  int report, bail;
+  if (!ReadConfiguredGf(info, &search, &tolerance, &report, &bail)) return;
+  const char *const names[] = {"occultation", "front", "frontShape", "frontFrame", "back", "backShape", "backFrame", "aberration", "observer"};
+  std::string text[9];
+  if (!ReadGfTexts(search, names, 9, text)) return;
+  auto fn = info[3].As<Napi::Function>();
+  UserCallbacks callback{env, fn, fn, env.Undefined()};
+  tspice_backend_node::CspiceLock lock;
+  uintptr_t input = 0, output = 0;
+  if (!VisibilityWindowPointers(lock, info, 1, &input, &output)) return;
+  char error[tspice_backend_node::kErrMaxBytes] = {};
+  const int status = tspice_gfocce(CallConfiguredGf, &callback, text[0].c_str(), text[1].c_str(),
+      text[2].c_str(), text[3].c_str(), text[4].c_str(), text[5].c_str(), text[6].c_str(),
+      text[7].c_str(), text[8].c_str(), tolerance, report, bail, input, output, error, sizeof(error));
+  FinishUserCall(callback, status, error);
+}
+
 static void Gfoclt(const Napi::CallbackInfo &info) {
   auto env = info.Env();
   if (info.Length() != 12 || !info[9].IsNumber()) {
@@ -568,6 +757,9 @@ void RegisterGeometryGf(Napi::Env env, Napi::Object exports) {
   if (!SetExportChecked(env,exports,"udf",Napi::Function::New(env,Udf),__func__)) return;
   if (!SetExportChecked(env,exports,"uddf",Napi::Function::New(env,Uddf),__func__)) return;
   if (!SetExportChecked(env,exports,"uddc",Napi::Function::New(env,Uddc),__func__)) return;
+  if (!SetExportChecked(env, exports, "gfevnt", Napi::Function::New(env, Gfevnt), __func__)) return;
+  if (!SetExportChecked(env, exports, "gffove", Napi::Function::New(env, Gffove), __func__)) return;
+  if (!SetExportChecked(env, exports, "gfocce", Napi::Function::New(env, Gfocce), __func__)) return;
   if (!SetExportChecked(env,exports,"gfudb",Napi::Function::New(env,Gfudb),__func__)) return;
   if (!SetExportChecked(env,exports,"gfuds",Napi::Function::New(env,Gfuds),__func__)) return;
   if (!SetExportChecked(env, exports, "gfsep", Napi::Function::New(env, Gfsep), __func__)) return;

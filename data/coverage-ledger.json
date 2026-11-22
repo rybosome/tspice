@@ -2,7 +2,7 @@
   "audit": {
     "baselineCommit": "3f950ae22993aaf9a629263a12388bf56894879c",
     "baselineRoutines": 162,
-    "expansionRoutines": 15,
+    "expansionRoutines": 18,
     "batches": [
       {
         "id": "cell-capacity-prerequisite",
@@ -533,18 +533,32 @@
         "prs": [],
         "nextAction": "Preserve earlier source-bound observations as historical. Record both complete local lanes and canonical CI on the expanded source.",
         "record": "data/parity-audits/e25-gf-user-functions.json"
+      },
+      {
+        "id": "e24-gf-configurable",
+        "routines": [
+          "gfevnt_c",
+          "gffove_c",
+          "gfocce_c"
+        ],
+        "dependsOn": [
+          "e25-gf-user-functions"
+        ],
+        "prs": [],
+        "nextAction": "Run both require lanes, comparing complete configured search windows and callback sequences.",
+        "record": "data/parity-audits/e24-gf-configurable.json"
       }
     ],
     "counts": {
       "node": {
         "unreviewed": 0,
-        "reviewed": 177,
+        "reviewed": 180,
         "needs-repair": 0,
         "verified": 0
       },
       "wasm": {
         "unreviewed": 0,
-        "reviewed": 177,
+        "reviewed": 180,
         "needs-repair": 0,
         "verified": 0
       }
@@ -561,11 +575,11 @@
   "summary": {
     "total": 652,
     "eligible": 649,
-    "implemented": 177,
-    "planned": 472,
+    "implemented": 180,
+    "planned": 469,
     "excluded": 3,
-    "caseFiles": 177,
-    "scenarios": 1334,
+    "caseFiles": 180,
+    "scenarios": 1340,
     "wasmRawUnsupported": 0
   },
   "ciLanes": [
@@ -1862,7 +1876,40 @@
       "contractDomain": "geometry-gf",
       "dispatch": {
         "file": "packages/py-parity-checking/src/run-tspice/dispatch.ts",
-        "line": 232
+        "line": 235
+      },
+      "namespaceMapping": "canonical-domain",
+      "aliasEvidence": null
+    },
+    {
+      "operation": "geometry-gf.gfevnt",
+      "contractMethod": "gfevnt",
+      "contractDomain": "geometry-gf",
+      "dispatch": {
+        "file": "packages/py-parity-checking/src/run-tspice/dispatch.ts",
+        "line": 223
+      },
+      "namespaceMapping": "canonical-domain",
+      "aliasEvidence": null
+    },
+    {
+      "operation": "geometry-gf.gffove",
+      "contractMethod": "gffove",
+      "contractDomain": "geometry-gf",
+      "dispatch": {
+        "file": "packages/py-parity-checking/src/run-tspice/dispatch.ts",
+        "line": 224
+      },
+      "namespaceMapping": "canonical-domain",
+      "aliasEvidence": null
+    },
+    {
+      "operation": "geometry-gf.gfocce",
+      "contractMethod": "gfocce",
+      "contractDomain": "geometry-gf",
+      "dispatch": {
+        "file": "packages/py-parity-checking/src/run-tspice/dispatch.ts",
+        "line": 225
       },
       "namespaceMapping": "canonical-domain",
       "aliasEvidence": null
@@ -1873,7 +1920,7 @@
       "contractDomain": "geometry-gf",
       "dispatch": {
         "file": "packages/py-parity-checking/src/run-tspice/dispatch.ts",
-        "line": 223
+        "line": 226
       },
       "namespaceMapping": "canonical-domain",
       "aliasEvidence": null
@@ -1917,7 +1964,7 @@
       "contractDomain": "geometry-gf",
       "dispatch": {
         "file": "packages/py-parity-checking/src/run-tspice/dispatch.ts",
-        "line": 224
+        "line": 227
       },
       "namespaceMapping": "canonical-domain",
       "aliasEvidence": null
@@ -1928,7 +1975,7 @@
       "contractDomain": "geometry-gf",
       "dispatch": {
         "file": "packages/py-parity-checking/src/run-tspice/dispatch.ts",
-        "line": 226
+        "line": 229
       },
       "namespaceMapping": "canonical-domain",
       "aliasEvidence": null
@@ -1972,7 +2019,7 @@
       "contractDomain": "geometry-gf",
       "dispatch": {
         "file": "packages/py-parity-checking/src/run-tspice/dispatch.ts",
-        "line": 225
+        "line": 228
       },
       "namespaceMapping": "canonical-domain",
       "aliasEvidence": null
@@ -1983,7 +2030,7 @@
       "contractDomain": "geometry-gf",
       "dispatch": {
         "file": "packages/py-parity-checking/src/run-tspice/dispatch.ts",
-        "line": 230
+        "line": 233
       },
       "namespaceMapping": "canonical-domain",
       "aliasEvidence": null
@@ -1994,7 +2041,7 @@
       "contractDomain": "geometry-gf",
       "dispatch": {
         "file": "packages/py-parity-checking/src/run-tspice/dispatch.ts",
-        "line": 231
+        "line": 234
       },
       "namespaceMapping": "canonical-domain",
       "aliasEvidence": null
@@ -2005,7 +2052,7 @@
       "contractDomain": "geometry-gf",
       "dispatch": {
         "file": "packages/py-parity-checking/src/run-tspice/dispatch.ts",
-        "line": 228
+        "line": 231
       },
       "namespaceMapping": "canonical-domain",
       "aliasEvidence": null
@@ -2016,7 +2063,7 @@
       "contractDomain": "geometry-gf",
       "dispatch": {
         "file": "packages/py-parity-checking/src/run-tspice/dispatch.ts",
-        "line": 229
+        "line": 232
       },
       "namespaceMapping": "canonical-domain",
       "aliasEvidence": null
@@ -2027,7 +2074,7 @@
       "contractDomain": "geometry-gf",
       "dispatch": {
         "file": "packages/py-parity-checking/src/run-tspice/dispatch.ts",
-        "line": 227
+        "line": 230
       },
       "namespaceMapping": "canonical-domain",
       "aliasEvidence": null
@@ -2741,7 +2788,7 @@
           "symbol": "tspice_axisar",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1200
+            "line": 1217
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/coords_vectors.c",
@@ -5063,7 +5110,7 @@
           "symbol": "tspice_card",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1367
+            "line": 1384
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/cells_windows.c",
@@ -6468,7 +6515,7 @@
           "symbol": "tspice_ckcov",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1323
+            "line": 1340
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/frames.c",
@@ -7022,7 +7069,7 @@
           "symbol": "tspice_ckgp",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1284
+            "line": 1301
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/frames.c",
@@ -7384,7 +7431,7 @@
           "symbol": "tspice_ckgpav",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1299
+            "line": 1316
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/frames.c",
@@ -7760,7 +7807,7 @@
           "symbol": "tspice_cklpf",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1314
+            "line": 1331
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/frames.c",
@@ -8080,7 +8127,7 @@
           "symbol": "tspice_ckobj",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1320
+            "line": 1337
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/frames.c",
@@ -8468,7 +8515,7 @@
           "symbol": "tspice_ckupf",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1317
+            "line": 1334
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/frames.c",
@@ -25180,7 +25227,7 @@
           "symbol": "tspice_georec",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1208
+            "line": 1225
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/coords_vectors.c",
@@ -27345,7 +27392,7 @@
         "domain": "geometry-gf",
         "evidence": {
           "file": "packages/backend-contract/src/domains/geometry-gf.ts",
-          "line": 198
+          "line": 278
         }
       },
       "mapping": {
@@ -27392,11 +27439,11 @@
           "symbol": "tspice_gfdist",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1091
+            "line": 1108
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/geometry_gf.c",
-            "line": 631
+            "line": 795
           }
         }
       ],
@@ -27405,7 +27452,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/geometry-gf.ts",
-            "line": 269
+            "line": 291
           },
           "factory": "createGeometryGfApi",
           "delegation": null,
@@ -27417,7 +27464,7 @@
               "registration": "RegisterGeometryGf",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/geometry_gf.cc",
-                "line": 574
+                "line": 766
               },
               "calls": [
                 "tspice_gfdist"
@@ -27446,7 +27493,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/geometry-gf.ts",
-            "line": 547
+            "line": 558
           },
           "factory": "createGeometryGfApi",
           "delegation": null,
@@ -28489,14 +28536,474 @@
       "purpose": "GF, geometric event finder",
       "inventoryDecision": "planned",
       "inventoryJustification": null,
-      "implementation": "planned"
+      "implementation": "contract-present",
+      "contract": {
+        "name": "gfevnt",
+        "interface": "GeometryGfApi",
+        "domain": "geometry-gf",
+        "evidence": {
+          "file": "packages/backend-contract/src/domains/geometry-gf.ts",
+          "line": 84
+        }
+      },
+      "mapping": {
+        "classification": "same-named-cspice-entrypoint",
+        "cspiceEntrypoints": [
+          "copy_c",
+          "erract_c",
+          "errprt_c",
+          "failed_c",
+          "getmsg_c",
+          "gfevnt_c",
+          "qcktrc_c",
+          "reset_c"
+        ],
+        "node": {
+          "classification": "same-named-cspice-entrypoint",
+          "reason": null,
+          "cspiceEntrypoints": [
+            "copy_c",
+            "erract_c",
+            "errprt_c",
+            "failed_c",
+            "getmsg_c",
+            "gfevnt_c",
+            "qcktrc_c",
+            "reset_c"
+          ]
+        },
+        "wasm": {
+          "classification": "same-named-cspice-entrypoint",
+          "reason": null,
+          "cspiceEntrypoints": [
+            "copy_c",
+            "erract_c",
+            "errprt_c",
+            "failed_c",
+            "getmsg_c",
+            "gfevnt_c",
+            "qcktrc_c",
+            "reset_c"
+          ]
+        },
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
+      },
+      "shim": [
+        {
+          "symbol": "tspice_gfevnt",
+          "declaration": {
+            "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
+            "line": 1070
+          },
+          "definition": {
+            "file": "packages/backend-shim-c/src/domains/geometry_gf.c",
+            "line": 572
+          }
+        }
+      ],
+      "backends": {
+        "node": {
+          "status": "source-route-present",
+          "evidence": {
+            "file": "packages/backend-node/src/domains/geometry-gf.ts",
+            "line": 72
+          },
+          "factory": "createGeometryGfApi",
+          "delegation": null,
+          "routePolicy": null,
+          "nativeExports": [
+            {
+              "name": "gfevnt",
+              "handler": "Gfevnt",
+              "registration": "RegisterGeometryGf",
+              "evidence": {
+                "file": "packages/backend-node/native/src/domains/geometry_gf.cc",
+                "line": 760
+              },
+              "calls": [
+                "tspice_gfevnt"
+              ]
+            }
+          ],
+          "shimSymbols": [
+            "tspice_gfevnt"
+          ],
+          "cspiceEntrypoints": [
+            "copy_c",
+            "erract_c",
+            "errprt_c",
+            "failed_c",
+            "getmsg_c",
+            "gfevnt_c",
+            "qcktrc_c",
+            "reset_c"
+          ],
+          "ciJobs": [
+            "check-native"
+          ],
+          "oracleParity": "registered-scenarios; execution must be established by CI logs"
+        },
+        "wasm": {
+          "status": "source-and-binary-route-present",
+          "unsupportedThrow": null,
+          "evidence": {
+            "file": "packages/backend-wasm/src/domains/geometry-gf.ts",
+            "line": 315
+          },
+          "factory": "createGeometryGfApi",
+          "delegation": null,
+          "routePolicy": null,
+          "shimSymbols": [
+            "tspice_gfevnt"
+          ],
+          "cspiceEntrypoints": [
+            "copy_c",
+            "erract_c",
+            "errprt_c",
+            "failed_c",
+            "getmsg_c",
+            "gfevnt_c",
+            "qcktrc_c",
+            "reset_c"
+          ],
+          "ciJobs": [
+            "check",
+            "check-native"
+          ],
+          "oracleParity": "registered-scenarios; execution must be established by CI logs"
+        }
+      },
+      "parity": {
+        "scenarios": [
+          {
+            "caseId": "geometry-gf-gfevnt-interrupted",
+            "source": "packages/py-parity-checking/src/cases/geometry-gf/gfevnt.cases.json",
+            "expectation": "success",
+            "operations": [
+              "cells-windows.wninsd",
+              "geometry-gf.gfevnt",
+              "kernels.furnsh"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-fov.ti",
+                "kind": "checked-in-fixture"
+              },
+              {
+                "path": "kernels/audit-geometry.bsp",
+                "kind": "checked-in-fixture"
+              },
+              {
+                "path": "kernels/audit-geometry.tf",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "edge",
+                "success"
+              ],
+              "observes": "Records all callback inputs in order and both complete caller windows.",
+              "record": "data/parity-audits/e24-gf-configurable.json"
+            }
+          },
+          {
+            "caseId": "geometry-gf-gfevnt-progress",
+            "source": "packages/py-parity-checking/src/cases/geometry-gf/gfevnt.cases.json",
+            "expectation": "success",
+            "operations": [
+              "cells-windows.wninsd",
+              "geometry-gf.gfevnt",
+              "kernels.furnsh"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-fov.ti",
+                "kind": "checked-in-fixture"
+              },
+              {
+                "path": "kernels/audit-geometry.bsp",
+                "kind": "checked-in-fixture"
+              },
+              {
+                "path": "kernels/audit-geometry.tf",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "edge",
+                "success"
+              ],
+              "observes": "Records all callback inputs in order and both complete caller windows.",
+              "record": "data/parity-audits/e24-gf-configurable.json"
+            }
+          }
+        ],
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
+      },
+      "audit": {
+        "batch": "e24-gf-configurable",
+        "node": {
+          "history": [
+            "unreviewed",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Raw gfevnt delegates through the node adapter and shared shim to gfevnt_c.",
+          "executions": [],
+          "status": "reviewed",
+          "record": "data/parity-audits/e24-gf-configurable.json"
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Raw gfevnt delegates through the wasm adapter and shared shim to gfevnt_c.",
+          "executions": [],
+          "status": "reviewed",
+          "record": "data/parity-audits/e24-gf-configurable.json"
+        }
+      }
     },
     {
       "routine": "gffove_c",
       "purpose": "GF, is target in FOV?",
       "inventoryDecision": "planned",
       "inventoryJustification": null,
-      "implementation": "planned"
+      "implementation": "contract-present",
+      "contract": {
+        "name": "gffove",
+        "interface": "GeometryGfApi",
+        "domain": "geometry-gf",
+        "evidence": {
+          "file": "packages/backend-contract/src/domains/geometry-gf.ts",
+          "line": 93
+        }
+      },
+      "mapping": {
+        "classification": "same-named-cspice-entrypoint",
+        "cspiceEntrypoints": [
+          "copy_c",
+          "erract_c",
+          "errprt_c",
+          "failed_c",
+          "getmsg_c",
+          "gffove_c",
+          "qcktrc_c",
+          "reset_c"
+        ],
+        "node": {
+          "classification": "same-named-cspice-entrypoint",
+          "reason": null,
+          "cspiceEntrypoints": [
+            "copy_c",
+            "erract_c",
+            "errprt_c",
+            "failed_c",
+            "getmsg_c",
+            "gffove_c",
+            "qcktrc_c",
+            "reset_c"
+          ]
+        },
+        "wasm": {
+          "classification": "same-named-cspice-entrypoint",
+          "reason": null,
+          "cspiceEntrypoints": [
+            "copy_c",
+            "erract_c",
+            "errprt_c",
+            "failed_c",
+            "getmsg_c",
+            "gffove_c",
+            "qcktrc_c",
+            "reset_c"
+          ]
+        },
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
+      },
+      "shim": [
+        {
+          "symbol": "tspice_gffove",
+          "declaration": {
+            "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
+            "line": 1075
+          },
+          "definition": {
+            "file": "packages/backend-shim-c/src/domains/geometry_gf.c",
+            "line": 593
+          }
+        }
+      ],
+      "backends": {
+        "node": {
+          "status": "source-route-present",
+          "evidence": {
+            "file": "packages/backend-node/src/domains/geometry-gf.ts",
+            "line": 79
+          },
+          "factory": "createGeometryGfApi",
+          "delegation": null,
+          "routePolicy": null,
+          "nativeExports": [
+            {
+              "name": "gffove",
+              "handler": "Gffove",
+              "registration": "RegisterGeometryGf",
+              "evidence": {
+                "file": "packages/backend-node/native/src/domains/geometry_gf.cc",
+                "line": 761
+              },
+              "calls": [
+                "tspice_gffove"
+              ]
+            }
+          ],
+          "shimSymbols": [
+            "tspice_gffove"
+          ],
+          "cspiceEntrypoints": [
+            "copy_c",
+            "erract_c",
+            "errprt_c",
+            "failed_c",
+            "getmsg_c",
+            "gffove_c",
+            "qcktrc_c",
+            "reset_c"
+          ],
+          "ciJobs": [
+            "check-native"
+          ],
+          "oracleParity": "registered-scenarios; execution must be established by CI logs"
+        },
+        "wasm": {
+          "status": "source-and-binary-route-present",
+          "unsupportedThrow": null,
+          "evidence": {
+            "file": "packages/backend-wasm/src/domains/geometry-gf.ts",
+            "line": 318
+          },
+          "factory": "createGeometryGfApi",
+          "delegation": null,
+          "routePolicy": null,
+          "shimSymbols": [
+            "tspice_gffove"
+          ],
+          "cspiceEntrypoints": [
+            "copy_c",
+            "erract_c",
+            "errprt_c",
+            "failed_c",
+            "getmsg_c",
+            "gffove_c",
+            "qcktrc_c",
+            "reset_c"
+          ],
+          "ciJobs": [
+            "check",
+            "check-native"
+          ],
+          "oracleParity": "registered-scenarios; execution must be established by CI logs"
+        }
+      },
+      "parity": {
+        "scenarios": [
+          {
+            "caseId": "geometry-gf-gffove-interrupted",
+            "source": "packages/py-parity-checking/src/cases/geometry-gf/gffove.cases.json",
+            "expectation": "success",
+            "operations": [
+              "cells-windows.wninsd",
+              "geometry-gf.gffove",
+              "kernels.furnsh"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-fov.ti",
+                "kind": "checked-in-fixture"
+              },
+              {
+                "path": "kernels/audit-geometry.bsp",
+                "kind": "checked-in-fixture"
+              },
+              {
+                "path": "kernels/audit-geometry.tf",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "edge",
+                "success"
+              ],
+              "observes": "Records all callback inputs in order and both complete caller windows.",
+              "record": "data/parity-audits/e24-gf-configurable.json"
+            }
+          },
+          {
+            "caseId": "geometry-gf-gffove-progress",
+            "source": "packages/py-parity-checking/src/cases/geometry-gf/gffove.cases.json",
+            "expectation": "success",
+            "operations": [
+              "cells-windows.wninsd",
+              "geometry-gf.gffove",
+              "kernels.furnsh"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-fov.ti",
+                "kind": "checked-in-fixture"
+              },
+              {
+                "path": "kernels/audit-geometry.bsp",
+                "kind": "checked-in-fixture"
+              },
+              {
+                "path": "kernels/audit-geometry.tf",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "edge",
+                "success"
+              ],
+              "observes": "Records all callback inputs in order and both complete caller windows.",
+              "record": "data/parity-audits/e24-gf-configurable.json"
+            }
+          }
+        ],
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
+      },
+      "audit": {
+        "batch": "e24-gf-configurable",
+        "node": {
+          "history": [
+            "unreviewed",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Raw gffove delegates through the node adapter and shared shim to gffove_c.",
+          "executions": [],
+          "status": "reviewed",
+          "record": "data/parity-audits/e24-gf-configurable.json"
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Raw gffove delegates through the wasm adapter and shared shim to gffove_c.",
+          "executions": [],
+          "status": "reviewed",
+          "record": "data/parity-audits/e24-gf-configurable.json"
+        }
+      }
     },
     {
       "routine": "gfilum_c",
@@ -28517,7 +29024,237 @@
       "purpose": "GF, occultation event",
       "inventoryDecision": "planned",
       "inventoryJustification": null,
-      "implementation": "planned"
+      "implementation": "contract-present",
+      "contract": {
+        "name": "gfocce",
+        "interface": "GeometryGfApi",
+        "domain": "geometry-gf",
+        "evidence": {
+          "file": "packages/backend-contract/src/domains/geometry-gf.ts",
+          "line": 102
+        }
+      },
+      "mapping": {
+        "classification": "same-named-cspice-entrypoint",
+        "cspiceEntrypoints": [
+          "copy_c",
+          "erract_c",
+          "errprt_c",
+          "failed_c",
+          "getmsg_c",
+          "gfocce_c",
+          "qcktrc_c",
+          "reset_c"
+        ],
+        "node": {
+          "classification": "same-named-cspice-entrypoint",
+          "reason": null,
+          "cspiceEntrypoints": [
+            "copy_c",
+            "erract_c",
+            "errprt_c",
+            "failed_c",
+            "getmsg_c",
+            "gfocce_c",
+            "qcktrc_c",
+            "reset_c"
+          ]
+        },
+        "wasm": {
+          "classification": "same-named-cspice-entrypoint",
+          "reason": null,
+          "cspiceEntrypoints": [
+            "copy_c",
+            "erract_c",
+            "errprt_c",
+            "failed_c",
+            "getmsg_c",
+            "gfocce_c",
+            "qcktrc_c",
+            "reset_c"
+          ]
+        },
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
+      },
+      "shim": [
+        {
+          "symbol": "tspice_gfocce",
+          "declaration": {
+            "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
+            "line": 1079
+          },
+          "definition": {
+            "file": "packages/backend-shim-c/src/domains/geometry_gf.c",
+            "line": 610
+          }
+        }
+      ],
+      "backends": {
+        "node": {
+          "status": "source-route-present",
+          "evidence": {
+            "file": "packages/backend-node/src/domains/geometry-gf.ts",
+            "line": 86
+          },
+          "factory": "createGeometryGfApi",
+          "delegation": null,
+          "routePolicy": null,
+          "nativeExports": [
+            {
+              "name": "gfocce",
+              "handler": "Gfocce",
+              "registration": "RegisterGeometryGf",
+              "evidence": {
+                "file": "packages/backend-node/native/src/domains/geometry_gf.cc",
+                "line": 762
+              },
+              "calls": [
+                "tspice_gfocce"
+              ]
+            }
+          ],
+          "shimSymbols": [
+            "tspice_gfocce"
+          ],
+          "cspiceEntrypoints": [
+            "copy_c",
+            "erract_c",
+            "errprt_c",
+            "failed_c",
+            "getmsg_c",
+            "gfocce_c",
+            "qcktrc_c",
+            "reset_c"
+          ],
+          "ciJobs": [
+            "check-native"
+          ],
+          "oracleParity": "registered-scenarios; execution must be established by CI logs"
+        },
+        "wasm": {
+          "status": "source-and-binary-route-present",
+          "unsupportedThrow": null,
+          "evidence": {
+            "file": "packages/backend-wasm/src/domains/geometry-gf.ts",
+            "line": 321
+          },
+          "factory": "createGeometryGfApi",
+          "delegation": null,
+          "routePolicy": null,
+          "shimSymbols": [
+            "tspice_gfocce"
+          ],
+          "cspiceEntrypoints": [
+            "copy_c",
+            "erract_c",
+            "errprt_c",
+            "failed_c",
+            "getmsg_c",
+            "gfocce_c",
+            "qcktrc_c",
+            "reset_c"
+          ],
+          "ciJobs": [
+            "check",
+            "check-native"
+          ],
+          "oracleParity": "registered-scenarios; execution must be established by CI logs"
+        }
+      },
+      "parity": {
+        "scenarios": [
+          {
+            "caseId": "geometry-gf-gfocce-interrupted",
+            "source": "packages/py-parity-checking/src/cases/geometry-gf/gfocce.cases.json",
+            "expectation": "success",
+            "operations": [
+              "cells-windows.wninsd",
+              "geometry-gf.gfocce",
+              "kernels.furnsh"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-fov.ti",
+                "kind": "checked-in-fixture"
+              },
+              {
+                "path": "kernels/audit-geometry.bsp",
+                "kind": "checked-in-fixture"
+              },
+              {
+                "path": "kernels/audit-geometry.tf",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "edge",
+                "success"
+              ],
+              "observes": "Records all callback inputs in order and both complete caller windows.",
+              "record": "data/parity-audits/e24-gf-configurable.json"
+            }
+          },
+          {
+            "caseId": "geometry-gf-gfocce-progress",
+            "source": "packages/py-parity-checking/src/cases/geometry-gf/gfocce.cases.json",
+            "expectation": "success",
+            "operations": [
+              "cells-windows.wninsd",
+              "geometry-gf.gfocce",
+              "kernels.furnsh"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-fov.ti",
+                "kind": "checked-in-fixture"
+              },
+              {
+                "path": "kernels/audit-geometry.bsp",
+                "kind": "checked-in-fixture"
+              },
+              {
+                "path": "kernels/audit-geometry.tf",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "edge",
+                "success"
+              ],
+              "observes": "Records all callback inputs in order and both complete caller windows.",
+              "record": "data/parity-audits/e24-gf-configurable.json"
+            }
+          }
+        ],
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
+      },
+      "audit": {
+        "batch": "e24-gf-configurable",
+        "node": {
+          "history": [
+            "unreviewed",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Raw gfocce delegates through the node adapter and shared shim to gfocce_c.",
+          "executions": [],
+          "status": "reviewed",
+          "record": "data/parity-audits/e24-gf-configurable.json"
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Raw gfocce delegates through the wasm adapter and shared shim to gfocce_c.",
+          "executions": [],
+          "status": "reviewed",
+          "record": "data/parity-audits/e24-gf-configurable.json"
+        }
+      }
     },
     {
       "routine": "gfoclt_c",
@@ -28531,7 +29268,7 @@
         "domain": "geometry-gf",
         "evidence": {
           "file": "packages/backend-contract/src/domains/geometry-gf.ts",
-          "line": 74
+          "line": 154
         }
       },
       "mapping": {
@@ -28582,7 +29319,7 @@
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/geometry_gf.c",
-            "line": 494
+            "line": 658
           }
         }
       ],
@@ -28591,7 +29328,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/geometry-gf.ts",
-            "line": 133
+            "line": 155
           },
           "factory": "createGeometryGfApi",
           "delegation": null,
@@ -28603,7 +29340,7 @@
               "registration": "RegisterGeometryGf",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/geometry_gf.cc",
-                "line": 559
+                "line": 748
               },
               "calls": [
                 "tspice_gfoclt"
@@ -28632,7 +29369,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/geometry-gf.ts",
-            "line": 334
+            "line": 345
           },
           "factory": "createGeometryGfApi",
           "delegation": null,
@@ -29355,7 +30092,7 @@
         "domain": "geometry-gf",
         "evidence": {
           "file": "packages/backend-contract/src/domains/geometry-gf.ts",
-          "line": 146
+          "line": 226
         }
       },
       "mapping": {
@@ -29415,7 +30152,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/geometry-gf.ts",
-            "line": 110
+            "line": 132
           },
           "factory": "createGeometryGfApi",
           "delegation": null,
@@ -29427,7 +30164,7 @@
               "registration": "RegisterGeometryGf",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/geometry_gf.cc",
-                "line": 556
+                "line": 745
               },
               "calls": [
                 "tspice_gfrefn"
@@ -29456,7 +30193,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/geometry-gf.ts",
-            "line": 319
+            "line": 330
           },
           "factory": "createGeometryGfApi",
           "delegation": null,
@@ -29723,7 +30460,7 @@
         "domain": "geometry-gf",
         "evidence": {
           "file": "packages/backend-contract/src/domains/geometry-gf.ts",
-          "line": 159
+          "line": 239
         }
       },
       "mapping": {
@@ -29783,7 +30520,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/geometry-gf.ts",
-            "line": 129
+            "line": 151
           },
           "factory": "createGeometryGfApi",
           "delegation": null,
@@ -29795,7 +30532,7 @@
               "registration": "RegisterGeometryGf",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/geometry_gf.cc",
-                "line": 558
+                "line": 747
               },
               "calls": [
                 "tspice_gfrepf"
@@ -29824,7 +30561,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/geometry-gf.ts",
-            "line": 332
+            "line": 343
           },
           "factory": "createGeometryGfApi",
           "delegation": null,
@@ -29974,7 +30711,7 @@
         "domain": "geometry-gf",
         "evidence": {
           "file": "packages/backend-contract/src/domains/geometry-gf.ts",
-          "line": 153
+          "line": 233
         }
       },
       "mapping": {
@@ -30034,7 +30771,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/geometry-gf.ts",
-            "line": 123
+            "line": 145
           },
           "factory": "createGeometryGfApi",
           "delegation": null,
@@ -30046,7 +30783,7 @@
               "registration": "RegisterGeometryGf",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/geometry_gf.cc",
-                "line": 557
+                "line": 746
               },
               "calls": [
                 "tspice_gfrepi"
@@ -30075,7 +30812,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/geometry-gf.ts",
-            "line": 327
+            "line": 338
           },
           "factory": "createGeometryGfApi",
           "delegation": null,
@@ -30350,7 +31087,7 @@
         "domain": "geometry-gf",
         "evidence": {
           "file": "packages/backend-contract/src/domains/geometry-gf.ts",
-          "line": 93
+          "line": 173
         }
       },
       "mapping": {
@@ -30401,7 +31138,7 @@
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/geometry_gf.c",
-            "line": 520
+            "line": 684
           }
         }
       ],
@@ -30410,7 +31147,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/geometry-gf.ts",
-            "line": 177
+            "line": 199
           },
           "factory": "createGeometryGfApi",
           "delegation": null,
@@ -30422,7 +31159,7 @@
               "registration": "RegisterGeometryGf",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/geometry_gf.cc",
-                "line": 562
+                "line": 751
               },
               "calls": [
                 "tspice_gfrfov"
@@ -30451,7 +31188,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/geometry-gf.ts",
-            "line": 412
+            "line": 423
           },
           "factory": "createGeometryGfApi",
           "delegation": null,
@@ -31168,7 +31905,7 @@
         "domain": "geometry-gf",
         "evidence": {
           "file": "packages/backend-contract/src/domains/geometry-gf.ts",
-          "line": 171
+          "line": 251
         }
       },
       "mapping": {
@@ -31215,11 +31952,11 @@
           "symbol": "tspice_gfsep",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1071
+            "line": 1088
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/geometry_gf.c",
-            "line": 567
+            "line": 731
           }
         }
       ],
@@ -31228,7 +31965,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/geometry-gf.ts",
-            "line": 222
+            "line": 244
           },
           "factory": "createGeometryGfApi",
           "delegation": null,
@@ -31240,7 +31977,7 @@
               "registration": "RegisterGeometryGf",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/geometry_gf.cc",
-                "line": 573
+                "line": 765
               },
               "calls": [
                 "tspice_gfsep"
@@ -31269,7 +32006,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/geometry-gf.ts",
-            "line": 500
+            "line": 511
           },
           "factory": "createGeometryGfApi",
           "delegation": null,
@@ -32470,7 +33207,7 @@
         "domain": "geometry-gf",
         "evidence": {
           "file": "packages/backend-contract/src/domains/geometry-gf.ts",
-          "line": 125
+          "line": 205
         }
       },
       "mapping": {
@@ -32530,7 +33267,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/geometry-gf.ts",
-            "line": 63
+            "line": 64
           },
           "factory": "createGeometryGfApi",
           "delegation": null,
@@ -32542,7 +33279,7 @@
               "registration": "RegisterGeometryGf",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/geometry_gf.cc",
-                "line": 553
+                "line": 742
               },
               "calls": [
                 "tspice_gfsstp"
@@ -32571,7 +33308,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/geometry-gf.ts",
-            "line": 316
+            "line": 327
           },
           "factory": "createGeometryGfApi",
           "delegation": null,
@@ -32768,7 +33505,7 @@
         "domain": "geometry-gf",
         "evidence": {
           "file": "packages/backend-contract/src/domains/geometry-gf.ts",
-          "line": 132
+          "line": 212
         }
       },
       "mapping": {
@@ -32828,7 +33565,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/geometry-gf.ts",
-            "line": 95
+            "line": 117
           },
           "factory": "createGeometryGfApi",
           "delegation": null,
@@ -32840,7 +33577,7 @@
               "registration": "RegisterGeometryGf",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/geometry_gf.cc",
-                "line": 554
+                "line": 743
               },
               "calls": [
                 "tspice_gfstep"
@@ -32869,7 +33606,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/geometry-gf.ts",
-            "line": 317
+            "line": 328
           },
           "factory": "createGeometryGfApi",
           "delegation": null,
@@ -33053,7 +33790,7 @@
         "domain": "geometry-gf",
         "evidence": {
           "file": "packages/backend-contract/src/domains/geometry-gf.ts",
-          "line": 139
+          "line": 219
         }
       },
       "mapping": {
@@ -33113,7 +33850,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/geometry-gf.ts",
-            "line": 105
+            "line": 127
           },
           "factory": "createGeometryGfApi",
           "delegation": null,
@@ -33125,7 +33862,7 @@
               "registration": "RegisterGeometryGf",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/geometry_gf.cc",
-                "line": 555
+                "line": 744
               },
               "calls": [
                 "tspice_gfstol"
@@ -33154,7 +33891,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/geometry-gf.ts",
-            "line": 318
+            "line": 329
           },
           "factory": "createGeometryGfApi",
           "delegation": null,
@@ -33343,7 +34080,7 @@
         "domain": "geometry-gf",
         "evidence": {
           "file": "packages/backend-contract/src/domains/geometry-gf.ts",
-          "line": 108
+          "line": 188
         }
       },
       "mapping": {
@@ -33397,7 +34134,7 @@
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/geometry_gf.c",
-            "line": 544
+            "line": 708
           }
         }
       ],
@@ -33406,7 +34143,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/geometry-gf.ts",
-            "line": 194
+            "line": 216
           },
           "factory": "createGeometryGfApi",
           "delegation": null,
@@ -33418,7 +34155,7 @@
               "registration": "RegisterGeometryGf",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/geometry_gf.cc",
-                "line": 565
+                "line": 754
               },
               "calls": [
                 "tspice_gftfov"
@@ -33448,7 +34185,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/geometry-gf.ts",
-            "line": 444
+            "line": 455
           },
           "factory": "createGeometryGfApi",
           "delegation": null,
@@ -34061,7 +34798,7 @@
         "domain": "geometry-gf",
         "evidence": {
           "file": "packages/backend-contract/src/domains/geometry-gf.ts",
-          "line": 47
+          "line": 127
         }
       },
       "mapping": {
@@ -34111,11 +34848,11 @@
           "symbol": "tspice_gfudb",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1068
+            "line": 1085
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/geometry_gf.c",
-            "line": 463
+            "line": 627
           }
         }
       ],
@@ -34124,7 +34861,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/geometry-gf.ts",
-            "line": 71
+            "line": 93
           },
           "factory": "createGeometryGfApi",
           "delegation": null,
@@ -34136,7 +34873,7 @@
               "registration": "RegisterGeometryGf",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/geometry_gf.cc",
-                "line": 571
+                "line": 763
               },
               "calls": [
                 "tspice_gfudb"
@@ -34166,7 +34903,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/geometry-gf.ts",
-            "line": 313
+            "line": 324
           },
           "factory": "createGeometryGfApi",
           "delegation": null,
@@ -34465,7 +35202,7 @@
         "domain": "geometry-gf",
         "evidence": {
           "file": "packages/backend-contract/src/domains/geometry-gf.ts",
-          "line": 58
+          "line": 138
         }
       },
       "mapping": {
@@ -34515,11 +35252,11 @@
           "symbol": "tspice_gfuds",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1069
+            "line": 1086
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/geometry_gf.c",
-            "line": 476
+            "line": 640
           }
         }
       ],
@@ -34528,7 +35265,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/geometry-gf.ts",
-            "line": 73
+            "line": 95
           },
           "factory": "createGeometryGfApi",
           "delegation": null,
@@ -34540,7 +35277,7 @@
               "registration": "RegisterGeometryGf",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/geometry_gf.cc",
-                "line": 572
+                "line": 764
               },
               "calls": [
                 "tspice_gfuds"
@@ -34570,7 +35307,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/geometry-gf.ts",
-            "line": 314
+            "line": 325
           },
           "factory": "createGeometryGfApi",
           "delegation": null,
@@ -38384,7 +39121,7 @@
           "symbol": "tspice_insrtc",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1373
+            "line": 1390
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/cells_windows.c",
@@ -38687,7 +39424,7 @@
           "symbol": "tspice_insrtd",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1372
+            "line": 1389
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/cells_windows.c",
@@ -38972,7 +39709,7 @@
           "symbol": "tspice_insrti",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1371
+            "line": 1388
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/cells_windows.c",
@@ -41371,7 +42108,7 @@
           "symbol": "tspice_latrec",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1117
+            "line": 1134
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/coords_vectors.c",
@@ -42571,7 +43308,7 @@
           "symbol": "tspice_mtxv",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1164
+            "line": 1181
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/coords_vectors.c",
@@ -42809,7 +43546,7 @@
           "symbol": "tspice_mxm",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1168
+            "line": 1185
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/coords_vectors.c",
@@ -43077,7 +43814,7 @@
           "symbol": "tspice_mxv",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1160
+            "line": 1177
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/coords_vectors.c",
@@ -47535,7 +48272,7 @@
           "symbol": "tspice_recgeo",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1219
+            "line": 1236
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/coords_vectors.c",
@@ -47832,7 +48569,7 @@
           "symbol": "tspice_reclat",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1108
+            "line": 1125
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/coords_vectors.c",
@@ -48093,7 +48830,7 @@
           "symbol": "tspice_recsph",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1126
+            "line": 1143
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/coords_vectors.c",
@@ -48668,7 +49405,7 @@
           "symbol": "tspice_rotate",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1188
+            "line": 1205
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/coords_vectors.c",
@@ -48915,7 +49652,7 @@
           "symbol": "tspice_rotmat",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1191
+            "line": 1208
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/coords_vectors.c",
@@ -49191,7 +49928,7 @@
           "symbol": "tspice_scard",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1366
+            "line": 1383
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/cells_windows.c",
@@ -49464,7 +50201,7 @@
           "symbol": "tspice_scdecd",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1257
+            "line": 1274
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/time.c",
@@ -49758,7 +50495,7 @@
           "symbol": "tspice_sce2c",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1274
+            "line": 1291
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/time.c",
@@ -50104,7 +50841,7 @@
           "symbol": "tspice_sce2s",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1240
+            "line": 1257
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/time.c",
@@ -50457,7 +51194,7 @@
           "symbol": "tspice_scencd",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1249
+            "line": 1266
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/time.c",
@@ -50787,7 +51524,7 @@
           "symbol": "tspice_scs2e",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1232
+            "line": 1249
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/time.c",
@@ -51133,7 +51870,7 @@
           "symbol": "tspice_sct2e",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1266
+            "line": 1283
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/time.c",
@@ -53031,7 +53768,7 @@
           "symbol": "tspice_size",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1368
+            "line": 1385
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/cells_windows.c",
@@ -53305,7 +54042,7 @@
           "symbol": "tspice_sphrec",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1135
+            "line": 1152
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/coords_vectors.c",
@@ -62219,7 +62956,7 @@
           "symbol": "tspice_ssize",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1365
+            "line": 1382
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/cells_windows.c",
@@ -67398,7 +68135,7 @@
         "domain": "geometry-gf",
         "evidence": {
           "file": "packages/backend-contract/src/domains/geometry-gf.ts",
-          "line": 42
+          "line": 122
         }
       },
       "mapping": {
@@ -67458,7 +68195,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/geometry-gf.ts",
-            "line": 70
+            "line": 71
           },
           "factory": "createGeometryGfApi",
           "delegation": null,
@@ -67470,7 +68207,7 @@
               "registration": "RegisterGeometryGf",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/geometry_gf.cc",
-                "line": 570
+                "line": 759
               },
               "calls": [
                 "tspice_uddc"
@@ -67499,7 +68236,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/geometry-gf.ts",
-            "line": 312
+            "line": 314
           },
           "factory": "createGeometryGfApi",
           "delegation": null,
@@ -67670,7 +68407,7 @@
         "domain": "geometry-gf",
         "evidence": {
           "file": "packages/backend-contract/src/domains/geometry-gf.ts",
-          "line": 37
+          "line": 117
         }
       },
       "mapping": {
@@ -67730,7 +68467,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/geometry-gf.ts",
-            "line": 69
+            "line": 70
           },
           "factory": "createGeometryGfApi",
           "delegation": null,
@@ -67742,7 +68479,7 @@
               "registration": "RegisterGeometryGf",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/geometry_gf.cc",
-                "line": 569
+                "line": 758
               },
               "calls": [
                 "tspice_uddf"
@@ -67771,7 +68508,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/geometry-gf.ts",
-            "line": 311
+            "line": 313
           },
           "factory": "createGeometryGfApi",
           "delegation": null,
@@ -67942,7 +68679,7 @@
         "domain": "geometry-gf",
         "evidence": {
           "file": "packages/backend-contract/src/domains/geometry-gf.ts",
-          "line": 32
+          "line": 112
         }
       },
       "mapping": {
@@ -68002,7 +68739,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/geometry-gf.ts",
-            "line": 68
+            "line": 69
           },
           "factory": "createGeometryGfApi",
           "delegation": null,
@@ -68014,7 +68751,7 @@
               "registration": "RegisterGeometryGf",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/geometry_gf.cc",
-                "line": 568
+                "line": 757
               },
               "calls": [
                 "tspice_udf"
@@ -68043,7 +68780,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/geometry-gf.ts",
-            "line": 296
+            "line": 298
           },
           "factory": "createGeometryGfApi",
           "delegation": null,
@@ -68848,7 +69585,7 @@
           "symbol": "tspice_vadd",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1176
+            "line": 1193
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/coords_vectors.c",
@@ -69094,7 +69831,7 @@
           "symbol": "tspice_valid",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1369
+            "line": 1386
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/cells_windows.c",
@@ -69409,7 +70146,7 @@
           "symbol": "tspice_vcrss",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1156
+            "line": 1173
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/coords_vectors.c",
@@ -69679,7 +70416,7 @@
           "symbol": "tspice_vdot",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1153
+            "line": 1170
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/coords_vectors.c",
@@ -69939,7 +70676,7 @@
           "symbol": "tspice_vhat",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1150
+            "line": 1167
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/coords_vectors.c",
@@ -70231,7 +70968,7 @@
           "symbol": "tspice_vminus",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1182
+            "line": 1199
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/coords_vectors.c",
@@ -70470,7 +71207,7 @@
           "symbol": "tspice_vnorm",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1144
+            "line": 1161
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/coords_vectors.c",
@@ -70796,7 +71533,7 @@
           "symbol": "tspice_vscl",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1185
+            "line": 1202
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/coords_vectors.c",
@@ -71056,7 +71793,7 @@
           "symbol": "tspice_vsub",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1179
+            "line": 1196
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/coords_vectors.c",
@@ -71337,7 +72074,7 @@
           "symbol": "tspice_wncard",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1386
+            "line": 1403
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/cells_windows.c",
@@ -71633,7 +72370,7 @@
           "symbol": "tspice_wnfetd",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1387
+            "line": 1404
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/cells_windows.c",
@@ -71923,7 +72660,7 @@
           "symbol": "tspice_wninsd",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1385
+            "line": 1402
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/cells_windows.c",
@@ -72237,7 +72974,7 @@
           "symbol": "tspice_wnvald",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1394
+            "line": 1411
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/cells_windows.c",

@@ -2136,6 +2136,15 @@ export function createFakeBackend(
     uddc: () => {
       throw new Error("Fake backend: uddc requires a scientific backend");
     },
+    gfevnt: () => {
+      throw new Error("Fake backend: gfevnt is not implemented");
+    },
+    gffove: () => {
+      throw new Error("Fake backend: gffove is not implemented");
+    },
+    gfocce: () => {
+      throw new Error("Fake backend: gfocce is not implemented");
+    },
     gfudb: () => {
       throw new Error("Fake backend: gfudb requires a scientific backend");
     },

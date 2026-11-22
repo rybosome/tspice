@@ -1,4 +1,5 @@
 import type {
+  GfControl,
   KernelSource,
   SpiceBackend,
   SpiceCharCell,
@@ -149,8 +150,19 @@ type SearchOptions<K extends "gfudb" | "gfuds"> =
     ? Rest
     : never;
 
+type WorkerConfiguredGfRaw = {
+  [K in "gfevnt" | "gffove" | "gfocce"]: (
+    search: Parameters<SpiceRaw[K]>[0],
+    cnfine: Parameters<SpiceRaw[K]>[1],
+    result: Parameters<SpiceRaw[K]>[2],
+    control: GfControl<
+      number | boolean | void | Promise<number | boolean | void>
+    >,
+  ) => Promise<void>;
+};
+
 /** Worker callbacks execute on the caller's thread and can await a measurement on the worker. */
-type WorkerGfRaw = {
+type WorkerGfRaw = WorkerConfiguredGfRaw & {
   uddf(scalar: WorkerGfScalar, x: number, dx: number): Promise<number>;
   uddc(scalar: WorkerGfScalar, x: number, dx: number): Promise<boolean>;
   gfudb<S extends WorkerGfScalar>(

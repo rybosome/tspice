@@ -1,4 +1,8 @@
-import type { SpiceWindow } from "@rybosome/tspice-backend-contract";
+import type {
+  GfControl,
+  GfControlEvent,
+  SpiceWindow,
+} from "@rybosome/tspice-backend-contract";
 import type {
   StepGeometryGfUdf,
   StepGeometryGfUddc,
@@ -10,6 +14,7 @@ import type {
   StepGeometryGfGfrefn,
   StepGeometryGfGfrepf,
   StepGeometryGfGfrepi,
+  StepGeometryGfConfigured,
   StepGeometryGfGfoclt,
   StepGeometryGfGfrfov,
   StepGeometryGfGftfov,
@@ -36,6 +41,7 @@ type GeometryGfStep =
   | StepGeometryGfGfrefn
   | StepGeometryGfGfrepf
   | StepGeometryGfGfrepi
+  | StepGeometryGfConfigured
   | StepGeometryGfGfoclt
   | StepGeometryGfGfrfov
   | StepGeometryGfGftfov
@@ -143,6 +149,50 @@ export function runGeometryGfStep(
       context.spice.raw.gfrepf();
       return { op: step.op, value: null };
 
+    case "geometry-gf.gfevnt":
+    case "geometry-gf.gffove":
+    case "geometry-gf.gfocce": {
+      const cnfine = requireWindow(context, step.cnfineWindowId);
+      const result = getOrCreateWindow(
+        context,
+        step.resultWindowId,
+        step.resultMaxIntervals ?? 8,
+      );
+      const callbacks: GfControlEvent[] = [];
+      let bailCalls = 0;
+      const control: GfControl = (event) => {
+        callbacks.push(event);
+        switch (event.kind) {
+          case "step":
+            return step.stepSeconds;
+          case "refine":
+            return (event.first + event.second) / 2;
+          case "bail":
+            return ++bailCalls >= (step.bailAfter ?? Infinity);
+          default:
+            return undefined;
+        }
+      };
+      switch (step.op) {
+        case "geometry-gf.gfevnt":
+          context.spice.raw.gfevnt(step.search, cnfine, result, control);
+          break;
+        case "geometry-gf.gffove":
+          context.spice.raw.gffove(step.search, cnfine, result, control);
+          break;
+        case "geometry-gf.gfocce":
+          context.spice.raw.gfocce(step.search, cnfine, result, control);
+          break;
+      }
+      return {
+        op: step.op,
+        value: {
+          intervals: windowIntervals(context, result),
+          confinementIntervals: windowIntervals(context, cnfine),
+          callbacks,
+        },
+      };
+    }
     case "geometry-gf.gfoclt": {
       preserveSearchStep(context);
       const cnfine = requireWindow(context, step.cnfineWindowId),

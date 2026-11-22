@@ -437,6 +437,13 @@
       "dependsOn": ["e23-gf-visibility"],
       "prs": [],
       "nextAction": "Preserve earlier source-bound observations as historical. Record both complete local lanes and canonical CI on the expanded source."
+    },
+    {
+      "id": "e24-gf-configurable",
+      "routines": ["gfevnt_c", "gffove_c", "gfocce_c"],
+      "dependsOn": ["e25-gf-user-functions"],
+      "prs": [],
+      "nextAction": "Run both require lanes, comparing complete configured search windows and callback sequences."
     }
   ]
 }
