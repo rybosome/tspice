@@ -726,6 +726,158 @@ export type StepCoordsVectorsXpose = {
   m: Matrix3x3;
 };
 
+export type StepCoordsVectorsMequg = {
+  op: "coords-vectors.mequg";
+  m1: number[];
+  nr: number;
+  nc: number;
+};
+
+export type StepCoordsVectorsMtxmg = {
+  op: "coords-vectors.mtxmg";
+  m1: number[];
+  m2: number[];
+  nc1: number;
+  nr1r2: number;
+  nc2: number;
+};
+
+export type StepCoordsVectorsMtxvg = {
+  op: "coords-vectors.mtxvg";
+  m1: number[];
+  v2: number[];
+  nc1: number;
+  nr1r2: number;
+};
+
+export type StepCoordsVectorsMxmg = {
+  op: "coords-vectors.mxmg";
+  m1: number[];
+  m2: number[];
+  nr1: number;
+  nc1r2: number;
+  nc2: number;
+};
+
+export type StepCoordsVectorsMxmtg = {
+  op: "coords-vectors.mxmtg";
+  m1: number[];
+  m2: number[];
+  nr1: number;
+  nc1c2: number;
+  nr2: number;
+};
+
+export type StepCoordsVectorsMxvg = {
+  op: "coords-vectors.mxvg";
+  m1: number[];
+  v2: number[];
+  nr1: number;
+  nc1r2: number;
+};
+
+export type StepCoordsVectorsVtmvg = {
+  op: "coords-vectors.vtmvg";
+  v1: number[];
+  matrix: number[];
+  v2: number[];
+  nrow: number;
+  ncol: number;
+};
+
+export type StepCoordsVectorsXposeg = {
+  op: "coords-vectors.xposeg";
+  matrix: number[];
+  nrow: number;
+  ncol: number;
+};
+
+export type StepCoordsVectorsVaddg = {
+  op: "coords-vectors.vaddg";
+  a: number[];
+  b: number[];
+};
+
+export type StepCoordsVectorsVdistg = {
+  op: "coords-vectors.vdistg";
+  a: number[];
+  b: number[];
+};
+
+export type StepCoordsVectorsVdotg = {
+  op: "coords-vectors.vdotg";
+  a: number[];
+  b: number[];
+};
+
+export type StepCoordsVectorsVequg = {
+  op: "coords-vectors.vequg";
+  v: number[];
+};
+
+export type StepCoordsVectorsVhatg = {
+  op: "coords-vectors.vhatg";
+  v: number[];
+};
+
+export type StepCoordsVectorsVlcomg = {
+  op: "coords-vectors.vlcomg";
+  a: number;
+  v1: number[];
+  b: number;
+  v2: number[];
+};
+
+export type StepCoordsVectorsVminug = {
+  op: "coords-vectors.vminug";
+  v: number[];
+};
+
+export type StepCoordsVectorsVnormg = {
+  op: "coords-vectors.vnormg";
+  v: number[];
+};
+
+export type StepCoordsVectorsVprojg = {
+  op: "coords-vectors.vprojg";
+  a: number[];
+  b: number[];
+};
+
+export type StepCoordsVectorsVrelg = {
+  op: "coords-vectors.vrelg";
+  a: number[];
+  b: number[];
+};
+
+export type StepCoordsVectorsVsclg = {
+  op: "coords-vectors.vsclg";
+  s: number;
+  v: number[];
+};
+
+export type StepCoordsVectorsVsepg = {
+  op: "coords-vectors.vsepg";
+  a: number[];
+  b: number[];
+};
+
+export type StepCoordsVectorsVsubg = {
+  op: "coords-vectors.vsubg";
+  a: number[];
+  b: number[];
+};
+
+export type StepCoordsVectorsVzerog = {
+  op: "coords-vectors.vzerog";
+  v: number[];
+};
+
+export type StepCoordsVectorsUnormg = {
+  op: "coords-vectors.unormg";
+  v: number[];
+};
+
 export type StepCoordsVectorsReclat = {
   op: "coords-vectors.reclat";
   rectan: Vector3;
@@ -1998,6 +2150,29 @@ export type WorkflowStep =
   | StepCoordsVectorsMxmt
   | StepCoordsVectorsTrace
   | StepCoordsVectorsXpose
+  | StepCoordsVectorsMequg
+  | StepCoordsVectorsMtxmg
+  | StepCoordsVectorsMtxvg
+  | StepCoordsVectorsMxmg
+  | StepCoordsVectorsMxmtg
+  | StepCoordsVectorsMxvg
+  | StepCoordsVectorsVtmvg
+  | StepCoordsVectorsXposeg
+  | StepCoordsVectorsVaddg
+  | StepCoordsVectorsVdistg
+  | StepCoordsVectorsVdotg
+  | StepCoordsVectorsVequg
+  | StepCoordsVectorsVhatg
+  | StepCoordsVectorsVlcomg
+  | StepCoordsVectorsVminug
+  | StepCoordsVectorsVnormg
+  | StepCoordsVectorsVprojg
+  | StepCoordsVectorsVrelg
+  | StepCoordsVectorsVsclg
+  | StepCoordsVectorsVsepg
+  | StepCoordsVectorsVsubg
+  | StepCoordsVectorsVzerog
+  | StepCoordsVectorsUnormg
   | StepCoordsVectorsReclat
   | StepCoordsVectorsLatrec
   | StepCoordsVectorsRecsph
@@ -2297,6 +2472,29 @@ export type StepOutput =
   | { op: "coords-vectors.mxmt"; value: Matrix3x3 }
   | { op: "coords-vectors.trace"; value: number }
   | { op: "coords-vectors.xpose"; value: Matrix3x3 }
+  | { op: "coords-vectors.mequg"; value: number[] }
+  | { op: "coords-vectors.mtxmg"; value: number[] }
+  | { op: "coords-vectors.mtxvg"; value: number[] }
+  | { op: "coords-vectors.mxmg"; value: number[] }
+  | { op: "coords-vectors.mxmtg"; value: number[] }
+  | { op: "coords-vectors.mxvg"; value: number[] }
+  | { op: "coords-vectors.vtmvg"; value: number }
+  | { op: "coords-vectors.xposeg"; value: number[] }
+  | { op: "coords-vectors.vaddg"; value: number[] }
+  | { op: "coords-vectors.vdistg"; value: number }
+  | { op: "coords-vectors.vdotg"; value: number }
+  | { op: "coords-vectors.vequg"; value: number[] }
+  | { op: "coords-vectors.vhatg"; value: number[] }
+  | { op: "coords-vectors.vlcomg"; value: number[] }
+  | { op: "coords-vectors.vminug"; value: number[] }
+  | { op: "coords-vectors.vnormg"; value: number }
+  | { op: "coords-vectors.vprojg"; value: number[] }
+  | { op: "coords-vectors.vrelg"; value: number }
+  | { op: "coords-vectors.vsclg"; value: number[] }
+  | { op: "coords-vectors.vsepg"; value: number }
+  | { op: "coords-vectors.vsubg"; value: number[] }
+  | { op: "coords-vectors.vzerog"; value: boolean }
+  | { op: "coords-vectors.unormg"; value: { unit: number[]; norm: number } }
   | { op: "time.str2et"; value: number }
   | { op: "time.et2utc"; value: string }
   | { op: "time.spd"; value: number }

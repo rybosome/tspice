@@ -616,6 +616,181 @@ class StepCoordsVectorsXpose:
 
 
 @dataclass(frozen=True)
+class StepCoordsVectorsMequg:
+    op: Literal["coords-vectors.mequg"]
+    m1: list[float]
+    nr: int
+    nc: int
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsMtxmg:
+    op: Literal["coords-vectors.mtxmg"]
+    m1: list[float]
+    m2: list[float]
+    nc1: int
+    nr1r2: int
+    nc2: int
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsMtxvg:
+    op: Literal["coords-vectors.mtxvg"]
+    m1: list[float]
+    v2: list[float]
+    nc1: int
+    nr1r2: int
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsMxmg:
+    op: Literal["coords-vectors.mxmg"]
+    m1: list[float]
+    m2: list[float]
+    nr1: int
+    nc1r2: int
+    nc2: int
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsMxmtg:
+    op: Literal["coords-vectors.mxmtg"]
+    m1: list[float]
+    m2: list[float]
+    nr1: int
+    nc1c2: int
+    nr2: int
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsMxvg:
+    op: Literal["coords-vectors.mxvg"]
+    m1: list[float]
+    v2: list[float]
+    nr1: int
+    nc1r2: int
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsVtmvg:
+    op: Literal["coords-vectors.vtmvg"]
+    v1: list[float]
+    matrix: list[float]
+    v2: list[float]
+    nrow: int
+    ncol: int
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsXposeg:
+    op: Literal["coords-vectors.xposeg"]
+    matrix: list[float]
+    nrow: int
+    ncol: int
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsVaddg:
+    op: Literal["coords-vectors.vaddg"]
+    a: list[float]
+    b: list[float]
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsVdistg:
+    op: Literal["coords-vectors.vdistg"]
+    a: list[float]
+    b: list[float]
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsVdotg:
+    op: Literal["coords-vectors.vdotg"]
+    a: list[float]
+    b: list[float]
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsVequg:
+    op: Literal["coords-vectors.vequg"]
+    v: list[float]
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsVhatg:
+    op: Literal["coords-vectors.vhatg"]
+    v: list[float]
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsVlcomg:
+    op: Literal["coords-vectors.vlcomg"]
+    a: float
+    v1: list[float]
+    b: float
+    v2: list[float]
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsVminug:
+    op: Literal["coords-vectors.vminug"]
+    v: list[float]
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsVnormg:
+    op: Literal["coords-vectors.vnormg"]
+    v: list[float]
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsVprojg:
+    op: Literal["coords-vectors.vprojg"]
+    a: list[float]
+    b: list[float]
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsVrelg:
+    op: Literal["coords-vectors.vrelg"]
+    a: list[float]
+    b: list[float]
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsVsclg:
+    op: Literal["coords-vectors.vsclg"]
+    s: float
+    v: list[float]
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsVsepg:
+    op: Literal["coords-vectors.vsepg"]
+    a: list[float]
+    b: list[float]
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsVsubg:
+    op: Literal["coords-vectors.vsubg"]
+    a: list[float]
+    b: list[float]
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsVzerog:
+    op: Literal["coords-vectors.vzerog"]
+    v: list[float]
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsUnormg:
+    op: Literal["coords-vectors.unormg"]
+    v: list[float]
+
+
+@dataclass(frozen=True)
 class StepCoordsVectorsReclat:
     op: Literal["coords-vectors.reclat"]
     rectan: Vec3

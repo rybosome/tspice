@@ -1,0 +1,122 @@
+[
+  {
+    "caseId": "coords-vectors-vsubg-dimension-zero",
+    "description": "vsubg: actual C dimension-zero call with valid non-NULL storage; vector-output conversion uses the narrowly scoped independent binding, scalar wrappers call CSPICE directly.",
+    "workflow": [
+      {
+        "op": "coords-vectors.vsubg",
+        "a": [],
+        "b": []
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-vsubg-dimension-one",
+    "description": "vsubg: dimension-one; kernel-free actual raw outputs, every component compared with the independent locked CSPICE oracle.",
+    "workflow": [
+      {
+        "op": "coords-vectors.vsubg",
+        "a": [3],
+        "b": [-7]
+      },
+      {
+        "op": "coords-vectors.vsubg",
+        "a": [-2],
+        "b": [5]
+      },
+      {
+        "op": "coords-vectors.vsubg",
+        "a": [0],
+        "b": [0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-vsubg-mixed-dimensions-and-order",
+    "description": "vsubg: mixed-dimensions-and-order; kernel-free actual raw outputs, every component compared with the independent locked CSPICE oracle.",
+    "workflow": [
+      {
+        "op": "coords-vectors.vsubg",
+        "a": [2, -5],
+        "b": [7, 11]
+      },
+      {
+        "op": "coords-vectors.vsubg",
+        "a": [3, -4, 0, 12],
+        "b": [2, 7, -11, 5]
+      },
+      {
+        "op": "coords-vectors.vsubg",
+        "a": [1, -2, 4, -8, 16, -32, 64],
+        "b": [-3, 5, -7, 11, -13, 17, -19]
+      },
+      {
+        "op": "coords-vectors.vsubg",
+        "a": [-3, 5, -7, 11, -13, 17, -19],
+        "b": [1, -2, 4, -8, 16, -32, 64]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-vsubg-zero-and-axis-boundaries",
+    "description": "vsubg: zero-and-axis-boundaries; kernel-free actual raw outputs, every component compared with the independent locked CSPICE oracle.",
+    "workflow": [
+      {
+        "op": "coords-vectors.vsubg",
+        "a": [0, 0, 0, 0],
+        "b": [2, -3, 5, 7]
+      },
+      {
+        "op": "coords-vectors.vsubg",
+        "a": [2, -3, 5, 7],
+        "b": [0, 0, 0, 0]
+      },
+      {
+        "op": "coords-vectors.vsubg",
+        "a": [1, 0, 0, 0],
+        "b": [2, 0, 0, 0]
+      },
+      {
+        "op": "coords-vectors.vsubg",
+        "a": [1, 0, 0, 0],
+        "b": [-2, 0, 0, 0]
+      },
+      {
+        "op": "coords-vectors.vsubg",
+        "a": [1, 0, 0, 0],
+        "b": [0, 0, 0, 3]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-vsubg-scaled-magnitudes",
+    "description": "vsubg: scaled-magnitudes; kernel-free actual raw outputs, every component compared with the independent locked CSPICE oracle.",
+    "workflow": [
+      {
+        "op": "coords-vectors.vsubg",
+        "a": [1e100, -2e100, 4e100, -8e100],
+        "b": [2e100, 3.0000000000000002e100, -5e100, 7e100]
+      },
+      {
+        "op": "coords-vectors.vsubg",
+        "a": [1e-100, -2e-100, 4e-100, -8e-100],
+        "b": [2e-100, 3e-100, -5e-100, 7e-100]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

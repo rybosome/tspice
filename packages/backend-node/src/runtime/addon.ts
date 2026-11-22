@@ -761,6 +761,69 @@ export type NativeAddon = {
   trace(m: readonly number[]): number;
   xpose(m: readonly number[]): number[];
 
+  mequg(m1: readonly number[], nr: number, nc: number): unknown;
+  mtxmg(
+    m1: readonly number[],
+    m2: readonly number[],
+    nc1: number,
+    nr1r2: number,
+    nc2: number,
+  ): unknown;
+  mtxvg(
+    m1: readonly number[],
+    v2: readonly number[],
+    nc1: number,
+    nr1r2: number,
+  ): unknown;
+  mxmg(
+    m1: readonly number[],
+    m2: readonly number[],
+    nr1: number,
+    nc1r2: number,
+    nc2: number,
+  ): unknown;
+  mxmtg(
+    m1: readonly number[],
+    m2: readonly number[],
+    nr1: number,
+    nc1c2: number,
+    nr2: number,
+  ): unknown;
+  mxvg(
+    m1: readonly number[],
+    v2: readonly number[],
+    nr1: number,
+    nc1r2: number,
+  ): unknown;
+  vtmvg(
+    v1: readonly number[],
+    matrix: readonly number[],
+    v2: readonly number[],
+    nrow: number,
+    ncol: number,
+  ): unknown;
+  xposeg(matrix: readonly number[], nrow: number, ncol: number): unknown;
+  vaddg(a: readonly number[], b: readonly number[]): number[];
+  vdistg(a: readonly number[], b: readonly number[]): number;
+  vdotg(a: readonly number[], b: readonly number[]): number;
+  vequg(v: readonly number[]): number[];
+  vhatg(v: readonly number[]): number[];
+  vlcomg(
+    a: number,
+    v1: readonly number[],
+    b: number,
+    v2: readonly number[],
+  ): number[];
+  vminug(v: readonly number[]): number[];
+  vnormg(v: readonly number[]): number;
+  vprojg(a: readonly number[], b: readonly number[]): number[];
+  vrelg(a: readonly number[], b: readonly number[]): number;
+  vsclg(s: number, v: readonly number[]): number[];
+  vsepg(a: readonly number[], b: readonly number[]): number;
+  vsubg(a: readonly number[], b: readonly number[]): number[];
+  vzerog(v: readonly number[]): boolean;
+  unormg(v: readonly number[]): { unit: number[]; norm: number };
+
   reclat(rect: number[]): { radius: number; lon: number; lat: number };
   latrec(radius: number, lon: number, lat: number): number[];
   recsph(rect: number[]): { radius: number; colat: number; lon: number };

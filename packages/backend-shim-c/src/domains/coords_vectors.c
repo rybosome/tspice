@@ -1,3 +1,5 @@
+#include "tspice_matrix_shapes.h"
+#include "tspice_error.h"
 #include "tspice_backend_shim.h"
 
 #include "SpiceUsr.h"
@@ -331,6 +333,7 @@ int tspice_vsep(const double *a, const double *b, double *out, char *err, int er
   *out = (double)value;
   return 0;
 }
+#include <stdint.h>
 #include <stdint.h>
 #include <stdint.h>
 
@@ -1549,6 +1552,376 @@ int tspice_xpose(const double *m, double *out, char *err, int errMaxBytes) {
   }
   for (int i = 0; i < 3; i++) {
     for (int j = 0; j < 3; j++) out[i * 3 + j] = value[i][j];
+  }
+  return 0;
+}
+
+static int tspice_general_vector_invalid_arg(char *err, int errMaxBytes) {
+  tspice_clear_last_error_buffers();
+  if (err && errMaxBytes > 0) {
+    strncpy(err, "general vector operation requires valid dimension and non-NULL buffers", (size_t)errMaxBytes - 1);
+    err[errMaxBytes - 1] = '\0';
+  }
+  return 1;
+}
+
+int tspice_mequg(
+    const double *m1,
+    int nr,
+    int nc,
+    double *out,
+    char *err,
+    int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  tspice_clear_error(err, errMaxBytes);
+  int count;
+  if (!m1 || !out ||
+      !tspice_matrix_count(nr, nc, &count)) return tspice_return_error(err, errMaxBytes, "Invalid matrix dimensions or storage");
+  mequg_c(m1, nr, nc, out);
+  if (failed_c()) { tspice_get_spice_error_message_and_reset(err, errMaxBytes); return 1; }
+  return 0;
+}
+
+int tspice_mtxmg(
+    const double *m1,
+    const double *m2,
+    int nc1,
+    int nr1r2,
+    int nc2,
+    double *out,
+    char *err,
+    int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  tspice_clear_error(err, errMaxBytes);
+  int count;
+  const int k = nr1r2 < 0 ? 0 : nr1r2;
+  if (!m1 || !m2 || !out ||
+      nc1 > TSPICE_MATRIX_MAX_ELEMENTS ||
+      !tspice_matrix_count(k, nc1, &count) ||
+      !tspice_matrix_count(k, nc2, &count) ||
+      !tspice_matrix_count(nc1, nc2, &count)) return tspice_return_error(err, errMaxBytes, "Invalid matrix dimensions or storage");
+  mtxmg_c(m1, m2, nc1, nr1r2, nc2, out);
+  if (failed_c()) { tspice_get_spice_error_message_and_reset(err, errMaxBytes); return 1; }
+  return 0;
+}
+
+int tspice_mtxvg(
+    const double *m1,
+    const double *v2,
+    int nc1,
+    int nr1r2,
+    double *out,
+    char *err,
+    int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  tspice_clear_error(err, errMaxBytes);
+  int count;
+  if (!m1 || !v2 || !out ||
+      !tspice_matrix_count(nr1r2, nc1, &count) ||
+      !tspice_matrix_count(nr1r2, 1, &count) ||
+      !tspice_matrix_count(nc1, 1, &count)) return tspice_return_error(err, errMaxBytes, "Invalid matrix dimensions or storage");
+  mtxvg_c(m1, v2, nc1, nr1r2, out);
+  if (failed_c()) { tspice_get_spice_error_message_and_reset(err, errMaxBytes); return 1; }
+  return 0;
+}
+
+int tspice_mxmg(
+    const double *m1,
+    const double *m2,
+    int nr1,
+    int nc1r2,
+    int nc2,
+    double *out,
+    char *err,
+    int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  tspice_clear_error(err, errMaxBytes);
+  int count;
+  const int k = nc1r2 < 0 ? 0 : nc1r2;
+  if (!m1 || !m2 || !out ||
+      nr1 > TSPICE_MATRIX_MAX_ELEMENTS ||
+      !tspice_matrix_count(nr1, k, &count) ||
+      !tspice_matrix_count(k, nc2, &count) ||
+      !tspice_matrix_count(nr1, nc2, &count)) return tspice_return_error(err, errMaxBytes, "Invalid matrix dimensions or storage");
+  mxmg_c(m1, m2, nr1, nc1r2, nc2, out);
+  if (failed_c()) { tspice_get_spice_error_message_and_reset(err, errMaxBytes); return 1; }
+  return 0;
+}
+
+int tspice_mxmtg(
+    const double *m1,
+    const double *m2,
+    int nr1,
+    int nc1c2,
+    int nr2,
+    double *out,
+    char *err,
+    int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  tspice_clear_error(err, errMaxBytes);
+  int count;
+  if (!m1 || !m2 || !out ||
+      nr1 > TSPICE_MATRIX_MAX_ELEMENTS ||
+      !tspice_matrix_count(nr1, nc1c2, &count) ||
+      !tspice_matrix_count(nr2, nc1c2, &count) ||
+      !tspice_matrix_count(nr1, nr2, &count)) return tspice_return_error(err, errMaxBytes, "Invalid matrix dimensions or storage");
+  mxmtg_c(m1, m2, nr1, nc1c2, nr2, out);
+  if (failed_c()) { tspice_get_spice_error_message_and_reset(err, errMaxBytes); return 1; }
+  return 0;
+}
+
+int tspice_mxvg(
+    const double *m1,
+    const double *v2,
+    int nr1,
+    int nc1r2,
+    double *out,
+    char *err,
+    int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  tspice_clear_error(err, errMaxBytes);
+  int count;
+  if (!m1 || !v2 || !out ||
+      !tspice_matrix_count(nr1, nc1r2, &count) ||
+      !tspice_matrix_count(nc1r2, 1, &count) ||
+      !tspice_matrix_count(nr1, 1, &count)) return tspice_return_error(err, errMaxBytes, "Invalid matrix dimensions or storage");
+  mxvg_c(m1, v2, nr1, nc1r2, out);
+  if (failed_c()) { tspice_get_spice_error_message_and_reset(err, errMaxBytes); return 1; }
+  return 0;
+}
+
+int tspice_vtmvg(
+    const double *v1,
+    const double *matrix,
+    const double *v2,
+    int nrow,
+    int ncol,
+    double *out,
+    char *err,
+    int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  tspice_clear_error(err, errMaxBytes);
+  int count;
+  if (!v1 || !matrix || !v2 || !out ||
+      !tspice_matrix_count(nrow, 1, &count) ||
+      !tspice_matrix_count(nrow, ncol, &count) ||
+      !tspice_matrix_count(ncol, 1, &count) ||
+      !tspice_matrix_count(1, 1, &count)) return tspice_return_error(err, errMaxBytes, "Invalid matrix dimensions or storage");
+  *out = vtmvg_c(v1, matrix, v2, nrow, ncol);
+  if (failed_c()) { tspice_get_spice_error_message_and_reset(err, errMaxBytes); return 1; }
+  return 0;
+}
+
+int tspice_xposeg(
+    const double *matrix,
+    int nrow,
+    int ncol,
+    double *out,
+    char *err,
+    int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  tspice_clear_error(err, errMaxBytes);
+  int count;
+  const int r = nrow <= 0 || ncol <= 0 ? 0 : nrow;
+  const int c = r == 0 ? 0 : ncol;
+  if (!matrix || !out ||
+      !tspice_matrix_count(r, c, &count)) return tspice_return_error(err, errMaxBytes, "Invalid matrix dimensions or storage");
+  xposeg_c(matrix, nrow, ncol, out);
+  if (failed_c()) { tspice_get_spice_error_message_and_reset(err, errMaxBytes); return 1; }
+  return 0;
+}
+
+int tspice_vaddg(const double *a, const double *b, int ndim, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!a || !b || !out || ndim < 0 || (size_t)ndim > SIZE_MAX / sizeof(double)) return tspice_general_vector_invalid_arg(err, errMaxBytes);
+  vaddg_c(a, b, (SpiceInt)ndim, out);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  return 0;
+}
+
+int tspice_vdistg(const double *a, const double *b, int ndim, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!a || !b || !out || ndim < 0 || (size_t)ndim > SIZE_MAX / sizeof(double)) return tspice_general_vector_invalid_arg(err, errMaxBytes);
+  *out = 0;
+  const SpiceDouble value = vdistg_c(a, b, (SpiceInt)ndim);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  *out = value;
+  return 0;
+}
+
+int tspice_vdotg(const double *a, const double *b, int ndim, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!a || !b || !out || ndim < 0 || (size_t)ndim > SIZE_MAX / sizeof(double)) return tspice_general_vector_invalid_arg(err, errMaxBytes);
+  *out = 0;
+  const SpiceDouble value = vdotg_c(a, b, (SpiceInt)ndim);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  *out = value;
+  return 0;
+}
+
+int tspice_vequg(const double *v, int ndim, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!v || !out || ndim < 0 || (size_t)ndim > SIZE_MAX / sizeof(double)) return tspice_general_vector_invalid_arg(err, errMaxBytes);
+  vequg_c(v, (SpiceInt)ndim, out);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  return 0;
+}
+
+int tspice_vhatg(const double *v, int ndim, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!v || !out || ndim < 0 || (size_t)ndim > SIZE_MAX / sizeof(double)) return tspice_general_vector_invalid_arg(err, errMaxBytes);
+  vhatg_c(v, (SpiceInt)ndim, out);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  return 0;
+}
+
+int tspice_vlcomg(double a, const double *v1, double b, const double *v2, int ndim, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!v1 || !v2 || !out || ndim < 0 || (size_t)ndim > SIZE_MAX / sizeof(double)) return tspice_general_vector_invalid_arg(err, errMaxBytes);
+  vlcomg_c((SpiceInt)ndim, a, v1, b, v2, out);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  return 0;
+}
+
+int tspice_vminug(const double *v, int ndim, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!v || !out || ndim < 0 || (size_t)ndim > SIZE_MAX / sizeof(double)) return tspice_general_vector_invalid_arg(err, errMaxBytes);
+  vminug_c(v, (SpiceInt)ndim, out);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  return 0;
+}
+
+int tspice_vnormg(const double *v, int ndim, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!v || !out || ndim < 0 || (size_t)ndim > SIZE_MAX / sizeof(double)) return tspice_general_vector_invalid_arg(err, errMaxBytes);
+  *out = 0;
+  const SpiceDouble value = vnormg_c(v, (SpiceInt)ndim);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  *out = value;
+  return 0;
+}
+
+int tspice_vprojg(const double *a, const double *b, int ndim, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!a || !b || !out || ndim < 0 || ndim > 2147483646 || (size_t)ndim > SIZE_MAX / sizeof(double)) return tspice_general_vector_invalid_arg(err, errMaxBytes);
+  // Keep f2c one-based loop counters below their signed32 overflow limit.
+  vprojg_c(a, b, (SpiceInt)ndim, out);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  return 0;
+}
+
+int tspice_vrelg(const double *a, const double *b, int ndim, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!a || !b || !out || ndim < 0 || (size_t)ndim > SIZE_MAX / sizeof(double)) return tspice_general_vector_invalid_arg(err, errMaxBytes);
+  *out = 0;
+  const SpiceDouble value = vrelg_c(a, b, (SpiceInt)ndim);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  *out = value;
+  return 0;
+}
+
+int tspice_vsclg(double s, const double *v, int ndim, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!v || !out || ndim < 0 || (size_t)ndim > SIZE_MAX / sizeof(double)) return tspice_general_vector_invalid_arg(err, errMaxBytes);
+  vsclg_c(s, v, (SpiceInt)ndim, out);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  return 0;
+}
+
+int tspice_vsepg(const double *a, const double *b, int ndim, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!a || !b || !out || ndim < 0 || (size_t)ndim > SIZE_MAX / sizeof(double)) return tspice_general_vector_invalid_arg(err, errMaxBytes);
+  *out = 0;
+  const SpiceDouble value = vsepg_c(a, b, (SpiceInt)ndim);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  *out = value;
+  return 0;
+}
+
+int tspice_vsubg(const double *a, const double *b, int ndim, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!a || !b || !out || ndim < 0 || (size_t)ndim > SIZE_MAX / sizeof(double)) return tspice_general_vector_invalid_arg(err, errMaxBytes);
+  vsubg_c(a, b, (SpiceInt)ndim, out);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  return 0;
+}
+
+int tspice_vzerog(const double *v, int ndim, int *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!v || !out || ndim < 0 || (size_t)ndim > SIZE_MAX / sizeof(double)) return tspice_general_vector_invalid_arg(err, errMaxBytes);
+  *out = 0;
+  const SpiceBoolean value = vzerog_c(v, (SpiceInt)ndim);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  *out = value ? 1 : 0;
+  return 0;
+}
+
+int tspice_unormg(const double *v, int ndim, double *outUnit, double *outNorm, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!v || !outUnit || !outNorm || ndim < 0 || ndim > 2147483646 || (size_t)ndim > SIZE_MAX / sizeof(double)) return tspice_general_vector_invalid_arg(err, errMaxBytes);
+  // Keep f2c one-based loop counters below their signed32 overflow limit.
+  *outNorm = 0.0;
+  unormg_c(v, (SpiceInt)ndim, outUnit, outNorm);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
   }
   return 0;
 }

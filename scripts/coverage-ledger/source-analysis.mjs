@@ -448,7 +448,7 @@ export function closeToken(tokens, start) {
   throw new Error(`Unbalanced C delimiter at line ${tokens[start].line}`);
 }
 
-export function cFunctions(tokens) {
+export function cFunctions(tokens, { staticInlineOnly = false } = {}) {
   const definitions = new Map();
   const keywords = new Set(["if", "while", "for", "switch", "catch", "sizeof"]);
   for (let i = 0; i < tokens.length - 1; i++) {
@@ -465,6 +465,16 @@ export function cFunctions(tokens) {
       tokens[end + 1]?.value !== "{"
     )
       continue;
+    if (staticInlineOnly) {
+      const qualifiers = new Set();
+      for (
+        let j = i - 1;
+        tokens[j]?.kind === "id" || tokens[j]?.value === "*";
+        j--
+      )
+        qualifiers.add(tokens[j].value);
+      if (!qualifiers.has("static") || !qualifiers.has("inline")) continue;
+    }
     const bodyEnd = closeToken(tokens, end + 1);
     definitions.set(tokens[i].value, {
       line: tokens[i].line,
@@ -513,6 +523,36 @@ export function nativeExports(root) {
   )) {
     const tokens = cTokens(fs.readFileSync(file, "utf8"));
     const functions = cFunctions(tokens);
+    // Shared headers can define TU-local helpers using the same prefix as the
+    // exported ABI. Follow only definitions in this translation unit's direct
+    // includes, so a declaration or a matching name in another file cannot
+    // establish an implementation route.
+    for (let i = 0; i + 2 < tokens.length; i++) {
+      const directive = tokens[i];
+      const keyword = tokens[i + 1];
+      const header = tokens[i + 2];
+      if (
+        directive.kind !== "punctuation" ||
+        directive.value !== "#" ||
+        keyword.value !== "include" ||
+        keyword.line !== directive.line ||
+        header.kind !== "string" ||
+        header.line !== directive.line ||
+        !header.value.endsWith(".h") ||
+        path.basename(header.value) !== header.value
+      )
+        continue;
+      const included = path.join(
+        root,
+        "packages/backend-shim-c/include",
+        header.value,
+      );
+      if (!fs.existsSync(included)) continue;
+      const locals = cFunctions(cTokens(fs.readFileSync(included, "utf8")), {
+        staticInlineOnly: true,
+      });
+      for (const [name, definition] of locals) functions.set(name, definition);
+    }
     for (let i = 0; i < tokens.length; i++)
       if (
         tokens[i].value === "SetExportChecked" &&
@@ -540,9 +580,9 @@ export function nativeExports(root) {
           if (seen.has(fn)) return;
           seen.add(fn);
           for (const call of cCalls(functions.get(fn).body)) {
-            if (call.startsWith("tspice_") || call.endsWith("_c"))
+            if (functions.has(call)) trace(call);
+            else if (call.startsWith("tspice_") || call.endsWith("_c"))
               calls.add(call);
-            else if (functions.has(call)) trace(call);
           }
         }
         trace(handler);

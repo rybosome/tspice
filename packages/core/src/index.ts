@@ -168,3 +168,10 @@ export {
   copySpiceStorage,
   assertSpiceStorageFits,
 } from "./spice-runtime/shared/array-storage.js";
+
+export {
+  matrixDimension,
+  matrixElementCount,
+  checkMatrixProductRows,
+  checkMatrixInputLength,
+} from "./spice-runtime/domains/general-matrices.js";

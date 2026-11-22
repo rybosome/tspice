@@ -346,3 +346,59 @@ export function fixedMatrixTypes(sync: Spice, async: SpiceAsync): void {
     asyncEigensystem,
   ];
 }
+
+/** Verify general-vector methods accept readonly arrays and preserve sync/async results without DOM types. */
+export function generalVectorTypes(sync: Spice, async: SpiceAsync): void {
+  const a = [1, -2, 3, -4, 5] as const;
+  const b: readonly number[] = [2, 3, 4, 5, 6];
+  const sum: number[] = sync.raw.vaddg(a, b);
+  const distance: Promise<number> = async.raw.vdistg(a, b);
+  const dot: number = sync.raw.vdotg(a, b);
+  const copy: Promise<number[]> = async.raw.vequg(a);
+  const normalized: number[] = sync.raw.vhatg(a);
+  const combination: Promise<number[]> = async.raw.vlcomg(2, a, -3, b);
+  const negative: number[] = sync.raw.vminug(a);
+  const norm: Promise<number> = async.raw.vnormg(a);
+  const projection: number[] = sync.raw.vprojg(a, b);
+  const relative: Promise<number> = async.raw.vrelg(a, b);
+  const scaled: number[] = sync.raw.vsclg(2, a);
+  const separation: Promise<number> = async.raw.vsepg(a, b);
+  const difference: number[] = sync.raw.vsubg(a, b);
+  const zero: Promise<boolean> = async.raw.vzerog(a);
+  const unitAndNorm: { unit: number[]; norm: number } = sync.raw.unormg(a);
+  void [
+    sum,
+    distance,
+    dot,
+    copy,
+    normalized,
+    combination,
+    negative,
+    norm,
+    projection,
+    relative,
+    scaled,
+    separation,
+    difference,
+    zero,
+    unitAndNorm,
+  ];
+}
+
+function generalMatrices(
+  raw: Awaited<ReturnType<typeof spiceClients.toSync>>["spice"]["raw"],
+) {
+  const matrix = [1, 2, 3, 4, 5, 6] as const,
+    vector = [2, 1] as const;
+  const copy: number[] = raw.mequg(matrix, 2, 3);
+  const transposed = raw.xposeg(copy, 2, 3);
+  const mv = raw.mtxvg(matrix, vector, 3, 2);
+  const product = raw.mxmg(matrix, transposed, 2, 3, 2);
+  return [
+    raw.mxmtg(matrix, matrix, 2, 3, 2),
+    raw.mtxmg(matrix, matrix, 3, 2, 3),
+    raw.mxvg(product, vector, 2, 2),
+    raw.vtmvg(vector, matrix, mv, 2, 3),
+  ];
+}
+void generalMatrices;

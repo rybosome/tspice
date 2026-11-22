@@ -193,6 +193,29 @@ verification: A12 remains `reviewed` until fresh source-bound local and observed
 canonical CI evidence is recorded. The original Step 7 observations remain
 historical on this branch.
 
+## General vectors expansion
+
+A10 reviews fifteen general-dimensional routines in the existing coordinate
+API: `vaddg`, `vdistg`, `vdotg`, `vequg`, `vhatg`, `vlcomg`, `vminug`, `vnormg`,
+`vprojg`, `vrelg`, `vsclg`, `vsepg`, `vsubg`, `vzerog` and `unormg`. Their 82
+registered scenarios contain 205 actual new-routine calls across empty,
+singleton and larger dimensions. Every output component and both `unormg`
+fields reach independent comparison. No kernels or external fixtures are needed.
+
+[General-vector evidence](step8-general-vectors.md) explains the pinned empty
+results, safe dimensions, nine repaired SpiceyPy zero-length output conversions,
+and source-specific numerical limits. The independent repair calls exact
+canonical symbols in the locked library only for empty vector results; ordinary
+nonempty calls remain on SpiceyPy. Separate tagged comparisons retain all fields
+for 22 extreme/signed-zero observations per backend, without changing the normal
+comparator. Allocation, guard, ownership and real RPC codec/structured-clone
+checks are distinct from scientific comparisons and browser startup claims.
+
+The immutable original 162-routine assignment remains intact. This branch adds
+only A10's fifteen routines. Historical Step 7 executions cannot verify changed
+sources; all judgments remain `reviewed` until fresh required local and observed
+canonical CI records are attached to the final source digest.
+
 ## Recording verification
 
 Execution records are maintained observations, not inferred from CI configuration or scenario registration. Record the command, backend, native-required flag where applicable, successful scenario IDs, result summary, and SHA-256 source digest. CI observations also need the actual successful job URL and tested commit. Inspect logs for executed cases and absence of unexpected skips before recording success. Local observations describe the run result; durable CI links provide independently inspectable execution evidence.
@@ -270,7 +293,12 @@ Regression evidence: [owned-numeric-inputs.test.ts](../packages/py-parity-checki
 `det_c`, `diags2_c`, `invert_c`, `invort_c`, `isrot_c`, `mequ_c`, `mtxm_c`, `mxmt_c`, `trace_c`, `xpose_c` now marshal the same entries that the typed adapters validated.
 Capture each four- or nine-entry row-major matrix into an owned input. Keep the existing structural input acceptance, result branding and IEEE output behavior. Both native delegation and WASM marshaling use the validated snapshot. Bounded entry-read and ownership regressions check this adapter property independently of unchanged scientific cases.
 
-Regression evidence: [fixed-matrices-domain.test.ts](../packages/backend-node/test/fixed-matrices-domain.test.ts), [fixed-matrices-allocations.test.ts](../packages/backend-wasm/test/fixed-matrices-allocations.test.ts). These adapter checks do not replace
+Regression evidence: [fixed-matrices-domain.test.ts](../packages/backend-node/test/fixed-matrices-domain.test.ts), [fixed-matrices-allocations.test.ts](../packages/backend-wasm/test/fixed-matrices-allocations.test.ts).
+
+`vaddg_c`, `vdistg_c`, `vdotg_c`, `vequg_c`, `vhatg_c`, `vlcomg_c`, `vminug_c`, `vnormg_c`, `vprojg_c`, `vrelg_c`, `vsclg_c`, `vsepg_c`, `vsubg_c`, `vzerog_c`, `unormg_c` now marshal the same entries that the typed adapters validated.
+Capture dimensions, enforce routine-specific count bounds and equal lengths where required, then copy each finite general-vector component once. Use the owned copies for dispatch, buffer sizes and output-length checks. Both native delegation and WASM marshaling use the validated snapshot. Bounded entry-read and ownership regressions check this adapter property independently of unchanged scientific cases.
+
+Regression evidence: [general-vectors-domain.test.ts](../packages/backend-node/test/general-vectors-domain.test.ts), [general-vectors-allocations.test.ts](../packages/backend-wasm/test/general-vectors-allocations.test.ts), [general-vector-input-snapshots.test.ts](../packages/backend-wasm/test/general-vector-input-snapshots.test.ts). These adapter checks do not replace
 the independent scientific workflows. Earlier executions remain historical on
 their recorded fingerprints; both required local lanes and observed canonical CI
 must run on the corrected source before current verification.
@@ -307,3 +335,11 @@ two expansion assignments remain separate. The combined source requires
 new full validation records for each backend. The Euler constructor uses
 the actual linked SPICELIB implementation with defined error handling.
 [Matrix, quaternion, Euler and axis conventions](step8-rotation-representations.md)
+
+## General matrices
+
+Eight row-major operations add 60 registered workflows and 132 explicit calls.
+The independent oracle preserves rectangular, empty and supported signed
+dimensions. Public tests compare every element, owned output, transpose and
+product composition, and exceptional floating-point results.
+[Matrix contracts and numerical observations](step8-general-matrices.md)

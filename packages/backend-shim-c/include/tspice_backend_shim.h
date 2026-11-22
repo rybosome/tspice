@@ -1256,6 +1256,104 @@ int tspice_trace(const double *m, double *out, char *err, int errMaxBytes);
 // xpose_c: flat row-major matrix buffers.
 int tspice_xpose(const double *m, double *out, char *err, int errMaxBytes);
 
+// General matrices use flat row-major inputs and explicit signed dimensions.
+int tspice_mequg(
+    const double *m1,
+    int nr,
+    int nc,
+    double *out,
+    char *err,
+    int errMaxBytes);
+int tspice_mtxmg(
+    const double *m1,
+    const double *m2,
+    int nc1,
+    int nr1r2,
+    int nc2,
+    double *out,
+    char *err,
+    int errMaxBytes);
+int tspice_mtxvg(
+    const double *m1,
+    const double *v2,
+    int nc1,
+    int nr1r2,
+    double *out,
+    char *err,
+    int errMaxBytes);
+int tspice_mxmg(
+    const double *m1,
+    const double *m2,
+    int nr1,
+    int nc1r2,
+    int nc2,
+    double *out,
+    char *err,
+    int errMaxBytes);
+int tspice_mxmtg(
+    const double *m1,
+    const double *m2,
+    int nr1,
+    int nc1c2,
+    int nr2,
+    double *out,
+    char *err,
+    int errMaxBytes);
+int tspice_mxvg(
+    const double *m1,
+    const double *v2,
+    int nr1,
+    int nc1r2,
+    double *out,
+    char *err,
+    int errMaxBytes);
+int tspice_vtmvg(
+    const double *v1,
+    const double *matrix,
+    const double *v2,
+    int nrow,
+    int ncol,
+    double *out,
+    char *err,
+    int errMaxBytes);
+int tspice_xposeg(
+    const double *matrix,
+    int nrow,
+    int ncol,
+    double *out,
+    char *err,
+    int errMaxBytes);
+// vaddg_c: dimension is inferred by adapters; empty buffers remain non-NULL.
+int tspice_vaddg(const double *a, const double *b, int ndim, double *out, char *err, int errMaxBytes);
+// vdistg_c: dimension is inferred by adapters; empty buffers remain non-NULL.
+int tspice_vdistg(const double *a, const double *b, int ndim, double *out, char *err, int errMaxBytes);
+// vdotg_c: dimension is inferred by adapters; empty buffers remain non-NULL.
+int tspice_vdotg(const double *a, const double *b, int ndim, double *out, char *err, int errMaxBytes);
+// vequg_c: dimension is inferred by adapters; empty buffers remain non-NULL.
+int tspice_vequg(const double *v, int ndim, double *out, char *err, int errMaxBytes);
+// vhatg_c: dimension is inferred by adapters; empty buffers remain non-NULL.
+int tspice_vhatg(const double *v, int ndim, double *out, char *err, int errMaxBytes);
+// vlcomg_c: dimension is inferred by adapters; empty buffers remain non-NULL.
+int tspice_vlcomg(double a, const double *v1, double b, const double *v2, int ndim, double *out, char *err, int errMaxBytes);
+// vminug_c: dimension is inferred by adapters; empty buffers remain non-NULL.
+int tspice_vminug(const double *v, int ndim, double *out, char *err, int errMaxBytes);
+// vnormg_c: dimension is inferred by adapters; empty buffers remain non-NULL.
+int tspice_vnormg(const double *v, int ndim, double *out, char *err, int errMaxBytes);
+// vprojg_c: dimension is inferred by adapters; empty buffers remain non-NULL.
+int tspice_vprojg(const double *a, const double *b, int ndim, double *out, char *err, int errMaxBytes);
+// vrelg_c: dimension is inferred by adapters; empty buffers remain non-NULL.
+int tspice_vrelg(const double *a, const double *b, int ndim, double *out, char *err, int errMaxBytes);
+// vsclg_c: dimension is inferred by adapters; empty buffers remain non-NULL.
+int tspice_vsclg(double s, const double *v, int ndim, double *out, char *err, int errMaxBytes);
+// vsepg_c: dimension is inferred by adapters; empty buffers remain non-NULL.
+int tspice_vsepg(const double *a, const double *b, int ndim, double *out, char *err, int errMaxBytes);
+// vsubg_c: dimension is inferred by adapters; empty buffers remain non-NULL.
+int tspice_vsubg(const double *a, const double *b, int ndim, double *out, char *err, int errMaxBytes);
+// vzerog_c: dimension is inferred by adapters; empty buffers remain non-NULL.
+int tspice_vzerog(const double *v, int ndim, int *out, char *err, int errMaxBytes);
+// unormg_c: dimension is inferred by adapters; empty buffers remain non-NULL.
+int tspice_unormg(const double *v, int ndim, double *outUnit, double *outNorm, char *err, int errMaxBytes);
+
 // reclat_c: rectangular -> latitudinal coordinates.
 int tspice_reclat(
     const double *rect3,

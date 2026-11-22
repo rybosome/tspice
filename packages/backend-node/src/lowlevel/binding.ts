@@ -717,6 +717,66 @@ export function getNodeBinding(): NativeAddon {
     "Expected native addon to export xpose()",
   );
   invariant(
+    typeof native.vaddg === "function",
+    "Expected native addon to export vaddg()",
+  );
+  invariant(
+    typeof native.vdistg === "function",
+    "Expected native addon to export vdistg()",
+  );
+  invariant(
+    typeof native.vdotg === "function",
+    "Expected native addon to export vdotg()",
+  );
+  invariant(
+    typeof native.vequg === "function",
+    "Expected native addon to export vequg()",
+  );
+  invariant(
+    typeof native.vhatg === "function",
+    "Expected native addon to export vhatg()",
+  );
+  invariant(
+    typeof native.vlcomg === "function",
+    "Expected native addon to export vlcomg()",
+  );
+  invariant(
+    typeof native.vminug === "function",
+    "Expected native addon to export vminug()",
+  );
+  invariant(
+    typeof native.vnormg === "function",
+    "Expected native addon to export vnormg()",
+  );
+  invariant(
+    typeof native.vprojg === "function",
+    "Expected native addon to export vprojg()",
+  );
+  invariant(
+    typeof native.vrelg === "function",
+    "Expected native addon to export vrelg()",
+  );
+  invariant(
+    typeof native.vsclg === "function",
+    "Expected native addon to export vsclg()",
+  );
+  invariant(
+    typeof native.vsepg === "function",
+    "Expected native addon to export vsepg()",
+  );
+  invariant(
+    typeof native.vsubg === "function",
+    "Expected native addon to export vsubg()",
+  );
+  invariant(
+    typeof native.vzerog === "function",
+    "Expected native addon to export vzerog()",
+  );
+  invariant(
+    typeof native.unormg === "function",
+    "Expected native addon to export unormg()",
+  );
+  invariant(
     typeof native.reclat === "function",
     "Expected native addon to export reclat(rect)",
   );
@@ -1004,6 +1064,38 @@ export function getNodeBinding(): NativeAddon {
   invariant(
     typeof native.raxisa === "function",
     "Expected native addon to export raxisa",
+  );
+  invariant(
+    typeof native.mequg === "function",
+    "Expected native addon to export mequg",
+  );
+  invariant(
+    typeof native.mtxmg === "function",
+    "Expected native addon to export mtxmg",
+  );
+  invariant(
+    typeof native.mtxvg === "function",
+    "Expected native addon to export mtxvg",
+  );
+  invariant(
+    typeof native.mxmg === "function",
+    "Expected native addon to export mxmg",
+  );
+  invariant(
+    typeof native.mxmtg === "function",
+    "Expected native addon to export mxmtg",
+  );
+  invariant(
+    typeof native.mxvg === "function",
+    "Expected native addon to export mxvg",
+  );
+  invariant(
+    typeof native.vtmvg === "function",
+    "Expected native addon to export vtmvg",
+  );
+  invariant(
+    typeof native.xposeg === "function",
+    "Expected native addon to export xposeg",
   );
   return native;
 }

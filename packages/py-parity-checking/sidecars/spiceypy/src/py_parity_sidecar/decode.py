@@ -105,6 +105,29 @@ from .models import (
     StepCoordsVectorsMxmt,
     StepCoordsVectorsTrace,
     StepCoordsVectorsXpose,
+    StepCoordsVectorsMequg,
+    StepCoordsVectorsMtxmg,
+    StepCoordsVectorsMtxvg,
+    StepCoordsVectorsMxmg,
+    StepCoordsVectorsMxmtg,
+    StepCoordsVectorsMxvg,
+    StepCoordsVectorsVtmvg,
+    StepCoordsVectorsXposeg,
+    StepCoordsVectorsVaddg,
+    StepCoordsVectorsVdistg,
+    StepCoordsVectorsVdotg,
+    StepCoordsVectorsVequg,
+    StepCoordsVectorsVhatg,
+    StepCoordsVectorsVlcomg,
+    StepCoordsVectorsVminug,
+    StepCoordsVectorsVnormg,
+    StepCoordsVectorsVprojg,
+    StepCoordsVectorsVrelg,
+    StepCoordsVectorsVsclg,
+    StepCoordsVectorsVsepg,
+    StepCoordsVectorsVsubg,
+    StepCoordsVectorsVzerog,
+    StepCoordsVectorsUnormg,
     StepCoordsVectorsReclat,
     StepCoordsVectorsRecgeo,
     StepCoordsVectorsRecsph,
@@ -638,6 +661,181 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
                 op=op,
                 body=_expect_int(step.get("body"), label="ids-names.bodvar.body"),
                 item=_expect_string(step.get("item"), label="ids-names.bodvar.item"),
+            )
+
+        case "coords-vectors.mequg":
+            return StepCoordsVectorsMequg(
+                op=op,
+                m1=_expect_number_list(step.get("m1"), label="coords-vectors.mequg.m1"),
+                nr=_expect_int(step.get("nr"), label="coords-vectors.mequg.nr"),
+                nc=_expect_int(step.get("nc"), label="coords-vectors.mequg.nc"),
+            )
+
+        case "coords-vectors.mtxmg":
+            return StepCoordsVectorsMtxmg(
+                op=op,
+                m1=_expect_number_list(step.get("m1"), label="coords-vectors.mtxmg.m1"),
+                m2=_expect_number_list(step.get("m2"), label="coords-vectors.mtxmg.m2"),
+                nc1=_expect_int(step.get("nc1"), label="coords-vectors.mtxmg.nc1"),
+                nr1r2=_expect_int(step.get("nr1r2"), label="coords-vectors.mtxmg.nr1r2"),
+                nc2=_expect_int(step.get("nc2"), label="coords-vectors.mtxmg.nc2"),
+            )
+
+        case "coords-vectors.mtxvg":
+            return StepCoordsVectorsMtxvg(
+                op=op,
+                m1=_expect_number_list(step.get("m1"), label="coords-vectors.mtxvg.m1"),
+                v2=_expect_number_list(step.get("v2"), label="coords-vectors.mtxvg.v2"),
+                nc1=_expect_int(step.get("nc1"), label="coords-vectors.mtxvg.nc1"),
+                nr1r2=_expect_int(step.get("nr1r2"), label="coords-vectors.mtxvg.nr1r2"),
+            )
+
+        case "coords-vectors.mxmg":
+            return StepCoordsVectorsMxmg(
+                op=op,
+                m1=_expect_number_list(step.get("m1"), label="coords-vectors.mxmg.m1"),
+                m2=_expect_number_list(step.get("m2"), label="coords-vectors.mxmg.m2"),
+                nr1=_expect_int(step.get("nr1"), label="coords-vectors.mxmg.nr1"),
+                nc1r2=_expect_int(step.get("nc1r2"), label="coords-vectors.mxmg.nc1r2"),
+                nc2=_expect_int(step.get("nc2"), label="coords-vectors.mxmg.nc2"),
+            )
+
+        case "coords-vectors.mxmtg":
+            return StepCoordsVectorsMxmtg(
+                op=op,
+                m1=_expect_number_list(step.get("m1"), label="coords-vectors.mxmtg.m1"),
+                m2=_expect_number_list(step.get("m2"), label="coords-vectors.mxmtg.m2"),
+                nr1=_expect_int(step.get("nr1"), label="coords-vectors.mxmtg.nr1"),
+                nc1c2=_expect_int(step.get("nc1c2"), label="coords-vectors.mxmtg.nc1c2"),
+                nr2=_expect_int(step.get("nr2"), label="coords-vectors.mxmtg.nr2"),
+            )
+
+        case "coords-vectors.mxvg":
+            return StepCoordsVectorsMxvg(
+                op=op,
+                m1=_expect_number_list(step.get("m1"), label="coords-vectors.mxvg.m1"),
+                v2=_expect_number_list(step.get("v2"), label="coords-vectors.mxvg.v2"),
+                nr1=_expect_int(step.get("nr1"), label="coords-vectors.mxvg.nr1"),
+                nc1r2=_expect_int(step.get("nc1r2"), label="coords-vectors.mxvg.nc1r2"),
+            )
+
+        case "coords-vectors.vtmvg":
+            return StepCoordsVectorsVtmvg(
+                op=op,
+                v1=_expect_number_list(step.get("v1"), label="coords-vectors.vtmvg.v1"),
+                matrix=_expect_number_list(step.get("matrix"), label="coords-vectors.vtmvg.matrix"),
+                v2=_expect_number_list(step.get("v2"), label="coords-vectors.vtmvg.v2"),
+                nrow=_expect_int(step.get("nrow"), label="coords-vectors.vtmvg.nrow"),
+                ncol=_expect_int(step.get("ncol"), label="coords-vectors.vtmvg.ncol"),
+            )
+
+        case "coords-vectors.xposeg":
+            return StepCoordsVectorsXposeg(
+                op=op,
+                matrix=_expect_number_list(step.get("matrix"), label="coords-vectors.xposeg.matrix"),
+                nrow=_expect_int(step.get("nrow"), label="coords-vectors.xposeg.nrow"),
+                ncol=_expect_int(step.get("ncol"), label="coords-vectors.xposeg.ncol"),
+            )
+
+        case "coords-vectors.vaddg":
+            return StepCoordsVectorsVaddg(
+                op=op,
+                a=_expect_number_list(step.get("a"), label="coords-vectors.vaddg.a"),
+                b=_expect_number_list(step.get("b"), label="coords-vectors.vaddg.b"),
+            )
+
+        case "coords-vectors.vdistg":
+            return StepCoordsVectorsVdistg(
+                op=op,
+                a=_expect_number_list(step.get("a"), label="coords-vectors.vdistg.a"),
+                b=_expect_number_list(step.get("b"), label="coords-vectors.vdistg.b"),
+            )
+
+        case "coords-vectors.vdotg":
+            return StepCoordsVectorsVdotg(
+                op=op,
+                a=_expect_number_list(step.get("a"), label="coords-vectors.vdotg.a"),
+                b=_expect_number_list(step.get("b"), label="coords-vectors.vdotg.b"),
+            )
+
+        case "coords-vectors.vequg":
+            return StepCoordsVectorsVequg(
+                op=op,
+                v=_expect_number_list(step.get("v"), label="coords-vectors.vequg.v"),
+            )
+
+        case "coords-vectors.vhatg":
+            return StepCoordsVectorsVhatg(
+                op=op,
+                v=_expect_number_list(step.get("v"), label="coords-vectors.vhatg.v"),
+            )
+
+        case "coords-vectors.vlcomg":
+            return StepCoordsVectorsVlcomg(
+                op=op,
+                a=_expect_number(step.get("a"), label="coords-vectors.vlcomg.a"),
+                v1=_expect_number_list(step.get("v1"), label="coords-vectors.vlcomg.v1"),
+                b=_expect_number(step.get("b"), label="coords-vectors.vlcomg.b"),
+                v2=_expect_number_list(step.get("v2"), label="coords-vectors.vlcomg.v2"),
+            )
+
+        case "coords-vectors.vminug":
+            return StepCoordsVectorsVminug(
+                op=op,
+                v=_expect_number_list(step.get("v"), label="coords-vectors.vminug.v"),
+            )
+
+        case "coords-vectors.vnormg":
+            return StepCoordsVectorsVnormg(
+                op=op,
+                v=_expect_number_list(step.get("v"), label="coords-vectors.vnormg.v"),
+            )
+
+        case "coords-vectors.vprojg":
+            return StepCoordsVectorsVprojg(
+                op=op,
+                a=_expect_number_list(step.get("a"), label="coords-vectors.vprojg.a"),
+                b=_expect_number_list(step.get("b"), label="coords-vectors.vprojg.b"),
+            )
+
+        case "coords-vectors.vrelg":
+            return StepCoordsVectorsVrelg(
+                op=op,
+                a=_expect_number_list(step.get("a"), label="coords-vectors.vrelg.a"),
+                b=_expect_number_list(step.get("b"), label="coords-vectors.vrelg.b"),
+            )
+
+        case "coords-vectors.vsclg":
+            return StepCoordsVectorsVsclg(
+                op=op,
+                s=_expect_number(step.get("s"), label="coords-vectors.vsclg.s"),
+                v=_expect_number_list(step.get("v"), label="coords-vectors.vsclg.v"),
+            )
+
+        case "coords-vectors.vsepg":
+            return StepCoordsVectorsVsepg(
+                op=op,
+                a=_expect_number_list(step.get("a"), label="coords-vectors.vsepg.a"),
+                b=_expect_number_list(step.get("b"), label="coords-vectors.vsepg.b"),
+            )
+
+        case "coords-vectors.vsubg":
+            return StepCoordsVectorsVsubg(
+                op=op,
+                a=_expect_number_list(step.get("a"), label="coords-vectors.vsubg.a"),
+                b=_expect_number_list(step.get("b"), label="coords-vectors.vsubg.b"),
+            )
+
+        case "coords-vectors.vzerog":
+            return StepCoordsVectorsVzerog(
+                op=op,
+                v=_expect_number_list(step.get("v"), label="coords-vectors.vzerog.v"),
+            )
+
+        case "coords-vectors.unormg":
+            return StepCoordsVectorsUnormg(
+                op=op,
+                v=_expect_number_list(step.get("v"), label="coords-vectors.unormg.v"),
             )
 
         case "coords-vectors.eul2m":

@@ -138,6 +138,29 @@ export function dispatchStep(
     case "coords-vectors.mxmt":
     case "coords-vectors.trace":
     case "coords-vectors.xpose":
+    case "coords-vectors.mequg":
+    case "coords-vectors.mtxmg":
+    case "coords-vectors.mtxvg":
+    case "coords-vectors.mxmg":
+    case "coords-vectors.mxmtg":
+    case "coords-vectors.mxvg":
+    case "coords-vectors.vtmvg":
+    case "coords-vectors.xposeg":
+    case "coords-vectors.vaddg":
+    case "coords-vectors.vdistg":
+    case "coords-vectors.vdotg":
+    case "coords-vectors.vequg":
+    case "coords-vectors.vhatg":
+    case "coords-vectors.vlcomg":
+    case "coords-vectors.vminug":
+    case "coords-vectors.vnormg":
+    case "coords-vectors.vprojg":
+    case "coords-vectors.vrelg":
+    case "coords-vectors.vsclg":
+    case "coords-vectors.vsepg":
+    case "coords-vectors.vsubg":
+    case "coords-vectors.vzerog":
+    case "coords-vectors.unormg":
     case "coords-vectors.reclat":
     case "coords-vectors.latrec":
     case "coords-vectors.recsph":

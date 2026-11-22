@@ -104,6 +104,29 @@ import coordsVectorsMtxmCasesRaw from "./coords-vectors/mtxm.cases.json" with { 
 import coordsVectorsMxmtCasesRaw from "./coords-vectors/mxmt.cases.json" with { type: "json" };
 import coordsVectorsTraceCasesRaw from "./coords-vectors/trace.cases.json" with { type: "json" };
 import coordsVectorsXposeCasesRaw from "./coords-vectors/xpose.cases.json" with { type: "json" };
+import coordsVectorsMequgCasesRaw from "./coords-vectors/mequg.cases.json" with { type: "json" };
+import coordsVectorsMtxmgCasesRaw from "./coords-vectors/mtxmg.cases.json" with { type: "json" };
+import coordsVectorsMtxvgCasesRaw from "./coords-vectors/mtxvg.cases.json" with { type: "json" };
+import coordsVectorsMxmgCasesRaw from "./coords-vectors/mxmg.cases.json" with { type: "json" };
+import coordsVectorsMxmtgCasesRaw from "./coords-vectors/mxmtg.cases.json" with { type: "json" };
+import coordsVectorsMxvgCasesRaw from "./coords-vectors/mxvg.cases.json" with { type: "json" };
+import coordsVectorsVtmvgCasesRaw from "./coords-vectors/vtmvg.cases.json" with { type: "json" };
+import coordsVectorsXposegCasesRaw from "./coords-vectors/xposeg.cases.json" with { type: "json" };
+import coordsVectorsVaddgCasesRaw from "./coords-vectors/vaddg.cases.json" with { type: "json" };
+import coordsVectorsVdistgCasesRaw from "./coords-vectors/vdistg.cases.json" with { type: "json" };
+import coordsVectorsVdotgCasesRaw from "./coords-vectors/vdotg.cases.json" with { type: "json" };
+import coordsVectorsVequgCasesRaw from "./coords-vectors/vequg.cases.json" with { type: "json" };
+import coordsVectorsVhatgCasesRaw from "./coords-vectors/vhatg.cases.json" with { type: "json" };
+import coordsVectorsVlcomgCasesRaw from "./coords-vectors/vlcomg.cases.json" with { type: "json" };
+import coordsVectorsVminugCasesRaw from "./coords-vectors/vminug.cases.json" with { type: "json" };
+import coordsVectorsVnormgCasesRaw from "./coords-vectors/vnormg.cases.json" with { type: "json" };
+import coordsVectorsVprojgCasesRaw from "./coords-vectors/vprojg.cases.json" with { type: "json" };
+import coordsVectorsVrelgCasesRaw from "./coords-vectors/vrelg.cases.json" with { type: "json" };
+import coordsVectorsVsclgCasesRaw from "./coords-vectors/vsclg.cases.json" with { type: "json" };
+import coordsVectorsVsepgCasesRaw from "./coords-vectors/vsepg.cases.json" with { type: "json" };
+import coordsVectorsVsubgCasesRaw from "./coords-vectors/vsubg.cases.json" with { type: "json" };
+import coordsVectorsVzerogCasesRaw from "./coords-vectors/vzerog.cases.json" with { type: "json" };
+import coordsVectorsUnormgCasesRaw from "./coords-vectors/unormg.cases.json" with { type: "json" };
 import coordsVectorsAxisarCasesRaw from "./coords-vectors/axisar.cases.json" with { type: "json" };
 import coordsVectorsGeorecCasesRaw from "./coords-vectors/georec.cases.json" with { type: "json" };
 import coordsVectorsLatrecCasesRaw from "./coords-vectors/latrec.cases.json" with { type: "json" };
@@ -371,6 +394,30 @@ export const coordsVectorsCases: ParityCase[] = [
   ...(coordsVectorsMxmtCasesRaw as ParityCase[]),
   ...(coordsVectorsTraceCasesRaw as ParityCase[]),
   ...(coordsVectorsXposeCasesRaw as ParityCase[]),
+
+  ...(coordsVectorsMequgCasesRaw as ParityCase[]),
+  ...(coordsVectorsMtxmgCasesRaw as ParityCase[]),
+  ...(coordsVectorsMtxvgCasesRaw as ParityCase[]),
+  ...(coordsVectorsMxmgCasesRaw as ParityCase[]),
+  ...(coordsVectorsMxmtgCasesRaw as ParityCase[]),
+  ...(coordsVectorsMxvgCasesRaw as ParityCase[]),
+  ...(coordsVectorsVtmvgCasesRaw as ParityCase[]),
+  ...(coordsVectorsXposegCasesRaw as ParityCase[]),
+  ...(coordsVectorsVaddgCasesRaw as ParityCase[]),
+  ...(coordsVectorsVdistgCasesRaw as ParityCase[]),
+  ...(coordsVectorsVdotgCasesRaw as ParityCase[]),
+  ...(coordsVectorsVequgCasesRaw as ParityCase[]),
+  ...(coordsVectorsVhatgCasesRaw as ParityCase[]),
+  ...(coordsVectorsVlcomgCasesRaw as ParityCase[]),
+  ...(coordsVectorsVminugCasesRaw as ParityCase[]),
+  ...(coordsVectorsVnormgCasesRaw as ParityCase[]),
+  ...(coordsVectorsVprojgCasesRaw as ParityCase[]),
+  ...(coordsVectorsVrelgCasesRaw as ParityCase[]),
+  ...(coordsVectorsVsclgCasesRaw as ParityCase[]),
+  ...(coordsVectorsVsepgCasesRaw as ParityCase[]),
+  ...(coordsVectorsVsubgCasesRaw as ParityCase[]),
+  ...(coordsVectorsVzerogCasesRaw as ParityCase[]),
+  ...(coordsVectorsUnormgCasesRaw as ParityCase[]),
 
   ...(coordsVectorsReclatCasesRaw as ParityCase[]),
   ...(coordsVectorsLatrecCasesRaw as ParityCase[]),

@@ -105,6 +105,29 @@ from .coords_vectors import (
     StepCoordsVectorsMxmt,
     StepCoordsVectorsTrace,
     StepCoordsVectorsXpose,
+    StepCoordsVectorsMequg,
+    StepCoordsVectorsMtxmg,
+    StepCoordsVectorsMtxvg,
+    StepCoordsVectorsMxmg,
+    StepCoordsVectorsMxmtg,
+    StepCoordsVectorsMxvg,
+    StepCoordsVectorsVtmvg,
+    StepCoordsVectorsXposeg,
+    StepCoordsVectorsVaddg,
+    StepCoordsVectorsVdistg,
+    StepCoordsVectorsVdotg,
+    StepCoordsVectorsVequg,
+    StepCoordsVectorsVhatg,
+    StepCoordsVectorsVlcomg,
+    StepCoordsVectorsVminug,
+    StepCoordsVectorsVnormg,
+    StepCoordsVectorsVprojg,
+    StepCoordsVectorsVrelg,
+    StepCoordsVectorsVsclg,
+    StepCoordsVectorsVsepg,
+    StepCoordsVectorsVsubg,
+    StepCoordsVectorsVzerog,
+    StepCoordsVectorsUnormg,
     StepCoordsVectorsReclat,
     StepCoordsVectorsRecgeo,
     StepCoordsVectorsRecsph,
@@ -416,6 +439,29 @@ WorkflowStep: TypeAlias = (
     | StepCoordsVectorsMxmt
     | StepCoordsVectorsTrace
     | StepCoordsVectorsXpose
+    | StepCoordsVectorsMequg
+    | StepCoordsVectorsMtxmg
+    | StepCoordsVectorsMtxvg
+    | StepCoordsVectorsMxmg
+    | StepCoordsVectorsMxmtg
+    | StepCoordsVectorsMxvg
+    | StepCoordsVectorsVtmvg
+    | StepCoordsVectorsXposeg
+    | StepCoordsVectorsVaddg
+    | StepCoordsVectorsVdistg
+    | StepCoordsVectorsVdotg
+    | StepCoordsVectorsVequg
+    | StepCoordsVectorsVhatg
+    | StepCoordsVectorsVlcomg
+    | StepCoordsVectorsVminug
+    | StepCoordsVectorsVnormg
+    | StepCoordsVectorsVprojg
+    | StepCoordsVectorsVrelg
+    | StepCoordsVectorsVsclg
+    | StepCoordsVectorsVsepg
+    | StepCoordsVectorsVsubg
+    | StepCoordsVectorsVzerog
+    | StepCoordsVectorsUnormg
     | StepCoordsVectorsReclat
     | StepCoordsVectorsLatrec
     | StepCoordsVectorsRecsph
