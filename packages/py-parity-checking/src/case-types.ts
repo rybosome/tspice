@@ -361,6 +361,30 @@ export type StepTimeSct2e = {
   sclkdp: number;
 };
 
+export type StepTimeSce2t = {
+  op: "time.sce2t";
+  sc: number;
+  et: number;
+};
+
+export type StepTimeScfmt = {
+  op: "time.scfmt";
+  sc: number;
+  ticks: number;
+  clklen?: number;
+};
+
+export type StepTimeScpart = {
+  op: "time.scpart";
+  sc: number;
+};
+
+export type StepTimeSctiks = {
+  op: "time.sctiks";
+  sc: number;
+  clkstr: string;
+};
+
 export type StepTimeSce2c = {
   op: "time.sce2c";
   sc: number;
@@ -2908,6 +2932,10 @@ export type WorkflowStep =
   | StepTimeScencd
   | StepTimeScdecd
   | StepTimeSct2e
+  | StepTimeSce2t
+  | StepTimeScfmt
+  | StepTimeScpart
+  | StepTimeSctiks
   | StepTimeSce2c
   | StepIdsNamesSrfc2s
   | StepIdsNamesSrfcss
@@ -3531,6 +3559,10 @@ export type StepOutput =
   | { op: "time.scencd"; value: number }
   | { op: "time.scdecd"; value: string }
   | { op: "time.sct2e"; value: number }
+  | { op: "time.sce2t"; value: number }
+  | { op: "time.scfmt"; value: string }
+  | { op: "time.scpart"; value: { pstart: number[]; pstop: number[] } }
+  | { op: "time.sctiks"; value: number }
   | { op: "time.sce2c"; value: number }
   | {
       op: "ids-names.bodn2c";

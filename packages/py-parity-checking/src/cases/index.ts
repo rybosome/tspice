@@ -346,6 +346,10 @@ import timeTyearCasesRaw from "./time/tyear.cases.json" with { type: "json" };
 import timeDeltetCasesRaw from "./time/deltet.cases.json" with { type: "json" };
 import timeEt2UtcCasesRaw from "./time/et2utc.cases.json" with { type: "json" };
 import timeScdecdCasesRaw from "./time/scdecd.cases.json" with { type: "json" };
+import timeSce2tCasesRaw from "./time/sce2t.cases.json" with { type: "json" };
+import timeScfmtCasesRaw from "./time/scfmt.cases.json" with { type: "json" };
+import timeScpartCasesRaw from "./time/scpart.cases.json" with { type: "json" };
+import timeSctiksCasesRaw from "./time/sctiks.cases.json" with { type: "json" };
 import timeSce2cCasesRaw from "./time/sce2c.cases.json" with { type: "json" };
 import timeSce2sCasesRaw from "./time/sce2s.cases.json" with { type: "json" };
 import timeScencdCasesRaw from "./time/scencd.cases.json" with { type: "json" };
@@ -376,6 +380,10 @@ export const timeCases: ParityCase[] = [
   ...(timeTimdefCasesRaw as ParityCase[]),
   ...(timeDeltetCasesRaw as ParityCase[]),
   ...(timeScdecdCasesRaw as ParityCase[]),
+  ...(timeSce2tCasesRaw as ParityCase[]),
+  ...(timeScfmtCasesRaw as ParityCase[]),
+  ...(timeScpartCasesRaw as ParityCase[]),
+  ...(timeSctiksCasesRaw as ParityCase[]),
   ...(timeSce2cCasesRaw as ParityCase[]),
   ...(timeSce2sCasesRaw as ParityCase[]),
   ...(timeScencdCasesRaw as ParityCase[]),

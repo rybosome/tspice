@@ -1,0 +1,216 @@
+[
+  {
+    "caseId": "time-scpart-single-and-multiple-partitions",
+    "description": "Compare every raw partition start/stop for two independently loaded clocks, including a stop above signed32.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-ck-clock.tsc"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-two-partition.tsc"
+      },
+      {
+        "op": "time.scpart",
+        "sc": -123
+      },
+      {
+        "op": "time.scpart",
+        "sc": -12345
+      },
+      {
+        "op": "time.scpart",
+        "sc": -123
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "time-scpart-fractional-boundaries",
+    "description": "Read fractional start and stop values verbatim, in their original order.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-two-partition.tsc"
+      },
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "SCLK_PARTITION_START_12345",
+        "values": [20.25, 120.75]
+      },
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "SCLK_PARTITION_END_12345",
+        "values": [80.5, 200.25]
+      },
+      {
+        "op": "time.scpart",
+        "sc": -12345
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "time-scpart-overlapping-resets",
+    "description": "Raw partition readings may repeat or decrease when a spacecraft clock resets.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-two-partition.tsc"
+      },
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "SCLK_PARTITION_START_12345",
+        "values": [8, 0, 8]
+      },
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "SCLK_PARTITION_END_12345",
+        "values": [12, 3, 10]
+      },
+      {
+        "op": "time.scpart",
+        "sc": -12345
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "time-scpart-reload-original",
+    "description": "Pool edits change the returned partition count and reloading after kclear restores the original arrays.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-two-partition.tsc"
+      },
+      {
+        "op": "time.scpart",
+        "sc": -12345
+      },
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "SCLK_PARTITION_START_12345",
+        "values": [4]
+      },
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "SCLK_PARTITION_END_12345",
+        "values": [12]
+      },
+      {
+        "op": "time.scpart",
+        "sc": -12345
+      },
+      {
+        "op": "kernels.kclear"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-two-partition.tsc"
+      },
+      {
+        "op": "time.scpart",
+        "sc": -12345
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "time-scpart-unequal-cardinalities",
+    "description": "Mismatch is diagnosed before partition arrays are copied.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-two-partition.tsc"
+      },
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "SCLK_PARTITION_END_12345",
+        "values": [42]
+      },
+      {
+        "op": "time.scpart",
+        "sc": -12345
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["NUMPARTSUNEQUAL"]
+    }
+  },
+  {
+    "caseId": "time-scpart-missing-clock",
+    "description": "No partition information is available without SCLK data.",
+    "workflow": [
+      {
+        "op": "time.scpart",
+        "sc": -12345
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["KERNELVARNOTFOUND"]
+    }
+  },
+  {
+    "caseId": "time-scpart-clock-cleared",
+    "description": "A prior successful lookup cannot mask a subsequent kernel clear.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-two-partition.tsc"
+      },
+      {
+        "op": "time.scpart",
+        "sc": -12345
+      },
+      {
+        "op": "kernels.kclear"
+      },
+      {
+        "op": "time.scpart",
+        "sc": -12345
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["KERNELVARNOTFOUND"]
+    }
+  },
+  {
+    "caseId": "time-scpart-type-cache-followup",
+    "description": "SCPR01 reads type-1 partition metadata directly. After this successful read the same-clock SCTY01 cache supplies type 1 to the next formatter.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-two-partition.tsc"
+      },
+      {
+        "op": "kernel-pool.pipool",
+        "name": "SCLK_DATA_TYPE_12345",
+        "values": [2]
+      },
+      {
+        "op": "time.scpart",
+        "sc": -12345
+      },
+      {
+        "op": "time.scfmt",
+        "sc": -12345,
+        "ticks": 258
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

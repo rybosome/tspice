@@ -94,11 +94,11 @@ test("baseline derives breadth and preserves direct/non-direct evidence", (t) =>
   assert.deepEqual(ledger.summary, {
     total: 652,
     eligible: 649,
-    implemented: 412,
-    planned: 237,
+    implemented: 416,
+    planned: 233,
     excluded: 3,
-    caseFiles: 412,
-    scenarios: 2678,
+    caseFiles: 416,
+    scenarios: 2727,
     wasmRawUnsupported: 0,
   });
   const kplfrm = ledger.routines.find((r) => r.routine === "kplfrm_c");
@@ -388,6 +388,39 @@ test("the EUL2M route retains its linked SPICELIB call and outer trace", (t) => 
   }
 });
 
+test("the SCE2T alias requires its linked SPICELIB call and outer trace", (t) => {
+  const f = fixture(t);
+  const routine = f
+    .build()
+    .routines.find((entry) => entry.routine === "sce2t_c");
+  for (const backend of ["node", "wasm"]) {
+    const mapping = routine.mapping[backend];
+    assert.equal(mapping.classification, "alias-or-composed");
+    assert.ok(mapping.cspiceEntrypoints.includes("sce2t_"));
+    assert.ok(mapping.cspiceEntrypoints.includes("chkin_c"));
+    assert.ok(mapping.cspiceEntrypoints.includes("chkout_c"));
+    assert.ok(!mapping.cspiceEntrypoints.includes("sce2t_c"));
+  }
+
+  const source = "packages/backend-shim-c/src/domains/time.c";
+  const call = "sce2t_(&spacecraft, &epoch, &encoded)";
+  for (const replacement of [
+    "0 /* sce2t_(&spacecraft, &epoch, &encoded) */",
+    "sce2c_(&spacecraft, &epoch, &encoded)",
+    "sce2t_c(spacecraft, epoch, &encoded)",
+  ]) {
+    f.edit(source, call + ";", replacement + ";");
+    assert.throws(f.build, /Stale non-direct mapping policy for node.sce2t/);
+    f.edit(source, replacement + ";", call + ";");
+  }
+  for (const traceCall of ['chkin_c("sce2t_c");', 'chkout_c("sce2t_c");']) {
+    const comment = "/* " + traceCall + " */";
+    f.edit(source, traceCall, comment);
+    assert.throws(f.build, /Stale non-direct mapping policy for node.sce2t/);
+    f.edit(source, comment, traceCall);
+  }
+});
+
 test("CI native expectation forwarding is distinct from exporting it in the shell", (t) => {
   const f = fixture(t);
   const file = path.join(f.root, "turbo.json");
@@ -521,7 +554,7 @@ test("maintained audit separates reviewed findings from verified backend executi
   const f = fixture(t);
   const ledger = f.build();
   assert.equal(ledger.audit.baselineRoutines, 162);
-  assert.equal(ledger.audit.expansionRoutines, 250);
+  assert.equal(ledger.audit.expansionRoutines, 254);
   // Each success route reaches its public C entrypoint. The three guarded paths
   // must also retain the linked numerical routine used to reject invalid input.
   for (const name of [

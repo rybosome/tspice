@@ -426,6 +426,10 @@ from .time import (
     StepTimeEt2Utc,
     StepTimeScdecd,
     StepTimeScencd,
+    StepTimeSce2t,
+    StepTimeScfmt,
+    StepTimeScpart,
+    StepTimeSctiks,
     StepTimeSce2c,
     StepTimeSce2s,
     StepTimeScs2e,
@@ -509,6 +513,10 @@ WorkflowStep: TypeAlias = (
     | StepTimeScencd
     | StepTimeScdecd
     | StepTimeSct2e
+    | StepTimeSce2t
+    | StepTimeScfmt
+    | StepTimeScpart
+    | StepTimeSctiks
     | StepTimeSce2c
     | StepIdsNamesSrfc2s
     | StepIdsNamesSrfcss

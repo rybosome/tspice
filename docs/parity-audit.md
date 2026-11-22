@@ -437,3 +437,10 @@ D04 covers four surface-name and code translations in 46 registered workflows.
 The audit checks complete output text, separate name and found flags, pool
 precedence and refresh, byte capacities and genuine malformed-table errors.
 [Surface translation semantics and supported bounds](step8-surface-names.md)
+
+## Spacecraft clock details
+
+Four new time routines use 49 registered workflows. The SCE2T route is a
+reviewed SPICELIB alias with initialized result storage and an independent
+oracle. The other three use their corresponding public CSPICE entrypoints.
+[Clock routes, fixtures and numerical bounds](step8-sclk-additions.md)

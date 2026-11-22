@@ -64,27 +64,40 @@
     "bodvar": {
       "node": {
         "reason": "The wrapper queries pool dimensions and delegates numeric retrieval to bodvcd.",
-        "expectedEntrypoints": ["dtpool_c", "bodvcd_c"]
+        "expectedEntrypoints": [
+          "dtpool_c",
+          "bodvcd_c"
+        ]
       },
       "wasm": {
         "reason": "The wrapper queries pool dimensions and delegates numeric retrieval to bodvcd.",
-        "expectedEntrypoints": ["dtpool_c", "bodvcd_c"]
+        "expectedEntrypoints": [
+          "dtpool_c",
+          "bodvcd_c"
+        ]
       }
     },
     "dlacls": {
       "node": {
         "reason": "tspice exposes dlacls as a DAS close alias; CSPICE DAS close handles DLA files.",
-        "expectedEntrypoints": ["dascls_c"]
+        "expectedEntrypoints": [
+          "dascls_c"
+        ]
       },
       "wasm": {
         "reason": "tspice exposes dlacls as a DAS close alias; CSPICE DAS close handles DLA files.",
-        "expectedEntrypoints": ["dascls_c"]
+        "expectedEntrypoints": [
+          "dascls_c"
+        ]
       }
     },
     "kinfo": {
       "wasm": {
         "reason": "The WASM adapter caches loaded kernel metadata assembled with ktotal and kdata.",
-        "expectedEntrypoints": ["ktotal_c", "kdata_c"]
+        "expectedEntrypoints": [
+          "ktotal_c",
+          "kdata_c"
+        ]
       }
     },
     "kxtrct": {
@@ -96,11 +109,37 @@
     "eul2m": {
       "node": {
         "reason": "N0067 eul2m_c transposes an uninitialized temporary matrix after early errors. The shared wrapper calls the same linked SPICELIB eul2m_ with initialized storage and the public trace frame, then transposes successful output into row-major form.",
-        "expectedEntrypoints": ["eul2m_", "chkin_c", "chkout_c"]
+        "expectedEntrypoints": [
+          "eul2m_",
+          "chkin_c",
+          "chkout_c"
+        ]
       },
       "wasm": {
         "reason": "N0067 eul2m_c transposes an uninitialized temporary matrix after early errors. The shared wrapper calls the same linked SPICELIB eul2m_ with initialized storage and the public trace frame, then transposes successful output into row-major form.",
-        "expectedEntrypoints": ["eul2m_", "chkin_c", "chkout_c"]
+        "expectedEntrypoints": [
+          "eul2m_",
+          "chkin_c",
+          "chkout_c"
+        ]
+      }
+    },
+    "sce2t": {
+      "node": {
+        "reason": "N0067 sce2t_c unconditionally copies a private uninitialized double after early errors. The shared wrapper preserves its outer CSPICE trace frame and calls the same linked SPICELIB sce2t_ implementation with initialized output storage.",
+        "expectedEntrypoints": [
+          "sce2t_",
+          "chkin_c",
+          "chkout_c"
+        ]
+      },
+      "wasm": {
+        "reason": "N0067 sce2t_c unconditionally copies a private uninitialized double after early errors. The shared wrapper preserves its outer CSPICE trace frame and calls the same linked SPICELIB sce2t_ implementation with initialized output storage.",
+        "expectedEntrypoints": [
+          "sce2t_",
+          "chkin_c",
+          "chkout_c"
+        ]
       }
     }
   }

@@ -1,0 +1,788 @@
+{
+  "schemaVersion": 1,
+  "batch": "d02-sclk-additions",
+  "traceFiles": [
+    "data/coverage-ledger-policy.json",
+    "docs/step8-sclk-additions.md",
+    "fixtures/consumer-nodom/src/index.ts",
+    "packages/backend-contract/src/domains/time.ts",
+    "packages/backend-fake/src/index.ts",
+    "packages/backend-node/native/src/domains/time.cc",
+    "packages/backend-node/src/domains/time.ts",
+    "packages/backend-node/src/lowlevel/binding.ts",
+    "packages/backend-node/src/runtime/addon.ts",
+    "packages/backend-node/test/sclk-details-domain.test.ts",
+    "packages/backend-shim-c/include/tspice_backend_shim.h",
+    "packages/backend-shim-c/src/domains/time.c",
+    "packages/backend-wasm/src/codec/alloc.ts",
+    "packages/backend-wasm/src/codec/errors.ts",
+    "packages/backend-wasm/src/domains/time.ts",
+    "packages/backend-wasm/src/lowlevel/exports.ts",
+    "packages/backend-wasm/test/sclk-additions-allocations.test.ts",
+    "packages/core/src/index.ts",
+    "packages/core/src/spice-runtime/domains/string-bytes.ts",
+    "packages/py-parity-checking/fixtures/README.md",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/decode.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/time.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/__init__.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/time.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/workflow.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/runtime/lifecycle.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/sclk_oracle.py",
+    "packages/py-parity-checking/src/case-types.ts",
+    "packages/py-parity-checking/src/cases/index.ts",
+    "packages/py-parity-checking/src/run-tspice/dispatch.ts",
+    "packages/py-parity-checking/src/run-tspice/domains/time.ts",
+    "packages/py-parity-checking/src/runtime/lifecycle.ts",
+    "packages/py-parity-checking/test/sclk-additions.test.ts",
+    "scripts/build-backend-wasm.mjs",
+    "scripts/coverage-ledger.test.mjs",
+    "scripts/generate-coverage-ledger.mjs"
+  ],
+  "executions": [
+    {
+      "id": "local-d02-09d17ed1-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "53039f8065ae5cb8f256cdb900872a9a7f29b0303809cb8172447a681ab08ee6",
+      "caseIds": [
+        "time-sce2t-after-clock",
+        "time-sce2t-before-clock",
+        "time-sce2t-first-half-tick",
+        "time-sce2t-integral-rounding",
+        "time-sce2t-invalid-rate",
+        "time-sce2t-lower-and-upper-clock-rates",
+        "time-sce2t-missing-clock",
+        "time-sce2t-non-tdb-clock-no-lsk",
+        "time-sce2t-non-tdb-clock-with-lsk",
+        "time-sce2t-piecewise-coefficients",
+        "time-sce2t-raw-partition-boundaries",
+        "time-sce2t-unknown-spacecraft",
+        "time-sce2t-unsupported-clock-type",
+        "time-scfmt-above-major-modulus",
+        "time-scfmt-all-output-delimiters",
+        "time-scfmt-exact-and-generous-capacities",
+        "time-scfmt-field-offsets",
+        "time-scfmt-fractional-and-half-ticks",
+        "time-scfmt-invalid-output-delimiter",
+        "time-scfmt-missing-clock",
+        "time-scfmt-negative-capacity",
+        "time-scfmt-negative-ticks",
+        "time-scfmt-nominal-truncation",
+        "time-scfmt-raw-partition-boundaries",
+        "time-scfmt-short-capacity",
+        "time-scfmt-single-field-clock",
+        "time-scfmt-unsupported-clock-type",
+        "time-scfmt-zero-capacity",
+        "time-scpart-clock-cleared",
+        "time-scpart-fractional-boundaries",
+        "time-scpart-missing-clock",
+        "time-scpart-overlapping-resets",
+        "time-scpart-reload-original",
+        "time-scpart-single-and-multiple-partitions",
+        "time-scpart-type-cache-followup",
+        "time-scpart-unequal-cardinalities",
+        "time-sctiks-absent-fields-and-carry",
+        "time-sctiks-below-field-offset",
+        "time-sctiks-blank-string",
+        "time-sctiks-empty-string",
+        "time-sctiks-extra-field",
+        "time-sctiks-invalid-character",
+        "time-sctiks-missing-clock",
+        "time-sctiks-nonzero-field-offsets",
+        "time-sctiks-outside-partition",
+        "time-sctiks-partition-prefix",
+        "time-sctiks-raw-field-separators",
+        "time-sctiks-single-field-clock",
+        "time-sctiks-unsupported-clock-type"
+      ],
+      "observation": "Both complete required lanes passed locally on 09d17ed130821551b86d2e1df7a01137af37b49f. JavaScript: 2,535 parity tests and one expected guard skip. Native-required: 2,316 registered Node/WASM live comparisons; 2,536 parity-package tests with no skips, including the native-required guard; 88 native wrapper, 617 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "local-d02-09d17ed1-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "53039f8065ae5cb8f256cdb900872a9a7f29b0303809cb8172447a681ab08ee6",
+      "caseIds": [
+        "time-sce2t-after-clock",
+        "time-sce2t-before-clock",
+        "time-sce2t-first-half-tick",
+        "time-sce2t-integral-rounding",
+        "time-sce2t-invalid-rate",
+        "time-sce2t-lower-and-upper-clock-rates",
+        "time-sce2t-missing-clock",
+        "time-sce2t-non-tdb-clock-no-lsk",
+        "time-sce2t-non-tdb-clock-with-lsk",
+        "time-sce2t-piecewise-coefficients",
+        "time-sce2t-raw-partition-boundaries",
+        "time-sce2t-unknown-spacecraft",
+        "time-sce2t-unsupported-clock-type",
+        "time-scfmt-above-major-modulus",
+        "time-scfmt-all-output-delimiters",
+        "time-scfmt-exact-and-generous-capacities",
+        "time-scfmt-field-offsets",
+        "time-scfmt-fractional-and-half-ticks",
+        "time-scfmt-invalid-output-delimiter",
+        "time-scfmt-missing-clock",
+        "time-scfmt-negative-capacity",
+        "time-scfmt-negative-ticks",
+        "time-scfmt-nominal-truncation",
+        "time-scfmt-raw-partition-boundaries",
+        "time-scfmt-short-capacity",
+        "time-scfmt-single-field-clock",
+        "time-scfmt-unsupported-clock-type",
+        "time-scfmt-zero-capacity",
+        "time-scpart-clock-cleared",
+        "time-scpart-fractional-boundaries",
+        "time-scpart-missing-clock",
+        "time-scpart-overlapping-resets",
+        "time-scpart-reload-original",
+        "time-scpart-single-and-multiple-partitions",
+        "time-scpart-type-cache-followup",
+        "time-scpart-unequal-cardinalities",
+        "time-sctiks-absent-fields-and-carry",
+        "time-sctiks-below-field-offset",
+        "time-sctiks-blank-string",
+        "time-sctiks-empty-string",
+        "time-sctiks-extra-field",
+        "time-sctiks-invalid-character",
+        "time-sctiks-missing-clock",
+        "time-sctiks-nonzero-field-offsets",
+        "time-sctiks-outside-partition",
+        "time-sctiks-partition-prefix",
+        "time-sctiks-raw-field-separators",
+        "time-sctiks-single-field-clock",
+        "time-sctiks-unsupported-clock-type"
+      ],
+      "observation": "Both complete required lanes passed locally on 09d17ed130821551b86d2e1df7a01137af37b49f. JavaScript: 2,535 parity tests and one expected guard skip. Native-required: 2,316 registered Node/WASM live comparisons; 2,536 parity-package tests with no skips, including the native-required guard; 88 native wrapper, 617 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-d02-09d17ed1-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "53039f8065ae5cb8f256cdb900872a9a7f29b0303809cb8172447a681ab08ee6",
+      "caseIds": [
+        "time-sce2t-after-clock",
+        "time-sce2t-before-clock",
+        "time-sce2t-first-half-tick",
+        "time-sce2t-integral-rounding",
+        "time-sce2t-invalid-rate",
+        "time-sce2t-lower-and-upper-clock-rates",
+        "time-sce2t-missing-clock",
+        "time-sce2t-non-tdb-clock-no-lsk",
+        "time-sce2t-non-tdb-clock-with-lsk",
+        "time-sce2t-piecewise-coefficients",
+        "time-sce2t-raw-partition-boundaries",
+        "time-sce2t-unknown-spacecraft",
+        "time-sce2t-unsupported-clock-type",
+        "time-scfmt-above-major-modulus",
+        "time-scfmt-all-output-delimiters",
+        "time-scfmt-exact-and-generous-capacities",
+        "time-scfmt-field-offsets",
+        "time-scfmt-fractional-and-half-ticks",
+        "time-scfmt-invalid-output-delimiter",
+        "time-scfmt-missing-clock",
+        "time-scfmt-negative-capacity",
+        "time-scfmt-negative-ticks",
+        "time-scfmt-nominal-truncation",
+        "time-scfmt-raw-partition-boundaries",
+        "time-scfmt-short-capacity",
+        "time-scfmt-single-field-clock",
+        "time-scfmt-unsupported-clock-type",
+        "time-scfmt-zero-capacity",
+        "time-scpart-clock-cleared",
+        "time-scpart-fractional-boundaries",
+        "time-scpart-missing-clock",
+        "time-scpart-overlapping-resets",
+        "time-scpart-reload-original",
+        "time-scpart-single-and-multiple-partitions",
+        "time-scpart-type-cache-followup",
+        "time-scpart-unequal-cardinalities",
+        "time-sctiks-absent-fields-and-carry",
+        "time-sctiks-below-field-offset",
+        "time-sctiks-blank-string",
+        "time-sctiks-empty-string",
+        "time-sctiks-extra-field",
+        "time-sctiks-invalid-character",
+        "time-sctiks-missing-clock",
+        "time-sctiks-nonzero-field-offsets",
+        "time-sctiks-outside-partition",
+        "time-sctiks-partition-prefix",
+        "time-sctiks-raw-field-separators",
+        "time-sctiks-single-field-clock",
+        "time-sctiks-unsupported-clock-type"
+      ],
+      "commit": "09d17ed130821551b86d2e1df7a01137af37b49f",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43556126707/job/132329262471",
+      "observation": "Inspected successful Linux Node 22 native-required job 132329262471 on 09d17ed130821551b86d2e1df7a01137af37b49f: 2,316 registered Node/WASM live comparisons; 2,536 parity-package tests with no skips, including the native-required guard; 88 native wrapper, 617 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-d02-09d17ed1-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "53039f8065ae5cb8f256cdb900872a9a7f29b0303809cb8172447a681ab08ee6",
+      "caseIds": [
+        "time-sce2t-after-clock",
+        "time-sce2t-before-clock",
+        "time-sce2t-first-half-tick",
+        "time-sce2t-integral-rounding",
+        "time-sce2t-invalid-rate",
+        "time-sce2t-lower-and-upper-clock-rates",
+        "time-sce2t-missing-clock",
+        "time-sce2t-non-tdb-clock-no-lsk",
+        "time-sce2t-non-tdb-clock-with-lsk",
+        "time-sce2t-piecewise-coefficients",
+        "time-sce2t-raw-partition-boundaries",
+        "time-sce2t-unknown-spacecraft",
+        "time-sce2t-unsupported-clock-type",
+        "time-scfmt-above-major-modulus",
+        "time-scfmt-all-output-delimiters",
+        "time-scfmt-exact-and-generous-capacities",
+        "time-scfmt-field-offsets",
+        "time-scfmt-fractional-and-half-ticks",
+        "time-scfmt-invalid-output-delimiter",
+        "time-scfmt-missing-clock",
+        "time-scfmt-negative-capacity",
+        "time-scfmt-negative-ticks",
+        "time-scfmt-nominal-truncation",
+        "time-scfmt-raw-partition-boundaries",
+        "time-scfmt-short-capacity",
+        "time-scfmt-single-field-clock",
+        "time-scfmt-unsupported-clock-type",
+        "time-scfmt-zero-capacity",
+        "time-scpart-clock-cleared",
+        "time-scpart-fractional-boundaries",
+        "time-scpart-missing-clock",
+        "time-scpart-overlapping-resets",
+        "time-scpart-reload-original",
+        "time-scpart-single-and-multiple-partitions",
+        "time-scpart-type-cache-followup",
+        "time-scpart-unequal-cardinalities",
+        "time-sctiks-absent-fields-and-carry",
+        "time-sctiks-below-field-offset",
+        "time-sctiks-blank-string",
+        "time-sctiks-empty-string",
+        "time-sctiks-extra-field",
+        "time-sctiks-invalid-character",
+        "time-sctiks-missing-clock",
+        "time-sctiks-nonzero-field-offsets",
+        "time-sctiks-outside-partition",
+        "time-sctiks-partition-prefix",
+        "time-sctiks-raw-field-separators",
+        "time-sctiks-single-field-clock",
+        "time-sctiks-unsupported-clock-type"
+      ],
+      "commit": "09d17ed130821551b86d2e1df7a01137af37b49f",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43556126707/job/132329262471",
+      "observation": "Inspected successful Linux Node 22 native-required job 132329262471 on 09d17ed130821551b86d2e1df7a01137af37b49f: 2,316 registered Node/WASM live comparisons; 2,536 parity-package tests with no skips, including the native-required guard; 88 native wrapper, 617 WASM, 28 core and 150 facade tests passed."
+    }
+  ],
+  "routines": [
+    {
+      "routine": "sce2t_c",
+      "contract": "packages/backend-contract/src/domains/time.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/sce2t_c.html",
+      "semantics": "Convert ephemeris seconds past J2000 to encoded spacecraft clock ticks rounded to the nearest integer tick, using the selected type-1 clock, time system and calibration. Return a number representing the integral encoded reading. The supported wrapper uses the same linked SPICELIB SCE2T implementation and trace frame as the pinned public C routine.",
+      "scenarios": [
+        {
+          "caseId": "time-sce2t-integral-rounding",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Compare integral encoded ticks at half-tick and adjacent dyadic ET values."
+        },
+        {
+          "caseId": "time-sce2t-raw-partition-boundaries",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Convert ET around the shared encoded boundary and final representable tick."
+        },
+        {
+          "caseId": "time-sce2t-first-half-tick",
+          "coverage": ["success", "edge", "state"],
+          "observes": "A slightly negative ET can still round to the first encoded tick."
+        },
+        {
+          "caseId": "time-sce2t-lower-and-upper-clock-rates",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Separate the single-field one-second clock from a 256-ticks-per-second clock."
+        },
+        {
+          "caseId": "time-sce2t-piecewise-coefficients",
+          "coverage": ["success", "edge", "state"],
+          "observes": "An updated coefficient set changes the rate at encoded tick 512."
+        },
+        {
+          "caseId": "time-sce2t-missing-clock",
+          "coverage": ["error", "edge", "state"],
+          "observes": "A spacecraft without loaded SCLK data reports a toolkit error. Actual SPICE diagnostic KERNELVARNOTFOUND."
+        },
+        {
+          "caseId": "time-sce2t-unknown-spacecraft",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Loading a clock for another spacecraft does not define this clock. Actual SPICE diagnostic KERNELVARNOTFOUND."
+        },
+        {
+          "caseId": "time-sce2t-before-clock",
+          "coverage": ["error", "edge", "state"],
+          "observes": "An ET rounding below the minimum count is rejected. Actual SPICE diagnostic VALUEOUTOFRANGE."
+        },
+        {
+          "caseId": "time-sce2t-after-clock",
+          "coverage": ["error", "edge", "state"],
+          "observes": "An ET rounding above the maximum encoded count is rejected. Actual SPICE diagnostic VALUEOUTOFRANGE."
+        },
+        {
+          "caseId": "time-sce2t-non-tdb-clock-no-lsk",
+          "coverage": ["error", "edge", "state"],
+          "observes": "A non-TDB correlation needs conversion data. Actual SPICE diagnostic MISSINGTIMEINFO."
+        },
+        {
+          "caseId": "time-sce2t-non-tdb-clock-with-lsk",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Evaluate a TDT correlation with the leap-seconds kernel loaded."
+        },
+        {
+          "caseId": "time-sce2t-invalid-rate",
+          "coverage": ["error", "edge", "state"],
+          "observes": "A zero coefficient rate is rejected by the linked SCLK conversion. Actual SPICE diagnostic VALUEOUTOFRANGE."
+        },
+        {
+          "caseId": "time-sce2t-unsupported-clock-type",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Changing only the spacecraft clock type to two rejects a fresh type-dependent lookup. Actual SPICE diagnostic NOTSUPPORTED."
+        }
+      ],
+      "edgeAssessment": "Observe the first half-tick and opposite sides, integral versus finer encodings, partition crossings, fast and slow clock rates, piecewise coefficients and a non-TDB clock with and without a leapseconds kernel.",
+      "errorAssessment": "Registered genuine toolkit diagnostics include SPICE(KERNELVARNOTFOUND), SPICE(MISSINGTIMEINFO), SPICE(NOTSUPPORTED), SPICE(VALUEOUTOFRANGE). The signed32 minimum spacecraft ID is outside the supported bound because the pinned clock code negates that integer. Independent guard tests cover excluded unsafe argument values without invoking undefined behavior.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-ck-clock.tsc",
+          "provenance": "Project-authored arbitrary Type3 pointing/AV segments and synthetic single-field spacecraft clock; generator fixtures/generate-audit-ck.py independently writes CKs through locked SpiceyPy and asserts literal coverage, pointing, clock and physical derivative. No mission observations or external dataset.",
+          "distribution": "Repository-authored synthetic binary/text fixture under MIT; provenance documented in fixtures/README.md for maintainer review."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-two-partition.tsc",
+          "provenance": "Authored for this audit: synthetic spacecraft -12345 type-1 clock, two fields with 256 ticks per major unit, one TDB second per major unit, partition raw ranges [0,1023] and [1024,4095]. No real calibration/measurement data.",
+          "distribution": "Repository-authored synthetic numeric constants under the repository license; no externally sourced scientific data."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/naif0012.tls",
+          "provenance": "Existing unchanged facade/NAIF kernel fixture reused with provenance in fixtures/README.md: station SPK, Apophis DSK or naif0012 LSK.",
+          "distribution": "Existing repository fixture and established provenance retained unchanged; no newly acquired scientific data."
+        }
+      ],
+      "fixtureRationale": "Use existing authored clock kernels for known tick/field/partition state. Workflows mutate the pool or clear/reload the clock to distinguish missing/stale data. The existing NAIF LSK is required for the explicitly configured non-TDB conversion.",
+      "cleanup": "The kernel lifecycle unloads or clears loaded state and releases client resources. Public output is read only after successful toolkit status. Node owns per-call storage under the lock. WASM releases return, input and diagnostic buffers across status failures.",
+      "tolerance": "The integral encoded ticks are compared to the locked public output on successful calls, including discriminating half-tick and partition examples. The independent initialized-output call must agree exactly with that public result.",
+      "findings": [
+        {
+          "id": "pinned-spicelib-initialized-result",
+          "status": "repaired",
+          "summary": "On an early SPICELIB error N0067 sce2t_c can copy an uninitialized private loc_sclkdp. Initializing caller output cannot repair the private read.",
+          "repair": "Call the pinned linked sce2t_ implementation with initialized output, reproduce the outer chkin_c/chkout_c frame, and inspect toolkit status before publishing ticks. The independent oracle uses the same declared ABI on error and checks the public wrapper on known successful calls. The narrow mapping policy and mutation test require the actual external call and both trace calls.",
+          "evidence": [
+            "packages/backend-shim-c/src/domains/time.c",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/sclk_oracle.py",
+            "data/coverage-ledger-policy.json",
+            "scripts/coverage-ledger.test.mjs",
+            "docs/step8-sclk-additions.md"
+          ],
+          "caseIds": [
+            "time-sce2t-integral-rounding",
+            "time-sce2t-missing-clock",
+            "time-sce2t-non-tdb-clock-no-lsk",
+            "time-sce2t-invalid-rate"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "alias",
+          "trace": "raw.sce2t -> Node adapter -> native addon under the shared SPICE lock -> shared tspice_sce2t -> chkin_c -> exact linked sce2t_ from SpiceZfc.h -> chkout_c; independent locked ABI on defined output and public wrapper on success.",
+          "executions": ["local-d02-09d17ed1-node", "ci-d02-09d17ed1-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "alias",
+          "trace": "raw.sce2t -> WASM adapter -> owned bounded linear-memory buffers and checked export -> shared tspice_sce2t -> chkin_c -> exact linked sce2t_ from SpiceZfc.h -> chkout_c; independent locked ABI on defined output and public wrapper on success.",
+          "executions": ["local-d02-09d17ed1-wasm", "ci-d02-09d17ed1-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "scfmt_c",
+      "contract": "packages/backend-contract/src/domains/time.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/scfmt_c.html",
+      "semantics": "Format a raw, partition-independent tick count into clock fields using the active modulus, field offsets and output delimiter. The toolkit rounds to an integer tick before formatting. Return its exact clock string. The optional byte capacity includes NUL.",
+      "scenarios": [
+        {
+          "caseId": "time-scfmt-fractional-and-half-ticks",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Round fractional raw ticks before formatting both fields, including a major-field carry."
+        },
+        {
+          "caseId": "time-scfmt-raw-partition-boundaries",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Format raw per-partition ticks with no partition prefix, including counts beyond the partition stops."
+        },
+        {
+          "caseId": "time-scfmt-single-field-clock",
+          "coverage": ["success", "edge", "state"],
+          "observes": "The single-field result retains zero-padding and all ten digits at its inclusive stop."
+        },
+        {
+          "caseId": "time-scfmt-all-output-delimiters",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Change the same clock through all five type-1 output separators."
+        },
+        {
+          "caseId": "time-scfmt-field-offsets",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Nonzero field offsets change the zero-padded spelling for raw zero and the next two fields."
+        },
+        {
+          "caseId": "time-scfmt-exact-and-generous-capacities",
+          "coverage": ["success", "edge", "state"],
+          "observes": "A nominal ten-byte result fits a capacity of eleven including NUL."
+        },
+        {
+          "caseId": "time-scfmt-above-major-modulus",
+          "coverage": ["success", "edge", "state"],
+          "observes": "A major field with an extra digit fills the nominal-width buffer and uses the extra byte when available."
+        },
+        {
+          "caseId": "time-scfmt-nominal-truncation",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Capacity leaves one fewer byte than the configured field widths require. Actual SPICE diagnostic SCLKTRUNCATED."
+        },
+        {
+          "caseId": "time-scfmt-negative-ticks",
+          "coverage": ["error", "edge", "state"],
+          "observes": "A negative half tick rounds away from the first tick. Actual SPICE diagnostic VALUEOUTOFRANGE."
+        },
+        {
+          "caseId": "time-scfmt-short-capacity",
+          "coverage": ["error", "edge", "state"],
+          "observes": "The C wrapper checks its output buffer minimum before formatting. Actual SPICE diagnostic STRINGTOOSHORT."
+        },
+        {
+          "caseId": "time-scfmt-zero-capacity",
+          "coverage": ["error", "edge", "state"],
+          "observes": "A zero logical capacity still receives real required pointer storage. Actual SPICE diagnostic STRINGTOOSHORT."
+        },
+        {
+          "caseId": "time-scfmt-negative-capacity",
+          "coverage": ["error", "edge", "state"],
+          "observes": "The signed capacity reaches the canonical output-length check. Actual SPICE diagnostic STRINGTOOSHORT."
+        },
+        {
+          "caseId": "time-scfmt-missing-clock",
+          "coverage": ["error", "edge", "state"],
+          "observes": "The type lookup needs a clock for this spacecraft. Actual SPICE diagnostic KERNELVARNOTFOUND."
+        },
+        {
+          "caseId": "time-scfmt-invalid-output-delimiter",
+          "coverage": ["error", "edge", "state"],
+          "observes": "A delimiter code outside the configured five choices is rejected by type-1 metadata validation. Actual SPICE diagnostic VALUEOUTOFRANGE."
+        },
+        {
+          "caseId": "time-scfmt-unsupported-clock-type",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Changing only the spacecraft clock type to two rejects a fresh type-dependent lookup. Actual SPICE diagnostic NOTSUPPORTED."
+        }
+      ],
+      "edgeAssessment": "Check fractional/half ticks, partition-independent raw ticks, single and multi-field configurations, every supported output delimiter, nonzero field offsets, an over-major reading and exact/large/short byte capacities.",
+      "errorAssessment": "Registered genuine toolkit diagnostics include SPICE(KERNELVARNOTFOUND), SPICE(NOTSUPPORTED), SPICE(SCLKTRUNCATED), SPICE(STRINGTOOSHORT), SPICE(VALUEOUTOFRANGE). The signed32 minimum spacecraft ID is outside the supported bound because the pinned clock code negates that integer. Independent guard tests cover excluded unsafe argument values without invoking undefined behavior.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-ck-clock.tsc",
+          "provenance": "Project-authored arbitrary Type3 pointing/AV segments and synthetic single-field spacecraft clock; generator fixtures/generate-audit-ck.py independently writes CKs through locked SpiceyPy and asserts literal coverage, pointing, clock and physical derivative. No mission observations or external dataset.",
+          "distribution": "Repository-authored synthetic binary/text fixture under MIT; provenance documented in fixtures/README.md for maintainer review."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-two-partition.tsc",
+          "provenance": "Authored for this audit: synthetic spacecraft -12345 type-1 clock, two fields with 256 ticks per major unit, one TDB second per major unit, partition raw ranges [0,1023] and [1024,4095]. No real calibration/measurement data.",
+          "distribution": "Repository-authored synthetic numeric constants under the repository license; no externally sourced scientific data."
+        }
+      ],
+      "fixtureRationale": "Use existing authored clock kernels for known tick/field/partition state. Workflows mutate the pool or clear/reload the clock to distinguish missing/stale data. These field and partition operations need no LSK.",
+      "cleanup": "The kernel lifecycle unloads or clears loaded state and releases client resources. Public output is read only after successful toolkit status. Node owns per-call storage under the lock. WASM releases return, input and diagnostic buffers across status failures.",
+      "tolerance": "Compare canonical strings and delimiters exactly, including field widths and zero padding. No floating tolerance applies to text.",
+      "findings": [
+        {
+          "id": "bounded-type-one-formatter-fields",
+          "status": "repaired",
+          "summary": "Pinned SCFM01 uses fixed 30-byte local field representations and derives widths from pool moduli and offsets. Caller output length alone cannot protect internal field conversion.",
+          "repair": "Check the supported arithmetic/storage domain for the loaded clock before entering its canonical formatter. Preserve genuine short-output and malformed-clock diagnostics on safe paths. The independent oracle protects the same unsafe inputs before canonical conversion.",
+          "evidence": [
+            "packages/backend-shim-c/src/domains/time.c",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/sclk_oracle.py",
+            "docs/step8-sclk-additions.md"
+          ],
+          "caseIds": [
+            "time-scfmt-field-offsets",
+            "time-scfmt-exact-and-generous-capacities",
+            "time-scfmt-nominal-truncation"
+          ]
+        },
+        {
+          "id": "scfmt-shared-clock-type-cache",
+          "status": "repaired",
+          "summary": "SCPART calls SCPR01 directly and can populate the shared SC01 previous-spacecraft state despite a non-1 nominal clock type. A later SCTY01 cache hit can expose type-1 fields without rereading the nominal type.",
+          "repair": "Preserve the direct partition read and subsequent real formatter behavior. Check available formatter field metadata independently of the nominal type in the application and oracle guard. Exercise the successful state sequence separately from fresh unsupported clock errors.",
+          "evidence": [
+            "packages/backend-shim-c/src/domains/time.c",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/sclk_oracle.py",
+            "packages/py-parity-checking/src/cases/time/scpart.cases.json",
+            "docs/step8-sclk-additions.md"
+          ],
+          "caseIds": [
+            "time-scfmt-field-offsets",
+            "time-scfmt-unsupported-clock-type"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.scfmt -> Node adapter -> native addon under the shared SPICE lock -> shared tspice_scfmt -> scfmt_c; independent locked SpiceyPy wrapper with a typed canonical call and non-null sentinel at a nonpositive logical output length.",
+          "executions": ["local-d02-09d17ed1-node", "ci-d02-09d17ed1-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.scfmt -> WASM adapter -> owned bounded linear-memory buffers and checked export -> shared tspice_scfmt -> scfmt_c; independent locked SpiceyPy wrapper with a typed canonical call and non-null sentinel at a nonpositive logical output length.",
+          "executions": ["local-d02-09d17ed1-wasm", "ci-d02-09d17ed1-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "scpart_c",
+      "contract": "packages/backend-contract/src/domains/time.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/scpart_c.html",
+      "semantics": "Return owned pstart and pstop arrays containing each raw partition start and stop tick, in the order reported by CSPICE. Preserve fractional readings, clock resets and endpoint values above signed32. The number of entries is the actual returned partition count.",
+      "scenarios": [
+        {
+          "caseId": "time-scpart-single-and-multiple-partitions",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Compare every raw partition start/stop for two independently loaded clocks, including a stop above signed32."
+        },
+        {
+          "caseId": "time-scpart-fractional-boundaries",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Read fractional start and stop values verbatim, in their original order."
+        },
+        {
+          "caseId": "time-scpart-overlapping-resets",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Raw partition readings may repeat or decrease when a spacecraft clock resets."
+        },
+        {
+          "caseId": "time-scpart-reload-original",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Pool edits change the returned partition count and reloading after kclear restores the original arrays."
+        },
+        {
+          "caseId": "time-scpart-unequal-cardinalities",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Mismatch is diagnosed before partition arrays are copied. Actual SPICE diagnostic NUMPARTSUNEQUAL."
+        },
+        {
+          "caseId": "time-scpart-missing-clock",
+          "coverage": ["error", "edge", "state"],
+          "observes": "No partition information is available without SCLK data. Actual SPICE diagnostic KERNELVARNOTFOUND."
+        },
+        {
+          "caseId": "time-scpart-clock-cleared",
+          "coverage": ["error", "edge", "state"],
+          "observes": "A prior successful lookup cannot mask a subsequent kernel clear. Actual SPICE diagnostic KERNELVARNOTFOUND."
+        },
+        {
+          "caseId": "time-scpart-type-cache-followup",
+          "coverage": ["success", "edge", "state"],
+          "observes": "SCPR01 reads type-1 partition metadata directly. After this successful read the same-clock SCTY01 cache supplies type 1 to the next formatter."
+        }
+      ],
+      "edgeAssessment": "Compare both arrays in full for single/two-partition clocks, fractional boundaries and reset/overlap order. Replace pool values, clear and reload. Preserve bounds exceeding signed32 as doubles.",
+      "errorAssessment": "Registered genuine toolkit diagnostics include SPICE(KERNELVARNOTFOUND), SPICE(NUMPARTSUNEQUAL). The signed32 minimum spacecraft ID is outside the supported bound because the pinned clock code negates that integer. Independent guard tests cover excluded unsafe argument values without invoking undefined behavior.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-ck-clock.tsc",
+          "provenance": "Project-authored arbitrary Type3 pointing/AV segments and synthetic single-field spacecraft clock; generator fixtures/generate-audit-ck.py independently writes CKs through locked SpiceyPy and asserts literal coverage, pointing, clock and physical derivative. No mission observations or external dataset.",
+          "distribution": "Repository-authored synthetic binary/text fixture under MIT; provenance documented in fixtures/README.md for maintainer review."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-two-partition.tsc",
+          "provenance": "Authored for this audit: synthetic spacecraft -12345 type-1 clock, two fields with 256 ticks per major unit, one TDB second per major unit, partition raw ranges [0,1023] and [1024,4095]. No real calibration/measurement data.",
+          "distribution": "Repository-authored synthetic numeric constants under the repository license; no externally sourced scientific data."
+        }
+      ],
+      "fixtureRationale": "Use existing authored clock kernels for known tick/field/partition state. Workflows mutate the pool or clear/reload the clock to distinguish missing/stale data. These field and partition operations need no LSK.",
+      "cleanup": "The kernel lifecycle unloads or clears loaded state and releases client resources. Public output is read only after successful toolkit status. Node owns per-call storage under the lock. WASM releases return, input and diagnostic buffers across status failures.",
+      "tolerance": "Compare both arrays in order, including complete field lengths and fractional and repeated endpoints. The authored raw partition values are checked as actual binary64 data.",
+      "findings": [
+        {
+          "id": "full-caller-owned-partition-buffers",
+          "status": "repaired",
+          "summary": "scpart_c receives no room argument for its output arrays and can supply the pinned 9,999 partition maximum.",
+          "repair": "Provide both full-capacity native or WASM arrays before the canonical call and expose owned copies restricted to the returned count. The independent locked wrapper allocates both complete arrays.",
+          "evidence": [
+            "packages/backend-shim-c/src/domains/time.c",
+            "packages/backend-node/native/src/domains/time.cc",
+            "packages/backend-wasm/src/domains/time.ts",
+            "docs/step8-sclk-additions.md"
+          ],
+          "caseIds": [
+            "time-scpart-single-and-multiple-partitions",
+            "time-scpart-reload-original"
+          ]
+        },
+        {
+          "id": "scpart-shared-clock-type-cache",
+          "status": "repaired",
+          "summary": "SCPART calls SCPR01 directly and can populate the shared SC01 previous-spacecraft state despite a non-1 nominal clock type. A later SCTY01 cache hit can expose type-1 fields without rereading the nominal type.",
+          "repair": "Preserve the direct partition read and subsequent real formatter behavior. Check available formatter field metadata independently of the nominal type in the application and oracle guard. Exercise the successful state sequence separately from fresh unsupported clock errors.",
+          "evidence": [
+            "packages/backend-shim-c/src/domains/time.c",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/sclk_oracle.py",
+            "packages/py-parity-checking/src/cases/time/scpart.cases.json",
+            "docs/step8-sclk-additions.md"
+          ],
+          "caseIds": ["time-scpart-type-cache-followup"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.scpart -> Node adapter -> native addon under the shared SPICE lock -> shared tspice_scpart -> scpart_c; independent matching locked SpiceyPy wrapper on supported inputs.",
+          "executions": ["local-d02-09d17ed1-node", "ci-d02-09d17ed1-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.scpart -> WASM adapter -> owned bounded linear-memory buffers and checked export -> shared tspice_scpart -> scpart_c; independent matching locked SpiceyPy wrapper on supported inputs.",
+          "executions": ["local-d02-09d17ed1-wasm", "ci-d02-09d17ed1-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "sctiks_c",
+      "contract": "packages/backend-contract/src/domains/time.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/sctiks_c.html",
+      "semantics": "Translate an unpartitioned clock field string into a raw tick count in spacecraft-clock units. Honor configured field offsets and moduli, accepted separators, absent fields, and carry from an oversized field per the actual parser. Encoded partition prefixes have their own diagnostic.",
+      "scenarios": [
+        {
+          "caseId": "time-sctiks-raw-field-separators",
+          "coverage": ["success", "edge", "state"],
+          "observes": "All five input separators and mixed whitespace encode the same two raw clock fields."
+        },
+        {
+          "caseId": "time-sctiks-absent-fields-and-carry",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Omitted, trailing and leading fields plus an oversized minor field reveal positional units."
+        },
+        {
+          "caseId": "time-sctiks-outside-partition",
+          "coverage": ["success", "edge", "state"],
+          "observes": "String counts beyond a partition boundary remain raw readings."
+        },
+        {
+          "caseId": "time-sctiks-single-field-clock",
+          "coverage": ["success", "edge", "state"],
+          "observes": "The lexical count may use leading zeros and exceed signed32."
+        },
+        {
+          "caseId": "time-sctiks-nonzero-field-offsets",
+          "coverage": ["success", "edge", "state"],
+          "observes": "The parser subtracts each field offset and an omitted field contributes zero."
+        },
+        {
+          "caseId": "time-sctiks-below-field-offset",
+          "coverage": ["error", "edge", "state"],
+          "observes": "An explicitly supplied minor field is below its minimum. Actual SPICE diagnostic INVALIDSCLKSTRING."
+        },
+        {
+          "caseId": "time-sctiks-partition-prefix",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Raw clock parser diagnoses an encoded-clock partition prefix. Actual SPICE diagnostic INVALIDSCLKSTRING."
+        },
+        {
+          "caseId": "time-sctiks-extra-field",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Three fields exceed the two-field clock. Actual SPICE diagnostic INVALIDSCLKSTRING."
+        },
+        {
+          "caseId": "time-sctiks-invalid-character",
+          "coverage": ["error", "edge", "state"],
+          "observes": "An unsupported separator is part of an unparseable field. Actual SPICE diagnostic INVALIDSCLKSTRING."
+        },
+        {
+          "caseId": "time-sctiks-empty-string",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Empty NUL-terminated input is diagnosed by the C wrapper. Actual SPICE diagnostic EMPTYSTRING."
+        },
+        {
+          "caseId": "time-sctiks-blank-string",
+          "coverage": ["error", "edge", "state"],
+          "observes": "A nonempty string consisting only of blanks reaches the clock parser. Actual SPICE diagnostic INVALIDSCLKSTRING."
+        },
+        {
+          "caseId": "time-sctiks-missing-clock",
+          "coverage": ["error", "edge", "state"],
+          "observes": "A nonempty clock string still needs the spacecraft-specific definition. Actual SPICE diagnostic KERNELVARNOTFOUND."
+        },
+        {
+          "caseId": "time-sctiks-unsupported-clock-type",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Changing only the spacecraft clock type to two rejects a fresh type-dependent lookup. Actual SPICE diagnostic NOTSUPPORTED."
+        }
+      ],
+      "edgeAssessment": "Exercise alternate clock-field separators, missing components, carry and raw readings beyond a partition boundary. Include nonzero offsets, numbers beyond signed32, below-offset and malformed strings.",
+      "errorAssessment": "Registered genuine toolkit diagnostics include SPICE(EMPTYSTRING), SPICE(INVALIDSCLKSTRING), SPICE(KERNELVARNOTFOUND), SPICE(NOTSUPPORTED). The signed32 minimum spacecraft ID is outside the supported bound because the pinned clock code negates that integer. Independent guard tests cover excluded unsafe argument values without invoking undefined behavior.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-ck-clock.tsc",
+          "provenance": "Project-authored arbitrary Type3 pointing/AV segments and synthetic single-field spacecraft clock; generator fixtures/generate-audit-ck.py independently writes CKs through locked SpiceyPy and asserts literal coverage, pointing, clock and physical derivative. No mission observations or external dataset.",
+          "distribution": "Repository-authored synthetic binary/text fixture under MIT; provenance documented in fixtures/README.md for maintainer review."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-two-partition.tsc",
+          "provenance": "Authored for this audit: synthetic spacecraft -12345 type-1 clock, two fields with 256 ticks per major unit, one TDB second per major unit, partition raw ranges [0,1023] and [1024,4095]. No real calibration/measurement data.",
+          "distribution": "Repository-authored synthetic numeric constants under the repository license; no externally sourced scientific data."
+        }
+      ],
+      "fixtureRationale": "Use existing authored clock kernels for known tick/field/partition state. Workflows mutate the pool or clear/reload the clock to distinguish missing/stale data. These field and partition operations need no LSK.",
+      "cleanup": "The kernel lifecycle unloads or clears loaded state and releases client resources. Public output is read only after successful toolkit status. Node owns per-call storage under the lock. WASM releases return, input and diagnostic buffers across status failures.",
+      "tolerance": "Compare raw parsed numerical ticks, including field carries and large count units. Standard registered numerical comparison is unchanged. Invalid text is checked by its specific SPICE diagnostic.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.sctiks -> Node adapter -> native addon under the shared SPICE lock -> shared tspice_sctiks -> sctiks_c; independent matching locked SpiceyPy wrapper on supported inputs.",
+          "executions": ["local-d02-09d17ed1-node", "ci-d02-09d17ed1-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.sctiks -> WASM adapter -> owned bounded linear-memory buffers and checked export -> shared tspice_sctiks -> sctiks_c; independent matching locked SpiceyPy wrapper on supported inputs.",
+          "executions": ["local-d02-09d17ed1-wasm", "ci-d02-09d17ed1-wasm"]
+        }
+      }
+    }
+  ],
+  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
+}

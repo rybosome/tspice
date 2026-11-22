@@ -759,6 +759,20 @@
       "nextAction": "Verify the combined source on both required lanes and canonical CI."
     },
     {
+      "id": "d02-sclk-additions",
+      "routines": [
+        "sce2t_c",
+        "scfmt_c",
+        "scpart_c",
+        "sctiks_c"
+      ],
+      "dependsOn": [],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/724"
+      ],
+      "nextAction": "Verify the combined source on both required lanes and canonical CI."
+    },
+    {
       "id": "a14-rotation-representations",
       "routines": [
         "eul2m_c",

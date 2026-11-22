@@ -446,9 +446,11 @@ export function buildLedger(root = defaultRoot, options = {}) {
       if (seen.has(key)) return;
       seen.add(key);
       const definition = shim.resolve(symbol, fromFile);
-      // The pinned eul2m_c wrapper uses this declared SPICELIB function.
-      // Only a real call to the external symbol qualifies as alias evidence.
-      if (symbol.endsWith("_c") || (symbol === "eul2m_" && !definition)) {
+      // These N0067 wrappers call linked SPICELIB routines. A real external call is required.
+      if (
+        symbol.endsWith("_c") ||
+        (!definition && (symbol === "eul2m_" || symbol === "sce2t_"))
+      ) {
         result.add(symbol);
         return;
       }
