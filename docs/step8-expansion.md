@@ -23,7 +23,9 @@ anything lands on main; never report that increase as merged coverage.
 
 The 76 pinned source PRs cover all 487 expansion routines and passed CI at their accepted heads. The queue records the exact source heads, bases and CI runs.
 
-[Checkpoint 01](https://github.com/rybosome/tspice/pull/783) landed as `85375ed988b0a003247454f48a02a8173e06d53f` and passed [main CI](https://github.com/rybosome/tspice/actions/runs/45039222575). Its validated tree adds 145 routines to the baseline for a total of 307. The squash commit carries the implementation tree. Checkpoint 02 carries the 17 original source histories and adds 101 routines for an expected total of 408. Source review and validation for checkpoint 02 are pending.
+[Checkpoint 01](https://github.com/rybosome/tspice/pull/783) landed the implementation for 307 cumulative routines. [Checkpoint 02](https://github.com/rybosome/tspice/pull/784) brought the cumulative total to 408. Its [audit evidence](https://github.com/rybosome/tspice/pull/785) and [history follow-up](https://github.com/rybosome/tspice/pull/786) landed the validated implementation and evidence tree. The squash merges left the original source heads outside main.
+
+Checkpoint 03 adds 115 routines and 895 registered case identities. Its merge commit will make all 49 original source heads from checkpoints 01–03 reachable from main. The combined source has 523 routines and 3,527 registered cases. Current combined parity evidence follows the rebuilt WASM and both required execution lanes.
 
 ## Initial ownership and deliveries
 
