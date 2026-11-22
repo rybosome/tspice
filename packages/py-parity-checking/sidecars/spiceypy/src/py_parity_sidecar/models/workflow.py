@@ -327,6 +327,12 @@ from .frames import (
     StepFramesFrinfo,
     StepFramesFrmnam,
     StepFramesNamfrm,
+    StepFramesBltfrm,
+    StepFramesPxfrm2,
+    StepFramesTipbod,
+    StepFramesTisbod,
+    StepFramesTkfram,
+    StepFramesXfmsta,
     StepFramesPxform,
     StepFramesFrame,
     StepFramesTwovec,
@@ -820,6 +826,12 @@ WorkflowStep: TypeAlias = (
     | StepFramesCkupf
     | StepFramesCkobj
     | StepFramesCkcov
+    | StepFramesBltfrm
+    | StepFramesPxfrm2
+    | StepFramesTipbod
+    | StepFramesTisbod
+    | StepFramesTkfram
+    | StepFramesXfmsta
     | StepFramesPxform
     | StepFramesFrame
     | StepFramesTwovec

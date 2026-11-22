@@ -3017,7 +3017,7 @@
       ],
       "domain": "frames",
       "apiPlacement": "packages/backend-contract/src/domains/frames.ts; raw methods retain canonical names without _c.",
-      "owner": null,
+      "owner": "Codex Step 8 (/root)",
       "status": "in-progress",
       "dependsOn": [],
       "prerequisiteReview": "Reuse owner-local ID cells, row-major transforms and state vectors. Inspect xfmsta coordinate-system conventions and output units; distinguish frames at unequal epochs.",
@@ -3033,21 +3033,24 @@
       "prs": [
         "https://github.com/rybosome/tspice/pull/740"
       ],
-      "validationEvidence": [],
-      "nextAction": "Intake the pinned source after checkpoint 02 lands and passes main CI.",
-      "sourceSnapshot": {
-        "number": 740,
-        "url": "https://github.com/rybosome/tspice/pull/740",
-        "head": "1793970285d5d782897a2ef473d2a51590f1685c",
-        "base": "73f3fec8788ed926351f891b459ac75d434f6446",
-        "ci": "https://github.com/rybosome/tspice/actions/runs/43570385522",
-        "ciConclusion": "success"
-      },
-      "checkpoint": {
-        "number": 3,
-        "status": "pending intake"
-      },
-      "deliveryNote": "The pinned source head passed its configured CI matrix."
+      "validationEvidence": [
+        {
+          "kind": "local-focused",
+          "result": "54 workflows, 145 steps, 105 new calls, 29 terminal toolkit errors. 108 live comparisons, eight public tests, eight Node tests, 37 WASM tests and real Chrome for all six."
+        },
+        {
+          "kind": "source-bound-required-lanes",
+          "testedCommit": "dc3b5c59960ad933c6e9de5d16fe6fd5c7d1ea28",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43569071686/job/132369255234",
+          "result": "Both complete required lanes passed locally on dc3b5c59960ad933c6e9de5d16fe6fd5c7d1ea28. JavaScript: 2,546 parity tests and one expected guard skip. Native-required: 2,326 registered Node/WASM live comparisons; 2,547 parity-package tests with no skips, including the native-required guard; 74 native wrapper, 637 WASM, 28 core and 150 facade tests passed. Inspected successful Linux Node 22 native-required job 132369255234 on dc3b5c59960ad933c6e9de5d16fe6fd5c7d1ea28: 2,326 registered Node/WASM live comparisons; 2,547 parity-package tests with no skips, including the native-required guard; 74 native wrapper, 637 WASM, 28 core and 150 facade tests passed."
+        }
+      ],
+      "nextAction": "Wait for the full metadata-head CI matrix and verify explicit rebaseability before marking the PR ready; do not merge.",
+      "branch": "codex/expand-frame-metadata",
+      "worktree": "/private/tmp/tspice-step8-frame-metadata",
+      "baseCommit": "73f3fec8788ed926351f891b459ac75d434f6446",
+      "progressNote": "Both required local lanes and observed canonical native-required CI passed on the implementation source dc3b5c59. 2,326 registered Node/WASM live comparisons; 2,547 parity-package tests with no skips, including the native-required guard; 74 native wrapper, 637 WASM, 28 core and 150 facade tests passed.",
+      "priorCheckpoint": "Six frame methods reviewed on the independent main baseline. Reuses existing PCK, FK and cell/state representations."
     },
     {
       "id": "D04-surface-names",

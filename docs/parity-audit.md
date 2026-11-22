@@ -444,3 +444,7 @@ Four new time routines use 49 registered workflows. The SCE2T route is a
 reviewed SPICELIB alias with initialized result storage and an independent
 oracle. The other three use their corresponding public CSPICE entrypoints.
 [Clock routes, fixtures and numerical bounds](step8-sclk-additions.md)
+
+## Frame metadata and transformations
+
+D03 adds six methods to the 162-routine baseline, including the two-epoch orientation error guard. [Scientific and lifecycle evidence](step8-frame-metadata.md) [Routine audit](../data/parity-audits/d03-frame-additions.json)

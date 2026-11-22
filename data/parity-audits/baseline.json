@@ -954,6 +954,22 @@
       "nextAction": "Verify the combined source on both required lanes and canonical CI."
     },
     {
+      "id": "d03-frame-additions",
+      "routines": [
+        "bltfrm_c",
+        "pxfrm2_c",
+        "tipbod_c",
+        "tisbod_c",
+        "tkfram_c",
+        "xfmsta_c"
+      ],
+      "dependsOn": [],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/740"
+      ],
+      "nextAction": "Verify the combined source on both required lanes and canonical CI."
+    },
+    {
       "id": "b02-set-algebra",
       "routines": [
         "diff_c",

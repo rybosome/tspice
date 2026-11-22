@@ -101,6 +101,54 @@ class StepFramesCkcov:
 
 
 @dataclass(frozen=True)
+class StepFramesBltfrm:
+    op: Literal["frames.bltfrm"]
+    frameClass: int
+    idsId: str
+    maxCard: int
+
+
+@dataclass(frozen=True)
+class StepFramesPxfrm2:
+    op: Literal["frames.pxfrm2"]
+    from_: str
+    to: str
+    etfrom: float
+    etto: float
+
+
+@dataclass(frozen=True)
+class StepFramesTipbod:
+    op: Literal["frames.tipbod"]
+    ref: str
+    body: int
+    et: float
+
+
+@dataclass(frozen=True)
+class StepFramesTisbod:
+    op: Literal["frames.tisbod"]
+    ref: str
+    body: int
+    et: float
+
+
+@dataclass(frozen=True)
+class StepFramesTkfram:
+    op: Literal["frames.tkfram"]
+    typeId: int
+
+
+@dataclass(frozen=True)
+class StepFramesXfmsta:
+    op: Literal["frames.xfmsta"]
+    state: list[float]
+    from_: str
+    to: str
+    body: str
+
+
+@dataclass(frozen=True)
 class StepFramesPxform:
     op: Literal["frames.pxform"]
     from_: str

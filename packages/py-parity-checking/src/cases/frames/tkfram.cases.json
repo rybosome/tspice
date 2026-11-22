@@ -1,0 +1,165 @@
+[
+  {
+    "caseId": "frames-tkfram-class-not-frame",
+    "description": "Resolve the explicit class ID distinct from the frame identification code.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-frames.tf"
+      },
+      {
+        "op": "frames.tkfram",
+        "typeId": -1800999
+      },
+      {
+        "op": "frames.tkfram",
+        "typeId": -1800999
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-tkfram-angles-and-matrix",
+    "description": "Check both matrix and angle specifications with asymmetric rotation and base ID.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "frames.tkfram",
+        "typeId": 1800201
+      },
+      {
+        "op": "frames.tkfram",
+        "typeId": 1800202
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-tkfram-reload",
+    "description": "The same fixed frame responds to a live kernel angle change.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "frames.tkfram",
+        "typeId": 1800202
+      },
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "TKFRAME_1800202_ANGLES",
+        "values": [22, -15, 73]
+      },
+      {
+        "op": "frames.tkfram",
+        "typeId": 1800202
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-tkfram-zero",
+    "description": "Zero is an invalid frame class ID.",
+    "workflow": [
+      {
+        "op": "frames.tkfram",
+        "typeId": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["ZEROFRAMEID"]
+    }
+  },
+  {
+    "caseId": "frames-tkfram-unknown",
+    "description": "An unknown frame signals a real incomplete-frame exception.",
+    "workflow": [
+      {
+        "op": "frames.tkfram",
+        "typeId": 98765432
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INCOMPLETEFRAME"]
+    }
+  },
+  {
+    "caseId": "frames-tkfram-mismatched-id",
+    "description": "Looking up the frame code instead of its distinct class ID lacks a required definition.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-frames.tf"
+      },
+      {
+        "op": "frames.tkfram",
+        "typeId": -1800102
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["VARIABLENOTFOUND"]
+    }
+  },
+  {
+    "caseId": "frames-tkfram-invalid-relative",
+    "description": "An unknown base frame triggers a toolkit diagnostic.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernel-pool.pcpool",
+        "name": "TKFRAME_1800202_RELATIVE",
+        "values": ["NO_SUCH_FRAME"]
+      },
+      {
+        "op": "frames.tkfram",
+        "typeId": 1800202
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["BADFRAMESPEC"]
+    }
+  },
+  {
+    "caseId": "frames-tkfram-unloaded",
+    "description": "Unloading this FK expires both class metadata and cached fixed rotations.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "frames.tkfram",
+        "typeId": 1800202
+      },
+      {
+        "op": "kernels.unload",
+        "path": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "frames.tkfram",
+        "typeId": 1800202
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INCOMPLETEFRAME"]
+    }
+  }
+]

@@ -1,0 +1,194 @@
+[
+  {
+    "caseId": "frames-bltfrm-all",
+    "description": "Every built-in ID is compared at the exact N0067 capacity.",
+    "workflow": [
+      {
+        "op": "frames.bltfrm",
+        "frameClass": -1,
+        "maxCard": 145,
+        "idsId": "frames"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-bltfrm-classes",
+    "description": "Compare complete sorted sets in the same cell as the class changes, including empty sets.",
+    "workflow": [
+      {
+        "op": "frames.bltfrm",
+        "frameClass": 1,
+        "maxCard": 145,
+        "idsId": "frames"
+      },
+      {
+        "op": "frames.bltfrm",
+        "frameClass": 2,
+        "maxCard": 145,
+        "idsId": "frames"
+      },
+      {
+        "op": "frames.bltfrm",
+        "frameClass": 3,
+        "maxCard": 145,
+        "idsId": "frames"
+      },
+      {
+        "op": "frames.bltfrm",
+        "frameClass": 4,
+        "maxCard": 145,
+        "idsId": "frames"
+      },
+      {
+        "op": "frames.bltfrm",
+        "frameClass": 5,
+        "maxCard": 145,
+        "idsId": "frames"
+      },
+      {
+        "op": "frames.bltfrm",
+        "frameClass": 6,
+        "maxCard": 145,
+        "idsId": "frames"
+      },
+      {
+        "op": "frames.bltfrm",
+        "frameClass": 1,
+        "maxCard": 145,
+        "idsId": "frames"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-bltfrm-replace",
+    "description": "A previously inserted unrelated ID disappears when BLTFRM overwrites the caller cell.",
+    "workflow": [
+      {
+        "op": "cells-windows.insrti",
+        "cellId": "frames",
+        "item": -98765,
+        "maxCardinality": 150
+      },
+      {
+        "op": "frames.bltfrm",
+        "frameClass": 1,
+        "maxCard": 150,
+        "idsId": "frames"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-bltfrm-loaded-fk",
+    "description": "Kernel-defined frames do not enter the built-in IDs.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-frames.tf"
+      },
+      {
+        "op": "frames.bltfrm",
+        "frameClass": -1,
+        "maxCard": 145,
+        "idsId": "frames"
+      },
+      {
+        "op": "frames.bltfrm",
+        "frameClass": 4,
+        "maxCard": 145,
+        "idsId": "frames"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-bltfrm-undersized",
+    "description": "N0067 requires the full built-in capacity even for a class with no members.",
+    "workflow": [
+      {
+        "op": "frames.bltfrm",
+        "frameClass": 6,
+        "maxCard": 144,
+        "idsId": "frames"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SETTOOSMALL"]
+    }
+  },
+  {
+    "caseId": "frames-bltfrm-zero-room",
+    "description": "Zero room signals the actual capacity diagnostic.",
+    "workflow": [
+      {
+        "op": "frames.bltfrm",
+        "frameClass": 1,
+        "maxCard": 0,
+        "idsId": "frames"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SETTOOSMALL"]
+    }
+  },
+  {
+    "caseId": "frames-bltfrm-invalid-minus2",
+    "description": "An unsupported class precedes capacity validation.",
+    "workflow": [
+      {
+        "op": "frames.bltfrm",
+        "frameClass": -2,
+        "maxCard": 0,
+        "idsId": "frames"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["BADFRAMECLASS"]
+    }
+  },
+  {
+    "caseId": "frames-bltfrm-invalid-0",
+    "description": "An unsupported class precedes capacity validation.",
+    "workflow": [
+      {
+        "op": "frames.bltfrm",
+        "frameClass": 0,
+        "maxCard": 0,
+        "idsId": "frames"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["BADFRAMECLASS"]
+    }
+  },
+  {
+    "caseId": "frames-bltfrm-invalid-7",
+    "description": "An unsupported class precedes capacity validation.",
+    "workflow": [
+      {
+        "op": "frames.bltfrm",
+        "frameClass": 7,
+        "maxCard": 0,
+        "idsId": "frames"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["BADFRAMECLASS"]
+    }
+  }
+]

@@ -440,6 +440,12 @@ export function dispatchStep(
     case "frames.ckupf":
     case "frames.ckobj":
     case "frames.ckcov":
+    case "frames.bltfrm":
+    case "frames.pxfrm2":
+    case "frames.tipbod":
+    case "frames.tisbod":
+    case "frames.tkfram":
+    case "frames.xfmsta":
     case "frames.pxform":
     case "frames.frame":
     case "frames.twovec":

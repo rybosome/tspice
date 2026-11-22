@@ -2441,6 +2441,48 @@ export type StepFramesCkcov = {
   reset?: boolean;
 };
 
+export type StepFramesBltfrm = {
+  op: "frames.bltfrm";
+  frameClass: number;
+  idsId: string;
+  maxCard: number;
+};
+
+export type StepFramesPxfrm2 = {
+  op: "frames.pxfrm2";
+  from: string;
+  to: string;
+  etfrom: number;
+  etto: number;
+};
+
+export type StepFramesTipbod = {
+  op: "frames.tipbod";
+  ref: string;
+  body: number;
+  et: number;
+};
+
+export type StepFramesTisbod = {
+  op: "frames.tisbod";
+  ref: string;
+  body: number;
+  et: number;
+};
+
+export type StepFramesTkfram = {
+  op: "frames.tkfram";
+  typeId: number;
+};
+
+export type StepFramesXfmsta = {
+  op: "frames.xfmsta";
+  state: [number, number, number, number, number, number];
+  from: string;
+  to: string;
+  body: string;
+};
+
 export type StepFramesPxform = {
   op: "frames.pxform";
   from: string;
@@ -3239,6 +3281,12 @@ export type WorkflowStep =
   | StepFramesCkupf
   | StepFramesCkobj
   | StepFramesCkcov
+  | StepFramesBltfrm
+  | StepFramesPxfrm2
+  | StepFramesTipbod
+  | StepFramesTisbod
+  | StepFramesTkfram
+  | StepFramesXfmsta
   | StepFramesPxform
   | StepFramesFrame
   | StepFramesTwovec
@@ -3905,6 +3953,18 @@ export type StepOutput =
       value: {
         intervals: Array<{ left: number; right: number }>;
       };
+    }
+  | { op: "frames.bltfrm"; value: { ids: number[] } }
+  | { op: "frames.pxfrm2"; value: Matrix3x3 }
+  | { op: "frames.tipbod"; value: Matrix3x3 }
+  | { op: "frames.tisbod"; value: Matrix6x6 }
+  | {
+      op: "frames.tkfram";
+      value: { found: false } | { found: true; rot: Matrix3x3; frame: number };
+    }
+  | {
+      op: "frames.xfmsta";
+      value: [number, number, number, number, number, number];
     }
   | { op: "frames.pxform"; value: Matrix3x3 }
   | { op: "frames.frame"; value: { x: Vector3; y: Vector3; z: Vector3 } }

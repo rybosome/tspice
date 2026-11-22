@@ -1,0 +1,204 @@
+[
+  {
+    "caseId": "frames-pxfrm2-inertial",
+    "description": "Compare complete inertial rotations in both directions at distinct epochs.",
+    "workflow": [
+      {
+        "op": "frames.pxfrm2",
+        "from": "J2000",
+        "to": "ECLIPJ2000",
+        "etfrom": -2,
+        "etto": 8
+      },
+      {
+        "op": "frames.pxfrm2",
+        "from": "ECLIPJ2000",
+        "to": "J2000",
+        "etfrom": 12,
+        "etto": -22
+      },
+      {
+        "op": "frames.pxfrm2",
+        "from": "J2000",
+        "to": "J2000",
+        "etfrom": -3,
+        "etto": 50
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-pxfrm2-dynamic",
+    "description": "One evolving frame at different epochs need not map to itself by identity.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-frames.tf"
+      },
+      {
+        "op": "frames.pxfrm2",
+        "from": "AUDIT_SPIN",
+        "to": "AUDIT_SPIN",
+        "etfrom": 0,
+        "etto": 0
+      },
+      {
+        "op": "frames.pxfrm2",
+        "from": "AUDIT_SPIN",
+        "to": "AUDIT_SPIN",
+        "etfrom": -123.5,
+        "etto": 78.125
+      },
+      {
+        "op": "frames.pxfrm2",
+        "from": "AUDIT_SPIN",
+        "to": "AUDIT_SPIN",
+        "etfrom": 78.125,
+        "etto": -123.5
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-pxfrm2-mixed-epochs",
+    "description": "Map between independently moving frames and vary each time separately.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-frames.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/pck00010.tpc"
+      },
+      {
+        "op": "frames.pxfrm2",
+        "from": "AUDIT_SPIN",
+        "to": "IAU_EARTH",
+        "etfrom": 100,
+        "etto": 30
+      },
+      {
+        "op": "frames.pxfrm2",
+        "from": "AUDIT_SPIN",
+        "to": "IAU_EARTH",
+        "etfrom": 100,
+        "etto": -86370
+      },
+      {
+        "op": "frames.pxfrm2",
+        "from": "AUDIT_SPIN",
+        "to": "IAU_EARTH",
+        "etfrom": -80,
+        "etto": 30
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-pxfrm2-missing-from",
+    "description": "The first known frame lacks orientation coverage.",
+    "workflow": [
+      {
+        "op": "frames.pxfrm2",
+        "from": "IAU_EARTH",
+        "to": "J2000",
+        "etfrom": 0,
+        "etto": 1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["FRAMEDATANOTFOUND"]
+    }
+  },
+  {
+    "caseId": "frames-pxfrm2-missing-to",
+    "description": "The second known frame lacks orientation coverage.",
+    "workflow": [
+      {
+        "op": "frames.pxfrm2",
+        "from": "J2000",
+        "to": "IAU_MARS",
+        "etfrom": 0,
+        "etto": 1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["FRAMEDATANOTFOUND"]
+    }
+  },
+  {
+    "caseId": "frames-pxfrm2-unknown-before-coverage",
+    "description": "Unknown names are diagnosed before evaluating either leg.",
+    "workflow": [
+      {
+        "op": "frames.pxfrm2",
+        "from": "IAU_EARTH",
+        "to": "UNKNOWN_D03",
+        "etfrom": 0,
+        "etto": 1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["UNKNOWNFRAME"]
+    }
+  },
+  {
+    "caseId": "frames-pxfrm2-empty",
+    "description": "An empty name signals the original C string error.",
+    "workflow": [
+      {
+        "op": "frames.pxfrm2",
+        "from": "",
+        "to": "J2000",
+        "etfrom": 0,
+        "etto": 1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["EMPTYSTRING"]
+    }
+  },
+  {
+    "caseId": "frames-pxfrm2-unloaded",
+    "description": "Unloading a resolved rotating frame invalidates its transform.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-frames.tf"
+      },
+      {
+        "op": "frames.pxfrm2",
+        "from": "AUDIT_SPIN",
+        "to": "J2000",
+        "etfrom": 0,
+        "etto": 1
+      },
+      {
+        "op": "kernels.unload",
+        "path": "kernels/audit-frames.tf"
+      },
+      {
+        "op": "frames.pxfrm2",
+        "from": "AUDIT_SPIN",
+        "to": "J2000",
+        "etfrom": 0,
+        "etto": 1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["UNKNOWNFRAME"]
+    }
+  }
+]

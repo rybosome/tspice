@@ -197,3 +197,5 @@ The checkpoint also preserves source history and evidence for [#735](https://git
 The checkpoint also preserves source history and evidence for [#723](https://github.com/rybosome/tspice/pull/723).
 
 The checkpoint also preserves source history and evidence for [#724](https://github.com/rybosome/tspice/pull/724).
+
+The checkpoint also preserves source history and evidence for [#740](https://github.com/rybosome/tspice/pull/740).
