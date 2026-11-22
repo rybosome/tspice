@@ -1318,20 +1318,20 @@
         "lxqstr_c"
       ],
       "domain": "strings",
-      "apiPlacement": "Proposed directly consumed strings.ts raw domain: existing domains have no general string API. Confirm this small domain placement before implementation; preserve flat raw method composition and the existing architecture.",
-      "owner": null,
+      "apiPlacement": "Existing StringsApi on the A18 prerequisite. Flat raw calls retain exact strings, list rows, byte offsets, inclusive indexes and separate consumed counts.",
+      "owner": "Codex Step 8 (/root)",
       "status": "in-progress",
       "dependsOn": [
         "A18-string-transform"
       ],
-      "prerequisiteReview": "Resolve nextwd/nthwd oracle gaps independently. Establish empty token handling, delimiter sets, scan indices and bounded output list storage; split gaps if needed.",
+      "prerequisiteReview": "Typed independent NEXTWD and NTHWD bindings use the locked library. LPARSE/LPARSM use exact C-buffer decoding and explicit widths. Empty LX4UNS supplies initialized outputs. Signed-leading-dot lexer counts are preserved.",
       "fixtures": "None anticipated; authored scalar/array inputs.",
       "expectedChanges": {
         "domain": "strings",
         "scope": "Add raw contract/JSDoc, shared C calls, Node adapter/native registration and WASM adapter/exports; regenerate compiled artifacts; update fake/facade/schema consumers and live parity dispatch/cases. See common acceptance requirements."
       },
       "oracle": {
-        "status": "independent-route-investigation-required",
+        "status": "independent-locked-library-route-established",
         "missingTopLevelWrappers": [
           "nextwd_c",
           "nthwd_c"
@@ -1340,21 +1340,30 @@
       "prs": [
         "https://github.com/rybosome/tspice/pull/735"
       ],
-      "validationEvidence": [],
-      "nextAction": "Intake the pinned source after checkpoint 01 lands and passes main CI.",
-      "sourceSnapshot": {
-        "number": 735,
-        "url": "https://github.com/rybosome/tspice/pull/735",
-        "head": "26d044b87e55e237f507b4dcaa887ca2adfa90d7",
-        "base": "92b3050e86d486d3cc445239355e2d89562dc8ad",
-        "ci": "https://github.com/rybosome/tspice/actions/runs/43567105818",
-        "ciConclusion": "success"
-      },
-      "checkpoint": {
-        "number": 2,
-        "status": "pending intake"
-      },
-      "deliveryNote": "The pinned source head passed its configured CI matrix."
+      "validationEvidence": [
+        {
+          "kind": "local-focused",
+          "result": "124 live registered comparisons and four public tests passed. 21 Node tests and 49 WASM tests passed. The real Chrome inline worker exercised all nine. See docs/step8-string-tokenization.md for exact byte results and the Node-only adapter repair."
+        },
+        {
+          "kind": "source-bound-required-lanes",
+          "testedCommit": "4d4f03cd111409d7993311854d0f1132c654140d",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43565592056/job/132358618309",
+          "result": "Both complete required lanes passed locally on 4d4f03cd111409d7993311854d0f1132c654140d. JavaScript: 2,697 parity tests and one expected guard skip. Native-required: 2,470 registered Node/WASM live comparisons; 2,698 parity-package tests with no skips, including the native-required guard; 124 native wrapper, 687 WASM, 28 core and 151 facade tests passed. Inspected successful Linux Node 22 native-required job 132358618309 on 4d4f03cd111409d7993311854d0f1132c654140d: 2,470 registered Node/WASM live comparisons; 2,698 parity-package tests with no skips, including the native-required guard; 124 native wrapper, 687 WASM, 28 core and 151 facade tests passed."
+        },
+        {
+          "kind": "final-head-ci",
+          "testedCommit": "26d044b87e55e237f507b4dcaa887ca2adfa90d7",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43567105818",
+          "result": "Final PR matrix awaiting completion."
+        }
+      ],
+      "nextAction": "Wait for the full metadata-head CI matrix and verify explicit rebaseability before marking the PR ready; do not merge.",
+      "branch": "codex/expand-string-tokenization",
+      "worktree": "/private/tmp/tspice-step8-string-tokenization",
+      "baseCommit": "92b3050e86d486d3cc445239355e2d89562dc8ad",
+      "progressNote": "Both required local lanes and observed canonical native-required CI passed on the implementation source 4d4f03cd. 2,470 registered Node/WASM live comparisons; 2,698 parity-package tests with no skips, including the native-required guard; 124 native wrapper, 687 WASM, 28 core and 151 facade tests passed.",
+      "priorCheckpoint": "62 workflows contain 330 targeted calls and eight genuine capacity errors. A valid signed-leading-dot token exposed an overly strict Node result check; both compiled backends pass the corrected registered lane."
     },
     {
       "id": "A21-string-numeric",
@@ -1767,39 +1776,43 @@
       ],
       "domain": "cells-windows",
       "apiPlacement": "packages/backend-contract/src/domains/cells-windows.ts; raw methods retain canonical names without _c.",
-      "owner": null,
+      "owner": "Codex Step 8 (/root)",
       "status": "in-progress",
       "dependsOn": [
         "A20-string-tokenize"
       ],
-      "prerequisiteReview": "Single routine integrates character width/capacity with parser output; verify deduplication, delimiter behavior and owner-local cell lifecycle. Implement only immediate parser-to-cell bridge.",
+      "prerequisiteReview": "Uses A20 native text validation and adds scoped parser-to-cell ownership. A18 precedes A20.",
       "fixtures": "None anticipated; authored scalar/array inputs.",
       "expectedChanges": {
         "domain": "cells-windows",
         "scope": "Add raw contract/JSDoc, shared C calls, Node adapter/native registration and WASM adapter/exports; regenerate compiled artifacts; update fake/facade/schema consumers and live parity dispatch/cases. See common acceptance requirements."
       },
       "oracle": {
-        "status": "source-wrappers-present",
-        "missingTopLevelWrappers": []
+        "status": "independent-locked-library-route-established",
+        "missingTopLevelWrappers": [],
+        "limitation": "High-level helper allocates a new cell. The typed reference calls LPARSS on the existing SpiceCell."
       },
       "prs": [
         "https://github.com/rybosome/tspice/pull/746"
       ],
-      "validationEvidence": [],
-      "nextAction": "Intake the pinned source after checkpoint 01 lands and passes main CI.",
-      "sourceSnapshot": {
-        "number": 746,
-        "url": "https://github.com/rybosome/tspice/pull/746",
-        "head": "6d0b3e909a65b8bb0be7ab4409cbe2a871c054ed",
-        "base": "26d044b87e55e237f507b4dcaa887ca2adfa90d7",
-        "ci": "https://github.com/rybosome/tspice/actions/runs/43573404657",
-        "ciConclusion": "success"
-      },
-      "checkpoint": {
-        "number": 2,
-        "status": "pending intake"
-      },
-      "deliveryNote": "The pinned source head passed its configured CI matrix."
+      "validationEvidence": [
+        {
+          "kind": "local-focused",
+          "result": "36 registered live comparisons, four public tests, one private native test, and three real-module allocation failures. Real Chrome worker exercised retained members and post-error cell contents."
+        },
+        {
+          "kind": "source-bound-required-lanes",
+          "testedCommit": "1aa35005d77652f38251c1d2fd7c93a6a5c83087",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43572333173/job/132379194042",
+          "result": "Both complete required lanes passed locally on 1aa35005d77652f38251c1d2fd7c93a6a5c83087. JavaScript: 2,737 parity tests and one expected guard skip. Native-required: 2,506 registered Node/WASM live comparisons; 2,738 parity-package tests with no skips, including the native-required guard; 125 native wrapper, 690 WASM, 28 core and 151 facade tests passed. Inspected successful Linux Node 22 native-required job 132379194042 on 1aa35005d77652f38251c1d2fd7c93a6a5c83087: 2,506 registered Node/WASM live comparisons; 2,738 parity-package tests with no skips, including the native-required guard; 125 native wrapper, 690 WASM, 28 core and 151 facade tests passed."
+        }
+      ],
+      "nextAction": "Wait for the full metadata-head CI matrix and verify explicit rebaseability before marking the PR ready; do not merge.",
+      "worktree": "/private/tmp/tspice-step8-string-set",
+      "branch": "codex/expand-string-set",
+      "baseCommit": "26d044b87e55e237f507b4dcaa887ca2adfa90d7",
+      "progressNote": "Both required local lanes and observed canonical native-required CI passed on the implementation source 1aa35005. 2,506 registered Node/WASM live comparisons; 2,738 parity-package tests with no skips, including the native-required guard; 125 native wrapper, 690 WASM, 28 core and 151 facade tests passed.",
+      "priorCheckpoint": "Actual caller-cell parsing, partial mutation on capacity errors and byte-sensitive membership exercised on both compiled backends and a browser worker."
     },
     {
       "id": "B05-kernel-pool",

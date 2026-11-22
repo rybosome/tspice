@@ -296,6 +296,27 @@ and applies the whitespace and ASCII-case rules of EQSTR to each terminated
 row. The independent oracle exercises empty, all-empty, ASCII and multibyte rows.
 [Byte positions, signed bounds and row ABI](step8-string-search.md)
 
+### Tokenization and lexical spans
+
+All nine methods dispatch through their same-named CSPICE routine. A20 reuses
+the A18 string validation and strict byte decoding on both real backends.
+
+| Raw method | CSPICE     | Complete public result                                                     |
+| ---------- | ---------- | -------------------------------------------------------------------------- |
+| `nextwd`   | `nextwd_c` | Next word and left-justified remainder, with independent capacities        |
+| `nthwd`    | `nthwd_c`  | Word and zero-based UTF-8 start location                                   |
+| `lparse`   | `lparse_c` | Item count and ordered rows using one delimiter byte                       |
+| `lparsm`   | `lparsm_c` | Item count and ordered rows using a delimiter byte set                     |
+| `lx4dec`   | `lx4dec_c` | Inclusive last byte and character count of a decimal mantissa              |
+| `lx4num`   | `lx4num_c` | Inclusive last byte and character count of a number with optional exponent |
+| `lx4sgn`   | `lx4sgn_c` | Inclusive last byte and character count of an optionally signed integer    |
+| `lx4uns`   | `lx4uns_c` | Inclusive last byte and character count of unsigned digits                 |
+| `lxqstr`   | `lxqstr_c` | Inclusive last byte and character count of a quoted token                  |
+
+The independent oracle retains byte capacities, complete UTF-8 text, signed
+miss positions and the toolkit's separate decimal location/count fields.
+[Bounds, oracle adaptations and scientific observations](step8-string-tokenization.md)
+
 ## Domain: `coords-vectors` (`CoordsVectorsApi`)
 
 Array-storage methods operate on initialized owned copies and return the full
@@ -501,6 +522,10 @@ All eleven array-ordering methods use the canonical routine in both backends. Th
 | `coords-vectors.vsubg(a, b)`                          | `vsubg_c`            | `(a: readonly number[], b: readonly number[])`                                                                          | `number[]`                                                                             | Ordered a-b; all positions; empty []                                                                                                                                             | none; signed32 dimension, WASM 256 MiB per vector buffer                                               |
 | `coords-vectors.vzerog(v)`                            | `vzerog_c`           | `(v: readonly number[])`                                                                                                | `boolean`                                                                              | Exact all-zero for nonempty vector; empty false                                                                                                                                  | none; signed32 dimension, WASM 256 MiB per vector buffer                                               |
 | `coords-vectors.unormg(v)`                            | `unormg_c`           | `(v: readonly number[])`                                                                                                | `{ unit: number[]; norm: number }`                                                     | Both actual outputs; empty {unit:[],norm:0}; max dimension 2147483646                                                                                                            | none; signed32 dimension, WASM 256 MiB per vector buffer                                               |
+
+### Character list parsing
+
+`raw.lparss(list, delims, set)` calls `lparss_c` on the live caller-owned character set. [Byte widths, empty-list insertion and partial mutation](step8-string-set.md)
 
 ### Cell backing bounds
 

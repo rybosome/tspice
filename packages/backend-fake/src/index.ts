@@ -3233,6 +3233,36 @@ export function createFakeBackend(
     repmot: () => {
       throw new Error("Fake backend does not model repmot()");
     },
+    nextwd: () => {
+      throw new Error("Fake backend does not model nextwd()");
+    },
+    nthwd: () => {
+      throw new Error("Fake backend does not model nthwd()");
+    },
+    lparse: () => {
+      throw new Error("Fake backend does not model lparse()");
+    },
+    lparss: () => {
+      throw new Error("Fake backend does not model lparss()");
+    },
+    lparsm: () => {
+      throw new Error("Fake backend does not model lparsm()");
+    },
+    lx4dec: () => {
+      throw new Error("Fake backend does not model lx4dec()");
+    },
+    lx4num: () => {
+      throw new Error("Fake backend does not model lx4num()");
+    },
+    lx4sgn: () => {
+      throw new Error("Fake backend does not model lx4sgn()");
+    },
+    lx4uns: () => {
+      throw new Error("Fake backend does not model lx4uns()");
+    },
+    lxqstr: () => {
+      throw new Error("Fake backend does not model lxqstr()");
+    },
     cmprss: () => {
       throw new Error("Fake backend does not model cmprss()");
     },

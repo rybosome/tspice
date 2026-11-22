@@ -162,6 +162,7 @@ export {
   snapshotSearchRows,
   spiceStringByteLength,
   spiceAsciiChar,
+  spiceTokenTable,
   spiceStringOutputCapacity,
 } from "./spice-runtime/domains/string-bytes.js";
 

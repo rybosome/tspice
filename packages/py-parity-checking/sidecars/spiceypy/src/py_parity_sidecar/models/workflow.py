@@ -19,6 +19,7 @@ from .cells_windows import (
     StepCellsWindowsElemc,
     StepCellsWindowsElemd,
     StepCellsWindowsElemi,
+    StepCellsWindowsLparss,
     StepCellsWindowsInsrtc,
     StepCellsWindowsInsrtd,
     StepCellsWindowsInsrti,
@@ -398,6 +399,15 @@ from .strings import (
     StepStringsRepmi,
     StepStringsRepml,
     StepStringsRepmot,
+    StepStringsNextwd,
+    StepStringsNthwd,
+    StepStringsLparse,
+    StepStringsLparsm,
+    StepStringsLx4dec,
+    StepStringsLx4num,
+    StepStringsLx4sgn,
+    StepStringsLx4uns,
+    StepStringsLxqstr,
     StepStringsCmprss,
     StepStringsEqstr,
     StepStringsIswhsp,
@@ -455,6 +465,15 @@ WorkflowStep: TypeAlias = (
     | StepStringsRepmi
     | StepStringsRepml
     | StepStringsRepmot
+    | StepStringsNextwd
+    | StepStringsNthwd
+    | StepStringsLparse
+    | StepStringsLparsm
+    | StepStringsLx4dec
+    | StepStringsLx4num
+    | StepStringsLx4sgn
+    | StepStringsLx4uns
+    | StepStringsLxqstr
     | StepStringsCmprss
     | StepStringsEqstr
     | StepStringsIswhsp
@@ -682,6 +701,7 @@ WorkflowStep: TypeAlias = (
     | StepCellsWindowsElemc
     | StepCellsWindowsElemd
     | StepCellsWindowsElemi
+    | StepCellsWindowsLparss
     | StepCellsWindowsInsrtc
     | StepCellsWindowsInsrtd
     | StepCellsWindowsInsrti

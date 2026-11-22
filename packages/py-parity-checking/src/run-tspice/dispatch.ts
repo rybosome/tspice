@@ -40,6 +40,15 @@ export function dispatchStep(
     case "strings.repmi":
     case "strings.repml":
     case "strings.repmot":
+    case "strings.nextwd":
+    case "strings.nthwd":
+    case "strings.lparse":
+    case "strings.lparsm":
+    case "strings.lx4dec":
+    case "strings.lx4num":
+    case "strings.lx4sgn":
+    case "strings.lx4uns":
+    case "strings.lxqstr":
     case "strings.cmprss":
     case "strings.eqstr":
     case "strings.iswhsp":
@@ -278,6 +287,7 @@ export function dispatchStep(
     case "cells-windows.elemc":
     case "cells-windows.elemd":
     case "cells-windows.elemi":
+    case "cells-windows.lparss":
     case "cells-windows.insrtc":
     case "cells-windows.insrtd":
     case "cells-windows.insrti":

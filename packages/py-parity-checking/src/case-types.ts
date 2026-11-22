@@ -144,6 +144,58 @@ export type StepStringsRepmot = {
   rtcase: string;
   lenout?: number;
 };
+export type StepStringsNextwd = {
+  op: "strings.nextwd";
+  input: string;
+  nexlen?: number;
+  reslen?: number;
+};
+export type StepStringsNthwd = {
+  op: "strings.nthwd";
+  input: string;
+  nth: number;
+  worlen?: number;
+};
+export type StepStringsLparse = {
+  op: "strings.lparse";
+  list: string;
+  delim: string;
+  nmax: number;
+  itemln?: number;
+};
+export type StepStringsLparsm = {
+  op: "strings.lparsm";
+  list: string;
+  delims: string;
+  nmax: number;
+  itemln?: number;
+};
+export type StepStringsLx4dec = {
+  op: "strings.lx4dec";
+  input: string;
+  first: number;
+};
+export type StepStringsLx4num = {
+  op: "strings.lx4num";
+  input: string;
+  first: number;
+};
+export type StepStringsLx4sgn = {
+  op: "strings.lx4sgn";
+  input: string;
+  first: number;
+};
+export type StepStringsLx4uns = {
+  op: "strings.lx4uns";
+  input: string;
+  first: number;
+};
+export type StepStringsLxqstr = {
+  op: "strings.lxqstr";
+  input: string;
+  qchar: string;
+  first: number;
+};
 export type StepStringsCmprss = {
   op: "strings.cmprss";
   delim: string;
@@ -1577,6 +1629,15 @@ export type StepCellsWindowsElemi = {
   maxCardinality?: number;
 };
 
+export type StepCellsWindowsLparss = {
+  op: "cells-windows.lparss";
+  cellId: string;
+  list: string;
+  delims: string;
+  maxCardinality?: number;
+  length?: number;
+};
+
 export type StepCellsWindowsInsrtc = {
   op: "cells-windows.insrtc";
   cellId: string;
@@ -2784,6 +2845,15 @@ export type WorkflowStep =
   | StepStringsRepmi
   | StepStringsRepml
   | StepStringsRepmot
+  | StepStringsNextwd
+  | StepStringsNthwd
+  | StepStringsLparse
+  | StepStringsLparsm
+  | StepStringsLx4dec
+  | StepStringsLx4num
+  | StepStringsLx4sgn
+  | StepStringsLx4uns
+  | StepStringsLxqstr
   | StepStringsCmprss
   | StepStringsEqstr
   | StepStringsIswhsp
@@ -3012,6 +3082,7 @@ export type WorkflowStep =
   | StepCellsWindowsElemc
   | StepCellsWindowsElemd
   | StepCellsWindowsElemi
+  | StepCellsWindowsLparss
   | StepCellsWindowsInsrtc
   | StepCellsWindowsInsrtd
   | StepCellsWindowsInsrti
@@ -3369,6 +3440,15 @@ export type StepOutput =
   | { op: "strings.repmi"; value: string }
   | { op: "strings.repml"; value: string }
   | { op: "strings.repmot"; value: string }
+  | { op: "strings.nextwd"; value: { next: string; rest: string } }
+  | { op: "strings.nthwd"; value: { word: string; loc: number } }
+  | { op: "strings.lparse"; value: { n: number; items: string[] } }
+  | { op: "strings.lparsm"; value: { n: number; items: string[] } }
+  | { op: "strings.lx4dec"; value: { last: number; nchar: number } }
+  | { op: "strings.lx4num"; value: { last: number; nchar: number } }
+  | { op: "strings.lx4sgn"; value: { last: number; nchar: number } }
+  | { op: "strings.lx4uns"; value: { last: number; nchar: number } }
+  | { op: "strings.lxqstr"; value: { last: number; nchar: number } }
   | { op: "strings.cmprss"; value: string }
   | { op: "strings.eqstr"; value: boolean }
   | { op: "strings.iswhsp"; value: boolean }
@@ -3500,6 +3580,7 @@ export type StepOutput =
   | { op: "cells-windows.elemc"; value: boolean }
   | { op: "cells-windows.elemd"; value: boolean }
   | { op: "cells-windows.elemi"; value: boolean }
+  | { op: "cells-windows.lparss"; value: string[] }
   | { op: "cells-windows.insrtc"; value: string[] }
   | { op: "cells-windows.insrtd"; value: number[] }
   | { op: "cells-windows.insrti"; value: number[] }

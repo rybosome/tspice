@@ -7,21 +7,33 @@ import type {
   SpiceWindow,
 } from "@rybosome/tspice-backend-contract";
 import {
-  spiceStringByteLength,
   assertWindowScalar,
   windowSideByte,
   windowOperatorBytes,
   windowSummaryIndex,
   assertSpiceInt32,
   assertSpiceInt32NonNegative,
+  spiceStringByteLength,
   invariant,
 } from "@rybosome/tspice-core";
 
 import type { NativeAddon } from "../runtime/addon.js";
 
 /** Create the raw {@link CellsWindowsApi} implementation backed by the native Node addon. */
-export function createCellsWindowsApi(native: NativeAddon): CellsWindowsApi {
+export function createCellsWindowsApi(
+  native: NativeAddon,
+  charCells: ReadonlySet<number> = new Set(),
+): CellsWindowsApi {
   return {
+    lparss: (list, delims, set) => {
+      spiceStringByteLength(list, "lparss(list)", 2147483645);
+      spiceStringByteLength(delims, "lparss(delims)");
+      if (!charCells.has(set))
+        throw new RangeError(
+          "lparss requires a live character cell owned by this backend",
+        );
+      native.lparss(list, delims, set);
+    },
     ssize: (size, cell) => {
       assertSpiceInt32NonNegative(size, "ssize(size)");
       native.ssize(size, cell);
@@ -294,6 +306,7 @@ export function createCellsWindowsApi(native: NativeAddon): CellsWindowsApi {
 /** Create backend kit hooks for cells/windows backed by the native Node addon. */
 export function createCellsWindowsKitApi(
   native: NativeAddon,
+  charCells: Set<number> = new Set(),
 ): CellsWindowsKitApi {
   return {
     newIntCell: (size) => {
@@ -322,6 +335,7 @@ export function createCellsWindowsKitApi(
         typeof handle === "number",
         "Expected newCharCell() to return a number handle",
       );
+      charCells.add(handle);
       return handle as SpiceCharCell;
     },
     newWindow: (maxIntervals) => {
@@ -337,6 +351,7 @@ export function createCellsWindowsKitApi(
     freeCell: (cell) => {
       assertSpiceInt32NonNegative(cell as unknown as number, "freeCell(cell)");
       native.freeCell(cell);
+      charCells.delete(cell);
     },
     freeWindow: (window) => {
       assertSpiceInt32NonNegative(

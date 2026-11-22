@@ -861,6 +861,27 @@
       "nextAction": "Verify the combined source on both required lanes and canonical CI."
     },
     {
+      "id": "a20-string-tokenize",
+      "routines": [
+        "nextwd_c",
+        "nthwd_c",
+        "lparse_c",
+        "lparsm_c",
+        "lx4dec_c",
+        "lx4num_c",
+        "lx4sgn_c",
+        "lx4uns_c",
+        "lxqstr_c"
+      ],
+      "dependsOn": [
+        "a18-string-transform"
+      ],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/735"
+      ],
+      "nextAction": "Verify the combined source on both required lanes and canonical CI."
+    },
+    {
       "id": "a15-frame-algebra",
       "routines": [
         "frame_c",
@@ -947,6 +968,19 @@
       ],
       "prs": [
         "https://github.com/rybosome/tspice/pull/744"
+      ],
+      "nextAction": "Verify the combined source on both required lanes and canonical CI."
+    },
+    {
+      "id": "b04-string-set",
+      "routines": [
+        "lparss_c"
+      ],
+      "dependsOn": [
+        "a20-string-tokenize"
+      ],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/746"
       ],
       "nextAction": "Verify the combined source on both required lanes and canonical CI."
     },

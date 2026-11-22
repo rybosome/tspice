@@ -82,3 +82,18 @@ export function snapshotSearchRows(
   }
   return { rows, width };
 }
+
+/** Validate explicit signed dimensions and cap the parser's rectangular output before allocation. */
+export function spiceTokenTable(
+  inputBytes: number,
+  nmax: number,
+  itemln?: number,
+) {
+  assertSpiceInt32(nmax, "nmax");
+  const count = Math.min(nmax, inputBytes + 1);
+  const width = spiceStringOutputCapacity(inputBytes, 2, itemln);
+  const bytes = count > 0 && width >= 2 ? count * width : 1;
+  if (bytes > 256 * 1024 * 1024)
+    throw new RangeError("Token table exceeds 256 MiB");
+  return { count, width, bytes };
+}

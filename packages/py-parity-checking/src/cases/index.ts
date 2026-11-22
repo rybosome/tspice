@@ -19,6 +19,7 @@ import cellsWindowsCopyCasesRaw from "./cells-windows/copy.cases.json" with { ty
 import cellsWindowsElemcCasesRaw from "./cells-windows/elemc.cases.json" with { type: "json" };
 import cellsWindowsElemdCasesRaw from "./cells-windows/elemd.cases.json" with { type: "json" };
 import cellsWindowsElemiCasesRaw from "./cells-windows/elemi.cases.json" with { type: "json" };
+import cellsWindowsLparssCasesRaw from "./cells-windows/lparss.cases.json" with { type: "json" };
 import cellsWindowsInsrtcCasesRaw from "./cells-windows/insrtc.cases.json" with { type: "json" };
 import cellsWindowsInsrtdCasesRaw from "./cells-windows/insrtd.cases.json" with { type: "json" };
 import cellsWindowsInsrtiCasesRaw from "./cells-windows/insrti.cases.json" with { type: "json" };
@@ -212,6 +213,15 @@ import stringRepmfCases from "./strings/repmf.cases.json" with { type: "json" };
 import stringRepmiCases from "./strings/repmi.cases.json" with { type: "json" };
 import stringRepmlCases from "./strings/repml.cases.json" with { type: "json" };
 import stringRepmotCases from "./strings/repmot.cases.json" with { type: "json" };
+import stringNextwdCases from "./strings/nextwd.cases.json" with { type: "json" };
+import stringNthwdCases from "./strings/nthwd.cases.json" with { type: "json" };
+import stringLparseCases from "./strings/lparse.cases.json" with { type: "json" };
+import stringLparsmCases from "./strings/lparsm.cases.json" with { type: "json" };
+import stringLx4decCases from "./strings/lx4dec.cases.json" with { type: "json" };
+import stringLx4numCases from "./strings/lx4num.cases.json" with { type: "json" };
+import stringLx4sgnCases from "./strings/lx4sgn.cases.json" with { type: "json" };
+import stringLx4unsCases from "./strings/lx4uns.cases.json" with { type: "json" };
+import stringLxqstrCases from "./strings/lxqstr.cases.json" with { type: "json" };
 import stringCmprssCases from "./strings/cmprss.cases.json" with { type: "json" };
 import stringEqstrCases from "./strings/eqstr.cases.json" with { type: "json" };
 import stringIswhspCases from "./strings/iswhsp.cases.json" with { type: "json" };
@@ -593,6 +603,7 @@ export const cellsWindowsCases: ParityCase[] = [
   ...(cellsWindowsElemcCasesRaw as ParityCase[]),
   ...(cellsWindowsElemdCasesRaw as ParityCase[]),
   ...(cellsWindowsElemiCasesRaw as ParityCase[]),
+  ...(cellsWindowsLparssCasesRaw as ParityCase[]),
   ...(cellsWindowsInsrtcCasesRaw as ParityCase[]),
   ...(cellsWindowsInsrtdCasesRaw as ParityCase[]),
   ...(cellsWindowsInsrtiCasesRaw as ParityCase[]),
@@ -725,6 +736,15 @@ export const stringsCases: ParityCase[] = [
   ...(stringRepmiCases as ParityCase[]),
   ...(stringRepmlCases as ParityCase[]),
   ...(stringRepmotCases as ParityCase[]),
+  ...(stringNextwdCases as ParityCase[]),
+  ...(stringNthwdCases as ParityCase[]),
+  ...(stringLparseCases as ParityCase[]),
+  ...(stringLparsmCases as ParityCase[]),
+  ...(stringLx4decCases as ParityCase[]),
+  ...(stringLx4numCases as ParityCase[]),
+  ...(stringLx4sgnCases as ParityCase[]),
+  ...(stringLx4unsCases as ParityCase[]),
+  ...(stringLxqstrCases as ParityCase[]),
   ...(stringCmprssCases as ParityCase[]),
   ...(stringEqstrCases as ParityCase[]),
   ...(stringIswhspCases as ParityCase[]),

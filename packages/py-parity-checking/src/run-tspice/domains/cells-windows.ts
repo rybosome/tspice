@@ -16,6 +16,7 @@ import type {
   StepCellsWindowsElemc,
   StepCellsWindowsElemd,
   StepCellsWindowsElemi,
+  StepCellsWindowsLparss,
   StepCellsWindowsInsrtc,
   StepCellsWindowsInsrtd,
   StepCellsWindowsInsrti,
@@ -71,6 +72,7 @@ type CellsWindowsStep =
   | StepCellsWindowsElemc
   | StepCellsWindowsElemd
   | StepCellsWindowsElemi
+  | StepCellsWindowsLparss
   | StepCellsWindowsInsrtc
   | StepCellsWindowsInsrtd
   | StepCellsWindowsInsrti
@@ -469,6 +471,21 @@ export function runCellsWindowsStep(
         step.maxCardinality ?? 8,
       );
       return { op: step.op, value: context.spice.raw.elemi(step.item, cell) };
+    }
+    case "cells-windows.lparss": {
+      const cell = getOrCreateCharCell(
+        context,
+        step.cellId,
+        step.maxCardinality ?? 8,
+        step.length ?? 32,
+      );
+      context.spice.raw.lparss(step.list, step.delims, cell);
+      return {
+        op: step.op,
+        value: Array.from({ length: context.spice.raw.card(cell) }, (_, i) =>
+          context.spice.kit.cellGetc(cell, i),
+        ),
+      };
     }
     case "cells-windows.insrtc": {
       const cell = getOrCreateCharCell(

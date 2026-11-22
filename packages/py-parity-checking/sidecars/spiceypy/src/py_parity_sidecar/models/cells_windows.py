@@ -144,6 +144,16 @@ class StepCellsWindowsElemi:
 
 
 @dataclass(frozen=True)
+class StepCellsWindowsLparss:
+    op: Literal["cells-windows.lparss"]
+    cellId: str
+    list: str
+    delims: str
+    maxCardinality: int
+    length: int
+
+
+@dataclass(frozen=True)
 class StepCellsWindowsInsrtc:
     op: Literal["cells-windows.insrtc"]
     cellId: str
