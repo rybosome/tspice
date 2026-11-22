@@ -489,6 +489,442 @@
       "url": "https://github.com/rybosome/tspice/actions/runs/43570201253/job/132372707159",
       "observation": "Inspected successful Linux Node 22 native-required job 132372707159 on 1b3e4370ffaa1e32066df1195c0fb9853da2c56b: 2,702 registered Node/WASM live comparisons; 2,940 parity-package tests with no skips, including the native-required guard; 150 native wrapper, 688 WASM, 28 core and 150 facade tests passed.",
       "historical": true
+    },
+    {
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "416d8105ef40fab908f6b4f2fe17f68fb2795a721a410d467ad3c74b210c6d5e",
+      "caseIds": [
+        "cells-windows-diff-char-both-orders",
+        "cells-windows-diff-char-capacity",
+        "cells-windows-diff-char-empty-identities",
+        "cells-windows-diff-double-both-orders",
+        "cells-windows-diff-double-capacity",
+        "cells-windows-diff-double-empty-identities",
+        "cells-windows-diff-int-both-orders",
+        "cells-windows-diff-int-capacity",
+        "cells-windows-diff-int-empty-identities",
+        "cells-windows-diff-short-control-encoding",
+        "cells-windows-diff-unequal-character-widths",
+        "cells-windows-diff-unset-input",
+        "cells-windows-inter-char-both-orders",
+        "cells-windows-inter-char-capacity",
+        "cells-windows-inter-char-empty-identities",
+        "cells-windows-inter-double-both-orders",
+        "cells-windows-inter-double-capacity",
+        "cells-windows-inter-double-empty-identities",
+        "cells-windows-inter-int-both-orders",
+        "cells-windows-inter-int-capacity",
+        "cells-windows-inter-int-empty-identities",
+        "cells-windows-inter-short-control-encoding",
+        "cells-windows-inter-unequal-character-widths",
+        "cells-windows-inter-unset-input",
+        "cells-windows-ordc-blanks-and-tabs",
+        "cells-windows-ordc-empty",
+        "cells-windows-ordc-misses",
+        "cells-windows-ordc-ordered-members",
+        "cells-windows-ordc-unset",
+        "cells-windows-ordd-adjacent-values",
+        "cells-windows-ordd-empty",
+        "cells-windows-ordd-misses",
+        "cells-windows-ordd-ordered-members",
+        "cells-windows-ordd-unset",
+        "cells-windows-ordi-empty",
+        "cells-windows-ordi-misses",
+        "cells-windows-ordi-ordered-members",
+        "cells-windows-ordi-unset",
+        "cells-windows-removc-blanks-and-tabs",
+        "cells-windows-removc-empty",
+        "cells-windows-removc-misses",
+        "cells-windows-removc-ordered-members",
+        "cells-windows-removc-unset",
+        "cells-windows-removd-adjacent-values",
+        "cells-windows-removd-empty",
+        "cells-windows-removd-misses",
+        "cells-windows-removd-ordered-members",
+        "cells-windows-removd-unset",
+        "cells-windows-removi-empty",
+        "cells-windows-removi-misses",
+        "cells-windows-removi-ordered-members",
+        "cells-windows-removi-unset",
+        "cells-windows-sdiff-char-both-orders",
+        "cells-windows-sdiff-char-capacity",
+        "cells-windows-sdiff-char-empty-identities",
+        "cells-windows-sdiff-double-both-orders",
+        "cells-windows-sdiff-double-capacity",
+        "cells-windows-sdiff-double-empty-identities",
+        "cells-windows-sdiff-int-both-orders",
+        "cells-windows-sdiff-int-capacity",
+        "cells-windows-sdiff-int-empty-identities",
+        "cells-windows-sdiff-short-control-encoding",
+        "cells-windows-sdiff-unequal-character-widths",
+        "cells-windows-sdiff-unset-input",
+        "cells-windows-set-char-disjoint",
+        "cells-windows-set-char-empty",
+        "cells-windows-set-char-equal",
+        "cells-windows-set-char-partial",
+        "cells-windows-set-char-subset",
+        "cells-windows-set-double-disjoint",
+        "cells-windows-set-double-empty",
+        "cells-windows-set-double-equal",
+        "cells-windows-set-double-partial",
+        "cells-windows-set-double-subset",
+        "cells-windows-set-int-disjoint",
+        "cells-windows-set-int-empty",
+        "cells-windows-set-int-equal",
+        "cells-windows-set-int-partial",
+        "cells-windows-set-int-subset",
+        "cells-windows-set-operator-empty",
+        "cells-windows-set-operator-leading-space",
+        "cells-windows-set-operator-padding",
+        "cells-windows-set-operator-unknown",
+        "cells-windows-set-unset-input",
+        "cells-windows-union-char-both-orders",
+        "cells-windows-union-char-capacity",
+        "cells-windows-union-char-empty-identities",
+        "cells-windows-union-double-both-orders",
+        "cells-windows-union-double-capacity",
+        "cells-windows-union-double-empty-identities",
+        "cells-windows-union-int-both-orders",
+        "cells-windows-union-int-capacity",
+        "cells-windows-union-int-empty-identities",
+        "cells-windows-union-short-control-encoding",
+        "cells-windows-union-unequal-character-widths",
+        "cells-windows-union-unset-input"
+      ],
+      "id": "local-cp02-44c6136d16c7-node",
+      "kind": "local",
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 44c6136d16c7325e07e5e233988ffb02dab543ee. The native-required lane completed 5264 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45043538272/job/137273010344"
+    },
+    {
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "416d8105ef40fab908f6b4f2fe17f68fb2795a721a410d467ad3c74b210c6d5e",
+      "caseIds": [
+        "cells-windows-diff-char-both-orders",
+        "cells-windows-diff-char-capacity",
+        "cells-windows-diff-char-empty-identities",
+        "cells-windows-diff-double-both-orders",
+        "cells-windows-diff-double-capacity",
+        "cells-windows-diff-double-empty-identities",
+        "cells-windows-diff-int-both-orders",
+        "cells-windows-diff-int-capacity",
+        "cells-windows-diff-int-empty-identities",
+        "cells-windows-diff-short-control-encoding",
+        "cells-windows-diff-unequal-character-widths",
+        "cells-windows-diff-unset-input",
+        "cells-windows-inter-char-both-orders",
+        "cells-windows-inter-char-capacity",
+        "cells-windows-inter-char-empty-identities",
+        "cells-windows-inter-double-both-orders",
+        "cells-windows-inter-double-capacity",
+        "cells-windows-inter-double-empty-identities",
+        "cells-windows-inter-int-both-orders",
+        "cells-windows-inter-int-capacity",
+        "cells-windows-inter-int-empty-identities",
+        "cells-windows-inter-short-control-encoding",
+        "cells-windows-inter-unequal-character-widths",
+        "cells-windows-inter-unset-input",
+        "cells-windows-ordc-blanks-and-tabs",
+        "cells-windows-ordc-empty",
+        "cells-windows-ordc-misses",
+        "cells-windows-ordc-ordered-members",
+        "cells-windows-ordc-unset",
+        "cells-windows-ordd-adjacent-values",
+        "cells-windows-ordd-empty",
+        "cells-windows-ordd-misses",
+        "cells-windows-ordd-ordered-members",
+        "cells-windows-ordd-unset",
+        "cells-windows-ordi-empty",
+        "cells-windows-ordi-misses",
+        "cells-windows-ordi-ordered-members",
+        "cells-windows-ordi-unset",
+        "cells-windows-removc-blanks-and-tabs",
+        "cells-windows-removc-empty",
+        "cells-windows-removc-misses",
+        "cells-windows-removc-ordered-members",
+        "cells-windows-removc-unset",
+        "cells-windows-removd-adjacent-values",
+        "cells-windows-removd-empty",
+        "cells-windows-removd-misses",
+        "cells-windows-removd-ordered-members",
+        "cells-windows-removd-unset",
+        "cells-windows-removi-empty",
+        "cells-windows-removi-misses",
+        "cells-windows-removi-ordered-members",
+        "cells-windows-removi-unset",
+        "cells-windows-sdiff-char-both-orders",
+        "cells-windows-sdiff-char-capacity",
+        "cells-windows-sdiff-char-empty-identities",
+        "cells-windows-sdiff-double-both-orders",
+        "cells-windows-sdiff-double-capacity",
+        "cells-windows-sdiff-double-empty-identities",
+        "cells-windows-sdiff-int-both-orders",
+        "cells-windows-sdiff-int-capacity",
+        "cells-windows-sdiff-int-empty-identities",
+        "cells-windows-sdiff-short-control-encoding",
+        "cells-windows-sdiff-unequal-character-widths",
+        "cells-windows-sdiff-unset-input",
+        "cells-windows-set-char-disjoint",
+        "cells-windows-set-char-empty",
+        "cells-windows-set-char-equal",
+        "cells-windows-set-char-partial",
+        "cells-windows-set-char-subset",
+        "cells-windows-set-double-disjoint",
+        "cells-windows-set-double-empty",
+        "cells-windows-set-double-equal",
+        "cells-windows-set-double-partial",
+        "cells-windows-set-double-subset",
+        "cells-windows-set-int-disjoint",
+        "cells-windows-set-int-empty",
+        "cells-windows-set-int-equal",
+        "cells-windows-set-int-partial",
+        "cells-windows-set-int-subset",
+        "cells-windows-set-operator-empty",
+        "cells-windows-set-operator-leading-space",
+        "cells-windows-set-operator-padding",
+        "cells-windows-set-operator-unknown",
+        "cells-windows-set-unset-input",
+        "cells-windows-union-char-both-orders",
+        "cells-windows-union-char-capacity",
+        "cells-windows-union-char-empty-identities",
+        "cells-windows-union-double-both-orders",
+        "cells-windows-union-double-capacity",
+        "cells-windows-union-double-empty-identities",
+        "cells-windows-union-int-both-orders",
+        "cells-windows-union-int-capacity",
+        "cells-windows-union-int-empty-identities",
+        "cells-windows-union-short-control-encoding",
+        "cells-windows-union-unequal-character-widths",
+        "cells-windows-union-unset-input"
+      ],
+      "id": "ci-cp02-44c6136d16c7-node",
+      "kind": "ci",
+      "commit": "b826f8e1b3d9afff24f291c885b6380ff82a8689",
+      "url": "https://github.com/rybosome/tspice/actions/runs/45048703356/job/137288855808",
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 5264 live comparisons without unexpected skips."
+    },
+    {
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "416d8105ef40fab908f6b4f2fe17f68fb2795a721a410d467ad3c74b210c6d5e",
+      "caseIds": [
+        "cells-windows-diff-char-both-orders",
+        "cells-windows-diff-char-capacity",
+        "cells-windows-diff-char-empty-identities",
+        "cells-windows-diff-double-both-orders",
+        "cells-windows-diff-double-capacity",
+        "cells-windows-diff-double-empty-identities",
+        "cells-windows-diff-int-both-orders",
+        "cells-windows-diff-int-capacity",
+        "cells-windows-diff-int-empty-identities",
+        "cells-windows-diff-short-control-encoding",
+        "cells-windows-diff-unequal-character-widths",
+        "cells-windows-diff-unset-input",
+        "cells-windows-inter-char-both-orders",
+        "cells-windows-inter-char-capacity",
+        "cells-windows-inter-char-empty-identities",
+        "cells-windows-inter-double-both-orders",
+        "cells-windows-inter-double-capacity",
+        "cells-windows-inter-double-empty-identities",
+        "cells-windows-inter-int-both-orders",
+        "cells-windows-inter-int-capacity",
+        "cells-windows-inter-int-empty-identities",
+        "cells-windows-inter-short-control-encoding",
+        "cells-windows-inter-unequal-character-widths",
+        "cells-windows-inter-unset-input",
+        "cells-windows-ordc-blanks-and-tabs",
+        "cells-windows-ordc-empty",
+        "cells-windows-ordc-misses",
+        "cells-windows-ordc-ordered-members",
+        "cells-windows-ordc-unset",
+        "cells-windows-ordd-adjacent-values",
+        "cells-windows-ordd-empty",
+        "cells-windows-ordd-misses",
+        "cells-windows-ordd-ordered-members",
+        "cells-windows-ordd-unset",
+        "cells-windows-ordi-empty",
+        "cells-windows-ordi-misses",
+        "cells-windows-ordi-ordered-members",
+        "cells-windows-ordi-unset",
+        "cells-windows-removc-blanks-and-tabs",
+        "cells-windows-removc-empty",
+        "cells-windows-removc-misses",
+        "cells-windows-removc-ordered-members",
+        "cells-windows-removc-unset",
+        "cells-windows-removd-adjacent-values",
+        "cells-windows-removd-empty",
+        "cells-windows-removd-misses",
+        "cells-windows-removd-ordered-members",
+        "cells-windows-removd-unset",
+        "cells-windows-removi-empty",
+        "cells-windows-removi-misses",
+        "cells-windows-removi-ordered-members",
+        "cells-windows-removi-unset",
+        "cells-windows-sdiff-char-both-orders",
+        "cells-windows-sdiff-char-capacity",
+        "cells-windows-sdiff-char-empty-identities",
+        "cells-windows-sdiff-double-both-orders",
+        "cells-windows-sdiff-double-capacity",
+        "cells-windows-sdiff-double-empty-identities",
+        "cells-windows-sdiff-int-both-orders",
+        "cells-windows-sdiff-int-capacity",
+        "cells-windows-sdiff-int-empty-identities",
+        "cells-windows-sdiff-short-control-encoding",
+        "cells-windows-sdiff-unequal-character-widths",
+        "cells-windows-sdiff-unset-input",
+        "cells-windows-set-char-disjoint",
+        "cells-windows-set-char-empty",
+        "cells-windows-set-char-equal",
+        "cells-windows-set-char-partial",
+        "cells-windows-set-char-subset",
+        "cells-windows-set-double-disjoint",
+        "cells-windows-set-double-empty",
+        "cells-windows-set-double-equal",
+        "cells-windows-set-double-partial",
+        "cells-windows-set-double-subset",
+        "cells-windows-set-int-disjoint",
+        "cells-windows-set-int-empty",
+        "cells-windows-set-int-equal",
+        "cells-windows-set-int-partial",
+        "cells-windows-set-int-subset",
+        "cells-windows-set-operator-empty",
+        "cells-windows-set-operator-leading-space",
+        "cells-windows-set-operator-padding",
+        "cells-windows-set-operator-unknown",
+        "cells-windows-set-unset-input",
+        "cells-windows-union-char-both-orders",
+        "cells-windows-union-char-capacity",
+        "cells-windows-union-char-empty-identities",
+        "cells-windows-union-double-both-orders",
+        "cells-windows-union-double-capacity",
+        "cells-windows-union-double-empty-identities",
+        "cells-windows-union-int-both-orders",
+        "cells-windows-union-int-capacity",
+        "cells-windows-union-int-empty-identities",
+        "cells-windows-union-short-control-encoding",
+        "cells-windows-union-unequal-character-widths",
+        "cells-windows-union-unset-input"
+      ],
+      "id": "local-cp02-44c6136d16c7-wasm",
+      "kind": "local",
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 44c6136d16c7325e07e5e233988ffb02dab543ee. The native-required lane completed 5264 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45043538272/job/137273010344"
+    },
+    {
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "416d8105ef40fab908f6b4f2fe17f68fb2795a721a410d467ad3c74b210c6d5e",
+      "caseIds": [
+        "cells-windows-diff-char-both-orders",
+        "cells-windows-diff-char-capacity",
+        "cells-windows-diff-char-empty-identities",
+        "cells-windows-diff-double-both-orders",
+        "cells-windows-diff-double-capacity",
+        "cells-windows-diff-double-empty-identities",
+        "cells-windows-diff-int-both-orders",
+        "cells-windows-diff-int-capacity",
+        "cells-windows-diff-int-empty-identities",
+        "cells-windows-diff-short-control-encoding",
+        "cells-windows-diff-unequal-character-widths",
+        "cells-windows-diff-unset-input",
+        "cells-windows-inter-char-both-orders",
+        "cells-windows-inter-char-capacity",
+        "cells-windows-inter-char-empty-identities",
+        "cells-windows-inter-double-both-orders",
+        "cells-windows-inter-double-capacity",
+        "cells-windows-inter-double-empty-identities",
+        "cells-windows-inter-int-both-orders",
+        "cells-windows-inter-int-capacity",
+        "cells-windows-inter-int-empty-identities",
+        "cells-windows-inter-short-control-encoding",
+        "cells-windows-inter-unequal-character-widths",
+        "cells-windows-inter-unset-input",
+        "cells-windows-ordc-blanks-and-tabs",
+        "cells-windows-ordc-empty",
+        "cells-windows-ordc-misses",
+        "cells-windows-ordc-ordered-members",
+        "cells-windows-ordc-unset",
+        "cells-windows-ordd-adjacent-values",
+        "cells-windows-ordd-empty",
+        "cells-windows-ordd-misses",
+        "cells-windows-ordd-ordered-members",
+        "cells-windows-ordd-unset",
+        "cells-windows-ordi-empty",
+        "cells-windows-ordi-misses",
+        "cells-windows-ordi-ordered-members",
+        "cells-windows-ordi-unset",
+        "cells-windows-removc-blanks-and-tabs",
+        "cells-windows-removc-empty",
+        "cells-windows-removc-misses",
+        "cells-windows-removc-ordered-members",
+        "cells-windows-removc-unset",
+        "cells-windows-removd-adjacent-values",
+        "cells-windows-removd-empty",
+        "cells-windows-removd-misses",
+        "cells-windows-removd-ordered-members",
+        "cells-windows-removd-unset",
+        "cells-windows-removi-empty",
+        "cells-windows-removi-misses",
+        "cells-windows-removi-ordered-members",
+        "cells-windows-removi-unset",
+        "cells-windows-sdiff-char-both-orders",
+        "cells-windows-sdiff-char-capacity",
+        "cells-windows-sdiff-char-empty-identities",
+        "cells-windows-sdiff-double-both-orders",
+        "cells-windows-sdiff-double-capacity",
+        "cells-windows-sdiff-double-empty-identities",
+        "cells-windows-sdiff-int-both-orders",
+        "cells-windows-sdiff-int-capacity",
+        "cells-windows-sdiff-int-empty-identities",
+        "cells-windows-sdiff-short-control-encoding",
+        "cells-windows-sdiff-unequal-character-widths",
+        "cells-windows-sdiff-unset-input",
+        "cells-windows-set-char-disjoint",
+        "cells-windows-set-char-empty",
+        "cells-windows-set-char-equal",
+        "cells-windows-set-char-partial",
+        "cells-windows-set-char-subset",
+        "cells-windows-set-double-disjoint",
+        "cells-windows-set-double-empty",
+        "cells-windows-set-double-equal",
+        "cells-windows-set-double-partial",
+        "cells-windows-set-double-subset",
+        "cells-windows-set-int-disjoint",
+        "cells-windows-set-int-empty",
+        "cells-windows-set-int-equal",
+        "cells-windows-set-int-partial",
+        "cells-windows-set-int-subset",
+        "cells-windows-set-operator-empty",
+        "cells-windows-set-operator-leading-space",
+        "cells-windows-set-operator-padding",
+        "cells-windows-set-operator-unknown",
+        "cells-windows-set-unset-input",
+        "cells-windows-union-char-both-orders",
+        "cells-windows-union-char-capacity",
+        "cells-windows-union-char-empty-identities",
+        "cells-windows-union-double-both-orders",
+        "cells-windows-union-double-capacity",
+        "cells-windows-union-double-empty-identities",
+        "cells-windows-union-int-both-orders",
+        "cells-windows-union-int-capacity",
+        "cells-windows-union-int-empty-identities",
+        "cells-windows-union-short-control-encoding",
+        "cells-windows-union-unequal-character-widths",
+        "cells-windows-union-unset-input"
+      ],
+      "id": "ci-cp02-44c6136d16c7-wasm",
+      "kind": "ci",
+      "commit": "b826f8e1b3d9afff24f291c885b6380ff82a8689",
+      "url": "https://github.com/rybosome/tspice/actions/runs/45048703356/job/137288855808",
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 5264 live comparisons without unexpected skips."
     }
   ],
   "routines": [
@@ -594,11 +1030,15 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.diff → mutex-serialized native addon with ordinary-cell registry → tspice_diff → diff_c. Independent oracle uses typed caller-allocated diff_c symbol from locked SpiceyPy 6.0.3.",
-          "executions": []
+          "executions": [
+            "local-cp02-44c6136d16c7-node",
+            "ci-cp02-44c6136d16c7-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -606,11 +1046,15 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.diff → compiled WASM export with module-owned ordinary handles → tspice_diff → diff_c. Independent oracle uses typed caller-allocated diff_c symbol from locked SpiceyPy 6.0.3.",
-          "executions": []
+          "executions": [
+            "local-cp02-44c6136d16c7-wasm",
+            "ci-cp02-44c6136d16c7-wasm"
+          ]
         }
       }
     },
@@ -716,11 +1160,15 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.inter → mutex-serialized native addon with ordinary-cell registry → tspice_inter → inter_c. Independent oracle uses typed caller-allocated inter_c symbol from locked SpiceyPy 6.0.3.",
-          "executions": []
+          "executions": [
+            "local-cp02-44c6136d16c7-node",
+            "ci-cp02-44c6136d16c7-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -728,11 +1176,15 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.inter → compiled WASM export with module-owned ordinary handles → tspice_inter → inter_c. Independent oracle uses typed caller-allocated inter_c symbol from locked SpiceyPy 6.0.3.",
-          "executions": []
+          "executions": [
+            "local-cp02-44c6136d16c7-wasm",
+            "ci-cp02-44c6136d16c7-wasm"
+          ]
         }
       }
     },
@@ -838,11 +1290,15 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.sdiff → mutex-serialized native addon with ordinary-cell registry → tspice_sdiff → sdiff_c. Independent oracle uses typed caller-allocated sdiff_c symbol from locked SpiceyPy 6.0.3.",
-          "executions": []
+          "executions": [
+            "local-cp02-44c6136d16c7-node",
+            "ci-cp02-44c6136d16c7-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -850,11 +1306,15 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.sdiff → compiled WASM export with module-owned ordinary handles → tspice_sdiff → sdiff_c. Independent oracle uses typed caller-allocated sdiff_c symbol from locked SpiceyPy 6.0.3.",
-          "executions": []
+          "executions": [
+            "local-cp02-44c6136d16c7-wasm",
+            "ci-cp02-44c6136d16c7-wasm"
+          ]
         }
       }
     },
@@ -974,16 +1434,34 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "raw.set → mutex-serialized native addon with ordinary-cell registry → tspice_set → set_c. Independent oracle uses sp.set_c wrapper from locked SpiceyPy 6.0.3.",
-          "executions": []
+          "executions": [
+            "local-cp02-44c6136d16c7-node",
+            "ci-cp02-44c6136d16c7-node"
+          ]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "raw.set → compiled WASM export with module-owned ordinary handles → tspice_set → set_c. Independent oracle uses sp.set_c wrapper from locked SpiceyPy 6.0.3.",
-          "executions": []
+          "executions": [
+            "local-cp02-44c6136d16c7-wasm",
+            "ci-cp02-44c6136d16c7-wasm"
+          ]
         }
       }
     },
@@ -1089,11 +1567,15 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.union → mutex-serialized native addon with ordinary-cell registry → tspice_union → union_c. Independent oracle uses typed caller-allocated union_c symbol from locked SpiceyPy 6.0.3.",
-          "executions": []
+          "executions": [
+            "local-cp02-44c6136d16c7-node",
+            "ci-cp02-44c6136d16c7-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -1101,11 +1583,15 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.union → compiled WASM export with module-owned ordinary handles → tspice_union → union_c. Independent oracle uses typed caller-allocated union_c symbol from locked SpiceyPy 6.0.3.",
-          "executions": []
+          "executions": [
+            "local-cp02-44c6136d16c7-wasm",
+            "ci-cp02-44c6136d16c7-wasm"
+          ]
         }
       }
     },
@@ -1167,11 +1653,15 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.removc → mutex-serialized native addon with ordinary-cell registry → tspice_removc → removc_c. Independent oracle uses sp.removc wrapper from locked SpiceyPy 6.0.3.",
-          "executions": []
+          "executions": [
+            "local-cp02-44c6136d16c7-node",
+            "ci-cp02-44c6136d16c7-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -1179,11 +1669,15 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.removc → compiled WASM export with module-owned ordinary handles → tspice_removc → removc_c. Independent oracle uses sp.removc wrapper from locked SpiceyPy 6.0.3.",
-          "executions": []
+          "executions": [
+            "local-cp02-44c6136d16c7-wasm",
+            "ci-cp02-44c6136d16c7-wasm"
+          ]
         }
       }
     },
@@ -1228,16 +1722,34 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "raw.removd → mutex-serialized native addon with ordinary-cell registry → tspice_removd → removd_c. Independent oracle uses sp.removd wrapper from locked SpiceyPy 6.0.3.",
-          "executions": []
+          "executions": [
+            "local-cp02-44c6136d16c7-node",
+            "ci-cp02-44c6136d16c7-node"
+          ]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "raw.removd → compiled WASM export with module-owned ordinary handles → tspice_removd → removd_c. Independent oracle uses sp.removd wrapper from locked SpiceyPy 6.0.3.",
-          "executions": []
+          "executions": [
+            "local-cp02-44c6136d16c7-wasm",
+            "ci-cp02-44c6136d16c7-wasm"
+          ]
         }
       }
     },
@@ -1277,16 +1789,34 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "raw.removi → mutex-serialized native addon with ordinary-cell registry → tspice_removi → removi_c. Independent oracle uses sp.removi wrapper from locked SpiceyPy 6.0.3.",
-          "executions": []
+          "executions": [
+            "local-cp02-44c6136d16c7-node",
+            "ci-cp02-44c6136d16c7-node"
+          ]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "raw.removi → compiled WASM export with module-owned ordinary handles → tspice_removi → removi_c. Independent oracle uses sp.removi wrapper from locked SpiceyPy 6.0.3.",
-          "executions": []
+          "executions": [
+            "local-cp02-44c6136d16c7-wasm",
+            "ci-cp02-44c6136d16c7-wasm"
+          ]
         }
       }
     },
@@ -1348,11 +1878,15 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.ordc → mutex-serialized native addon with ordinary-cell registry → tspice_ordc → ordc_c. Independent oracle uses sp.ordc wrapper from locked SpiceyPy 6.0.3.",
-          "executions": []
+          "executions": [
+            "local-cp02-44c6136d16c7-node",
+            "ci-cp02-44c6136d16c7-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -1360,11 +1894,15 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.ordc → compiled WASM export with module-owned ordinary handles → tspice_ordc → ordc_c. Independent oracle uses sp.ordc wrapper from locked SpiceyPy 6.0.3.",
-          "executions": []
+          "executions": [
+            "local-cp02-44c6136d16c7-wasm",
+            "ci-cp02-44c6136d16c7-wasm"
+          ]
         }
       }
     },
@@ -1409,16 +1947,34 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "raw.ordd → mutex-serialized native addon with ordinary-cell registry → tspice_ordd → ordd_c. Independent oracle uses sp.ordd wrapper from locked SpiceyPy 6.0.3.",
-          "executions": []
+          "executions": [
+            "local-cp02-44c6136d16c7-node",
+            "ci-cp02-44c6136d16c7-node"
+          ]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "raw.ordd → compiled WASM export with module-owned ordinary handles → tspice_ordd → ordd_c. Independent oracle uses sp.ordd wrapper from locked SpiceyPy 6.0.3.",
-          "executions": []
+          "executions": [
+            "local-cp02-44c6136d16c7-wasm",
+            "ci-cp02-44c6136d16c7-wasm"
+          ]
         }
       }
     },
@@ -1458,16 +2014,34 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "raw.ordi → mutex-serialized native addon with ordinary-cell registry → tspice_ordi → ordi_c. Independent oracle uses sp.ordi wrapper from locked SpiceyPy 6.0.3.",
-          "executions": []
+          "executions": [
+            "local-cp02-44c6136d16c7-node",
+            "ci-cp02-44c6136d16c7-node"
+          ]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "raw.ordi → compiled WASM export with module-owned ordinary handles → tspice_ordi → ordi_c. Independent oracle uses sp.ordi wrapper from locked SpiceyPy 6.0.3.",
-          "executions": []
+          "executions": [
+            "local-cp02-44c6136d16c7-wasm",
+            "ci-cp02-44c6136d16c7-wasm"
+          ]
         }
       }
     }

@@ -646,6 +646,306 @@
       "url": "https://github.com/rybosome/tspice/actions/runs/43572333173/job/132379194042",
       "observation": "Inspected successful Linux Node 22 native-required job 132379194042 on 1aa35005d77652f38251c1d2fd7c93a6a5c83087: 2,506 registered Node/WASM live comparisons; 2,738 parity-package tests with no skips, including the native-required guard; 125 native wrapper, 690 WASM, 28 core and 151 facade tests passed.",
       "historical": true
+    },
+    {
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "48172264eda848b3d43e0f71f51965d74f7fe7fd488024b22cd57e7c2faab983",
+      "caseIds": [
+        "strings-lparse-delimiters",
+        "strings-lparse-empty",
+        "strings-lparse-empty-delimiter",
+        "strings-lparse-maximum-count",
+        "strings-lparse-no-room",
+        "strings-lparse-separators",
+        "strings-lparse-space-semantics",
+        "strings-lparse-too-short-row",
+        "strings-lparse-widths",
+        "strings-lparsm-delimiters",
+        "strings-lparsm-empty",
+        "strings-lparsm-empty-delimiter",
+        "strings-lparsm-maximum-count",
+        "strings-lparsm-no-room",
+        "strings-lparsm-separators",
+        "strings-lparsm-space-semantics",
+        "strings-lparsm-too-short-row",
+        "strings-lparsm-widths",
+        "strings-lx4dec-empty",
+        "strings-lx4dec-lexical-only",
+        "strings-lx4dec-number-grammar",
+        "strings-lx4dec-starts",
+        "strings-lx4dec-utf8",
+        "strings-lx4dec-whole-extents",
+        "strings-lx4num-empty",
+        "strings-lx4num-lexical-only",
+        "strings-lx4num-number-grammar",
+        "strings-lx4num-starts",
+        "strings-lx4num-utf8",
+        "strings-lx4num-whole-extents",
+        "strings-lx4sgn-empty",
+        "strings-lx4sgn-lexical-only",
+        "strings-lx4sgn-number-grammar",
+        "strings-lx4sgn-starts",
+        "strings-lx4sgn-utf8",
+        "strings-lx4sgn-whole-extents",
+        "strings-lx4uns-empty",
+        "strings-lx4uns-lexical-only",
+        "strings-lx4uns-number-grammar",
+        "strings-lx4uns-starts",
+        "strings-lx4uns-utf8",
+        "strings-lx4uns-whole-extents",
+        "strings-lxqstr-custom-delimiter",
+        "strings-lxqstr-empty",
+        "strings-lxqstr-quoted",
+        "strings-lxqstr-starts",
+        "strings-lxqstr-utf8",
+        "strings-lxqstr-whole-extents",
+        "strings-nextwd-ascii-controls",
+        "strings-nextwd-empty",
+        "strings-nextwd-explicit-capacity",
+        "strings-nextwd-negative-rest",
+        "strings-nextwd-short-next",
+        "strings-nextwd-short-rest",
+        "strings-nextwd-spaces",
+        "strings-nextwd-unicode",
+        "strings-nthwd-empty",
+        "strings-nthwd-ordinals",
+        "strings-nthwd-output-capacity",
+        "strings-nthwd-signed-extents",
+        "strings-nthwd-truncated-word",
+        "strings-nthwd-utf8-byte-locations"
+      ],
+      "id": "local-cp02-44c6136d16c7-node",
+      "kind": "local",
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 44c6136d16c7325e07e5e233988ffb02dab543ee. The native-required lane completed 5264 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45043538272/job/137273010344"
+    },
+    {
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "48172264eda848b3d43e0f71f51965d74f7fe7fd488024b22cd57e7c2faab983",
+      "caseIds": [
+        "strings-lparse-delimiters",
+        "strings-lparse-empty",
+        "strings-lparse-empty-delimiter",
+        "strings-lparse-maximum-count",
+        "strings-lparse-no-room",
+        "strings-lparse-separators",
+        "strings-lparse-space-semantics",
+        "strings-lparse-too-short-row",
+        "strings-lparse-widths",
+        "strings-lparsm-delimiters",
+        "strings-lparsm-empty",
+        "strings-lparsm-empty-delimiter",
+        "strings-lparsm-maximum-count",
+        "strings-lparsm-no-room",
+        "strings-lparsm-separators",
+        "strings-lparsm-space-semantics",
+        "strings-lparsm-too-short-row",
+        "strings-lparsm-widths",
+        "strings-lx4dec-empty",
+        "strings-lx4dec-lexical-only",
+        "strings-lx4dec-number-grammar",
+        "strings-lx4dec-starts",
+        "strings-lx4dec-utf8",
+        "strings-lx4dec-whole-extents",
+        "strings-lx4num-empty",
+        "strings-lx4num-lexical-only",
+        "strings-lx4num-number-grammar",
+        "strings-lx4num-starts",
+        "strings-lx4num-utf8",
+        "strings-lx4num-whole-extents",
+        "strings-lx4sgn-empty",
+        "strings-lx4sgn-lexical-only",
+        "strings-lx4sgn-number-grammar",
+        "strings-lx4sgn-starts",
+        "strings-lx4sgn-utf8",
+        "strings-lx4sgn-whole-extents",
+        "strings-lx4uns-empty",
+        "strings-lx4uns-lexical-only",
+        "strings-lx4uns-number-grammar",
+        "strings-lx4uns-starts",
+        "strings-lx4uns-utf8",
+        "strings-lx4uns-whole-extents",
+        "strings-lxqstr-custom-delimiter",
+        "strings-lxqstr-empty",
+        "strings-lxqstr-quoted",
+        "strings-lxqstr-starts",
+        "strings-lxqstr-utf8",
+        "strings-lxqstr-whole-extents",
+        "strings-nextwd-ascii-controls",
+        "strings-nextwd-empty",
+        "strings-nextwd-explicit-capacity",
+        "strings-nextwd-negative-rest",
+        "strings-nextwd-short-next",
+        "strings-nextwd-short-rest",
+        "strings-nextwd-spaces",
+        "strings-nextwd-unicode",
+        "strings-nthwd-empty",
+        "strings-nthwd-ordinals",
+        "strings-nthwd-output-capacity",
+        "strings-nthwd-signed-extents",
+        "strings-nthwd-truncated-word",
+        "strings-nthwd-utf8-byte-locations"
+      ],
+      "id": "ci-cp02-44c6136d16c7-node",
+      "kind": "ci",
+      "commit": "b826f8e1b3d9afff24f291c885b6380ff82a8689",
+      "url": "https://github.com/rybosome/tspice/actions/runs/45048703356/job/137288855808",
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 5264 live comparisons without unexpected skips."
+    },
+    {
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "48172264eda848b3d43e0f71f51965d74f7fe7fd488024b22cd57e7c2faab983",
+      "caseIds": [
+        "strings-lparse-delimiters",
+        "strings-lparse-empty",
+        "strings-lparse-empty-delimiter",
+        "strings-lparse-maximum-count",
+        "strings-lparse-no-room",
+        "strings-lparse-separators",
+        "strings-lparse-space-semantics",
+        "strings-lparse-too-short-row",
+        "strings-lparse-widths",
+        "strings-lparsm-delimiters",
+        "strings-lparsm-empty",
+        "strings-lparsm-empty-delimiter",
+        "strings-lparsm-maximum-count",
+        "strings-lparsm-no-room",
+        "strings-lparsm-separators",
+        "strings-lparsm-space-semantics",
+        "strings-lparsm-too-short-row",
+        "strings-lparsm-widths",
+        "strings-lx4dec-empty",
+        "strings-lx4dec-lexical-only",
+        "strings-lx4dec-number-grammar",
+        "strings-lx4dec-starts",
+        "strings-lx4dec-utf8",
+        "strings-lx4dec-whole-extents",
+        "strings-lx4num-empty",
+        "strings-lx4num-lexical-only",
+        "strings-lx4num-number-grammar",
+        "strings-lx4num-starts",
+        "strings-lx4num-utf8",
+        "strings-lx4num-whole-extents",
+        "strings-lx4sgn-empty",
+        "strings-lx4sgn-lexical-only",
+        "strings-lx4sgn-number-grammar",
+        "strings-lx4sgn-starts",
+        "strings-lx4sgn-utf8",
+        "strings-lx4sgn-whole-extents",
+        "strings-lx4uns-empty",
+        "strings-lx4uns-lexical-only",
+        "strings-lx4uns-number-grammar",
+        "strings-lx4uns-starts",
+        "strings-lx4uns-utf8",
+        "strings-lx4uns-whole-extents",
+        "strings-lxqstr-custom-delimiter",
+        "strings-lxqstr-empty",
+        "strings-lxqstr-quoted",
+        "strings-lxqstr-starts",
+        "strings-lxqstr-utf8",
+        "strings-lxqstr-whole-extents",
+        "strings-nextwd-ascii-controls",
+        "strings-nextwd-empty",
+        "strings-nextwd-explicit-capacity",
+        "strings-nextwd-negative-rest",
+        "strings-nextwd-short-next",
+        "strings-nextwd-short-rest",
+        "strings-nextwd-spaces",
+        "strings-nextwd-unicode",
+        "strings-nthwd-empty",
+        "strings-nthwd-ordinals",
+        "strings-nthwd-output-capacity",
+        "strings-nthwd-signed-extents",
+        "strings-nthwd-truncated-word",
+        "strings-nthwd-utf8-byte-locations"
+      ],
+      "id": "local-cp02-44c6136d16c7-wasm",
+      "kind": "local",
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 44c6136d16c7325e07e5e233988ffb02dab543ee. The native-required lane completed 5264 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45043538272/job/137273010344"
+    },
+    {
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "48172264eda848b3d43e0f71f51965d74f7fe7fd488024b22cd57e7c2faab983",
+      "caseIds": [
+        "strings-lparse-delimiters",
+        "strings-lparse-empty",
+        "strings-lparse-empty-delimiter",
+        "strings-lparse-maximum-count",
+        "strings-lparse-no-room",
+        "strings-lparse-separators",
+        "strings-lparse-space-semantics",
+        "strings-lparse-too-short-row",
+        "strings-lparse-widths",
+        "strings-lparsm-delimiters",
+        "strings-lparsm-empty",
+        "strings-lparsm-empty-delimiter",
+        "strings-lparsm-maximum-count",
+        "strings-lparsm-no-room",
+        "strings-lparsm-separators",
+        "strings-lparsm-space-semantics",
+        "strings-lparsm-too-short-row",
+        "strings-lparsm-widths",
+        "strings-lx4dec-empty",
+        "strings-lx4dec-lexical-only",
+        "strings-lx4dec-number-grammar",
+        "strings-lx4dec-starts",
+        "strings-lx4dec-utf8",
+        "strings-lx4dec-whole-extents",
+        "strings-lx4num-empty",
+        "strings-lx4num-lexical-only",
+        "strings-lx4num-number-grammar",
+        "strings-lx4num-starts",
+        "strings-lx4num-utf8",
+        "strings-lx4num-whole-extents",
+        "strings-lx4sgn-empty",
+        "strings-lx4sgn-lexical-only",
+        "strings-lx4sgn-number-grammar",
+        "strings-lx4sgn-starts",
+        "strings-lx4sgn-utf8",
+        "strings-lx4sgn-whole-extents",
+        "strings-lx4uns-empty",
+        "strings-lx4uns-lexical-only",
+        "strings-lx4uns-number-grammar",
+        "strings-lx4uns-starts",
+        "strings-lx4uns-utf8",
+        "strings-lx4uns-whole-extents",
+        "strings-lxqstr-custom-delimiter",
+        "strings-lxqstr-empty",
+        "strings-lxqstr-quoted",
+        "strings-lxqstr-starts",
+        "strings-lxqstr-utf8",
+        "strings-lxqstr-whole-extents",
+        "strings-nextwd-ascii-controls",
+        "strings-nextwd-empty",
+        "strings-nextwd-explicit-capacity",
+        "strings-nextwd-negative-rest",
+        "strings-nextwd-short-next",
+        "strings-nextwd-short-rest",
+        "strings-nextwd-spaces",
+        "strings-nextwd-unicode",
+        "strings-nthwd-empty",
+        "strings-nthwd-ordinals",
+        "strings-nthwd-output-capacity",
+        "strings-nthwd-signed-extents",
+        "strings-nthwd-truncated-word",
+        "strings-nthwd-utf8-byte-locations"
+      ],
+      "id": "ci-cp02-44c6136d16c7-wasm",
+      "kind": "ci",
+      "commit": "b826f8e1b3d9afff24f291c885b6380ff82a8689",
+      "url": "https://github.com/rybosome/tspice/actions/runs/45048703356/job/137288855808",
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 5264 live comparisons without unexpected skips."
     }
   ],
   "routines": [
@@ -726,11 +1026,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.nextwd -> typed UTF-8 Node adapter, native owned output under CSPICE mutex -> tspice_nextwd -> nextwd_c. Every returned scientific field is observed.",
-          "executions": []
+          "executions": [
+            "local-cp02-44c6136d16c7-node",
+            "ci-cp02-44c6136d16c7-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -740,11 +1044,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.nextwd -> module-local WASM byte buffers and typed export -> tspice_nextwd -> nextwd_c. Every returned scientific field is observed.",
-          "executions": []
+          "executions": [
+            "local-cp02-44c6136d16c7-wasm",
+            "ci-cp02-44c6136d16c7-wasm"
+          ]
         }
       }
     },
@@ -815,11 +1123,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.nthwd -> typed UTF-8 Node adapter, native owned output under CSPICE mutex -> tspice_nthwd -> nthwd_c. Every returned scientific field is observed.",
-          "executions": []
+          "executions": [
+            "local-cp02-44c6136d16c7-node",
+            "ci-cp02-44c6136d16c7-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -829,11 +1141,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.nthwd -> module-local WASM byte buffers and typed export -> tspice_nthwd -> nthwd_c. Every returned scientific field is observed.",
-          "executions": []
+          "executions": [
+            "local-cp02-44c6136d16c7-wasm",
+            "ci-cp02-44c6136d16c7-wasm"
+          ]
         }
       }
     },
@@ -919,11 +1235,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.lparse -> typed UTF-8 Node adapter, native owned output under CSPICE mutex -> tspice_lparse -> lparse_c. Every returned scientific field is observed.",
-          "executions": []
+          "executions": [
+            "local-cp02-44c6136d16c7-node",
+            "ci-cp02-44c6136d16c7-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -933,11 +1253,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.lparse -> module-local WASM byte buffers and typed export -> tspice_lparse -> lparse_c. Every returned scientific field is observed.",
-          "executions": []
+          "executions": [
+            "local-cp02-44c6136d16c7-wasm",
+            "ci-cp02-44c6136d16c7-wasm"
+          ]
         }
       }
     },
@@ -1023,11 +1347,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.lparsm -> typed UTF-8 Node adapter, native owned output under CSPICE mutex -> tspice_lparsm -> lparsm_c. Every returned scientific field is observed.",
-          "executions": []
+          "executions": [
+            "local-cp02-44c6136d16c7-node",
+            "ci-cp02-44c6136d16c7-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -1037,11 +1365,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.lparsm -> module-local WASM byte buffers and typed export -> tspice_lparsm -> lparsm_c. Every returned scientific field is observed.",
-          "executions": []
+          "executions": [
+            "local-cp02-44c6136d16c7-wasm",
+            "ci-cp02-44c6136d16c7-wasm"
+          ]
         }
       }
     },
@@ -1125,11 +1457,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.lx4dec -> typed UTF-8 Node adapter, native owned output under CSPICE mutex -> tspice_lx4dec -> lx4dec_c. Every returned scientific field is observed.",
-          "executions": []
+          "executions": [
+            "local-cp02-44c6136d16c7-node",
+            "ci-cp02-44c6136d16c7-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -1139,11 +1475,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.lx4dec -> module-local WASM byte buffers and typed export -> tspice_lx4dec -> lx4dec_c. Every returned scientific field is observed.",
-          "executions": []
+          "executions": [
+            "local-cp02-44c6136d16c7-wasm",
+            "ci-cp02-44c6136d16c7-wasm"
+          ]
         }
       }
     },
@@ -1227,11 +1567,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.lx4num -> typed UTF-8 Node adapter, native owned output under CSPICE mutex -> tspice_lx4num -> lx4num_c. Every returned scientific field is observed.",
-          "executions": []
+          "executions": [
+            "local-cp02-44c6136d16c7-node",
+            "ci-cp02-44c6136d16c7-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -1241,11 +1585,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.lx4num -> module-local WASM byte buffers and typed export -> tspice_lx4num -> lx4num_c. Every returned scientific field is observed.",
-          "executions": []
+          "executions": [
+            "local-cp02-44c6136d16c7-wasm",
+            "ci-cp02-44c6136d16c7-wasm"
+          ]
         }
       }
     },
@@ -1316,11 +1664,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.lx4sgn -> typed UTF-8 Node adapter, native owned output under CSPICE mutex -> tspice_lx4sgn -> lx4sgn_c. Every returned scientific field is observed.",
-          "executions": []
+          "executions": [
+            "local-cp02-44c6136d16c7-node",
+            "ci-cp02-44c6136d16c7-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -1330,11 +1682,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.lx4sgn -> module-local WASM byte buffers and typed export -> tspice_lx4sgn -> lx4sgn_c. Every returned scientific field is observed.",
-          "executions": []
+          "executions": [
+            "local-cp02-44c6136d16c7-wasm",
+            "ci-cp02-44c6136d16c7-wasm"
+          ]
         }
       }
     },
@@ -1405,11 +1761,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.lx4uns -> typed UTF-8 Node adapter, native owned output under CSPICE mutex -> tspice_lx4uns -> lx4uns_c. Every returned scientific field is observed.",
-          "executions": []
+          "executions": [
+            "local-cp02-44c6136d16c7-node",
+            "ci-cp02-44c6136d16c7-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -1419,11 +1779,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.lx4uns -> module-local WASM byte buffers and typed export -> tspice_lx4uns -> lx4uns_c. Every returned scientific field is observed.",
-          "executions": []
+          "executions": [
+            "local-cp02-44c6136d16c7-wasm",
+            "ci-cp02-44c6136d16c7-wasm"
+          ]
         }
       }
     },
@@ -1494,11 +1858,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.lxqstr -> typed UTF-8 Node adapter, native owned output under CSPICE mutex -> tspice_lxqstr -> lxqstr_c. Every returned scientific field is observed.",
-          "executions": []
+          "executions": [
+            "local-cp02-44c6136d16c7-node",
+            "ci-cp02-44c6136d16c7-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -1508,11 +1876,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.lxqstr -> module-local WASM byte buffers and typed export -> tspice_lxqstr -> lxqstr_c. Every returned scientific field is observed.",
-          "executions": []
+          "executions": [
+            "local-cp02-44c6136d16c7-wasm",
+            "ci-cp02-44c6136d16c7-wasm"
+          ]
         }
       }
     }
