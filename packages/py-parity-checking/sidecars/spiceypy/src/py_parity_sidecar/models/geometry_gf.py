@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Literal
+from typing import Any, Literal
 
 
 @dataclass(frozen=True)
@@ -42,6 +42,17 @@ class StepGeometryGfGfrepi:
 @dataclass(frozen=True)
 class StepGeometryGfGfrepf:
     op: Literal["geometry-gf.gfrepf"]
+
+
+@dataclass(frozen=True)
+class StepGeometryGfConfigured:
+    op: Literal["geometry-gf.gfevnt", "geometry-gf.gffove", "geometry-gf.gfocce"]
+    search: dict[str, Any]
+    stepSeconds: float
+    cnfineWindowId: str
+    resultWindowId: str
+    resultMaxIntervals: int | None = None
+    bailAfter: int | None = None
 
 
 @dataclass(frozen=True)

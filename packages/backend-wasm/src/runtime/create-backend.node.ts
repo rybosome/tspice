@@ -1,3 +1,4 @@
+import { createConfiguredGf } from "../domains/configured-gf.js";
 import { createUserGf } from "../domains/user-gf.js";
 import type { SpiceBackend } from "@rybosome/tspice-backend-contract";
 
@@ -474,8 +475,32 @@ export async function createWasmBackend(
   const fileIoApi = createFileIoApi(module, spiceHandles);
 
   const userGf = createUserGf(module);
+  const configured = createConfiguredGf(module);
   const backend = {
-    asyncRaw: userGf.asynchronous,
+    asyncRaw: {
+      ...userGf.asynchronous,
+      gfevnt: async (
+        ...args: Parameters<
+          import("@rybosome/tspice-backend-contract").GeometryGfApi["gfevnt"]
+        >
+      ) => {
+        await configured.gfevnt(true, module._tspice_gfevnt, ...args);
+      },
+      gffove: async (
+        ...args: Parameters<
+          import("@rybosome/tspice-backend-contract").GeometryGfApi["gffove"]
+        >
+      ) => {
+        await configured.gffove(true, module._tspice_gffove, ...args);
+      },
+      gfocce: async (
+        ...args: Parameters<
+          import("@rybosome/tspice-backend-contract").GeometryGfApi["gfocce"]
+        >
+      ) => {
+        await configured.gfocce(true, module._tspice_gfocce, ...args);
+      },
+    },
     kind: "wasm",
     raw: {
       ...timeApi,

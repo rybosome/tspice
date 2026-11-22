@@ -1,3 +1,8 @@
+import type {
+  GfEventSearch,
+  GfFovSearch,
+  GfOccultationSearch,
+} from "@rybosome/tspice-backend-contract";
 import fs from "node:fs";
 import path from "node:path";
 import { createRequire } from "node:module";
@@ -543,6 +548,24 @@ export type NativeAddon = {
   udf(et: number, initialValue: number): number;
   uddf(scalar: (et: number) => number, x: number, dx: number): number;
   uddc(scalar: (et: number) => number, x: number, dx: number): boolean;
+  gfevnt(
+    search: GfEventSearch,
+    cnfine: number,
+    result: number,
+    control: (slot: number, args: readonly unknown[]) => number,
+  ): void;
+  gffove(
+    search: GfFovSearch,
+    cnfine: number,
+    result: number,
+    control: (slot: number, args: readonly unknown[]) => number,
+  ): void;
+  gfocce(
+    search: GfOccultationSearch,
+    cnfine: number,
+    result: number,
+    control: (slot: number, args: readonly unknown[]) => number,
+  ): void;
   gfudb(
     scalar: (et: number) => number,
     predicate: (scalar: (et: number) => number, et: number) => boolean,

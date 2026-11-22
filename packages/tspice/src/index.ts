@@ -1,4 +1,10 @@
 export type {
+  GfControl,
+  GfControlEvent,
+  GfEventSearch,
+  GfFovSearch,
+  GfOccultationSearch,
+  GfQuantityParameter,
   KernelSource,
   Mat3ColMajor,
   Mat3RowMajor,

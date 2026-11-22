@@ -13,8 +13,8 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 ## Summary
 
 - Total routines (NAIF index): 652
-- Implemented now (SpiceRawBackend): 177
-- Planned (not yet implemented): 472
+- Implemented now (SpiceRawBackend): 180
+- Planned (not yet implemented): 469
 - Excluded: 3
 
 ## Implemented now
@@ -94,6 +94,9 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `getfvn_c` | Get instrument FOV parameters, by instrument name |
 | `getmsg_c` | Get Error Message |
 | `gfdist_c` | GF, distance search |
+| `gfevnt_c` | GF, geometric event finder |
+| `gffove_c` | GF, is target in FOV? |
+| `gfocce_c` | GF, occultation event |
 | `gfoclt_c` | GF, find occultation |
 | `gfrefn_c` | GF, default refinement estimator |
 | `gfrepf_c` | GF, progress report finalization |
@@ -385,11 +388,8 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `getelm_c` | Get the components from two-line elements |
 | `gfbail_c` | GF, interrupt signal indicator |
 | `gfclrh_c` | GF, clear interrupt signal handler status |
-| `gfevnt_c` | GF, geometric event finder |
-| `gffove_c` | GF, is target in FOV? |
 | `gfilum_c` | GF, illumination angle search |
 | `gfinth_c` | GF, interrupt signal handler |
-| `gfocce_c` | GF, occultation event |
 | `gfpa_c` | GF, phase angle search |
 | `gfposc_c` | GF, observer-target vector coordinate search |
 | `gfrepu_c` | GF, progress report update |

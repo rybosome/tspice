@@ -220,6 +220,9 @@ export function dispatchStep(
     case "geometry-gf.gfrefn":
     case "geometry-gf.gfrepi":
     case "geometry-gf.gfrepf":
+    case "geometry-gf.gfevnt":
+    case "geometry-gf.gffove":
+    case "geometry-gf.gfocce":
     case "geometry-gf.gfoclt":
     case "geometry-gf.gfrfov":
     case "geometry-gf.gftfov":
