@@ -928,6 +928,29 @@
       "nextAction": "Verify the combined source on both required lanes and canonical CI."
     },
     {
+      "id": "a23-array-order",
+      "routines": [
+        "isordv_c",
+        "orderc_c",
+        "orderd_c",
+        "orderi_c",
+        "reordc_c",
+        "reordd_c",
+        "reordi_c",
+        "reordl_c",
+        "shellc_c",
+        "shelld_c",
+        "shelli_c"
+      ],
+      "dependsOn": [
+        "a24-sorted-bounds"
+      ],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/744"
+      ],
+      "nextAction": "Verify the combined source on both required lanes and canonical CI."
+    },
+    {
       "id": "a07-coordinate-jacobians",
       "routines": [
         "dazldr_c",

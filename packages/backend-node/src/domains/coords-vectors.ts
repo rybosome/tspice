@@ -8,6 +8,12 @@ import {
   spiceStorageLength,
   searchOrderInput,
   SPICE_INT32_MAX,
+  orderDoubles,
+  orderIntegers,
+  orderLogicals,
+  orderPermutation,
+  orderRows,
+  readOrderRows,
   sortedNumericInputs,
   sortedCharacterInputs,
   sortedBoundResult,
@@ -699,6 +705,105 @@ export function createCoordsVectorsApi(native: NativeAddon): CoordsVectorsApi {
         native.isrchi(input.key, input.values),
         input.values.length,
       );
+    },
+    isordv(order) {
+      const input = orderIntegers(order);
+      const result = native.isordv(input);
+      invariant(typeof result === "boolean", "Invalid order predicate result");
+      return result;
+    },
+    orderc(values) {
+      const { bytes: input, width, count } = orderRows(values, true);
+      const result = native.orderc(width, input);
+      invariant(
+        result instanceof Int32Array && result.length === count,
+        "Invalid native output array",
+      );
+      return Array.from(result);
+    },
+    orderd(values) {
+      const input = orderDoubles(values);
+      const count = input.length;
+      const result = native.orderd(input);
+      invariant(
+        result instanceof Int32Array && result.length === count,
+        "Invalid native output array",
+      );
+      return Array.from(result);
+    },
+    orderi(values) {
+      const input = orderIntegers(values);
+      const count = input.length;
+      const result = native.orderi(input);
+      invariant(
+        result instanceof Int32Array && result.length === count,
+        "Invalid native output array",
+      );
+      return Array.from(result);
+    },
+    reordc(order, values) {
+      const { bytes: input, width, count } = orderRows(values, false);
+      const indices = orderPermutation(order, count);
+      const result = native.reordc(indices, width, input);
+      return readOrderRows(result, width, count);
+    },
+    reordd(order, values) {
+      const input = orderDoubles(values);
+      const count = input.length;
+      const indices = orderPermutation(order, count);
+      const result = native.reordd(indices, input);
+      invariant(
+        result instanceof Float64Array && result.length === count,
+        "Invalid native output array",
+      );
+      return Array.from(result);
+    },
+    reordi(order, values) {
+      const input = orderIntegers(values);
+      const count = input.length;
+      const indices = orderPermutation(order, count);
+      const result = native.reordi(indices, input);
+      invariant(
+        result instanceof Int32Array && result.length === count,
+        "Invalid native output array",
+      );
+      return Array.from(result);
+    },
+    reordl(order, values) {
+      const input = orderLogicals(values);
+      const count = input.length;
+      const indices = orderPermutation(order, count);
+      const result = native.reordl(indices, input);
+      invariant(
+        result instanceof Int32Array && result.length === count,
+        "Invalid native output array",
+      );
+      return Array.from(result, (v) => Boolean(v));
+    },
+    shellc(values) {
+      const { bytes: input, width, count } = orderRows(values, false);
+      const result = native.shellc(width, input);
+      return readOrderRows(result, width, count);
+    },
+    shelld(values) {
+      const input = orderDoubles(values);
+      const count = input.length;
+      const result = native.shelld(input);
+      invariant(
+        result instanceof Float64Array && result.length === count,
+        "Invalid native output array",
+      );
+      return Array.from(result);
+    },
+    shelli(values) {
+      const input = orderIntegers(values);
+      const count = input.length;
+      const result = native.shelli(input);
+      invariant(
+        result instanceof Int32Array && result.length === count,
+        "Invalid native output array",
+      );
+      return Array.from(result);
     },
     lstlec: (key, values) => {
       const input = sortedCharacterInputs(key, values);

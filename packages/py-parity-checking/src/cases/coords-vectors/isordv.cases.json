@@ -1,0 +1,140 @@
+[
+  {
+    "caseId": "coords-vectors-isordv-empty-singleton",
+    "description": "Distinguish the canonical empty false result and the only one-element permutation.",
+    "workflow": [
+      {
+        "op": "coords-vectors.isordv",
+        "order": []
+      },
+      {
+        "op": "coords-vectors.isordv",
+        "order": [0]
+      },
+      {
+        "op": "coords-vectors.isordv",
+        "order": [1]
+      },
+      {
+        "op": "coords-vectors.isordv",
+        "order": [-1]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-isordv-cycles",
+    "description": "Recognize identity, reverse order, multiple cycles and a long nonidentity cycle.",
+    "workflow": [
+      {
+        "op": "coords-vectors.isordv",
+        "order": [0, 1, 2, 3]
+      },
+      {
+        "op": "coords-vectors.isordv",
+        "order": [3, 2, 1, 0]
+      },
+      {
+        "op": "coords-vectors.isordv",
+        "order": [1, 0, 3, 2]
+      },
+      {
+        "op": "coords-vectors.isordv",
+        "order": [1, 2, 3, 4, 5, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-isordv-duplicate",
+    "description": "Reject even and odd multiplicities and repeated elements at either endpoint.",
+    "workflow": [
+      {
+        "op": "coords-vectors.isordv",
+        "order": [0, 0]
+      },
+      {
+        "op": "coords-vectors.isordv",
+        "order": [0, 2, 0]
+      },
+      {
+        "op": "coords-vectors.isordv",
+        "order": [1, 1, 1]
+      },
+      {
+        "op": "coords-vectors.isordv",
+        "order": [0, 1, 2, 2]
+      },
+      {
+        "op": "coords-vectors.isordv",
+        "order": [1, 1, 2, 3]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-isordv-out-of-range",
+    "description": "Observe false for negative, exactly one past the last and both signed32 extremes.",
+    "workflow": [
+      {
+        "op": "coords-vectors.isordv",
+        "order": [-1, 0]
+      },
+      {
+        "op": "coords-vectors.isordv",
+        "order": [2, 0]
+      },
+      {
+        "op": "coords-vectors.isordv",
+        "order": [-2147483648, 1]
+      },
+      {
+        "op": "coords-vectors.isordv",
+        "order": [0, 2147483647]
+      },
+      {
+        "op": "coords-vectors.isordv",
+        "order": [2147483647]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-isordv-larger",
+    "description": "Exercise a nonconsecutive 31-element permutation, a missing index and restoration on the next call.",
+    "workflow": [
+      {
+        "op": "coords-vectors.isordv",
+        "order": [
+          0, 13, 26, 8, 21, 3, 16, 29, 11, 24, 6, 19, 1, 14, 27, 9, 22, 4, 17,
+          30, 12, 25, 7, 20, 2, 15, 28, 10, 23, 5, 18
+        ]
+      },
+      {
+        "op": "coords-vectors.isordv",
+        "order": [
+          0, 0, 13, 26, 8, 21, 3, 16, 29, 11, 24, 6, 19, 1, 14, 27, 9, 22, 4,
+          17, 30, 12, 25, 7, 20, 2, 15, 28, 10, 23, 5
+        ]
+      },
+      {
+        "op": "coords-vectors.isordv",
+        "order": [
+          0, 13, 26, 8, 21, 3, 16, 29, 11, 24, 6, 19, 1, 14, 27, 9, 22, 4, 17,
+          30, 12, 25, 7, 20, 2, 15, 28, 10, 23, 5, 18
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

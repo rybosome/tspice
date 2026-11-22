@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import spiceypy as sp
 
+from .. import array_order_oracle
 from .. import array_search_oracle, sorted_bounds_oracle
 
 from .. import general_matrix_oracle
@@ -141,6 +142,17 @@ from ..models import (
     StepCoordsVectorsDrdpgr,
     StepCoordsVectorsDrdsph,
     StepCoordsVectorsDsphdr,
+    StepCoordsVectorsIsordv,
+    StepCoordsVectorsOrderc,
+    StepCoordsVectorsOrderd,
+    StepCoordsVectorsOrderi,
+    StepCoordsVectorsReordc,
+    StepCoordsVectorsReordd,
+    StepCoordsVectorsReordi,
+    StepCoordsVectorsReordl,
+    StepCoordsVectorsShellc,
+    StepCoordsVectorsShelld,
+    StepCoordsVectorsShelli,
     StepCoordsVectorsLstlec,
     StepCoordsVectorsLstled,
     StepCoordsVectorsLstlei,
@@ -734,6 +746,28 @@ def run_coords_vectors_step(step: WorkflowStep, _context: SidecarRuntimeContext)
         out = sp.dsphdr(step.x, step.y, step.z)
         return StepOutput(op=step.op, value=_to_matrix3x3(out))
 
+    if isinstance(step, StepCoordsVectorsIsordv):
+        return StepOutput(op=step.op, value=array_order_oracle.run("isordv", step.order))
+    if isinstance(step, StepCoordsVectorsOrderc):
+        return StepOutput(op=step.op, value=array_order_oracle.run("orderc", step.values))
+    if isinstance(step, StepCoordsVectorsOrderd):
+        return StepOutput(op=step.op, value=array_order_oracle.run("orderd", step.values))
+    if isinstance(step, StepCoordsVectorsOrderi):
+        return StepOutput(op=step.op, value=array_order_oracle.run("orderi", step.values))
+    if isinstance(step, StepCoordsVectorsReordc):
+        return StepOutput(op=step.op, value=array_order_oracle.run("reordc", step.values, step.order))
+    if isinstance(step, StepCoordsVectorsReordd):
+        return StepOutput(op=step.op, value=array_order_oracle.run("reordd", step.values, step.order))
+    if isinstance(step, StepCoordsVectorsReordi):
+        return StepOutput(op=step.op, value=array_order_oracle.run("reordi", step.values, step.order))
+    if isinstance(step, StepCoordsVectorsReordl):
+        return StepOutput(op=step.op, value=array_order_oracle.run("reordl", step.values, step.order))
+    if isinstance(step, StepCoordsVectorsShellc):
+        return StepOutput(op=step.op, value=array_order_oracle.run("shellc", step.values))
+    if isinstance(step, StepCoordsVectorsShelld):
+        return StepOutput(op=step.op, value=array_order_oracle.run("shelld", step.values))
+    if isinstance(step, StepCoordsVectorsShelli):
+        return StepOutput(op=step.op, value=array_order_oracle.run("shelli", step.values))
     if isinstance(step, StepCoordsVectorsLstlec):
         width, rows = sorted_bounds_oracle.character_rows(step.key, step.values)
         return StepOutput(op=step.op, value=sp.lstlec(step.key, len(rows), width, rows))

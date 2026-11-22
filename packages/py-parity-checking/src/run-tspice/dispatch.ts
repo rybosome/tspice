@@ -202,6 +202,17 @@ export function dispatchStep(
     case "coords-vectors.drdpgr":
     case "coords-vectors.drdsph":
     case "coords-vectors.dsphdr":
+    case "coords-vectors.isordv":
+    case "coords-vectors.orderc":
+    case "coords-vectors.orderd":
+    case "coords-vectors.orderi":
+    case "coords-vectors.reordc":
+    case "coords-vectors.reordd":
+    case "coords-vectors.reordi":
+    case "coords-vectors.reordl":
+    case "coords-vectors.shellc":
+    case "coords-vectors.shelld":
+    case "coords-vectors.shelli":
     case "coords-vectors.lstlec":
     case "coords-vectors.lstled":
     case "coords-vectors.lstlei":

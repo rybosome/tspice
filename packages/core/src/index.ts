@@ -209,3 +209,12 @@ export {
   windowOperatorBytes,
   windowSummaryIndex,
 } from "./spice-runtime/domains/window-algebra.js";
+
+export {
+  orderDoubles,
+  orderIntegers,
+  orderLogicals,
+  orderPermutation,
+  orderRows,
+  readOrderRows,
+} from "./spice-runtime/domains/array-order.js";

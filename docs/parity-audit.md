@@ -413,3 +413,7 @@ B02 exercises the eleven ordinary set-algebra entry points on real character,
 double and integer cells. Its locked oracle supplies existing destination
 storage and records post-error state before resetting and reusing each cell.
 [Set-algebra semantics and evidence](step8-set-algebra.md)
+
+## Array ordering
+
+A23 adds eleven direct raw routines on the A24 array validation and UTF-8 layout. The 63 registered workflows cover source permutations, distinct output values, Shell-sort ties, signed bounds, UTF-8 rows and guarded domain errors. Focused tests compare the exact order and representation of double values outside JSON. [Semantic evidence](step8-array-order.md) [Per-routine audits](../data/parity-audits/a23-array-order.json)

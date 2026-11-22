@@ -178,6 +178,17 @@ import coordsVectorsBsrchiCasesRaw from "./coords-vectors/bsrchi.cases.json" wit
 import coordsVectorsIsrchcCasesRaw from "./coords-vectors/isrchc.cases.json" with { type: "json" };
 import coordsVectorsIsrchdCasesRaw from "./coords-vectors/isrchd.cases.json" with { type: "json" };
 import coordsVectorsIsrchiCasesRaw from "./coords-vectors/isrchi.cases.json" with { type: "json" };
+import coordsVectorsIsordvCasesRaw from "./coords-vectors/isordv.cases.json" with { type: "json" };
+import coordsVectorsOrdercCasesRaw from "./coords-vectors/orderc.cases.json" with { type: "json" };
+import coordsVectorsOrderdCasesRaw from "./coords-vectors/orderd.cases.json" with { type: "json" };
+import coordsVectorsOrderiCasesRaw from "./coords-vectors/orderi.cases.json" with { type: "json" };
+import coordsVectorsReordcCasesRaw from "./coords-vectors/reordc.cases.json" with { type: "json" };
+import coordsVectorsReorddCasesRaw from "./coords-vectors/reordd.cases.json" with { type: "json" };
+import coordsVectorsReordiCasesRaw from "./coords-vectors/reordi.cases.json" with { type: "json" };
+import coordsVectorsReordlCasesRaw from "./coords-vectors/reordl.cases.json" with { type: "json" };
+import coordsVectorsShellcCasesRaw from "./coords-vectors/shellc.cases.json" with { type: "json" };
+import coordsVectorsShelldCasesRaw from "./coords-vectors/shelld.cases.json" with { type: "json" };
+import coordsVectorsShelliCasesRaw from "./coords-vectors/shelli.cases.json" with { type: "json" };
 import coordsVectorsLstlecCasesRaw from "./coords-vectors/lstlec.cases.json" with { type: "json" };
 import coordsVectorsLstledCasesRaw from "./coords-vectors/lstled.cases.json" with { type: "json" };
 import coordsVectorsLstleiCasesRaw from "./coords-vectors/lstlei.cases.json" with { type: "json" };
@@ -523,6 +534,17 @@ export const coordsVectorsCases: ParityCase[] = [
   ...(coordsVectorsIsrchcCasesRaw as ParityCase[]),
   ...(coordsVectorsIsrchdCasesRaw as ParityCase[]),
   ...(coordsVectorsIsrchiCasesRaw as ParityCase[]),
+  ...(coordsVectorsIsordvCasesRaw as ParityCase[]),
+  ...(coordsVectorsOrdercCasesRaw as ParityCase[]),
+  ...(coordsVectorsOrderdCasesRaw as ParityCase[]),
+  ...(coordsVectorsOrderiCasesRaw as ParityCase[]),
+  ...(coordsVectorsReordcCasesRaw as ParityCase[]),
+  ...(coordsVectorsReorddCasesRaw as ParityCase[]),
+  ...(coordsVectorsReordiCasesRaw as ParityCase[]),
+  ...(coordsVectorsReordlCasesRaw as ParityCase[]),
+  ...(coordsVectorsShellcCasesRaw as ParityCase[]),
+  ...(coordsVectorsShelldCasesRaw as ParityCase[]),
+  ...(coordsVectorsShelliCasesRaw as ParityCase[]),
   ...(coordsVectorsLstlecCasesRaw as ParityCase[]),
   ...(coordsVectorsLstledCasesRaw as ParityCase[]),
   ...(coordsVectorsLstleiCasesRaw as ParityCase[]),
