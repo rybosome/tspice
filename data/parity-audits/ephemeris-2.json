@@ -18507,187 +18507,122 @@
       "scenarios": [
         {
           "caseId": "ephemeris-spkez-generated-segment-success",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "spkez returns state/lt from a generated type-8 segment. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkez-invalid-frame-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "spkez rejects an unknown reference frame. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkez-audit-correction-none",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe every component and light time for NONE with moving target/observer polynomial ephemerides. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkez-audit-correction-lt",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe every component and light time for LT with moving target/observer polynomial ephemerides. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkez-audit-correction-lt-s",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe every component and light time for LT+S with moving target/observer polynomial ephemerides. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkez-audit-correction-cn",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe every component and light time for CN with moving target/observer polynomial ephemerides. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkez-audit-correction-cn-s",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe every component and light time for CN+S with moving target/observer polynomial ephemerides. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkez-audit-correction-xlt",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe every component and light time for XLT with moving target/observer polynomial ephemerides. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkez-audit-correction-xlt-s",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe every component and light time for XLT+S with moving target/observer polynomial ephemerides. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkez-audit-correction-xcn",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe every component and light time for XCN with moving target/observer polynomial ephemerides. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkez-audit-correction-xcn-s",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe every component and light time for XCN+S with moving target/observer polynomial ephemerides. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkez-audit-bad-correction",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Require actual INVALIDOPTION rather than two unrelated errors. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkez-audit-empty-correction",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Require actual EMPTYSTRING. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkez-audit-rotated-frame",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare all components and light time at a distinguishing frame or exact closed coverage boundary. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkez-audit-first-endpoint",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare all components and light time at a distinguishing frame or exact closed coverage boundary. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkez-audit-last-endpoint",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare all components and light time at a distinguishing frame or exact closed coverage boundary. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkez-audit-signed-chain",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Resolve multiple linked segments including a negative center and compare all components. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkez-audit-coverage-gap",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "A real gap between segments must produce SPKINSUFFDATA. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkez-audit-unknown-frame",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Require actual UNKNOWNFRAME for a real state request. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkez-audit-empty-frame",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Require actual EMPTYSTRING at the compiled boundary. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkez-audit-no-files",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Require real NOLOADEDFILES with no ephemerides loaded. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkez-audit-priority-restored",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Read changed complete state after competing segment load and restore the original after unload. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkez-audit-same-body",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Geometric same-body state/position and light time are zero. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkez-audit-reverse-vector",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Swap target and observer to observe the opposite geometric vector. The complete requested raw result reaches the live assertion."
         }
       ],
@@ -18758,9 +18693,7 @@
             "packages/backend-wasm/src/domains/ephemeris.ts",
             "packages/py-parity-checking/test/spk-query-boundaries.test.ts"
           ],
-          "caseIds": [
-            "ephemeris-spkez-audit-correction-none"
-          ]
+          "caseIds": ["ephemeris-spkez-audit-correction-none"]
         },
         {
           "id": "spkez-allocation-rollback",
@@ -18771,9 +18704,7 @@
             "packages/backend-wasm/test/spk-query-allocations.test.ts",
             "packages/backend-wasm/src/domains/ephemeris.ts"
           ],
-          "caseIds": [
-            "ephemeris-spkez-audit-correction-none"
-          ]
+          "caseIds": ["ephemeris-spkez-audit-correction-none"]
         }
       ],
       "backends": {
@@ -18831,187 +18762,122 @@
       "scenarios": [
         {
           "caseId": "ephemeris-spkezp-generated-segment-success",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "spkezp returns position/lt from a generated type-8 segment. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkezp-invalid-frame-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "spkezp rejects an unknown reference frame. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkezp-audit-correction-none",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe every component and light time for NONE with moving target/observer polynomial ephemerides. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkezp-audit-correction-lt",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe every component and light time for LT with moving target/observer polynomial ephemerides. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkezp-audit-correction-lt-s",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe every component and light time for LT+S with moving target/observer polynomial ephemerides. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkezp-audit-correction-cn",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe every component and light time for CN with moving target/observer polynomial ephemerides. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkezp-audit-correction-cn-s",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe every component and light time for CN+S with moving target/observer polynomial ephemerides. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkezp-audit-correction-xlt",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe every component and light time for XLT with moving target/observer polynomial ephemerides. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkezp-audit-correction-xlt-s",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe every component and light time for XLT+S with moving target/observer polynomial ephemerides. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkezp-audit-correction-xcn",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe every component and light time for XCN with moving target/observer polynomial ephemerides. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkezp-audit-correction-xcn-s",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe every component and light time for XCN+S with moving target/observer polynomial ephemerides. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkezp-audit-bad-correction",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Require actual INVALIDOPTION rather than two unrelated errors. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkezp-audit-empty-correction",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Require actual EMPTYSTRING. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkezp-audit-rotated-frame",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare all components and light time at a distinguishing frame or exact closed coverage boundary. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkezp-audit-first-endpoint",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare all components and light time at a distinguishing frame or exact closed coverage boundary. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkezp-audit-last-endpoint",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare all components and light time at a distinguishing frame or exact closed coverage boundary. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkezp-audit-signed-chain",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Resolve multiple linked segments including a negative center and compare all components. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkezp-audit-coverage-gap",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "A real gap between segments must produce SPKINSUFFDATA. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkezp-audit-unknown-frame",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Require actual UNKNOWNFRAME for a real state request. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkezp-audit-empty-frame",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Require actual EMPTYSTRING at the compiled boundary. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkezp-audit-no-files",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Require real NOLOADEDFILES with no ephemerides loaded. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkezp-audit-priority-restored",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Read changed complete state after competing segment load and restore the original after unload. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkezp-audit-same-body",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Geometric same-body state/position and light time are zero. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkezp-audit-reverse-vector",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Swap target and observer to observe the opposite geometric vector. The complete requested raw result reaches the live assertion."
         }
       ],
@@ -19082,9 +18948,7 @@
             "packages/backend-wasm/src/domains/ephemeris.ts",
             "packages/py-parity-checking/test/spk-query-boundaries.test.ts"
           ],
-          "caseIds": [
-            "ephemeris-spkezp-audit-correction-none"
-          ]
+          "caseIds": ["ephemeris-spkezp-audit-correction-none"]
         },
         {
           "id": "spkezp-allocation-rollback",
@@ -19095,9 +18959,7 @@
             "packages/backend-wasm/test/spk-query-allocations.test.ts",
             "packages/backend-wasm/src/domains/ephemeris.ts"
           ],
-          "caseIds": [
-            "ephemeris-spkezp-audit-correction-none"
-          ]
+          "caseIds": ["ephemeris-spkezp-audit-correction-none"]
         }
       ],
       "backends": {
@@ -19155,209 +19017,137 @@
       "scenarios": [
         {
           "caseId": "ephemeris-spkezr-generated-segment-success",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "spkezr returns state/lt for string targets from generated SPK data. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkezr-invalid-observer-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "spkezr errors for an observer name that cannot be resolved. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkezr-audit-correction-none",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe every component and light time for NONE with moving target/observer polynomial ephemerides. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkezr-audit-correction-lt",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe every component and light time for LT with moving target/observer polynomial ephemerides. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkezr-audit-correction-lt-s",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe every component and light time for LT+S with moving target/observer polynomial ephemerides. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkezr-audit-correction-cn",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe every component and light time for CN with moving target/observer polynomial ephemerides. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkezr-audit-correction-cn-s",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe every component and light time for CN+S with moving target/observer polynomial ephemerides. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkezr-audit-correction-xlt",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe every component and light time for XLT with moving target/observer polynomial ephemerides. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkezr-audit-correction-xlt-s",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe every component and light time for XLT+S with moving target/observer polynomial ephemerides. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkezr-audit-correction-xcn",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe every component and light time for XCN with moving target/observer polynomial ephemerides. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkezr-audit-correction-xcn-s",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe every component and light time for XCN+S with moving target/observer polynomial ephemerides. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkezr-audit-bad-correction",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Require actual INVALIDOPTION rather than two unrelated errors. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkezr-audit-empty-correction",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Require actual EMPTYSTRING. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkezr-audit-rotated-frame",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare all components and light time at a distinguishing frame or exact closed coverage boundary. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkezr-audit-first-endpoint",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare all components and light time at a distinguishing frame or exact closed coverage boundary. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkezr-audit-last-endpoint",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare all components and light time at a distinguishing frame or exact closed coverage boundary. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkezr-audit-signed-chain",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Resolve multiple linked segments including a negative center and compare all components. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkezr-audit-coverage-gap",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "A real gap between segments must produce SPKINSUFFDATA. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkezr-audit-unknown-frame",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Require actual UNKNOWNFRAME for a real state request. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkezr-audit-empty-frame",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Require actual EMPTYSTRING at the compiled boundary. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkezr-audit-no-files",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Require real NOLOADEDFILES with no ephemerides loaded. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkezr-audit-priority-restored",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Read changed complete state after competing segment load and restore the original after unload. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkezr-audit-same-body",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Geometric same-body state/position and light time are zero. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkezr-audit-unknown-name",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Require actual IDCODENOTFOUND for an unrecognized target name. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkezr-audit-empty-target",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Require actual EMPTYSTRING for an empty target name. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkezr-audit-case-insensitive-names",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Use actual built-in barycenter name translation and case-insensitive frame/correction. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkezr-audit-noninertial-frame",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare complete real lunar state/position and light time in the rotating Earth frame with converged reception correction. The complete requested raw result reaches the live assertion."
         }
       ],
@@ -19441,9 +19231,7 @@
             "packages/backend-wasm/src/domains/ephemeris.ts",
             "packages/py-parity-checking/test/spk-query-boundaries.test.ts"
           ],
-          "caseIds": [
-            "ephemeris-spkezr-audit-correction-none"
-          ]
+          "caseIds": ["ephemeris-spkezr-audit-correction-none"]
         },
         {
           "id": "spkezr-allocation-rollback",
@@ -19454,9 +19242,7 @@
             "packages/backend-wasm/test/spk-query-allocations.test.ts",
             "packages/backend-wasm/src/domains/ephemeris.ts"
           ],
-          "caseIds": [
-            "ephemeris-spkezr-audit-correction-none"
-          ]
+          "caseIds": ["ephemeris-spkezr-audit-correction-none"]
         }
       ],
       "backends": {
@@ -19514,209 +19300,137 @@
       "scenarios": [
         {
           "caseId": "ephemeris-spkpos-generated-segment-success",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "spkpos returns position/lt for string targets from generated SPK data. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkpos-invalid-abcorr-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "spkpos rejects unsupported aberration correction strings. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkpos-audit-correction-none",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe every component and light time for NONE with moving target/observer polynomial ephemerides. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkpos-audit-correction-lt",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe every component and light time for LT with moving target/observer polynomial ephemerides. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkpos-audit-correction-lt-s",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe every component and light time for LT+S with moving target/observer polynomial ephemerides. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkpos-audit-correction-cn",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe every component and light time for CN with moving target/observer polynomial ephemerides. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkpos-audit-correction-cn-s",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe every component and light time for CN+S with moving target/observer polynomial ephemerides. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkpos-audit-correction-xlt",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe every component and light time for XLT with moving target/observer polynomial ephemerides. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkpos-audit-correction-xlt-s",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe every component and light time for XLT+S with moving target/observer polynomial ephemerides. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkpos-audit-correction-xcn",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe every component and light time for XCN with moving target/observer polynomial ephemerides. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkpos-audit-correction-xcn-s",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe every component and light time for XCN+S with moving target/observer polynomial ephemerides. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkpos-audit-bad-correction",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Require actual INVALIDOPTION rather than two unrelated errors. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkpos-audit-empty-correction",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Require actual EMPTYSTRING. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkpos-audit-rotated-frame",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare all components and light time at a distinguishing frame or exact closed coverage boundary. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkpos-audit-first-endpoint",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare all components and light time at a distinguishing frame or exact closed coverage boundary. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkpos-audit-last-endpoint",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare all components and light time at a distinguishing frame or exact closed coverage boundary. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkpos-audit-signed-chain",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Resolve multiple linked segments including a negative center and compare all components. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkpos-audit-coverage-gap",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "A real gap between segments must produce SPKINSUFFDATA. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkpos-audit-unknown-frame",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Require actual UNKNOWNFRAME for a real state request. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkpos-audit-empty-frame",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Require actual EMPTYSTRING at the compiled boundary. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkpos-audit-no-files",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Require real NOLOADEDFILES with no ephemerides loaded. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkpos-audit-priority-restored",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Read changed complete state after competing segment load and restore the original after unload. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkpos-audit-same-body",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Geometric same-body state/position and light time are zero. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkpos-audit-unknown-name",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Require actual IDCODENOTFOUND for an unrecognized target name. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkpos-audit-empty-target",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Require actual EMPTYSTRING for an empty target name. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkpos-audit-case-insensitive-names",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Use actual built-in barycenter name translation and case-insensitive frame/correction. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkpos-audit-noninertial-frame",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare complete real lunar state/position and light time in the rotating Earth frame with converged reception correction. The complete requested raw result reaches the live assertion."
         }
       ],
@@ -19800,9 +19514,7 @@
             "packages/backend-wasm/src/domains/ephemeris.ts",
             "packages/py-parity-checking/test/spk-query-boundaries.test.ts"
           ],
-          "caseIds": [
-            "ephemeris-spkpos-audit-correction-none"
-          ]
+          "caseIds": ["ephemeris-spkpos-audit-correction-none"]
         },
         {
           "id": "spkpos-allocation-rollback",
@@ -19813,9 +19525,7 @@
             "packages/backend-wasm/test/spk-query-allocations.test.ts",
             "packages/backend-wasm/src/domains/ephemeris.ts"
           ],
-          "caseIds": [
-            "ephemeris-spkpos-audit-correction-none"
-          ]
+          "caseIds": ["ephemeris-spkpos-audit-correction-none"]
         }
       ],
       "backends": {
@@ -19873,109 +19583,72 @@
       "scenarios": [
         {
           "caseId": "ephemeris-spkgeo-generated-segment-success",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "spkgeo returns geometric state/lt from generated SPK data. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkgeo-invalid-frame-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "spkgeo errors for an unknown reference frame. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkgeo-audit-polynomial",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe complete geometric state or position and light time, or all six barycentric components. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkgeo-audit-rotated-frame",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare all components and light time at a distinguishing frame or exact closed coverage boundary. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkgeo-audit-first-endpoint",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare all components and light time at a distinguishing frame or exact closed coverage boundary. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkgeo-audit-last-endpoint",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare all components and light time at a distinguishing frame or exact closed coverage boundary. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkgeo-audit-signed-chain",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Resolve multiple linked segments including a negative center and compare all components. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkgeo-audit-coverage-gap",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "A real gap between segments must produce SPKINSUFFDATA. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkgeo-audit-unknown-frame",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Require actual UNKNOWNFRAME for a real state request. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkgeo-audit-empty-frame",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Require actual EMPTYSTRING at the compiled boundary. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkgeo-audit-no-files",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Require real NOLOADEDFILES with no ephemerides loaded. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkgeo-audit-priority-restored",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Read changed complete state after competing segment load and restore the original after unload. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkgeo-audit-same-body",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Geometric same-body state/position and light time are zero. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkgeo-audit-reverse-vector",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Swap target and observer to observe the opposite geometric vector. The complete requested raw result reaches the live assertion."
         }
       ],
@@ -20031,9 +19704,7 @@
             "packages/backend-wasm/src/domains/ephemeris.ts",
             "packages/py-parity-checking/test/spk-query-boundaries.test.ts"
           ],
-          "caseIds": [
-            "ephemeris-spkgeo-audit-polynomial"
-          ]
+          "caseIds": ["ephemeris-spkgeo-audit-polynomial"]
         }
       ],
       "backends": {
@@ -20091,109 +19762,72 @@
       "scenarios": [
         {
           "caseId": "ephemeris-spkgps-generated-segment-success",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "spkgps returns geometric position/lt from generated SPK data. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkgps-invalid-frame-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "spkgps errors for an unknown reference frame. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkgps-audit-polynomial",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe complete geometric state or position and light time, or all six barycentric components. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkgps-audit-rotated-frame",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare all components and light time at a distinguishing frame or exact closed coverage boundary. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkgps-audit-first-endpoint",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare all components and light time at a distinguishing frame or exact closed coverage boundary. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkgps-audit-last-endpoint",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare all components and light time at a distinguishing frame or exact closed coverage boundary. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkgps-audit-signed-chain",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Resolve multiple linked segments including a negative center and compare all components. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkgps-audit-coverage-gap",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "A real gap between segments must produce SPKINSUFFDATA. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkgps-audit-unknown-frame",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Require actual UNKNOWNFRAME for a real state request. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkgps-audit-empty-frame",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Require actual EMPTYSTRING at the compiled boundary. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkgps-audit-no-files",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Require real NOLOADEDFILES with no ephemerides loaded. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkgps-audit-priority-restored",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Read changed complete state after competing segment load and restore the original after unload. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkgps-audit-same-body",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Geometric same-body state/position and light time are zero. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkgps-audit-reverse-vector",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Swap target and observer to observe the opposite geometric vector. The complete requested raw result reaches the live assertion."
         }
       ],
@@ -20249,9 +19883,7 @@
             "packages/backend-wasm/src/domains/ephemeris.ts",
             "packages/py-parity-checking/test/spk-query-boundaries.test.ts"
           ],
-          "caseIds": [
-            "ephemeris-spkgps-audit-polynomial"
-          ]
+          "caseIds": ["ephemeris-spkgps-audit-polynomial"]
         }
       ],
       "backends": {
@@ -20309,101 +19941,67 @@
       "scenarios": [
         {
           "caseId": "ephemeris-spkssb-generated-segment-success",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "spkssb returns a state vector relative to the solar-system barycenter. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkssb-invalid-frame-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "spkssb rejects an unknown reference frame. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkssb-audit-polynomial",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe complete geometric state or position and light time, or all six barycentric components. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkssb-audit-rotated-frame",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare all components and light time at a distinguishing frame or exact closed coverage boundary. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkssb-audit-first-endpoint",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare all components and light time at a distinguishing frame or exact closed coverage boundary. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkssb-audit-last-endpoint",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare all components and light time at a distinguishing frame or exact closed coverage boundary. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkssb-audit-signed-chain",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Resolve multiple linked segments including a negative center and compare all components. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkssb-audit-coverage-gap",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "A real gap between segments must produce SPKINSUFFDATA. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkssb-audit-unknown-frame",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Require actual UNKNOWNFRAME for a real state request. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkssb-audit-empty-frame",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Require actual EMPTYSTRING at the compiled boundary. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkssb-audit-no-files",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Require real NOLOADEDFILES with no ephemerides loaded. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkssb-audit-priority-restored",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Read changed complete state after competing segment load and restore the original after unload. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spkssb-audit-barycenter-zero",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "The barycenter state is exactly zero without loading any SPK. The complete requested raw result reaches the live assertion."
         }
       ],
@@ -20458,9 +20056,7 @@
             "packages/backend-wasm/src/domains/ephemeris.ts",
             "packages/py-parity-checking/test/spk-query-boundaries.test.ts"
           ],
-          "caseIds": [
-            "ephemeris-spkssb-audit-polynomial"
-          ]
+          "caseIds": ["ephemeris-spkssb-audit-polynomial"]
         }
       ],
       "backends": {
@@ -20518,89 +20114,57 @@
       "scenarios": [
         {
           "caseId": "ephemeris-spksfs-found-success",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "spksfs finds the highest-priority segment and returns descriptor metadata. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spksfs-not-found-success",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "spksfs miss returns found=false when no segment matches. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spksfs-audit-no-files-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "A true toolkit NOLOADEDFILES error must not be converted into found:false. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spksfs-audit-negative-center",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe complete found flag, segment identifier, TDB bounds and all six packed integers; negative center is unpacked through the real descriptor. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spksfs-audit-coverage-gap",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe complete found flag, segment identifier, TDB bounds and all six packed integers; negative center is unpacked through the real descriptor. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spksfs-audit-unknown-object",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe complete found flag, segment identifier, TDB bounds and all six packed integers; negative center is unpacked through the real descriptor. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spksfs-audit-first-endpoint",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe complete found flag, segment identifier, TDB bounds and all six packed integers; negative center is unpacked through the real descriptor. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spksfs-audit-last-endpoint",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe complete found flag, segment identifier, TDB bounds and all six packed integers; negative center is unpacked through the real descriptor. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spksfs-audit-outside",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe complete found flag, segment identifier, TDB bounds and all six packed integers; negative center is unpacked through the real descriptor. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spksfs-audit-priority-unload-reload",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe selected segment changes after load/unload, cache reuse and reverse load order. The complete requested raw result reaches the live assertion."
         },
         {
           "caseId": "ephemeris-spksfs-audit-loaded-empty",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "A loaded valid empty SPK produces a genuine miss, distinct from NOLOADEDFILES. The complete requested raw result reaches the live assertion."
         }
       ],
@@ -20658,9 +20222,7 @@
             "packages/backend-wasm/src/domains/ephemeris.ts",
             "packages/py-parity-checking/test/spk-query-boundaries.test.ts"
           ],
-          "caseIds": [
-            "ephemeris-spksfs-audit-no-files-error"
-          ]
+          "caseIds": ["ephemeris-spksfs-audit-no-files-error"]
         },
         {
           "id": "spksfs-oracle-masked-toolkit-error",

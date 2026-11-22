@@ -22142,170 +22142,112 @@
       "scenarios": [
         {
           "caseId": "geometry-subpnt-happy-path-success",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "subpnt near-point ellipsoid sub-observer geometry on Moon from Earth; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-subpnt-invalid-method-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Representative subpnt method syntax error; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-subpnt-audit-method-near-point-ellipsoid",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare all point coordinates, target surface epoch and observer-to-surface vector for NEAR POINT/ELLIPSOID; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-subpnt-audit-method-intercept-ellipsoid",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare all point coordinates, target surface epoch and observer-to-surface vector for INTERCEPT/ELLIPSOID; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-subpnt-audit-method-nadir-dsk",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare all point coordinates, target surface epoch and observer-to-surface vector for NADIR/DSK/UNPRIORITIZED; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-subpnt-audit-method-intercept-dsk",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare all point coordinates, target surface epoch and observer-to-surface vector for INTERCEPT/DSK/UNPRIORITIZED/SURFACES=101; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-subpnt-audit-correction-lt",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe complete point/vector/angles/flags and target surface epoch for LT; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-subpnt-audit-correction-lt-s",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe complete point/vector/angles/flags and target surface epoch for LT+S; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-subpnt-audit-correction-cn",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe complete point/vector/angles/flags and target surface epoch for CN; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-subpnt-audit-correction-cn-s",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe complete point/vector/angles/flags and target surface epoch for CN+S; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-subpnt-audit-correction-xlt",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe complete point/vector/angles/flags and target surface epoch for XLT; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-subpnt-audit-correction-xlt-s",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe complete point/vector/angles/flags and target surface epoch for XLT+S; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-subpnt-audit-correction-xcn",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe complete point/vector/angles/flags and target surface epoch for XCN; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-subpnt-audit-correction-xcn-s",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe complete point/vector/angles/flags and target surface epoch for XCN+S; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-subpnt-audit-different-epoch",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe full geometry at a negative nonzero TDB epoch and moving observer; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-subpnt-audit-bad-method",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Require a structured toolkit method error; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-subpnt-audit-bad-frame",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Observe actual CSPICE body/frame/epoch/correction behavior for bad-frame; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-subpnt-audit-wrong-center-frame",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Observe actual CSPICE body/frame/epoch/correction behavior for wrong-center-frame; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-subpnt-audit-empty-target",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Observe actual CSPICE body/frame/epoch/correction behavior for empty-target; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-subpnt-audit-same-body",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Observe actual CSPICE body/frame/epoch/correction behavior for same-body; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-subpnt-audit-outside-coverage",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Observe actual CSPICE body/frame/epoch/correction behavior for outside-coverage; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-subpnt-audit-bad-correction",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Observe actual CSPICE body/frame/epoch/correction behavior for bad-correction; the complete requested raw result reaches the live comparison."
         }
       ],
@@ -22388,9 +22330,7 @@
             "packages/backend-wasm/test/geometry-allocations.test.ts",
             "packages/backend-wasm/src/domains/geometry.ts"
           ],
-          "caseIds": [
-            "geometry-subpnt-audit-method-near-point-ellipsoid"
-          ]
+          "caseIds": ["geometry-subpnt-audit-method-near-point-ellipsoid"]
         },
         {
           "id": "subpnt-typed-numeric-boundary",
@@ -22402,9 +22342,7 @@
             "packages/backend-node/src/domains/geometry.ts",
             "packages/backend-wasm/src/domains/geometry.ts"
           ],
-          "caseIds": [
-            "geometry-subpnt-audit-method-near-point-ellipsoid"
-          ]
+          "caseIds": ["geometry-subpnt-audit-method-near-point-ellipsoid"]
         }
       ],
       "backends": {
@@ -22462,167 +22400,112 @@
       "scenarios": [
         {
           "caseId": "geometry-subslr-happy-path-success",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "subslr near-point ellipsoid sub-solar geometry on Moon from Earth frame; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-subslr-invalid-method-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Representative subslr method syntax error; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-subslr-audit-method-near-point-ellipsoid",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare all point coordinates, target surface epoch and observer-to-surface vector for NEAR POINT/ELLIPSOID; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-subslr-audit-method-intercept-ellipsoid",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare all point coordinates, target surface epoch and observer-to-surface vector for INTERCEPT/ELLIPSOID; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-subslr-audit-method-nadir-dsk",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare all point coordinates, target surface epoch and observer-to-surface vector for NADIR/DSK/UNPRIORITIZED; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-subslr-audit-method-intercept-dsk",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare all point coordinates, target surface epoch and observer-to-surface vector for INTERCEPT/DSK/UNPRIORITIZED/SURFACES=101; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-subslr-audit-correction-lt",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe complete point/vector/angles/flags and target surface epoch for LT; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-subslr-audit-correction-lt-s",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe complete point/vector/angles/flags and target surface epoch for LT+S; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-subslr-audit-correction-cn",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe complete point/vector/angles/flags and target surface epoch for CN; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-subslr-audit-correction-cn-s",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe complete point/vector/angles/flags and target surface epoch for CN+S; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-subslr-audit-correction-xlt",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Observe complete point/vector/angles/flags and target surface epoch for XLT; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-subslr-audit-correction-xlt-s",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Observe complete point/vector/angles/flags and target surface epoch for XLT+S; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-subslr-audit-correction-xcn",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Observe complete point/vector/angles/flags and target surface epoch for XCN; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-subslr-audit-correction-xcn-s",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Observe complete point/vector/angles/flags and target surface epoch for XCN+S; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-subslr-audit-different-epoch",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe full geometry at a negative nonzero TDB epoch and moving observer; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-subslr-audit-bad-method",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Require a structured toolkit method error; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-subslr-audit-bad-frame",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Observe actual CSPICE body/frame/epoch/correction behavior for bad-frame; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-subslr-audit-wrong-center-frame",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Observe actual CSPICE body/frame/epoch/correction behavior for wrong-center-frame; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-subslr-audit-empty-target",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Observe actual CSPICE body/frame/epoch/correction behavior for empty-target; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-subslr-audit-same-body",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe actual CSPICE body/frame/epoch/correction behavior for same-body; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-subslr-audit-outside-coverage",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Observe actual CSPICE body/frame/epoch/correction behavior for outside-coverage; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-subslr-audit-bad-correction",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Observe actual CSPICE body/frame/epoch/correction behavior for bad-correction; the complete requested raw result reaches the live comparison."
         }
       ],
@@ -22705,9 +22588,7 @@
             "packages/backend-wasm/test/geometry-allocations.test.ts",
             "packages/backend-wasm/src/domains/geometry.ts"
           ],
-          "caseIds": [
-            "geometry-subslr-audit-method-near-point-ellipsoid"
-          ]
+          "caseIds": ["geometry-subslr-audit-method-near-point-ellipsoid"]
         },
         {
           "id": "subslr-typed-numeric-boundary",
@@ -22719,9 +22600,7 @@
             "packages/backend-node/src/domains/geometry.ts",
             "packages/backend-wasm/src/domains/geometry.ts"
           ],
-          "caseIds": [
-            "geometry-subslr-audit-method-near-point-ellipsoid"
-          ]
+          "caseIds": ["geometry-subslr-audit-method-near-point-ellipsoid"]
         }
       ],
       "backends": {
@@ -22779,190 +22658,127 @@
       "scenarios": [
         {
           "caseId": "geometry-sincpt-intercept-hit-success",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "sincpt ellipsoid boresight toward Moon center returns found=true intercept; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-sincpt-invalid-target-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Representative sincpt invalid target/frame combination error; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-sincpt-audit-badmethod",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Preserve actual BADMETHODSYNTAX instead of generic found-decorator failure; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-sincpt-audit-correction-lt",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe complete point/vector/angles/flags and target surface epoch for LT; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-sincpt-audit-correction-lt-s",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe complete point/vector/angles/flags and target surface epoch for LT+S; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-sincpt-audit-correction-cn",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe complete point/vector/angles/flags and target surface epoch for CN; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-sincpt-audit-correction-cn-s",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe complete point/vector/angles/flags and target surface epoch for CN+S; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-sincpt-audit-correction-xlt",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe complete point/vector/angles/flags and target surface epoch for XLT; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-sincpt-audit-correction-xlt-s",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe complete point/vector/angles/flags and target surface epoch for XLT+S; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-sincpt-audit-correction-xcn",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe complete point/vector/angles/flags and target surface epoch for XCN; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-sincpt-audit-correction-xcn-s",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe complete point/vector/angles/flags and target surface epoch for XCN+S; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-sincpt-audit-different-epoch",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe full geometry at a negative nonzero TDB epoch and moving observer; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-sincpt-audit-bad-method",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Require a structured toolkit method error; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-sincpt-audit-bad-frame",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Observe actual CSPICE body/frame/epoch/correction behavior for bad-frame; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-sincpt-audit-wrong-center-frame",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Observe actual CSPICE body/frame/epoch/correction behavior for wrong-center-frame; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-sincpt-audit-empty-target",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Observe actual CSPICE body/frame/epoch/correction behavior for empty-target; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-sincpt-audit-same-body",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Observe actual CSPICE body/frame/epoch/correction behavior for same-body; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-sincpt-audit-outside-coverage",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Observe actual CSPICE body/frame/epoch/correction behavior for outside-coverage; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-sincpt-audit-bad-correction",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Observe actual CSPICE body/frame/epoch/correction behavior for bad-correction; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-sincpt-audit-dsk-facet",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe a genuine triangle-interior point/normal on the authored DSK; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-sincpt-audit-dsk-missing-surface",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Pinned N0067 ILLUMF uses all target DSK surfaces despite a parsed list; other routines require matching data; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-sincpt-audit-miss",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "A ray directed away from the target is a genuine found:false; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-sincpt-audit-zero-ray",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "A zero direction is actual ZEROVECTOR, not a successful miss; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-sincpt-audit-bad-direction-frame",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Require actual direction-frame error; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-sincpt-audit-dsk-rotated-output",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Transform the complete DSK intercept into a distinct body-centered frame; the complete requested raw result reaches the live comparison."
         }
       ],
@@ -23048,9 +22864,7 @@
             "packages/backend-wasm/test/geometry-allocations.test.ts",
             "packages/backend-wasm/src/domains/geometry.ts"
           ],
-          "caseIds": [
-            "geometry-sincpt-audit-badmethod"
-          ]
+          "caseIds": ["geometry-sincpt-audit-badmethod"]
         },
         {
           "id": "sincpt-typed-numeric-boundary",
@@ -23062,9 +22876,7 @@
             "packages/backend-node/src/domains/geometry.ts",
             "packages/backend-wasm/src/domains/geometry.ts"
           ],
-          "caseIds": [
-            "geometry-sincpt-audit-badmethod"
-          ]
+          "caseIds": ["geometry-sincpt-audit-badmethod"]
         },
         {
           "id": "sincpt-structured-oracle-error",
@@ -23075,9 +22887,7 @@
             "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/geometry.py",
             "packages/py-parity-checking/src/cases/geometry/sincpt.cases.json"
           ],
-          "caseIds": [
-            "geometry-sincpt-audit-badmethod"
-          ]
+          "caseIds": ["geometry-sincpt-audit-badmethod"]
         }
       ],
       "backends": {
@@ -23135,153 +22945,102 @@
       "scenarios": [
         {
           "caseId": "geometry-ilumin-happy-path-success",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "ilumin ellipsoid illumination at stable Moon sub-observer surface point; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-ilumin-invalid-method-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Representative ilumin method syntax error; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-ilumin-audit-correction-lt",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe complete point/vector/angles/flags and target surface epoch for LT; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-ilumin-audit-correction-lt-s",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe complete point/vector/angles/flags and target surface epoch for LT+S; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-ilumin-audit-correction-cn",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe complete point/vector/angles/flags and target surface epoch for CN; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-ilumin-audit-correction-cn-s",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe complete point/vector/angles/flags and target surface epoch for CN+S; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-ilumin-audit-correction-xlt",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe complete point/vector/angles/flags and target surface epoch for XLT; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-ilumin-audit-correction-xlt-s",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe complete point/vector/angles/flags and target surface epoch for XLT+S; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-ilumin-audit-correction-xcn",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe complete point/vector/angles/flags and target surface epoch for XCN; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-ilumin-audit-correction-xcn-s",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe complete point/vector/angles/flags and target surface epoch for XCN+S; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-ilumin-audit-different-epoch",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe full geometry at a negative nonzero TDB epoch and moving observer; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-ilumin-audit-bad-method",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Require a structured toolkit method error; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-ilumin-audit-bad-frame",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Observe actual CSPICE body/frame/epoch/correction behavior for bad-frame; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-ilumin-audit-wrong-center-frame",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Observe actual CSPICE body/frame/epoch/correction behavior for wrong-center-frame; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-ilumin-audit-empty-target",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Observe actual CSPICE body/frame/epoch/correction behavior for empty-target; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-ilumin-audit-same-body",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Observe actual CSPICE body/frame/epoch/correction behavior for same-body; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-ilumin-audit-outside-coverage",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Observe actual CSPICE body/frame/epoch/correction behavior for outside-coverage; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-ilumin-audit-bad-correction",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Observe actual CSPICE body/frame/epoch/correction behavior for bad-correction; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-ilumin-audit-dsk-facet",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe a genuine triangle-interior point/normal on the authored DSK; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-ilumin-audit-dsk-missing-surface",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Pinned N0067 ILLUMF uses all target DSK surfaces despite a parsed list; other routines require matching data; the complete requested raw result reaches the live comparison."
         }
       ],
@@ -23362,9 +23121,7 @@
             "packages/backend-wasm/test/geometry-allocations.test.ts",
             "packages/backend-wasm/src/domains/geometry.ts"
           ],
-          "caseIds": [
-            "geometry-ilumin-audit-correction-lt"
-          ]
+          "caseIds": ["geometry-ilumin-audit-correction-lt"]
         },
         {
           "id": "ilumin-typed-numeric-boundary",
@@ -23376,9 +23133,7 @@
             "packages/backend-node/src/domains/geometry.ts",
             "packages/backend-wasm/src/domains/geometry.ts"
           ],
-          "caseIds": [
-            "geometry-ilumin-audit-correction-lt"
-          ]
+          "caseIds": ["geometry-ilumin-audit-correction-lt"]
         }
       ],
       "backends": {
@@ -23436,176 +23191,117 @@
       "scenarios": [
         {
           "caseId": "geometry-illumg-happy-path-success",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "illumg ellipsoid illumination with explicit SUN source at stable Moon surface point; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-illumg-invalid-method-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Representative illumg method syntax error; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-illumg-audit-correction-lt",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe complete point/vector/angles/flags and target surface epoch for LT; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-illumg-audit-correction-lt-s",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe complete point/vector/angles/flags and target surface epoch for LT+S; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-illumg-audit-correction-cn",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe complete point/vector/angles/flags and target surface epoch for CN; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-illumg-audit-correction-cn-s",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe complete point/vector/angles/flags and target surface epoch for CN+S; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-illumg-audit-correction-xlt",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe complete point/vector/angles/flags and target surface epoch for XLT; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-illumg-audit-correction-xlt-s",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe complete point/vector/angles/flags and target surface epoch for XLT+S; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-illumg-audit-correction-xcn",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe complete point/vector/angles/flags and target surface epoch for XCN; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-illumg-audit-correction-xcn-s",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe complete point/vector/angles/flags and target surface epoch for XCN+S; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-illumg-audit-different-epoch",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe full geometry at a negative nonzero TDB epoch and moving observer; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-illumg-audit-bad-method",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Require a structured toolkit method error; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-illumg-audit-bad-frame",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Observe actual CSPICE body/frame/epoch/correction behavior for bad-frame; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-illumg-audit-wrong-center-frame",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Observe actual CSPICE body/frame/epoch/correction behavior for wrong-center-frame; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-illumg-audit-empty-target",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Observe actual CSPICE body/frame/epoch/correction behavior for empty-target; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-illumg-audit-same-body",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Observe actual CSPICE body/frame/epoch/correction behavior for same-body; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-illumg-audit-outside-coverage",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Observe actual CSPICE body/frame/epoch/correction behavior for outside-coverage; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-illumg-audit-bad-correction",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Observe actual CSPICE body/frame/epoch/correction behavior for bad-correction; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-illumg-audit-dsk-facet",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe a genuine triangle-interior point/normal on the authored DSK; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-illumg-audit-dsk-missing-surface",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Pinned N0067 ILLUMF uses all target DSK surfaces despite a parsed list; other routines require matching data; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-illumg-audit-alternate-source",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Explicitly change the illumination source direction; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-illumg-audit-same-source-target",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "CSPICE permits a source at the target center; observe complete angles and applicable flags; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-illumg-audit-unknown-source",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Unknown source name requires an actual toolkit ID error; the complete requested raw result reaches the live comparison."
         }
       ],
@@ -23689,9 +23385,7 @@
             "packages/backend-wasm/test/geometry-allocations.test.ts",
             "packages/backend-wasm/src/domains/geometry.ts"
           ],
-          "caseIds": [
-            "geometry-illumg-audit-correction-lt"
-          ]
+          "caseIds": ["geometry-illumg-audit-correction-lt"]
         },
         {
           "id": "illumg-typed-numeric-boundary",
@@ -23703,9 +23397,7 @@
             "packages/backend-node/src/domains/geometry.ts",
             "packages/backend-wasm/src/domains/geometry.ts"
           ],
-          "caseIds": [
-            "geometry-illumg-audit-correction-lt"
-          ]
+          "caseIds": ["geometry-illumg-audit-correction-lt"]
         }
       ],
       "backends": {
@@ -23763,209 +23455,137 @@
       "scenarios": [
         {
           "caseId": "geometry-illumf-happy-path-success",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "illumf ellipsoid illumination + visibility flags at stable Moon surface point; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-illumf-invalid-method-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Representative illumf method syntax error; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-illumf-audit-correction-lt",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe complete point/vector/angles/flags and target surface epoch for LT; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-illumf-audit-correction-lt-s",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe complete point/vector/angles/flags and target surface epoch for LT+S; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-illumf-audit-correction-cn",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe complete point/vector/angles/flags and target surface epoch for CN; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-illumf-audit-correction-cn-s",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe complete point/vector/angles/flags and target surface epoch for CN+S; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-illumf-audit-correction-xlt",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe complete point/vector/angles/flags and target surface epoch for XLT; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-illumf-audit-correction-xlt-s",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe complete point/vector/angles/flags and target surface epoch for XLT+S; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-illumf-audit-correction-xcn",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe complete point/vector/angles/flags and target surface epoch for XCN; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-illumf-audit-correction-xcn-s",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe complete point/vector/angles/flags and target surface epoch for XCN+S; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-illumf-audit-different-epoch",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe full geometry at a negative nonzero TDB epoch and moving observer; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-illumf-audit-bad-method",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Require a structured toolkit method error; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-illumf-audit-bad-frame",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Observe actual CSPICE body/frame/epoch/correction behavior for bad-frame; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-illumf-audit-wrong-center-frame",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Observe actual CSPICE body/frame/epoch/correction behavior for wrong-center-frame; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-illumf-audit-empty-target",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Observe actual CSPICE body/frame/epoch/correction behavior for empty-target; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-illumf-audit-same-body",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Observe actual CSPICE body/frame/epoch/correction behavior for same-body; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-illumf-audit-outside-coverage",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Observe actual CSPICE body/frame/epoch/correction behavior for outside-coverage; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-illumf-audit-bad-correction",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Observe actual CSPICE body/frame/epoch/correction behavior for bad-correction; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-illumf-audit-dsk-facet",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe a genuine triangle-interior point/normal on the authored DSK; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-illumf-audit-dsk-missing-surface",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Pinned N0067 ILLUMF uses all target DSK surfaces despite a parsed list; other routines require matching data; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-illumf-audit-alternate-source",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Explicitly change the illumination source direction; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-illumf-audit-same-source-target",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "CSPICE permits a source at the target center; observe complete angles and applicable flags; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-illumf-audit-unknown-source",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Unknown source name requires an actual toolkit ID error; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-illumf-audit-flags-3-sun",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe both visibility and lighting flags, including all four combinations; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-illumf-audit-flags-3-100106",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe both visibility and lighting flags, including all four combinations; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-illumf-audit-flags--3-sun",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe both visibility and lighting flags, including all four combinations; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-illumf-audit-flags--3-100106",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe both visibility and lighting flags, including all four combinations; the complete requested raw result reaches the live comparison."
         }
       ],
@@ -24053,9 +23673,7 @@
             "packages/backend-wasm/test/geometry-allocations.test.ts",
             "packages/backend-wasm/src/domains/geometry.ts"
           ],
-          "caseIds": [
-            "geometry-illumf-audit-correction-lt"
-          ]
+          "caseIds": ["geometry-illumf-audit-correction-lt"]
         },
         {
           "id": "illumf-typed-numeric-boundary",
@@ -24067,9 +23685,7 @@
             "packages/backend-node/src/domains/geometry.ts",
             "packages/backend-wasm/src/domains/geometry.ts"
           ],
-          "caseIds": [
-            "geometry-illumf-audit-correction-lt"
-          ]
+          "caseIds": ["geometry-illumf-audit-correction-lt"]
         },
         {
           "id": "illumf-pinned-surface-list-semantics",
@@ -24142,250 +23758,162 @@
       "scenarios": [
         {
           "caseId": "geometry-occult-eclipse-code-success",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "occult returns non-zero eclipse code for Moon vs Sun from Earth at 2024-04-08; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-occult-invalid-shape-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Representative occult method syntax error on unsupported target shape; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-occult-audit-total",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Independently verified literal occultation code 3; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-occult-audit-partial",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Independently verified literal occultation code 1; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-occult-audit-none",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Independently verified literal occultation code 0; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-occult-audit-annular",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Independently verified literal occultation code 2; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-occult-audit-reverse-total",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Independently verified literal occultation code -3; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-occult-audit-reverse-partial",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Independently verified literal occultation code -1; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-occult-audit-reverse-annular",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Independently verified literal occultation code -2; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-occult-audit-point-target",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "A point-like background target uses an ignored nonempty frame; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-occult-audit-dsk-point",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Actual DSK silhouette against a point target; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-occult-audit-correction-lt",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe actual occultation correction parsing for LT; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-occult-audit-correction-lt-s",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe actual occultation correction parsing for LT+S; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-occult-audit-correction-cn",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe actual occultation correction parsing for CN; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-occult-audit-correction-cn-s",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe actual occultation correction parsing for CN+S; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-occult-audit-correction-xlt",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe actual occultation correction parsing for XLT; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-occult-audit-correction-xlt-s",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe actual occultation correction parsing for XLT+S; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-occult-audit-correction-xcn",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe actual occultation correction parsing for XCN; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-occult-audit-correction-xcn-s",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe actual occultation correction parsing for XCN+S; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-occult-audit-both-points",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Require actual structured error for both-points; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-occult-audit-same-targets",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Require actual structured error for same-targets; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-occult-audit-bad-shape",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Require actual structured error for bad-shape; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-occult-audit-bad-correction",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Require actual structured error for bad-correction; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-occult-audit-unknown-observer",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Require actual structured error for unknown-observer; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-occult-audit-empty-name",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Require actual structured error for empty-name; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-occult-audit-outside-coverage",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Require actual structured error for outside-coverage; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-occult-audit-contact-before-none",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "At analytic apparent-limb contact plus -5e-05s, NONE must produce literal code 3, distinguishing light-time behavior; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-occult-audit-contact-before-xlt",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "At analytic apparent-limb contact plus -5e-05s, XLT must produce literal code 0, distinguishing light-time behavior; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-occult-audit-contact-before-xcn",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "At analytic apparent-limb contact plus -5e-05s, XCN must produce literal code 0, distinguishing light-time behavior; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-occult-audit-contact-after-none",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "At analytic apparent-limb contact plus 5e-05s, NONE must produce literal code 0, distinguishing light-time behavior; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-occult-audit-contact-after-lt",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "At analytic apparent-limb contact plus 5e-05s, LT must produce literal code 3, distinguishing light-time behavior; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-occult-audit-contact-after-cn",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "At analytic apparent-limb contact plus 5e-05s, CN must produce literal code 3, distinguishing light-time behavior; the complete requested raw result reaches the live comparison."
         }
       ],
@@ -24478,9 +24006,7 @@
             "packages/backend-wasm/test/geometry-allocations.test.ts",
             "packages/backend-wasm/src/domains/geometry.ts"
           ],
-          "caseIds": [
-            "geometry-occult-audit-total"
-          ]
+          "caseIds": ["geometry-occult-audit-total"]
         },
         {
           "id": "occult-typed-numeric-boundary",
@@ -24492,9 +24018,7 @@
             "packages/backend-node/src/domains/geometry.ts",
             "packages/backend-wasm/src/domains/geometry.ts"
           ],
-          "caseIds": [
-            "geometry-occult-audit-total"
-          ]
+          "caseIds": ["geometry-occult-audit-total"]
         }
       ],
       "backends": {
@@ -24552,72 +24076,47 @@
       "scenarios": [
         {
           "caseId": "geometry-nvc2pl-happy-path-success",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "nvc2pl normalizes non-unit normal and computes scaled plane constant; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-nvc2pl-zero-vector-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Representative nvc2pl zero-normal vector error; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-nvc2pl-audit-canonical-0",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe every canonical plane word or decoded unit normal/constant; serialized input is produced by actual CSPICE NVC2PL; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-nvc2pl-audit-canonical-1",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe every canonical plane word or decoded unit normal/constant; serialized input is produced by actual CSPICE NVC2PL; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-nvc2pl-audit-canonical-2",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe every canonical plane word or decoded unit normal/constant; serialized input is produced by actual CSPICE NVC2PL; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-nvc2pl-audit-canonical-3",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe every canonical plane word or decoded unit normal/constant; serialized input is produced by actual CSPICE NVC2PL; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-nvc2pl-audit-canonical-4",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe every canonical plane word or decoded unit normal/constant; serialized input is produced by actual CSPICE NVC2PL; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-nvc2pl-audit-canonical-5",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe every canonical plane word or decoded unit normal/constant; serialized input is produced by actual CSPICE NVC2PL; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-nvc2pl-audit-zero-normal",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Require actual ZEROVECTOR for an undefined plane normal; the complete requested raw result reaches the live comparison."
         }
       ],
@@ -24656,9 +24155,7 @@
             "packages/backend-wasm/test/geometry-allocations.test.ts",
             "packages/backend-wasm/src/domains/geometry.ts"
           ],
-          "caseIds": [
-            "geometry-nvc2pl-audit-canonical-0"
-          ]
+          "caseIds": ["geometry-nvc2pl-audit-canonical-0"]
         }
       ],
       "backends": {
@@ -24716,58 +24213,37 @@
       "scenarios": [
         {
           "caseId": "geometry-pl2nvc-happy-path-success",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "pl2nvc decodes normalized plane representation into normal + constant; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-pl2nvc-audit-canonical-0",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe every canonical plane word or decoded unit normal/constant; serialized input is produced by actual CSPICE NVC2PL; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-pl2nvc-audit-canonical-1",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe every canonical plane word or decoded unit normal/constant; serialized input is produced by actual CSPICE NVC2PL; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-pl2nvc-audit-canonical-2",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe every canonical plane word or decoded unit normal/constant; serialized input is produced by actual CSPICE NVC2PL; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-pl2nvc-audit-canonical-3",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe every canonical plane word or decoded unit normal/constant; serialized input is produced by actual CSPICE NVC2PL; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-pl2nvc-audit-canonical-4",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe every canonical plane word or decoded unit normal/constant; serialized input is produced by actual CSPICE NVC2PL; the complete requested raw result reaches the live comparison."
         },
         {
           "caseId": "geometry-pl2nvc-audit-canonical-5",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe every canonical plane word or decoded unit normal/constant; serialized input is produced by actual CSPICE NVC2PL; the complete requested raw result reaches the live comparison."
         }
       ],
@@ -24805,9 +24281,7 @@
             "packages/backend-wasm/test/geometry-allocations.test.ts",
             "packages/backend-wasm/src/domains/geometry.ts"
           ],
-          "caseIds": [
-            "geometry-pl2nvc-audit-canonical-0"
-          ]
+          "caseIds": ["geometry-pl2nvc-audit-canonical-0"]
         }
       ],
       "backends": {

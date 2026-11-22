@@ -172,8 +172,6 @@ export function stateDerivativeTypes(sync: Spice, async: SpiceAsync): void {
   void [unitCross, cross, dot, unit, norm, separation];
 }
 
-
-
 /** Check readonly polynomial inputs and every result field without DOM types. */
 export async function polynomialConsumer(
   spice: Spice,
@@ -233,8 +231,6 @@ export async function polynomialConsumer(
     asyncRoots,
   ];
 }
-
-
 
 /** Check readonly interpolation inputs and result fields without DOM types. */
 export async function interpolationConsumer(

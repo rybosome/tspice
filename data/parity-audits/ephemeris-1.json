@@ -7734,56 +7734,37 @@
       "scenarios": [
         {
           "caseId": "ephemeris-spkopn-create-file-success",
-          "coverage": [
-            "success"
-          ],
+          "coverage": ["success"],
           "observes": "spkopn creates a writable SPK and registers its logical handle Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
         },
         {
           "caseId": "ephemeris-spkopn-existing-file-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "spkopn fails when attempting to create an SPK that already exists Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
         },
         {
           "caseId": "ephemeris-spkopn-audit-negative-comments",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe actual created type8 state and complete descriptor after close; negative comment counts follow CSPICE zero-default, positive reservations and blank/full internal names remain meaningful file inputs. Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
         },
         {
           "caseId": "ephemeris-spkopn-audit-reserved-comments",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe actual created type8 state and complete descriptor after close; negative comment counts follow CSPICE zero-default, positive reservations and blank/full internal names remain meaningful file inputs. Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
         },
         {
           "caseId": "ephemeris-spkopn-audit-blank-internal-name",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe actual created type8 state and complete descriptor after close; negative comment counts follow CSPICE zero-default, positive reservations and blank/full internal names remain meaningful file inputs. Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
         },
         {
           "caseId": "ephemeris-spkopn-audit-full-internal-name",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe actual created type8 state and complete descriptor after close; negative comment counts follow CSPICE zero-default, positive reservations and blank/full internal names remain meaningful file inputs. Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
         },
         {
           "caseId": "ephemeris-spkopn-audit-empty-internal-name",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Actual empty internal-name error must reach CSPICE EMPTYSTRING, not a generic shim preflight error. Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
         }
       ],
@@ -7906,51 +7887,32 @@
       "scenarios": [
         {
           "caseId": "ephemeris-spkopa-append-segment-success",
-          "coverage": [
-            "success",
-            "state"
-          ],
+          "coverage": ["success", "state"],
           "observes": "spkopa reopens an SPK for append and writes an additional segment Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
         },
         {
           "caseId": "ephemeris-spkopa-missing-file-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "spkopa fails when the target file does not exist Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
         },
         {
           "caseId": "ephemeris-spkopa-audit-append-complete-second-segment",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Actual append preserves the first segment and adds the full second object, metadata, coverage and all state components. Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
         },
         {
           "caseId": "ephemeris-spkopa-audit-missing-file",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Require actual missing-file FILENOTFOUND from append. Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
         },
         {
           "caseId": "ephemeris-spkopa-audit-wrong-daf-type",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "An actual CK DAF is not an SPK append target; require FILEISNOTSPK. Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
         },
         {
           "caseId": "ephemeris-spkopa-audit-loaded-file-conflict",
-          "coverage": [
-            "error",
-            "edge",
-            "state"
-          ],
+          "coverage": ["error", "edge", "state"],
           "observes": "The same physical generated SPK is loaded for read, so append must signal actual FILEOPENCONFLICT. A harness copy must not hide file identity. Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
         }
       ],
@@ -8008,9 +7970,7 @@
             "packages/py-parity-checking/src/run-tspice/domains/kernels.ts",
             "packages/py-parity-checking/src/cases/ephemeris/spkopa.cases.json"
           ],
-          "caseIds": [
-            "ephemeris-spkopa-audit-loaded-file-conflict"
-          ]
+          "caseIds": ["ephemeris-spkopa-audit-loaded-file-conflict"]
         }
       ],
       "backends": {
@@ -8068,35 +8028,22 @@
       "scenarios": [
         {
           "caseId": "ephemeris-spkcls-close-writer-success",
-          "coverage": [
-            "success",
-            "state"
-          ],
+          "coverage": ["success", "state"],
           "observes": "spkcls closes a writer handle so the output can be queried by path Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
         },
         {
           "caseId": "ephemeris-spkcls-missing-handle-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "spkcls errors when the logical handle ID is unknown Harness-local unknown label preflight; does not establish a CSPICE error. Actual owned token/empty-close recovery and physical-disposal tests provide the relevant raw evidence."
         },
         {
           "caseId": "ephemeris-spkcls-audit-empty-error-and-recovery",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Capture only a real structured empty-file NOSEGMENTSFOUND, retain the actual handle, then write/close/reopen/query successfully; a no-op or unrelated error cannot satisfy this success workflow. Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
         },
         {
           "caseId": "ephemeris-spkcls-audit-close-reopen-append",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Successful physical close permits actual append/reclose and complete second-object state/descriptor inspection, rather than comparing a void return. Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
         }
       ],
@@ -8218,184 +8165,117 @@
       "scenarios": [
         {
           "caseId": "ephemeris-spkw08-write-segment-success",
-          "coverage": [
-            "success"
-          ],
+          "coverage": ["success"],
           "observes": "spkw08 writes a type-8 segment that can be queried for coverage Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
         },
         {
           "caseId": "ephemeris-spkw08-invalid-states-length-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "spkw08 errors when states is not a non-empty multiple of six Explicit flat-array preflight on both dispatchers, not intrinsic CSPICE error coverage. A preceding valid segment permits proper file cleanup; separate named real writer errors provide raw evidence."
         },
         {
           "caseId": "ephemeris-spkw08-audit-quadratic-all-components",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Evaluate every authored position/velocity component, light time, exact written IDs, coverage and complete descriptor/identifier after actual write/close; distinguish degree and full segment ID boundaries. Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
         },
         {
           "caseId": "ephemeris-spkw08-audit-minimum-degree-linear",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Evaluate every authored position/velocity component, light time, exact written IDs, coverage and complete descriptor/identifier after actual write/close; distinguish degree and full segment ID boundaries. Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
         },
         {
           "caseId": "ephemeris-spkw08-audit-maximum-degree",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Evaluate every authored position/velocity component, light time, exact written IDs, coverage and complete descriptor/identifier after actual write/close; distinguish degree and full segment ID boundaries. Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
         },
         {
           "caseId": "ephemeris-spkw08-audit-forty-character-id",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Evaluate every authored position/velocity component, light time, exact written IDs, coverage and complete descriptor/identifier after actual write/close; distinguish degree and full segment ID boundaries. Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
         },
         {
           "caseId": "ephemeris-spkw08-audit-forty-id-trailing-blank",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Evaluate every authored position/velocity component, light time, exact written IDs, coverage and complete descriptor/identifier after actual write/close; distinguish degree and full segment ID boundaries. Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
         },
         {
           "caseId": "ephemeris-spkw08-audit-zero-body",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "N0067 SPKW08 accepts this metadata even though SPKPDS has stricter constructor checks; observe actual stored object/descriptor and preserve writer semantics. Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
         },
         {
           "caseId": "ephemeris-spkw08-audit-equal-body-center",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "N0067 SPKW08 accepts this metadata even though SPKPDS has stricter constructor checks; observe actual stored object/descriptor and preserve writer semantics. Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
         },
         {
           "caseId": "ephemeris-spkw08-audit-empty-frame",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Require actual EMPTYSTRING from a writer with an existing valid segment, so error cleanup can close meaningful data rather than orphaning an empty file. Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
         },
         {
           "caseId": "ephemeris-spkw08-audit-empty-segment-id",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Require actual EMPTYSTRING from a writer with an existing valid segment, so error cleanup can close meaningful data rather than orphaning an empty file. Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
         },
         {
           "caseId": "ephemeris-spkw08-audit-long-segment-id",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Require actual SEGIDTOOLONG from a writer with an existing valid segment, so error cleanup can close meaningful data rather than orphaning an empty file. Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
         },
         {
           "caseId": "ephemeris-spkw08-audit-nonprintable-segment-id",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Require actual NONPRINTABLECHARS from a writer with an existing valid segment, so error cleanup can close meaningful data rather than orphaning an empty file. Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
         },
         {
           "caseId": "ephemeris-spkw08-audit-unknown-frame",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Require actual INVALIDREFFRAME from a writer with an existing valid segment, so error cleanup can close meaningful data rather than orphaning an empty file. Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
         },
         {
           "caseId": "ephemeris-spkw08-audit-zero-degree",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Require actual INVALIDDEGREE from a writer with an existing valid segment, so error cleanup can close meaningful data rather than orphaning an empty file. Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
         },
         {
           "caseId": "ephemeris-spkw08-audit-large-degree",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Require actual INVALIDDEGREE from a writer with an existing valid segment, so error cleanup can close meaningful data rather than orphaning an empty file. Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
         },
         {
           "caseId": "ephemeris-spkw08-audit-too-few-states",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Require actual TOOFEWSTATES from a writer with an existing valid segment, so error cleanup can close meaningful data rather than orphaning an empty file. Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
         },
         {
           "caseId": "ephemeris-spkw08-audit-equal-epochs",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Require actual BADDESCRTIMES from a writer with an existing valid segment, so error cleanup can close meaningful data rather than orphaning an empty file. Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
         },
         {
           "caseId": "ephemeris-spkw08-audit-reversed-epochs",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Require actual BADDESCRTIMES from a writer with an existing valid segment, so error cleanup can close meaningful data rather than orphaning an empty file. Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
         },
         {
           "caseId": "ephemeris-spkw08-audit-zero-step",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Require actual INVALIDSTEPSIZE from a writer with an existing valid segment, so error cleanup can close meaningful data rather than orphaning an empty file. Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
         },
         {
           "caseId": "ephemeris-spkw08-audit-negative-step",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Require actual INVALIDSTEPSIZE from a writer with an existing valid segment, so error cleanup can close meaningful data rather than orphaning an empty file. Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
         },
         {
           "caseId": "ephemeris-spkw08-audit-first-coverage-gap",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Require actual COVERAGEGAP from a writer with an existing valid segment, so error cleanup can close meaningful data rather than orphaning an empty file. Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
         },
         {
           "caseId": "ephemeris-spkw08-audit-last-coverage-gap",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Require actual COVERAGEGAP from a writer with an existing valid segment, so error cleanup can close meaningful data rather than orphaning an empty file. Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
         }
       ],
@@ -8534,65 +8414,42 @@
       "scenarios": [
         {
           "caseId": "ephemeris-spkobj-generated-file-success",
-          "coverage": [
-            "success"
-          ],
+          "coverage": ["success"],
           "observes": "spkobj returns object IDs present in a generated SPK Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
         },
         {
           "caseId": "ephemeris-spkobj-missing-file-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "spkobj fails for a missing SPK path Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
         },
         {
           "caseId": "ephemeris-spkobj-audit-all-objects-and-deduplication",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare every sorted signed object ID from repeated/negative-center segments. Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
         },
         {
           "caseId": "ephemeris-spkobj-audit-union-across-files",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Repeated raw queries append/deduplicate into the same actual set; observe all intermediate and final IDs. Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
         },
         {
           "caseId": "ephemeris-spkobj-audit-empty-zero-capacity",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "An empty SPK has no IDs and permits a genuine zero-capacity output cell. Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
         },
         {
           "caseId": "ephemeris-spkobj-audit-populated-zero-capacity",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Preserve zero capacity and require actual SETEXCESS. Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
         },
         {
           "caseId": "ephemeris-spkobj-audit-insufficient-capacity",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "One slot cannot contain five distinct IDs; require SETEXCESS. Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
         },
         {
           "caseId": "ephemeris-spkobj-audit-wrong-daf-type",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "A CK DAF must fail actual SPK object inspection with INVALIDFILETYPE. Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
         }
       ],
@@ -8713,65 +8570,42 @@
       "scenarios": [
         {
           "caseId": "ephemeris-spkcov-generated-file-success",
-          "coverage": [
-            "success"
-          ],
+          "coverage": ["success"],
           "observes": "spkcov returns coverage intervals for a generated SPK Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
         },
         {
           "caseId": "ephemeris-spkcov-missing-file-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "spkcov fails for a missing SPK path Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
         },
         {
           "caseId": "ephemeris-spkcov-audit-disjoint-intervals",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe all ET-second endpoints of two real segments and the intervening coverage gap. Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
         },
         {
           "caseId": "ephemeris-spkcov-audit-union-merges-gap",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "A competing file covers the gap; existing coverage must be unioned into [-1000,1000], not reset before inspection. Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
         },
         {
           "caseId": "ephemeris-spkcov-audit-absent-object",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "An absent object yields no intervals without a manufactured error. Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
         },
         {
           "caseId": "ephemeris-spkcov-audit-empty-zero-capacity",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Empty SPK coverage fits a genuine zero-capacity window. Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
         },
         {
           "caseId": "ephemeris-spkcov-audit-insufficient-capacity",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "A single interval slot cannot hold two disjoint intervals; require actual WINDOWEXCESS. Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
         },
         {
           "caseId": "ephemeris-spkcov-audit-wrong-daf-type",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Require INVALIDFILETYPE when inspecting a real CK DAF for SPK coverage. Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
         }
       ],
@@ -8831,9 +8665,7 @@
             "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/ephemeris.py",
             "packages/py-parity-checking/src/cases/ephemeris/spkcov.cases.json"
           ],
-          "caseIds": [
-            "ephemeris-spkcov-audit-empty-zero-capacity"
-          ]
+          "caseIds": ["ephemeris-spkcov-audit-empty-zero-capacity"]
         }
       ],
       "backends": {

@@ -1,4 +1,16 @@
-import { matrixDimension, matrixElementCount, checkMatrixProductRows, checkMatrixInputLength, assertSpiceStorageFits, copySpiceStorage, spiceStorageLength, assertMat3ArrayLike9, assertSpiceInt32, brandMat3RowMajor, brandMat3RowMajorResult } from "@rybosome/tspice-core";
+import {
+  matrixDimension,
+  matrixElementCount,
+  checkMatrixProductRows,
+  checkMatrixInputLength,
+  assertSpiceStorageFits,
+  copySpiceStorage,
+  spiceStorageLength,
+  assertMat3ArrayLike9,
+  assertSpiceInt32,
+  brandMat3RowMajor,
+  brandMat3RowMajorResult,
+} from "@rybosome/tspice-core";
 import type {
   CoordsVectorsApi,
   Mat3RowMajor,
@@ -6,21 +18,9 @@ import type {
   SpiceStateVector,
 } from "@rybosome/tspice-backend-contract";
 
-
 import type { EmscriptenModule } from "../lowlevel/exports.js";
 
 import { withAllocs, WASM_MAX_ALLOC_BYTES } from "../codec/alloc.js";
-
-
-
-
-
-
-
-
-
-
-
 
 import { throwWasmSpiceError } from "../codec/errors.js";
 

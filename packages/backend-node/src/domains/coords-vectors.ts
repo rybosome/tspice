@@ -1,10 +1,22 @@
-import { matrixDimension, matrixElementCount, checkMatrixProductRows, checkMatrixInputLength, assertSpiceStorageFits, copySpiceStorage, spiceStorageLength, assertMat3ArrayLike9, assertSpiceInt32, brandMat3RowMajor, brandMat3RowMajorResult, invariant } from "@rybosome/tspice-core";
+import {
+  matrixDimension,
+  matrixElementCount,
+  checkMatrixProductRows,
+  checkMatrixInputLength,
+  assertSpiceStorageFits,
+  copySpiceStorage,
+  spiceStorageLength,
+  assertMat3ArrayLike9,
+  assertSpiceInt32,
+  brandMat3RowMajor,
+  brandMat3RowMajorResult,
+  invariant,
+} from "@rybosome/tspice-core";
 import type {
   CoordsVectorsApi,
   SpiceVector3,
   SpiceStateVector,
 } from "@rybosome/tspice-backend-contract";
-
 
 import type { NativeAddon } from "../runtime/addon.js";
 

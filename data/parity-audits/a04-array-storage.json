@@ -235,63 +235,42 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-clearc-nonzero-rows-and-unchanged-tail",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe every space and NUL across each cleared row and the complete preinitialized suffix, including values unrelated to text."
         },
         {
           "caseId": "coords-vectors-clearc-stride-includes-terminator",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Vary row count and stride and compare all last-byte NUL positions against the actual locked C output."
         },
         {
           "caseId": "coords-vectors-clearc-exact-capacity-and-leading-nuls",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Exercise completely filled storage and storage with early NULs, observing every byte independent of C-string length."
         },
         {
           "caseId": "coords-vectors-clearc-zero-negative-counts",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe no writes at signed nonpositive counts, including widths that would fail for a positive number of rows."
         },
         {
           "caseId": "coords-vectors-clearc-empty-storage-no-write",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Pass valid non-null empty storage with no requested rows and observe an owned empty result."
         },
         {
           "caseId": "coords-vectors-clearc-one-width-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Positive count and width one reach actual STRINGTOOSHORT with the oracle checking surrounding and destination bytes."
         },
         {
           "caseId": "coords-vectors-clearc-zero-width-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Positive count and width zero reach actual STRINGTOOSHORT, separate from the zero-count no-write case."
         },
         {
           "caseId": "coords-vectors-clearc-negative-width-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Positive count and negative signed width reach actual STRINGTOOSHORT with guarded storage."
         }
       ],
@@ -312,9 +291,7 @@
             "packages/py-parity-checking/test/array-storage.test.ts",
             "docs/step8-array-storage.md"
           ],
-          "caseIds": [
-            "coords-vectors-clearc-nonzero-rows-and-unchanged-tail"
-          ]
+          "caseIds": ["coords-vectors-clearc-nonzero-rows-and-unchanged-tail"]
         },
         {
           "id": "single-read-ownership-assertion",
@@ -325,9 +302,7 @@
             "packages/backend-node/test/array-storage-domain.test.ts",
             "docs/step8-array-storage.md"
           ],
-          "caseIds": [
-            "coords-vectors-clearc-nonzero-rows-and-unchanged-tail"
-          ]
+          "caseIds": ["coords-vectors-clearc-nonzero-rows-and-unchanged-tail"]
         }
       ],
       "backends": {
@@ -365,42 +340,27 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-cleard-prefix-and-unchanged-tail",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare the complete initialized array after a prefix write, distinguishing changed entries and every untouched suffix element."
         },
         {
           "caseId": "coords-vectors-cleard-single-and-full-buffer",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Exercise single-element and whole-buffer operations and compare the complete destination length/order."
         },
         {
           "caseId": "coords-vectors-cleard-zero-and-negative-count",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Pass signed nonpositive counts to the canonical loop and observe unchanged initialized storage and its boundary guards."
         },
         {
           "caseId": "coords-vectors-cleard-empty-storage",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe the canonical no-write path on valid non-null empty storage and retain the exact empty-result shape."
         },
         {
           "caseId": "coords-vectors-cleard-extreme-finite-storage",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare maximum/minimum finite or tiny double entries and the full prefix/suffix, with separate focused IEEE checks retaining signs and classes."
         }
       ],
@@ -421,9 +381,7 @@
             "packages/py-parity-checking/test/array-storage.test.ts",
             "docs/step8-array-storage.md"
           ],
-          "caseIds": [
-            "coords-vectors-cleard-prefix-and-unchanged-tail"
-          ]
+          "caseIds": ["coords-vectors-cleard-prefix-and-unchanged-tail"]
         },
         {
           "id": "single-read-ownership-assertion",
@@ -434,9 +392,7 @@
             "packages/backend-node/test/array-storage-domain.test.ts",
             "docs/step8-array-storage.md"
           ],
-          "caseIds": [
-            "coords-vectors-cleard-prefix-and-unchanged-tail"
-          ]
+          "caseIds": ["coords-vectors-cleard-prefix-and-unchanged-tail"]
         }
       ],
       "backends": {
@@ -474,42 +430,27 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-cleari-prefix-and-unchanged-tail",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare the complete initialized array after a prefix write, distinguishing changed entries and every untouched suffix element."
         },
         {
           "caseId": "coords-vectors-cleari-single-and-full-buffer",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Exercise single-element and whole-buffer operations and compare the complete destination length/order."
         },
         {
           "caseId": "coords-vectors-cleari-zero-and-negative-count",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Pass signed nonpositive counts to the canonical loop and observe unchanged initialized storage and its boundary guards."
         },
         {
           "caseId": "coords-vectors-cleari-empty-storage",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe the canonical no-write path on valid non-null empty storage and retain the exact empty-result shape."
         },
         {
           "caseId": "coords-vectors-cleari-signed-int32-limits",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Use actual signed32 extrema as storage or fill values and retain the entire result exactly."
         }
       ],
@@ -530,9 +471,7 @@
             "packages/py-parity-checking/test/array-storage.test.ts",
             "docs/step8-array-storage.md"
           ],
-          "caseIds": [
-            "coords-vectors-cleari-prefix-and-unchanged-tail"
-          ]
+          "caseIds": ["coords-vectors-cleari-prefix-and-unchanged-tail"]
         },
         {
           "id": "single-read-ownership-assertion",
@@ -543,9 +482,7 @@
             "packages/backend-node/test/array-storage-domain.test.ts",
             "docs/step8-array-storage.md"
           ],
-          "caseIds": [
-            "coords-vectors-cleari-prefix-and-unchanged-tail"
-          ]
+          "caseIds": ["coords-vectors-cleari-prefix-and-unchanged-tail"]
         }
       ],
       "backends": {
@@ -583,50 +520,32 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-filld-prefix-and-unchanged-tail",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare the complete initialized array after a prefix write, distinguishing changed entries and every untouched suffix element."
         },
         {
           "caseId": "coords-vectors-filld-single-and-full-buffer",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Exercise single-element and whole-buffer operations and compare the complete destination length/order."
         },
         {
           "caseId": "coords-vectors-filld-zero-and-negative-count",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Pass signed nonpositive counts to the canonical loop and observe unchanged initialized storage and its boundary guards."
         },
         {
           "caseId": "coords-vectors-filld-empty-storage",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe the canonical no-write path on valid non-null empty storage and retain the exact empty-result shape."
         },
         {
           "caseId": "coords-vectors-filld-extreme-finite-storage",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare maximum/minimum finite or tiny double entries and the full prefix/suffix, with separate focused IEEE checks retaining signs and classes."
         },
         {
           "caseId": "coords-vectors-filld-distinct-fill-values",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Vary signed fill values and counts so that source/initial values, written prefix and suffix remain distinguishable."
         }
       ],
@@ -647,9 +566,7 @@
             "packages/py-parity-checking/test/array-storage.test.ts",
             "docs/step8-array-storage.md"
           ],
-          "caseIds": [
-            "coords-vectors-filld-prefix-and-unchanged-tail"
-          ]
+          "caseIds": ["coords-vectors-filld-prefix-and-unchanged-tail"]
         },
         {
           "id": "single-read-ownership-assertion",
@@ -660,9 +577,7 @@
             "packages/backend-node/test/array-storage-domain.test.ts",
             "docs/step8-array-storage.md"
           ],
-          "caseIds": [
-            "coords-vectors-filld-prefix-and-unchanged-tail"
-          ]
+          "caseIds": ["coords-vectors-filld-prefix-and-unchanged-tail"]
         }
       ],
       "backends": {
@@ -700,50 +615,32 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-filli-prefix-and-unchanged-tail",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare the complete initialized array after a prefix write, distinguishing changed entries and every untouched suffix element."
         },
         {
           "caseId": "coords-vectors-filli-single-and-full-buffer",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Exercise single-element and whole-buffer operations and compare the complete destination length/order."
         },
         {
           "caseId": "coords-vectors-filli-zero-and-negative-count",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Pass signed nonpositive counts to the canonical loop and observe unchanged initialized storage and its boundary guards."
         },
         {
           "caseId": "coords-vectors-filli-empty-storage",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe the canonical no-write path on valid non-null empty storage and retain the exact empty-result shape."
         },
         {
           "caseId": "coords-vectors-filli-signed-int32-limits",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Use actual signed32 extrema as storage or fill values and retain the entire result exactly."
         },
         {
           "caseId": "coords-vectors-filli-distinct-fill-values",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Vary signed fill values and counts so that source/initial values, written prefix and suffix remain distinguishable."
         }
       ],
@@ -764,9 +661,7 @@
             "packages/py-parity-checking/test/array-storage.test.ts",
             "docs/step8-array-storage.md"
           ],
-          "caseIds": [
-            "coords-vectors-filli-prefix-and-unchanged-tail"
-          ]
+          "caseIds": ["coords-vectors-filli-prefix-and-unchanged-tail"]
         },
         {
           "id": "single-read-ownership-assertion",
@@ -777,9 +672,7 @@
             "packages/backend-node/test/array-storage-domain.test.ts",
             "docs/step8-array-storage.md"
           ],
-          "caseIds": [
-            "coords-vectors-filli-prefix-and-unchanged-tail"
-          ]
+          "caseIds": ["coords-vectors-filli-prefix-and-unchanged-tail"]
         }
       ],
       "backends": {
@@ -817,42 +710,27 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-moved-disjoint-source-and-destination",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Copy between independently initialized arrays and compare the complete destination, including suffix and differing source entries."
         },
         {
           "caseId": "coords-vectors-moved-unequal-lengths",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Use different lengths with a valid prefix that fits both arrays, retaining the destination-length result."
         },
         {
           "caseId": "coords-vectors-moved-zero-with-empty-or-nonempty",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Call actual moved with zero count and non-null valid storage, including empty/nonempty source and destination; retain the complete destination."
         },
         {
           "caseId": "coords-vectors-moved-distinguishing-order",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Use distinct ordered values to expose reversal, source/destination confusion and accidentally copying the wrong prefix."
         },
         {
           "caseId": "coords-vectors-moved-extreme-finite-storage",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare maximum/minimum finite or tiny double entries and the full prefix/suffix, with separate focused IEEE checks retaining signs and classes."
         }
       ],
@@ -873,9 +751,7 @@
             "packages/py-parity-checking/test/array-storage.test.ts",
             "docs/step8-array-storage.md"
           ],
-          "caseIds": [
-            "coords-vectors-moved-disjoint-source-and-destination"
-          ]
+          "caseIds": ["coords-vectors-moved-disjoint-source-and-destination"]
         },
         {
           "id": "pinned-negative-move-count",
@@ -902,9 +778,7 @@
             "packages/backend-node/test/array-storage-domain.test.ts",
             "docs/step8-array-storage.md"
           ],
-          "caseIds": [
-            "coords-vectors-moved-disjoint-source-and-destination"
-          ]
+          "caseIds": ["coords-vectors-moved-disjoint-source-and-destination"]
         }
       ],
       "backends": {

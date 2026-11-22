@@ -466,42 +466,27 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-cyllat-mixed-signs",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "cyllat: mixed-signs; compare all three raw output components with the corresponding live SpiceyPy routine. Every actual raw output scalar/vector component is retained by the dispatcher and compared with the corresponding live SpiceyPy routine, preserving object field/array order semantics."
         },
         {
           "caseId": "coords-vectors-cyllat-axis-and-origin",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "cyllat: axis-and-origin; compare all three raw output components with the corresponding live SpiceyPy routine. Every actual raw output scalar/vector component is retained by the dispatcher and compared with the corresponding live SpiceyPy routine, preserving object field/array order semantics."
         },
         {
           "caseId": "coords-vectors-cyllat-negative-radius",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "cyllat: negative-radius; compare all three raw output components with the corresponding live SpiceyPy routine. Every actual raw output scalar/vector component is retained by the dispatcher and compared with the corresponding live SpiceyPy routine, preserving object field/array order semantics."
         },
         {
           "caseId": "coords-vectors-cyllat-unwrapped-longitude",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "cyllat: unwrapped-longitude; compare all three raw output components with the corresponding live SpiceyPy routine. Every actual raw output scalar/vector component is retained by the dispatcher and compared with the corresponding live SpiceyPy routine, preserving object field/array order semantics."
         },
         {
           "caseId": "coords-vectors-cyllat-scaled-magnitudes",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "cyllat: scaled-magnitudes; compare all three raw output components with the corresponding live SpiceyPy routine. Every actual raw output scalar/vector component is retained by the dispatcher and compared with the corresponding live SpiceyPy routine, preserving object field/array order semantics."
         }
       ],
@@ -549,42 +534,27 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-cylrec-mixed-signs",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "cylrec: mixed-signs; compare all three raw output components with the corresponding live SpiceyPy routine. Every actual raw output scalar/vector component is retained by the dispatcher and compared with the corresponding live SpiceyPy routine, preserving object field/array order semantics."
         },
         {
           "caseId": "coords-vectors-cylrec-axis-and-origin",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "cylrec: axis-and-origin; compare all three raw output components with the corresponding live SpiceyPy routine. Every actual raw output scalar/vector component is retained by the dispatcher and compared with the corresponding live SpiceyPy routine, preserving object field/array order semantics."
         },
         {
           "caseId": "coords-vectors-cylrec-negative-radius",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "cylrec: negative-radius; compare all three raw output components with the corresponding live SpiceyPy routine. Every actual raw output scalar/vector component is retained by the dispatcher and compared with the corresponding live SpiceyPy routine, preserving object field/array order semantics."
         },
         {
           "caseId": "coords-vectors-cylrec-unwrapped-longitude",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "cylrec: unwrapped-longitude; compare all three raw output components with the corresponding live SpiceyPy routine. Every actual raw output scalar/vector component is retained by the dispatcher and compared with the corresponding live SpiceyPy routine, preserving object field/array order semantics."
         },
         {
           "caseId": "coords-vectors-cylrec-scaled-magnitudes",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "cylrec: scaled-magnitudes; compare all three raw output components with the corresponding live SpiceyPy routine. Every actual raw output scalar/vector component is retained by the dispatcher and compared with the corresponding live SpiceyPy routine, preserving object field/array order semantics."
         }
       ],
@@ -632,42 +602,27 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-cylsph-mixed-signs",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "cylsph: mixed-signs; compare all three raw output components with the corresponding live SpiceyPy routine. Every actual raw output scalar/vector component is retained by the dispatcher and compared with the corresponding live SpiceyPy routine, preserving object field/array order semantics."
         },
         {
           "caseId": "coords-vectors-cylsph-axis-and-origin",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "cylsph: axis-and-origin; compare all three raw output components with the corresponding live SpiceyPy routine. Every actual raw output scalar/vector component is retained by the dispatcher and compared with the corresponding live SpiceyPy routine, preserving object field/array order semantics."
         },
         {
           "caseId": "coords-vectors-cylsph-negative-radius",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "cylsph: negative-radius; compare all three raw output components with the corresponding live SpiceyPy routine. Every actual raw output scalar/vector component is retained by the dispatcher and compared with the corresponding live SpiceyPy routine, preserving object field/array order semantics."
         },
         {
           "caseId": "coords-vectors-cylsph-unwrapped-longitude",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "cylsph: unwrapped-longitude; compare all three raw output components with the corresponding live SpiceyPy routine. Every actual raw output scalar/vector component is retained by the dispatcher and compared with the corresponding live SpiceyPy routine, preserving object field/array order semantics."
         },
         {
           "caseId": "coords-vectors-cylsph-scaled-magnitudes",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "cylsph: scaled-magnitudes; compare all three raw output components with the corresponding live SpiceyPy routine. Every actual raw output scalar/vector component is retained by the dispatcher and compared with the corresponding live SpiceyPy routine, preserving object field/array order semantics."
         }
       ],
@@ -715,42 +670,27 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-latcyl-mixed-signs",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "latcyl: mixed-signs; compare all three raw output components with the corresponding live SpiceyPy routine. Every actual raw output scalar/vector component is retained by the dispatcher and compared with the corresponding live SpiceyPy routine, preserving object field/array order semantics."
         },
         {
           "caseId": "coords-vectors-latcyl-zero-and-poles",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "latcyl: zero-and-poles; compare all three raw output components with the corresponding live SpiceyPy routine. Every actual raw output scalar/vector component is retained by the dispatcher and compared with the corresponding live SpiceyPy routine, preserving object field/array order semantics."
         },
         {
           "caseId": "coords-vectors-latcyl-negative-radius",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "latcyl: negative-radius; compare all three raw output components with the corresponding live SpiceyPy routine. Every actual raw output scalar/vector component is retained by the dispatcher and compared with the corresponding live SpiceyPy routine, preserving object field/array order semantics."
         },
         {
           "caseId": "coords-vectors-latcyl-unwrapped-angles",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "latcyl: unwrapped-angles; compare all three raw output components with the corresponding live SpiceyPy routine. Every actual raw output scalar/vector component is retained by the dispatcher and compared with the corresponding live SpiceyPy routine, preserving object field/array order semantics."
         },
         {
           "caseId": "coords-vectors-latcyl-scaled-magnitudes",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "latcyl: scaled-magnitudes; compare all three raw output components with the corresponding live SpiceyPy routine. Every actual raw output scalar/vector component is retained by the dispatcher and compared with the corresponding live SpiceyPy routine, preserving object field/array order semantics."
         }
       ],
@@ -798,42 +738,27 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-latsph-mixed-signs",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "latsph: mixed-signs; compare all three raw output components with the corresponding live SpiceyPy routine. Every actual raw output scalar/vector component is retained by the dispatcher and compared with the corresponding live SpiceyPy routine, preserving object field/array order semantics."
         },
         {
           "caseId": "coords-vectors-latsph-zero-and-poles",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "latsph: zero-and-poles; compare all three raw output components with the corresponding live SpiceyPy routine. Every actual raw output scalar/vector component is retained by the dispatcher and compared with the corresponding live SpiceyPy routine, preserving object field/array order semantics."
         },
         {
           "caseId": "coords-vectors-latsph-negative-radius",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "latsph: negative-radius; compare all three raw output components with the corresponding live SpiceyPy routine. Every actual raw output scalar/vector component is retained by the dispatcher and compared with the corresponding live SpiceyPy routine, preserving object field/array order semantics."
         },
         {
           "caseId": "coords-vectors-latsph-unwrapped-angles",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "latsph: unwrapped-angles; compare all three raw output components with the corresponding live SpiceyPy routine. Every actual raw output scalar/vector component is retained by the dispatcher and compared with the corresponding live SpiceyPy routine, preserving object field/array order semantics."
         },
         {
           "caseId": "coords-vectors-latsph-scaled-magnitudes",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "latsph: scaled-magnitudes; compare all three raw output components with the corresponding live SpiceyPy routine. Every actual raw output scalar/vector component is retained by the dispatcher and compared with the corresponding live SpiceyPy routine, preserving object field/array order semantics."
         }
       ],
@@ -881,42 +806,27 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-reccyl-four-quadrants",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "reccyl: four-quadrants; compare all three raw output components with the corresponding live SpiceyPy routine. Every actual raw output scalar/vector component is retained by the dispatcher and compared with the corresponding live SpiceyPy routine, preserving object field/array order semantics."
         },
         {
           "caseId": "coords-vectors-reccyl-axis-and-origin",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "reccyl: axis-and-origin; compare all three raw output components with the corresponding live SpiceyPy routine. Every actual raw output scalar/vector component is retained by the dispatcher and compared with the corresponding live SpiceyPy routine, preserving object field/array order semantics."
         },
         {
           "caseId": "coords-vectors-reccyl-longitude-boundaries",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "reccyl: longitude-boundaries; compare all three raw output components with the corresponding live SpiceyPy routine. Every actual raw output scalar/vector component is retained by the dispatcher and compared with the corresponding live SpiceyPy routine, preserving object field/array order semantics."
         },
         {
           "caseId": "coords-vectors-reccyl-asymmetric-components",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "reccyl: asymmetric-components; compare all three raw output components with the corresponding live SpiceyPy routine. Every actual raw output scalar/vector component is retained by the dispatcher and compared with the corresponding live SpiceyPy routine, preserving object field/array order semantics."
         },
         {
           "caseId": "coords-vectors-reccyl-scaled-magnitudes",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "reccyl: scaled-magnitudes; compare all three raw output components with the corresponding live SpiceyPy routine. Every actual raw output scalar/vector component is retained by the dispatcher and compared with the corresponding live SpiceyPy routine, preserving object field/array order semantics."
         }
       ],
@@ -937,9 +847,7 @@
             "packages/backend-wasm/src/domains/coords-vectors.ts",
             "packages/py-parity-checking/test/owned-numeric-inputs.test.ts"
           ],
-          "caseIds": [
-            "coords-vectors-reccyl-four-quadrants"
-          ]
+          "caseIds": ["coords-vectors-reccyl-four-quadrants"]
         }
       ],
       "backends": {
@@ -981,42 +889,27 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-sphcyl-mixed-signs",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "sphcyl: mixed-signs; compare all three raw output components with the corresponding live SpiceyPy routine. Every actual raw output scalar/vector component is retained by the dispatcher and compared with the corresponding live SpiceyPy routine, preserving object field/array order semantics."
         },
         {
           "caseId": "coords-vectors-sphcyl-zero-and-poles",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "sphcyl: zero-and-poles; compare all three raw output components with the corresponding live SpiceyPy routine. Every actual raw output scalar/vector component is retained by the dispatcher and compared with the corresponding live SpiceyPy routine, preserving object field/array order semantics."
         },
         {
           "caseId": "coords-vectors-sphcyl-negative-radius",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "sphcyl: negative-radius; compare all three raw output components with the corresponding live SpiceyPy routine. Every actual raw output scalar/vector component is retained by the dispatcher and compared with the corresponding live SpiceyPy routine, preserving object field/array order semantics."
         },
         {
           "caseId": "coords-vectors-sphcyl-unwrapped-angles",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "sphcyl: unwrapped-angles; compare all three raw output components with the corresponding live SpiceyPy routine. Every actual raw output scalar/vector component is retained by the dispatcher and compared with the corresponding live SpiceyPy routine, preserving object field/array order semantics."
         },
         {
           "caseId": "coords-vectors-sphcyl-scaled-magnitudes",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "sphcyl: scaled-magnitudes; compare all three raw output components with the corresponding live SpiceyPy routine. Every actual raw output scalar/vector component is retained by the dispatcher and compared with the corresponding live SpiceyPy routine, preserving object field/array order semantics."
         }
       ],
@@ -1064,42 +957,27 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-sphlat-mixed-signs",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "sphlat: mixed-signs; compare all three raw output components with the corresponding live SpiceyPy routine. Every actual raw output scalar/vector component is retained by the dispatcher and compared with the corresponding live SpiceyPy routine, preserving object field/array order semantics."
         },
         {
           "caseId": "coords-vectors-sphlat-zero-and-poles",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "sphlat: zero-and-poles; compare all three raw output components with the corresponding live SpiceyPy routine. Every actual raw output scalar/vector component is retained by the dispatcher and compared with the corresponding live SpiceyPy routine, preserving object field/array order semantics."
         },
         {
           "caseId": "coords-vectors-sphlat-negative-radius",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "sphlat: negative-radius; compare all three raw output components with the corresponding live SpiceyPy routine. Every actual raw output scalar/vector component is retained by the dispatcher and compared with the corresponding live SpiceyPy routine, preserving object field/array order semantics."
         },
         {
           "caseId": "coords-vectors-sphlat-unwrapped-angles",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "sphlat: unwrapped-angles; compare all three raw output components with the corresponding live SpiceyPy routine. Every actual raw output scalar/vector component is retained by the dispatcher and compared with the corresponding live SpiceyPy routine, preserving object field/array order semantics."
         },
         {
           "caseId": "coords-vectors-sphlat-scaled-magnitudes",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "sphlat: scaled-magnitudes; compare all three raw output components with the corresponding live SpiceyPy routine. Every actual raw output scalar/vector component is retained by the dispatcher and compared with the corresponding live SpiceyPy routine, preserving object field/array order semantics."
         }
       ],

@@ -344,50 +344,32 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-mequg-unequal-rectangles",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Read every row-major element of asymmetric 2×3 and 3×2 inputs backed by the same six values."
         },
         {
           "caseId": "coords-vectors-mequg-row-column-scalar",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Exercise separately allocated singletons, one row, one column and a strongly nonsymmetric square."
         },
         {
           "caseId": "coords-vectors-mequg-stride-and-interior-cycles",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "A 3×5 rectangle with unique interior values distinguishes row stride and transpose cycles."
         },
         {
           "caseId": "coords-vectors-mequg-growing-and-shrinking",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Alternate sizes including empty to detect retained results from prior calls."
         },
         {
           "caseId": "coords-vectors-mequg-empty-axes",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Call the real routine for zero rows, zero columns and both zero with initialized sentinel storage."
         },
         {
           "caseId": "coords-vectors-mequg-small-and-large",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Preserve complete tiny, large and ordinary entries when copying or transposing."
         }
       ],
@@ -403,9 +385,7 @@
           "summary": "SpiceyPy 6.0.3 swaps nr and nc in its MEQUG call. Their product preserves ordinary copy length, hiding the ordering issue. Its nested NumPy signature also does not retain the full exposed rectangular empty-shape domain.",
           "repair": "Call the reviewed independent mequg_c ABI in C argument order with owned non-null storage. Separately compare a positive nonsquare call with the ordinary wrapper byte for byte, including negative zero.",
           "status": "repaired",
-          "caseIds": [
-            "coords-vectors-mequg-empty-axes"
-          ],
+          "caseIds": ["coords-vectors-mequg-empty-axes"],
           "evidence": [
             "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/general_matrix_oracle.py",
             "packages/py-parity-checking/test/general-matrices.test.ts",
@@ -448,74 +428,47 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-mtxmg-unequal-rectangles",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe all outputs from asymmetric unequal extents, including different signs, unequal left/right factors and row-major strides."
         },
         {
           "caseId": "coords-vectors-mtxmg-scalar-row-and-column",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Exercise a scalar product, a single output row and a length-one contraction with differing magnitudes and signs."
         },
         {
           "caseId": "coords-vectors-mtxmg-row-selection",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Sparse and permuted basis rows isolate two indices of the input independently."
         },
         {
           "caseId": "coords-vectors-mtxmg-ordered-cancellation",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "A unit term beside 2⁵³ rounds away before cancellation, distinguishing the ordered dot product from a reordered sum."
         },
         {
           "caseId": "coords-vectors-mtxmg-scaled-fractions",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Mixed dyadic and small-magnitude factors exercise every contracted component without rounding-sensitive cancellation."
         },
         {
           "caseId": "coords-vectors-mtxmg-zero-contraction",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Zero inner extent with nonzero outer dimensions produces a complete zero output; the independent canonical call receives allocated input sentinels."
         },
         {
           "caseId": "coords-vectors-mtxmg-zero-outer",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Zero output rows and both zero dimensions retain the explicit shape in the actual toolkit call."
         },
         {
           "caseId": "coords-vectors-mtxmg-zero-columns",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Zero right-hand output width has an empty result even with nonempty left storage and inner extent."
         },
         {
           "caseId": "coords-vectors-mtxmg-negative-inner",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "The pinned routine performs an empty contraction for a negative inner dimension, writing exact zeros for all output rows and columns."
         }
       ],
@@ -578,58 +531,37 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-mtxvg-unequal-rectangles",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe all outputs from asymmetric unequal extents, including different signs, unequal left/right factors and row-major strides."
         },
         {
           "caseId": "coords-vectors-mtxvg-scalar-row-and-column",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Exercise a scalar product, a single output row and a length-one contraction with differing magnitudes and signs."
         },
         {
           "caseId": "coords-vectors-mtxvg-row-selection",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Sparse and permuted basis rows isolate two indices of the input independently."
         },
         {
           "caseId": "coords-vectors-mtxvg-ordered-cancellation",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "A unit term beside 2⁵³ rounds away before cancellation, distinguishing the ordered dot product from a reordered sum."
         },
         {
           "caseId": "coords-vectors-mtxvg-scaled-fractions",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Mixed dyadic and small-magnitude factors exercise every contracted component without rounding-sensitive cancellation."
         },
         {
           "caseId": "coords-vectors-mtxvg-zero-contraction",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Zero inner extent with nonzero outer dimensions produces a complete zero output; the independent canonical call receives allocated input sentinels."
         },
         {
           "caseId": "coords-vectors-mtxvg-zero-outer",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Zero output rows and both zero dimensions retain the explicit shape in the actual toolkit call."
         }
       ],
@@ -691,74 +623,47 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-mxmg-unequal-rectangles",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe all outputs from asymmetric unequal extents, including different signs, unequal left/right factors and row-major strides."
         },
         {
           "caseId": "coords-vectors-mxmg-scalar-row-and-column",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Exercise a scalar product, a single output row and a length-one contraction with differing magnitudes and signs."
         },
         {
           "caseId": "coords-vectors-mxmg-row-selection",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Sparse and permuted basis rows isolate two indices of the input independently."
         },
         {
           "caseId": "coords-vectors-mxmg-ordered-cancellation",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "A unit term beside 2⁵³ rounds away before cancellation, distinguishing the ordered dot product from a reordered sum."
         },
         {
           "caseId": "coords-vectors-mxmg-scaled-fractions",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Mixed dyadic and small-magnitude factors exercise every contracted component without rounding-sensitive cancellation."
         },
         {
           "caseId": "coords-vectors-mxmg-zero-contraction",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Zero inner extent with nonzero outer dimensions produces a complete zero output; the independent canonical call receives allocated input sentinels."
         },
         {
           "caseId": "coords-vectors-mxmg-zero-outer",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Zero output rows and both zero dimensions retain the explicit shape in the actual toolkit call."
         },
         {
           "caseId": "coords-vectors-mxmg-zero-columns",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Zero right-hand output width has an empty result even with nonempty left storage and inner extent."
         },
         {
           "caseId": "coords-vectors-mxmg-negative-inner",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "The pinned routine performs an empty contraction for a negative inner dimension, writing exact zeros for all output rows and columns."
         }
       ],
@@ -821,66 +726,42 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-mxmtg-unequal-rectangles",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe all outputs from asymmetric unequal extents, including different signs, unequal left/right factors and row-major strides."
         },
         {
           "caseId": "coords-vectors-mxmtg-scalar-row-and-column",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Exercise a scalar product, a single output row and a length-one contraction with differing magnitudes and signs."
         },
         {
           "caseId": "coords-vectors-mxmtg-row-selection",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Sparse and permuted basis rows isolate two indices of the input independently."
         },
         {
           "caseId": "coords-vectors-mxmtg-ordered-cancellation",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "A unit term beside 2⁵³ rounds away before cancellation, distinguishing the ordered dot product from a reordered sum."
         },
         {
           "caseId": "coords-vectors-mxmtg-scaled-fractions",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Mixed dyadic and small-magnitude factors exercise every contracted component without rounding-sensitive cancellation."
         },
         {
           "caseId": "coords-vectors-mxmtg-zero-contraction",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Zero inner extent with nonzero outer dimensions produces a complete zero output; the independent canonical call receives allocated input sentinels."
         },
         {
           "caseId": "coords-vectors-mxmtg-zero-outer",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Zero output rows and both zero dimensions retain the explicit shape in the actual toolkit call."
         },
         {
           "caseId": "coords-vectors-mxmtg-zero-columns",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Zero right-hand output width has an empty result even with nonempty left storage and inner extent."
         }
       ],
@@ -942,58 +823,37 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-mxvg-unequal-rectangles",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe all outputs from asymmetric unequal extents, including different signs, unequal left/right factors and row-major strides."
         },
         {
           "caseId": "coords-vectors-mxvg-scalar-row-and-column",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Exercise a scalar product, a single output row and a length-one contraction with differing magnitudes and signs."
         },
         {
           "caseId": "coords-vectors-mxvg-row-selection",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Sparse and permuted basis rows isolate two indices of the input independently."
         },
         {
           "caseId": "coords-vectors-mxvg-ordered-cancellation",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "A unit term beside 2⁵³ rounds away before cancellation, distinguishing the ordered dot product from a reordered sum."
         },
         {
           "caseId": "coords-vectors-mxvg-scaled-fractions",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Mixed dyadic and small-magnitude factors exercise every contracted component without rounding-sensitive cancellation."
         },
         {
           "caseId": "coords-vectors-mxvg-zero-contraction",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Zero inner extent with nonzero outer dimensions produces a complete zero output; the independent canonical call receives allocated input sentinels."
         },
         {
           "caseId": "coords-vectors-mxvg-zero-outer",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Zero output rows and both zero dimensions retain the explicit shape in the actual toolkit call."
         }
       ],
@@ -1055,58 +915,37 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-vtmvg-unequal-rectangles",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe all outputs from asymmetric unequal extents, including different signs, unequal left/right factors and row-major strides."
         },
         {
           "caseId": "coords-vectors-vtmvg-scalar-row-and-column",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Exercise a scalar product, a single output row and a length-one contraction with differing magnitudes and signs."
         },
         {
           "caseId": "coords-vectors-vtmvg-row-selection",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Sparse and permuted basis rows isolate two indices of the input independently."
         },
         {
           "caseId": "coords-vectors-vtmvg-ordered-cancellation",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "A unit term beside 2⁵³ rounds away before cancellation, distinguishing the ordered dot product from a reordered sum."
         },
         {
           "caseId": "coords-vectors-vtmvg-scaled-fractions",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Mixed dyadic and small-magnitude factors exercise every contracted component without rounding-sensitive cancellation."
         },
         {
           "caseId": "coords-vectors-vtmvg-zero-contraction",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Zero inner extent with nonzero outer dimensions produces a complete zero output; the independent canonical call receives allocated input sentinels."
         },
         {
           "caseId": "coords-vectors-vtmvg-zero-outer",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Zero output rows and both zero dimensions retain the explicit shape in the actual toolkit call."
         }
       ],
@@ -1168,58 +1007,37 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-xposeg-unequal-rectangles",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Read every row-major element of asymmetric 2×3 and 3×2 inputs backed by the same six values."
         },
         {
           "caseId": "coords-vectors-xposeg-row-column-scalar",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Exercise separately allocated singletons, one row, one column and a strongly nonsymmetric square."
         },
         {
           "caseId": "coords-vectors-xposeg-stride-and-interior-cycles",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "A 3×5 rectangle with unique interior values distinguishes row stride and transpose cycles."
         },
         {
           "caseId": "coords-vectors-xposeg-growing-and-shrinking",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Alternate sizes including empty to detect retained results from prior calls."
         },
         {
           "caseId": "coords-vectors-xposeg-empty-axes",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Call the real routine for zero rows, zero columns and both zero with initialized sentinel storage."
         },
         {
           "caseId": "coords-vectors-xposeg-small-and-large",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Preserve complete tiny, large and ordinary entries when copying or transposing."
         },
         {
           "caseId": "coords-vectors-xposeg-nonpositive-no-write",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Pinned XPOSEG returns without writing if either dimension is nonpositive, including signed-minimum."
         }
       ],

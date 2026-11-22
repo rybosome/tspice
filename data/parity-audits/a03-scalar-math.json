@@ -526,42 +526,27 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-brcktd-ordered-bounds",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe values below, at both boundaries, inside and above an ordered closed interval."
         },
         {
           "caseId": "coords-vectors-brcktd-reversed-bounds",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Repeat the full interval positions with reversed endpoints, distinguishing endpoint-order assumptions."
         },
         {
           "caseId": "coords-vectors-brcktd-collapsed-interval",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe values below, equal to and above identical endpoints; every result is that endpoint."
         },
         {
           "caseId": "coords-vectors-brcktd-finite-extrema",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe exact selected or accumulated finite extrema, including maximum magnitudes and the minimum subnormal; focused live equality prevents ordinary absolute tolerance accepting tiny output as zero."
         },
         {
           "caseId": "coords-vectors-brcktd-fractional-bounds",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe noninteger values and bounds to distinguish real-valued bracketing from integer conversion."
         }
       ],
@@ -609,34 +594,22 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-brckti-ordered-bounds",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe values below, at both boundaries, inside and above an ordered closed interval."
         },
         {
           "caseId": "coords-vectors-brckti-reversed-bounds",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Repeat the full interval positions with reversed endpoints, distinguishing endpoint-order assumptions."
         },
         {
           "caseId": "coords-vectors-brckti-collapsed-interval",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe values below, equal to and above identical endpoints; every result is that endpoint."
         },
         {
           "caseId": "coords-vectors-brckti-signed32-extrema",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe exact signed32 endpoints and extreme inputs; integer results are also compared exactly in focused live tests."
         }
       ],
@@ -684,115 +657,77 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-convrt-angular-units",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe angular conversions including degrees/radians and hour/minute/second angle aliases."
         },
         {
           "caseId": "coords-vectors-convrt-metric-aliases",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe metric aliases and signed values across kilometer/meter/centimeter/millimeter scales."
         },
         {
           "caseId": "coords-vectors-convrt-english-distances",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe feet, inches, yards, statute miles and nautical miles through the pinned conversion table."
         },
         {
           "caseId": "coords-vectors-convrt-astrometric-table",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe AU, parsec, light-second and Julian light-year conversions using actual pinned constants; no modern astronomical constants are substituted."
         },
         {
           "caseId": "coords-vectors-convrt-time-units",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe days, Julian years/YEARS, tropical years and hours/minutes/seconds, retaining their distinct conversion factors."
         },
         {
           "caseId": "coords-vectors-convrt-case-and-trailing-blanks",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe mixed case and trailing blanks accepted by CSPICE without client-side string rewriting."
         },
         {
           "caseId": "coords-vectors-convrt-zero-and-finite-identity",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe zero, a negative scalar, and maximum finite scalar in an identity unit conversion."
         },
         {
           "caseId": "coords-vectors-convrt-scaled-magnitudes",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe 1e200 and 1e-200 kilometer values converted to meters; focused actual-oracle rescaling makes tiny output observable."
         },
         {
           "caseId": "coords-vectors-convrt-unknown-input-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Pass an unsupported input unit and observe UNITSNOTREC."
         },
         {
           "caseId": "coords-vectors-convrt-unknown-output-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Pass an unsupported output unit and observe UNITSNOTREC."
         },
         {
           "caseId": "coords-vectors-convrt-leading-blank-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Pass a leading-blank unit and observe UNITSNOTREC, preserving the distinction from accepted trailing blanks."
         },
         {
           "caseId": "coords-vectors-convrt-unsupported-singular-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Pass METER and observe UNITSNOTREC instead of inventing a singular alias."
         },
         {
           "caseId": "coords-vectors-convrt-incompatible-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Convert distance to time and observe INCOMPATIBLEUNITS."
         },
         {
           "caseId": "coords-vectors-convrt-empty-input-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Pass an empty input-unit string and observe EMPTYSTRING from actual CSPICE."
         },
         {
           "caseId": "coords-vectors-convrt-empty-output-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Pass an empty output-unit string and observe EMPTYSTRING from actual CSPICE."
         }
       ],
@@ -840,34 +775,22 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-sumad-empty-singleton-and-mixed",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe actual empty-array zero, singleton preservation and mixed-sign inputs; the routines themselves produce the scalar results."
         },
         {
           "caseId": "coords-vectors-sumad-ordered-cancellation",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare ordered sums [1e16,1,-1e16] and [1e16,-1e16,1], their sign variant and large cancellation leaving a tiny term. The 0 versus 1 outputs distinguish reassociation; a literal scaled tiny-result assertion supplements live comparison."
         },
         {
           "caseId": "coords-vectors-sumad-finite-extrema",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe exact selected or accumulated finite extrema, including maximum magnitudes and the minimum subnormal; focused live equality prevents ordinary absolute tolerance accepting tiny output as zero."
         },
         {
           "caseId": "coords-vectors-sumad-longer-than-variadic-limit",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe all 64 supplied fractional elements through the array routine, distinguishing the sum count from the separate 30-element variadic cap."
         }
       ],
@@ -888,9 +811,7 @@
             "packages/backend-wasm/src/domains/coords-vectors.ts",
             "packages/py-parity-checking/test/owned-numeric-inputs.test.ts"
           ],
-          "caseIds": [
-            "coords-vectors-sumad-empty-singleton-and-mixed"
-          ]
+          "caseIds": ["coords-vectors-sumad-empty-singleton-and-mixed"]
         }
       ],
       "backends": {
@@ -932,26 +853,17 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-sumai-empty-singleton-and-mixed",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe actual empty-array zero, singleton preservation and mixed-sign inputs; the routines themselves produce the scalar results."
         },
         {
           "caseId": "coords-vectors-sumai-safe-prefix-signed32-extrema",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe singleton signed32 bounds, cancellation sequences with every prefix valid, and multi-element sums exactly at each bound. All results come from actual CSPICE, not the safety-prefix accumulator."
         },
         {
           "caseId": "coords-vectors-sumai-longer-than-variadic-limit",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe a 64-element mixed-sign array with safe prefixes; the array routine is not incorrectly capped at 30."
         }
       ],
@@ -972,9 +884,7 @@
             "packages/backend-wasm/src/domains/coords-vectors.ts",
             "packages/py-parity-checking/test/owned-numeric-inputs.test.ts"
           ],
-          "caseIds": [
-            "coords-vectors-sumai-empty-singleton-and-mixed"
-          ]
+          "caseIds": ["coords-vectors-sumai-empty-singleton-and-mixed"]
         }
       ],
       "backends": {
@@ -1016,34 +926,22 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-maxd-empty-singleton-and-mixed",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe actual empty-array zero, singleton preservation and mixed-sign inputs; the routines themselves produce the scalar results."
         },
         {
           "caseId": "coords-vectors-maxd-all-portable-arities",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe 60 actual canonical calls: empty and singleton, then a distinguishing extreme at the first and last position for each count 2..30. Focused live equality compares all outputs, while source review confirms every arm passes all count ordered entries."
         },
         {
           "caseId": "coords-vectors-maxd-finite-extrema",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe exact selected or accumulated finite extrema, including maximum magnitudes and the minimum subnormal; focused live equality prevents ordinary absolute tolerance accepting tiny output as zero."
         },
         {
           "caseId": "coords-vectors-maxd-repeated-values",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe repeated positive and negative values at the maximum portable length without replacing tie behavior."
         }
       ],
@@ -1064,9 +962,7 @@
             "packages/backend-wasm/src/domains/coords-vectors.ts",
             "packages/py-parity-checking/test/owned-numeric-inputs.test.ts"
           ],
-          "caseIds": [
-            "coords-vectors-maxd-empty-singleton-and-mixed"
-          ]
+          "caseIds": ["coords-vectors-maxd-empty-singleton-and-mixed"]
         }
       ],
       "backends": {
@@ -1108,34 +1004,22 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-maxi-empty-singleton-and-mixed",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe actual empty-array zero, singleton preservation and mixed-sign inputs; the routines themselves produce the scalar results."
         },
         {
           "caseId": "coords-vectors-maxi-all-portable-arities",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe 60 actual canonical calls: empty and singleton, then a distinguishing extreme at the first and last position for each count 2..30. Focused live equality compares all outputs, while source review confirms every arm passes all count ordered entries."
         },
         {
           "caseId": "coords-vectors-maxi-signed32-extrema",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe exact signed32 endpoints and extreme inputs; integer results are also compared exactly in focused live tests."
         },
         {
           "caseId": "coords-vectors-maxi-repeated-values",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe repeated positive and negative values at the maximum portable length without replacing tie behavior."
         }
       ],
@@ -1156,9 +1040,7 @@
             "packages/backend-wasm/src/domains/coords-vectors.ts",
             "packages/py-parity-checking/test/owned-numeric-inputs.test.ts"
           ],
-          "caseIds": [
-            "coords-vectors-maxi-empty-singleton-and-mixed"
-          ]
+          "caseIds": ["coords-vectors-maxi-empty-singleton-and-mixed"]
         }
       ],
       "backends": {
@@ -1200,34 +1082,22 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-mind-empty-singleton-and-mixed",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe actual empty-array zero, singleton preservation and mixed-sign inputs; the routines themselves produce the scalar results."
         },
         {
           "caseId": "coords-vectors-mind-all-portable-arities",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe 60 actual canonical calls: empty and singleton, then a distinguishing extreme at the first and last position for each count 2..30. Focused live equality compares all outputs, while source review confirms every arm passes all count ordered entries."
         },
         {
           "caseId": "coords-vectors-mind-finite-extrema",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe exact selected or accumulated finite extrema, including maximum magnitudes and the minimum subnormal; focused live equality prevents ordinary absolute tolerance accepting tiny output as zero."
         },
         {
           "caseId": "coords-vectors-mind-repeated-values",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe repeated positive and negative values at the maximum portable length without replacing tie behavior."
         }
       ],
@@ -1248,9 +1118,7 @@
             "packages/backend-wasm/src/domains/coords-vectors.ts",
             "packages/py-parity-checking/test/owned-numeric-inputs.test.ts"
           ],
-          "caseIds": [
-            "coords-vectors-mind-empty-singleton-and-mixed"
-          ]
+          "caseIds": ["coords-vectors-mind-empty-singleton-and-mixed"]
         }
       ],
       "backends": {
@@ -1292,34 +1160,22 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-mini-empty-singleton-and-mixed",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe actual empty-array zero, singleton preservation and mixed-sign inputs; the routines themselves produce the scalar results."
         },
         {
           "caseId": "coords-vectors-mini-all-portable-arities",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe 60 actual canonical calls: empty and singleton, then a distinguishing extreme at the first and last position for each count 2..30. Focused live equality compares all outputs, while source review confirms every arm passes all count ordered entries."
         },
         {
           "caseId": "coords-vectors-mini-signed32-extrema",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe exact signed32 endpoints and extreme inputs; integer results are also compared exactly in focused live tests."
         },
         {
           "caseId": "coords-vectors-mini-repeated-values",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe repeated positive and negative values at the maximum portable length without replacing tie behavior."
         }
       ],
@@ -1340,9 +1196,7 @@
             "packages/backend-wasm/src/domains/coords-vectors.ts",
             "packages/py-parity-checking/test/owned-numeric-inputs.test.ts"
           ],
-          "caseIds": [
-            "coords-vectors-mini-empty-singleton-and-mixed"
-          ]
+          "caseIds": ["coords-vectors-mini-empty-singleton-and-mixed"]
         }
       ],
       "backends": {

@@ -6522,27 +6522,17 @@
       "scenarios": [
         {
           "caseId": "time-deltet-happy-et-with-lsk",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Every actual delta scalar reaches live comparison for both input scales, nonzero positive/negative epochs and pre/post leap steps. The result is near 60 seconds rather than a large epoch baseline, preserving sensitivity under existing tolerance. Case: Computes ET-UTC delta at J2000 ET with LSK loaded"
         },
         {
           "caseId": "time-deltet-missing-lsk-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Every actual delta scalar reaches live comparison for both input scales, nonzero positive/negative epochs and pre/post leap steps. The result is near 60 seconds rather than a large epoch baseline, preserving sensitivity under existing tolerance. Case: Representative deltet error when leap-seconds kernel is not loaded"
         },
         {
           "caseId": "time-deltet-audit-both-input-scales-and-leap-step",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Every actual delta scalar reaches live comparison for both input scales, nonzero positive/negative epochs and pre/post leap steps. The result is near 60 seconds rather than a large epoch baseline, preserving sensitivity under existing tolerance. Case: deltet: both input scales and leap step, observe actual output or named diagnostic with live SpiceyPy"
         }
       ],
@@ -6634,59 +6624,37 @@
       "scenarios": [
         {
           "caseId": "time-et2utc-happy-isoc",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Every complete output string reaches comparison for all five formats, signed/fractional ET, negative/large/INTMAX clamped integer precision, UTC leap-second rounding, B.C. C/D era text and named ISO/range/format/missing-info errors. Case: Formats J2000 epoch ET as UTC ISO calendar string"
         },
         {
           "caseId": "time-et2utc-invalid-format-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Every complete output string reaches comparison for all five formats, signed/fractional ET, negative/large/INTMAX clamped integer precision, UTC leap-second rounding, B.C. C/D era text and named ISO/range/format/missing-info errors. Case: Representative formatting error with unsupported format token"
         },
         {
           "caseId": "time-et2utc-audit-all-formats-signed-fractional-and-clamped-precision",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Every complete output string reaches comparison for all five formats, signed/fractional ET, negative/large/INTMAX clamped integer precision, UTC leap-second rounding, B.C. C/D era text and named ISO/range/format/missing-info errors. Case: et2utc: all formats signed fractional and clamped precision, observe actual output or named diagnostic with live SpiceyPy"
         },
         {
           "caseId": "time-et2utc-audit-utc-leap-second-rounding",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Every complete output string reaches comparison for all five formats, signed/fractional ET, negative/large/INTMAX clamped integer precision, UTC leap-second rounding, B.C. C/D era text and named ISO/range/format/missing-info errors. Case: et2utc: utc leap second rounding, observe actual output or named diagnostic with live SpiceyPy"
         },
         {
           "caseId": "time-et2utc-audit-missing-leap-information",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Every complete output string reaches comparison for all five formats, signed/fractional ET, negative/large/INTMAX clamped integer precision, UTC leap-second rounding, B.C. C/D era text and named ISO/range/format/missing-info errors. Case: et2utc: missing leap information, observe actual output or named diagnostic with live SpiceyPy"
         },
         {
           "caseId": "time-et2utc-audit-before-common-era-calendar",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Every complete output string reaches comparison for all five formats, signed/fractional ET, negative/large/INTMAX clamped integer precision, UTC leap-second rounding, B.C. C/D era text and named ISO/range/format/missing-info errors. Case: Calendar/day formats retain era text for epochs before 1 AD."
         },
         {
           "caseId": "time-et2utc-audit-before-common-era-iso-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Every complete output string reaches comparison for all five formats, signed/fractional ET, negative/large/INTMAX clamped integer precision, UTC leap-second rounding, B.C. C/D era text and named ISO/range/format/missing-info errors. Case: ISO formats cannot represent a B.C. era and must signal YEAROUTOFRANGE."
         }
       ],
@@ -6797,34 +6765,22 @@
       "scenarios": [
         {
           "caseId": "time-scdecd-happy-with-cook-sclk",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Every complete partitioned string reaches comparison for zero, fractional half-ticks, nonzero ticks, the shared endpoint and final mission count, with named range/missing-clock errors. Later-partition selection and rounding are observed explicitly. Case: Decodes cookbook SCLK ticks to partitioned clock string"
         },
         {
           "caseId": "time-scdecd-missing-sclk-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Every complete partitioned string reaches comparison for zero, fractional half-ticks, nonzero ticks, the shared endpoint and final mission count, with named range/missing-clock errors. Later-partition selection and rounding are observed explicitly. Case: Representative scdecd error when SCLK kernel is not loaded"
         },
         {
           "caseId": "time-scdecd-audit-fractional-ticks-shared-boundary-and-last-count",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Every complete partitioned string reaches comparison for zero, fractional half-ticks, nonzero ticks, the shared endpoint and final mission count, with named range/missing-clock errors. Later-partition selection and rounding are observed explicitly. Case: scdecd: fractional ticks shared boundary and last count, observe actual output or named diagnostic with live SpiceyPy"
         },
         {
           "caseId": "time-scdecd-audit-negative-clock-range",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Every complete partitioned string reaches comparison for zero, fractional half-ticks, nonzero ticks, the shared endpoint and final mission count, with named range/missing-clock errors. Later-partition selection and rounding are observed explicitly. Case: scdecd: negative clock range, observe actual output or named diagnostic with live SpiceyPy"
         }
       ],
@@ -6941,50 +6897,32 @@
       "scenarios": [
         {
           "caseId": "time-sce2c-happy-with-cook-sclk",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Every encoded output reaches comparison for small signed-system epochs, fractional half ticks, partition boundary and mission end. The fractional result is distinguished from rounded sce2s; conditional conversion with/without LSK and range errors are actual toolkit results. Case: Converts cookbook ET to encoded SCLK ticks"
         },
         {
           "caseId": "time-sce2c-missing-sclk-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Every encoded output reaches comparison for small signed-system epochs, fractional half ticks, partition boundary and mission end. The fractional result is distinguished from rounded sce2s; conditional conversion with/without LSK and range errors are actual toolkit results. Case: Representative sce2c error when SCLK kernel is missing"
         },
         {
           "caseId": "time-sce2c-audit-fractional-tick-versus-rounded-string",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Every encoded output reaches comparison for small signed-system epochs, fractional half ticks, partition boundary and mission end. The fractional result is distinguished from rounded sce2s; conditional conversion with/without LSK and range errors are actual toolkit results. Case: sce2c: fractional tick versus rounded string, observe actual output or named diagnostic with live SpiceyPy"
         },
         {
           "caseId": "time-sce2c-audit-negative-epoch-range",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Every encoded output reaches comparison for small signed-system epochs, fractional half ticks, partition boundary and mission end. The fractional result is distinguished from rounded sce2s; conditional conversion with/without LSK and range errors are actual toolkit results. Case: sce2c: negative epoch range, observe actual output or named diagnostic with live SpiceyPy"
         },
         {
           "caseId": "time-sce2c-audit-non-tdb-clock-requires-conversion-info",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Every encoded output reaches comparison for small signed-system epochs, fractional half ticks, partition boundary and mission end. The fractional result is distinguished from rounded sce2s; conditional conversion with/without LSK and range errors are actual toolkit results. Case: sce2c: non tdb clock requires conversion info, observe actual output or named diagnostic with live SpiceyPy"
         },
         {
           "caseId": "time-sce2c-audit-non-tdb-clock-with-conversion-info",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Every encoded output reaches comparison for small signed-system epochs, fractional half ticks, partition boundary and mission end. The fractional result is distinguished from rounded sce2s; conditional conversion with/without LSK and range errors are actual toolkit results. Case: Loading LSK makes non-TDB clock mapping perform the actual time-system conversion."
         }
       ],
@@ -7103,50 +7041,32 @@
       "scenarios": [
         {
           "caseId": "time-sce2s-happy-with-cook-sclk",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Every complete clock string reaches comparison for fractional ET near tick rounding, nonzero epochs, shared partition boundary, mission end and both time-system correlations; missing conversion and out-of-mission errors are named. Case: Formats cookbook ET into spacecraft clock string"
         },
         {
           "caseId": "time-sce2s-missing-sclk-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Every complete clock string reaches comparison for fractional ET near tick rounding, nonzero epochs, shared partition boundary, mission end and both time-system correlations; missing conversion and out-of-mission errors are named. Case: Representative sce2s error when SCLK kernel is not loaded"
         },
         {
           "caseId": "time-sce2s-audit-fractional-tick-versus-rounded-string",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Every complete clock string reaches comparison for fractional ET near tick rounding, nonzero epochs, shared partition boundary, mission end and both time-system correlations; missing conversion and out-of-mission errors are named. Case: sce2s: fractional tick versus rounded string, observe actual output or named diagnostic with live SpiceyPy"
         },
         {
           "caseId": "time-sce2s-audit-negative-epoch-range",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Every complete clock string reaches comparison for fractional ET near tick rounding, nonzero epochs, shared partition boundary, mission end and both time-system correlations; missing conversion and out-of-mission errors are named. Case: sce2s: negative epoch range, observe actual output or named diagnostic with live SpiceyPy"
         },
         {
           "caseId": "time-sce2s-audit-non-tdb-clock-requires-conversion-info",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Every complete clock string reaches comparison for fractional ET near tick rounding, nonzero epochs, shared partition boundary, mission end and both time-system correlations; missing conversion and out-of-mission errors are named. Case: Non-TDB clock mapping requires actual LSK conversion information."
         },
         {
           "caseId": "time-sce2s-audit-non-tdb-clock-with-conversion-info",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Every complete clock string reaches comparison for fractional ET near tick rounding, nonzero epochs, shared partition boundary, mission end and both time-system correlations; missing conversion and out-of-mission errors are named. Case: Loading LSK makes non-TDB clock mapping perform the actual time-system conversion."
         }
       ],
@@ -7265,41 +7185,27 @@
       "scenarios": [
         {
           "caseId": "time-scencd-happy-with-cook-sclk",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Every encoded scalar reaches comparison across explicit/inferred partitions, field rollover, nonzero counts and shared endpoints. Authored small clock values distinguish omitted partition offsets and constant/cookbook-only answers; named BADPARTNUMBER/EMPTYSTRING/missing clock errors remain distinct. Case: Encodes cookbook SCLK string into ticks"
         },
         {
           "caseId": "time-scencd-missing-sclk-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Every encoded scalar reaches comparison across explicit/inferred partitions, field rollover, nonzero counts and shared endpoints. Authored small clock values distinguish omitted partition offsets and constant/cookbook-only answers; named BADPARTNUMBER/EMPTYSTRING/missing clock errors remain distinct. Case: Representative scencd error when SCLK kernel is not loaded"
         },
         {
           "caseId": "time-scencd-audit-partitions-shared-boundary-and-field-rollover",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Every encoded scalar reaches comparison across explicit/inferred partitions, field rollover, nonzero counts and shared endpoints. Authored small clock values distinguish omitted partition offsets and constant/cookbook-only answers; named BADPARTNUMBER/EMPTYSTRING/missing clock errors remain distinct. Case: scencd: partitions shared boundary and field rollover, observe actual output or named diagnostic with live SpiceyPy"
         },
         {
           "caseId": "time-scencd-audit-bad-partition",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Every encoded scalar reaches comparison across explicit/inferred partitions, field rollover, nonzero counts and shared endpoints. Authored small clock values distinguish omitted partition offsets and constant/cookbook-only answers; named BADPARTNUMBER/EMPTYSTRING/missing clock errors remain distinct. Case: scencd: bad partition, observe actual output or named diagnostic with live SpiceyPy"
         },
         {
           "caseId": "time-scencd-audit-empty-clock-string",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Every encoded scalar reaches comparison across explicit/inferred partitions, field rollover, nonzero counts and shared endpoints. Authored small clock values distinguish omitted partition offsets and constant/cookbook-only answers; named BADPARTNUMBER/EMPTYSTRING/missing clock errors remain distinct. Case: scencd: empty clock string, observe actual output or named diagnostic with live SpiceyPy"
         }
       ],
@@ -7416,50 +7322,32 @@
       "scenarios": [
         {
           "caseId": "time-scs2e-happy-with-cook-sclk",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Every ET scalar reaches comparison for multiple clock strings, partition boundaries/offsets, field rollover, TDB correlation without LSK and non-TDB correlation with LSK. Missing conditional conversion information and bad partitions are named errors. Case: Converts cookbook spacecraft clock string to ET"
         },
         {
           "caseId": "time-scs2e-missing-sclk-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Every ET scalar reaches comparison for multiple clock strings, partition boundaries/offsets, field rollover, TDB correlation without LSK and non-TDB correlation with LSK. Missing conditional conversion information and bad partitions are named errors. Case: Representative scs2e error when SCLK kernel is missing"
         },
         {
           "caseId": "time-scs2e-audit-partitions-shared-boundary-and-field-rollover",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Every ET scalar reaches comparison for multiple clock strings, partition boundaries/offsets, field rollover, TDB correlation without LSK and non-TDB correlation with LSK. Missing conditional conversion information and bad partitions are named errors. Case: scs2e: partitions shared boundary and field rollover, observe actual output or named diagnostic with live SpiceyPy"
         },
         {
           "caseId": "time-scs2e-audit-bad-partition",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Every ET scalar reaches comparison for multiple clock strings, partition boundaries/offsets, field rollover, TDB correlation without LSK and non-TDB correlation with LSK. Missing conditional conversion information and bad partitions are named errors. Case: scs2e: bad partition, observe actual output or named diagnostic with live SpiceyPy"
         },
         {
           "caseId": "time-scs2e-audit-non-tdb-clock-requires-conversion-info",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Every ET scalar reaches comparison for multiple clock strings, partition boundaries/offsets, field rollover, TDB correlation without LSK and non-TDB correlation with LSK. Missing conditional conversion information and bad partitions are named errors. Case: Non-TDB clock mapping requires actual LSK conversion information."
         },
         {
           "caseId": "time-scs2e-audit-non-tdb-clock-with-conversion-info",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Every ET scalar reaches comparison for multiple clock strings, partition boundaries/offsets, field rollover, TDB correlation without LSK and non-TDB correlation with LSK. Missing conditional conversion information and bad partitions are named errors. Case: Loading LSK makes non-TDB clock mapping perform the actual time-system conversion."
         }
       ],
@@ -7578,50 +7466,32 @@
       "scenarios": [
         {
           "caseId": "time-sct2e-happy-with-cook-sclk",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Every ET scalar reaches comparison across fractional mission ticks, partition boundary and final count, including TDB and non-TDB correlations. Missing conditional conversion metadata and negative/range counts are named errors. Case: Converts cookbook encoded SCLK ticks to ET"
         },
         {
           "caseId": "time-sct2e-missing-sclk-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Every ET scalar reaches comparison across fractional mission ticks, partition boundary and final count, including TDB and non-TDB correlations. Missing conditional conversion metadata and negative/range counts are named errors. Case: Representative sct2e error when SCLK kernel is not loaded"
         },
         {
           "caseId": "time-sct2e-audit-fractional-ticks-shared-boundary-and-last-count",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Every ET scalar reaches comparison across fractional mission ticks, partition boundary and final count, including TDB and non-TDB correlations. Missing conditional conversion metadata and negative/range counts are named errors. Case: sct2e: fractional ticks shared boundary and last count, observe actual output or named diagnostic with live SpiceyPy"
         },
         {
           "caseId": "time-sct2e-audit-negative-clock-range",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Every ET scalar reaches comparison across fractional mission ticks, partition boundary and final count, including TDB and non-TDB correlations. Missing conditional conversion metadata and negative/range counts are named errors. Case: sct2e: negative clock range, observe actual output or named diagnostic with live SpiceyPy"
         },
         {
           "caseId": "time-sct2e-audit-non-tdb-clock-requires-conversion-info",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Every ET scalar reaches comparison across fractional mission ticks, partition boundary and final count, including TDB and non-TDB correlations. Missing conditional conversion metadata and negative/range counts are named errors. Case: sct2e: non tdb clock requires conversion info, observe actual output or named diagnostic with live SpiceyPy"
         },
         {
           "caseId": "time-sct2e-audit-non-tdb-clock-with-conversion-info",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Every ET scalar reaches comparison across fractional mission ticks, partition boundary and final count, including TDB and non-TDB correlations. Missing conditional conversion metadata and negative/range counts are named errors. Case: Loading LSK makes non-TDB clock mapping perform the actual time-system conversion."
         }
       ],

@@ -292,66 +292,42 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-chbder-constant-and-zero",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe full constant coefficient/zero expansion and all requested derivative tails, without a half-coefficient convention."
         },
         {
           "caseId": "coords-vectors-chbder-distinct-basis-and-coefficient-order",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe isolated T_i and mixed ordered coefficients so reversal, dropping a highest term, or confusing power and Chebyshev bases changes actual outputs."
         },
         {
           "caseId": "coords-vectors-chbder-shifted-scaled-domain",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe midpoint and radius mappings away from the unit interval, retaining all returned fields in x units."
         },
         {
           "caseId": "coords-vectors-chbder-domain-endpoints",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe both normalized endpoints s=−1 and s=+1, retaining signs and all returned components."
         },
         {
           "caseId": "coords-vectors-chbder-scaled-coefficients",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe 1e100 and 1e−100 common coefficient scales. Focused live rescaling keeps every tiny output field observable; quadratic roots instead retain scale invariance."
         },
         {
           "caseId": "coords-vectors-chbder-scaled-domain-radius",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe radii1e100/1e−100 at fixed normalized argument; focused live comparison multiplies each derivative by its own radius power, observing all value/derivative entries."
         },
         {
           "caseId": "coords-vectors-chbder-negative-radius-orientation",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe negative nonzero radius inside normalized range; compare actual orientation and derivative signs without inventing INVALIDRADIUS for the error-free evaluator."
         },
         {
           "caseId": "coords-vectors-chbder-derivative-order-and-zero-tail",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe order0, higher derivatives, orders beyond degree and trailing coefficient zeros; output length/order and every zero tail entry remain observable."
         }
       ],
@@ -415,79 +391,52 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-chbigr-constant-and-zero",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe full constant coefficient and zero expansion, retaining both value and midpoint-normalized integral."
         },
         {
           "caseId": "coords-vectors-chbigr-distinct-basis-and-coefficient-order",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe isolated T_i and mixed ordered coefficients so reversal, dropping a highest term, or confusing power and Chebyshev bases changes actual outputs."
         },
         {
           "caseId": "coords-vectors-chbigr-shifted-scaled-domain",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe midpoint and radius mappings away from the unit interval, retaining all returned fields in x units."
         },
         {
           "caseId": "coords-vectors-chbigr-domain-endpoints",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe both normalized endpoints s=−1 and s=+1, retaining signs and all returned components."
         },
         {
           "caseId": "coords-vectors-chbigr-scaled-coefficients",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe 1e100 and 1e−100 common coefficient scales. Focused live rescaling keeps every tiny output field observable; quadratic roots instead retain scale invariance."
         },
         {
           "caseId": "coords-vectors-chbigr-scaled-domain-radius",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe radii1e100/1e−100 at fixed normalized argument; focused live comparison retains p and rescales integral by dividing by radius."
         },
         {
           "caseId": "coords-vectors-chbigr-integral-midpoint-normalization",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe the integral exactly at the midpoint and on each side, distinguishing the prescribed integration constant and signed area from an arbitrary antiderivative."
         },
         {
           "caseId": "coords-vectors-chbigr-empty-degree-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Observe actual SPICE(INVALIDDEGREE) from inferred degree−1 with valid unread dummy storage; require the real spelling rather than the header typo."
         },
         {
           "caseId": "coords-vectors-chbigr-zero-radius-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Observe actual SPICE(INVALIDRADIUS) for zero radius; do not reclassify it as a wrapper error."
         },
         {
           "caseId": "coords-vectors-chbigr-negative-radius-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Observe actual SPICE(INVALIDRADIUS) for negative radius, distinguishing integral semantics from the error-free evaluators."
         }
       ],
@@ -509,9 +458,7 @@
             "packages/py-parity-checking/test/polynomial-expansions-extremes.test.ts",
             "docs/step8-polynomial-expansions.md"
           ],
-          "caseIds": [
-            "coords-vectors-chbigr-empty-degree-error"
-          ]
+          "caseIds": ["coords-vectors-chbigr-empty-degree-error"]
         },
         {
           "id": "validated-input-snapshot",
@@ -568,58 +515,37 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-chbint-constant-and-zero",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe full constant coefficient and zero expansion, retaining value and zero first derivative."
         },
         {
           "caseId": "coords-vectors-chbint-distinct-basis-and-coefficient-order",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe isolated T_i and mixed ordered coefficients so reversal, dropping a highest term, or confusing power and Chebyshev bases changes actual outputs."
         },
         {
           "caseId": "coords-vectors-chbint-shifted-scaled-domain",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe midpoint and radius mappings away from the unit interval, retaining all returned fields in x units."
         },
         {
           "caseId": "coords-vectors-chbint-domain-endpoints",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe both normalized endpoints s=−1 and s=+1, retaining signs and all returned components."
         },
         {
           "caseId": "coords-vectors-chbint-scaled-coefficients",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe 1e100 and 1e−100 common coefficient scales. Focused live rescaling keeps every tiny output field observable; quadratic roots instead retain scale invariance."
         },
         {
           "caseId": "coords-vectors-chbint-scaled-domain-radius",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe radii1e100/1e−100 at fixed normalized argument; focused live comparison retains p and multiplies dpdx by radius."
         },
         {
           "caseId": "coords-vectors-chbint-negative-radius-orientation",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe negative nonzero radius inside normalized range; compare actual orientation and derivative signs without inventing INVALIDRADIUS for the error-free evaluator."
         }
       ],
@@ -683,58 +609,37 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-chbval-constant-and-zero",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe the full constant coefficient and zero expansion at distinct abscissae, without a half-coefficient convention."
         },
         {
           "caseId": "coords-vectors-chbval-distinct-basis-and-coefficient-order",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe isolated T_i and mixed ordered coefficients so reversal, dropping a highest term, or confusing power and Chebyshev bases changes actual outputs."
         },
         {
           "caseId": "coords-vectors-chbval-shifted-scaled-domain",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe midpoint and radius mappings away from the unit interval, retaining all returned fields in x units."
         },
         {
           "caseId": "coords-vectors-chbval-domain-endpoints",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe both normalized endpoints s=−1 and s=+1, retaining signs and all returned components."
         },
         {
           "caseId": "coords-vectors-chbval-scaled-coefficients",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe 1e100 and 1e−100 common coefficient scales. Focused live rescaling keeps every tiny output field observable; quadratic roots instead retain scale invariance."
         },
         {
           "caseId": "coords-vectors-chbval-scaled-domain-radius",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe radii1e100/1e−100 at fixed normalized argument; actual scalar value remains5 through both interval transformations."
         },
         {
           "caseId": "coords-vectors-chbval-negative-radius-orientation",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe negative nonzero radius inside normalized range; compare actual orientation and derivative signs without inventing INVALIDRADIUS for the error-free evaluator."
         }
       ],
@@ -798,50 +703,32 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-polyds-constant-and-empty",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe constant outputs, ordinary zero polynomial and empty degree−1 producing all requested zeros through actual CSPICE."
         },
         {
           "caseId": "coords-vectors-polyds-coefficient-order-and-signed-abscissa",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe distinct ascending ordinary-power coefficients at positive, negative and zero abscissae; retain every requested derivative."
         },
         {
           "caseId": "coords-vectors-polyds-derivative-order-and-zero-tail",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe order0, higher derivatives, orders beyond degree and trailing coefficient zeros; output length/order and every zero tail entry remain observable."
         },
         {
           "caseId": "coords-vectors-polyds-negative-order-no-write",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe actual canonical calls at negative signed32 orders, including INT32_MIN, with both nonempty/empty coefficients. Independent guarded output storage remains untouched and public empty arrays reach comparison."
         },
         {
           "caseId": "coords-vectors-polyds-scaled-coefficients",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe 1e100 and 1e−100 common coefficient scales. Focused live rescaling keeps every tiny output field observable; quadratic roots instead retain scale invariance."
         },
         {
           "caseId": "coords-vectors-polyds-higher-degree-and-highest-coefficient",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe higher polynomial degree and the last nonzero coefficient with derivatives including the highest and beyond-degree orders, preventing truncation to low-order cases."
         }
       ],
@@ -924,64 +811,42 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-rquad-real-root-order-and-leading-sign",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe both real roots with positive/negative quadratic and linear coefficients; actual formula branch ordering is retained rather than sorted."
         },
         {
           "caseId": "coords-vectors-rquad-complex-conjugate-fields",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe all four real/imaginary entries, including changed imaginary ordering for negative leading coefficient and nonsymmetric real part."
         },
         {
           "caseId": "coords-vectors-rquad-repeated-and-zero-roots",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe repeated roots, zero constant term and double zero roots, retaining both pair fields and duplicate roots."
         },
         {
           "caseId": "coords-vectors-rquad-linear-equations",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe a=0,b!=0 with signed linear/constant coefficients; both actual root pairs carry the repeated linear solution."
         },
         {
           "caseId": "coords-vectors-rquad-unequal-root-magnitudes",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe both tiny and huge roots with either linear coefficient sign; focused independent scaling distinguishes the tiny root from zero and preserves branch ordering."
         },
         {
           "caseId": "coords-vectors-rquad-scaled-coefficients",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe common coefficient scaling by1e100 and1e−100; all four ordered root components retain the actual scale-invariant results."
         },
         {
           "caseId": "coords-vectors-rquad-all-zero-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Observe actual SPICE(DEGENERATECASE) when all coefficients vanish; no invented root set is returned."
         },
         {
           "caseId": "coords-vectors-rquad-constant-only-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Observe actual SPICE(DEGENERATECASE) when a=b=0 and constant is nonzero; distinguish from the genuine linear path."
         }
       ],
