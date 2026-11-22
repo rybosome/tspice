@@ -997,6 +997,16 @@ export function createFakeBackend(
   } satisfies FileIoKitApi;
 
   const rawAndKit = {
+    // Deterministic toy values; the fake backend does not execute CSPICE.
+    pi: () => Math.PI,
+    twopi: () => 2 * Math.PI,
+    halfpi: () => Math.PI / 2,
+    dpr: () => 180 / Math.PI,
+    rpd: () => Math.PI / 180,
+    spd: () => 86400,
+    j2000: () => 2451545,
+    j1900: () => 2415020,
+    b1950: () => 2433282.42345905,
     failed: () => spiceFailed,
     reset: () => {
       spiceFailed = false;

@@ -36,6 +36,31 @@ class StepCoordsVectorsSphrec:
 
 
 @dataclass(frozen=True)
+class StepCoordsVectorsPi:
+    op: Literal["coords-vectors.pi"]
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsTwopi:
+    op: Literal["coords-vectors.twopi"]
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsHalfpi:
+    op: Literal["coords-vectors.halfpi"]
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsDpr:
+    op: Literal["coords-vectors.dpr"]
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsRpd:
+    op: Literal["coords-vectors.rpd"]
+
+
+@dataclass(frozen=True)
 class StepCoordsVectorsVnorm:
     op: Literal["coords-vectors.vnorm"]
     v: Vec3

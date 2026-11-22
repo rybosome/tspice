@@ -449,6 +449,10 @@ export function createTimeApi(
   toolkitVersion: string,
 ): TimeApi {
   return {
+    spd: () => module._tspice_spd(),
+    j2000: () => module._tspice_j2000(),
+    j1900: () => module._tspice_j1900(),
+    b1950: () => module._tspice_b1950(),
     tkvrsn: (item) => {
       if (item !== "TOOLKIT") {
         throw new Error(`Unsupported tkvrsn item: ${item}`);

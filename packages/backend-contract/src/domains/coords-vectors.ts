@@ -8,6 +8,56 @@ import type { Mat3RowMajor, SpiceVector3 } from "../shared/types.js";
 
 /** Backend contract for basic coordinate transforms and vector/matrix math. */
 export interface CoordsVectorsApi {
+  /**
+   * Return the CSPICE value of pi (a half turn in radians).
+   *
+   * Dimensionless circle circumference-to-diameter ratio.
+   * Requires no kernels; error-free and has no caller-visible state effects.
+   * @returns The double-precision CSPICE constant.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/pi_c.html
+   */
+  pi(): number;
+
+  /**
+   * Return twice the CSPICE value of pi (a full turn in radians).
+   *
+   * The result is 2 * pi.
+   * Requires no kernels; error-free and has no caller-visible state effects.
+   * @returns The double-precision CSPICE constant.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/twopi_c.html
+   */
+  twopi(): number;
+
+  /**
+   * Return half the CSPICE value of pi (a quarter turn in radians).
+   *
+   * The result is pi / 2.
+   * Requires no kernels; error-free and has no caller-visible state effects.
+   * @returns The double-precision CSPICE constant.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/halfpi_c.html
+   */
+  halfpi(): number;
+
+  /**
+   * Return the number of degrees per radian.
+   *
+   * Multiply an angle in radians by this value to obtain degrees.
+   * Requires no kernels; error-free and has no caller-visible state effects.
+   * @returns The double-precision CSPICE constant.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dpr_c.html
+   */
+  dpr(): number;
+
+  /**
+   * Return the number of radians per degree.
+   *
+   * Multiply an angle in degrees by this value to obtain radians.
+   * Requires no kernels; error-free and has no caller-visible state effects.
+   * @returns The double-precision CSPICE constant.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/rpd_c.html
+   */
+  rpd(): number;
+
   /** SPICE `reclat_c`: rectangular -> latitudinal coordinates. */
   reclat(rect: SpiceVector3): { radius: number; lon: number; lat: number };
   /** SPICE `latrec_c`: latitudinal -> rectangular coordinates. */

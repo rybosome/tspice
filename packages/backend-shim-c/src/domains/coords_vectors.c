@@ -4,6 +4,27 @@
 
 #include <string.h>
 
+// Error-free scalar routines need no output allocation or error-state changes.
+double tspice_pi(void) {
+  return (double)pi_c();
+}
+
+double tspice_twopi(void) {
+  return (double)twopi_c();
+}
+
+double tspice_halfpi(void) {
+  return (double)halfpi_c();
+}
+
+double tspice_dpr(void) {
+  return (double)dpr_c();
+}
+
+double tspice_rpd(void) {
+  return (double)rpd_c();
+}
+
 static void FillMat33(SpiceDouble out[3][3], const double *m3x3) {
   int i;
   int j;

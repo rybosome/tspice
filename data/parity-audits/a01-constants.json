@@ -1,0 +1,503 @@
+{
+  "schemaVersion": 1,
+  "batch": "a01-constants",
+  "traceFiles": [
+    "packages/py-parity-checking/src/run-tspice/domains/coords-vectors.ts",
+    "packages/py-parity-checking/src/run-tspice/domains/time.ts",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/coords_vectors.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/time.py",
+    "packages/py-parity-checking/test/constants.test.ts",
+    "scripts/build-backend-wasm.mjs",
+    "packages/backend-wasm/src/lowlevel/exports.ts",
+    "packages/backend-node/src/lowlevel/binding.ts",
+    "packages/backend-node/test/constants-domain.test.ts",
+    "fixtures/consumer-nodom/src/index.ts",
+    "packages/py-parity-checking/src/run-tspice/dispatch.ts",
+    "packages/py-parity-checking/src/case-types.ts",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/decode.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/__init__.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/coords_vectors.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/time.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/workflow.py"
+  ],
+  "executions": [
+    {
+      "id": "local-a01-bfedb109-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "5c8c959dd391f93ac4b68e17cd48a262aaddb7fab89ffa659319bcaac5d387ba",
+      "caseIds": [
+        "coords-vectors-dpr-constant-repeat-after-reset",
+        "coords-vectors-dpr-constant-value",
+        "coords-vectors-halfpi-constant-repeat-after-reset",
+        "coords-vectors-halfpi-constant-value",
+        "coords-vectors-pi-constant-repeat-after-reset",
+        "coords-vectors-pi-constant-value",
+        "coords-vectors-rpd-constant-repeat-after-reset",
+        "coords-vectors-rpd-constant-value",
+        "coords-vectors-twopi-constant-repeat-after-reset",
+        "coords-vectors-twopi-constant-value",
+        "time-b1950-constant-repeat-after-reset",
+        "time-b1950-constant-value",
+        "time-j1900-constant-repeat-after-reset",
+        "time-j1900-constant-value",
+        "time-j2000-constant-repeat-after-reset",
+        "time-j2000-constant-value",
+        "time-spd-constant-repeat-after-reset",
+        "time-spd-constant-value"
+      ],
+      "observation": "Both complete required local lanes passed with Node 22.23.4, pnpm10.13.1, locked Python3.12.15/SpiceyPy6.0.3 and production CSPICE N0067. Current native-required execution rebuilt/loaded production addon and ran native-presence guard, all2254 live comparisons (1127 per backend), all2471 parity-package tests without skips, 84Node/600WASM/28core/150facade tests. First JS attempts exposed required JSDoc and missing platform staging; repaired before successful complete lanes. No scientific tolerances or native guard weakened."
+    },
+    {
+      "id": "local-a01-bfedb109-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "5c8c959dd391f93ac4b68e17cd48a262aaddb7fab89ffa659319bcaac5d387ba",
+      "caseIds": [
+        "coords-vectors-dpr-constant-repeat-after-reset",
+        "coords-vectors-dpr-constant-value",
+        "coords-vectors-halfpi-constant-repeat-after-reset",
+        "coords-vectors-halfpi-constant-value",
+        "coords-vectors-pi-constant-repeat-after-reset",
+        "coords-vectors-pi-constant-value",
+        "coords-vectors-rpd-constant-repeat-after-reset",
+        "coords-vectors-rpd-constant-value",
+        "coords-vectors-twopi-constant-repeat-after-reset",
+        "coords-vectors-twopi-constant-value",
+        "time-b1950-constant-repeat-after-reset",
+        "time-b1950-constant-value",
+        "time-j1900-constant-repeat-after-reset",
+        "time-j1900-constant-value",
+        "time-j2000-constant-repeat-after-reset",
+        "time-j2000-constant-value",
+        "time-spd-constant-repeat-after-reset",
+        "time-spd-constant-value"
+      ],
+      "observation": "Both complete required local lanes passed with Node 22.23.4, pnpm10.13.1, locked Python3.12.15/SpiceyPy6.0.3 and production CSPICE N0067. Current native-required execution rebuilt/loaded production addon and ran native-presence guard, all2254 live comparisons (1127 per backend), all2471 parity-package tests without skips, 84Node/600WASM/28core/150facade tests. First JS attempts exposed required JSDoc and missing platform staging; repaired before successful complete lanes. No scientific tolerances or native guard weakened."
+    },
+    {
+      "id": "ci-a01-bfedb109-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "5c8c959dd391f93ac4b68e17cd48a262aaddb7fab89ffa659319bcaac5d387ba",
+      "caseIds": [
+        "coords-vectors-dpr-constant-repeat-after-reset",
+        "coords-vectors-dpr-constant-value",
+        "coords-vectors-halfpi-constant-repeat-after-reset",
+        "coords-vectors-halfpi-constant-value",
+        "coords-vectors-pi-constant-repeat-after-reset",
+        "coords-vectors-pi-constant-value",
+        "coords-vectors-rpd-constant-repeat-after-reset",
+        "coords-vectors-rpd-constant-value",
+        "coords-vectors-twopi-constant-repeat-after-reset",
+        "coords-vectors-twopi-constant-value",
+        "time-b1950-constant-repeat-after-reset",
+        "time-b1950-constant-value",
+        "time-j1900-constant-repeat-after-reset",
+        "time-j1900-constant-value",
+        "time-j2000-constant-repeat-after-reset",
+        "time-j2000-constant-value",
+        "time-spd-constant-repeat-after-reset",
+        "time-spd-constant-value"
+      ],
+      "commit": "bfedb1098e738e821b831ba9d1f9d6f7bc24c637",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43536295333/job/132265992665",
+      "observation": "Inspected successful canonical Linux Node 22 native-required job on bfedb109: production N0067 addon built and loaded, native-required assertion executed, parity test task was a cache miss and all 2254 live comparisons passed (1127 scenarios per actual backend). All 2471 parity-package tests passed with no skips, plus 84 Node / 600 WASM / 28 core / 150 facade tests. New exact constants and native boundary tests executed. No job retry; remaining matrix jobs are tracked separately."
+    },
+    {
+      "id": "ci-a01-bfedb109-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "5c8c959dd391f93ac4b68e17cd48a262aaddb7fab89ffa659319bcaac5d387ba",
+      "caseIds": [
+        "coords-vectors-dpr-constant-repeat-after-reset",
+        "coords-vectors-dpr-constant-value",
+        "coords-vectors-halfpi-constant-repeat-after-reset",
+        "coords-vectors-halfpi-constant-value",
+        "coords-vectors-pi-constant-repeat-after-reset",
+        "coords-vectors-pi-constant-value",
+        "coords-vectors-rpd-constant-repeat-after-reset",
+        "coords-vectors-rpd-constant-value",
+        "coords-vectors-twopi-constant-repeat-after-reset",
+        "coords-vectors-twopi-constant-value",
+        "time-b1950-constant-repeat-after-reset",
+        "time-b1950-constant-value",
+        "time-j1900-constant-repeat-after-reset",
+        "time-j1900-constant-value",
+        "time-j2000-constant-repeat-after-reset",
+        "time-j2000-constant-value",
+        "time-spd-constant-repeat-after-reset",
+        "time-spd-constant-value"
+      ],
+      "commit": "bfedb1098e738e821b831ba9d1f9d6f7bc24c637",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43536295333/job/132265992665",
+      "observation": "Inspected successful canonical Linux Node 22 native-required job on bfedb109: production N0067 addon built and loaded, native-required assertion executed, parity test task was a cache miss and all 2254 live comparisons passed (1127 scenarios per actual backend). All 2471 parity-package tests passed with no skips, plus 84 Node / 600 WASM / 28 core / 150 facade tests. New exact constants and native boundary tests executed. No job retry; remaining matrix jobs are tracked separately."
+    }
+  ],
+  "routines": [
+    {
+      "routine": "pi_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/pi_c.html",
+      "semantics": "SpiceDouble pi_c(void), raw.pi(): number. Returns pi radians, computed by CSPICE as acos(-1). No inputs, capacities, indexing, kernel requirement, handles, ownership transfer or observable mutable state.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-pi-constant-value",
+          "coverage": ["success"],
+          "observes": "Actual raw.pi return is propagated as StepOutput.value and compared with direct locked SpiceyPy pi execution; full double scalar is retained without normalization."
+        },
+        {
+          "caseId": "coords-vectors-pi-constant-repeat-after-reset",
+          "coverage": ["success", "state"],
+          "observes": "Actual raw.pi return is propagated as StepOutput.value and compared with direct locked SpiceyPy pi execution; repeat around kclear/reset observes unchanged value without kernels."
+        }
+      ],
+      "edgeAssessment": "Zero-argument constant has no input boundaries or legitimate absence; repeated calls and clearing state are covered. The focused constant test supplements registered parity with exact live-oracle equality, unit relationships and Julian-day magnitude/fraction assertions.",
+      "errorAssessment": "NAIF and pinned N0067 source document an error-free routine. No fabricated input/error test. Direct shared-C return does not allocate or inspect/reset CSPICE error state. Node adapter separately rejects malformed native results.",
+      "fixtures": [],
+      "fixtureRationale": "No kernels, files, scientific datasets or authored fixtures needed; all values are returned live by CSPICE through both independent bindings.",
+      "cleanup": "No output buffers or handles allocated by the scalar shim/WASM path; Node serializes CSPICE access under the existing mutex. Case/backend finalizers retain standard clear/reset/dispose behavior.",
+      "tolerance": "Registered parity keeps the unchanged 1e-12 absolute-or-relative comparator. Focused constants.test.ts additionally compares actual scalar results exactly with live SpiceyPy, preventing tolerance at Julian-date magnitude from concealing a lost B1950 fractional day. No global tolerance changes.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.pi -> Node domain adapter -> registered native scalar handler under g_cspice_mutex -> tspice_pi shared C shim -> pi_c; double scalar returned directly.",
+          "executions": ["local-a01-bfedb109-node", "ci-a01-bfedb109-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.pi -> WASM domain adapter -> typed/build-configured/binary _tspice_pi -> tspice_pi shared C shim -> pi_c; double scalar returned directly.",
+          "executions": ["local-a01-bfedb109-wasm", "ci-a01-bfedb109-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "twopi_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/twopi_c.html",
+      "semantics": "SpiceDouble twopi_c(void), raw.twopi(): number. Returns 2*pi radians. No inputs, capacities, indexing, kernel requirement, handles, ownership transfer or observable mutable state.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-twopi-constant-value",
+          "coverage": ["success"],
+          "observes": "Actual raw.twopi return is propagated as StepOutput.value and compared with direct locked SpiceyPy twopi execution; full double scalar is retained without normalization."
+        },
+        {
+          "caseId": "coords-vectors-twopi-constant-repeat-after-reset",
+          "coverage": ["success", "state"],
+          "observes": "Actual raw.twopi return is propagated as StepOutput.value and compared with direct locked SpiceyPy twopi execution; repeat around kclear/reset observes unchanged value without kernels."
+        }
+      ],
+      "edgeAssessment": "Zero-argument constant has no input boundaries or legitimate absence; repeated calls and clearing state are covered. The focused constant test supplements registered parity with exact live-oracle equality, unit relationships and Julian-day magnitude/fraction assertions.",
+      "errorAssessment": "NAIF and pinned N0067 source document an error-free routine. No fabricated input/error test. Direct shared-C return does not allocate or inspect/reset CSPICE error state. Node adapter separately rejects malformed native results.",
+      "fixtures": [],
+      "fixtureRationale": "No kernels, files, scientific datasets or authored fixtures needed; all values are returned live by CSPICE through both independent bindings.",
+      "cleanup": "No output buffers or handles allocated by the scalar shim/WASM path; Node serializes CSPICE access under the existing mutex. Case/backend finalizers retain standard clear/reset/dispose behavior.",
+      "tolerance": "Registered parity keeps the unchanged 1e-12 absolute-or-relative comparator. Focused constants.test.ts additionally compares actual scalar results exactly with live SpiceyPy, preventing tolerance at Julian-date magnitude from concealing a lost B1950 fractional day. No global tolerance changes.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.twopi -> Node domain adapter -> registered native scalar handler under g_cspice_mutex -> tspice_twopi shared C shim -> twopi_c; double scalar returned directly.",
+          "executions": ["local-a01-bfedb109-node", "ci-a01-bfedb109-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.twopi -> WASM domain adapter -> typed/build-configured/binary _tspice_twopi -> tspice_twopi shared C shim -> twopi_c; double scalar returned directly.",
+          "executions": ["local-a01-bfedb109-wasm", "ci-a01-bfedb109-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "halfpi_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/halfpi_c.html",
+      "semantics": "SpiceDouble halfpi_c(void), raw.halfpi(): number. Returns pi/2 radians. No inputs, capacities, indexing, kernel requirement, handles, ownership transfer or observable mutable state.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-halfpi-constant-value",
+          "coverage": ["success"],
+          "observes": "Actual raw.halfpi return is propagated as StepOutput.value and compared with direct locked SpiceyPy halfpi execution; full double scalar is retained without normalization."
+        },
+        {
+          "caseId": "coords-vectors-halfpi-constant-repeat-after-reset",
+          "coverage": ["success", "state"],
+          "observes": "Actual raw.halfpi return is propagated as StepOutput.value and compared with direct locked SpiceyPy halfpi execution; repeat around kclear/reset observes unchanged value without kernels."
+        }
+      ],
+      "edgeAssessment": "Zero-argument constant has no input boundaries or legitimate absence; repeated calls and clearing state are covered. The focused constant test supplements registered parity with exact live-oracle equality, unit relationships and Julian-day magnitude/fraction assertions.",
+      "errorAssessment": "NAIF and pinned N0067 source document an error-free routine. No fabricated input/error test. Direct shared-C return does not allocate or inspect/reset CSPICE error state. Node adapter separately rejects malformed native results.",
+      "fixtures": [],
+      "fixtureRationale": "No kernels, files, scientific datasets or authored fixtures needed; all values are returned live by CSPICE through both independent bindings.",
+      "cleanup": "No output buffers or handles allocated by the scalar shim/WASM path; Node serializes CSPICE access under the existing mutex. Case/backend finalizers retain standard clear/reset/dispose behavior.",
+      "tolerance": "Registered parity keeps the unchanged 1e-12 absolute-or-relative comparator. Focused constants.test.ts additionally compares actual scalar results exactly with live SpiceyPy, preventing tolerance at Julian-date magnitude from concealing a lost B1950 fractional day. No global tolerance changes.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.halfpi -> Node domain adapter -> registered native scalar handler under g_cspice_mutex -> tspice_halfpi shared C shim -> halfpi_c; double scalar returned directly.",
+          "executions": ["local-a01-bfedb109-node", "ci-a01-bfedb109-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.halfpi -> WASM domain adapter -> typed/build-configured/binary _tspice_halfpi -> tspice_halfpi shared C shim -> halfpi_c; double scalar returned directly.",
+          "executions": ["local-a01-bfedb109-wasm", "ci-a01-bfedb109-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "dpr_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dpr_c.html",
+      "semantics": "SpiceDouble dpr_c(void), raw.dpr(): number. Returns degrees per radian (180/pi). No inputs, capacities, indexing, kernel requirement, handles, ownership transfer or observable mutable state.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-dpr-constant-value",
+          "coverage": ["success"],
+          "observes": "Actual raw.dpr return is propagated as StepOutput.value and compared with direct locked SpiceyPy dpr execution; full double scalar is retained without normalization."
+        },
+        {
+          "caseId": "coords-vectors-dpr-constant-repeat-after-reset",
+          "coverage": ["success", "state"],
+          "observes": "Actual raw.dpr return is propagated as StepOutput.value and compared with direct locked SpiceyPy dpr execution; repeat around kclear/reset observes unchanged value without kernels."
+        }
+      ],
+      "edgeAssessment": "Zero-argument constant has no input boundaries or legitimate absence; repeated calls and clearing state are covered. The focused constant test supplements registered parity with exact live-oracle equality, unit relationships and Julian-day magnitude/fraction assertions.",
+      "errorAssessment": "NAIF and pinned N0067 source document an error-free routine. No fabricated input/error test. Direct shared-C return does not allocate or inspect/reset CSPICE error state. Node adapter separately rejects malformed native results.",
+      "fixtures": [],
+      "fixtureRationale": "No kernels, files, scientific datasets or authored fixtures needed; all values are returned live by CSPICE through both independent bindings.",
+      "cleanup": "No output buffers or handles allocated by the scalar shim/WASM path; Node serializes CSPICE access under the existing mutex. Case/backend finalizers retain standard clear/reset/dispose behavior.",
+      "tolerance": "Registered parity keeps the unchanged 1e-12 absolute-or-relative comparator. Focused constants.test.ts additionally compares actual scalar results exactly with live SpiceyPy, preventing tolerance at Julian-date magnitude from concealing a lost B1950 fractional day. No global tolerance changes.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.dpr -> Node domain adapter -> registered native scalar handler under g_cspice_mutex -> tspice_dpr shared C shim -> dpr_c; double scalar returned directly.",
+          "executions": ["local-a01-bfedb109-node", "ci-a01-bfedb109-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.dpr -> WASM domain adapter -> typed/build-configured/binary _tspice_dpr -> tspice_dpr shared C shim -> dpr_c; double scalar returned directly.",
+          "executions": ["local-a01-bfedb109-wasm", "ci-a01-bfedb109-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "rpd_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/rpd_c.html",
+      "semantics": "SpiceDouble rpd_c(void), raw.rpd(): number. Returns radians per degree (pi/180). No inputs, capacities, indexing, kernel requirement, handles, ownership transfer or observable mutable state.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-rpd-constant-value",
+          "coverage": ["success"],
+          "observes": "Actual raw.rpd return is propagated as StepOutput.value and compared with direct locked SpiceyPy rpd execution; full double scalar is retained without normalization."
+        },
+        {
+          "caseId": "coords-vectors-rpd-constant-repeat-after-reset",
+          "coverage": ["success", "state"],
+          "observes": "Actual raw.rpd return is propagated as StepOutput.value and compared with direct locked SpiceyPy rpd execution; repeat around kclear/reset observes unchanged value without kernels."
+        }
+      ],
+      "edgeAssessment": "Zero-argument constant has no input boundaries or legitimate absence; repeated calls and clearing state are covered. The focused constant test supplements registered parity with exact live-oracle equality, unit relationships and Julian-day magnitude/fraction assertions.",
+      "errorAssessment": "NAIF and pinned N0067 source document an error-free routine. No fabricated input/error test. Direct shared-C return does not allocate or inspect/reset CSPICE error state. Node adapter separately rejects malformed native results.",
+      "fixtures": [],
+      "fixtureRationale": "No kernels, files, scientific datasets or authored fixtures needed; all values are returned live by CSPICE through both independent bindings.",
+      "cleanup": "No output buffers or handles allocated by the scalar shim/WASM path; Node serializes CSPICE access under the existing mutex. Case/backend finalizers retain standard clear/reset/dispose behavior.",
+      "tolerance": "Registered parity keeps the unchanged 1e-12 absolute-or-relative comparator. Focused constants.test.ts additionally compares actual scalar results exactly with live SpiceyPy, preventing tolerance at Julian-date magnitude from concealing a lost B1950 fractional day. No global tolerance changes.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.rpd -> Node domain adapter -> registered native scalar handler under g_cspice_mutex -> tspice_rpd shared C shim -> rpd_c; double scalar returned directly.",
+          "executions": ["local-a01-bfedb109-node", "ci-a01-bfedb109-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.rpd -> WASM domain adapter -> typed/build-configured/binary _tspice_rpd -> tspice_rpd shared C shim -> rpd_c; double scalar returned directly.",
+          "executions": ["local-a01-bfedb109-wasm", "ci-a01-bfedb109-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "spd_c",
+      "contract": "packages/backend-contract/src/domains/time.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spd_c.html",
+      "semantics": "SpiceDouble spd_c(void), raw.spd(): number. Returns 86400 seconds per nominal day; not an epoch-dependent UTC day length. No inputs, capacities, indexing, kernel requirement, handles, ownership transfer or observable mutable state.",
+      "scenarios": [
+        {
+          "caseId": "time-spd-constant-value",
+          "coverage": ["success"],
+          "observes": "Actual raw.spd return is propagated as StepOutput.value and compared with direct locked SpiceyPy spd execution; full double scalar is retained without normalization."
+        },
+        {
+          "caseId": "time-spd-constant-repeat-after-reset",
+          "coverage": ["success", "state"],
+          "observes": "Actual raw.spd return is propagated as StepOutput.value and compared with direct locked SpiceyPy spd execution; repeat around kclear/reset observes unchanged value without kernels."
+        }
+      ],
+      "edgeAssessment": "Zero-argument constant has no input boundaries or legitimate absence; repeated calls and clearing state are covered. The focused constant test supplements registered parity with exact live-oracle equality, unit relationships and Julian-day magnitude/fraction assertions.",
+      "errorAssessment": "NAIF and pinned N0067 source document an error-free routine. No fabricated input/error test. Direct shared-C return does not allocate or inspect/reset CSPICE error state. Node adapter separately rejects malformed native results.",
+      "fixtures": [],
+      "fixtureRationale": "No kernels, files, scientific datasets or authored fixtures needed; all values are returned live by CSPICE through both independent bindings.",
+      "cleanup": "No output buffers or handles allocated by the scalar shim/WASM path; Node serializes CSPICE access under the existing mutex. Case/backend finalizers retain standard clear/reset/dispose behavior.",
+      "tolerance": "Registered parity keeps the unchanged 1e-12 absolute-or-relative comparator. Focused constants.test.ts additionally compares actual scalar results exactly with live SpiceyPy, preventing tolerance at Julian-date magnitude from concealing a lost B1950 fractional day. No global tolerance changes.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.spd -> Node domain adapter -> registered native scalar handler under g_cspice_mutex -> tspice_spd shared C shim -> spd_c; double scalar returned directly.",
+          "executions": ["local-a01-bfedb109-node", "ci-a01-bfedb109-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.spd -> WASM domain adapter -> typed/build-configured/binary _tspice_spd -> tspice_spd shared C shim -> spd_c; double scalar returned directly.",
+          "executions": ["local-a01-bfedb109-wasm", "ci-a01-bfedb109-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "j2000_c",
+      "contract": "packages/backend-contract/src/domains/time.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/j2000_c.html",
+      "semantics": "SpiceDouble j2000_c(void), raw.j2000(): number. Returns 2451545.0 Julian days at Julian epoch 2000.0 (2000-01-01 noon), not ET seconds. No inputs, capacities, indexing, kernel requirement, handles, ownership transfer or observable mutable state.",
+      "scenarios": [
+        {
+          "caseId": "time-j2000-constant-value",
+          "coverage": ["success"],
+          "observes": "Actual raw.j2000 return is propagated as StepOutput.value and compared with direct locked SpiceyPy j2000 execution; full double scalar is retained without normalization."
+        },
+        {
+          "caseId": "time-j2000-constant-repeat-after-reset",
+          "coverage": ["success", "state"],
+          "observes": "Actual raw.j2000 return is propagated as StepOutput.value and compared with direct locked SpiceyPy j2000 execution; repeat around kclear/reset observes unchanged value without kernels."
+        }
+      ],
+      "edgeAssessment": "Zero-argument constant has no input boundaries or legitimate absence; repeated calls and clearing state are covered. The focused constant test supplements registered parity with exact live-oracle equality, unit relationships and Julian-day magnitude/fraction assertions.",
+      "errorAssessment": "NAIF and pinned N0067 source document an error-free routine. No fabricated input/error test. Direct shared-C return does not allocate or inspect/reset CSPICE error state. Node adapter separately rejects malformed native results.",
+      "fixtures": [],
+      "fixtureRationale": "No kernels, files, scientific datasets or authored fixtures needed; all values are returned live by CSPICE through both independent bindings.",
+      "cleanup": "No output buffers or handles allocated by the scalar shim/WASM path; Node serializes CSPICE access under the existing mutex. Case/backend finalizers retain standard clear/reset/dispose behavior.",
+      "tolerance": "Registered parity keeps the unchanged 1e-12 absolute-or-relative comparator. Focused constants.test.ts additionally compares actual scalar results exactly with live SpiceyPy, preventing tolerance at Julian-date magnitude from concealing a lost B1950 fractional day. No global tolerance changes.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.j2000 -> Node domain adapter -> registered native scalar handler under g_cspice_mutex -> tspice_j2000 shared C shim -> j2000_c; double scalar returned directly.",
+          "executions": ["local-a01-bfedb109-node", "ci-a01-bfedb109-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.j2000 -> WASM domain adapter -> typed/build-configured/binary _tspice_j2000 -> tspice_j2000 shared C shim -> j2000_c; double scalar returned directly.",
+          "executions": ["local-a01-bfedb109-wasm", "ci-a01-bfedb109-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "j1900_c",
+      "contract": "packages/backend-contract/src/domains/time.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/j1900_c.html",
+      "semantics": "SpiceDouble j1900_c(void), raw.j1900(): number. Returns 2415020.0 Julian days at Julian epoch 1900.0 (1899-12-31 noon), not ET seconds. No inputs, capacities, indexing, kernel requirement, handles, ownership transfer or observable mutable state.",
+      "scenarios": [
+        {
+          "caseId": "time-j1900-constant-value",
+          "coverage": ["success"],
+          "observes": "Actual raw.j1900 return is propagated as StepOutput.value and compared with direct locked SpiceyPy j1900 execution; full double scalar is retained without normalization."
+        },
+        {
+          "caseId": "time-j1900-constant-repeat-after-reset",
+          "coverage": ["success", "state"],
+          "observes": "Actual raw.j1900 return is propagated as StepOutput.value and compared with direct locked SpiceyPy j1900 execution; repeat around kclear/reset observes unchanged value without kernels."
+        }
+      ],
+      "edgeAssessment": "Zero-argument constant has no input boundaries or legitimate absence; repeated calls and clearing state are covered. The focused constant test supplements registered parity with exact live-oracle equality, unit relationships and Julian-day magnitude/fraction assertions.",
+      "errorAssessment": "NAIF and pinned N0067 source document an error-free routine. No fabricated input/error test. Direct shared-C return does not allocate or inspect/reset CSPICE error state. Node adapter separately rejects malformed native results.",
+      "fixtures": [],
+      "fixtureRationale": "No kernels, files, scientific datasets or authored fixtures needed; all values are returned live by CSPICE through both independent bindings.",
+      "cleanup": "No output buffers or handles allocated by the scalar shim/WASM path; Node serializes CSPICE access under the existing mutex. Case/backend finalizers retain standard clear/reset/dispose behavior.",
+      "tolerance": "Registered parity keeps the unchanged 1e-12 absolute-or-relative comparator. Focused constants.test.ts additionally compares actual scalar results exactly with live SpiceyPy, preventing tolerance at Julian-date magnitude from concealing a lost B1950 fractional day. No global tolerance changes.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.j1900 -> Node domain adapter -> registered native scalar handler under g_cspice_mutex -> tspice_j1900 shared C shim -> j1900_c; double scalar returned directly.",
+          "executions": ["local-a01-bfedb109-node", "ci-a01-bfedb109-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.j1900 -> WASM domain adapter -> typed/build-configured/binary _tspice_j1900 -> tspice_j1900 shared C shim -> j1900_c; double scalar returned directly.",
+          "executions": ["local-a01-bfedb109-wasm", "ci-a01-bfedb109-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "b1950_c",
+      "contract": "packages/backend-contract/src/domains/time.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/b1950_c.html",
+      "semantics": "SpiceDouble b1950_c(void), raw.b1950(): number. Returns 2433282.42345905 Julian days at Besselian epoch 1950.0; the fractional day is retained, not ET seconds. No inputs, capacities, indexing, kernel requirement, handles, ownership transfer or observable mutable state.",
+      "scenarios": [
+        {
+          "caseId": "time-b1950-constant-value",
+          "coverage": ["success"],
+          "observes": "Actual raw.b1950 return is propagated as StepOutput.value and compared with direct locked SpiceyPy b1950 execution; full double scalar is retained without normalization."
+        },
+        {
+          "caseId": "time-b1950-constant-repeat-after-reset",
+          "coverage": ["success", "state"],
+          "observes": "Actual raw.b1950 return is propagated as StepOutput.value and compared with direct locked SpiceyPy b1950 execution; repeat around kclear/reset observes unchanged value without kernels."
+        }
+      ],
+      "edgeAssessment": "Zero-argument constant has no input boundaries or legitimate absence; repeated calls and clearing state are covered. The focused constant test supplements registered parity with exact live-oracle equality, unit relationships and Julian-day magnitude/fraction assertions.",
+      "errorAssessment": "NAIF and pinned N0067 source document an error-free routine. No fabricated input/error test. Direct shared-C return does not allocate or inspect/reset CSPICE error state. Node adapter separately rejects malformed native results.",
+      "fixtures": [],
+      "fixtureRationale": "No kernels, files, scientific datasets or authored fixtures needed; all values are returned live by CSPICE through both independent bindings.",
+      "cleanup": "No output buffers or handles allocated by the scalar shim/WASM path; Node serializes CSPICE access under the existing mutex. Case/backend finalizers retain standard clear/reset/dispose behavior.",
+      "tolerance": "Registered parity keeps the unchanged 1e-12 absolute-or-relative comparator. Focused constants.test.ts additionally compares actual scalar results exactly with live SpiceyPy, preventing tolerance at Julian-date magnitude from concealing a lost B1950 fractional day. No global tolerance changes.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.b1950 -> Node domain adapter -> registered native scalar handler under g_cspice_mutex -> tspice_b1950 shared C shim -> b1950_c; double scalar returned directly.",
+          "executions": ["local-a01-bfedb109-node", "ci-a01-bfedb109-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.b1950 -> WASM domain adapter -> typed/build-configured/binary _tspice_b1950 -> tspice_b1950 shared C shim -> b1950_c; double scalar returned directly.",
+          "executions": ["local-a01-bfedb109-wasm", "ci-a01-bfedb109-wasm"]
+        }
+      }
+    }
+  ],
+  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
+}

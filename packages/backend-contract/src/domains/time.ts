@@ -12,6 +12,46 @@ export interface TimeKitApi {
 /** Time-domain backend API surface over SPICE primitives. */
 export interface TimeApi {
   /**
+   * Return 86400 seconds per uniform day.
+   *
+   * This fixed conversion factor does not count UTC leap seconds.
+   * Requires no kernels; error-free and has no caller-visible state effects.
+   * @returns The double-precision CSPICE constant.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spd_c.html
+   */
+  spd(): number;
+
+  /**
+   * Return Julian date 2451545.0 for 2000 JAN 01 12:00:00.
+   *
+   * The result is a Julian date in days, not ET seconds past J2000.
+   * Requires no kernels; error-free and has no caller-visible state effects.
+   * @returns The double-precision CSPICE constant.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/j2000_c.html
+   */
+  j2000(): number;
+
+  /**
+   * Return Julian date 2415020.0 for 1899 DEC 31 12:00:00.
+   *
+   * The result is a Julian date in days, not ET seconds past J2000.
+   * Requires no kernels; error-free and has no caller-visible state effects.
+   * @returns The double-precision CSPICE constant.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/j1900_c.html
+   */
+  j1900(): number;
+
+  /**
+   * Return Julian date 2433282.42345905 for Besselian epoch 1950.0.
+   *
+   * The result is a Julian ephemeris date in days, not ET seconds past J2000.
+   * Requires no kernels; error-free and has no caller-visible state effects.
+   * @returns The double-precision CSPICE constant.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/b1950_c.html
+   */
+  b1950(): number;
+
+  /**
    * Thin wrapper over the SPICE primitive `tkvrsn()`.
    *
    * Only TOOLKIT is exposed; other items are rejected by this contract. The

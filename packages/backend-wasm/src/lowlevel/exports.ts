@@ -12,6 +12,17 @@ export type EmscriptenModule = {
   HEAP32: Int32Array;
   HEAPF64: Float64Array;
 
+  // Error-free scalar constants return their double directly.
+  _tspice_pi(): number;
+  _tspice_twopi(): number;
+  _tspice_halfpi(): number;
+  _tspice_dpr(): number;
+  _tspice_rpd(): number;
+  _tspice_spd(): number;
+  _tspice_j2000(): number;
+  _tspice_j1900(): number;
+  _tspice_b1950(): number;
+
   // --- error/status utilities ---
   _tspice_get_last_error_short(outPtr: number, outMaxBytes: number): number;
   _tspice_get_last_error_long(outPtr: number, outMaxBytes: number): number;

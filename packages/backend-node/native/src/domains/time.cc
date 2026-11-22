@@ -10,6 +10,46 @@ using tspice_napi::SetExportChecked;
 using tspice_napi::PreviewForError;
 using tspice_napi::ThrowSpiceError;
 
+static Napi::Number Spd(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 0) {
+    ThrowSpiceError(Napi::TypeError::New(env, "spd() expects no arguments"));
+    return Napi::Number::New(env, 0);
+  }
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  return Napi::Number::New(env, tspice_spd());
+}
+
+static Napi::Number J2000(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 0) {
+    ThrowSpiceError(Napi::TypeError::New(env, "j2000() expects no arguments"));
+    return Napi::Number::New(env, 0);
+  }
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  return Napi::Number::New(env, tspice_j2000());
+}
+
+static Napi::Number J1900(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 0) {
+    ThrowSpiceError(Napi::TypeError::New(env, "j1900() expects no arguments"));
+    return Napi::Number::New(env, 0);
+  }
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  return Napi::Number::New(env, tspice_j1900());
+}
+
+static Napi::Number B1950(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 0) {
+    ThrowSpiceError(Napi::TypeError::New(env, "b1950() expects no arguments"));
+    return Napi::Number::New(env, 0);
+  }
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  return Napi::Number::New(env, tspice_b1950());
+}
+
 static Napi::Number Str2et(const Napi::CallbackInfo& info) {
   Napi::Env env = info.Env();
 
@@ -375,6 +415,10 @@ static Napi::Number Sce2c(const Napi::CallbackInfo& info) {
 namespace tspice_backend_node {
 
 void RegisterTime(Napi::Env env, Napi::Object exports) {
+  if (!SetExportChecked(env, exports, "spd", Napi::Function::New(env, Spd), __func__)) return;
+  if (!SetExportChecked(env, exports, "j2000", Napi::Function::New(env, J2000), __func__)) return;
+  if (!SetExportChecked(env, exports, "j1900", Napi::Function::New(env, J1900), __func__)) return;
+  if (!SetExportChecked(env, exports, "b1950", Napi::Function::New(env, B1950), __func__)) return;
   if (!SetExportChecked(env, exports, "str2et", Napi::Function::New(env, Str2et), __func__)) return;
   if (!SetExportChecked(env, exports, "et2utc", Napi::Function::New(env, Et2utc), __func__)) return;
   if (!SetExportChecked(env, exports, "timout", Napi::Function::New(env, Timout), __func__)) return;

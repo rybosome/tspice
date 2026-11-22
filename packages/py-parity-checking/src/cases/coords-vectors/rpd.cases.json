@@ -1,0 +1,38 @@
+[
+  {
+    "caseId": "coords-vectors-rpd-constant-value",
+    "description": "rpd: compare radians per degree returned by actual raw and live SpiceyPy without kernels.",
+    "workflow": [
+      {
+        "op": "coords-vectors.rpd"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-rpd-constant-repeat-after-reset",
+    "description": "rpd: repeat the raw constant across kernel clear and error reset; all three returned values are compared.",
+    "workflow": [
+      {
+        "op": "coords-vectors.rpd"
+      },
+      {
+        "op": "kernels.kclear"
+      },
+      {
+        "op": "coords-vectors.rpd"
+      },
+      {
+        "op": "error.reset"
+      },
+      {
+        "op": "coords-vectors.rpd"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

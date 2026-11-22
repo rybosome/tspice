@@ -12,6 +12,11 @@ import cellsWindowsWncardCasesRaw from "./cells-windows/wncard.cases.json" with 
 import cellsWindowsWnfetdCasesRaw from "./cells-windows/wnfetd.cases.json" with { type: "json" };
 import cellsWindowsWninsdCasesRaw from "./cells-windows/wninsd.cases.json" with { type: "json" };
 import cellsWindowsWnvaldCasesRaw from "./cells-windows/wnvald.cases.json" with { type: "json" };
+import coordsVectorsPiCasesRaw from "./coords-vectors/pi.cases.json" with { type: "json" };
+import coordsVectorsTwopiCasesRaw from "./coords-vectors/twopi.cases.json" with { type: "json" };
+import coordsVectorsHalfpiCasesRaw from "./coords-vectors/halfpi.cases.json" with { type: "json" };
+import coordsVectorsDprCasesRaw from "./coords-vectors/dpr.cases.json" with { type: "json" };
+import coordsVectorsRpdCasesRaw from "./coords-vectors/rpd.cases.json" with { type: "json" };
 import coordsVectorsAxisarCasesRaw from "./coords-vectors/axisar.cases.json" with { type: "json" };
 import coordsVectorsGeorecCasesRaw from "./coords-vectors/georec.cases.json" with { type: "json" };
 import coordsVectorsLatrecCasesRaw from "./coords-vectors/latrec.cases.json" with { type: "json" };
@@ -111,6 +116,10 @@ import idsNamesBods2cCasesRaw from "./ids-names/bods2c.cases.json" with { type: 
 import idsNamesBodvarCasesRaw from "./ids-names/bodvar.cases.json" with { type: "json" };
 import { kernelPoolCases } from "./kernel-pool/index.js";
 import { kernelsCases } from "./kernels/index.js";
+import timeSpdCasesRaw from "./time/spd.cases.json" with { type: "json" };
+import timeJ2000CasesRaw from "./time/j2000.cases.json" with { type: "json" };
+import timeJ1900CasesRaw from "./time/j1900.cases.json" with { type: "json" };
+import timeB1950CasesRaw from "./time/b1950.cases.json" with { type: "json" };
 import timeDeltetCasesRaw from "./time/deltet.cases.json" with { type: "json" };
 import timeEt2UtcCasesRaw from "./time/et2utc.cases.json" with { type: "json" };
 import timeScdecdCasesRaw from "./time/scdecd.cases.json" with { type: "json" };
@@ -128,6 +137,11 @@ import timeTpictrCasesRaw from "./time/tpictr.cases.json" with { type: "json" };
 import timeUnitimCasesRaw from "./time/unitim.cases.json" with { type: "json" };
 
 export const timeCases: ParityCase[] = [
+  ...(timeSpdCasesRaw as ParityCase[]),
+  ...(timeJ2000CasesRaw as ParityCase[]),
+  ...(timeJ1900CasesRaw as ParityCase[]),
+  ...(timeB1950CasesRaw as ParityCase[]),
+
   ...(timeStr2EtCasesRaw as ParityCase[]),
   ...(timeEt2UtcCasesRaw as ParityCase[]),
   ...(timeTimdefCasesRaw as ParityCase[]),
@@ -154,7 +168,14 @@ export const idsNamesCases: ParityCase[] = [
   ...(idsNamesBods2cCasesRaw as ParityCase[]),
   ...(idsNamesBodvarCasesRaw as ParityCase[]),
 ];
+
 export const coordsVectorsCases: ParityCase[] = [
+  ...(coordsVectorsPiCasesRaw as ParityCase[]),
+  ...(coordsVectorsTwopiCasesRaw as ParityCase[]),
+  ...(coordsVectorsHalfpiCasesRaw as ParityCase[]),
+  ...(coordsVectorsDprCasesRaw as ParityCase[]),
+  ...(coordsVectorsRpdCasesRaw as ParityCase[]),
+
   ...(coordsVectorsReclatCasesRaw as ParityCase[]),
   ...(coordsVectorsLatrecCasesRaw as ParityCase[]),
   ...(coordsVectorsRecsphCasesRaw as ParityCase[]),

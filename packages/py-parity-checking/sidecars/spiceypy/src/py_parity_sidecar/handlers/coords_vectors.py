@@ -20,6 +20,11 @@ from ..models import (
     StepCoordsVectorsVdot,
     StepCoordsVectorsVhat,
     StepCoordsVectorsVminus,
+    StepCoordsVectorsPi,
+    StepCoordsVectorsTwopi,
+    StepCoordsVectorsHalfpi,
+    StepCoordsVectorsDpr,
+    StepCoordsVectorsRpd,
     StepCoordsVectorsVnorm,
     StepCoordsVectorsVscl,
     StepCoordsVectorsVsub,
@@ -66,6 +71,21 @@ def run_coords_vectors_step(step: WorkflowStep, _context: SidecarRuntimeContext)
     if isinstance(step, StepCoordsVectorsSphrec):
         out = sp.sphrec(step.radius, step.colat, step.lon)
         return StepOutput(op=step.op, value=_to_vec3(out))
+
+    if isinstance(step, StepCoordsVectorsPi):
+        return StepOutput(op=step.op, value=float(sp.pi()))
+
+    if isinstance(step, StepCoordsVectorsTwopi):
+        return StepOutput(op=step.op, value=float(sp.twopi()))
+
+    if isinstance(step, StepCoordsVectorsHalfpi):
+        return StepOutput(op=step.op, value=float(sp.halfpi()))
+
+    if isinstance(step, StepCoordsVectorsDpr):
+        return StepOutput(op=step.op, value=float(sp.dpr()))
+
+    if isinstance(step, StepCoordsVectorsRpd):
+        return StepOutput(op=step.op, value=float(sp.rpd()))
 
     if isinstance(step, StepCoordsVectorsVnorm):
         out = sp.vnorm(step.v)

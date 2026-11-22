@@ -88,7 +88,12 @@ export function applyAudits(root, routines) {
   const byName = new Map(
     routines.filter((r) => r.contract).map((r) => [r.routine, r]),
   );
-  const batches = baseline.batches;
+  // Keep the Step 7 denominator immutable while applying the same acceptance
+  // rules to newly implemented Step 8 batches. Unimplemented queue entries do
+  // not belong here and cannot acquire an audit status through planning alone.
+  const expansionBatches = baseline.expansionBatches ?? [];
+  requireValue(Array.isArray(expansionBatches), "invalid expansion batches");
+  const batches = [...baseline.batches, ...expansionBatches];
   unique(
     batches.map((b) => b.id),
     "batch identifiers",
@@ -131,7 +136,7 @@ export function applyAudits(root, routines) {
   }
   requireValue(
     assigned.size === byName.size,
-    "contract-present routines missing from baseline assignments",
+    "contract-present routines missing from audit assignments",
   );
   const visit = (id, ancestors = []) => {
     requireValue(!ancestors.includes(id), `cyclic batch dependency ${id}`);
@@ -412,7 +417,14 @@ export function applyAudits(root, routines) {
   }
   return {
     baselineCommit: baseline.baselineCommit,
-    baselineRoutines: assigned.size,
+    baselineRoutines: baseline.batches.reduce(
+      (sum, batch) => sum + batch.routines.length,
+      0,
+    ),
+    expansionRoutines: expansionBatches.reduce(
+      (sum, batch) => sum + batch.routines.length,
+      0,
+    ),
     batches: batches.map((b) => ({
       ...b,
       record: records.has(b.id) ? `${directory}/${b.id}.json` : null,

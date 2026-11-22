@@ -34,6 +34,11 @@ from .coords_vectors import (
     StepCoordsVectorsVdot,
     StepCoordsVectorsVhat,
     StepCoordsVectorsVminus,
+    StepCoordsVectorsPi,
+    StepCoordsVectorsTwopi,
+    StepCoordsVectorsHalfpi,
+    StepCoordsVectorsDpr,
+    StepCoordsVectorsRpd,
     StepCoordsVectorsVnorm,
     StepCoordsVectorsVscl,
     StepCoordsVectorsVsub,
@@ -194,6 +199,10 @@ from .time import (
     StepTimeTimdefGet,
     StepTimeTimdefSet,
     StepTimeTimout,
+    StepTimeSpd,
+    StepTimeJ2000,
+    StepTimeJ1900,
+    StepTimeB1950,
     StepTimeTkvrsn,
     StepTimeTparse,
     StepTimeTpictr,
@@ -203,6 +212,10 @@ from .time import (
 WorkflowStep: TypeAlias = (
     StepTimeStr2Et
     | StepTimeEt2Utc
+    | StepTimeSpd
+    | StepTimeJ2000
+    | StepTimeJ1900
+    | StepTimeB1950
     | StepTimeTkvrsn
     | StepTimeTimout
     | StepTimeDeltet
@@ -228,6 +241,11 @@ WorkflowStep: TypeAlias = (
     | StepCoordsVectorsLatrec
     | StepCoordsVectorsRecsph
     | StepCoordsVectorsSphrec
+    | StepCoordsVectorsPi
+    | StepCoordsVectorsTwopi
+    | StepCoordsVectorsHalfpi
+    | StepCoordsVectorsDpr
+    | StepCoordsVectorsRpd
     | StepCoordsVectorsVnorm
     | StepCoordsVectorsVhat
     | StepCoordsVectorsVdot

@@ -360,6 +360,15 @@ const exportedFunctions = [
   "_tspice_chkout",
 
   // --- kernels ---
+  "_tspice_pi",
+  "_tspice_twopi",
+  "_tspice_halfpi",
+  "_tspice_dpr",
+  "_tspice_rpd",
+  "_tspice_spd",
+  "_tspice_j2000",
+  "_tspice_j1900",
+  "_tspice_b1950",
   "_tspice_tkvrsn_toolkit",
   "_tspice_furnsh",
   "_tspice_unload",
