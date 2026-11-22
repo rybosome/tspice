@@ -145,3 +145,5 @@ release decisions remain separate; this queue authorizes no version choice,
 publishing or deployment.
 
 The checkpoint also preserves source history and evidence for [#708](https://github.com/rybosome/tspice/pull/708).
+
+The checkpoint also preserves source history and evidence for [#709](https://github.com/rybosome/tspice/pull/709).

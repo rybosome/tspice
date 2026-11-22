@@ -66,3 +66,13 @@ This reuses the #684 cell identity mechanism; no C/WASM regeneration is needed.
 Error workflows can set `capture: true` on the existing `error.sigerr` step. This calls actual `raw.sigerr`, requires a structured SPICE exception, and compares its complete short/long/trace fields plus `raw.failed()` after the backend's automatic reset. No-op signaling and unrelated exceptions fail capture. The oracle calls actual `sp.sigerr`, reads full-size CSPICE buffers, and explicitly resets in `finally` to model the documented shim policy. Other steps continue normally, so stack changes, prepared messages, reset and repeated recovery have observable effects. This internal workflow option does not change public raw semantics.
 
 Both backends reset signaled errors before throwing. A persistent true failure flag cannot be reached through these raw operations alone; the audit records that limitation instead of injecting an artificial flag or claiming a constant-false implementation is fully distinguished by live workflows. The case handlers track caller-managed traceback entries and unwind remaining names in reverse order on success/error; reset alone does not remove them. Leading diagnostic blanks are significant; only trailing CSPICE padding is removed.
+
+## Validated input snapshots
+
+`reccyl_c` now marshal the same entries that the typed adapters validated.
+Copy the three validated rectangular components once into an owned tuple; dispatch the tuple to native or WASM. Scalar-input coordinate routines are unchanged. The focused public boundary regression compares single-read inputs with ordinary arrays on both real backends; unchanged registered cases retain the independent scientific oracle.
+
+Regression evidence: [owned-numeric-inputs.test.ts](../packages/py-parity-checking/test/owned-numeric-inputs.test.ts). These adapter checks do not replace
+the independent scientific workflows. Earlier executions remain historical on
+their recorded fingerprints; both required local lanes and observed canonical CI
+must run on the corrected source before current verification.

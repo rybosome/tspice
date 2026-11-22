@@ -35,6 +35,69 @@ export type EmscriptenModule = {
   _tspice_jyear(): number;
   _tspice_tyear(): number;
 
+  _tspice_cyllat(
+    radius: number,
+    lon: number,
+    z: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_cylrec(
+    radius: number,
+    lon: number,
+    z: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_cylsph(
+    radius: number,
+    lon: number,
+    z: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_latcyl(
+    radius: number,
+    lon: number,
+    lat: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_latsph(
+    radius: number,
+    lon: number,
+    lat: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_reccyl(
+    rectPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_sphcyl(
+    radius: number,
+    colat: number,
+    lon: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_sphlat(
+    radius: number,
+    colat: number,
+    lon: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
   // --- error/status utilities ---
   _tspice_get_last_error_short(outPtr: number, outMaxBytes: number): number;
   _tspice_get_last_error_long(outPtr: number, outMaxBytes: number): number;

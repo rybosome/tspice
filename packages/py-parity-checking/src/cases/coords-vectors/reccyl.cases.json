@@ -1,0 +1,107 @@
+[
+  {
+    "caseId": "coords-vectors-reccyl-four-quadrants",
+    "description": "reccyl: four-quadrants; compare all three raw output components with the corresponding live SpiceyPy routine.",
+    "workflow": [
+      {
+        "op": "coords-vectors.reccyl",
+        "rectan": [-3, 4, -7]
+      },
+      {
+        "op": "coords-vectors.reccyl",
+        "rectan": [-3, -4, 2]
+      },
+      {
+        "op": "coords-vectors.reccyl",
+        "rectan": [3, -4, -5]
+      },
+      {
+        "op": "coords-vectors.reccyl",
+        "rectan": [3, 4, 6]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-reccyl-axis-and-origin",
+    "description": "reccyl: axis-and-origin; compare all three raw output components with the corresponding live SpiceyPy routine.",
+    "workflow": [
+      {
+        "op": "coords-vectors.reccyl",
+        "rectan": [0, 0, 0]
+      },
+      {
+        "op": "coords-vectors.reccyl",
+        "rectan": [0, 0, 7]
+      },
+      {
+        "op": "coords-vectors.reccyl",
+        "rectan": [0, 0, -7]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-reccyl-longitude-boundaries",
+    "description": "reccyl: longitude-boundaries; compare all three raw output components with the corresponding live SpiceyPy routine.",
+    "workflow": [
+      {
+        "op": "coords-vectors.reccyl",
+        "rectan": [5, 0, 1]
+      },
+      {
+        "op": "coords-vectors.reccyl",
+        "rectan": [-5, 0, 2]
+      },
+      {
+        "op": "coords-vectors.reccyl",
+        "rectan": [0, 5, 3]
+      },
+      {
+        "op": "coords-vectors.reccyl",
+        "rectan": [0, -5, 4]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-reccyl-asymmetric-components",
+    "description": "reccyl: asymmetric-components; compare all three raw output components with the corresponding live SpiceyPy routine.",
+    "workflow": [
+      {
+        "op": "coords-vectors.reccyl",
+        "rectan": [0.125, -9.75, 2.5]
+      },
+      {
+        "op": "coords-vectors.reccyl",
+        "rectan": [-8.5, 0.25, -6.75]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-reccyl-scaled-magnitudes",
+    "description": "reccyl: scaled-magnitudes; compare all three raw output components with the corresponding live SpiceyPy routine.",
+    "workflow": [
+      {
+        "op": "coords-vectors.reccyl",
+        "rectan": [3e200, -4e200, 2e200]
+      },
+      {
+        "op": "coords-vectors.reccyl",
+        "rectan": [3e-200, -4e-200, 2e-200]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]
