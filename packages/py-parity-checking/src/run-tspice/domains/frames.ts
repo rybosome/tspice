@@ -22,6 +22,13 @@ import type {
   StepFramesCkw02,
   StepFramesCkw03,
   StepFramesCkw05,
+  StepFramesCkfrot,
+  StepFramesCkfxfm,
+  StepFramesCkgr02,
+  StepFramesCkgr03,
+  StepFramesCkmeta,
+  StepFramesCknr02,
+  StepFramesCknr03,
   StepFramesCklpf,
   StepFramesCkobj,
   StepFramesCkupf,
@@ -83,6 +90,13 @@ type FramesStep =
   | StepFramesCkw02
   | StepFramesCkw03
   | StepFramesCkw05
+  | StepFramesCkfrot
+  | StepFramesCkfxfm
+  | StepFramesCkgr02
+  | StepFramesCkgr03
+  | StepFramesCkmeta
+  | StepFramesCknr02
+  | StepFramesCknr03
   | StepFramesCklpf
   | StepFramesCkupf
   | StepFramesCkobj
@@ -578,6 +592,70 @@ export function runFramesStep(
         step.intervalStarts,
       );
       return { op: step.op, value: null };
+    }
+    case "frames.ckfrot": {
+      const out = context.spice.raw.ckfrot(step.inst, step.et);
+      return {
+        op: step.op,
+        value: out.found
+          ? { found: true, ref: out.ref, rotate: Array.from(out.rotate) }
+          : { found: false },
+      };
+    }
+    case "frames.ckfxfm": {
+      const out = context.spice.raw.ckfxfm(step.inst, step.et);
+      return {
+        op: step.op,
+        value: out.found
+          ? { found: true, ref: out.ref, xform: Array.from(out.xform) }
+          : { found: false },
+      };
+    }
+    case "frames.ckgr02": {
+      const entry = context.state.fileIo.handles.get(step.handleId),
+        desc = context.state.fileIo.ckSummaries.get(step.summaryId);
+      if (!entry?.isOpen || !desc || desc.handle !== entry.handle)
+        throw new Error("Expected live CK descriptor and owning DAF");
+      return {
+        op: step.op,
+        value: context.spice.raw.ckgr02(entry.handle, desc.bytes, step.recno),
+      };
+    }
+    case "frames.ckgr03": {
+      const entry = context.state.fileIo.handles.get(step.handleId),
+        desc = context.state.fileIo.ckSummaries.get(step.summaryId);
+      if (!entry?.isOpen || !desc || desc.handle !== entry.handle)
+        throw new Error("Expected live CK descriptor and owning DAF");
+      return {
+        op: step.op,
+        value: context.spice.raw.ckgr03(entry.handle, desc.bytes, step.recno),
+      };
+    }
+    case "frames.ckmeta": {
+      return {
+        op: step.op,
+        value: context.spice.raw.ckmeta(step.ckid, step.meta),
+      };
+    }
+    case "frames.cknr02": {
+      const entry = context.state.fileIo.handles.get(step.handleId),
+        desc = context.state.fileIo.ckSummaries.get(step.summaryId);
+      if (!entry?.isOpen || !desc || desc.handle !== entry.handle)
+        throw new Error("Expected live CK descriptor and owning DAF");
+      return {
+        op: step.op,
+        value: context.spice.raw.cknr02(entry.handle, desc.bytes),
+      };
+    }
+    case "frames.cknr03": {
+      const entry = context.state.fileIo.handles.get(step.handleId),
+        desc = context.state.fileIo.ckSummaries.get(step.summaryId);
+      if (!entry?.isOpen || !desc || desc.handle !== entry.handle)
+        throw new Error("Expected live CK descriptor and owning DAF");
+      return {
+        op: step.op,
+        value: context.spice.raw.cknr03(entry.handle, desc.bytes),
+      };
     }
     case "frames.cklpf": {
       if (context.state.frames.ckHandles.has(step.handleId))

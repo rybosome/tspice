@@ -1807,6 +1807,14 @@ int tspice_ckw02(int handle, double beg, double end, int inst, const char *ref, 
 int tspice_ckw03(int handle, double beg, double end, int inst, const char *ref, int av, const char *segid, int n, int nints, const double *data, int count, char *err, int errMaxBytes);
 int tspice_ckw05(int handle, int subtype, int degree, double beg, double end, int inst, const char *ref, int av, const char *segid, int n, int nints, double rate, const double *data, int count, char *err, int errMaxBytes);
 
+int tspice_ckfrot(int inst, double et, double *out, int *ref, int *found, char *err, int errMaxBytes);
+int tspice_ckfxfm(int inst, double et, double *out, int *ref, int *found, char *err, int errMaxBytes);
+int tspice_ckgr02(int handle, const unsigned char *bytes, int size, int recno, double *out, char *err, int errMaxBytes);
+int tspice_ckgr03(int handle, const unsigned char *bytes, int size, int recno, double *out, int *nwords, char *err, int errMaxBytes);
+int tspice_ckmeta(int ckid, const char *meta, int *out, char *err, int errMaxBytes);
+int tspice_cknr02(int handle, const unsigned char *bytes, int size, int *out, char *err, int errMaxBytes);
+int tspice_cknr03(int handle, const unsigned char *bytes, int size, int *out, char *err, int errMaxBytes);
+
 // cklpf_c: load a CK file for access by pointing routines.
 int tspice_cklpf(const char *ck, int *outHandle, char *err, int errMaxBytes);
 

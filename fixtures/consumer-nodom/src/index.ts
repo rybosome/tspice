@@ -972,7 +972,7 @@ function localClock(spice: SpiceSync, utc: string): string {
 }
 void localClock;
 
-import type { SpiceSync } from "@rybosome/tspice";
+
 
 function inspectDaf(spice: SpiceSync, path: string): Uint8Array | undefined {
   const handle = spice.raw.dafopw(path);
@@ -1264,3 +1264,35 @@ export async function typecheckEkRecordEntries() {
     await dispose();
   }
 }
+
+function readCkRecords(
+  spice: SpiceSync,
+  path: string,
+  inst: number,
+  et: number,
+) {
+  const h = spice.raw.dafopr(path);
+  try {
+    spice.raw.dafbfs(h);
+    if (!spice.raw.daffna(h)) return;
+    const d = spice.raw.dafgs(h);
+    const type = spice.raw.dafus(d, 2, 6).ic[2];
+    if (type === 2) {
+      spice.raw.cknr02(h, d);
+      const rate: number = spice.raw.ckgr02(h, d, 1).rate;
+      void rate;
+    }
+    if (type === 3) {
+      spice.raw.cknr03(h, d);
+      const av: [number, number, number] | null = spice.raw.ckgr03(h, d, 1).av;
+      void av;
+    }
+    spice.raw.ckmeta(inst, "SCLK");
+    const r = spice.raw.ckfrot(inst, et),
+      x = spice.raw.ckfxfm(inst, et);
+    if (r.found && x.found) return [r.rotate[8], x.xform[35], r.ref, x.ref];
+  } finally {
+    spice.raw.dafcls(h);
+  }
+}
+void readCkRecords;

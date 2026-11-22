@@ -118,6 +118,7 @@ class StepFileIoDafgn:
 class StepFileIoDafgs:
     op: Literal["file-io.dafgs"]
     handleId: str
+    summaryId: str | None = None
 
 
 @dataclass(frozen=True)

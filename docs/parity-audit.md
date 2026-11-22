@@ -500,3 +500,7 @@ C08 compares the five added record routines through 38 workflows and reads indep
 ## Physical EK entry values
 
 C09 compares nine typed record operations through independently created, updated and reopened EK files. [Entry semantics, canonical error handling and observed cross-file persistence](step8-ek-entries.md) [Per-routine evidence](../data/parity-audits/c09-ek-entries.json)
+
+## CK frame and record access
+
+C13 compares complete CK rotations, state transforms, metadata IDs and type 2/3 records against locked SpiceyPy, with independent physical units and cursor checks. [Scientific evidence and fixture provenance](step8-ck-records.md) [Per-routine judgments](../data/parity-audits/c13-ck-records.json)

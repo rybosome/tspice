@@ -18,6 +18,13 @@ import ckw01CasesRaw from "./ckw01.cases.json" with { type: "json" };
 import ckw02CasesRaw from "./ckw02.cases.json" with { type: "json" };
 import ckw03CasesRaw from "./ckw03.cases.json" with { type: "json" };
 import ckw05CasesRaw from "./ckw05.cases.json" with { type: "json" };
+import ckfrotCasesRaw from "./ckfrot.cases.json" with { type: "json" };
+import ckfxfmCasesRaw from "./ckfxfm.cases.json" with { type: "json" };
+import ckgr02CasesRaw from "./ckgr02.cases.json" with { type: "json" };
+import ckgr03CasesRaw from "./ckgr03.cases.json" with { type: "json" };
+import ckmetaCasesRaw from "./ckmeta.cases.json" with { type: "json" };
+import cknr02CasesRaw from "./cknr02.cases.json" with { type: "json" };
+import cknr03CasesRaw from "./cknr03.cases.json" with { type: "json" };
 import cklpfCasesRaw from "./cklpf.cases.json" with { type: "json" };
 import ckobjCasesRaw from "./ckobj.cases.json" with { type: "json" };
 import ckupfCasesRaw from "./ckupf.cases.json" with { type: "json" };
@@ -83,6 +90,13 @@ export const framesCases: ParityCase[] = [
   ...(ckw02CasesRaw as ParityCase[]),
   ...(ckw03CasesRaw as ParityCase[]),
   ...(ckw05CasesRaw as ParityCase[]),
+  ...(ckfrotCasesRaw as ParityCase[]),
+  ...(ckfxfmCasesRaw as ParityCase[]),
+  ...(ckgr02CasesRaw as ParityCase[]),
+  ...(ckgr03CasesRaw as ParityCase[]),
+  ...(ckmetaCasesRaw as ParityCase[]),
+  ...(cknr02CasesRaw as ParityCase[]),
+  ...(cknr03CasesRaw as ParityCase[]),
   ...framesCklpfCases,
   ...framesCkobjCases,
   ...framesCkupfCases,

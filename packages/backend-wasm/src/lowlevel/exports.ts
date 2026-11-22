@@ -4079,6 +4079,66 @@ export type EmscriptenModule = {
     err: number,
     errMaxBytes: number,
   ): number;
+  _tspice_ckfrot(
+    inst: number,
+    et: number,
+    out: number,
+    ref: number,
+    found: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_ckfxfm(
+    inst: number,
+    et: number,
+    out: number,
+    ref: number,
+    found: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_ckgr02(
+    handle: number,
+    bytes: number,
+    size: number,
+    recno: number,
+    out: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_ckgr03(
+    handle: number,
+    bytes: number,
+    size: number,
+    recno: number,
+    out: number,
+    nwords: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_ckmeta(
+    ckid: number,
+    meta: number,
+    out: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_cknr02(
+    handle: number,
+    bytes: number,
+    size: number,
+    out: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_cknr03(
+    handle: number,
+    bytes: number,
+    size: number,
+    out: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
   _tspice_cklpf(
     ckPathPtr: number,
     outHandlePtr: number,
@@ -6221,6 +6281,13 @@ const REQUIRED_FUNCTION_EXPORTS = [
   "_tspice_ckw02",
   "_tspice_ckw03",
   "_tspice_ckw05",
+  "_tspice_ckfrot",
+  "_tspice_ckfxfm",
+  "_tspice_ckgr02",
+  "_tspice_ckgr03",
+  "_tspice_ckmeta",
+  "_tspice_cknr02",
+  "_tspice_cknr03",
   "_tspice_cklpf",
   "_tspice_ckupf",
   "_tspice_ckobj",

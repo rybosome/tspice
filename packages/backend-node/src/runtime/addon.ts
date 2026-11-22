@@ -636,6 +636,19 @@ export type NativeAddon = {
     rate: number,
     data: Float64Array,
   ): void;
+  ckfrot(
+    inst: number,
+    et: number,
+  ): { found: false } | { found: true; ref: number; rotate: number[] };
+  ckfxfm(
+    inst: number,
+    et: number,
+  ): { found: false } | { found: true; ref: number; xform: number[] };
+  ckgr02(handle: number, descr: Uint8Array, recno: number): number[];
+  ckgr03(handle: number, descr: Uint8Array, recno: number): number[];
+  ckmeta(ckid: number, meta: string): number;
+  cknr02(handle: number, descr: Uint8Array): number;
+  cknr03(handle: number, descr: Uint8Array): number;
   cklpf(ck: string): number;
   ckupf(handle: number): void;
   ckobj(ck: string, idsCellHandle: number): void;

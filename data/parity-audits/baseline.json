@@ -1262,6 +1262,26 @@
         "https://github.com/rybosome/tspice/pull/762"
       ],
       "nextAction": "Verify the combined source on both required lanes and canonical CI."
+    },
+    {
+      "id": "c13-ck-records",
+      "routines": [
+        "ckfrot_c",
+        "ckfxfm_c",
+        "ckgr02_c",
+        "ckgr03_c",
+        "ckmeta_c",
+        "cknr02_c",
+        "cknr03_c"
+      ],
+      "dependsOn": [
+        "c01-daf-navigation",
+        "c02-daf-records"
+      ],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/765"
+      ],
+      "nextAction": "Verify the combined source on both required lanes and canonical CI."
     }
   ]
 }

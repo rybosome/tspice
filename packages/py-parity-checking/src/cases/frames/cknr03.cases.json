@@ -1,0 +1,303 @@
+[
+  {
+    "caseId": "frames-cknr03-all-packets",
+    "description": "Use the retained exact five-word descriptor and read each one-based record or repeat the segment count.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-pointing.bc"
+      },
+      {
+        "op": "file-io.dafopr",
+        "handleId": "f",
+        "path": "kernels/audit-pointing.bc"
+      },
+      {
+        "op": "file-io.dafbfs",
+        "handleId": "f"
+      },
+      {
+        "op": "file-io.daffna",
+        "handleId": "f"
+      },
+      {
+        "op": "file-io.dafgs",
+        "handleId": "f",
+        "summaryId": "d"
+      },
+      {
+        "op": "frames.cknr03",
+        "handleId": "f",
+        "summaryId": "d"
+      },
+      {
+        "op": "frames.cknr03",
+        "handleId": "f",
+        "summaryId": "d"
+      },
+      {
+        "op": "frames.cknr03",
+        "handleId": "f",
+        "summaryId": "d"
+      },
+      {
+        "op": "frames.cknr03",
+        "handleId": "f",
+        "summaryId": "d"
+      },
+      {
+        "op": "file-io.dafcls",
+        "handleId": "f"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-cknr03-cursor-independent",
+    "description": "Moving the active DAF search beyond the selected array preserves retained descriptor access and current cursor.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-pointing.bc"
+      },
+      {
+        "op": "file-io.dafopr",
+        "handleId": "f",
+        "path": "kernels/audit-pointing.bc"
+      },
+      {
+        "op": "file-io.dafbfs",
+        "handleId": "f"
+      },
+      {
+        "op": "file-io.daffna",
+        "handleId": "f"
+      },
+      {
+        "op": "file-io.dafgs",
+        "handleId": "f",
+        "summaryId": "d"
+      },
+      {
+        "op": "file-io.daffna",
+        "handleId": "f"
+      },
+      {
+        "op": "frames.cknr03",
+        "handleId": "f",
+        "summaryId": "d"
+      },
+      {
+        "op": "file-io.dafcls",
+        "handleId": "f"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-cknr03-wrong-segment-type",
+    "description": "A genuine CK descriptor of the other type signals CKWRONGDATATYPE.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-ck-records.bc"
+      },
+      {
+        "op": "file-io.dafopr",
+        "handleId": "f",
+        "path": "kernels/audit-ck-records.bc"
+      },
+      {
+        "op": "file-io.dafbfs",
+        "handleId": "f"
+      },
+      {
+        "op": "file-io.daffna",
+        "handleId": "f"
+      },
+      {
+        "op": "file-io.dafgs",
+        "handleId": "f",
+        "summaryId": "d"
+      },
+      {
+        "op": "frames.cknr03",
+        "handleId": "f",
+        "summaryId": "d"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["CKWRONGDATATYPE"]
+    }
+  },
+  {
+    "caseId": "frames-cknr03-separate-segments",
+    "description": "Read two independently retained descriptors in reverse order while a third array is selected.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-pointing.bc"
+      },
+      {
+        "op": "file-io.dafopr",
+        "handleId": "f",
+        "path": "kernels/audit-pointing.bc"
+      },
+      {
+        "op": "file-io.dafbfs",
+        "handleId": "f"
+      },
+      {
+        "op": "file-io.daffna",
+        "handleId": "f"
+      },
+      {
+        "op": "file-io.dafgs",
+        "handleId": "f",
+        "summaryId": "d"
+      },
+      {
+        "op": "file-io.daffna",
+        "handleId": "f"
+      },
+      {
+        "op": "file-io.dafgs",
+        "handleId": "f",
+        "summaryId": "d2"
+      },
+      {
+        "op": "file-io.daffna",
+        "handleId": "f"
+      },
+      {
+        "op": "file-io.dafgs",
+        "handleId": "f",
+        "summaryId": "d3"
+      },
+      {
+        "op": "frames.cknr03",
+        "handleId": "f",
+        "summaryId": "d3"
+      },
+      {
+        "op": "frames.cknr03",
+        "handleId": "f",
+        "summaryId": "d2"
+      },
+      {
+        "op": "frames.cknr03",
+        "handleId": "f",
+        "summaryId": "d"
+      },
+      {
+        "op": "file-io.dafgn",
+        "handleId": "f"
+      },
+      {
+        "op": "file-io.dafcls",
+        "handleId": "f"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-cknr03-missing-av",
+    "description": "Select the type 3 segment without angular velocities; compare each defined data word or its count.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-pointing.bc"
+      },
+      {
+        "op": "file-io.dafopr",
+        "handleId": "f",
+        "path": "kernels/audit-pointing.bc"
+      },
+      {
+        "op": "file-io.dafbfs",
+        "handleId": "f"
+      },
+      {
+        "op": "file-io.daffna",
+        "handleId": "f"
+      },
+      {
+        "op": "file-io.daffna",
+        "handleId": "f"
+      },
+      {
+        "op": "file-io.daffna",
+        "handleId": "f"
+      },
+      {
+        "op": "file-io.dafgs",
+        "handleId": "f",
+        "summaryId": "d"
+      },
+      {
+        "op": "frames.cknr03",
+        "handleId": "f",
+        "summaryId": "d"
+      },
+      {
+        "op": "frames.cknr03",
+        "handleId": "f",
+        "summaryId": "d"
+      },
+      {
+        "op": "file-io.dafcls",
+        "handleId": "f"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-cknr03-second-summary-directory",
+    "description": "Find a retained segment on the second physical DAF summary record and compare actual directory-bearing segment counts or records across the hundredth sample.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-ck-record-directory.bc"
+      },
+      {
+        "op": "file-io.dafopr",
+        "handleId": "f",
+        "path": "kernels/audit-ck-record-directory.bc"
+      },
+      {
+        "op": "file-io.dafbbs",
+        "handleId": "f"
+      },
+      {
+        "op": "file-io.daffpa",
+        "handleId": "f"
+      },
+      {
+        "op": "file-io.dafgs",
+        "handleId": "f",
+        "summaryId": "d"
+      },
+      {
+        "op": "frames.cknr03",
+        "handleId": "f",
+        "summaryId": "d"
+      },
+      {
+        "op": "file-io.dafcls",
+        "handleId": "f"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

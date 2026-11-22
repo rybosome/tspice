@@ -596,7 +596,8 @@
         "file-io-dafopw-scratch-reopen-read",
         "file-io-dafopw-writer-after-close"
       ],
-      "observation": "Both complete required lanes passed locally on 1bbd25341467aaa7683a9816578856601ab89b1d. JavaScript: 2,710 parity tests and one expected guard skip. Native-required: 2,484 registered Node/WASM live comparisons; 2,711 parity-package tests with no skips, including the native-required guard; 91 native wrapper, 669 WASM, 28 core and 152 facade tests passed."
+      "observation": "Both complete required lanes passed locally on 1bbd25341467aaa7683a9816578856601ab89b1d. JavaScript: 2,710 parity tests and one expected guard skip. Native-required: 2,484 registered Node/WASM live comparisons; 2,711 parity-package tests with no skips, including the native-required guard; 91 native wrapper, 669 WASM, 28 core and 152 facade tests passed.",
+      "historical": true
     },
     {
       "id": "local-c03-1bbd2534-wasm",
@@ -653,7 +654,8 @@
         "file-io-dafopw-scratch-reopen-read",
         "file-io-dafopw-writer-after-close"
       ],
-      "observation": "Both complete required lanes passed locally on 1bbd25341467aaa7683a9816578856601ab89b1d. JavaScript: 2,710 parity tests and one expected guard skip. Native-required: 2,484 registered Node/WASM live comparisons; 2,711 parity-package tests with no skips, including the native-required guard; 91 native wrapper, 669 WASM, 28 core and 152 facade tests passed."
+      "observation": "Both complete required lanes passed locally on 1bbd25341467aaa7683a9816578856601ab89b1d. JavaScript: 2,710 parity tests and one expected guard skip. Native-required: 2,484 registered Node/WASM live comparisons; 2,711 parity-package tests with no skips, including the native-required guard; 91 native wrapper, 669 WASM, 28 core and 152 facade tests passed.",
+      "historical": true
     },
     {
       "id": "ci-c03-1bbd2534-node",
@@ -712,7 +714,8 @@
       ],
       "commit": "1bbd25341467aaa7683a9816578856601ab89b1d",
       "url": "https://github.com/rybosome/tspice/actions/runs/43574811423/job/132386652756",
-      "observation": "Inspected successful Linux Node 22 native-required job 132386652756 on 1bbd25341467aaa7683a9816578856601ab89b1d: 2,484 registered Node/WASM live comparisons; 2,711 parity-package tests with no skips, including the native-required guard; 91 native wrapper, 669 WASM, 28 core and 152 facade tests passed."
+      "observation": "Inspected successful Linux Node 22 native-required job 132386652756 on 1bbd25341467aaa7683a9816578856601ab89b1d: 2,484 registered Node/WASM live comparisons; 2,711 parity-package tests with no skips, including the native-required guard; 91 native wrapper, 669 WASM, 28 core and 152 facade tests passed.",
+      "historical": true
     },
     {
       "id": "ci-c03-1bbd2534-wasm",
@@ -771,7 +774,244 @@
       ],
       "commit": "1bbd25341467aaa7683a9816578856601ab89b1d",
       "url": "https://github.com/rybosome/tspice/actions/runs/43574811423/job/132386652756",
-      "observation": "Inspected successful Linux Node 22 native-required job 132386652756 on 1bbd25341467aaa7683a9816578856601ab89b1d: 2,484 registered Node/WASM live comparisons; 2,711 parity-package tests with no skips, including the native-required guard; 91 native wrapper, 669 WASM, 28 core and 152 facade tests passed."
+      "observation": "Inspected successful Linux Node 22 native-required job 132386652756 on 1bbd25341467aaa7683a9816578856601ab89b1d: 2,484 registered Node/WASM live comparisons; 2,711 parity-package tests with no skips, including the native-required guard; 91 native wrapper, 669 WASM, 28 core and 152 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "local-c13-567cf58f-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "2b590580117fb882e0757fcc1fa8e6b2cd985e62596cddb03400141ab704552c",
+      "caseIds": [
+        "file-io-dafbbs-empty-search",
+        "file-io-dafbbs-interleaved-files",
+        "file-io-dafbbs-restart-after-position",
+        "file-io-dafbbs-reverse-an-active-forward-search",
+        "file-io-dafbbs-two-segment-backward",
+        "file-io-dafcs-empty-current-file",
+        "file-io-dafcs-not-initialized",
+        "file-io-dafcs-other-active",
+        "file-io-dafcs-repeated-selection",
+        "file-io-dafcs-select-between-files",
+        "file-io-daffpa-before-first-forward",
+        "file-io-daffpa-empty-repeated-false",
+        "file-io-daffpa-no-search",
+        "file-io-daffpa-previous-exhaust-and-forward",
+        "file-io-daffpa-select-own-file",
+        "file-io-dafgh-before-an-array",
+        "file-io-dafgh-duplicate-open-ownership",
+        "file-io-dafgh-exhausted-file",
+        "file-io-dafgh-interleaved-selection",
+        "file-io-dafgh-reopen-workflow-label",
+        "file-io-dafgn-after-final-array",
+        "file-io-dafgn-before-any-array",
+        "file-io-dafgn-full-and-prefix",
+        "file-io-dafgn-implicit-selection",
+        "file-io-dafgn-negative-capacity",
+        "file-io-dafgn-recover-same-search",
+        "file-io-dafgn-short-capacity",
+        "file-io-dafgn-unstarted-short-capacity",
+        "file-io-dafgs-after-backward-exhaustion",
+        "file-io-dafgs-before-any-array",
+        "file-io-dafgs-changing-packed-addresses",
+        "file-io-dafgs-packed-nan-payload",
+        "file-io-dafgs-select-across-daf-kinds",
+        "file-io-dafgs-unstarted-file",
+        "file-io-dafhsf-active-then-exhausted",
+        "file-io-dafhsf-new-write-handle",
+        "file-io-dafhsf-no-current-change",
+        "file-io-dafhsf-unpositioned-and-empty",
+        "file-io-dafopw-generated-path-alias",
+        "file-io-dafopw-missing-scratch",
+        "file-io-dafopw-read-during-write",
+        "file-io-dafopw-read-open-conflict",
+        "file-io-dafopw-repeated-writer-conflict",
+        "file-io-dafopw-scratch-reopen-read",
+        "file-io-dafopw-writer-after-close"
+      ],
+      "observation": "Both complete required lanes passed locally on 567cf58f4e25faf1f6ba268229bc417cb38dc8e5. JavaScript: 2,721 parity tests and one expected guard skip. Native-required: 2,494 registered Node/WASM live comparisons; 2,722 parity-package tests with no skips, including the native-required guard; 89 native wrapper, 678 WASM, 28 core and 152 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "local-c13-567cf58f-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "2b590580117fb882e0757fcc1fa8e6b2cd985e62596cddb03400141ab704552c",
+      "caseIds": [
+        "file-io-dafbbs-empty-search",
+        "file-io-dafbbs-interleaved-files",
+        "file-io-dafbbs-restart-after-position",
+        "file-io-dafbbs-reverse-an-active-forward-search",
+        "file-io-dafbbs-two-segment-backward",
+        "file-io-dafcs-empty-current-file",
+        "file-io-dafcs-not-initialized",
+        "file-io-dafcs-other-active",
+        "file-io-dafcs-repeated-selection",
+        "file-io-dafcs-select-between-files",
+        "file-io-daffpa-before-first-forward",
+        "file-io-daffpa-empty-repeated-false",
+        "file-io-daffpa-no-search",
+        "file-io-daffpa-previous-exhaust-and-forward",
+        "file-io-daffpa-select-own-file",
+        "file-io-dafgh-before-an-array",
+        "file-io-dafgh-duplicate-open-ownership",
+        "file-io-dafgh-exhausted-file",
+        "file-io-dafgh-interleaved-selection",
+        "file-io-dafgh-reopen-workflow-label",
+        "file-io-dafgn-after-final-array",
+        "file-io-dafgn-before-any-array",
+        "file-io-dafgn-full-and-prefix",
+        "file-io-dafgn-implicit-selection",
+        "file-io-dafgn-negative-capacity",
+        "file-io-dafgn-recover-same-search",
+        "file-io-dafgn-short-capacity",
+        "file-io-dafgn-unstarted-short-capacity",
+        "file-io-dafgs-after-backward-exhaustion",
+        "file-io-dafgs-before-any-array",
+        "file-io-dafgs-changing-packed-addresses",
+        "file-io-dafgs-packed-nan-payload",
+        "file-io-dafgs-select-across-daf-kinds",
+        "file-io-dafgs-unstarted-file",
+        "file-io-dafhsf-active-then-exhausted",
+        "file-io-dafhsf-new-write-handle",
+        "file-io-dafhsf-no-current-change",
+        "file-io-dafhsf-unpositioned-and-empty",
+        "file-io-dafopw-generated-path-alias",
+        "file-io-dafopw-missing-scratch",
+        "file-io-dafopw-read-during-write",
+        "file-io-dafopw-read-open-conflict",
+        "file-io-dafopw-repeated-writer-conflict",
+        "file-io-dafopw-scratch-reopen-read",
+        "file-io-dafopw-writer-after-close"
+      ],
+      "observation": "Both complete required lanes passed locally on 567cf58f4e25faf1f6ba268229bc417cb38dc8e5. JavaScript: 2,721 parity tests and one expected guard skip. Native-required: 2,494 registered Node/WASM live comparisons; 2,722 parity-package tests with no skips, including the native-required guard; 89 native wrapper, 678 WASM, 28 core and 152 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "ci-c13-567cf58f-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "2b590580117fb882e0757fcc1fa8e6b2cd985e62596cddb03400141ab704552c",
+      "caseIds": [
+        "file-io-dafbbs-empty-search",
+        "file-io-dafbbs-interleaved-files",
+        "file-io-dafbbs-restart-after-position",
+        "file-io-dafbbs-reverse-an-active-forward-search",
+        "file-io-dafbbs-two-segment-backward",
+        "file-io-dafcs-empty-current-file",
+        "file-io-dafcs-not-initialized",
+        "file-io-dafcs-other-active",
+        "file-io-dafcs-repeated-selection",
+        "file-io-dafcs-select-between-files",
+        "file-io-daffpa-before-first-forward",
+        "file-io-daffpa-empty-repeated-false",
+        "file-io-daffpa-no-search",
+        "file-io-daffpa-previous-exhaust-and-forward",
+        "file-io-daffpa-select-own-file",
+        "file-io-dafgh-before-an-array",
+        "file-io-dafgh-duplicate-open-ownership",
+        "file-io-dafgh-exhausted-file",
+        "file-io-dafgh-interleaved-selection",
+        "file-io-dafgh-reopen-workflow-label",
+        "file-io-dafgn-after-final-array",
+        "file-io-dafgn-before-any-array",
+        "file-io-dafgn-full-and-prefix",
+        "file-io-dafgn-implicit-selection",
+        "file-io-dafgn-negative-capacity",
+        "file-io-dafgn-recover-same-search",
+        "file-io-dafgn-short-capacity",
+        "file-io-dafgn-unstarted-short-capacity",
+        "file-io-dafgs-after-backward-exhaustion",
+        "file-io-dafgs-before-any-array",
+        "file-io-dafgs-changing-packed-addresses",
+        "file-io-dafgs-packed-nan-payload",
+        "file-io-dafgs-select-across-daf-kinds",
+        "file-io-dafgs-unstarted-file",
+        "file-io-dafhsf-active-then-exhausted",
+        "file-io-dafhsf-new-write-handle",
+        "file-io-dafhsf-no-current-change",
+        "file-io-dafhsf-unpositioned-and-empty",
+        "file-io-dafopw-generated-path-alias",
+        "file-io-dafopw-missing-scratch",
+        "file-io-dafopw-read-during-write",
+        "file-io-dafopw-read-open-conflict",
+        "file-io-dafopw-repeated-writer-conflict",
+        "file-io-dafopw-scratch-reopen-read",
+        "file-io-dafopw-writer-after-close"
+      ],
+      "commit": "567cf58f4e25faf1f6ba268229bc417cb38dc8e5",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43582482585/job/132409964346",
+      "observation": "Inspected successful Linux Node 22 native-required job 132409964346 on 567cf58f4e25faf1f6ba268229bc417cb38dc8e5: 2,494 registered Node/WASM live comparisons; 2,722 parity-package tests with no skips, including the native-required guard; 89 native wrapper, 678 WASM, 28 core and 152 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "ci-c13-567cf58f-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "2b590580117fb882e0757fcc1fa8e6b2cd985e62596cddb03400141ab704552c",
+      "caseIds": [
+        "file-io-dafbbs-empty-search",
+        "file-io-dafbbs-interleaved-files",
+        "file-io-dafbbs-restart-after-position",
+        "file-io-dafbbs-reverse-an-active-forward-search",
+        "file-io-dafbbs-two-segment-backward",
+        "file-io-dafcs-empty-current-file",
+        "file-io-dafcs-not-initialized",
+        "file-io-dafcs-other-active",
+        "file-io-dafcs-repeated-selection",
+        "file-io-dafcs-select-between-files",
+        "file-io-daffpa-before-first-forward",
+        "file-io-daffpa-empty-repeated-false",
+        "file-io-daffpa-no-search",
+        "file-io-daffpa-previous-exhaust-and-forward",
+        "file-io-daffpa-select-own-file",
+        "file-io-dafgh-before-an-array",
+        "file-io-dafgh-duplicate-open-ownership",
+        "file-io-dafgh-exhausted-file",
+        "file-io-dafgh-interleaved-selection",
+        "file-io-dafgh-reopen-workflow-label",
+        "file-io-dafgn-after-final-array",
+        "file-io-dafgn-before-any-array",
+        "file-io-dafgn-full-and-prefix",
+        "file-io-dafgn-implicit-selection",
+        "file-io-dafgn-negative-capacity",
+        "file-io-dafgn-recover-same-search",
+        "file-io-dafgn-short-capacity",
+        "file-io-dafgn-unstarted-short-capacity",
+        "file-io-dafgs-after-backward-exhaustion",
+        "file-io-dafgs-before-any-array",
+        "file-io-dafgs-changing-packed-addresses",
+        "file-io-dafgs-packed-nan-payload",
+        "file-io-dafgs-select-across-daf-kinds",
+        "file-io-dafgs-unstarted-file",
+        "file-io-dafhsf-active-then-exhausted",
+        "file-io-dafhsf-new-write-handle",
+        "file-io-dafhsf-no-current-change",
+        "file-io-dafhsf-unpositioned-and-empty",
+        "file-io-dafopw-generated-path-alias",
+        "file-io-dafopw-missing-scratch",
+        "file-io-dafopw-read-during-write",
+        "file-io-dafopw-read-open-conflict",
+        "file-io-dafopw-repeated-writer-conflict",
+        "file-io-dafopw-scratch-reopen-read",
+        "file-io-dafopw-writer-after-close"
+      ],
+      "commit": "567cf58f4e25faf1f6ba268229bc417cb38dc8e5",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43582482585/job/132409964346",
+      "observation": "Inspected successful Linux Node 22 native-required job 132409964346 on 567cf58f4e25faf1f6ba268229bc417cb38dc8e5: 2,494 registered Node/WASM live comparisons; 2,722 parity-package tests with no skips, including the native-required guard; 89 native wrapper, 678 WASM, 28 core and 152 facade tests passed.",
+      "historical": true
     }
   ],
   "routines": [
@@ -783,27 +1023,47 @@
       "scenarios": [
         {
           "caseId": "file-io-dafbbs-two-segment-backward",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Backward search makes the last array available first, then the first, before exhaustion."
         },
         {
           "caseId": "file-io-dafbbs-empty-search",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "An empty DAF supports beginning and repeating a backward search."
         },
         {
           "caseId": "file-io-dafbbs-restart-after-position",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Beginning again on the same handle resets its cursor to just after the last array."
         },
         {
           "caseId": "file-io-dafbbs-reverse-an-active-forward-search",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Backward initialization replaces an earlier forward cursor."
         },
         {
           "caseId": "file-io-dafbbs-interleaved-files",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Backward starts on independent files retain their own array positions."
         }
       ],
@@ -839,11 +1099,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.dafbbs -> Node owner registry and mutex-protected native addon -> shared tspice_dafbbs -> dafbbs_c.",
-          "executions": ["local-c03-1bbd2534-node", "ci-c03-1bbd2534-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -853,11 +1114,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.dafbbs -> WASM owner registry and scoped linear-memory buffers -> shared tspice_dafbbs -> dafbbs_c.",
-          "executions": ["local-c03-1bbd2534-wasm", "ci-c03-1bbd2534-wasm"]
+          "executions": []
         }
       }
     },
@@ -869,27 +1131,47 @@
       "scenarios": [
         {
           "caseId": "file-io-dafcs-select-between-files",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Select a positioned search without advancing and observe the current handle and array."
         },
         {
           "caseId": "file-io-dafcs-repeated-selection",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Reselecting the same file preserves its position and current name."
         },
         {
           "caseId": "file-io-dafcs-empty-current-file",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Selection may identify an active empty DAF without a current array."
         },
         {
           "caseId": "file-io-dafcs-not-initialized",
-          "coverage": ["error", "edge", "state"],
+          "coverage": [
+            "error",
+            "edge",
+            "state"
+          ],
           "observes": "An open DAF without an active search cannot be selected. Actual toolkit diagnostic SPICE(DAFNOSEARCH)."
         },
         {
           "caseId": "file-io-dafcs-other-active",
-          "coverage": ["error", "edge", "state"],
+          "coverage": [
+            "error",
+            "edge",
+            "state"
+          ],
           "observes": "Starting a search in one file does not start one in another. Actual toolkit diagnostic SPICE(DAFNOSEARCH)."
         }
       ],
@@ -925,11 +1207,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.dafcs -> Node owner registry and mutex-protected native addon -> shared tspice_dafcs -> dafcs_c.",
-          "executions": ["local-c03-1bbd2534-node", "ci-c03-1bbd2534-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -939,11 +1222,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.dafcs -> WASM owner registry and scoped linear-memory buffers -> shared tspice_dafcs -> dafcs_c.",
-          "executions": ["local-c03-1bbd2534-wasm", "ci-c03-1bbd2534-wasm"]
+          "executions": []
         }
       }
     },
@@ -955,27 +1239,47 @@
       "scenarios": [
         {
           "caseId": "file-io-daffpa-previous-exhaust-and-forward",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Observe both arrays backward, repeated exhaustion, then a forward step from the endpoint."
         },
         {
           "caseId": "file-io-daffpa-empty-repeated-false",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "No previous arrays exist at any position in the empty file."
         },
         {
           "caseId": "file-io-daffpa-before-first-forward",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "A backward step at the fresh forward start is false; forward advancement remains possible."
         },
         {
           "caseId": "file-io-daffpa-select-own-file",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Interleaved previous calls implicitly select their specified file and retain both saved cursors."
         },
         {
           "caseId": "file-io-daffpa-no-search",
-          "coverage": ["error", "edge", "state"],
+          "coverage": [
+            "error",
+            "edge",
+            "state"
+          ],
           "observes": "A preceding DAFCS failure propagates before any advancement. Actual toolkit diagnostic SPICE(DAFNOSEARCH)."
         }
       ],
@@ -1029,11 +1333,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "alias",
           "trace": "raw.daffpa -> Node owner registry and mutex-protected native addon -> shared tspice_daffpa -> dafcs_c -> chkin_c -> linked daffpa_ -> chkout_c.",
-          "executions": ["local-c03-1bbd2534-node", "ci-c03-1bbd2534-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1044,11 +1349,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "alias",
           "trace": "raw.daffpa -> WASM owner registry and scoped linear-memory buffers -> shared tspice_daffpa -> dafcs_c -> chkin_c -> linked daffpa_ -> chkout_c.",
-          "executions": ["local-c03-1bbd2534-wasm", "ci-c03-1bbd2534-wasm"]
+          "executions": []
         }
       }
     },
@@ -1060,27 +1366,47 @@
       "scenarios": [
         {
           "caseId": "file-io-dafgh-before-an-array",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "DAFGH returns the active owner after beginning a search, before any array is current."
         },
         {
           "caseId": "file-io-dafgh-interleaved-selection",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Current handle identity follows explicit and implicit selections across files."
         },
         {
           "caseId": "file-io-dafgh-duplicate-open-ownership",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Two owned opens share a native DAF handle; closing the oldest promotes the surviving token."
         },
         {
           "caseId": "file-io-dafgh-reopen-workflow-label",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Reopening a previously closed label registers a new owner after the remaining alias."
         },
         {
           "caseId": "file-io-dafgh-exhausted-file",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "An exhausted search retains its owning DAF handle."
         }
       ],
@@ -1133,11 +1459,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.dafgh -> Node owner registry and mutex-protected native addon -> shared tspice_dafgh -> dafgh_c -> existing owner-local reference.",
-          "executions": ["local-c03-1bbd2534-node", "ci-c03-1bbd2534-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1148,11 +1475,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.dafgh -> WASM owner registry and scoped linear-memory buffers -> shared tspice_dafgh -> dafgh_c -> existing owner-local reference.",
-          "executions": ["local-c03-1bbd2534-wasm", "ci-c03-1bbd2534-wasm"]
+          "executions": []
         }
       }
     },
@@ -1164,42 +1492,74 @@
       "scenarios": [
         {
           "caseId": "file-io-dafgn-full-and-prefix",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Read complete and truncated first and last array names with explicit NUL-inclusive capacities."
         },
         {
           "caseId": "file-io-dafgn-implicit-selection",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Name lookups switch active files without advancing either cursor."
         },
         {
           "caseId": "file-io-dafgn-before-any-array",
-          "coverage": ["error", "edge", "state"],
+          "coverage": [
+            "error",
+            "edge",
+            "state"
+          ],
           "observes": "Starting a search does not position it on an array yet. Actual toolkit diagnostic SPICE(NOCURRENTARRAY)."
         },
         {
           "caseId": "file-io-dafgn-after-final-array",
-          "coverage": ["error", "edge", "state"],
+          "coverage": [
+            "error",
+            "edge",
+            "state"
+          ],
           "observes": "The name cannot be read past the final array. Actual toolkit diagnostic SPICE(NOCURRENTARRAY)."
         },
         {
           "caseId": "file-io-dafgn-short-capacity",
-          "coverage": ["error", "edge", "state"],
+          "coverage": [
+            "error",
+            "edge",
+            "state"
+          ],
           "observes": "Length one cannot accommodate a character and its terminating NUL. Actual toolkit diagnostic SPICE(STRINGTOOSHORT)."
         },
         {
           "caseId": "file-io-dafgn-negative-capacity",
-          "coverage": ["error", "edge", "state"],
+          "coverage": [
+            "error",
+            "edge",
+            "state"
+          ],
           "observes": "A negative logical name capacity receives toolkit length validation. Actual toolkit diagnostic SPICE(STRINGTOOSHORT)."
         },
         {
           "caseId": "file-io-dafgn-unstarted-short-capacity",
-          "coverage": ["error", "edge", "state"],
+          "coverage": [
+            "error",
+            "edge",
+            "state"
+          ],
           "observes": "Explicit handle selection precedes name buffer validation. Actual toolkit diagnostic SPICE(DAFNOSEARCH)."
         },
         {
           "caseId": "file-io-dafgn-recover-same-search",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Capture the actual missing-array and short-buffer errors on one owner, then read the complete name and summary without resetting its search."
         }
       ],
@@ -1247,11 +1607,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.dafgn -> Node owner registry and mutex-protected native addon -> shared tspice_dafgn -> dafcs_c -> dafgn_c -> strict UTF-8 decode.",
-          "executions": ["local-c03-1bbd2534-node", "ci-c03-1bbd2534-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1262,11 +1623,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.dafgn -> WASM owner registry and scoped linear-memory buffers -> shared tspice_dafgn -> dafcs_c -> dafgn_c -> strict UTF-8 decode.",
-          "executions": ["local-c03-1bbd2534-wasm", "ci-c03-1bbd2534-wasm"]
+          "executions": []
         }
       }
     },
@@ -1278,32 +1640,56 @@
       "scenarios": [
         {
           "caseId": "file-io-dafgs-changing-packed-addresses",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Compare each summary byte for both arrays, including distinct packed body and address words."
         },
         {
           "caseId": "file-io-dafgs-packed-nan-payload",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Preserve the authored negative body and center integer bits even when their packed double word is a NaN."
         },
         {
           "caseId": "file-io-dafgs-select-across-daf-kinds",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Switch between CK and SPK arrays and observe every format-specific summary byte."
         },
         {
           "caseId": "file-io-dafgs-before-any-array",
-          "coverage": ["error", "edge", "state"],
+          "coverage": [
+            "error",
+            "edge",
+            "state"
+          ],
           "observes": "Summary reads need an array position after beginning a search. Actual toolkit diagnostic SPICE(NOCURRENTARRAY)."
         },
         {
           "caseId": "file-io-dafgs-after-backward-exhaustion",
-          "coverage": ["error", "edge", "state"],
+          "coverage": [
+            "error",
+            "edge",
+            "state"
+          ],
           "observes": "Repeated backward searching beyond the first array leaves no summary. Actual toolkit diagnostic SPICE(NOCURRENTARRAY)."
         },
         {
           "caseId": "file-io-dafgs-unstarted-file",
-          "coverage": ["error", "edge", "state"],
+          "coverage": [
+            "error",
+            "edge",
+            "state"
+          ],
           "observes": "A handle without a search is rejected before any summary bytes are read. Actual toolkit diagnostic SPICE(DAFNOSEARCH)."
         }
       ],
@@ -1357,11 +1743,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.dafgs -> Node owner registry and mutex-protected native addon -> shared tspice_dafgs -> dafcs_c -> dafhsf_c -> dafgs_c -> owned Uint8Array.",
-          "executions": ["local-c03-1bbd2534-node", "ci-c03-1bbd2534-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1372,11 +1759,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.dafgs -> WASM owner registry and scoped linear-memory buffers -> shared tspice_dafgs -> dafcs_c -> dafhsf_c -> dafgs_c -> owned Uint8Array.",
-          "executions": ["local-c03-1bbd2534-wasm", "ci-c03-1bbd2534-wasm"]
+          "executions": []
         }
       }
     },
@@ -1388,22 +1776,38 @@
       "scenarios": [
         {
           "caseId": "file-io-dafhsf-unpositioned-and-empty",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Query both dimensions before starting a search, including on an empty DAF."
         },
         {
           "caseId": "file-io-dafhsf-no-current-change",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Querying another file format does not change the current active search."
         },
         {
           "caseId": "file-io-dafhsf-active-then-exhausted",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Summary dimensions remain available after cursor exhaustion."
         },
         {
           "caseId": "file-io-dafhsf-new-write-handle",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "A freshly reopened writable SPK exposes the same file summary format."
         }
       ],
@@ -1439,11 +1843,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.dafhsf -> Node owner registry and mutex-protected native addon -> shared tspice_dafhsf -> dafhsf_c.",
-          "executions": ["local-c03-1bbd2534-node", "ci-c03-1bbd2534-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1453,11 +1858,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.dafhsf -> WASM owner registry and scoped linear-memory buffers -> shared tspice_dafhsf -> dafhsf_c.",
-          "executions": ["local-c03-1bbd2534-wasm", "ci-c03-1bbd2534-wasm"]
+          "executions": []
         }
       }
     },
@@ -1469,37 +1875,65 @@
       "scenarios": [
         {
           "caseId": "file-io-dafopw-scratch-reopen-read",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Open a generated SPK for write, navigate its array, close, and reopen the same file for read."
         },
         {
           "caseId": "file-io-dafopw-writer-after-close",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "A new write claim is permitted once the prior write claim closes."
         },
         {
           "caseId": "file-io-dafopw-repeated-writer-conflict",
-          "coverage": ["error", "edge", "state"],
+          "coverage": [
+            "error",
+            "edge",
+            "state"
+          ],
           "observes": "An existing writable claim prevents a second write open on the same generated file. Actual toolkit diagnostic SPICE(FILEOPENCONFLICT)."
         },
         {
           "caseId": "file-io-dafopw-read-open-conflict",
-          "coverage": ["error", "edge", "state"],
+          "coverage": [
+            "error",
+            "edge",
+            "state"
+          ],
           "observes": "A read claim on an existing generated file prevents a write open. Actual toolkit diagnostic SPICE(FILEOPENCONFLICT)."
         },
         {
           "caseId": "file-io-dafopw-read-during-write",
-          "coverage": ["error", "edge", "state"],
+          "coverage": [
+            "error",
+            "edge",
+            "state"
+          ],
           "observes": "Opening an existing file for read while it has a write claim produces the actual read/write conflict. Actual toolkit diagnostic SPICE(RWCONFLICT)."
         },
         {
           "caseId": "file-io-dafopw-missing-scratch",
-          "coverage": ["error", "edge", "state"],
+          "coverage": [
+            "error",
+            "edge",
+            "state"
+          ],
           "observes": "Opening a nonexistent file for write does not create a DAF. Actual toolkit diagnostic SPICE(FILENOTFOUND)."
         },
         {
           "caseId": "file-io-dafopw-generated-path-alias",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Resolve the logical SPK writer path to its unique generated scratch file before a DAF write open."
         }
       ],
@@ -1551,11 +1985,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.dafopw -> Node owner registry and mutex-protected native addon -> shared tspice_dafopw -> dafopw_c.",
-          "executions": ["local-c03-1bbd2534-node", "ci-c03-1bbd2534-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1566,11 +2001,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.dafopw -> WASM owner registry and scoped linear-memory buffers -> shared tspice_dafopw -> dafopw_c.",
-          "executions": ["local-c03-1bbd2534-wasm", "ci-c03-1bbd2534-wasm"]
+          "executions": []
         }
       }
     }

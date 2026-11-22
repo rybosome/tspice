@@ -272,3 +272,9 @@ export {
   dafPathByteLength,
   dafSummaryFormat,
 } from "./spice-runtime/shared/daf.js";
+
+export {
+  ckType2Record,
+  ckType3Record,
+  ckStateResult,
+} from "./spice-runtime/shared/ck-records.js";
