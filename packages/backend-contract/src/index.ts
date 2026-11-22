@@ -105,6 +105,12 @@ export interface SpiceKitBackend
 
 /** Unified backend contract */
 export interface SpiceBackend {
+  /** Asynchronous entry points for backends that suspend a live call while awaiting a worker callback. */
+  asyncRaw?: Partial<{
+    [K in "uddc" | "uddf" | "gfudb" | "gfuds"]: (
+      ...args: Parameters<GeometryGfApi[K]>
+    ) => Promise<ReturnType<GeometryGfApi[K]>>;
+  }>;
   /** Low-level, CSPICE-analogous functions. */
   raw: SpiceRawBackend;
 

@@ -4,7 +4,11 @@ import {
   type CreateSpiceAsyncOptions,
   type CreateSpiceOptions,
 } from "../spice.js";
-import type { Spice, SpiceAsync } from "../kit/types/spice-types.js";
+import type {
+  Spice,
+  SpiceAsync,
+  SpiceWorker,
+} from "../kit/types/spice-types.js";
 
 import type { SpiceTransport, SpiceTransportSync } from "../transport/types.js";
 
@@ -17,7 +21,10 @@ import {
   isCachingTransportSync,
   withCachingSync,
 } from "../transport/caching/withCachingSync.js";
-import { createSpiceAsyncFromTransport } from "./createSpiceAsyncFromTransport.js";
+import {
+  createSpiceAsyncFromTransport,
+  createSpiceWorkerFromTransport,
+} from "./createSpiceAsyncFromTransport.js";
 import { createSpiceSyncFromTransport } from "./createSpiceSyncFromTransport.js";
 import type { FetchLike, KernelPack } from "../kernels/kernelPack.js";
 import { loadKernelPack } from "../kernels/kernelPack.js";
@@ -102,7 +109,7 @@ export type SpiceClientsBuilder = {
   /** Build a web-worker client (async). */
   toWebWorker(
     opts?: SpiceClientsWebWorkerOptions,
-  ): Promise<SpiceClientBuildResult<SpiceAsync>>;
+  ): Promise<SpiceClientBuildResult<SpiceWorker>>;
 };
 
 const blockedStringKeys = new Set<string>([
@@ -530,7 +537,7 @@ function createBuilder(state: BuilderState): SpiceClientsBuilder {
 
     toWebWorker: async (
       webWorkerOpts?: SpiceClientsWebWorkerOptions,
-    ): Promise<SpiceClientBuildResult<SpiceAsync>> => {
+    ): Promise<SpiceClientBuildResult<SpiceWorker>> => {
       const ww = webWorkerOpts;
 
       const workerInput =
@@ -592,7 +599,7 @@ function createBuilder(state: BuilderState): SpiceClientsBuilder {
       try {
         const surfaceMethodKeys =
           await requestTransportSurfaceMethodKeys(baseTransport);
-        const spice = createSpiceAsyncFromTransport(
+        const spice = createSpiceWorkerFromTransport(
           transport,
           surfaceMethodKeys,
         );
@@ -603,7 +610,7 @@ function createBuilder(state: BuilderState): SpiceClientsBuilder {
           enumerable: true,
         });
 
-        const client: SpiceClientBuildResult<SpiceAsync> = { spice, dispose };
+        const client: SpiceClientBuildResult<SpiceWorker> = { spice, dispose };
 
         // Runtime alias for Explicit Resource Management. Do not polyfill.
         const asyncDisposeSymbol: unknown = Reflect.get(Symbol, "asyncDispose");

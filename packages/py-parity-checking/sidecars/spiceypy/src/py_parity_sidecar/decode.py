@@ -130,6 +130,11 @@ from .models import (
     StepGeometrySincpt,
     StepGeometrySubpnt,
     StepGeometrySubslr,
+    StepGeometryGfUdf,
+    StepGeometryGfUddc,
+    StepGeometryGfUddf,
+    StepGeometryGfGfudb,
+    StepGeometryGfGfuds,
     StepGeometryGfGfdist,
     StepGeometryGfGfrefn,
     StepGeometryGfGfrepf,
@@ -1817,6 +1822,46 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
                 ),
             )
 
+        case "geometry-gf.udf":
+            return StepGeometryGfUdf(op=op,
+                et=_expect_number(step.get("et"),label="geometry-gf.udf.et"),
+                initialValue=(_expect_number(step.get("initialValue"),label="geometry-gf.udf.initialValue") if step.get("initialValue") is not None else None),
+            )
+        case "geometry-gf.uddc":
+            return StepGeometryGfUddc(op=op,
+                scalar=_expect_string(step.get("scalar"),label="geometry-gf.uddc.scalar"),
+                x=_expect_number(step.get("x"),label="geometry-gf.uddc.x"),
+                dx=_expect_number(step.get("dx"),label="geometry-gf.uddc.dx"),
+            )
+        case "geometry-gf.uddf":
+            return StepGeometryGfUddf(op=op,
+                scalar=_expect_string(step.get("scalar"),label="geometry-gf.uddf.scalar"),
+                x=_expect_number(step.get("x"),label="geometry-gf.uddf.x"),
+                dx=_expect_number(step.get("dx"),label="geometry-gf.uddf.dx"),
+            )
+        case "geometry-gf.gfudb":
+            return StepGeometryGfGfudb(op=op,
+                scalar=_expect_string(step.get("scalar"),label="geometry-gf.gfudb.scalar"),
+                predicate=_expect_string(step.get("predicate"),label="geometry-gf.gfudb.predicate"),
+                threshold=_expect_number(step.get("threshold"),label="geometry-gf.gfudb.threshold"),
+                step=_expect_number(step.get("step"),label="geometry-gf.gfudb.step"),
+                cnfineWindowId=_expect_string(step.get("cnfineWindowId"),label="geometry-gf.gfudb.cnfineWindowId"),
+                resultWindowId=_expect_string(step.get("resultWindowId"),label="geometry-gf.gfudb.resultWindowId"),
+                resultMaxIntervals=(_expect_int(step.get("resultMaxIntervals"),label="geometry-gf.gfudb.resultMaxIntervals") if step.get("resultMaxIntervals") is not None else None),
+            )
+        case "geometry-gf.gfuds":
+            return StepGeometryGfGfuds(op=op,
+                scalar=_expect_string(step.get("scalar"),label="geometry-gf.gfuds.scalar"),
+                conditionDx=_expect_number(step.get("conditionDx"),label="geometry-gf.gfuds.conditionDx"),
+                relate=_expect_string(step.get("relate"),label="geometry-gf.gfuds.relate"),
+                refval=_expect_number(step.get("refval"),label="geometry-gf.gfuds.refval"),
+                adjust=_expect_number(step.get("adjust"),label="geometry-gf.gfuds.adjust"),
+                step=_expect_number(step.get("step"),label="geometry-gf.gfuds.step"),
+                nintvls=_expect_int(step.get("nintvls"),label="geometry-gf.gfuds.nintvls"),
+                cnfineWindowId=_expect_string(step.get("cnfineWindowId"),label="geometry-gf.gfuds.cnfineWindowId"),
+                resultWindowId=_expect_string(step.get("resultWindowId"),label="geometry-gf.gfuds.resultWindowId"),
+                resultMaxIntervals=(_expect_int(step.get("resultMaxIntervals"),label="geometry-gf.gfuds.resultMaxIntervals") if step.get("resultMaxIntervals") is not None else None),
+            )
         case "geometry-gf.gfdist":
             return StepGeometryGfGfdist(
                 op=op,

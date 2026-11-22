@@ -1,3 +1,4 @@
+import { createWorkerGfCallbacks } from "./gfCallbacks.js";
 import type { SpiceTransport } from "../../transport/types.js";
 
 import type {
@@ -206,6 +207,9 @@ export function exposeTransportToWorker(opts: {
     maybeCompactQueue();
   };
 
+  const gfCallbacks = createWorkerGfCallbacks((message) =>
+    self.postMessage(message),
+  );
   const runRequest = (req: QueuedRequest): void => {
     inFlight += 1;
 
@@ -213,7 +217,9 @@ export function exposeTransportToWorker(opts: {
       try {
         const value = await opts.transport.request(
           req.op,
-          req.args.map(decodeRpcValue),
+          req.args.map((arg, index) =>
+            gfCallbacks.decode(req.op, req.id, index, decodeRpcValue(arg)),
+          ),
         );
         if (disposed) return;
 
@@ -235,6 +241,7 @@ export function exposeTransportToWorker(opts: {
         };
         self.postMessage(res);
       } finally {
+        gfCallbacks.complete(req.id);
         inFlight -= 1;
         drain();
       }
@@ -242,6 +249,7 @@ export function exposeTransportToWorker(opts: {
   };
 
   const onMessage = (ev: { data: unknown }): void => {
+    if (gfCallbacks.receive(ev.data)) return;
     const msg = ev.data as Partial<RpcMessageFromMain> | null | undefined;
     if (!msg || typeof msg.type !== "string") return;
 
@@ -249,6 +257,7 @@ export function exposeTransportToWorker(opts: {
       // Dispose is a one-way signal; ignore any further traffic.
       if (disposed) return;
       disposed = true;
+      gfCallbacks.dispose();
 
       const queuedToFail = queued.slice(queuedHead);
       clearQueue();
@@ -336,6 +345,7 @@ export function exposeTransportToWorker(opts: {
   self.addEventListener("message", onMessage);
 
   const dispose = (): void => {
+    gfCallbacks.dispose();
     if (disposed) return;
     disposed = true;
 

@@ -1,0 +1,807 @@
+[
+  {
+    "caseId": "geometry-gf-gfuds-two-roots",
+    "description": "Equality returns both isolated crossings; comparisons above and below produce the integral intervals between and outside roots.",
+    "workflow": [
+      {
+        "op": "geometry-gf.gfstol",
+        "value": 1e-6
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -3,
+        "right": 3,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfuds",
+        "scalar": "square",
+        "step": 0.25,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r",
+        "resultMaxIntervals": 8,
+        "relate": "=",
+        "refval": 1,
+        "adjust": 0,
+        "nintvls": 16,
+        "conditionDx": 0.03125
+      },
+      {
+        "op": "geometry-gf.gfuds",
+        "scalar": "square",
+        "step": 0.25,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r",
+        "resultMaxIntervals": 8,
+        "relate": "<",
+        "refval": 1,
+        "adjust": 0,
+        "nintvls": 16,
+        "conditionDx": 0.03125
+      },
+      {
+        "op": "geometry-gf.gfuds",
+        "scalar": "square",
+        "step": 0.25,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r",
+        "resultMaxIntervals": 8,
+        "relate": ">",
+        "refval": 1,
+        "adjust": 0,
+        "nintvls": 16,
+        "conditionDx": 0.03125
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfuds-absolute-extrema",
+    "description": "The absolute minimum of a convex parabola and maximum of its negation are attained at the unique interior stationary epoch.",
+    "workflow": [
+      {
+        "op": "geometry-gf.gfstol",
+        "value": 1e-6
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -3,
+        "right": 2,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfuds",
+        "scalar": "square",
+        "step": 0.25,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r",
+        "resultMaxIntervals": 8,
+        "relate": "ABSMIN",
+        "refval": 1,
+        "adjust": 0,
+        "nintvls": 16,
+        "conditionDx": 0.03125
+      },
+      {
+        "op": "geometry-gf.gfuds",
+        "scalar": "negativeSquare",
+        "step": 0.25,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r",
+        "resultMaxIntervals": 8,
+        "relate": "ABSMAX",
+        "refval": 1,
+        "adjust": 0,
+        "nintvls": 16,
+        "conditionDx": 0.03125
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfuds-absolute-adjustment",
+    "description": "Positive adjustment turns a global minimum/maximum singleton into an interval around the extremum.",
+    "workflow": [
+      {
+        "op": "geometry-gf.gfstol",
+        "value": 1e-6
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -3,
+        "right": 2,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfuds",
+        "scalar": "square",
+        "step": 0.25,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r",
+        "resultMaxIntervals": 8,
+        "relate": "ABSMIN",
+        "refval": 1,
+        "adjust": 0.25,
+        "nintvls": 16,
+        "conditionDx": 0.03125
+      },
+      {
+        "op": "geometry-gf.gfuds",
+        "scalar": "negativeSquare",
+        "step": 0.25,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r",
+        "resultMaxIntervals": 8,
+        "relate": "ABSMAX",
+        "refval": 1,
+        "adjust": 1,
+        "nintvls": 16,
+        "conditionDx": 0.03125
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfuds-local-extrema",
+    "description": "A smooth cubic has a local maximum at \u22121 and local minimum at +1. The supplied decreasing predicate uses explicit scalar samples on both sides.",
+    "workflow": [
+      {
+        "op": "geometry-gf.gfstol",
+        "value": 1e-6
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -2,
+        "right": 2,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfuds",
+        "scalar": "cubic",
+        "step": 0.25,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r",
+        "resultMaxIntervals": 8,
+        "relate": "LOCMAX",
+        "refval": 1,
+        "adjust": 0,
+        "nintvls": 16,
+        "conditionDx": 0.0009765625
+      },
+      {
+        "op": "geometry-gf.gfuds",
+        "scalar": "cubic",
+        "step": 0.25,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r",
+        "resultMaxIntervals": 8,
+        "relate": "LOCMIN",
+        "refval": 1,
+        "adjust": 0,
+        "nintvls": 16,
+        "conditionDx": 0.0009765625
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfuds-monotone",
+    "description": "A decreasing affine scalar and increasing identity yield opposite inequality directions and different event locations.",
+    "workflow": [
+      {
+        "op": "geometry-gf.gfstol",
+        "value": 1e-6
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -2,
+        "right": 3,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfuds",
+        "scalar": "negativeAffine",
+        "step": 0.25,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r",
+        "resultMaxIntervals": 8,
+        "relate": ">",
+        "refval": 2,
+        "adjust": 0,
+        "nintvls": 16,
+        "conditionDx": 0.03125
+      },
+      {
+        "op": "geometry-gf.gfuds",
+        "scalar": "identity",
+        "step": 0.25,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r",
+        "resultMaxIntervals": 8,
+        "relate": ">",
+        "refval": 1,
+        "adjust": 0,
+        "nintvls": 16,
+        "conditionDx": 0.03125
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfuds-disjoint-confinement",
+    "description": "Equality and strict search are each confined to three separate components.",
+    "workflow": [
+      {
+        "op": "geometry-gf.gfstol",
+        "value": 1e-6
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -3,
+        "right": -0.5,
+        "maxIntervals": 8
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": 0.5,
+        "right": 1.5,
+        "maxIntervals": 8
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": 2,
+        "right": 3,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfuds",
+        "scalar": "square",
+        "step": 0.25,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r",
+        "resultMaxIntervals": 8,
+        "relate": "=",
+        "refval": 1,
+        "adjust": 0,
+        "nintvls": 16,
+        "conditionDx": 0.03125
+      },
+      {
+        "op": "geometry-gf.gfuds",
+        "scalar": "square",
+        "step": 0.25,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r",
+        "resultMaxIntervals": 8,
+        "relate": "<",
+        "refval": 1,
+        "adjust": 0,
+        "nintvls": 16,
+        "conditionDx": 0.03125
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfuds-no-result",
+    "description": "The reference exceeds the finite function range, then the result window is filled by a succeeding query.",
+    "workflow": [
+      {
+        "op": "geometry-gf.gfstol",
+        "value": 1e-6
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -3,
+        "right": 3,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfuds",
+        "scalar": "square",
+        "step": 0.25,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r",
+        "resultMaxIntervals": 8,
+        "relate": ">",
+        "refval": 100,
+        "adjust": 0,
+        "nintvls": 16,
+        "conditionDx": 0.03125
+      },
+      {
+        "op": "geometry-gf.gfuds",
+        "scalar": "square",
+        "step": 0.25,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r",
+        "resultMaxIntervals": 8,
+        "relate": "<",
+        "refval": 100,
+        "adjust": 0,
+        "nintvls": 16,
+        "conditionDx": 0.03125
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfuds-singleton",
+    "description": "Confinement of zero duration admits or rejects the single epoch by its measurement.",
+    "workflow": [
+      {
+        "op": "geometry-gf.gfstol",
+        "value": 1e-6
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": 2,
+        "right": 2,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfuds",
+        "scalar": "square",
+        "step": 0.25,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r",
+        "resultMaxIntervals": 8,
+        "relate": "<",
+        "refval": 5,
+        "adjust": 0,
+        "nintvls": 16,
+        "conditionDx": 0.03125
+      },
+      {
+        "op": "geometry-gf.gfuds",
+        "scalar": "square",
+        "step": 0.25,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r",
+        "resultMaxIntervals": 8,
+        "relate": ">",
+        "refval": 5,
+        "adjust": 0,
+        "nintvls": 16,
+        "conditionDx": 0.03125
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfuds-constant",
+    "description": "On a constant plateau use strict comparisons and avoid assigning a unique extremum.",
+    "workflow": [
+      {
+        "op": "geometry-gf.gfstol",
+        "value": 1e-6
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -2,
+        "right": 4,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfuds",
+        "scalar": "constant",
+        "step": 0.25,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r",
+        "resultMaxIntervals": 8,
+        "relate": "<",
+        "refval": 8,
+        "adjust": 0,
+        "nintvls": 16,
+        "conditionDx": 0.03125
+      },
+      {
+        "op": "geometry-gf.gfuds",
+        "scalar": "constant",
+        "step": 0.25,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r",
+        "resultMaxIntervals": 8,
+        "relate": ">",
+        "refval": 7,
+        "adjust": 0,
+        "nintvls": 16,
+        "conditionDx": 0.03125
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfuds-seeded-result",
+    "description": "A valid search overwrites an unrelated seeded result interval while leaving confinement intact.",
+    "workflow": [
+      {
+        "op": "geometry-gf.gfstol",
+        "value": 1e-6
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -3,
+        "right": 3,
+        "maxIntervals": 8
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "r",
+        "left": 10,
+        "right": 12,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfuds",
+        "scalar": "square",
+        "step": 0.25,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r",
+        "resultMaxIntervals": 8,
+        "relate": "<",
+        "refval": 1,
+        "adjust": 0,
+        "nintvls": 16,
+        "conditionDx": 0.03125
+      },
+      {
+        "op": "geometry-gf.gfuds",
+        "scalar": "square",
+        "step": 0.25,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r",
+        "resultMaxIntervals": 8,
+        "relate": "<",
+        "refval": -10,
+        "adjust": 0,
+        "nintvls": 16,
+        "conditionDx": 0.03125
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfuds-empty-confinement",
+    "description": "An empty initialized confinement produces an empty result and no scientific callback invocations.",
+    "workflow": [
+      {
+        "op": "geometry-gf.gfstol",
+        "value": 1e-6
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": 2,
+        "right": 3,
+        "maxIntervals": 8
+      },
+      {
+        "op": "cells-windows.scard",
+        "targetKind": "window",
+        "targetId": "c",
+        "card": 0
+      },
+      {
+        "op": "geometry-gf.gfuds",
+        "scalar": "square",
+        "step": 0.25,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r",
+        "resultMaxIntervals": 8,
+        "relate": "<",
+        "refval": 1,
+        "adjust": 0,
+        "nintvls": 16,
+        "conditionDx": 0.03125
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfuds-zero-step",
+    "description": "The original search rejects a nonpositive step on a valid confinement window.",
+    "workflow": [
+      {
+        "op": "geometry-gf.gfstol",
+        "value": 1e-6
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -3,
+        "right": 3,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfuds",
+        "scalar": "square",
+        "step": 0,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r",
+        "resultMaxIntervals": 8,
+        "relate": "<",
+        "refval": 1,
+        "adjust": 0,
+        "nintvls": 16,
+        "conditionDx": 0.03125
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDSTEP"]
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfuds-negative-step",
+    "description": "The original search rejects a nonpositive step on a valid confinement window.",
+    "workflow": [
+      {
+        "op": "geometry-gf.gfstol",
+        "value": 1e-6
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -3,
+        "right": 3,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfuds",
+        "scalar": "square",
+        "step": -0.5,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r",
+        "resultMaxIntervals": 8,
+        "relate": "<",
+        "refval": 1,
+        "adjust": 0,
+        "nintvls": 16,
+        "conditionDx": 0.03125
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDSTEP"]
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfuds-result-capacity",
+    "description": "The two disjoint components of square above one exceed capacity for one result interval.",
+    "workflow": [
+      {
+        "op": "geometry-gf.gfstol",
+        "value": 1e-6
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -3,
+        "right": 3,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfuds",
+        "scalar": "square",
+        "step": 0.25,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r",
+        "resultMaxIntervals": 1,
+        "relate": ">",
+        "refval": 1,
+        "adjust": 0,
+        "nintvls": 16,
+        "conditionDx": 0.03125
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["CELLTOOSMALL"]
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfuds-unknown-relation",
+    "description": "An unsupported scalar relation is rejected before any result can be read.",
+    "workflow": [
+      {
+        "op": "geometry-gf.gfstol",
+        "value": 1e-6
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -3,
+        "right": 3,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfuds",
+        "scalar": "square",
+        "step": 0.25,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r",
+        "resultMaxIntervals": 8,
+        "relate": "INVALID",
+        "refval": 1,
+        "adjust": 0,
+        "nintvls": 16,
+        "conditionDx": 0.03125
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["NOTRECOGNIZED"]
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfuds-empty-relation",
+    "description": "A zero-length relation reaches the original C string check.",
+    "workflow": [
+      {
+        "op": "geometry-gf.gfstol",
+        "value": 1e-6
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -3,
+        "right": 3,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfuds",
+        "scalar": "square",
+        "step": 0.25,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r",
+        "resultMaxIntervals": 8,
+        "relate": "",
+        "refval": 1,
+        "adjust": 0,
+        "nintvls": 16,
+        "conditionDx": 0.03125
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["EMPTYSTRING"]
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfuds-negative-adjustment",
+    "description": "A negative adjustment on an absolute maximum reaches the genuine solver error.",
+    "workflow": [
+      {
+        "op": "geometry-gf.gfstol",
+        "value": 1e-6
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -3,
+        "right": 3,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfuds",
+        "scalar": "square",
+        "step": 0.25,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r",
+        "resultMaxIntervals": 8,
+        "relate": "ABSMAX",
+        "refval": 1,
+        "adjust": -0.25,
+        "nintvls": 16,
+        "conditionDx": 0.03125
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["VALUEOUTOFRANGE"]
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfuds-zero-workspace",
+    "description": "Zero internal work intervals reaches the actual C wrapper dimension guard.",
+    "workflow": [
+      {
+        "op": "geometry-gf.gfstol",
+        "value": 1e-6
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -3,
+        "right": 3,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfuds",
+        "scalar": "square",
+        "step": 0.25,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r",
+        "resultMaxIntervals": 8,
+        "relate": "<",
+        "refval": 1,
+        "adjust": 0,
+        "nintvls": 0,
+        "conditionDx": 0.03125
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["VALUEOUTOFRANGE"]
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfuds-negative-workspace",
+    "description": "Negative internal interval count reaches the same diagnostic without allocating a workspace.",
+    "workflow": [
+      {
+        "op": "geometry-gf.gfstol",
+        "value": 1e-6
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -3,
+        "right": 3,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfuds",
+        "scalar": "square",
+        "step": 0.25,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r",
+        "resultMaxIntervals": 8,
+        "relate": "<",
+        "refval": 1,
+        "adjust": 0,
+        "nintvls": -1,
+        "conditionDx": 0.03125
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["VALUEOUTOFRANGE"]
+    }
+  }
+]

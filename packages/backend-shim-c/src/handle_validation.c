@@ -11,6 +11,7 @@
 typedef struct {
   uintptr_t handle;
   SpiceInt capacity;
+  uint64_t generation;
 } tspice_cell_registry_entry;
 
 typedef struct {
@@ -59,6 +60,11 @@ static int tspice_registry_contains(uintptr_t handle) {
   return found;
 }
 
+uint64_t tspice_registry_generation(uintptr_t handle) {
+  int found=0; size_t idx=tspice_registry_lower_bound(handle,&found);
+  return found?tspice_cells_registry.items[idx].generation:0;
+}
+
 int tspice_registry_add(SpiceCell *cell, const char *ctx, char *err, int errMaxBytes) {
   if (!cell) {
     return tspice_return_error(err, errMaxBytes, "tspice_registry_add(): cell must be non-null");
@@ -91,6 +97,8 @@ int tspice_registry_add(SpiceCell *cell, const char *ctx, char *err, int errMaxB
         &tspice_cells_registry.items[idx],
         (tspice_cells_registry.len - idx) * sizeof(tspice_cell_registry_entry));
   }
+  static uint64_t next_generation = 0;
+  tspice_cells_registry.items[idx].generation = ++next_generation;
   tspice_cells_registry.items[idx].handle = handle;
   tspice_cells_registry.items[idx].capacity = cell->size;
   tspice_cells_registry.len++;

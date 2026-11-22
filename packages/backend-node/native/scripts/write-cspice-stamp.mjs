@@ -1,3 +1,5 @@
+import { execFileSync } from "node:child_process";
+import { stageUserDerivative } from "../../../../scripts/stage-user-derivative.mjs";
 import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
@@ -247,6 +249,22 @@ async function main() {
 
   // Print the absolute generated directory path for consumption by binding.gyp via
   // the tspice_native_generated_dir variable.
+  let sourceDir = path.join(cspiceDir, "src/cspice");
+  if (!fs.existsSync(path.join(sourceDir, "uddf_c.c"))) {
+    const root = getRepoRoot();
+    execFileSync(
+      process.execPath,
+      [path.join(root, "scripts/fetch-cspice.mjs"), "--source"],
+      { cwd: root, stdio: ["ignore", process.stderr, process.stderr] },
+    );
+    sourceDir = path.join(
+      root,
+      ".cache/cspice",
+      manifest.toolkitVersion,
+      "source/cspice/src/cspice",
+    );
+  }
+  stageUserDerivative(sourceDir, generatedDir);
   process.stdout.write(generatedDir);
 }
 

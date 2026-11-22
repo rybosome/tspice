@@ -2127,6 +2127,21 @@ export function createFakeBackend(
     gftfov: () => {
       throw new Error("Fake backend: gftfov requires a scientific backend");
     },
+    udf: () => {
+      throw new Error("Fake backend: udf requires a scientific backend");
+    },
+    uddf: () => {
+      throw new Error("Fake backend: uddf requires a scientific backend");
+    },
+    uddc: () => {
+      throw new Error("Fake backend: uddc requires a scientific backend");
+    },
+    gfudb: () => {
+      throw new Error("Fake backend: gfudb requires a scientific backend");
+    },
+    gfuds: () => {
+      throw new Error("Fake backend: gfuds requires a scientific backend");
+    },
     gfsep: (
       _targ1: string,
       _shape1: string,

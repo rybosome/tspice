@@ -1,3 +1,4 @@
+import { createUserGf } from "../domains/user-gf.js";
 import type { SpiceBackend } from "@rybosome/tspice-backend-contract";
 
 import type { EmscriptenModule } from "../lowlevel/exports.js";
@@ -123,7 +124,9 @@ export async function createWasmBackend(
   const timeApi = createTimeApi(module, toolkitVersion);
   const fileIoApi = createFileIoApi(module, spiceHandles);
 
+  const userGf = createUserGf(module);
   const backend = {
+    asyncRaw: userGf.asynchronous,
     kind: "wasm",
     raw: {
       ...timeApi,
@@ -133,7 +136,7 @@ export async function createWasmBackend(
       ...createFramesApi(module),
       ...createEphemerisApi(module, spiceHandles, virtualOutputs),
       ...createGeometryApi(module),
-      ...createGeometryGfApi(module),
+      ...createGeometryGfApi(module, userGf),
       ...createCoordsVectorsApi(module),
       ...fileIoApi,
       ...createErrorApi(module),

@@ -1,5 +1,11 @@
 import type { SpiceWindow } from "@rybosome/tspice-backend-contract";
 import type {
+  StepGeometryGfUdf,
+  StepGeometryGfUddc,
+  StepGeometryGfUddf,
+  StepGeometryGfGfudb,
+  StepGeometryGfGfuds,
+  GfCallbackTrace,
   StepGeometryGfGfdist,
   StepGeometryGfGfrefn,
   StepGeometryGfGfrepf,
@@ -21,6 +27,11 @@ import {
 } from "../context.js";
 
 type GeometryGfStep =
+  | StepGeometryGfUdf
+  | StepGeometryGfUddc
+  | StepGeometryGfUddf
+  | StepGeometryGfGfudb
+  | StepGeometryGfGfuds
   | StepGeometryGfGfdist
   | StepGeometryGfGfrefn
   | StepGeometryGfGfrepf
@@ -70,6 +81,25 @@ function preserveSearchStep(context: RunTspiceContext): void {
   registerFinalizer(context, label, () => {
     if (previous !== undefined) context.spice.raw.gfsstp(previous);
   });
+}
+
+/** The workflow selects a pure, reproducible measurement. The toolkit chooses every sample epoch. */
+function userMeasurement(name: string, trace: GfCallbackTrace) {
+  const functions: Record<string, (x: number) => number> = {
+    constant: () => 7,
+    identity: (x) => x,
+    negativeAffine: (x) => 4 - 2 * x,
+    square: (x) => x * x,
+    negativeSquare: (x) => -(x * x),
+    cubic: (x) => x * x * x - 3 * x,
+  };
+  const measure = Object.hasOwn(functions, name) ? functions[name] : undefined;
+  if (!measure) throw new TypeError("Unknown user measurement: " + name);
+  return (x: number) => {
+    const value = measure(x);
+    trace.scalarSamples.push([x, value]);
+    return value;
+  };
 }
 
 /** Execute one `geometry-gf.*` workflow step in tspice. */
@@ -229,6 +259,103 @@ export function runGeometryGfStep(
       };
     }
 
+    case "geometry-gf.udf":
+      return {
+        op: step.op,
+        value:
+          step.initialValue === undefined
+            ? context.spice.raw.udf(step.et)
+            : context.spice.raw.udf(step.et, step.initialValue),
+      };
+    case "geometry-gf.uddc":
+    case "geometry-gf.uddf": {
+      const trace: GfCallbackTrace = {
+        scalarSamples: [],
+        conditionSamples: [],
+      };
+      const f = userMeasurement(step.scalar, trace);
+      if (step.op === "geometry-gf.uddc")
+        return {
+          op: step.op,
+          value: {
+            decreasing: context.spice.raw.uddc(f, step.x, step.dx),
+            scalarSamples: trace.scalarSamples,
+          },
+        };
+      return {
+        op: step.op,
+        value: {
+          derivative: context.spice.raw.uddf(f, step.x, step.dx),
+          scalarSamples: trace.scalarSamples,
+        },
+      };
+    }
+    case "geometry-gf.gfudb":
+    case "geometry-gf.gfuds": {
+      preserveSearchStep(context);
+      const trace: GfCallbackTrace = {
+        scalarSamples: [],
+        conditionSamples: [],
+      };
+      const scalar = userMeasurement(step.scalar, trace);
+      const cnfine = requireWindow(context, step.cnfineWindowId);
+      const result = getOrCreateWindow(
+        context,
+        step.resultWindowId,
+        step.resultMaxIntervals ?? 8,
+      );
+      if (step.op === "geometry-gf.gfudb") {
+        const condition = (f: (x: number) => number, t: number) => {
+          let value: boolean;
+          switch (step.predicate) {
+            case "above":
+              value = f(t) > step.threshold;
+              break;
+            case "below":
+              value = f(t) < step.threshold;
+              break;
+            case "always":
+              value = true;
+              break;
+            case "never":
+              value = false;
+              break;
+            default:
+              throw new TypeError("Unknown GF predicate: " + step.predicate);
+          }
+          trace.conditionSamples.push([t, value]);
+          return value;
+        };
+        context.spice.raw.gfudb(scalar, condition, step.step, cnfine, result);
+      } else {
+        const decreasing = (f: (x: number) => number, t: number) => {
+          const before = f(t - step.conditionDx),
+            after = f(t + step.conditionDx);
+          const value = after < before;
+          trace.conditionSamples.push([t, value]);
+          return value;
+        };
+        context.spice.raw.gfuds(
+          scalar,
+          decreasing,
+          step.relate,
+          step.refval,
+          step.adjust,
+          step.step,
+          step.nintvls,
+          cnfine,
+          result,
+        );
+      }
+      return {
+        op: step.op,
+        value: {
+          ...trace,
+          intervals: windowIntervals(context, result),
+          confinementIntervals: windowIntervals(context, cnfine),
+        },
+      };
+    }
     case "geometry-gf.gfdist": {
       const cnfine = requireWindow(context, step.cnfineWindowId);
       const result = getOrCreateWindow(

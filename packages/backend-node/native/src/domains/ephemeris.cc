@@ -66,7 +66,7 @@ static Napi::Object Ckgp(const Napi::CallbackInfo& info) {
   const double tol = info[2].As<Napi::Number>().DoubleValue();
   const std::string ref = info[3].As<Napi::String>().Utf8Value();
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
   double cmat[9] = {0};
   double clkout = 0.0;
@@ -105,7 +105,7 @@ static Napi::Object Ckgpav(const Napi::CallbackInfo& info) {
   const double tol = info[2].As<Napi::Number>().DoubleValue();
   const std::string ref = info[3].As<Napi::String>().Utf8Value();
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
   double cmat[9] = {0};
   double av[3] = {0};
@@ -156,7 +156,7 @@ static Napi::Object Spkezr(const Napi::CallbackInfo& info) {
   const std::string abcorr = info[3].As<Napi::String>().Utf8Value();
   const std::string observer = info[4].As<Napi::String>().Utf8Value();
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
   double state[6] = {0};
   double lt = 0.0;
@@ -198,7 +198,7 @@ static Napi::Object Spkpos(const Napi::CallbackInfo& info) {
   const std::string abcorr = info[3].As<Napi::String>().Utf8Value();
   const std::string observer = info[4].As<Napi::String>().Utf8Value();
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
   double pos[3] = {0};
   double lt = 0.0;
@@ -247,7 +247,7 @@ static Napi::Object Spkez(const Napi::CallbackInfo& info) {
     return Napi::Object::New(env);
   }
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
   double state[6] = {0};
   double lt = 0.0;
@@ -288,7 +288,7 @@ static Napi::Object Spkezp(const Napi::CallbackInfo& info) {
     return Napi::Object::New(env);
   }
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
   double pos[3] = {0};
   double lt = 0.0;
@@ -328,7 +328,7 @@ static Napi::Object Spkgeo(const Napi::CallbackInfo& info) {
     return Napi::Object::New(env);
   }
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
   double state[6] = {0};
   double lt = 0.0;
@@ -368,7 +368,7 @@ static Napi::Object Spkgps(const Napi::CallbackInfo& info) {
     return Napi::Object::New(env);
   }
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
   double pos[3] = {0};
   double lt = 0.0;
@@ -401,7 +401,7 @@ static Napi::Array Spkssb(const Napi::CallbackInfo& info) {
   const double et = info[1].As<Napi::Number>().DoubleValue();
   const std::string ref = info[2].As<Napi::String>().Utf8Value();
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
   double state[6] = {0};
 
@@ -503,7 +503,7 @@ static Napi::Object Spksfs(const Napi::CallbackInfo& info) {
 
   const double et = info[1].As<Napi::Number>().DoubleValue();
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
   int handle = 0;
   double descr[5] = {0};
@@ -559,7 +559,7 @@ static Napi::Float64Array Spkpds(const Napi::CallbackInfo& info) {
   const double first = info[4].As<Napi::Number>().DoubleValue();
   const double last = info[5].As<Napi::Number>().DoubleValue();
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
   double descr[5] = {0};
 
@@ -592,7 +592,7 @@ static Napi::Object Spkuds(const Napi::CallbackInfo& info) {
     return Napi::Object::New(env);
   }
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
 
   int body = 0;
@@ -652,7 +652,7 @@ static Napi::Number Spkopn(const Napi::CallbackInfo& info) {
     return Napi::Number::New(env, 0);
   }
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
   int handle = 0;
   const int code = tspice_spkopn(path.c_str(), ifname.c_str(), ncomch, &handle, err, (int)sizeof(err));
@@ -677,7 +677,7 @@ static Napi::Number Spkopa(const Napi::CallbackInfo& info) {
 
   const std::string path = info[0].As<Napi::String>().Utf8Value();
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
   int handle = 0;
   const int code = tspice_spkopa(path.c_str(), &handle, err, (int)sizeof(err));
@@ -705,7 +705,7 @@ static void Spkcls(const Napi::CallbackInfo& info) {
     return;
   }
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
   const int code = tspice_spkcls(handle, err, (int)sizeof(err));
   if (code != 0) {
@@ -806,7 +806,7 @@ static void Spkw08(const Napi::CallbackInfo& info) {
     }
   }
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
   const int code = tspice_spkw08_v2(
       handle,

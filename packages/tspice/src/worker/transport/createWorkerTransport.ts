@@ -1,3 +1,9 @@
+import {
+  dispatchGfCallback,
+  encodeGfCallback,
+  gfCallbackCancel,
+  usesGfCallbacks,
+} from "./gfCallbacks.js";
 import type { SpiceTransport } from "../../transport/types.js";
 
 import type {
@@ -151,6 +157,7 @@ export function createWorkerTransport(opts: {
   };
 
   type Pending = {
+    args: unknown[];
     op: string;
     resolve: (value: unknown) => void;
     reject: (reason: unknown) => void;
@@ -375,6 +382,18 @@ export function createWorkerTransport(opts: {
   };
 
   const onMessage = (ev: unknown): void => {
+    const packet: unknown =
+      typeof ev === "object" && ev !== null && "data" in ev
+        ? ev.data
+        : undefined;
+    if (
+      dispatchGfCallback(
+        packet,
+        (id) => pendingById.get(id),
+        (value) => ensureWorker().postMessage(value),
+      )
+    )
+      return;
     const msg = (ev as { data?: unknown } | null | undefined)?.data as
       Partial<RpcResponse> | null | undefined;
     if (
@@ -597,11 +616,19 @@ export function createWorkerTransport(opts: {
       };
 
       const rejectAndCleanup = (reason: unknown): void => {
+        if (usesGfCallbacks(op)) {
+          try {
+            w.postMessage({ type: gfCallbackCancel, id });
+          } catch {
+            /* worker already closed */
+          }
+        }
         cleanup();
         reject(reason);
       };
 
       const pending: Pending = {
+        args,
         op,
         resolve,
         reject,
@@ -640,7 +667,12 @@ export function createWorkerTransport(opts: {
 
       const msg: RpcRequest = { type: tspiceRpcRequestType, id, op, args };
       try {
-        w.postMessage({ ...msg, args: args.map(encodeRpcValue) });
+        w.postMessage({
+          ...msg,
+          args: args.map((arg, i) =>
+            encodeRpcValue(encodeGfCallback(op, i, arg)),
+          ),
+        });
       } catch (err) {
         if (pendingById.get(id) === pending) pendingById.delete(id);
 

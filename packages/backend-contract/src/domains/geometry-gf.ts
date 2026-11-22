@@ -1,9 +1,10 @@
 /**
  * GF (Geometry Finder) event finding.
  *
- * Tranche 1 scope:
+ * Search surfaces:
  * - "Plumbing" utilities (`gfsstp/gfstep`, `gfstol`, `gfrefn`, `gfrepi/gfrepf`).
- * - Callback-free distance, angular separation, occultation and field-of-view searches.
+ * - Distance, angular separation, occultation and field-of-view searches.
+ * - User-defined scalar and boolean searches with synchronous measurement callbacks.
  *
  * Notes:
  * - The CSPICE GF subsystem has some **global mutable state** (e.g. `gfsstp`,
@@ -18,8 +19,54 @@ import type { SpiceWindow } from "./cells-windows.js";
 export type GfRelate =
   ">" | "<" | "=" | "ABSMAX" | "ABSMIN" | "LOCMAX" | "LOCMIN";
 
+/** Synchronous scalar measurement at epoch ET (TDB seconds). */
+export type GfScalar = (et: number) => number;
+/** Evaluate a boolean condition with access to the same scalar passed to the search. */
+export type GfCondition = (scalar: GfScalar, et: number) => boolean;
+
 /** Backend contract for Geometry Finder (GF) event-finding routines. */
 export interface GeometryGfApi {
+  /** Return the initialized accumulator after the dummy scalar callback. Initial value defaults to zero.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/udf_c.html
+   */
+  udf(et: number, initialValue?: number): number;
+
+  /** Evaluate the symmetric first derivative of scalar at x using samples x−dx and x+dx.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/uddf_c.html
+   */
+  uddf(scalar: GfScalar, x: number, dx: number): number;
+
+  /** Test whether the numerical first derivative of scalar at x is negative.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/uddc_c.html
+   */
+  uddc(scalar: GfScalar, x: number, dx: number): boolean;
+
+  /** Find all intervals on which the supplied predicate is true. The predicate receives the original scalar function and the sampled epoch.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/gfudb_c.html
+   */
+  gfudb(
+    scalar: GfScalar,
+    predicate: GfCondition,
+    step: number,
+    cnfine: SpiceWindow,
+    result: SpiceWindow,
+  ): void;
+
+  /** Find intervals satisfying a scalar relation or extremum. The supplied condition tests whether the scalar is decreasing at the epoch.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/gfuds_c.html
+   */
+  gfuds(
+    scalar: GfScalar,
+    isDecreasing: GfCondition,
+    relate: GfRelate | string,
+    refval: number,
+    adjust: number,
+    step: number,
+    nintvls: number,
+    cnfine: SpiceWindow,
+    result: SpiceWindow,
+  ): void;
+
   /** Find occultations of the back target by the front target. Supply the occultation type, each body’s shape and fixed frame, correction and observer. Point shapes permit an empty frame; ellipsoid and supported DSK shapes need their kernels.
    * The positive search step is in TDB seconds and updates the global GF step. The routine replaces the distinct, preallocated result window with complete TDB intervals. A miss yields an empty window. Step size controls event detection; the GF convergence tolerance controls boundary refinement.
    * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/gfoclt_c.html

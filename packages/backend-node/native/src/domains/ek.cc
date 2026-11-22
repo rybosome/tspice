@@ -255,7 +255,7 @@ static Napi::Number Ekopr(const Napi::CallbackInfo& info) {
 
   const std::string path = info[0].As<Napi::String>().Utf8Value();
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
   int handle = 0;
   const int code = tspice_ekopr(path.c_str(), &handle, err, (int)sizeof(err));
@@ -282,7 +282,7 @@ static Napi::Number Ekopw(const Napi::CallbackInfo& info) {
 
   const std::string path = info[0].As<Napi::String>().Utf8Value();
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
   int handle = 0;
   const int code = tspice_ekopw(path.c_str(), &handle, err, (int)sizeof(err));
@@ -322,7 +322,7 @@ static Napi::Number Ekopn(const Napi::CallbackInfo& info) {
   const std::string path = info[0].As<Napi::String>().Utf8Value();
   const std::string ifname = info[1].As<Napi::String>().Utf8Value();
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
   int handle = 0;
   const int code = tspice_ekopn(path.c_str(), ifname.c_str(), ncomch, &handle, err, (int)sizeof(err));
@@ -356,7 +356,7 @@ static void Ekcls(const Napi::CallbackInfo& info) {
     return;
   }
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
   const int code = tspice_ekcls(handle, err, (int)sizeof(err));
   if (code != 0) {
@@ -377,7 +377,7 @@ static Napi::Number Ekntab(const Napi::CallbackInfo& info) {
     return Napi::Number::New(env, 0);
   }
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
   int n = 0;
   const int code = tspice_ekntab(&n, err, (int)sizeof(err));
@@ -407,7 +407,7 @@ static Napi::String Ektnam(const Napi::CallbackInfo& info) {
     return Napi::String::New(env, "");
   }
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
   char out[tspice_backend_node::kOutMaxBytes];
 
@@ -438,7 +438,7 @@ static Napi::Number Eknseg(const Napi::CallbackInfo& info) {
     return Napi::Number::New(env, 0);
   }
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
   int nseg = 0;
   const int code = tspice_eknseg(handle, &nseg, err, (int)sizeof(err));
@@ -468,7 +468,7 @@ static Napi::Object Ekfind(const Napi::CallbackInfo& info) {
     return Napi::Object::New(env);
   }
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
   char errmsg[tspice_backend_node::kOutMaxBytes];
   int nmrows = 0;
@@ -527,7 +527,7 @@ static Napi::Object Ekgc(const Napi::CallbackInfo& info) {
     return Napi::Object::New(env);
   }
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
   char out[tspice_backend_node::kOutMaxBytes];
   int isNull = 0;
@@ -596,7 +596,7 @@ static Napi::Object Ekgd(const Napi::CallbackInfo& info) {
     return Napi::Object::New(env);
   }
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
   double out = 0;
   int isNull = 0;
@@ -655,7 +655,7 @@ static Napi::Object Ekgi(const Napi::CallbackInfo& info) {
     return Napi::Object::New(env);
   }
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
   int out = 0;
   int isNull = 0;
@@ -788,7 +788,7 @@ static Napi::Object Ekifld(const Napi::CallbackInfo& info) {
   std::vector<int> rcptrs(static_cast<size_t>(nrows));
   int segno = 0;
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
   const int code = tspice_ekifld(
       handle,
@@ -865,7 +865,7 @@ static void Ekacli(const Napi::CallbackInfo& info) {
     return;
   }
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
   const int code = tspice_ekacli(
       handle,
@@ -935,7 +935,7 @@ static void Ekacld(const Napi::CallbackInfo& info) {
     return;
   }
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
   const int code = tspice_ekacld(
       handle,
@@ -1054,7 +1054,7 @@ static void Ekaclc(const Napi::CallbackInfo& info) {
     cvalsBuf[i * vallen + std::min(s.size(), vallen - 1)] = '\0';
   }
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
   const int code = tspice_ekaclc(
       handle,
@@ -1102,7 +1102,7 @@ static void Ekffld(const Napi::CallbackInfo& info) {
     return;
   }
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
   const int code = tspice_ekffld(handle, segno, (int)rcptrs.size(), rcptrs.data(), err, (int)sizeof(err));
   if (code != 0) {

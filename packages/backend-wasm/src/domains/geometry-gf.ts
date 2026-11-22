@@ -1,3 +1,4 @@
+import { createUserGf } from "./user-gf.js";
 import type {
   GeometryGfApi,
   SpiceWindow,
@@ -142,6 +143,11 @@ function tspiceCallGfrepi(
       if (result !== 0) {
         throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, result);
       }
+
+      // The shim drains libc stdout. Asyncify's fd_sync syncs the mount,
+      // so drain the terminal stream as well to emit the report immediately.
+      const stdout = module.FS.getStream(1);
+      stdout?.stream_ops.fsync?.(stdout);
     } finally {
       if (endmssPtr) module._free(endmssPtr);
       module._free(begmssPtr);
@@ -282,8 +288,31 @@ function tspiceCallGfdist(
 }
 
 /** Create a {@link GeometryGfApi} implementation backed by a WASM Emscripten module. */
-export function createGeometryGfApi(module: EmscriptenModule): GeometryGfApi {
+export function createGeometryGfApi(
+  module: EmscriptenModule,
+  user = createUserGf(module),
+): GeometryGfApi {
   return {
+    udf: (et, initial = 0) =>
+      withAllocs(module, [8, WASM_ERR_MAX_BYTES], (out, err) => {
+        if (typeof et !== "number" || typeof initial !== "number")
+          throw new TypeError("udf expects numeric epoch and initial value");
+        const status = module._tspice_udf(
+          et,
+          initial,
+          out,
+          err,
+          WASM_ERR_MAX_BYTES,
+        );
+        if (status)
+          throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, status);
+        return module.HEAPF64[out >>> 3]!;
+      }),
+    uddf: (...args) => user.sync.uddf(module._tspice_uddf, ...args),
+    uddc: (...args) => user.sync.uddc(module._tspice_uddc, ...args),
+    gfudb: (...args) => user.sync.gfudb(module._tspice_gfudb, ...args),
+    gfuds: (...args) => user.sync.gfuds(module._tspice_gfuds, ...args),
+
     gfsstp: (step) => tspiceCallGfsstp(module, step),
     gfstep: (time) => tspiceCallGfstep(module, time),
     gfstol: (value) => tspiceCallGfstol(module, value),

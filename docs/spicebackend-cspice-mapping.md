@@ -676,6 +676,16 @@ small authored fixtures and generators are documented in the fixture README.
 
 ## Geometry Finder semantic audit
 
+[User callbacks, numerical derivative and search-window ownership](step8-gf-user.md)
+
+| Raw method | N0067 entry | Result                                                                                                                                                               |
+| ---------- | ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `udf`      | `udf_c`     | Add positive zero to the initialized scalar accumulator. The epoch itself does not supply the output.                                                                |
+| `uddc`     | `uddc_c`    | Test whether the numerical centered derivative is strictly negative, preserving the scalar callback and exact evaluation order.                                      |
+| `uddf`     | `uddf_c`    | Evaluate the scalar callback at x−dx then x+dx and compute the pinned QDERIV centered first derivative.                                                              |
+| `gfudb`    | `gfudb_c`   | Search a caller-owned confinement for all epochs where the supplied condition evaluates true; pass the original scalar function to the condition.                    |
+| `gfuds`    | `gfuds_c`   | Search a user measurement and its decreasing predicate for relational or extremum solutions, including adjusted absolute extrema, into a caller-owned result window. |
+
 The eight GF raw routines call actual CSPICE on both backends. Search epochs,
 step and convergence tolerance are TDB seconds; GFDIST reference/adjustment are
 km and GFSEP reference/adjustment are radians. Searches replace result contents

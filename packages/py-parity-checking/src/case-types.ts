@@ -1137,6 +1137,46 @@ export type StepGeometryGfGfsep = {
   resultMaxIntervals?: number;
 };
 
+export type StepGeometryGfUdf = {
+  op: "geometry-gf.udf";
+  et: number;
+  initialValue?: number;
+};
+export type StepGeometryGfUddc = {
+  op: "geometry-gf.uddc";
+  scalar: string;
+  x: number;
+  dx: number;
+};
+export type StepGeometryGfUddf = {
+  op: "geometry-gf.uddf";
+  scalar: string;
+  x: number;
+  dx: number;
+};
+export type StepGeometryGfGfudb = {
+  op: "geometry-gf.gfudb";
+  scalar: string;
+  predicate: string;
+  threshold: number;
+  step: number;
+  cnfineWindowId: string;
+  resultWindowId: string;
+  resultMaxIntervals?: number;
+};
+export type StepGeometryGfGfuds = {
+  op: "geometry-gf.gfuds";
+  scalar: string;
+  conditionDx: number;
+  relate: string;
+  refval: number;
+  adjust: number;
+  step: number;
+  nintvls: number;
+  cnfineWindowId: string;
+  resultWindowId: string;
+  resultMaxIntervals?: number;
+};
 export type StepGeometryGfGfdist = {
   op: "geometry-gf.gfdist";
   target: string;
@@ -1569,6 +1609,11 @@ export type WorkflowStep =
   | StepGeometryGfGfrfov
   | StepGeometryGfGftfov
   | StepGeometryGfGfsep
+  | StepGeometryGfUdf
+  | StepGeometryGfUddc
+  | StepGeometryGfUddf
+  | StepGeometryGfGfudb
+  | StepGeometryGfGfuds
   | StepGeometryGfGfdist
   | StepDskDskobj
   | StepDskDsksrf
@@ -1599,6 +1644,11 @@ export type EkGetNumberResult =
   | { found: true; isNull: false; value: number };
 
 /** Complete observable windows after an actual GF search. */
+/** Epoch/value pairs recorded by the user-supplied scalar and epoch/result pairs from its condition. */
+export type GfCallbackTrace = {
+  scalarSamples: [number, number][];
+  conditionSamples: [number, boolean][];
+};
 export type GfSearchWindowPayload = {
   intervals: [number, number][];
   confinementIntervals: [number, number][];
@@ -2021,6 +2071,19 @@ export type StepOutput =
   | { op: "geometry-gf.gfrfov"; value: GfSearchWindowPayload }
   | { op: "geometry-gf.gftfov"; value: GfSearchWindowPayload }
   | { op: "geometry-gf.gfsep"; value: GfSearchWindowPayload }
+  | { op: "geometry-gf.udf"; value: number }
+  | {
+      op: "geometry-gf.uddc";
+      value: { decreasing: boolean; scalarSamples: [number, number][] };
+    }
+  | {
+      op: "geometry-gf.uddf";
+      value: { derivative: number; scalarSamples: [number, number][] };
+    }
+  | {
+      op: "geometry-gf.gfudb" | "geometry-gf.gfuds";
+      value: GfSearchWindowPayload & GfCallbackTrace;
+    }
   | { op: "geometry-gf.gfdist"; value: GfSearchWindowPayload }
   | {
       op: "dsk.dskobj";

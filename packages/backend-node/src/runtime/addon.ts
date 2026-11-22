@@ -540,6 +540,27 @@ export type NativeAddon = {
   // --- GF (Geometry Finder) ---
 
   gfsstp(step: number): void;
+  udf(et: number, initialValue: number): number;
+  uddf(scalar: (et: number) => number, x: number, dx: number): number;
+  uddc(scalar: (et: number) => number, x: number, dx: number): boolean;
+  gfudb(
+    scalar: (et: number) => number,
+    predicate: (scalar: (et: number) => number, et: number) => boolean,
+    step: number,
+    cnfine: SpiceWindow,
+    result: SpiceWindow,
+  ): void;
+  gfuds(
+    scalar: (et: number) => number,
+    isDecreasing: (scalar: (et: number) => number, et: number) => boolean,
+    relate: string,
+    refval: number,
+    adjust: number,
+    step: number,
+    nintvls: number,
+    cnfine: SpiceWindow,
+    result: SpiceWindow,
+  ): void;
   gfstep(time: number): number;
   gfstol(value: number): void;
   gfrefn(t1: number, t2: number, s1: boolean, s2: boolean): number;

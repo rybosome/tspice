@@ -103,7 +103,7 @@ static Napi::Object Gdpool(const Napi::CallbackInfo& info) {
 
   std::vector<double> values(static_cast<size_t>(room));
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
   int nOut = 0;
   int found = 0;
@@ -169,7 +169,7 @@ static Napi::Object Gipool(const Napi::CallbackInfo& info) {
 
   std::vector<int> values(static_cast<size_t>(room));
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
   int nOut = 0;
   int found = 0;
@@ -236,7 +236,7 @@ static Napi::Object Gcpool(const Napi::CallbackInfo& info) {
   // Fixed-width 2D buffer: room x kPoolStringMaxBytes.
   std::vector<std::array<char, kPoolStringMaxBytes>> cvals(static_cast<size_t>(room));
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
   int nOut = 0;
   int found = 0;
@@ -309,7 +309,7 @@ static Napi::Object Gnpool(const Napi::CallbackInfo& info) {
   // Fixed-width 2D buffer: room x kPoolNameMaxBytes.
   std::vector<std::array<char, kPoolNameMaxBytes>> cvals(static_cast<size_t>(room));
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
   int nOut = 0;
   int found = 0;
@@ -365,7 +365,7 @@ static Napi::Object Dtpool(const Napi::CallbackInfo& info) {
     return Napi::Object::New(env);
   }
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
   int found = 0;
   int nOut = 0;
@@ -438,7 +438,7 @@ static void Pdpool(const Napi::CallbackInfo& info) {
     values.push_back(d);
   }
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
   const int code = tspice_pdpool(name.c_str(), (int)values.size(), values.data(), err, (int)sizeof(err));
   if (code != 0) {
@@ -496,7 +496,7 @@ static void Pipool(const Napi::CallbackInfo& info) {
     values.push_back(static_cast<int>(d));
   }
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
   const int code = tspice_pipool(name.c_str(), (int)values.size(), values.data(), err, (int)sizeof(err));
   if (code != 0) {
@@ -533,7 +533,7 @@ static void Pcpool(const Napi::CallbackInfo& info) {
     CopyToFixedWidth(cvals[i], values.values[i]);
   }
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
   const int code = tspice_pcpool(
       name.c_str(),
@@ -584,7 +584,7 @@ static void Swpool(const Napi::CallbackInfo& info) {
     CopyToFixedWidth(namesBuf[i], names.values[i]);
   }
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
   const int code = tspice_swpool(
       agent.c_str(),
@@ -615,7 +615,7 @@ static Napi::Boolean Cvpool(const Napi::CallbackInfo& info) {
     return Napi::Boolean::New(env, false);
   }
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
   int update = 0;
   const int code = tspice_cvpool(agent.c_str(), &update, err, (int)sizeof(err));
@@ -644,7 +644,7 @@ static Napi::Boolean Expool(const Napi::CallbackInfo& info) {
     return Napi::Boolean::New(env, false);
   }
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
   int found = 0;
   const int code = tspice_expool(name.c_str(), &found, err, (int)sizeof(err));

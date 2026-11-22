@@ -8,7 +8,7 @@
 
 namespace tspice_backend_node {
 
-extern std::mutex g_cspice_mutex;
+extern std::recursive_mutex g_cspice_mutex;
 
 // RAII helper for ensuring all CSPICE and handle-registry operations remain
 // serialized under the single global mutex.
@@ -24,7 +24,7 @@ public:
   CspiceLock& operator=(const CspiceLock&) = delete;
 
 private:
-  std::lock_guard<std::mutex> lock_;
+  std::lock_guard<std::recursive_mutex> lock_;
 };
 
 inline constexpr int kErrMaxBytes = 2048;

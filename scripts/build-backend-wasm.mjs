@@ -1,3 +1,4 @@
+import { stageUserDerivative } from "./stage-user-derivative.mjs";
 import { execFileSync } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
@@ -117,6 +118,11 @@ fs.mkdirSync(wasmBuildDir, { recursive: true });
 // All CSPICE patching happens in this build tree; the downloaded sources remain untouched.
 const patchedCspiceSourceRoot = path.join(wasmBuildDir, "cspice");
 fs.cpSync(cspiceSourceRoot, patchedCspiceSourceRoot, { recursive: true });
+
+stageUserDerivative(
+  path.join(cspiceSourceRoot, "src/cspice"),
+  path.join(patchedCspiceSourceRoot, "src/cspice"),
+);
 
 const shimSources = [
   path.join(repoRoot, "packages", "backend-shim-c", "src", "errors.c"),
@@ -332,6 +338,7 @@ const includeDirs = [
 fs.mkdirSync(outputDir, { recursive: true });
 
 const exportedRuntimeMethods = [
+  "ccall",
   "UTF8ToString",
   "stringToUTF8",
   "lengthBytesUTF8",
@@ -517,6 +524,11 @@ const exportedFunctions = [
   "_tspice_gfoclt",
   "_tspice_gfrfov",
   "_tspice_gftfov",
+  "_tspice_udf",
+  "_tspice_uddf",
+  "_tspice_uddc",
+  "_tspice_gfudb",
+  "_tspice_gfuds",
   "_tspice_gfsep",
   "_tspice_gfdist",
 
@@ -576,6 +588,10 @@ const commonEmccArgs = [
   "-std=gnu11",
   "-Wno-implicit-int",
   "-O2",
+  "-s",
+  "ASYNCIFY=1",
+  "-s",
+  "ASYNCIFY_IMPORTS=tspice_host_gf_callback",
   "-s",
   "MODULARIZE=1",
   "-s",

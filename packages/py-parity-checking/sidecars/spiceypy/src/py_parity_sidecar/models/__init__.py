@@ -133,6 +133,11 @@ from .geometry import (
     StepGeometrySubslr,
 )
 from .geometry_gf import (
+    StepGeometryGfUdf,
+    StepGeometryGfUddc,
+    StepGeometryGfUddf,
+    StepGeometryGfGfudb,
+    StepGeometryGfGfuds,
     StepGeometryGfGfdist,
     StepGeometryGfGfrefn,
     StepGeometryGfGfrepf,
@@ -417,6 +422,11 @@ __all__ = [
     "StepGeometryGfGfrfov",
     "StepGeometryGfGftfov",
     "StepGeometryGfGfsep",
+    "StepGeometryGfUdf",
+    "StepGeometryGfUddc",
+    "StepGeometryGfUddf",
+    "StepGeometryGfGfudb",
+    "StepGeometryGfGfuds",
     "StepGeometryGfGfdist",
     "WorkflowStep",
 ]

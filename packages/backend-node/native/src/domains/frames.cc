@@ -26,7 +26,7 @@ static Napi::Object Namfrm(const Napi::CallbackInfo& info) {
   }
 
   const std::string name = info[0].As<Napi::String>().Utf8Value();
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
 
   char err[tspice_backend_node::kErrMaxBytes];
   int codeOut = 0;
@@ -56,7 +56,7 @@ static Napi::Object Frmnam(const Napi::CallbackInfo& info) {
   }
 
   const int codeIn = info[0].As<Napi::Number>().Int32Value();
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
 
   char err[tspice_backend_node::kErrMaxBytes];
   char nameOut[tspice_backend_node::kOutMaxBytes];
@@ -83,7 +83,7 @@ static Napi::Object Cidfrm(const Napi::CallbackInfo& info) {
   }
 
   const int center = info[0].As<Napi::Number>().Int32Value();
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
 
   char err[tspice_backend_node::kErrMaxBytes];
   char frname[tspice_backend_node::kOutMaxBytes];
@@ -115,7 +115,7 @@ static Napi::Object Cnmfrm(const Napi::CallbackInfo& info) {
   }
 
   const std::string centerName = info[0].As<Napi::String>().Utf8Value();
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
 
   char err[tspice_backend_node::kErrMaxBytes];
   char frname[tspice_backend_node::kOutMaxBytes];
@@ -157,7 +157,7 @@ static Napi::Object Frinfo(const Napi::CallbackInfo& info) {
   }
 
   const int frameId = info[0].As<Napi::Number>().Int32Value();
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
 
   char err[tspice_backend_node::kErrMaxBytes];
   int center = 0;
@@ -193,7 +193,7 @@ static Napi::Object Ccifrm(const Napi::CallbackInfo& info) {
   const int frameClass = info[0].As<Napi::Number>().Int32Value();
   const int classId = info[1].As<Napi::Number>().Int32Value();
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
 
   char err[tspice_backend_node::kErrMaxBytes];
   char frname[tspice_backend_node::kOutMaxBytes];
@@ -241,7 +241,7 @@ static Napi::Array Pxform(const Napi::CallbackInfo& info) {
   const std::string to = info[1].As<Napi::String>().Utf8Value();
   const double et = info[2].As<Napi::Number>().DoubleValue();
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
   double m[9] = {0};
   const int code = tspice_pxform(from.c_str(), to.c_str(), et, m, err, (int)sizeof(err));
@@ -267,7 +267,7 @@ static Napi::Array Sxform(const Napi::CallbackInfo& info) {
   const std::string to = info[1].As<Napi::String>().Utf8Value();
   const double et = info[2].As<Napi::Number>().DoubleValue();
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
   double m[36] = {0};
   const int code = tspice_sxform(from.c_str(), to.c_str(), et, m, err, (int)sizeof(err));

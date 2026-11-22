@@ -57,7 +57,7 @@ static Napi::Object Bodn2c(const Napi::CallbackInfo& info) {
   }
 
   const std::string name = info[0].As<Napi::String>().Utf8Value();
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
 
   char err[tspice_backend_node::kErrMaxBytes];
   int codeOut = 0;
@@ -87,7 +87,7 @@ static Napi::Object Bodc2n(const Napi::CallbackInfo& info) {
   }
 
   const int codeIn = info[0].As<Napi::Number>().Int32Value();
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
 
   char err[tspice_backend_node::kErrMaxBytes];
   char nameOut[tspice_backend_node::kOutMaxBytes];
@@ -114,7 +114,7 @@ static Napi::String Bodc2s(const Napi::CallbackInfo& info) {
   }
 
   const int codeIn = info[0].As<Napi::Number>().Int32Value();
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
 
   char err[tspice_backend_node::kErrMaxBytes];
   char nameOut[tspice_backend_node::kOutMaxBytes];
@@ -136,7 +136,7 @@ static Napi::Object Bods2c(const Napi::CallbackInfo& info) {
   }
 
   const std::string name = info[0].As<Napi::String>().Utf8Value();
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
 
   char err[tspice_backend_node::kErrMaxBytes];
   int codeOut = 0;
@@ -165,7 +165,7 @@ static void Boddef(const Napi::CallbackInfo& info) {
   const std::string name = info[0].As<Napi::String>().Utf8Value();
   const int codeIn = info[1].As<Napi::Number>().Int32Value();
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
   const int code = tspice_boddef(name.c_str(), codeIn, err, (int)sizeof(err));
   if (code != 0) {
@@ -185,7 +185,7 @@ static Napi::Boolean Bodfnd(const Napi::CallbackInfo& info) {
   const std::string itemRaw = info[1].As<Napi::String>().Utf8Value();
   const std::string item = NormalizeBodItem(itemRaw);
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
   int found = 0;
   const int code = tspice_bodfnd(body, item.c_str(), &found, err, (int)sizeof(err));
@@ -218,7 +218,7 @@ static Napi::Array Bodvar(const Napi::CallbackInfo& info) {
   const std::string itemRaw = itemArg.Utf8Value();
   const std::string item = NormalizeBodItem(itemRaw);
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
 
   // Match the 32-byte key constructed by NAIF BODVAR.
