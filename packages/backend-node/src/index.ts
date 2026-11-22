@@ -112,11 +112,12 @@ export function createNodeBackend(): SpiceBackend & { kind: "node" } {
             backend.raw.pckuof(handle);
             continue;
           }
-          if (entry.kind === "SPK" || entry.kind === "PCK-WRITER") {
+          if (entry.kind === "SPK" || entry.kind === "PCK-WRITER" || entry.kind === "CK-WRITER") {
             // Ensure VirtualOutputStager bookkeeping stays consistent.
             try {
               if (entry.kind === "SPK") backend.raw.spkcls(handle);
-              else backend.raw.pckcls(handle);
+              else if (entry.kind === "PCK-WRITER") backend.raw.pckcls(handle);
+              else backend.raw.ckcls(handle);
             } catch (error) {
               if (
                 typeof error !== "object" ||

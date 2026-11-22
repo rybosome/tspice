@@ -203,3 +203,7 @@ cleanup. Only the MIT-licensed generator is checked in.
 ## Binary orientation fixture
 
 `kernels/audit-orientation.bpc` contains project-authored synthetic type 2 orientation segments. The locked SpiceyPy generator writes two class 3000 segments in J2000 with different angular rates and an intervening gap, and one constant class 301 segment relative to B1950. Epochs are TDB seconds past J2000. These values exercise data layout and frame selection. They have no observational interpretation. The distributed 4096-byte fixture has SHA-256 `63afada27964265890dfd4c9846ba1dbd781edac6fd2d5aac319727333659dba`. [Generator](generate-audit-pck.py)
+
+## CK writer records
+
+`kernels/audit-ck-writers.bc` contains seven project-authored synthetic segments in J2000. The type 1, 2 and 3 segments and four type 5 subtypes each use a distinct negative instrument ID. Locked SpiceyPy 6.0.3 writes the fixture independently of tspice. Physical readback compares descriptors, names, every segment word, complete pointing matrices, angular velocities and selected encoded times. The distributed file has SHA-256 `c768e9191a0dc05c3b6ba5b1f4ab9a30904f6ee6f2bee38c4bea45f5a33ab8f6`. [Fixture generator](generate-audit-ck-writers.py)

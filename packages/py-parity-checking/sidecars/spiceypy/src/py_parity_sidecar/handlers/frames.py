@@ -8,6 +8,7 @@ from spiceypy.utils.support_types import SPICEINT_CELL
 
 from .. import frame_algebra_oracle
 from ..window_algebra_oracle import allocate_window
+from ..ck_writer_oracle import write_ck_record_segment
 from ..models import (
     StepFramesCcifrm,
     StepFramesCidfrm,
@@ -21,6 +22,12 @@ from ..models import (
     StepFramesPckopn,
     StepFramesPckuof,
     StepFramesPckw02,
+    StepFramesCkopn,
+    StepFramesCkcls,
+    StepFramesCkw01,
+    StepFramesCkw02,
+    StepFramesCkw03,
+    StepFramesCkw05,
     StepFramesCklpf,
     StepFramesCkobj,
     StepFramesCkupf,
@@ -396,6 +403,30 @@ def run_frames_step(step: WorkflowStep, context: SidecarRuntimeContext) -> StepO
             _release_pck_query_link(path)
             raise
         return StepOutput(op=step.op, value={"intervals": _window_to_intervals(cover)})
+    if isinstance(step,StepFramesCkopn):
+        from ..models import PathRef
+        if not isinstance(step.path,PathRef) or step.path.kind != "scratch":
+            raise ValueError("CK writers require an owned scratch path")
+        writers=context.state.frames.writers
+        if step.handleId in writers: raise ValueError("Duplicate CK writer ID")
+        handle=sp.ckopn(resolve_path_ref(context.paths,step.path),step.ifname,step.ncomch)
+        writers[step.handleId]=handle
+        def close_pending_writer() -> None:
+            if step.handleId in writers:
+                try: sp.ckcls(handle)
+                except sp.utils.exceptions.SpiceNOSEGMENTSFOUND: sp.dafcls(handle)
+                del writers[step.handleId]
+        context.register_finalizer(f"CK writer:{step.handleId}",close_pending_writer)
+        return StepOutput(op=step.op,value={"opened":True})
+
+    if isinstance(step,StepFramesCkcls):
+        writers=context.state.frames.writers
+        sp.ckcls(writers[step.handleId]);del writers[step.handleId]
+        return StepOutput(op=step.op,value={"closed":True})
+
+    if isinstance(step,(StepFramesCkw01,StepFramesCkw02,StepFramesCkw03,StepFramesCkw05)):
+        write_ck_record_segment(context.state.frames.writers[step.handleId], step)
+        return StepOutput(op=step.op,value=None)
 
     if isinstance(step, StepFramesCklpf):
         if step.handleId in context.state.frames.ckHandles:

@@ -2727,6 +2727,80 @@ export type StepFramesPckw02 = {
   btime: number;
 };
 
+export type StepFramesCkopn = {
+  op: "frames.ckopn";
+  handleId: string;
+  path: PathRefLike;
+  ifname: string;
+  ncomch: number;
+};
+
+export type StepFramesCkcls = {
+  op: "frames.ckcls";
+  handleId: string;
+};
+
+export type StepFramesCkw01 = {
+  op: "frames.ckw01";
+  handleId: string;
+  beg: number;
+  end: number;
+  inst: number;
+  ref: string;
+  av: boolean;
+  segid: string;
+  ticks: number[];
+  quats: number[];
+  avvs: number[];
+};
+
+export type StepFramesCkw02 = {
+  op: "frames.ckw02";
+  handleId: string;
+  beg: number;
+  end: number;
+  inst: number;
+  ref: string;
+  segid: string;
+  starts: number[];
+  stops: number[];
+  quats: number[];
+  avvs: number[];
+  rates: number[];
+};
+
+export type StepFramesCkw03 = {
+  op: "frames.ckw03";
+  handleId: string;
+  beg: number;
+  end: number;
+  inst: number;
+  ref: string;
+  av: boolean;
+  segid: string;
+  ticks: number[];
+  quats: number[];
+  avvs: number[];
+  intervalStarts: number[];
+};
+
+export type StepFramesCkw05 = {
+  op: "frames.ckw05";
+  handleId: string;
+  subtype: number;
+  degree: number;
+  beg: number;
+  end: number;
+  inst: number;
+  ref: string;
+  av: boolean;
+  segid: string;
+  ticks: number[];
+  packets: number[];
+  rate: number;
+  intervalStarts: number[];
+};
+
 export type StepFramesCklpf = {
   op: "frames.cklpf";
   ck: PathRefLike;
@@ -3652,6 +3726,12 @@ export type WorkflowStep =
   | StepFramesPckopn
   | StepFramesPckuof
   | StepFramesPckw02
+  | StepFramesCkopn
+  | StepFramesCkcls
+  | StepFramesCkw01
+  | StepFramesCkw02
+  | StepFramesCkw03
+  | StepFramesCkw05
   | StepFramesCklpf
   | StepFramesCkupf
   | StepFramesCkobj
@@ -4395,6 +4475,12 @@ export type StepOutput =
   | { op: "frames.pckopn"; value: { opened: true } }
   | { op: "frames.pckuof"; value: { closed: true } }
   | { op: "frames.pckw02"; value: null }
+  | { op: "frames.ckopn"; value: { opened: true } }
+  | { op: "frames.ckcls"; value: { closed: true } }
+  | { op: "frames.ckw01"; value: null }
+  | { op: "frames.ckw02"; value: null }
+  | { op: "frames.ckw03"; value: null }
+  | { op: "frames.ckw05"; value: null }
   | { op: "frames.cklpf"; value: { opened: true } }
   | { op: "frames.ckupf"; value: { closed: true } }
   | { op: "frames.ckobj"; value: { ids: number[] } }

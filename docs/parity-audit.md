@@ -488,3 +488,7 @@ C07 uses the C04 lifecycle and C05 typed component writers to construct generic,
 ## Binary PCK orientation files
 
 The seven C11 routines use independent binary fixtures and writers. Both compiled backends export physical DAF records for an independent reader and evaluate complete state and rotation matrices. [Binary PCK behavior and scoped observations](step8-pck-binary.md) [Per-routine audit](../data/parity-audits/c11-pck-binary.json)
+
+## CK writer lifecycle and segment formats
+
+C12 writes binary CK files through both compiled backends, reads complete independent pointing and angular velocity results, and exports complete physical segments for separate SpiceyPy readback. [Record layouts and source limits](step8-ck-writers.md) [Per-routine audit](../data/parity-audits/c12-ck-writers.json)

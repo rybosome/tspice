@@ -1210,6 +1210,22 @@
         "https://github.com/rybosome/tspice/pull/759"
       ],
       "nextAction": "Verify the combined source on both required lanes and canonical CI."
+    },
+    {
+      "id": "c12-ck-writers",
+      "routines": [
+        "ckopn_c",
+        "ckcls_c",
+        "ckw01_c",
+        "ckw02_c",
+        "ckw03_c",
+        "ckw05_c"
+      ],
+      "dependsOn": [],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/760"
+      ],
+      "nextAction": "Verify the combined source on both required lanes and canonical CI."
     }
   ]
 }

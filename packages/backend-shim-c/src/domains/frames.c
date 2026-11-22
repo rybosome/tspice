@@ -9,6 +9,8 @@
 #include <limits.h>
 #include <limits.h>
 #include <math.h>
+#include <limits.h>
+#include <math.h>
 #include <stddef.h>
 #include <stdio.h>
 #include <string.h>
@@ -990,6 +992,81 @@ int tspice_pckw02(int handle, int classId, const char *frame, double first, doub
   }
   pckw02_c(handle, classId, frame, first, last, segid, intlen, n, degree, coefficients, btime);
   return pck_status(err, errMaxBytes);
+}
+
+static int ck_writer_status(char *err, int errMaxBytes) {
+  if (!failed_c()) return 0;
+  tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+  return 1;
+}
+
+static int ck_writer_data(int handle, const char *ref, const char *segid, double beg, double end,
+                          const double *data, int count, int64_t expected, int n, int nints,
+                          char *err, int errMaxBytes) {
+  if (handle >= 0 || !ref || !segid || !data || n < 0 || nints < 0 ||
+      !isfinite(beg) || !isfinite(end) || count < 0 || count > 33554432 || count != expected)
+    return tspice_frames_invalid_arg(err, errMaxBytes, "Invalid CK writer dimensions or epochs");
+  for (int i = 0; i < count; ++i) if (!isfinite(data[i]))
+    return tspice_frames_invalid_arg(err, errMaxBytes, "CK data must contain finite numbers");
+  SpiceInt nd = 0, ni = 0, fwd = 0, back = 0, next = 0;
+  SpiceChar name[61] = {0};
+  dafrfr_c(handle, sizeof(name), &nd, &ni, name, &fwd, &back, &next);
+  if (failed_c()) return ck_writer_status(err, errMaxBytes);
+  // Count ordinary payload, both time directories, trailers and space for a
+  // new DAF summary/name record pair and alignment before any segment write.
+  if ((int64_t)next + count + n/100 + nints/100 + 5 + 3*128 > INT_MAX)
+    return tspice_frames_invalid_arg(err, errMaxBytes, "CK segment exceeds DAF address space");
+  return 0;
+}
+
+int tspice_ckopn(const char *path, const char *ifname, int ncomch, int *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (!path || !ifname || !out) return tspice_frames_invalid_arg(err, errMaxBytes, "Invalid CK open arguments");
+  *out = 0;
+  ckopn_c(path, ifname, ncomch, out);
+  return ck_writer_status(err, errMaxBytes);
+}
+
+int tspice_ckcls(int handle, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (handle >= 0) return tspice_frames_invalid_arg(err, errMaxBytes, "Expected CK writer handle");
+  ckcls_c(handle);
+  return ck_writer_status(err, errMaxBytes);
+}
+
+int tspice_ckw01(int handle, double beg, double end, int inst, const char *ref, int av, const char *segid, int n, const double *data, int count, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (ck_writer_data(handle, ref, segid, beg, end, data, count, (int64_t)n*(av ? 8 : 5) + 0, n, 0, err, errMaxBytes)) return 1;
+  ckw01_c(handle, beg, end, inst, ref, av, segid, n, data, (const double (*)[4])(data + n), (const double (*)[3])(av ? data + 5*n : data));
+  return ck_writer_status(err, errMaxBytes);
+}
+
+int tspice_ckw02(int handle, double beg, double end, int inst, const char *ref, const char *segid, int n, const double *data, int count, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (ck_writer_data(handle, ref, segid, beg, end, data, count, (int64_t)n*10 + 0, n, 0, err, errMaxBytes)) return 1;
+  ckw02_c(handle, beg, end, inst, ref, segid, n, data, data + n, (const double (*)[4])(data + 2*n), (const double (*)[3])(data + 6*n), data + 9*n);
+  return ck_writer_status(err, errMaxBytes);
+}
+
+int tspice_ckw03(int handle, double beg, double end, int inst, const char *ref, int av, const char *segid, int n, int nints, const double *data, int count, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (ck_writer_data(handle, ref, segid, beg, end, data, count, (int64_t)n*(av ? 8 : 5) + nints, n, nints, err, errMaxBytes)) return 1;
+  ckw03_c(handle, beg, end, inst, ref, av, segid, n, data, (const double (*)[4])(data + n), (const double (*)[3])(av ? data + 5*n : data), nints, data + n*(av ? 8 : 5));
+  return ck_writer_status(err, errMaxBytes);
+}
+
+int tspice_ckw05(int handle, int subtype, int degree, double beg, double end, int inst, const char *ref, int av, const char *segid, int n, int nints, double rate, const double *data, int count, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  static const int widths[4] = {8, 4, 14, 7};
+  const int width = subtype >= 0 && subtype < 4 ? widths[subtype] : 0;
+  if (degree == INT_MAX || !isfinite(rate)) return tspice_frames_invalid_arg(err, errMaxBytes, "Invalid CK type 5 degree or rate");
+  if (ck_writer_data(handle, ref, segid, beg, end, data, count, (int64_t)n*(1+width) + nints, n, nints, err, errMaxBytes)) return 1;
+  // CKR05 searches for an interval start at or before every packet. CKW05
+  // itself checks membership but omits the required first-packet start.
+  if (n && nints && data[n*(1+width)] != data[0])
+    return tspice_frames_invalid_arg(err, errMaxBytes, "First CK type 5 interval must start at the first packet");
+  ckw05_c(handle, (SpiceCK05Subtype)subtype, degree, beg, end, inst, ref, av, segid, n, data, data + n, rate, nints, data + n*(1+width));
+  return ck_writer_status(err, errMaxBytes);
 }
 
 int tspice_cklpf(const char *ck, int *outHandle, char *err, int errMaxBytes) {

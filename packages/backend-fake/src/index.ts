@@ -1770,6 +1770,24 @@ export function createFakeBackend(
     pckw02: () => {
       throw new Error("Fake backend: pckw02() is not implemented");
     },
+    ckopn: () => {
+      throw new Error("Fake backend: ckopn() is not implemented");
+    },
+    ckcls: () => {
+      throw new Error("Fake backend: ckcls() is not implemented");
+    },
+    ckw01: () => {
+      throw new Error("Fake backend: ckw01() is not implemented");
+    },
+    ckw02: () => {
+      throw new Error("Fake backend: ckw02() is not implemented");
+    },
+    ckw03: () => {
+      throw new Error("Fake backend: ckw03() is not implemented");
+    },
+    ckw05: () => {
+      throw new Error("Fake backend: ckw05() is not implemented");
+    },
     cklpf: (_ck: string) => {
       throw new Error("Fake backend: cklpf() is not implemented");
     },

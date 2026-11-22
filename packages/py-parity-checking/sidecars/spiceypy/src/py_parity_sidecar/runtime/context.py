@@ -74,6 +74,7 @@ class FramesState:
     requestedFrames: set[str] = field(default_factory=set)
     stagedVirtualKernelPaths: set[str] = field(default_factory=set)
     pckHandles: dict[str, tuple[int, bool]] = field(default_factory=dict)
+    writers: dict[str,int] = field(default_factory=dict)
     ckHandles: dict[str, int] = field(default_factory=dict)
 
 

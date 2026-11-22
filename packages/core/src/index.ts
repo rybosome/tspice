@@ -168,6 +168,10 @@ export {
   copyPckCoefficients,
   requirePckString,
 } from "./spice-runtime/shared/pck.js";
+export {
+  packCkWriterData,
+  checkCkWriter,
+} from "./spice-runtime/shared/ck-writers.js";
 export { createSpiceHandleRegistry } from "./spice-runtime/shared/spice-handles.js";
 
 export type { GetmsgWhich } from "./spice-runtime/domains/error.js";

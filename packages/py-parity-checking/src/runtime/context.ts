@@ -66,6 +66,7 @@ export type FramesState = {
   requestedFrames: Set<string>;
   stagedVirtualKernelPaths: Set<string>;
   pckHandles: Map<string, { handle: SpiceHandle; writer: boolean }>;
+  writers: Map<string, { handle: SpiceHandle; path: string; physical: string }>;
   ckHandles: Map<string, number>;
 };
 
@@ -153,6 +154,7 @@ export function createRunTspiceContext(
         requestedFrames: new Set<string>(),
         stagedVirtualKernelPaths: new Set<string>(),
         pckHandles: new Map(),
+        writers: new Map(),
         ckHandles: new Map<string, number>(),
       },
     },

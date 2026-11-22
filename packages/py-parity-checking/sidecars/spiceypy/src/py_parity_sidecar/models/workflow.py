@@ -370,6 +370,12 @@ from .frames import (
     StepFramesPckopn,
     StepFramesPckuof,
     StepFramesPckw02,
+    StepFramesCkopn,
+    StepFramesCkcls,
+    StepFramesCkw01,
+    StepFramesCkw02,
+    StepFramesCkw03,
+    StepFramesCkw05,
     StepFramesCklpf,
     StepFramesCkobj,
     StepFramesCkupf,
@@ -932,6 +938,12 @@ WorkflowStep: TypeAlias = (
     | StepFramesPckopn
     | StepFramesPckuof
     | StepFramesPckw02
+    | StepFramesCkopn
+    | StepFramesCkcls
+    | StepFramesCkw01
+    | StepFramesCkw02
+    | StepFramesCkw03
+    | StepFramesCkw05
     | StepFramesCklpf
     | StepFramesCkupf
     | StepFramesCkobj
