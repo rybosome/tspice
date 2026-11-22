@@ -577,6 +577,186 @@
       "url": "https://github.com/rybosome/tspice/actions/runs/45012853638/job/137178762153",
       "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 3788 live comparisons without unexpected skips.",
       "historical": true
+    },
+    {
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "75a05df089d531553f34e6fb0d79113643643e205c205a888a9958c77ed5e6f7",
+      "caseIds": [
+        "coords-vectors-ucrss-axis-handedness",
+        "coords-vectors-ucrss-mixed-handedness",
+        "coords-vectors-ucrss-near-parallel",
+        "coords-vectors-ucrss-scaled-magnitudes",
+        "coords-vectors-ucrss-zero-parallel-opposed",
+        "coords-vectors-unorm-mixed-and-negative",
+        "coords-vectors-unorm-scaled-magnitudes",
+        "coords-vectors-unorm-subnormal-axis",
+        "coords-vectors-unorm-zero-and-axes",
+        "coords-vectors-vdist-identical-and-zero",
+        "coords-vectors-vdist-mixed-and-reversed",
+        "coords-vectors-vdist-nearby-large-components",
+        "coords-vectors-vdist-scaled-magnitudes",
+        "coords-vectors-vequ-finite-extremes",
+        "coords-vectors-vequ-ordered-mixed-components",
+        "coords-vectors-vequ-zero-and-axes",
+        "coords-vectors-vpack-finite-extremes",
+        "coords-vectors-vpack-ordered-mixed-components",
+        "coords-vectors-vpack-zero-and-axes",
+        "coords-vectors-vsep-acute-obtuse-reversed",
+        "coords-vectors-vsep-near-parallel-opposed",
+        "coords-vectors-vsep-orthogonal",
+        "coords-vectors-vsep-parallel-opposed",
+        "coords-vectors-vsep-scaled-magnitudes",
+        "coords-vectors-vsep-zero",
+        "coords-vectors-vupack-finite-extremes",
+        "coords-vectors-vupack-ordered-mixed-components",
+        "coords-vectors-vupack-zero-and-axes",
+        "coords-vectors-vzero-each-nonzero-slot",
+        "coords-vectors-vzero-mixed-components",
+        "coords-vectors-vzero-subnormal-nonzero",
+        "coords-vectors-vzero-zero"
+      ],
+      "id": "local-cp02-44c6136d16c7-node",
+      "kind": "local",
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 44c6136d16c7325e07e5e233988ffb02dab543ee. The native-required lane completed 5264 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45043538272/job/137273010344"
+    },
+    {
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "75a05df089d531553f34e6fb0d79113643643e205c205a888a9958c77ed5e6f7",
+      "caseIds": [
+        "coords-vectors-ucrss-axis-handedness",
+        "coords-vectors-ucrss-mixed-handedness",
+        "coords-vectors-ucrss-near-parallel",
+        "coords-vectors-ucrss-scaled-magnitudes",
+        "coords-vectors-ucrss-zero-parallel-opposed",
+        "coords-vectors-unorm-mixed-and-negative",
+        "coords-vectors-unorm-scaled-magnitudes",
+        "coords-vectors-unorm-subnormal-axis",
+        "coords-vectors-unorm-zero-and-axes",
+        "coords-vectors-vdist-identical-and-zero",
+        "coords-vectors-vdist-mixed-and-reversed",
+        "coords-vectors-vdist-nearby-large-components",
+        "coords-vectors-vdist-scaled-magnitudes",
+        "coords-vectors-vequ-finite-extremes",
+        "coords-vectors-vequ-ordered-mixed-components",
+        "coords-vectors-vequ-zero-and-axes",
+        "coords-vectors-vpack-finite-extremes",
+        "coords-vectors-vpack-ordered-mixed-components",
+        "coords-vectors-vpack-zero-and-axes",
+        "coords-vectors-vsep-acute-obtuse-reversed",
+        "coords-vectors-vsep-near-parallel-opposed",
+        "coords-vectors-vsep-orthogonal",
+        "coords-vectors-vsep-parallel-opposed",
+        "coords-vectors-vsep-scaled-magnitudes",
+        "coords-vectors-vsep-zero",
+        "coords-vectors-vupack-finite-extremes",
+        "coords-vectors-vupack-ordered-mixed-components",
+        "coords-vectors-vupack-zero-and-axes",
+        "coords-vectors-vzero-each-nonzero-slot",
+        "coords-vectors-vzero-mixed-components",
+        "coords-vectors-vzero-subnormal-nonzero",
+        "coords-vectors-vzero-zero"
+      ],
+      "id": "ci-cp02-44c6136d16c7-node",
+      "kind": "ci",
+      "commit": "b826f8e1b3d9afff24f291c885b6380ff82a8689",
+      "url": "https://github.com/rybosome/tspice/actions/runs/45048703356/job/137288855808",
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 5264 live comparisons without unexpected skips."
+    },
+    {
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "75a05df089d531553f34e6fb0d79113643643e205c205a888a9958c77ed5e6f7",
+      "caseIds": [
+        "coords-vectors-ucrss-axis-handedness",
+        "coords-vectors-ucrss-mixed-handedness",
+        "coords-vectors-ucrss-near-parallel",
+        "coords-vectors-ucrss-scaled-magnitudes",
+        "coords-vectors-ucrss-zero-parallel-opposed",
+        "coords-vectors-unorm-mixed-and-negative",
+        "coords-vectors-unorm-scaled-magnitudes",
+        "coords-vectors-unorm-subnormal-axis",
+        "coords-vectors-unorm-zero-and-axes",
+        "coords-vectors-vdist-identical-and-zero",
+        "coords-vectors-vdist-mixed-and-reversed",
+        "coords-vectors-vdist-nearby-large-components",
+        "coords-vectors-vdist-scaled-magnitudes",
+        "coords-vectors-vequ-finite-extremes",
+        "coords-vectors-vequ-ordered-mixed-components",
+        "coords-vectors-vequ-zero-and-axes",
+        "coords-vectors-vpack-finite-extremes",
+        "coords-vectors-vpack-ordered-mixed-components",
+        "coords-vectors-vpack-zero-and-axes",
+        "coords-vectors-vsep-acute-obtuse-reversed",
+        "coords-vectors-vsep-near-parallel-opposed",
+        "coords-vectors-vsep-orthogonal",
+        "coords-vectors-vsep-parallel-opposed",
+        "coords-vectors-vsep-scaled-magnitudes",
+        "coords-vectors-vsep-zero",
+        "coords-vectors-vupack-finite-extremes",
+        "coords-vectors-vupack-ordered-mixed-components",
+        "coords-vectors-vupack-zero-and-axes",
+        "coords-vectors-vzero-each-nonzero-slot",
+        "coords-vectors-vzero-mixed-components",
+        "coords-vectors-vzero-subnormal-nonzero",
+        "coords-vectors-vzero-zero"
+      ],
+      "id": "local-cp02-44c6136d16c7-wasm",
+      "kind": "local",
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 44c6136d16c7325e07e5e233988ffb02dab543ee. The native-required lane completed 5264 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45043538272/job/137273010344"
+    },
+    {
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "75a05df089d531553f34e6fb0d79113643643e205c205a888a9958c77ed5e6f7",
+      "caseIds": [
+        "coords-vectors-ucrss-axis-handedness",
+        "coords-vectors-ucrss-mixed-handedness",
+        "coords-vectors-ucrss-near-parallel",
+        "coords-vectors-ucrss-scaled-magnitudes",
+        "coords-vectors-ucrss-zero-parallel-opposed",
+        "coords-vectors-unorm-mixed-and-negative",
+        "coords-vectors-unorm-scaled-magnitudes",
+        "coords-vectors-unorm-subnormal-axis",
+        "coords-vectors-unorm-zero-and-axes",
+        "coords-vectors-vdist-identical-and-zero",
+        "coords-vectors-vdist-mixed-and-reversed",
+        "coords-vectors-vdist-nearby-large-components",
+        "coords-vectors-vdist-scaled-magnitudes",
+        "coords-vectors-vequ-finite-extremes",
+        "coords-vectors-vequ-ordered-mixed-components",
+        "coords-vectors-vequ-zero-and-axes",
+        "coords-vectors-vpack-finite-extremes",
+        "coords-vectors-vpack-ordered-mixed-components",
+        "coords-vectors-vpack-zero-and-axes",
+        "coords-vectors-vsep-acute-obtuse-reversed",
+        "coords-vectors-vsep-near-parallel-opposed",
+        "coords-vectors-vsep-orthogonal",
+        "coords-vectors-vsep-parallel-opposed",
+        "coords-vectors-vsep-scaled-magnitudes",
+        "coords-vectors-vsep-zero",
+        "coords-vectors-vupack-finite-extremes",
+        "coords-vectors-vupack-ordered-mixed-components",
+        "coords-vectors-vupack-zero-and-axes",
+        "coords-vectors-vzero-each-nonzero-slot",
+        "coords-vectors-vzero-mixed-components",
+        "coords-vectors-vzero-subnormal-nonzero",
+        "coords-vectors-vzero-zero"
+      ],
+      "id": "ci-cp02-44c6136d16c7-wasm",
+      "kind": "ci",
+      "commit": "b826f8e1b3d9afff24f291c885b6380ff82a8689",
+      "url": "https://github.com/rybosome/tspice/actions/runs/45048703356/job/137288855808",
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 5264 live comparisons without unexpected skips."
     }
   ],
   "routines": [
@@ -639,11 +819,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vdist -> Node typed adapter -> registered native handler under global CSPICE mutex -> tspice_vdist shared C shim -> vdist_c; complete scalar/vector/object result copied and propagated.",
-          "executions": []
+          "executions": [
+            "local-cp02-44c6136d16c7-node",
+            "ci-cp02-44c6136d16c7-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -655,11 +839,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vdist -> WASM typed adapter -> configured _tspice_vdist export -> tspice_vdist shared C shim -> vdist_c; all result components copied from typed heap storage before withAllocs cleanup. Binary regeneration/export and execution verification remain required.",
-          "executions": []
+          "executions": [
+            "local-cp02-44c6136d16c7-wasm",
+            "ci-cp02-44c6136d16c7-wasm"
+          ]
         }
       }
     },
@@ -717,11 +905,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vequ -> Node typed adapter -> registered native handler under global CSPICE mutex -> tspice_vequ shared C shim -> vequ_c; complete scalar/vector/object result copied and propagated.",
-          "executions": []
+          "executions": [
+            "local-cp02-44c6136d16c7-node",
+            "ci-cp02-44c6136d16c7-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -733,11 +925,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vequ -> WASM typed adapter -> configured _tspice_vequ export -> tspice_vequ shared C shim -> vequ_c; all result components copied from typed heap storage before withAllocs cleanup. Binary regeneration/export and execution verification remain required.",
-          "executions": []
+          "executions": [
+            "local-cp02-44c6136d16c7-wasm",
+            "ci-cp02-44c6136d16c7-wasm"
+          ]
         }
       }
     },
@@ -780,11 +976,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vpack -> Node typed adapter -> registered native handler under global CSPICE mutex -> tspice_vpack shared C shim -> vpack_c; complete scalar/vector/object result copied and propagated.",
-          "executions": []
+          "executions": [
+            "local-cp02-44c6136d16c7-node",
+            "ci-cp02-44c6136d16c7-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -795,11 +995,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vpack -> WASM typed adapter -> configured _tspice_vpack export -> tspice_vpack shared C shim -> vpack_c; all result components copied from typed heap storage before withAllocs cleanup. Binary regeneration/export and execution verification remain required.",
-          "executions": []
+          "executions": [
+            "local-cp02-44c6136d16c7-wasm",
+            "ci-cp02-44c6136d16c7-wasm"
+          ]
         }
       }
     },
@@ -857,11 +1061,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vupack -> Node typed adapter -> registered native handler under global CSPICE mutex -> tspice_vupack shared C shim -> vupack_c; complete scalar/vector/object result copied and propagated.",
-          "executions": []
+          "executions": [
+            "local-cp02-44c6136d16c7-node",
+            "ci-cp02-44c6136d16c7-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -873,11 +1081,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vupack -> WASM typed adapter -> configured _tspice_vupack export -> tspice_vupack shared C shim -> vupack_c; all result components copied from typed heap storage before withAllocs cleanup. Binary regeneration/export and execution verification remain required.",
-          "executions": []
+          "executions": [
+            "local-cp02-44c6136d16c7-wasm",
+            "ci-cp02-44c6136d16c7-wasm"
+          ]
         }
       }
     },
@@ -940,11 +1152,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vzero -> Node typed adapter -> registered native handler under global CSPICE mutex -> tspice_vzero shared C shim -> vzero_c; complete scalar/vector/object result copied and propagated.",
-          "executions": []
+          "executions": [
+            "local-cp02-44c6136d16c7-node",
+            "ci-cp02-44c6136d16c7-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -956,11 +1172,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vzero -> WASM typed adapter -> configured _tspice_vzero export -> tspice_vzero shared C shim -> vzero_c; all result components copied from typed heap storage before withAllocs cleanup. Binary regeneration/export and execution verification remain required.",
-          "executions": []
+          "executions": [
+            "local-cp02-44c6136d16c7-wasm",
+            "ci-cp02-44c6136d16c7-wasm"
+          ]
         }
       }
     },
@@ -1023,11 +1243,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.unorm -> Node typed adapter -> registered native handler under global CSPICE mutex -> tspice_unorm shared C shim -> unorm_c; complete scalar/vector/object result copied and propagated.",
-          "executions": []
+          "executions": [
+            "local-cp02-44c6136d16c7-node",
+            "ci-cp02-44c6136d16c7-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -1039,11 +1263,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.unorm -> WASM typed adapter -> configured _tspice_unorm export -> tspice_unorm shared C shim -> unorm_c; all result components copied from typed heap storage before withAllocs cleanup. Binary regeneration/export and execution verification remain required.",
-          "executions": []
+          "executions": [
+            "local-cp02-44c6136d16c7-wasm",
+            "ci-cp02-44c6136d16c7-wasm"
+          ]
         }
       }
     },
@@ -1130,11 +1358,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.ucrss -> Node typed adapter -> registered native handler under global CSPICE mutex -> tspice_ucrss shared C shim -> ucrss_c; complete scalar/vector/object result copied and propagated.",
-          "executions": []
+          "executions": [
+            "local-cp02-44c6136d16c7-node",
+            "ci-cp02-44c6136d16c7-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -1147,11 +1379,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.ucrss -> WASM typed adapter -> configured _tspice_ucrss export -> tspice_ucrss shared C shim -> ucrss_c; all result components copied from typed heap storage before withAllocs cleanup. Binary regeneration/export and execution verification remain required.",
-          "executions": []
+          "executions": [
+            "local-cp02-44c6136d16c7-wasm",
+            "ci-cp02-44c6136d16c7-wasm"
+          ]
         }
       }
     },
@@ -1224,11 +1460,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vsep -> Node typed adapter -> registered native handler under global CSPICE mutex -> tspice_vsep shared C shim -> vsep_c; complete scalar/vector/object result copied and propagated.",
-          "executions": []
+          "executions": [
+            "local-cp02-44c6136d16c7-node",
+            "ci-cp02-44c6136d16c7-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -1240,11 +1480,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vsep -> WASM typed adapter -> configured _tspice_vsep export -> tspice_vsep shared C shim -> vsep_c; all result components copied from typed heap storage before withAllocs cleanup. Binary regeneration/export and execution verification remain required.",
-          "executions": []
+          "executions": [
+            "local-cp02-44c6136d16c7-wasm",
+            "ci-cp02-44c6136d16c7-wasm"
+          ]
         }
       }
     }

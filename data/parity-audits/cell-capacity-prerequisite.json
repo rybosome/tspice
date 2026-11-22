@@ -5682,6 +5682,114 @@
       "url": "https://github.com/rybosome/tspice/actions/runs/43572333173/job/132379194042",
       "observation": "Inspected successful Linux Node 22 native-required job 132379194042 on 1aa35005d77652f38251c1d2fd7c93a6a5c83087: 2,506 registered Node/WASM live comparisons; 2,738 parity-package tests with no skips, including the native-required guard; 125 native wrapper, 690 WASM, 28 core and 151 facade tests passed.",
       "historical": true
+    },
+    {
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "7ca1976ad3709d5aa0d05167e611b27b8f7978f7835a64a4b1965755a04d5462",
+      "caseIds": [
+        "cells-windows-ssize-audit-shrink-restore-original",
+        "cells-windows-ssize-negative-size-error",
+        "cells-windows-ssize-resizes-cell-success",
+        "cells-windows-valid-audit-n-exceeds-size",
+        "cells-windows-valid-audit-unsorted-duplicate-char",
+        "cells-windows-valid-audit-unsorted-duplicate-double",
+        "cells-windows-valid-audit-unsorted-duplicate-int",
+        "cells-windows-valid-negative-n-error",
+        "cells-windows-valid-normalizes-set-success",
+        "cells-windows-wnvald-audit-n-exceeds-size",
+        "cells-windows-wnvald-audit-odd-endpoint-count",
+        "cells-windows-wnvald-audit-unsorted-zero-pair",
+        "cells-windows-wnvald-negative-n-error",
+        "cells-windows-wnvald-normalizes-window-success"
+      ],
+      "id": "local-cp02-44c6136d16c7-node",
+      "kind": "local",
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 44c6136d16c7325e07e5e233988ffb02dab543ee. The native-required lane completed 5264 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45043538272/job/137273010344"
+    },
+    {
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "7ca1976ad3709d5aa0d05167e611b27b8f7978f7835a64a4b1965755a04d5462",
+      "caseIds": [
+        "cells-windows-ssize-audit-shrink-restore-original",
+        "cells-windows-ssize-negative-size-error",
+        "cells-windows-ssize-resizes-cell-success",
+        "cells-windows-valid-audit-n-exceeds-size",
+        "cells-windows-valid-audit-unsorted-duplicate-char",
+        "cells-windows-valid-audit-unsorted-duplicate-double",
+        "cells-windows-valid-audit-unsorted-duplicate-int",
+        "cells-windows-valid-negative-n-error",
+        "cells-windows-valid-normalizes-set-success",
+        "cells-windows-wnvald-audit-n-exceeds-size",
+        "cells-windows-wnvald-audit-odd-endpoint-count",
+        "cells-windows-wnvald-audit-unsorted-zero-pair",
+        "cells-windows-wnvald-negative-n-error",
+        "cells-windows-wnvald-normalizes-window-success"
+      ],
+      "id": "ci-cp02-44c6136d16c7-node",
+      "kind": "ci",
+      "commit": "b826f8e1b3d9afff24f291c885b6380ff82a8689",
+      "url": "https://github.com/rybosome/tspice/actions/runs/45048703356/job/137288855808",
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 5264 live comparisons without unexpected skips."
+    },
+    {
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "7ca1976ad3709d5aa0d05167e611b27b8f7978f7835a64a4b1965755a04d5462",
+      "caseIds": [
+        "cells-windows-ssize-audit-shrink-restore-original",
+        "cells-windows-ssize-negative-size-error",
+        "cells-windows-ssize-resizes-cell-success",
+        "cells-windows-valid-audit-n-exceeds-size",
+        "cells-windows-valid-audit-unsorted-duplicate-char",
+        "cells-windows-valid-audit-unsorted-duplicate-double",
+        "cells-windows-valid-audit-unsorted-duplicate-int",
+        "cells-windows-valid-negative-n-error",
+        "cells-windows-valid-normalizes-set-success",
+        "cells-windows-wnvald-audit-n-exceeds-size",
+        "cells-windows-wnvald-audit-odd-endpoint-count",
+        "cells-windows-wnvald-audit-unsorted-zero-pair",
+        "cells-windows-wnvald-negative-n-error",
+        "cells-windows-wnvald-normalizes-window-success"
+      ],
+      "id": "local-cp02-44c6136d16c7-wasm",
+      "kind": "local",
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 44c6136d16c7325e07e5e233988ffb02dab543ee. The native-required lane completed 5264 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45043538272/job/137273010344"
+    },
+    {
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "7ca1976ad3709d5aa0d05167e611b27b8f7978f7835a64a4b1965755a04d5462",
+      "caseIds": [
+        "cells-windows-ssize-audit-shrink-restore-original",
+        "cells-windows-ssize-negative-size-error",
+        "cells-windows-ssize-resizes-cell-success",
+        "cells-windows-valid-audit-n-exceeds-size",
+        "cells-windows-valid-audit-unsorted-duplicate-char",
+        "cells-windows-valid-audit-unsorted-duplicate-double",
+        "cells-windows-valid-audit-unsorted-duplicate-int",
+        "cells-windows-valid-negative-n-error",
+        "cells-windows-valid-normalizes-set-success",
+        "cells-windows-wnvald-audit-n-exceeds-size",
+        "cells-windows-wnvald-audit-odd-endpoint-count",
+        "cells-windows-wnvald-audit-unsorted-zero-pair",
+        "cells-windows-wnvald-negative-n-error",
+        "cells-windows-wnvald-normalizes-window-success"
+      ],
+      "id": "ci-cp02-44c6136d16c7-wasm",
+      "kind": "ci",
+      "commit": "b826f8e1b3d9afff24f291c885b6380ff82a8689",
+      "url": "https://github.com/rybosome/tspice/actions/runs/45048703356/job/137288855808",
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 5264 live comparisons without unexpected skips."
     }
   ],
   "routines": [
@@ -5799,11 +5907,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.ssize -> typed Node adapter -> registered native handler -> process handle registry -> shared registry capacity precondition -> tspice_ssize -> ssize_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
-          "executions": []
+          "executions": [
+            "local-cp02-44c6136d16c7-node",
+            "ci-cp02-44c6136d16c7-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -5825,11 +5937,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.ssize -> WASM typed helper -> per-module pointer membership -> compiled export -> shared registry capacity precondition -> tspice_ssize -> ssize_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
-          "executions": []
+          "executions": [
+            "local-cp02-44c6136d16c7-wasm",
+            "ci-cp02-44c6136d16c7-wasm"
+          ]
         }
       }
     },
@@ -5994,11 +6110,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.valid -> typed Node adapter -> registered native handler -> process handle registry -> shared registry capacity precondition -> tspice_valid -> valid_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
-          "executions": []
+          "executions": [
+            "local-cp02-44c6136d16c7-node",
+            "ci-cp02-44c6136d16c7-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -6020,11 +6140,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.valid -> WASM typed helper -> per-module pointer membership -> compiled export -> shared registry capacity precondition -> tspice_valid -> valid_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
-          "executions": []
+          "executions": [
+            "local-cp02-44c6136d16c7-wasm",
+            "ci-cp02-44c6136d16c7-wasm"
+          ]
         }
       }
     },
@@ -6178,11 +6302,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.wnvald -> typed Node adapter -> registered native handler -> process handle registry -> shared registry capacity precondition -> tspice_wnvald -> wnvald_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
-          "executions": []
+          "executions": [
+            "local-cp02-44c6136d16c7-node",
+            "ci-cp02-44c6136d16c7-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -6204,11 +6332,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.wnvald -> WASM typed helper -> per-module pointer membership -> compiled export -> shared registry capacity precondition -> tspice_wnvald -> wnvald_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
-          "executions": []
+          "executions": [
+            "local-cp02-44c6136d16c7-wasm",
+            "ci-cp02-44c6136d16c7-wasm"
+          ]
         }
       }
     }
