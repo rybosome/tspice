@@ -95,6 +95,7 @@ from .models import (
     StepFileIoGetfat,
     StepErrorChkin,
     StepErrorChkout,
+    StepErrorErract,
     StepErrorErrdev,
     StepErrorErrprt,
     StepErrorTrcoff,
@@ -1167,6 +1168,14 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
                 plates=_expect_int_list(step.get("plates"), label="file-io.dskw02.plates"),
                 spaixId=_expect_string(step.get("spaixId"), label="file-io.dskw02.spaixId"),
             )
+        case "error.erract":
+            operation = _expect_string(step.get("operation"), label="erract.operation")
+            if operation == "GET":
+                capacity = step.get("capacity")
+                return StepErrorErract(op=op, operation=operation, capacity=None if capacity is None else _expect_int(capacity, label="erract.capacity"))
+            if operation == "SET":
+                return StepErrorErract(op=op, operation=operation, value=_expect_string(step.get("value"), label="erract.value"))
+            raise ValueError("Invalid erract operation")
         case "error.errdev":
             operation = _expect_string(step.get("operation"), label="errdev.operation")
             if operation == "GET":

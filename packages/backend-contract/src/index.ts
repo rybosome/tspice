@@ -71,6 +71,7 @@ import type { GeometryApi } from "./domains/geometry.js";
 import type { GeometryGfApi } from "./domains/geometry-gf.js";
 import type { CoordsVectorsApi } from "./domains/coords-vectors.js";
 import type { FileIoApi, FileIoKitApi } from "./domains/file-io.js";
+export type { SpiceErrorAction } from "./domains/error.js";
 import type { ErrorApi } from "./domains/error.js";
 import type {
   CellsWindowsApi,

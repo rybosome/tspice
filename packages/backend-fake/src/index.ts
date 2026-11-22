@@ -997,6 +997,9 @@ export function createFakeBackend(
   } satisfies FileIoKitApi;
 
   const rawAndKit = {
+    erract: () => {
+      throw new Error("Fake backend: erract is not implemented");
+    },
     errdev: () => {
       throw new Error("Fake backend: errdev is not implemented");
     },

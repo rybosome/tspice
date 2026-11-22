@@ -101,7 +101,7 @@ static int tspice_expect_double_window(uintptr_t handle, const char *argName, co
 }
 
 int tspice_gfsstp(double step, char *err, int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
   if (errMaxBytes > 0) {
     err[0] = '\0';
   }
@@ -116,7 +116,7 @@ int tspice_gfsstp(double step, char *err, int errMaxBytes) {
 }
 
 int tspice_gfstep(double time, double *outStep, char *err, int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
   if (errMaxBytes > 0) {
     err[0] = '\0';
   }
@@ -138,7 +138,7 @@ int tspice_gfstep(double time, double *outStep, char *err, int errMaxBytes) {
 }
 
 int tspice_gfstol(double value, char *err, int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
   if (errMaxBytes > 0) {
     err[0] = '\0';
   }
@@ -160,7 +160,7 @@ int tspice_gfrefn(
     double *outT,
     char *err,
     int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
   if (errMaxBytes > 0) {
     err[0] = '\0';
   }
@@ -192,7 +192,7 @@ int tspice_gfrepi(
     const char *endmss,
     char *err,
     int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
   if (errMaxBytes > 0) {
     err[0] = '\0';
   }
@@ -219,7 +219,7 @@ int tspice_gfrepi(
 }
 
 int tspice_gfrepf(char *err, int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
   if (errMaxBytes > 0) {
     err[0] = '\0';
   }
@@ -251,7 +251,7 @@ int tspice_gfsep(
     uintptr_t resultWindowHandle,
     char *err,
     int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
   if (errMaxBytes > 0) {
     err[0] = '\0';
   }
@@ -309,7 +309,7 @@ int tspice_gfdist(
     uintptr_t resultWindowHandle,
     char *err,
     int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
   if (errMaxBytes > 0) {
     err[0] = '\0';
   }

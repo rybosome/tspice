@@ -431,6 +431,13 @@
       "dependsOn": ["b06-error-observation"],
       "prs": [],
       "nextAction": "Verify the final local and canonical lanes."
+    },
+    {
+      "id": "b08-error-action",
+      "routines": ["erract_c"],
+      "dependsOn": ["b07-error-devices"],
+      "prs": [],
+      "nextAction": "Run isolated action round trips and scientific-boundary regression on both backends."
     }
   ]
 }

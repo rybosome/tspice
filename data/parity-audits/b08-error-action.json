@@ -1,0 +1,72 @@
+{
+  "schemaVersion": 1,
+  "batch": "b08-error-action",
+  "traceFiles": [
+    "packages/backend-shim-c/src/errors.c",
+    "packages/backend-shim-c/src/domains/time.c",
+    "packages/backend-shim-c/src/domains/coords_vectors.c",
+    "packages/backend-node/native/src/domains/error.cc",
+    "packages/backend-wasm/src/domains/error.ts",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/error.py",
+    "packages/py-parity-checking/src/run-tspice/domains/error.ts",
+    "packages/py-parity-checking/test/error-action-public.test.ts",
+    "packages/py-parity-checking/src/cases/error/erract.cases.json"
+  ],
+  "executions": [],
+  "routines": [
+    {
+      "routine": "erract_c",
+      "contract": "packages/backend-contract/src/domains/error.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/erract_c.html",
+      "semantics": "Read or set all five N0067 actions. IGNORE and REPORT retain diagnostic semantics. Scientific entry points requiring dependable error detection reject calls before the toolkit can leave outputs undefined.",
+      "scenarios": [
+        {
+          "caseId": "error-erract-roundtrip-return",
+          "coverage": ["success", "edge"],
+          "observes": "Read the original error action, select RETURN, verify full and byte-truncated output, then restore RETURN."
+        },
+        {
+          "caseId": "error-erract-roundtrip-ignore",
+          "coverage": ["success", "edge"],
+          "observes": "Read the original error action, select IGNORE, verify full and byte-truncated output, then restore RETURN."
+        },
+        {
+          "caseId": "error-erract-roundtrip-report",
+          "coverage": ["success", "edge"],
+          "observes": "Read the original error action, select REPORT, verify full and byte-truncated output, then restore RETURN."
+        },
+        {
+          "caseId": "error-erract-roundtrip-abort",
+          "coverage": ["success", "edge"],
+          "observes": "Read the original error action, select ABORT, verify full and byte-truncated output, then restore RETURN."
+        },
+        {
+          "caseId": "error-erract-roundtrip-default",
+          "coverage": ["success", "edge"],
+          "observes": "Read the original error action, select DEFAULT, verify full and byte-truncated output, then restore RETURN."
+        }
+      ],
+      "edgeAssessment": "Reads report the toolkit action at the full and two-byte capacities, with an isolated runtime per choice.",
+      "errorAssessment": "The public boundary test checks scientific rejection under IGNORE and REPORT, invalid output capacity, diagnostic availability and recovery after RETURN.",
+      "fixtures": [],
+      "fixtureRationale": "No kernels required. The reference invokes erract_c from the independent locked wheel.",
+      "cleanup": "Every registered case restores RETURN and runs in a dedicated process. The supplemental test uses finally to restore RETURN and release owned handles.",
+      "tolerance": "Exact diagnostic text and behavior; no floating-point tolerance.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "Raw error action delegates to the shared C erract shim, which calls erract_c.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "Raw error action delegates to the shared C erract shim, which calls erract_c.",
+          "executions": []
+        }
+      }
+    }
+  ]
+}

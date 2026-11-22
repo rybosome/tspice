@@ -351,6 +351,7 @@ const exportedFunctions = [
   "_tspice_get_last_error_short",
   "_tspice_get_last_error_long",
   "_tspice_get_last_error_trace",
+  "_tspice_erract",
   "_tspice_errdev",
   "_tspice_errprt",
   "_tspice_trcoff",

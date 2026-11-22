@@ -1,0 +1,162 @@
+[
+  {
+    "description": "Read the original error action, select RETURN, verify full and byte-truncated output, then restore RETURN.",
+    "expectation": {
+      "kind": "success"
+    },
+    "caseId": "error-erract-roundtrip-return",
+    "workflow": [
+      {
+        "op": "error.erract",
+        "operation": "GET"
+      },
+      {
+        "op": "error.erract",
+        "operation": "SET",
+        "value": "RETURN"
+      },
+      {
+        "op": "error.erract",
+        "operation": "GET"
+      },
+      {
+        "op": "error.erract",
+        "operation": "GET",
+        "capacity": 2
+      },
+      {
+        "op": "error.erract",
+        "operation": "SET",
+        "value": "RETURN"
+      }
+    ]
+  },
+  {
+    "description": "Read the original error action, select IGNORE, verify full and byte-truncated output, then restore RETURN.",
+    "expectation": {
+      "kind": "success"
+    },
+    "caseId": "error-erract-roundtrip-ignore",
+    "workflow": [
+      {
+        "op": "error.erract",
+        "operation": "GET"
+      },
+      {
+        "op": "error.erract",
+        "operation": "SET",
+        "value": "IGNORE"
+      },
+      {
+        "op": "error.erract",
+        "operation": "GET"
+      },
+      {
+        "op": "error.erract",
+        "operation": "GET",
+        "capacity": 2
+      },
+      {
+        "op": "error.erract",
+        "operation": "SET",
+        "value": "RETURN"
+      }
+    ]
+  },
+  {
+    "description": "Read the original error action, select REPORT, verify full and byte-truncated output, then restore RETURN.",
+    "expectation": {
+      "kind": "success"
+    },
+    "caseId": "error-erract-roundtrip-report",
+    "workflow": [
+      {
+        "op": "error.erract",
+        "operation": "GET"
+      },
+      {
+        "op": "error.erract",
+        "operation": "SET",
+        "value": "REPORT"
+      },
+      {
+        "op": "error.erract",
+        "operation": "GET"
+      },
+      {
+        "op": "error.erract",
+        "operation": "GET",
+        "capacity": 2
+      },
+      {
+        "op": "error.erract",
+        "operation": "SET",
+        "value": "RETURN"
+      }
+    ]
+  },
+  {
+    "description": "Read the original error action, select ABORT, verify full and byte-truncated output, then restore RETURN.",
+    "expectation": {
+      "kind": "success"
+    },
+    "caseId": "error-erract-roundtrip-abort",
+    "workflow": [
+      {
+        "op": "error.erract",
+        "operation": "GET"
+      },
+      {
+        "op": "error.erract",
+        "operation": "SET",
+        "value": "ABORT"
+      },
+      {
+        "op": "error.erract",
+        "operation": "GET"
+      },
+      {
+        "op": "error.erract",
+        "operation": "GET",
+        "capacity": 2
+      },
+      {
+        "op": "error.erract",
+        "operation": "SET",
+        "value": "RETURN"
+      }
+    ]
+  },
+  {
+    "description": "Read the original error action, select DEFAULT, verify full and byte-truncated output, then restore RETURN.",
+    "expectation": {
+      "kind": "success"
+    },
+    "caseId": "error-erract-roundtrip-default",
+    "workflow": [
+      {
+        "op": "error.erract",
+        "operation": "GET"
+      },
+      {
+        "op": "error.erract",
+        "operation": "SET",
+        "value": "DEFAULT"
+      },
+      {
+        "op": "error.erract",
+        "operation": "GET"
+      },
+      {
+        "op": "error.erract",
+        "operation": "GET",
+        "capacity": 2
+      },
+      {
+        "op": "error.erract",
+        "operation": "SET",
+        "value": "RETURN"
+      }
+    ]
+  }
+]

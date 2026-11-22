@@ -1,6 +1,7 @@
 import type {
   StepErrorChkin,
   StepErrorChkout,
+  StepErrorErract,
   StepErrorErrdev,
   StepErrorErrprt,
   StepErrorTrcoff,
@@ -21,6 +22,7 @@ import type {
 import { registerFinalizer, type RunTspiceContext } from "../context.js";
 
 type ErrorStep =
+  | StepErrorErract
   | StepErrorErrdev
   | StepErrorErrprt
   | StepErrorTrcoff
@@ -45,6 +47,14 @@ export function runErrorStep(
   step: ErrorStep,
 ): StepOutput {
   switch (step.op) {
+    case "error.erract":
+      if (step.operation === "GET")
+        return {
+          op: step.op,
+          value: context.spice.raw.erract("GET", step.capacity),
+        };
+      context.spice.raw.erract("SET", step.value);
+      return { op: step.op, value: null };
     case "error.errdev":
       if (step.operation === "GET")
         return {

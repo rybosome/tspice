@@ -1,3 +1,4 @@
+import erractCasesRaw from "./erract.cases.json" with { type: "json" };
 import type { ParityCase } from "../../case-types.js";
 
 import errdevCasesRaw from "./errdev.cases.json" with { type: "json" };
@@ -18,6 +19,7 @@ import resetCasesRaw from "./reset.cases.json" with { type: "json" };
 import setmsgCasesRaw from "./setmsg.cases.json" with { type: "json" };
 import sigerrCasesRaw from "./sigerr.cases.json" with { type: "json" };
 
+export const errorErractCases = erractCasesRaw as ParityCase[];
 export const errorErrdevCases = errdevCasesRaw as ParityCase[];
 export const errorErrprtCases = errprtCasesRaw as ParityCase[];
 export const errorTrcoffCases = trcoffCasesRaw as ParityCase[];
@@ -37,6 +39,7 @@ export const errorSetmsgCases = setmsgCasesRaw as ParityCase[];
 export const errorSigerrCases = sigerrCasesRaw as ParityCase[];
 
 export const errorCases: ParityCase[] = [
+  ...errorErractCases,
   ...errorErrdevCases,
   ...errorErrprtCases,
   ...errorTrcoffCases,

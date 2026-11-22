@@ -10,6 +10,10 @@ export const GETMSG_WHICH_VALUES = ["SHORT", "LONG", "EXPLAIN"] as const;
 
 export type GetmsgWhich = (typeof GETMSG_WHICH_VALUES)[number];
 
+/** The five error response policies exposed by CSPICE N0067. */
+export type SpiceErrorAction =
+  "ABORT" | "DEFAULT" | "IGNORE" | "REPORT" | "RETURN";
+
 /**
  * Backend contract for SPICE error/status utilities (`failed/reset/getmsg/...`).
  *
@@ -17,6 +21,17 @@ export type GetmsgWhich = (typeof GETMSG_WHICH_VALUES)[number];
  * `@rybosome/tspice-core`.
  */
 export interface ErrorApi {
+  /** Read the current action with an optional output byte capacity including NUL. */
+  erract(op: "GET", capacity?: number): string;
+  /**
+   * Select the CSPICE error action. Native state is process-global and WASM
+   * state is instance-local. ABORT and DEFAULT may terminate the runtime on a
+   * CSPICE error. IGNORE and REPORT allow diagnostics and cleanup, and tspice
+   * rejects scientific calls that depend on reliable CSPICE failure status.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/erract_c.html
+   */
+  erract(op: "SET", value: SpiceErrorAction): void;
+
   /**
    * Read the selected CSPICE diagnostic device in its stored spelling. The byte capacity includes NUL and defaults to 256. A truncation that splits UTF-8 cannot be represented as a JavaScript string.
    * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/errdev_c.html
