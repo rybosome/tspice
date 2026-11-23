@@ -74,6 +74,11 @@ export function dispatchStep(
     case "time.timout":
     case "time.deltet":
     case "time.unitim":
+    case "time.etcal":
+    case "time.utc2et":
+    case "time.tparch":
+    case "time.tsetyr":
+    case "time.et2lst":
     case "time.tparse":
     case "time.tpictr":
     case "time.timdef":
@@ -82,9 +87,17 @@ export function dispatchStep(
     case "time.scencd":
     case "time.scdecd":
     case "time.sct2e":
+    case "time.sce2t":
+    case "time.scfmt":
+    case "time.scpart":
+    case "time.sctiks":
     case "time.sce2c":
       return runTimeStep(context, step);
 
+    case "ids-names.srfc2s":
+    case "ids-names.srfcss":
+    case "ids-names.srfs2c":
+    case "ids-names.srfscc":
     case "ids-names.bodn2c":
     case "ids-names.bodc2n":
     case "ids-names.bodc2s":
@@ -346,15 +359,60 @@ export function dispatchStep(
     case "kernels.unload":
       return runKernelsStep(context, step);
 
+    case "file-io.rdtext":
+    case "file-io.putcml":
     case "file-io.exists":
     case "file-io.getfat":
+    case "file-io.dafbbs":
+    case "file-io.dafcs":
+    case "file-io.daffpa":
+    case "file-io.dafgh":
+    case "file-io.dafgn":
+    case "file-io.dafgs":
+    case "file-io.dafhsf":
+    case "file-io.dafopw":
+    case "file-io.dafac":
+    case "file-io.dafdc":
+    case "file-io.dafec":
+    case "file-io.dafrs":
+    case "file-io.dafps":
+    case "file-io.dafus":
+    case "file-io.dafgsr":
+    case "file-io.dafrfr":
+    case "file-io.dafrda":
+    case "file-io.dafgda":
     case "file-io.dafopr":
     case "file-io.dafcls":
     case "file-io.dafbfs":
     case "file-io.daffna":
     case "file-io.dasopr":
+    case "file-io.dasac":
+    case "file-io.dasdc":
+    case "file-io.dasec":
+    case "file-io.dasadc":
+    case "file-io.dasadd":
+    case "file-io.dasadi":
+    case "file-io.dasrdc":
+    case "file-io.dasrdd":
+    case "file-io.dasrdi":
+    case "file-io.dasudc":
+    case "file-io.dasudd":
+    case "file-io.dasudi":
+    case "file-io.dasonw":
+    case "file-io.dasops":
+    case "file-io.dasopw":
+    case "file-io.dashfn":
+    case "file-io.dashfs":
+    case "file-io.daslla":
+    case "file-io.dasllc":
+    case "file-io.dasrfr":
+    case "file-io.daswbr":
     case "file-io.dascls":
     case "file-io.dlaopn":
+    case "file-io.dlabbs":
+    case "file-io.dlabns":
+    case "file-io.dlaens":
+    case "file-io.dlafps":
     case "file-io.dlabfs":
     case "file-io.dlafns":
     case "file-io.dlacls":
@@ -363,6 +421,16 @@ export function dispatchStep(
     case "file-io.dskw02":
       return runFileIoStep(context, step);
 
+    case "error.errdev":
+    case "error.errprt":
+    case "error.trcoff":
+    case "error.errch":
+    case "error.errdp":
+    case "error.errint":
+    case "error.qcktrc":
+    case "error.return":
+    case "error.trcdep":
+    case "error.trcnam":
     case "error.failed":
     case "error.reset":
     case "error.getmsg":
@@ -394,6 +462,27 @@ export function dispatchStep(
     case "ek.ekgc":
     case "ek.ekgd":
     case "ek.ekgi":
+    case "ek.ekops":
+    case "ek.ekbseg":
+    case "ek.ekappr":
+    case "ek.ekinsr":
+    case "ek.ekdelr":
+    case "ek.ekacec":
+    case "ek.ekaced":
+    case "ek.ekacei":
+    case "ek.ekrcec":
+    case "ek.ekrced":
+    case "ek.ekrcei":
+    case "ek.ekucec":
+    case "ek.ekuced":
+    case "ek.ekucei":
+    case "ek.ekccnt":
+    case "ek.ekcii":
+    case "ek.eklef":
+    case "ek.eknelt":
+    case "ek.ekpsel":
+    case "ek.ekssum":
+    case "ek.ekuef":
     case "ek.ekopn":
     case "ek.ekopr":
     case "ek.ekopw":
@@ -428,10 +517,36 @@ export function dispatchStep(
     case "frames.ccifrm":
     case "frames.ckgp":
     case "frames.ckgpav":
+    case "frames.pckcls":
+    case "frames.pckcov":
+    case "frames.pckfrm":
+    case "frames.pcklof":
+    case "frames.pckopn":
+    case "frames.pckuof":
+    case "frames.pckw02":
+    case "frames.ckopn":
+    case "frames.ckcls":
+    case "frames.ckw01":
+    case "frames.ckw02":
+    case "frames.ckw03":
+    case "frames.ckw05":
+    case "frames.ckfrot":
+    case "frames.ckfxfm":
+    case "frames.ckgr02":
+    case "frames.ckgr03":
+    case "frames.ckmeta":
+    case "frames.cknr02":
+    case "frames.cknr03":
     case "frames.cklpf":
     case "frames.ckupf":
     case "frames.ckobj":
     case "frames.ckcov":
+    case "frames.bltfrm":
+    case "frames.pxfrm2":
+    case "frames.tipbod":
+    case "frames.tisbod":
+    case "frames.tkfram":
+    case "frames.xfmsta":
     case "frames.pxform":
     case "frames.frame":
     case "frames.twovec":

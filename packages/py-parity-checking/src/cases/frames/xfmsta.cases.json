@@ -1,0 +1,450 @@
+[
+  {
+    "caseId": "frames-xfmsta-rectangular-to-all",
+    "description": "Compare each coordinate, ordering and derivative for every destination.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/pck00010.tpc"
+      },
+      {
+        "op": "frames.xfmsta",
+        "from": "RECTANGULAR",
+        "to": "CYLINDRICAL",
+        "body": "EARTH",
+        "state": [5700.0, -3900.0, 1800.0, -3.2, 4.6, 0.75]
+      },
+      {
+        "op": "frames.xfmsta",
+        "from": "RECTANGULAR",
+        "to": "LATITUDINAL",
+        "body": "EARTH",
+        "state": [5700.0, -3900.0, 1800.0, -3.2, 4.6, 0.75]
+      },
+      {
+        "op": "frames.xfmsta",
+        "from": "RECTANGULAR",
+        "to": "SPHERICAL",
+        "body": "EARTH",
+        "state": [5700.0, -3900.0, 1800.0, -3.2, 4.6, 0.75]
+      },
+      {
+        "op": "frames.xfmsta",
+        "from": "RECTANGULAR",
+        "to": "GEODETIC",
+        "body": "EARTH",
+        "state": [5700.0, -3900.0, 1800.0, -3.2, 4.6, 0.75]
+      },
+      {
+        "op": "frames.xfmsta",
+        "from": "RECTANGULAR",
+        "to": "PLANETOGRAPHIC",
+        "body": "EARTH",
+        "state": [5700.0, -3900.0, 1800.0, -3.2, 4.6, 0.75]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-xfmsta-cylindrical-to-rect",
+    "description": "Compare the six output components and all three velocity contributions.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/pck00010.tpc"
+      },
+      {
+        "op": "frames.xfmsta",
+        "from": "CYLINDRICAL",
+        "to": "RECTANGULAR",
+        "body": "MARS",
+        "state": [9, -0.4, 2, 0.2, 0.13, -0.5]
+      },
+      {
+        "op": "frames.xfmsta",
+        "from": "CYLINDRICAL",
+        "to": "RECTANGULAR",
+        "body": "EARTH",
+        "state": [9, -0.4, 2, 0.2, 0.13, -0.5]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-xfmsta-latitudinal-to-rect",
+    "description": "Compare the six output components and all three velocity contributions.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/pck00010.tpc"
+      },
+      {
+        "op": "frames.xfmsta",
+        "from": "LATITUDINAL",
+        "to": "RECTANGULAR",
+        "body": "MARS",
+        "state": [9, 0.2, -0.45, 0.12, -0.003, 0.03]
+      },
+      {
+        "op": "frames.xfmsta",
+        "from": "LATITUDINAL",
+        "to": "RECTANGULAR",
+        "body": "EARTH",
+        "state": [9, 0.2, -0.45, 0.12, -0.003, 0.03]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-xfmsta-spherical-to-rect",
+    "description": "Compare the six output components and all three velocity contributions.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/pck00010.tpc"
+      },
+      {
+        "op": "frames.xfmsta",
+        "from": "SPHERICAL",
+        "to": "RECTANGULAR",
+        "body": "MARS",
+        "state": [9, 1.24, -0.22, 0.12, -0.03, 0.055]
+      },
+      {
+        "op": "frames.xfmsta",
+        "from": "SPHERICAL",
+        "to": "RECTANGULAR",
+        "body": "EARTH",
+        "state": [9, 1.24, -0.22, 0.12, -0.03, 0.055]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-xfmsta-geodetic-to-rect",
+    "description": "Compare the six output components and all three velocity contributions.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/pck00010.tpc"
+      },
+      {
+        "op": "frames.xfmsta",
+        "from": "GEODETIC",
+        "to": "RECTANGULAR",
+        "body": "MARS",
+        "state": [0.45, -0.3, 15, 0.003, -0.002, 0.5]
+      },
+      {
+        "op": "frames.xfmsta",
+        "from": "GEODETIC",
+        "to": "RECTANGULAR",
+        "body": "EARTH",
+        "state": [0.45, -0.3, 15, 0.003, -0.002, 0.5]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-xfmsta-planetographic-to-rect",
+    "description": "Compare the six output components and all three velocity contributions.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/pck00010.tpc"
+      },
+      {
+        "op": "frames.xfmsta",
+        "from": "PLANETOGRAPHIC",
+        "to": "RECTANGULAR",
+        "body": "MARS",
+        "state": [0.45, -0.3, 15, 0.003, -0.002, 0.5]
+      },
+      {
+        "op": "frames.xfmsta",
+        "from": "PLANETOGRAPHIC",
+        "to": "RECTANGULAR",
+        "body": "EARTH",
+        "state": [0.45, -0.3, 15, 0.003, -0.002, 0.5]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-xfmsta-same-system",
+    "description": "Identical systems copy before resolving radii or checking singularities.",
+    "workflow": [
+      {
+        "op": "frames.xfmsta",
+        "from": "RECTANGULAR",
+        "to": "RECTANGULAR",
+        "body": "NO_SUCH_BODY",
+        "state": [-3, 4, 5, 6, 7, 8]
+      },
+      {
+        "op": "frames.xfmsta",
+        "from": "CYLINDRICAL",
+        "to": "CYLINDRICAL",
+        "body": "NO_SUCH_BODY",
+        "state": [-3, 4, 5, 6, 7, 8]
+      },
+      {
+        "op": "frames.xfmsta",
+        "from": "LATITUDINAL",
+        "to": "LATITUDINAL",
+        "body": "NO_SUCH_BODY",
+        "state": [-3, 4, 5, 6, 7, 8]
+      },
+      {
+        "op": "frames.xfmsta",
+        "from": "SPHERICAL",
+        "to": "SPHERICAL",
+        "body": "NO_SUCH_BODY",
+        "state": [-3, 4, 5, 6, 7, 8]
+      },
+      {
+        "op": "frames.xfmsta",
+        "from": "GEODETIC",
+        "to": "GEODETIC",
+        "body": "NO_SUCH_BODY",
+        "state": [-3, 4, 5, 6, 7, 8]
+      },
+      {
+        "op": "frames.xfmsta",
+        "from": "PLANETOGRAPHIC",
+        "to": "PLANETOGRAPHIC",
+        "body": "NO_SUCH_BODY",
+        "state": [-3, 4, 5, 6, 7, 8]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-xfmsta-axis",
+    "description": "A purely axial velocity has directly specified rates even at a pole or origin.",
+    "workflow": [
+      {
+        "op": "frames.xfmsta",
+        "from": "RECTANGULAR",
+        "to": "CYLINDRICAL",
+        "body": " ",
+        "state": [0, 0, -2, 0, 0, -3]
+      },
+      {
+        "op": "frames.xfmsta",
+        "from": "RECTANGULAR",
+        "to": "LATITUDINAL",
+        "body": " ",
+        "state": [0, 0, -2, 0, 0, -3]
+      },
+      {
+        "op": "frames.xfmsta",
+        "from": "RECTANGULAR",
+        "to": "SPHERICAL",
+        "body": " ",
+        "state": [0, 0, -2, 0, 0, -3]
+      },
+      {
+        "op": "frames.xfmsta",
+        "from": "RECTANGULAR",
+        "to": "CYLINDRICAL",
+        "body": " ",
+        "state": [0, 0, 0, 0, 0, -3]
+      },
+      {
+        "op": "frames.xfmsta",
+        "from": "RECTANGULAR",
+        "to": "LATITUDINAL",
+        "body": " ",
+        "state": [0, 0, 0, 0, 0, -3]
+      },
+      {
+        "op": "frames.xfmsta",
+        "from": "RECTANGULAR",
+        "to": "SPHERICAL",
+        "body": " ",
+        "state": [0, 0, 0, 0, 0, -3]
+      },
+      {
+        "op": "frames.xfmsta",
+        "from": "RECTANGULAR",
+        "to": "CYLINDRICAL",
+        "body": " ",
+        "state": [0, 0, 2, 0, 0, -3]
+      },
+      {
+        "op": "frames.xfmsta",
+        "from": "RECTANGULAR",
+        "to": "LATITUDINAL",
+        "body": " ",
+        "state": [0, 0, 2, 0, 0, -3]
+      },
+      {
+        "op": "frames.xfmsta",
+        "from": "RECTANGULAR",
+        "to": "SPHERICAL",
+        "body": " ",
+        "state": [0, 0, 2, 0, 0, -3]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-xfmsta-transverse",
+    "description": "A nonzero transverse velocity at a pole makes the coordinate derivative undefined.",
+    "workflow": [
+      {
+        "op": "frames.xfmsta",
+        "from": "RECTANGULAR",
+        "to": "LATITUDINAL",
+        "body": " ",
+        "state": [0, 0, 4, 1, 0, 2]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDSTATE"]
+    }
+  },
+  {
+    "caseId": "frames-xfmsta-bad-system",
+    "description": "Unknown coordinate system produces the CSPICE protocol error.",
+    "workflow": [
+      {
+        "op": "frames.xfmsta",
+        "from": "RECTANGULAR",
+        "to": "RADIANS",
+        "body": " ",
+        "state": [5700.0, -3900.0, 1800.0, -3.2, 4.6, 0.75]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["COORDSYSNOTREC"]
+    }
+  },
+  {
+    "caseId": "frames-xfmsta-empty-body",
+    "description": "The C wrapper requires nonempty body even for rectangular identity.",
+    "workflow": [
+      {
+        "op": "frames.xfmsta",
+        "from": "RECTANGULAR",
+        "to": "RECTANGULAR",
+        "body": "",
+        "state": [5700.0, -3900.0, 1800.0, -3.2, 4.6, 0.75]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["EMPTYSTRING"]
+    }
+  },
+  {
+    "caseId": "frames-xfmsta-missing-radii",
+    "description": "A known body can lack required spheroid radii.",
+    "workflow": [
+      {
+        "op": "frames.xfmsta",
+        "from": "RECTANGULAR",
+        "to": "GEODETIC",
+        "body": "EARTH",
+        "state": [5700.0, -3900.0, 1800.0, -3.2, 4.6, 0.75]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["KERNELVARNOTFOUND"]
+    }
+  },
+  {
+    "caseId": "frames-xfmsta-unknown-body",
+    "description": "Conversion involving planetographic coordinates resolves actual body IDs.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/pck00010.tpc"
+      },
+      {
+        "op": "frames.xfmsta",
+        "from": "PLANETOGRAPHIC",
+        "to": "RECTANGULAR",
+        "body": "D03_UNKNOWN",
+        "state": [5700.0, -3900.0, 1800.0, -3.2, 4.6, 0.75]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["IDCODENOTFOUND"]
+    }
+  },
+  {
+    "caseId": "frames-xfmsta-triaxial",
+    "description": "The loaded triaxial body has unequal equatorial radii.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "frames.xfmsta",
+        "from": "RECTANGULAR",
+        "to": "GEODETIC",
+        "body": "100101",
+        "state": [5700.0, -3900.0, 1800.0, -3.2, 4.6, 0.75]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["NOTSUPPORTED"]
+    }
+  },
+  {
+    "caseId": "frames-xfmsta-longitude-override",
+    "description": "Explicit east-positive Mars longitude changes planetographic coordinates and angular rates.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/pck00010.tpc"
+      },
+      {
+        "op": "frames.xfmsta",
+        "from": "RECTANGULAR",
+        "to": "PLANETOGRAPHIC",
+        "body": "MARS",
+        "state": [5700.0, -3900.0, 1800.0, -3.2, 4.6, 0.75]
+      },
+      {
+        "op": "kernel-pool.pcpool",
+        "name": "BODY499_PGR_POSITIVE_LON",
+        "values": ["EAST"]
+      },
+      {
+        "op": "frames.xfmsta",
+        "from": "RECTANGULAR",
+        "to": "PLANETOGRAPHIC",
+        "body": "499",
+        "state": [5700.0, -3900.0, 1800.0, -3.2, 4.6, 0.75]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

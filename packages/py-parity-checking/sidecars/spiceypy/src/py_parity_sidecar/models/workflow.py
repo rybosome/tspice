@@ -262,6 +262,27 @@ from .ek import (
     StepEkEkifld,
     StepEkEknseg,
     StepEkEkntab,
+    StepEkEkops,
+    StepEkEkbseg,
+    StepEkEkappr,
+    StepEkEkinsr,
+    StepEkEkdelr,
+    StepEkEkacec,
+    StepEkEkaced,
+    StepEkEkacei,
+    StepEkEkrcec,
+    StepEkEkrced,
+    StepEkEkrcei,
+    StepEkEkucec,
+    StepEkEkuced,
+    StepEkEkucei,
+    StepEkEkccnt,
+    StepEkEkcii,
+    StepEkEklef,
+    StepEkEknelt,
+    StepEkEkpsel,
+    StepEkEkssum,
+    StepEkEkuef,
     StepEkEkopn,
     StepEkEkopr,
     StepEkEkopw,
@@ -271,9 +292,52 @@ from .file_io import (
     StepFileIoDafbfs,
     StepFileIoDafcls,
     StepFileIoDaffna,
+    StepFileIoDafbbs,
+    StepFileIoDafcs,
+    StepFileIoDaffpa,
+    StepFileIoDafgh,
+    StepFileIoDafgn,
+    StepFileIoDafgs,
+    StepFileIoDafhsf,
+    StepFileIoDafopw,
+    StepFileIoDafac,
+    StepFileIoDafdc,
+    StepFileIoDafec,
+    StepFileIoDafrs,
+    StepFileIoDafps,
+    StepFileIoDafus,
+    StepFileIoDafgsr,
+    StepFileIoDafrfr,
+    StepFileIoDafrda,
+    StepFileIoDafgda,
     StepFileIoDafopr,
+    StepFileIoDasac,
+    StepFileIoDasdc,
+    StepFileIoDasec,
+    StepFileIoDasadc,
+    StepFileIoDasadd,
+    StepFileIoDasadi,
+    StepFileIoDasrdc,
+    StepFileIoDasrdd,
+    StepFileIoDasrdi,
+    StepFileIoDasudc,
+    StepFileIoDasudd,
+    StepFileIoDasudi,
+    StepFileIoDasonw,
+    StepFileIoDasops,
+    StepFileIoDasopw,
+    StepFileIoDashfn,
+    StepFileIoDashfs,
+    StepFileIoDaslla,
+    StepFileIoDasllc,
+    StepFileIoDasrfr,
+    StepFileIoDaswbr,
     StepFileIoDascls,
     StepFileIoDasopr,
+    StepFileIoDlabbs,
+    StepFileIoDlabns,
+    StepFileIoDlaens,
+    StepFileIoDlafps,
     StepFileIoDlabfs,
     StepFileIoDlacls,
     StepFileIoDlafns,
@@ -281,12 +345,24 @@ from .file_io import (
     StepFileIoDskmi2,
     StepFileIoDskopn,
     StepFileIoDskw02,
+    StepFileIoRdtext,
+    StepFileIoPutcml,
     StepFileIoExists,
     StepFileIoGetfat,
 )
 from .error import (
     StepErrorChkin,
     StepErrorChkout,
+    StepErrorErrdev,
+    StepErrorErrprt,
+    StepErrorTrcoff,
+    StepErrorErrch,
+    StepErrorErrdp,
+    StepErrorErrint,
+    StepErrorQcktrc,
+    StepErrorReturn,
+    StepErrorTrcdep,
+    StepErrorTrcnam,
     StepErrorFailed,
     StepErrorGetmsg,
     StepErrorReset,
@@ -320,6 +396,26 @@ from .frames import (
     StepFramesCkcov,
     StepFramesCkgp,
     StepFramesCkgpav,
+    StepFramesPckcls,
+    StepFramesPckcov,
+    StepFramesPckfrm,
+    StepFramesPcklof,
+    StepFramesPckopn,
+    StepFramesPckuof,
+    StepFramesPckw02,
+    StepFramesCkopn,
+    StepFramesCkcls,
+    StepFramesCkw01,
+    StepFramesCkw02,
+    StepFramesCkw03,
+    StepFramesCkw05,
+    StepFramesCkfrot,
+    StepFramesCkfxfm,
+    StepFramesCkgr02,
+    StepFramesCkgr03,
+    StepFramesCkmeta,
+    StepFramesCknr02,
+    StepFramesCknr03,
     StepFramesCklpf,
     StepFramesCkobj,
     StepFramesCkupf,
@@ -327,6 +423,12 @@ from .frames import (
     StepFramesFrinfo,
     StepFramesFrmnam,
     StepFramesNamfrm,
+    StepFramesBltfrm,
+    StepFramesPxfrm2,
+    StepFramesTipbod,
+    StepFramesTisbod,
+    StepFramesTkfram,
+    StepFramesXfmsta,
     StepFramesPxform,
     StepFramesFrame,
     StepFramesTwovec,
@@ -344,6 +446,10 @@ from .ids_names import (
     StepIdsNamesBodc2s,
     StepIdsNamesBoddef,
     StepIdsNamesBodfnd,
+    StepIdsNamesSrfc2s,
+    StepIdsNamesSrfcss,
+    StepIdsNamesSrfs2c,
+    StepIdsNamesSrfscc,
     StepIdsNamesBodn2c,
     StepIdsNamesBods2c,
     StepIdsNamesBodvar,
@@ -422,6 +528,10 @@ from .time import (
     StepTimeEt2Utc,
     StepTimeScdecd,
     StepTimeScencd,
+    StepTimeSce2t,
+    StepTimeScfmt,
+    StepTimeScpart,
+    StepTimeSctiks,
     StepTimeSce2c,
     StepTimeSce2s,
     StepTimeScs2e,
@@ -440,6 +550,11 @@ from .time import (
     StepTimeJyear,
     StepTimeTyear,
     StepTimeTkvrsn,
+    StepTimeEtcal,
+    StepTimeUtc2et,
+    StepTimeTparch,
+    StepTimeTsetyr,
+    StepTimeEt2lst,
     StepTimeTparse,
     StepTimeTpictr,
     StepTimeUnitim,
@@ -496,6 +611,11 @@ WorkflowStep: TypeAlias = (
     | StepTimeTimout
     | StepTimeDeltet
     | StepTimeUnitim
+    | StepTimeEtcal
+    | StepTimeUtc2et
+    | StepTimeTparch
+    | StepTimeTsetyr
+    | StepTimeEt2lst
     | StepTimeTparse
     | StepTimeTpictr
     | StepTimeTimdefGet
@@ -505,7 +625,15 @@ WorkflowStep: TypeAlias = (
     | StepTimeScencd
     | StepTimeScdecd
     | StepTimeSct2e
+    | StepTimeSce2t
+    | StepTimeScfmt
+    | StepTimeScpart
+    | StepTimeSctiks
     | StepTimeSce2c
+    | StepIdsNamesSrfc2s
+    | StepIdsNamesSrfcss
+    | StepIdsNamesSrfs2c
+    | StepIdsNamesSrfscc
     | StepIdsNamesBodn2c
     | StepIdsNamesBodc2n
     | StepIdsNamesBodc2s
@@ -770,21 +898,76 @@ WorkflowStep: TypeAlias = (
     | StepEphemerisSpkssb
     | StepEphemerisSpkuds
     | StepEphemerisSpkw08
+    | StepFileIoRdtext
+    | StepFileIoPutcml
     | StepFileIoExists
     | StepFileIoGetfat
+    | StepFileIoDafbbs
+    | StepFileIoDafcs
+    | StepFileIoDaffpa
+    | StepFileIoDafgh
+    | StepFileIoDafgn
+    | StepFileIoDafgs
+    | StepFileIoDafhsf
+    | StepFileIoDafopw
+    | StepFileIoDafac
+    | StepFileIoDafdc
+    | StepFileIoDafec
+    | StepFileIoDafrs
+    | StepFileIoDafps
+    | StepFileIoDafus
+    | StepFileIoDafgsr
+    | StepFileIoDafrfr
+    | StepFileIoDafrda
+    | StepFileIoDafgda
     | StepFileIoDafopr
     | StepFileIoDafcls
     | StepFileIoDafbfs
     | StepFileIoDaffna
     | StepFileIoDasopr
+    | StepFileIoDasac
+    | StepFileIoDasdc
+    | StepFileIoDasec
+    | StepFileIoDasadc
+    | StepFileIoDasadd
+    | StepFileIoDasadi
+    | StepFileIoDasrdc
+    | StepFileIoDasrdd
+    | StepFileIoDasrdi
+    | StepFileIoDasudc
+    | StepFileIoDasudd
+    | StepFileIoDasudi
+    | StepFileIoDasonw
+    | StepFileIoDasops
+    | StepFileIoDasopw
+    | StepFileIoDashfn
+    | StepFileIoDashfs
+    | StepFileIoDaslla
+    | StepFileIoDasllc
+    | StepFileIoDasrfr
+    | StepFileIoDaswbr
     | StepFileIoDascls
     | StepFileIoDlaopn
+    | StepFileIoDlabbs
+    | StepFileIoDlabns
+    | StepFileIoDlaens
+    | StepFileIoDlafps
     | StepFileIoDlabfs
     | StepFileIoDlafns
     | StepFileIoDlacls
     | StepFileIoDskopn
     | StepFileIoDskmi2
     | StepFileIoDskw02
+    | StepErrorErrdev
+    | StepErrorErrprt
+    | StepErrorTrcoff
+    | StepErrorErrch
+    | StepErrorErrdp
+    | StepErrorErrint
+    | StepErrorQcktrc
+    | StepErrorReturn
+    | StepErrorTrcdep
+    | StepErrorTrcnam
     | StepErrorFailed
     | StepErrorReset
     | StepErrorGetmsg
@@ -800,10 +983,36 @@ WorkflowStep: TypeAlias = (
     | StepFramesCcifrm
     | StepFramesCkgp
     | StepFramesCkgpav
+    | StepFramesPckcls
+    | StepFramesPckcov
+    | StepFramesPckfrm
+    | StepFramesPcklof
+    | StepFramesPckopn
+    | StepFramesPckuof
+    | StepFramesPckw02
+    | StepFramesCkopn
+    | StepFramesCkcls
+    | StepFramesCkw01
+    | StepFramesCkw02
+    | StepFramesCkw03
+    | StepFramesCkw05
+    | StepFramesCkfrot
+    | StepFramesCkfxfm
+    | StepFramesCkgr02
+    | StepFramesCkgr03
+    | StepFramesCkmeta
+    | StepFramesCknr02
+    | StepFramesCknr03
     | StepFramesCklpf
     | StepFramesCkupf
     | StepFramesCkobj
     | StepFramesCkcov
+    | StepFramesBltfrm
+    | StepFramesPxfrm2
+    | StepFramesTipbod
+    | StepFramesTisbod
+    | StepFramesTkfram
+    | StepFramesXfmsta
     | StepFramesPxform
     | StepFramesFrame
     | StepFramesTwovec
@@ -815,6 +1024,27 @@ WorkflowStep: TypeAlias = (
     | StepFramesInvstm
     | StepFramesXpose6
     | StepFramesSxform
+    | StepEkEkops
+    | StepEkEkbseg
+    | StepEkEkappr
+    | StepEkEkinsr
+    | StepEkEkdelr
+    | StepEkEkacec
+    | StepEkEkaced
+    | StepEkEkacei
+    | StepEkEkrcec
+    | StepEkEkrced
+    | StepEkEkrcei
+    | StepEkEkucec
+    | StepEkEkuced
+    | StepEkEkucei
+    | StepEkEkccnt
+    | StepEkEkcii
+    | StepEkEklef
+    | StepEkEknelt
+    | StepEkEkpsel
+    | StepEkEkssum
+    | StepEkEkuef
     | StepEkEkopn
     | StepEkEkopr
     | StepEkEkopw

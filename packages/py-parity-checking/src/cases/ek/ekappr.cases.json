@@ -1,0 +1,359 @@
+[
+  {
+    "caseId": "ek-ekappr-growth",
+    "description": "Append three empty records, observe indices, remove them all, and reuse zero.",
+    "workflow": [
+      {
+        "op": "ek.ekops",
+        "handleId": "h"
+      },
+      {
+        "op": "ek.ekbseg",
+        "handleId": "h",
+        "tabnam": "ORDERS",
+        "cnames": ["ID"],
+        "decls": ["DATATYPE=INTEGER"]
+      },
+      {
+        "op": "ek.ekappr",
+        "handleId": "h",
+        "segno": 0
+      },
+      {
+        "op": "ek.ekappr",
+        "handleId": "h",
+        "segno": 0
+      },
+      {
+        "op": "ek.ekappr",
+        "handleId": "h",
+        "segno": 0
+      },
+      {
+        "op": "ek.ekdelr",
+        "handleId": "h",
+        "segno": 0,
+        "recno": 2
+      },
+      {
+        "op": "ek.ekdelr",
+        "handleId": "h",
+        "segno": 0,
+        "recno": 1
+      },
+      {
+        "op": "ek.ekdelr",
+        "handleId": "h",
+        "segno": 0,
+        "recno": 0
+      },
+      {
+        "op": "ek.ekappr",
+        "handleId": "h",
+        "segno": 0
+      },
+      {
+        "op": "ek.ekdelr",
+        "handleId": "h",
+        "segno": 0,
+        "recno": 0
+      },
+      {
+        "op": "ek.ekcls",
+        "handleId": "h"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ek-ekappr-segment-isolation",
+    "description": "New record ordinals are per-segment and follow insertions and deletions in that segment.",
+    "workflow": [
+      {
+        "op": "ek.ekops",
+        "handleId": "h"
+      },
+      {
+        "op": "ek.ekbseg",
+        "handleId": "h",
+        "tabnam": "FIRST",
+        "cnames": ["ID"],
+        "decls": ["DATATYPE=INTEGER"]
+      },
+      {
+        "op": "ek.ekbseg",
+        "handleId": "h",
+        "tabnam": "SECOND",
+        "cnames": ["ID"],
+        "decls": ["DATATYPE=INTEGER"]
+      },
+      {
+        "op": "ek.ekappr",
+        "handleId": "h",
+        "segno": 0
+      },
+      {
+        "op": "ek.ekappr",
+        "handleId": "h",
+        "segno": 1
+      },
+      {
+        "op": "ek.ekappr",
+        "handleId": "h",
+        "segno": 0
+      },
+      {
+        "op": "ek.ekdelr",
+        "handleId": "h",
+        "segno": 0,
+        "recno": 0
+      },
+      {
+        "op": "ek.ekappr",
+        "handleId": "h",
+        "segno": 0
+      },
+      {
+        "op": "ek.ekappr",
+        "handleId": "h",
+        "segno": 1
+      },
+      {
+        "op": "ek.ekdelr",
+        "handleId": "h",
+        "segno": 1,
+        "recno": 1
+      },
+      {
+        "op": "ek.ekdelr",
+        "handleId": "h",
+        "segno": 1,
+        "recno": 0
+      },
+      {
+        "op": "ek.ekdelr",
+        "handleId": "h",
+        "segno": 0,
+        "recno": 1
+      },
+      {
+        "op": "ek.ekdelr",
+        "handleId": "h",
+        "segno": 0,
+        "recno": 0
+      },
+      {
+        "op": "ek.ekcls",
+        "handleId": "h"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ek-ekappr-populated-file",
+    "description": "Finish an independently populated three-row table, edit it, reopen and query both surviving rows and their double values.",
+    "workflow": [
+      {
+        "op": "ek.ekopn",
+        "handleId": "h",
+        "path": {
+          "kind": "scratch",
+          "rel": "c08.ek"
+        },
+        "ifname": "ORDERS",
+        "ncomch": 0
+      },
+      {
+        "op": "ek.ekifld",
+        "handleId": "h",
+        "tabnam": "SOURCE",
+        "segmentId": "s",
+        "nrows": 3,
+        "cnames": ["ID", "X"],
+        "decls": [
+          "DATATYPE=INTEGER,INDEXED=TRUE",
+          "DATATYPE=DOUBLE PRECISION,NULLS_OK=TRUE"
+        ]
+      },
+      {
+        "op": "ek.ekacli",
+        "segmentId": "s",
+        "column": "ID",
+        "ivals": [53, 17, 89],
+        "entszs": [1, 1, 1],
+        "nlflgs": [false, false, false]
+      },
+      {
+        "op": "ek.ekacld",
+        "segmentId": "s",
+        "column": "X",
+        "dvals": [13.25, 4.25, 22.25],
+        "entszs": [1, 1, 1],
+        "nlflgs": [false, false, false]
+      },
+      {
+        "op": "ek.ekffld",
+        "segmentId": "s"
+      },
+      {
+        "op": "ek.ekappr",
+        "handleId": "h",
+        "segno": 0
+      },
+      {
+        "op": "ek.ekdelr",
+        "handleId": "h",
+        "segno": 0,
+        "recno": 3
+      },
+      {
+        "op": "ek.ekdelr",
+        "handleId": "h",
+        "segno": 0,
+        "recno": 1
+      },
+      {
+        "op": "ek.ekcls",
+        "handleId": "h"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "scratch",
+          "rel": "c08.ek"
+        }
+      },
+      {
+        "op": "ek.ekfind",
+        "query": "SELECT ID,X FROM SOURCE"
+      },
+      {
+        "op": "ek.ekgi",
+        "selidx": 0,
+        "row": 0,
+        "elment": 0
+      },
+      {
+        "op": "ek.ekgd",
+        "selidx": 1,
+        "row": 0,
+        "elment": 0
+      },
+      {
+        "op": "ek.ekgi",
+        "selidx": 0,
+        "row": 1,
+        "elment": 0
+      },
+      {
+        "op": "ek.ekgd",
+        "selidx": 1,
+        "row": 1,
+        "elment": 0
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ek-ekappr-negative-segment",
+    "description": "A segment outside the created range reports the actual zero-based ordinal diagnostic.",
+    "workflow": [
+      {
+        "op": "ek.ekops",
+        "handleId": "h"
+      },
+      {
+        "op": "ek.ekbseg",
+        "handleId": "h",
+        "tabnam": "ORDERS",
+        "cnames": ["ID"],
+        "decls": ["DATATYPE=INTEGER"]
+      },
+      {
+        "op": "ek.ekappr",
+        "handleId": "h",
+        "segno": -1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDINDEX"]
+    }
+  },
+  {
+    "caseId": "ek-ekappr-past-segment",
+    "description": "A segment outside the created range reports the actual zero-based ordinal diagnostic.",
+    "workflow": [
+      {
+        "op": "ek.ekops",
+        "handleId": "h"
+      },
+      {
+        "op": "ek.ekbseg",
+        "handleId": "h",
+        "tabnam": "ORDERS",
+        "cnames": ["ID"],
+        "decls": ["DATATYPE=INTEGER"]
+      },
+      {
+        "op": "ek.ekappr",
+        "handleId": "h",
+        "segno": 1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDINDEX"]
+    }
+  },
+  {
+    "caseId": "ek-ekappr-read-only",
+    "description": "A valid segment of a reopened reader rejects row mutations.",
+    "workflow": [
+      {
+        "op": "ek.ekopn",
+        "handleId": "h",
+        "path": {
+          "kind": "scratch",
+          "rel": "c08.ek"
+        },
+        "ifname": "ORDERS",
+        "ncomch": 0
+      },
+      {
+        "op": "ek.ekbseg",
+        "handleId": "h",
+        "tabnam": "ORDERS",
+        "cnames": ["ID"],
+        "decls": ["DATATYPE=INTEGER"]
+      },
+      {
+        "op": "ek.ekcls",
+        "handleId": "h"
+      },
+      {
+        "op": "ek.ekopr",
+        "handleId": "h",
+        "path": {
+          "kind": "scratch",
+          "rel": "c08.ek"
+        }
+      },
+      {
+        "op": "ek.ekappr",
+        "handleId": "h",
+        "segno": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["DASINVALIDACCESS"]
+    }
+  }
+]

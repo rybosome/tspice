@@ -1,0 +1,368 @@
+{
+  "schemaVersion": 1,
+  "batch": "c14-text-command-state",
+  "traceFiles": [
+    "docs/step8-text-command-state.md",
+    "fixtures/consumer-nodom/src/index.ts",
+    "packages/backend-contract/src/domains/file-io.ts",
+    "packages/backend-fake/src/index.ts",
+    "packages/backend-node/native/binding.gyp",
+    "packages/backend-node/native/scripts/write-cspice-stamp.mjs",
+    "packages/backend-node/native/src/domains/file_io.cc",
+    "packages/backend-node/src/domains/file-io.ts",
+    "packages/backend-node/src/index.ts",
+    "packages/backend-node/src/lowlevel/binding.ts",
+    "packages/backend-node/src/runtime/addon.ts",
+    "packages/backend-node/src/runtime/kernel-staging.ts",
+    "packages/backend-node/test/dsk-index-bounds.test.ts",
+    "packages/backend-node/test/text-command-state.test.ts",
+    "packages/backend-shim-c/include/tspice_backend_shim.h",
+    "packages/backend-shim-c/src/domains/file_io.c",
+    "packages/backend-wasm/src/codec/alloc.ts",
+    "packages/backend-wasm/src/codec/strings.ts",
+    "packages/backend-wasm/src/domains/file-io.ts",
+    "packages/backend-wasm/src/lowlevel/exports.ts",
+    "packages/backend-wasm/test/file-reader-allocations.test.ts",
+    "packages/backend-wasm/test/text-command-state.test.ts",
+    "packages/core/src/index.ts",
+    "packages/core/src/spice-runtime/domains/text-command.ts",
+    "packages/core/src/spice-runtime/shared/opaque-handles.ts",
+    "packages/core/src/spice-runtime/shared/spice-handles.ts",
+    "packages/core/test/spice-handle-ownership.test.ts",
+    "packages/py-parity-checking/fixtures/generate-audit-daf.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/decode.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/file_io.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/__init__.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/file_io.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/workflow.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/runtime/context.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/runtime/lifecycle.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/text_command_oracle.py",
+    "packages/py-parity-checking/src/case-types.ts",
+    "packages/py-parity-checking/src/cases/file-io/putcml.cases.json",
+    "packages/py-parity-checking/src/cases/file-io/rdtext.cases.json",
+    "packages/py-parity-checking/src/cases/index.ts",
+    "packages/py-parity-checking/src/run-sidecar.ts",
+    "packages/py-parity-checking/src/run-tspice/dispatch.ts",
+    "packages/py-parity-checking/src/run-tspice/domains/file-io.ts",
+    "packages/py-parity-checking/src/run-tspice/index.ts",
+    "packages/py-parity-checking/src/run-tspice/post-case.ts",
+    "packages/py-parity-checking/src/runtime/lifecycle.ts",
+    "packages/py-parity-checking/src/workflow-normalization/domains/file-io.ts",
+    "packages/py-parity-checking/test/_helpers/nodeBackendAvailable.ts",
+    "packages/py-parity-checking/test/_helpers/run-isolated-command-case.mjs",
+    "packages/py-parity-checking/test/file-reader-boundaries.test.ts",
+    "packages/py-parity-checking/test/file-reader-oracle-errors.test.ts",
+    "packages/py-parity-checking/test/native-required.test.ts",
+    "packages/py-parity-checking/test/parity.test.ts",
+    "packages/py-parity-checking/test/text-command-state.test.ts",
+    "packages/tspice/src/clients/spiceClients.ts",
+    "packages/tspice/src/spice.ts",
+    "packages/tspice/src/transport/caching/policy.ts",
+    "packages/tspice/test/file-handle-ownership.test.ts",
+    "scripts/build-backend-wasm.mjs",
+    "scripts/checked-text-sources.mjs",
+    "scripts/coverage-ledger.test.mjs",
+    "scripts/generate-coverage-ledger.mjs"
+  ],
+  "executions": [
+    {
+      "id": "local-c14-04bb7542-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "c5a198592f49b3d02a01ac397b1c27ab25b2a18f358d06c2ed30db9b70d8fcc9",
+      "caseIds": [
+        "file-io-putcml-empty-argv",
+        "file-io-putcml-exact-argv",
+        "file-io-putcml-persists",
+        "file-io-putcml-repeated",
+        "file-io-putcml-single-empty",
+        "file-io-rdtext-across-kclear",
+        "file-io-rdtext-byte-capacity",
+        "file-io-rdtext-empty-file",
+        "file-io-rdtext-empty-path",
+        "file-io-rdtext-empty-path-width-order",
+        "file-io-rdtext-empty-record",
+        "file-io-rdtext-independent-files",
+        "file-io-rdtext-minimum-width",
+        "file-io-rdtext-negative-width",
+        "file-io-rdtext-records-and-restart",
+        "file-io-rdtext-rightmost-controls",
+        "file-io-rdtext-unterminated-tail"
+      ],
+      "observation": "Both complete required lanes passed locally on 04bb754253a44b86ef915eec79bfe08a3e9a78be. JavaScript: 2,475 parity tests and one expected guard skip. Native-required: 2,252 registered Node/WASM live comparisons; 2,476 parity-package tests with no skips, including the native-required guard; 68 native wrapper, 610 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "local-c14-04bb7542-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "c5a198592f49b3d02a01ac397b1c27ab25b2a18f358d06c2ed30db9b70d8fcc9",
+      "caseIds": [
+        "file-io-putcml-empty-argv",
+        "file-io-putcml-exact-argv",
+        "file-io-putcml-persists",
+        "file-io-putcml-repeated",
+        "file-io-putcml-single-empty",
+        "file-io-rdtext-across-kclear",
+        "file-io-rdtext-byte-capacity",
+        "file-io-rdtext-empty-file",
+        "file-io-rdtext-empty-path",
+        "file-io-rdtext-empty-path-width-order",
+        "file-io-rdtext-empty-record",
+        "file-io-rdtext-independent-files",
+        "file-io-rdtext-minimum-width",
+        "file-io-rdtext-negative-width",
+        "file-io-rdtext-records-and-restart",
+        "file-io-rdtext-rightmost-controls",
+        "file-io-rdtext-unterminated-tail"
+      ],
+      "observation": "Both complete required lanes passed locally on 04bb754253a44b86ef915eec79bfe08a3e9a78be. JavaScript: 2,475 parity tests and one expected guard skip. Native-required: 2,252 registered Node/WASM live comparisons; 2,476 parity-package tests with no skips, including the native-required guard; 68 native wrapper, 610 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "ci-c14-04bb7542-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "c5a198592f49b3d02a01ac397b1c27ab25b2a18f358d06c2ed30db9b70d8fcc9",
+      "caseIds": [
+        "file-io-putcml-empty-argv",
+        "file-io-putcml-exact-argv",
+        "file-io-putcml-persists",
+        "file-io-putcml-repeated",
+        "file-io-putcml-single-empty",
+        "file-io-rdtext-across-kclear",
+        "file-io-rdtext-byte-capacity",
+        "file-io-rdtext-empty-file",
+        "file-io-rdtext-empty-path",
+        "file-io-rdtext-empty-path-width-order",
+        "file-io-rdtext-empty-record",
+        "file-io-rdtext-independent-files",
+        "file-io-rdtext-minimum-width",
+        "file-io-rdtext-negative-width",
+        "file-io-rdtext-records-and-restart",
+        "file-io-rdtext-rightmost-controls",
+        "file-io-rdtext-unterminated-tail"
+      ],
+      "commit": "04bb754253a44b86ef915eec79bfe08a3e9a78be",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43588086401/job/132426787762",
+      "observation": "Inspected successful Linux Node 22 native-required job 132426787762 on 04bb754253a44b86ef915eec79bfe08a3e9a78be: 2,252 registered Node/WASM live comparisons; 2,476 parity-package tests with no skips, including the native-required guard; 68 native wrapper, 610 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "ci-c14-04bb7542-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "c5a198592f49b3d02a01ac397b1c27ab25b2a18f358d06c2ed30db9b70d8fcc9",
+      "caseIds": [
+        "file-io-putcml-empty-argv",
+        "file-io-putcml-exact-argv",
+        "file-io-putcml-persists",
+        "file-io-putcml-repeated",
+        "file-io-putcml-single-empty",
+        "file-io-rdtext-across-kclear",
+        "file-io-rdtext-byte-capacity",
+        "file-io-rdtext-empty-file",
+        "file-io-rdtext-empty-path",
+        "file-io-rdtext-empty-path-width-order",
+        "file-io-rdtext-empty-record",
+        "file-io-rdtext-independent-files",
+        "file-io-rdtext-minimum-width",
+        "file-io-rdtext-negative-width",
+        "file-io-rdtext-records-and-restart",
+        "file-io-rdtext-rightmost-controls",
+        "file-io-rdtext-unterminated-tail"
+      ],
+      "commit": "04bb754253a44b86ef915eec79bfe08a3e9a78be",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43588086401/job/132426787762",
+      "observation": "Inspected successful Linux Node 22 native-required job 132426787762 on 04bb754253a44b86ef915eec79bfe08a3e9a78be: 2,252 registered Node/WASM live comparisons; 2,476 parity-package tests with no skips, including the native-required guard; 68 native wrapper, 610 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
+    }
+  ],
+  "routines": [
+    {
+      "routine": "rdtext_c",
+      "contract": "packages/backend-contract/src/domains/file-io.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/rdtext_c.html",
+      "semantics": "Read one formatted physical record, advancing the cursor even after truncation. Return exact UTF-8 string bytes and EOF. EOF releases the unit and permits restart. Independently owned clients share an actual native file cursor until its last lease closes.",
+      "scenarios": [
+        {
+          "caseId": "file-io-rdtext-records-and-restart",
+          "coverage": ["success", "edge"],
+          "observes": "Read distinct records, EOF and the first record of the reopened file."
+        },
+        {
+          "caseId": "file-io-rdtext-empty-record",
+          "coverage": ["success", "edge"],
+          "observes": "Distinguish real empty and all-space records from end of file."
+        },
+        {
+          "caseId": "file-io-rdtext-empty-file",
+          "coverage": ["success", "edge"],
+          "observes": "Every read reopens the empty file and returns EOF."
+        },
+        {
+          "caseId": "file-io-rdtext-rightmost-controls",
+          "coverage": ["success", "edge"],
+          "observes": "Preserve a leading BOM, leading spaces, rightmost tab and carriage-return bytes."
+        },
+        {
+          "caseId": "file-io-rdtext-byte-capacity",
+          "coverage": ["success", "edge"],
+          "observes": "Truncate one record to the C byte capacity minus its terminator and advance the full record."
+        },
+        {
+          "caseId": "file-io-rdtext-unterminated-tail",
+          "coverage": ["success", "edge"],
+          "observes": "Observe the pinned formatted reader at EOF without a terminating newline."
+        },
+        {
+          "caseId": "file-io-rdtext-independent-files",
+          "coverage": ["success", "edge"],
+          "observes": "Interleave independent physical files, reaching and restarting each cursor."
+        },
+        {
+          "caseId": "file-io-rdtext-across-kclear",
+          "coverage": ["success", "edge"],
+          "observes": "Pool clearing and toolkit error reset leave the open text cursor in place."
+        },
+        {
+          "caseId": "file-io-rdtext-minimum-width",
+          "coverage": ["error", "edge"],
+          "observes": "The authentic C width check precedes an attempted read."
+        },
+        {
+          "caseId": "file-io-rdtext-negative-width",
+          "coverage": ["error", "edge"],
+          "observes": "Forward signed negative length through a valid one-byte error buffer."
+        },
+        {
+          "caseId": "file-io-rdtext-empty-path",
+          "coverage": ["error", "edge"],
+          "observes": "The C input-string check on an empty name precedes reading."
+        },
+        {
+          "caseId": "file-io-rdtext-empty-path-width-order",
+          "coverage": ["error", "edge"],
+          "observes": "The empty input name is diagnosed before the invalid output width."
+        }
+      ],
+      "edgeAssessment": "Read distinct records, EOF and the first record of the reopened file. Distinguish real empty and all-space records from end of file. Every read reopens the empty file and returns EOF. Preserve a leading BOM, leading spaces, rightmost tab and carriage-return bytes. Truncate one record to the C byte capacity minus its terminator and advance the full record. Observe the pinned formatted reader at EOF without a terminating newline. Interleave independent physical files, reaching and restarting each cursor. Pool clearing and toolkit error reset leave the open text cursor in place.",
+      "errorAssessment": "Independent registered early C checks exercise EMPTYSTRING and STRINGTOOSHORT. Actual compiled missing-file, pool exhaustion and recovery validate FILEOPENFAILED, NOFREELOGICALUNIT or TOOMANYFILESOPEN on the corrected reader.",
+      "fixtures": [],
+      "fixtureRationale": "Case JSON contains small independently materialized authored text records and argv strings. No kernel or external dataset is required.",
+      "cleanup": "Reach actual EOF or release outstanding reader leases before removing client files. Each locked oracle reads to EOF before scratch removal.",
+      "tolerance": "Exact byte-preserving strings, counts, booleans, toolkit short statuses and mutations. No numeric tolerance change.",
+      "findings": [
+        {
+          "id": "rdtext-canonical-state",
+          "status": "repaired",
+          "summary": "Pinned f2c and RDTEXT need a defined disconnected-unit sentinel, initialized status handling and accurate saved-index invalidation across failed switches or closes. Native inquiry uses the ABI of its platform archive.",
+          "repair": "Hash-check and stage the three minimal N0067 definitions. Read through canonical RDTEXT, capture the actual unit under the toolkit lock and release its last lease. Locked independent successful reads establish a connected witness before original RDTEXT, preserving the exact original cursor and bytes.",
+          "evidence": [
+            "docs/step8-text-command-state.md",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/text_command_oracle.py",
+            "packages/py-parity-checking/test/text-command-state.test.ts",
+            "packages/py-parity-checking/src/cases/file-io/rdtext.cases.json"
+          ],
+          "caseIds": ["file-io-rdtext-records-and-restart"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
+          "route": "direct",
+          "trace": "FileIoApi.rdtext -> mutex-serialized native addon -> tspice_rdtext -> rdtext_c. Read one formatted physical record, advancing the cursor even after truncation. Return exact UTF-8 string bytes and EOF. EOF releases the unit and permits restart. Independently owned clients share an actual native file cursor until its last lease closes.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
+          "route": "direct",
+          "trace": "FileIoApi.rdtext -> scoped WASM allocations and required export -> tspice_rdtext -> rdtext_c. Read one formatted physical record, advancing the cursor even after truncation. Return exact UTF-8 string bytes and EOF. EOF releases the unit and permits restart. Independently owned clients share an actual native file cursor until its last lease closes.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "putcml_c",
+      "contract": "packages/backend-contract/src/domains/file-io.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/putcml_c.html",
+      "semantics": "Initialize process-local or WASM-instance-local arguments exactly once, returning void. Observe the actual count and privately copied argument bytes immediately and retain canonical repeated-call errors across reset and kernel clear.",
+      "scenarios": [
+        {
+          "caseId": "file-io-putcml-empty-argv",
+          "coverage": ["success", "edge"],
+          "observes": "Pass zero arguments to the actual setter and inspect actual stored count."
+        },
+        {
+          "caseId": "file-io-putcml-single-empty",
+          "coverage": ["success", "edge"],
+          "observes": "An empty string is one argument with length zero."
+        },
+        {
+          "caseId": "file-io-putcml-exact-argv",
+          "coverage": ["success", "edge"],
+          "observes": "Verify all stored bytes for executable, spaces, empty, Unicode and trailing tabs."
+        },
+        {
+          "caseId": "file-io-putcml-repeated",
+          "coverage": ["error", "edge"],
+          "observes": "A second setter is a genuine toolkit error."
+        },
+        {
+          "caseId": "file-io-putcml-persists",
+          "coverage": ["error", "edge"],
+          "observes": "The first command survives error reset, kernel clear and a successful file read."
+        }
+      ],
+      "edgeAssessment": "Pass zero arguments to the actual setter and inspect actual stored count. An empty string is one argument with length zero. Verify all stored bytes for executable, spaces, empty, Unicode and trailing tabs.",
+      "errorAssessment": "Repeat setter after valid initialization and after kclear/reset. Observe real PUTCMLCALLEDTWICE and a clear failure status on recovery.",
+      "fixtures": [],
+      "fixtureRationale": "Case JSON contains small independently materialized authored text records and argv strings. No kernel or external dataset is required.",
+      "cleanup": "Run independent native command initializations in separate OS processes and WASM instances. Reset and kclear preserve command data.",
+      "tolerance": "Exact byte-preserving strings, counts, booleans, toolkit short statuses and mutations. No numeric tolerance change.",
+      "findings": [
+        {
+          "id": "putcml-canonical-state",
+          "status": "repaired",
+          "summary": "The locked Python wrapper omits the setter and declares the native argv parameter as a single char pointer. Its state can be initialized only once per process.",
+          "repair": "Declare the independent locked C char** ABI in a separate library handle. Observe all stored bytes after overwriting caller buffers. Isolate each native setter scenario in its own process.",
+          "evidence": [
+            "docs/step8-text-command-state.md",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/text_command_oracle.py",
+            "packages/py-parity-checking/test/text-command-state.test.ts",
+            "packages/py-parity-checking/src/cases/file-io/putcml.cases.json"
+          ],
+          "caseIds": ["file-io-putcml-empty-argv"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
+          "route": "direct",
+          "trace": "FileIoApi.putcml -> mutex-serialized native addon -> tspice_putcml -> putcml_c. Initialize process-local or WASM-instance-local arguments exactly once, returning void. Observe the actual count and privately copied argument bytes immediately and retain canonical repeated-call errors across reset and kernel clear.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
+          "route": "direct",
+          "trace": "FileIoApi.putcml -> scoped WASM allocations and required export -> tspice_putcml -> putcml_c. Initialize process-local or WASM-instance-local arguments exactly once, returning void. Observe the actual count and privately copied argument bytes immediately and retain canonical repeated-call errors across reset and kernel clear.",
+          "executions": []
+        }
+      }
+    }
+  ],
+  "verificationNote": "Prior executions are historical. Rebind both required lanes and canonical CI to the revised source."
+}

@@ -4,6 +4,28 @@ export {
   poolSourceBytes,
 } from "./spice-runtime/domains/pool-inputs.js";
 
+
+export {
+  dasCommentTable,
+  dasCommentPageBytes,
+  dasCommentPage,
+  copyDasBytes,
+  copyDasValues,
+  dasReadCount,
+  dasFileTarget,
+  copyDlaDescriptor,
+  dasText,
+  decodeDasSummary,
+  decodeDasAddresses,
+  decodeDasFileRecord,
+} from "./spice-runtime/domains/das-files.js";
+export {
+  ekEntryColumn,
+  packEkEntry,
+  unpackEkEntry,
+  checkEkRecordIndex,
+  packEkRecordSchema,
+} from "./spice-runtime/domains/ek-records.js";
 /** Error thrown when an internal invariant is violated (should never happen in correct usage). */
 export class InvariantError extends Error {
   constructor(message: string) {
@@ -93,8 +115,8 @@ export {
   assertMat3ArrayLike9,
   isMat3ArrayLike9,
   brandMat3ColMajor,
-  brandMat3RowMajor,
   brandMat3RowMajorResult,
+  brandMat3RowMajor,
   isBrandedMat3ColMajor,
   isBrandedMat3RowMajor,
 } from "./spice-runtime/shared/mat3.js";
@@ -125,6 +147,23 @@ export {
   hasSpkPackedDescriptorStorage,
 } from "./spice-runtime/shared/spk-descriptor.js";
 
+export {
+  decodeEkColumn,
+  decodeEkSummary,
+  decodeEkSelect,
+  ekMetadataLayout,
+  ekMetadataText,
+  ekMetadataOrdinal,
+  type EkMetadataBuffers,
+} from "./spice-runtime/domains/ek-metadata.js";
+export {
+  releaseTextReaders,
+  textBytes,
+  textWidth,
+  readTextResult,
+  packCommandArgs,
+  verifyCommandArgs,
+} from "./spice-runtime/domains/text-command.js";
 export type { AssertSpiceInt32Options } from "./spice-runtime/shared/spice-int.js";
 export {
   SPICE_INT32_MIN,
@@ -149,8 +188,17 @@ export type {
   Vec3,
   Vec6,
 } from "./spice-runtime/shared/types.js";
+export {
+  copyPckCoefficients,
+  requirePckString,
+} from "./spice-runtime/shared/pck.js";
+export {
+  packCkWriterData,
+  checkCkWriter,
+} from "./spice-runtime/shared/ck-writers.js";
 export { createSpiceHandleRegistry } from "./spice-runtime/shared/spice-handles.js";
 
+export { policyArguments } from "./spice-runtime/domains/error-policy.js";
 export type { GetmsgWhich } from "./spice-runtime/domains/error.js";
 export {
   GETMSG_WHICH_VALUES,
@@ -219,3 +267,32 @@ export {
   orderRows,
   readOrderRows,
 } from "./spice-runtime/domains/array-order.js";
+
+export {
+  checkTimeText,
+  checkTimeNumber,
+  checkTimeYearWindow,
+  timeOutputCapacity,
+} from "./spice-runtime/domains/time-inputs.js";
+
+export {
+  dafCommentTable,
+  dafCommentPageBytes,
+  dafCommentPage,
+  dafReplacementBytes,
+  dafComponentLayout,
+  dafComponents,
+  dafBytes,
+  dafRecordBytes,
+  dafAddressWords,
+  dafFileNameCapacity,
+  DAF_MAX_SUMMARY_BYTES,
+  dafPathByteLength,
+  dafSummaryFormat,
+} from "./spice-runtime/shared/daf.js";
+
+export {
+  ckType2Record,
+  ckType3Record,
+  ckStateResult,
+} from "./spice-runtime/shared/ck-records.js";

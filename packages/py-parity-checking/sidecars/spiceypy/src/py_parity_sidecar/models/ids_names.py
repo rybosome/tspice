@@ -5,6 +5,36 @@ from typing import Literal
 
 
 @dataclass(frozen=True)
+class StepIdsNamesSrfc2s:
+    op: Literal["ids-names.srfc2s"]
+    code: int
+    bodyId: int
+    srflen: int
+
+
+@dataclass(frozen=True)
+class StepIdsNamesSrfcss:
+    op: Literal["ids-names.srfcss"]
+    code: int
+    body: str
+    srflen: int
+
+
+@dataclass(frozen=True)
+class StepIdsNamesSrfs2c:
+    op: Literal["ids-names.srfs2c"]
+    surface: str
+    body: str
+
+
+@dataclass(frozen=True)
+class StepIdsNamesSrfscc:
+    op: Literal["ids-names.srfscc"]
+    surface: str
+    bodyId: int
+
+
+@dataclass(frozen=True)
 class StepIdsNamesBodn2c:
     op: Literal["ids-names.bodn2c"]
     name: str

@@ -1,0 +1,299 @@
+[
+  {
+    "caseId": "frames-ckfxfm-empty-state",
+    "description": "Query two CK class IDs before loading any CK or clock.",
+    "workflow": [
+      {
+        "op": "frames.ckfxfm",
+        "inst": -123000,
+        "et": 0
+      },
+      {
+        "op": "frames.ckfxfm",
+        "inst": 44,
+        "et": 3
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-ckfxfm-missing-clock",
+    "description": "A loaded CK alone has no usable ET to encoded-clock conversion.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-pointing.bc"
+      },
+      {
+        "op": "frames.ckfxfm",
+        "inst": -123000,
+        "et": 0
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-ck-clock.tsc"
+      },
+      {
+        "op": "frames.ckfxfm",
+        "inst": -123000,
+        "et": 0
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-ckfxfm-et-interval-gap",
+    "description": "ET zero maps to tick 1000. Query endpoints, unequal interior rotations, an interpolation gap and an out-of-range ET.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-ck-clock.tsc"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-pointing.bc"
+      },
+      {
+        "op": "frames.ckfxfm",
+        "inst": -123000,
+        "et": -1
+      },
+      {
+        "op": "frames.ckfxfm",
+        "inst": -123000,
+        "et": 0
+      },
+      {
+        "op": "frames.ckfxfm",
+        "inst": -123000,
+        "et": 3.25
+      },
+      {
+        "op": "frames.ckfxfm",
+        "inst": -123000,
+        "et": 10
+      },
+      {
+        "op": "frames.ckfxfm",
+        "inst": -123000,
+        "et": 20
+      },
+      {
+        "op": "frames.ckfxfm",
+        "inst": -123000,
+        "et": 30
+      },
+      {
+        "op": "frames.ckfxfm",
+        "inst": -123000,
+        "et": 40
+      },
+      {
+        "op": "frames.ckfxfm",
+        "inst": -123000,
+        "et": 45
+      },
+      {
+        "op": "frames.ckfxfm",
+        "inst": -123000,
+        "et": 65
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-ckfxfm-av-eligibility",
+    "description": "The third segment contains quaternions without angular velocity. Compare raw lookup for that instrument and one with AV.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-ck-clock.tsc"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-pointing.bc"
+      },
+      {
+        "op": "frames.ckfxfm",
+        "inst": -123001,
+        "et": 5
+      },
+      {
+        "op": "frames.ckfxfm",
+        "inst": -123000,
+        "et": 5
+      },
+      {
+        "op": "frames.ckfxfm",
+        "inst": -123003,
+        "et": 5
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-ckfxfm-b1950",
+    "description": "Type 2 pointing in B1950 has reference code 2, different packet rates and a gap.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-ck-clock.tsc"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-ck-records.bc"
+      },
+      {
+        "op": "frames.ckfxfm",
+        "inst": -123002,
+        "et": 0
+      },
+      {
+        "op": "frames.ckfxfm",
+        "inst": -123002,
+        "et": 2
+      },
+      {
+        "op": "frames.ckfxfm",
+        "inst": -123002,
+        "et": 5
+      },
+      {
+        "op": "frames.ckfxfm",
+        "inst": -123002,
+        "et": 6
+      },
+      {
+        "op": "frames.ckfxfm",
+        "inst": -123002,
+        "et": 12
+      },
+      {
+        "op": "frames.ckfxfm",
+        "inst": -123002,
+        "et": 33
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-ckfxfm-file-priority",
+    "description": "Load a second overlapping CK and unload it to recover the earlier segment.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-ck-clock.tsc"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-pointing.bc"
+      },
+      {
+        "op": "frames.ckfxfm",
+        "inst": -123000,
+        "et": 5
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-pointing-priority.bc"
+      },
+      {
+        "op": "frames.ckfxfm",
+        "inst": -123000,
+        "et": 5
+      },
+      {
+        "op": "kernels.unload",
+        "path": "kernels/audit-pointing-priority.bc"
+      },
+      {
+        "op": "frames.ckfxfm",
+        "inst": -123000,
+        "et": 5
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-ckfxfm-clock-override",
+    "description": "A changed CK clock association makes a hit unavailable until the correct clock ID is restored.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-ck-clock.tsc"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-pointing.bc"
+      },
+      {
+        "op": "frames.ckfxfm",
+        "inst": -123000,
+        "et": 3
+      },
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "CK_-123000_SCLK",
+        "values": [-555]
+      },
+      {
+        "op": "frames.ckfxfm",
+        "inst": -123000,
+        "et": 3
+      },
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "CK_-123000_SCLK",
+        "values": [-123]
+      },
+      {
+        "op": "frames.ckfxfm",
+        "inst": -123000,
+        "et": 3
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-ckfxfm-bad-clock-value",
+    "description": "The SCLK metadata value exceeds the signed toolkit range; the underlying GIPOOL conversion signals its actual error.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-ck-clock.tsc"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-pointing.bc"
+      },
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "CK_-123000_SCLK",
+        "values": [2147483648]
+      },
+      {
+        "op": "frames.ckfxfm",
+        "inst": -123000,
+        "et": 3
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["OUTOFRANGE"]
+    }
+  }
+]

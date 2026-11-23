@@ -32,6 +32,44 @@ describe("workflow normalization", () => {
     expect(workflow).toEqual(original);
   });
 
+  it("isolates generated DAF writes across runs and resolves every scratch reader to its writer", () => {
+    const file = { kind: "scratch", rel: "nested/generated.bsp" } as const;
+    const workflow: WorkflowStep[] = [
+      {
+        op: "ephemeris.spkopn",
+        file,
+        ifname: "test",
+        ncomch: 0,
+        handleId: "creator",
+      },
+      { op: "file-io.dafopw", path: file, handleId: "writer" },
+      { op: "file-io.dafopr", path: file, handleId: "reader" },
+      { op: "kernels.furnsh", file },
+    ];
+    for (const directory of ["first-run", "second-run"]) {
+      const scoped = { kind: "scratch", rel: directory + "/" + file.rel };
+      const run = normalizeWorkflowDetailed(workflow, "tspice", directory);
+      expect(run.workflow).toEqual([
+        { ...workflow[0], file: scoped },
+        { ...workflow[1], path: scoped },
+        { ...workflow[2], path: scoped },
+        { ...workflow[3], file: scoped },
+      ]);
+    }
+    expect(() =>
+      normalizeWorkflow(
+        [
+          {
+            op: "file-io.dafopw",
+            path: "kernels/input.bsp",
+            handleId: "writer",
+          },
+        ],
+        "sidecar",
+      ),
+    ).toThrow("DAF write access requires a case scratch path");
+  });
+
   it("returns deterministic empty metadata lanes when no domain emits metadata", () => {
     const workflow: WorkflowStep[] = [
       { op: "kernels.furnsh", file: "kernels/naif0012.tls" },

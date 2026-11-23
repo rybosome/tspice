@@ -1,0 +1,193 @@
+[
+  {
+    "caseId": "file-io-dasudi-middle-sentinels",
+    "description": "Overwrite an interior range with a longer source, observe both neighbors and all selected values.",
+    "workflow": [
+      {
+        "op": "file-io.dasops",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dasadi",
+        "handleId": "h",
+        "n": 7,
+        "data": [-2147483648, 2147483647, -8192, 0, 1, 4, -7]
+      },
+      {
+        "op": "file-io.dasudi",
+        "handleId": "h",
+        "first": 3,
+        "last": 5,
+        "data": [-2147483648, 2147483647, -8192, 0]
+      },
+      {
+        "op": "file-io.dasrdi",
+        "handleId": "h",
+        "first": 1,
+        "last": 7
+      },
+      {
+        "op": "file-io.daslla",
+        "handleId": "h"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dasudi-cross-record",
+    "description": "Update and read through a typed record transition; logical neighbors on both sides remain observable.",
+    "workflow": [
+      {
+        "op": "file-io.dasops",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dasadi",
+        "handleId": "h",
+        "n": 261,
+        "data": [
+          -55, -50, -45, -40, -35, -30, -25, -20, -15, -10, -5, 0, 5, 10, 15,
+          20, 25, 30, 35, 40, 45, 50, 55, -55, -50, -45, -40, -35, -30, -25,
+          -20, -15, -10, -5, 0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, -55,
+          -50, -45, -40, -35, -30, -25, -20, -15, -10, -5, 0, 5, 10, 15, 20, 25,
+          30, 35, 40, 45, 50, 55, -55, -50, -45, -40, -35, -30, -25, -20, -15,
+          -10, -5, 0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, -55, -50, -45,
+          -40, -35, -30, -25, -20, -15, -10, -5, 0, 5, 10, 15, 20, 25, 30, 35,
+          40, 45, 50, 55, -55, -50, -45, -40, -35, -30, -25, -20, -15, -10, -5,
+          0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, -55, -50, -45, -40, -35,
+          -30, -25, -20, -15, -10, -5, 0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50,
+          55, -55, -50, -45, -40, -35, -30, -25, -20, -15, -10, -5, 0, 5, 10,
+          15, 20, 25, 30, 35, 40, 45, 50, 55, -55, -50, -45, -40, -35, -30, -25,
+          -20, -15, -10, -5, 0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, -55,
+          -50, -45, -40, -35, -30, -25, -20, -15, -10, -5, 0, 5, 10, 15, 20, 25,
+          30, 35, 40, 45, 50, 55, -55, -50, -45, -40, -35, -30, -25, -20, -15,
+          -10, -5, 0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, -55, -50, -45,
+          -40, -35, -30, -25, -20
+        ]
+      },
+      {
+        "op": "file-io.dasudi",
+        "handleId": "h",
+        "first": 255,
+        "last": 258,
+        "data": [-2147483648, 2147483647, -8192, 0]
+      },
+      {
+        "op": "file-io.dasrdi",
+        "handleId": "h",
+        "first": 254,
+        "last": 259
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dasudi-reversed",
+    "description": "A valid reversed address interval leaves initialized data untouched.",
+    "workflow": [
+      {
+        "op": "file-io.dasops",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dasadi",
+        "handleId": "h",
+        "n": 7,
+        "data": [-2147483648, 2147483647, -8192, 0, 1, 4, -7]
+      },
+      {
+        "op": "file-io.dasudi",
+        "handleId": "h",
+        "first": 5,
+        "last": 2,
+        "data": []
+      },
+      {
+        "op": "file-io.dasrdi",
+        "handleId": "h",
+        "first": 1,
+        "last": 7
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dasudi-bad-address",
+    "description": "An update beyond the last allocated logical address reports the canonical update error.",
+    "workflow": [
+      {
+        "op": "file-io.dasops",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dasadi",
+        "handleId": "h",
+        "n": 7,
+        "data": [-2147483648, 2147483647, -8192, 0, 1, 4, -7]
+      },
+      {
+        "op": "file-io.dasudi",
+        "handleId": "h",
+        "first": 7,
+        "last": 8,
+        "data": [-2147483648, 2147483647]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDADDRESS"]
+    }
+  },
+  {
+    "caseId": "file-io-dasudi-read-only",
+    "description": "A valid addressed update on a reader takes the toolkit access error.",
+    "workflow": [
+      {
+        "op": "file-io.dasonw",
+        "handleId": "h",
+        "path": {
+          "kind": "scratch",
+          "rel": "observed/data.das"
+        },
+        "ftype": "DATA",
+        "ifname": "DAS DATA",
+        "ncomr": 0
+      },
+      {
+        "op": "file-io.dasadi",
+        "handleId": "h",
+        "n": 7,
+        "data": [-2147483648, 2147483647, -8192, 0, 1, 4, -7]
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dasopr",
+        "handleId": "h",
+        "path": {
+          "kind": "scratch",
+          "rel": "observed/data.das"
+        }
+      },
+      {
+        "op": "file-io.dasudi",
+        "handleId": "h",
+        "first": 2,
+        "last": 2,
+        "data": [-2147483648]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["DASINVALIDACCESS"]
+    }
+  }
+]

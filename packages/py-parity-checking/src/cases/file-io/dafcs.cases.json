@@ -1,0 +1,261 @@
+[
+  {
+    "caseId": "file-io-dafcs-select-between-files",
+    "description": "Select a positioned search without advancing and observe the current handle and array.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-two-segment.bsp"
+      },
+      {
+        "op": "file-io.dafopr",
+        "handleId": "a",
+        "path": "kernels/audit-two-segment.bsp"
+      },
+      {
+        "op": "file-io.dafbbs",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.daffpa",
+        "handleId": "a"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-ephemeris.bsp"
+      },
+      {
+        "op": "file-io.dafopr",
+        "handleId": "b",
+        "path": "kernels/audit-ephemeris.bsp"
+      },
+      {
+        "op": "file-io.dafbbs",
+        "handleId": "b"
+      },
+      {
+        "op": "file-io.daffpa",
+        "handleId": "b"
+      },
+      {
+        "op": "file-io.dafcs",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafgh"
+      },
+      {
+        "op": "file-io.dafgn",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafcs",
+        "handleId": "b"
+      },
+      {
+        "op": "file-io.dafgh"
+      },
+      {
+        "op": "file-io.dafgn",
+        "handleId": "b"
+      },
+      {
+        "op": "file-io.dafcls",
+        "handleId": "b"
+      },
+      {
+        "op": "file-io.dafcls",
+        "handleId": "a"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dafcs-repeated-selection",
+    "description": "Reselecting the same file preserves its position and current name.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-two-segment.bsp"
+      },
+      {
+        "op": "file-io.dafopr",
+        "handleId": "a",
+        "path": "kernels/audit-two-segment.bsp"
+      },
+      {
+        "op": "file-io.dafbbs",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.daffpa",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafcs",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafcs",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafgn",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.daffpa",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafcs",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafgn",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafcls",
+        "handleId": "a"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dafcs-empty-current-file",
+    "description": "Selection may identify an active empty DAF without a current array.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-two-segment.bsp"
+      },
+      {
+        "op": "file-io.dafopr",
+        "handleId": "a",
+        "path": "kernels/audit-two-segment.bsp"
+      },
+      {
+        "op": "file-io.dafbbs",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.daffpa",
+        "handleId": "a"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-empty-daf.bsp"
+      },
+      {
+        "op": "file-io.dafopr",
+        "handleId": "b",
+        "path": "kernels/audit-empty-daf.bsp"
+      },
+      {
+        "op": "file-io.dafbbs",
+        "handleId": "b"
+      },
+      {
+        "op": "file-io.dafcs",
+        "handleId": "b"
+      },
+      {
+        "op": "file-io.dafgh"
+      },
+      {
+        "op": "file-io.daffpa",
+        "handleId": "b"
+      },
+      {
+        "op": "file-io.dafcs",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafgh"
+      },
+      {
+        "op": "file-io.dafgn",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafcls",
+        "handleId": "b"
+      },
+      {
+        "op": "file-io.dafcls",
+        "handleId": "a"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dafcs-not-initialized",
+    "description": "An open DAF without an active search cannot be selected.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-two-segment.bsp"
+      },
+      {
+        "op": "file-io.dafopr",
+        "handleId": "a",
+        "path": "kernels/audit-two-segment.bsp"
+      },
+      {
+        "op": "file-io.dafcs",
+        "handleId": "a"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["DAFNOSEARCH"]
+    }
+  },
+  {
+    "caseId": "file-io-dafcs-other-active",
+    "description": "Starting a search in one file does not start one in another.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-two-segment.bsp"
+      },
+      {
+        "op": "file-io.dafopr",
+        "handleId": "a",
+        "path": "kernels/audit-two-segment.bsp"
+      },
+      {
+        "op": "file-io.dafbbs",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.daffpa",
+        "handleId": "a"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-empty-daf.bsp"
+      },
+      {
+        "op": "file-io.dafopr",
+        "handleId": "b",
+        "path": "kernels/audit-empty-daf.bsp"
+      },
+      {
+        "op": "file-io.dafcs",
+        "handleId": "b"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["DAFNOSEARCH"]
+    }
+  }
+]

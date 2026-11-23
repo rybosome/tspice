@@ -897,3 +897,492 @@ async function charSetParser(spice: Spice, worker: SpiceAsync): Promise<void> {
   }
 }
 void charSetParser;
+
+async function surfaceTranslations() {
+  const { spice, dispose } = await spiceClients.toSync({ backend: "wasm" });
+  try {
+    const text: string = spice.raw.srfc2s(-3, 399).surface;
+    const flag: boolean = spice.raw.srfcss(-3, "EARTH").isName;
+    const result = spice.raw.srfscc(text, 399);
+    if (result.found) spice.raw.srfs2c(String(result.code), "EARTH");
+    return flag;
+  } finally {
+    await dispose();
+  }
+}
+void surfaceTranslations;
+
+/** Check raw clock tick, string and owned partition outputs on both public facades without DOM types. */
+export async function clockDetailConsumer(
+  spice: Spice,
+  asyncSpice: SpiceAsync,
+): Promise<void> {
+  const ticks: number = spice.raw.sce2t(-123, 0);
+  const text: string = spice.raw.scfmt(-123, ticks);
+  const rawTicks: number = spice.raw.sctiks(-123, text);
+  const partitions: { pstart: number[]; pstop: number[] } =
+    spice.raw.scpart(-123);
+  const asyncTicks: number = await asyncSpice.raw.sce2t(-123, 0);
+  const asyncText: string = await asyncSpice.raw.scfmt(-123, asyncTicks, 37);
+  const asyncRawTicks: number = await asyncSpice.raw.sctiks(-123, asyncText);
+  const asyncPartitions: { pstart: number[]; pstop: number[] } =
+    await asyncSpice.raw.scpart(-123);
+  void [rawTicks, partitions, asyncRawTicks, asyncPartitions];
+}
+
+/** Compile the six raw frame signatures and their owned fixed-length results without DOM declarations. */
+export async function typecheckFrameMetadata() {
+  const { spice, dispose } = await spiceClients.toSync({ backend: "wasm" }),
+    { raw, kit } = spice;
+  const ids = kit.newIntCell(145);
+  try {
+    raw.bltfrm(1, ids);
+    const rotations = [
+      raw.pxfrm2("J2000", "B1950", 0, 1),
+      raw.tipbod("J2000", 399, 0),
+    ];
+    const fixed = raw.tkfram(1800201);
+    if (fixed.found) rotations.push(fixed.rot);
+    const state = [1, 2, 3, 4, 5, 6] as const;
+    return [
+      rotations,
+      raw.tisbod("J2000", 399, 0),
+      raw.xfmsta(state, "RECTANGULAR", "CYLINDRICAL", " "),
+    ];
+  } finally {
+    kit.freeCell(ids);
+    await dispose();
+  }
+}
+
+import type { SpiceSync } from "@rybosome/tspice";
+
+function localClock(spice: SpiceSync, utc: string): string {
+  spice.raw.tparch("YES");
+  spice.raw.tsetyr(1969);
+  const epoch = spice.raw.utc2et(utc);
+  const calendar: string = spice.raw.etcal(epoch, 181);
+  const { hr, mn, sc, time, ampm } = spice.raw.et2lst(
+    epoch,
+    10,
+    0,
+    "PLANETOCENTRIC",
+  );
+  return `${calendar} ${hr} ${mn} ${sc} ${time} ${ampm}`;
+}
+void localClock;
+
+
+
+function inspectDaf(spice: SpiceSync, path: string): Uint8Array | undefined {
+  const handle = spice.raw.dafopw(path);
+  try {
+    const bytes = spice.raw.dafps(1, 1, [1] as const, [-3] as const);
+    const components = spice.raw.dafus(bytes, 1, 1);
+    const record = spice.raw.dafrfr(handle);
+    const summary = spice.raw.dafgsr(handle, record.fward, 1, 128);
+    const physical: Uint8Array = spice.raw.dafrda(handle, 1, 1);
+    const numeric: number[] = spice.raw.dafgda(
+      handle,
+      record.free,
+      record.free,
+    );
+    if (summary.found) {
+      const data: Uint8Array = summary.data;
+      void data;
+    }
+    void [components.dc, components.ic, physical, numeric];
+    spice.raw.dafbbs(handle);
+    spice.raw.dafcs(handle);
+    if (!spice.raw.daffpa(handle)) return undefined;
+    const current = spice.raw.dafgh();
+    const name: string = spice.raw.dafgn(current);
+    const { nd, ni } = spice.raw.dafhsf(current);
+    void [name, nd, ni];
+    const summaryBytes = spice.raw.dafgs(current);
+    spice.raw.dafrs(current, summaryBytes);
+    spice.raw.dafac(handle, ["  first", ""] as const);
+    const page: { n: number; lines: string[]; done: boolean } = spice.raw.dafec(
+      handle,
+      2,
+    );
+    if (page.done) spice.raw.dafdc(handle);
+    return summaryBytes;
+  } finally {
+    spice.raw.dafcls(handle);
+  }
+}
+void inspectDaf;
+
+/** Check DAS metadata, string widths, virtual outputs and opaque token signatures without DOM types. */
+export async function typecheckDasLifecycle() {
+  const { spice, dispose } = await spiceClients.toSync({ backend: "wasm" }),
+    { raw, kit } = spice;
+  const output = { kind: "virtual-output", path: "c04.das" } as const;
+  try {
+    const h = raw.dasonw(output, "Test", "name", 0);
+    let name: string;
+    try {
+      name = raw.dashfn(h, 32);
+      raw.daswbr(h);
+    } finally {
+      raw.dasllc(h);
+    }
+    const w = raw.dasopw(output);
+    try {
+      const { lastla } = raw.dashfs(w);
+      const [character, double, integer] = lastla;
+      void [character, double, integer];
+    } finally {
+      raw.dascls(w);
+    }
+    const scratch = raw.dasops();
+    try {
+      raw.dasac(scratch, [" two  words", ""]);
+      const { n, lines, done } = raw.dasec(scratch, 2, 30);
+      const page: [number, string[], boolean] = [n, lines, done];
+      void page;
+      raw.dasdc(scratch);
+
+      return {
+        name,
+        bytes: kit.readVirtualOutput(output),
+        addresses: raw.daslla(scratch),
+        record: raw.dasrfr(scratch, 9, 61),
+      };
+    } finally {
+      raw.dascls(scratch);
+    }
+  } finally {
+    await dispose();
+  }
+}
+
+/** Exercise owned binary row and numeric DAS data shapes without DOM types. */
+export async function typecheckDasData() {
+  const {
+    spice: { raw },
+    dispose,
+  } = await spiceClients.toSync({ backend: "wasm" });
+  try {
+    const h = raw.dasops();
+    try {
+      const bytes = new Uint8Array([0, 255]);
+      const words = [2, -1] as const;
+      raw.dasadc(h, 2, 0, 1, 2, bytes);
+      raw.dasadd(h, 2, words);
+      raw.dasadi(h, 2, words);
+      raw.dasudc(h, 1, 2, 0, 1, 2, bytes);
+      raw.dasudd(h, 1, 2, words);
+      raw.dasudi(h, 1, 2, words);
+      const chars: Uint8Array = raw.dasrdc(h, 1, 2, 0, 1, 2, bytes);
+      return {
+        chars,
+        doubles: raw.dasrdd(h, 1, 2),
+        integers: raw.dasrdi(h, 1, 2),
+      };
+    } finally {
+      raw.dascls(h);
+    }
+  } finally {
+    await dispose();
+  }
+}
+
+/** Build and walk a DLA segment using the normal facade without DOM declarations. */
+export async function typecheckDlaSegments() {
+  const {
+    spice: { raw },
+    dispose,
+  } = await spiceClients.toSync({ backend: "wasm" });
+  try {
+    const handle = raw.dlaopn("segments.dla", "DLA", "generic data", 0);
+    try {
+      raw.dlabns(handle);
+      raw.dasadi(handle, 2, [10, 20]);
+      raw.dlaens(handle);
+      const tail = raw.dlabbs(handle);
+      return tail.found ? raw.dlafps(handle, tail.descr) : tail;
+    } finally {
+      raw.dascls(handle);
+    }
+  } finally {
+    await dispose();
+  }
+}
+
+/** Author and reopen a binary PCK through typed owned file, set and window handles. */
+export function binaryPckConsumer(
+  spice: Spice,
+  coefficients: readonly number[],
+): void {
+  const file = { kind: "virtual-output", path: "orientation.bpc" } as const;
+  const writer = spice.raw.pckopn(file, "ORIENTATION", 0);
+  spice.raw.pckw02(
+    writer,
+    3000,
+    "J2000",
+    0,
+    10,
+    "ONE",
+    10,
+    1,
+    1,
+    coefficients,
+    0,
+  );
+  spice.raw.pckcls(writer);
+  const ids = spice.kit.newIntCell(4),
+    coverage = spice.kit.newWindow(4);
+  try {
+    spice.raw.pckfrm(file, ids);
+    spice.raw.pckcov(file, 3000, coverage);
+    const loaded = spice.raw.pcklof(file);
+    spice.raw.pckuof(loaded);
+  } finally {
+    spice.kit.freeCell(ids);
+    spice.kit.freeWindow(coverage);
+  }
+}
+
+/** Compile the binary CK writer contract with readonly samples and an owned virtual output. */
+export function ckWriterConsumer(
+  spice: Spice,
+  ticks: readonly number[],
+  quats: readonly number[],
+  av: readonly number[],
+): void {
+  const file = { kind: "virtual-output", path: "attitude.bc" } as const;
+  const w = spice.raw.ckopn(file, "EXAMPLE", 0);
+  spice.raw.ckw01(w, 1, 2, -123000, "J2000", true, "ONE", ticks, quats, av);
+  spice.raw.ckw02(
+    w,
+    1,
+    2,
+    -123000,
+    "J2000",
+    "TWO",
+    [1],
+    [2],
+    [1, 0, 0, 0],
+    [0, 0, 0.1],
+    [0.5],
+  );
+  spice.raw.ckw03(
+    w,
+    1,
+    2,
+    -123000,
+    "J2000",
+    true,
+    "THREE",
+    ticks,
+    quats,
+    av,
+    [1],
+  );
+  spice.raw.ckw05(
+    w,
+    1,
+    1,
+    1,
+    2,
+    -123000,
+    "J2000",
+    true,
+    "FIVE",
+    ticks,
+    quats,
+    0.5,
+    [1],
+  );
+  spice.raw.ckcls(w);
+}
+
+/** Typecheck the owned scratch writer, inferred schema and zero-based record operations without DOM types. */
+export async function typecheckEkRecords() {
+  const {
+    spice: { raw },
+    dispose,
+  } = await spiceClients.toSync({ backend: "wasm" });
+  try {
+    const h = raw.ekops();
+    try {
+      const s: number = raw.ekbseg(
+        h,
+        "RECORDS",
+        ["ID"] as const,
+        ["DATATYPE=INTEGER"] as const,
+      );
+      const row: number = raw.ekappr(h, s);
+      raw.ekinsr(h, s, row);
+      raw.ekdelr(h, s, row);
+      raw.ekdelr(h, s, row);
+      return s;
+    } finally {
+      raw.ekcls(h);
+    }
+  } finally {
+    await dispose();
+  }
+}
+
+/** Exercise ownership, typed entries and null cardinality through the public surface. */
+export async function typecheckEkRecordEntries() {
+  const {
+    spice: { raw },
+    dispose,
+  } = await spiceClients.toSync({ backend: "wasm" });
+  try {
+    const handle = raw.ekops();
+    try {
+      const s = raw.ekbseg(
+        handle,
+        "SIGNALS",
+        ["NAME", "VALUE", "ID"],
+        [
+          "DATATYPE=CHARACTER*(9)",
+          "DATATYPE=DOUBLE PRECISION",
+          "DATATYPE=INTEGER",
+        ],
+      );
+      const r = raw.ekappr(handle, s);
+      raw.ekacec(handle, s, r, "NAME", ["A"] as const, false);
+      raw.ekaced(handle, s, r, "VALUE", [0.5], false);
+      raw.ekacei(handle, s, r, "ID", [3], false);
+      raw.ekucec(handle, s, r, "NAME", ["B"], false);
+      raw.ekuced(handle, s, r, "VALUE", [-1.25], false);
+      raw.ekucei(handle, s, r, "ID", [5], false);
+      const name: string[] = raw.ekrcec(handle, s, r, "NAME", 10).values;
+      const d: number[] = raw.ekrced(handle, s, r, "VALUE").values;
+      const i: number[] = raw.ekrcei(handle, s, r, "ID").values;
+      return { name, d, i };
+    } finally {
+      raw.ekcls(handle);
+    }
+  } finally {
+    await dispose();
+  }
+}
+
+function readCkRecords(
+  spice: SpiceSync,
+  path: string,
+  inst: number,
+  et: number,
+) {
+  const h = spice.raw.dafopr(path);
+  try {
+    spice.raw.dafbfs(h);
+    if (!spice.raw.daffna(h)) return;
+    const d = spice.raw.dafgs(h);
+    const type = spice.raw.dafus(d, 2, 6).ic[2];
+    if (type === 2) {
+      spice.raw.cknr02(h, d);
+      const rate: number = spice.raw.ckgr02(h, d, 1).rate;
+      void rate;
+    }
+    if (type === 3) {
+      spice.raw.cknr03(h, d);
+      const av: [number, number, number] | null = spice.raw.ckgr03(h, d, 1).av;
+      void av;
+    }
+    spice.raw.ckmeta(inst, "SCLK");
+    const r = spice.raw.ckfrot(inst, et),
+      x = spice.raw.ckfxfm(inst, et);
+    if (r.found && x.found) return [r.rotate[8], x.xform[35], r.ref, x.ref];
+  } finally {
+    spice.raw.dafcls(h);
+  }
+}
+void readCkRecords;
+
+/** Complete EK query and physical metadata through the typed public facade. */
+export async function typecheckEkMetadata(path: string) {
+  const {
+    spice: { raw },
+    dispose,
+  } = await spiceClients.toSync({ backend: "wasm" });
+  try {
+    const h = raw.eklef(path);
+    try {
+      const summary = raw.ekssum(h, 0),
+        table = summary.tabnam;
+      const n = raw.ekccnt(table),
+        { column, attdsc } = raw.ekcii(table, 0);
+      const query = "SELECT " + column + " FROM " + table;
+      const select = raw.ekpsel(query),
+        found = raw.ekfind(query);
+      return {
+        n,
+        summary,
+        attdsc,
+        select,
+        count: found.ok && found.nmrows ? raw.eknelt(0, 0) : 0,
+      };
+    } finally {
+      raw.ekuef(h);
+    }
+  } finally {
+    await dispose();
+  }
+}
+
+async function textCommandConsumer() {
+  const client = await spiceClients.toSync({ backend: "wasm" });
+  try {
+    const { line, eof } = client.spice.raw.rdtext(
+      { path: "words.txt", bytes: new Uint8Array([65, 10]) },
+      8,
+    );
+    const saved: void = client.spice.raw.putcml(["program", line]);
+    return { line, eof, saved };
+  } finally {
+    await client.dispose();
+  }
+}
+void textCommandConsumer;
+
+async function observeTrace() {
+  const {
+    spice: { raw },
+    dispose,
+  } = await spiceClients.toSync({ backend: "wasm" });
+  try {
+    raw.setmsg("value @ # !");
+    raw.errch("@", "text");
+    raw.errint("#", -2);
+    raw.errdp("!", 0.5);
+    raw.chkin("frame");
+    try {
+      const status: boolean = raw.return();
+      const depth: number = raw.trcdep();
+      const name: string = raw.trcnam(0, 8);
+      const trace: string = raw.qcktrc();
+      return { status, depth, name, trace };
+    } finally {
+      raw.chkout("frame");
+    }
+  } finally {
+    await dispose();
+  }
+}
+void observeTrace;
+
+async function observeErrorPolicy() {
+  const sync = await spiceClients.toSync({ backend: "wasm" });
+  const asyncClient = await spiceClients.toAsync({ backend: "wasm" });
+  try {
+    const device: string = sync.spice.raw.errdev("GET", 8);
+    sync.spice.raw.errdev("SET", "NULL");
+    sync.spice.raw.trcoff();
+    const read: Promise<string> = asyncClient.spice.raw.errprt("GET");
+    const set: Promise<void> = asyncClient.spice.raw.errdev("SET", device);
+    await set;
+    return await read;
+  } finally {
+    await sync.dispose();
+    await asyncClient.dispose();
+  }
+}
+void observeErrorPolicy;

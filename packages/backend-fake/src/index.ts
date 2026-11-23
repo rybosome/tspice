@@ -1123,6 +1123,32 @@ export function createFakeBackend(
     j2100: () => 2488070,
     jyear: () => 31557600,
     tyear: () => 31556925.9747,
+    errdev: () => {
+      throw new Error("Fake backend: errdev is not implemented");
+    },
+    errprt: () => {
+      throw new Error("Fake backend: errprt is not implemented");
+    },
+    trcoff: () => {
+      throw new Error("Fake backend: trcoff is not implemented");
+    },
+    errch: () => {
+      throw new Error("Fake backend: errch is not implemented");
+    },
+    errdp: () => {
+      throw new Error("Fake backend: errdp is not implemented");
+    },
+    errint: () => {
+      throw new Error("Fake backend: errint is not implemented");
+    },
+    qcktrc: () => {
+      throw new Error("Fake backend: qcktrc is not implemented");
+    },
+    return: () => spiceFailed,
+    trcdep: () => traceStack.length,
+    trcnam: () => {
+      throw new Error("Fake backend: trcnam is not implemented");
+    },
     failed: () => spiceFailed,
     reset: () => {
       spiceFailed = false;
@@ -1465,6 +1491,21 @@ export function createFakeBackend(
       return FAKE_SPICE_VERSION;
     },
 
+    etcal: () => {
+      throw new Error("Fake backend: etcal() is not implemented");
+    },
+    utc2et: () => {
+      throw new Error("Fake backend: utc2et() is not implemented");
+    },
+    tparch: () => {
+      throw new Error("Fake backend: tparch() is not implemented");
+    },
+    tsetyr: () => {
+      throw new Error("Fake backend: tsetyr() is not implemented");
+    },
+    et2lst: () => {
+      throw new Error("Fake backend: et2lst() is not implemented");
+    },
     str2et: (time) => {
       if (!isIso8601OrRfc3339Utcish(time)) {
         throw new Error(
@@ -1531,6 +1572,18 @@ export function createFakeBackend(
 
     timdef,
 
+    srfc2s: () => {
+      throw new Error("Fake backend: srfc2s() is not implemented");
+    },
+    srfcss: () => {
+      throw new Error("Fake backend: srfcss() is not implemented");
+    },
+    srfs2c: () => {
+      throw new Error("Fake backend: srfs2c() is not implemented");
+    },
+    srfscc: () => {
+      throw new Error("Fake backend: srfscc() is not implemented");
+    },
     bodn2c: (name) => {
       const trimmed = normalizeName(name);
 
@@ -1675,6 +1728,19 @@ export function createFakeBackend(
       return Number.isFinite(n) ? n : 0;
     },
 
+    sce2t: () => {
+      throw new Error("Fake backend does not model sce2t()");
+    },
+    scfmt: () => {
+      throw new Error("Fake backend does not model scfmt()");
+    },
+    scpart: () => {
+      throw new Error("Fake backend does not model scpart()");
+    },
+    sctiks: () => {
+      throw new Error("Fake backend does not model sctiks()");
+    },
+
     sce2s: (_sc: number, et: number) => {
       // Minimal deterministic stub.
       return String(et);
@@ -1701,6 +1767,21 @@ export function createFakeBackend(
       return et;
     },
 
+    ckfrot: () => ({ found: false }),
+    ckfxfm: () => ({ found: false }),
+    ckgr02: () => {
+      throw new Error("Fake backend does not read CK records");
+    },
+    ckgr03: () => {
+      throw new Error("Fake backend does not read CK records");
+    },
+    ckmeta: () => 0,
+    cknr02: () => {
+      throw new Error("Fake backend does not read CK records");
+    },
+    cknr03: () => {
+      throw new Error("Fake backend does not read CK records");
+    },
     ckgp: (_inst: number, _sclkdp: number, _tol: number, _ref: string) => {
       return { found: false };
     },
@@ -1709,6 +1790,45 @@ export function createFakeBackend(
       return { found: false };
     },
 
+    pckcls: () => {
+      throw new Error("Fake backend: pckcls() is not implemented");
+    },
+    pckcov: () => {
+      throw new Error("Fake backend: pckcov() is not implemented");
+    },
+    pckfrm: () => {
+      throw new Error("Fake backend: pckfrm() is not implemented");
+    },
+    pcklof: () => {
+      throw new Error("Fake backend: pcklof() is not implemented");
+    },
+    pckopn: () => {
+      throw new Error("Fake backend: pckopn() is not implemented");
+    },
+    pckuof: () => {
+      throw new Error("Fake backend: pckuof() is not implemented");
+    },
+    pckw02: () => {
+      throw new Error("Fake backend: pckw02() is not implemented");
+    },
+    ckopn: () => {
+      throw new Error("Fake backend: ckopn() is not implemented");
+    },
+    ckcls: () => {
+      throw new Error("Fake backend: ckcls() is not implemented");
+    },
+    ckw01: () => {
+      throw new Error("Fake backend: ckw01() is not implemented");
+    },
+    ckw02: () => {
+      throw new Error("Fake backend: ckw02() is not implemented");
+    },
+    ckw03: () => {
+      throw new Error("Fake backend: ckw03() is not implemented");
+    },
+    ckw05: () => {
+      throw new Error("Fake backend: ckw05() is not implemented");
+    },
     cklpf: (_ck: string) => {
       throw new Error("Fake backend: cklpf() is not implemented");
     },
@@ -1733,6 +1853,24 @@ export function createFakeBackend(
       throw new Error("Fake backend: ckcov() is not implemented");
     },
 
+    bltfrm: () => {
+      throw new Error("Fake backend does not model bltfrm");
+    },
+    pxfrm2: () => {
+      throw new Error("Fake backend does not model pxfrm2");
+    },
+    tipbod: () => {
+      throw new Error("Fake backend does not model tipbod");
+    },
+    tisbod: () => {
+      throw new Error("Fake backend does not model tisbod");
+    },
+    tkfram: () => {
+      throw new Error("Fake backend does not model tkfram");
+    },
+    xfmsta: () => {
+      throw new Error("Fake backend does not model xfmsta");
+    },
     pxform: (from: string, to: string, et: number) => {
       const f = parseFrameName(from);
       const t = parseFrameName(to);
@@ -2313,11 +2451,71 @@ export function createFakeBackend(
 
     // --- file i/o primitives (not implemented in fake backend) ---
 
+    rdtext: () => {
+      throw new Error("Fake backend does not model text files");
+    },
+    putcml: () => {
+      throw new Error("Fake backend does not model command state");
+    },
     exists: (_path: string) => {
       throw new Error("Fake backend: exists() is not implemented");
     },
     getfat: (_path: string) => {
       throw new Error("Fake backend: getfat() is not implemented");
+    },
+    dafac: () => {
+      throw new Error("Fake backend: dafac() is not implemented");
+    },
+    dafdc: () => {
+      throw new Error("Fake backend: dafdc() is not implemented");
+    },
+    dafec: () => {
+      throw new Error("Fake backend: dafec() is not implemented");
+    },
+    dafrs: () => {
+      throw new Error("Fake backend: dafrs() is not implemented");
+    },
+    dafps: () => {
+      throw new Error("Fake backend: dafps() is not implemented");
+    },
+    dafus: () => {
+      throw new Error("Fake backend: dafus() is not implemented");
+    },
+    dafgsr: () => {
+      throw new Error("Fake backend: dafgsr() is not implemented");
+    },
+    dafrfr: () => {
+      throw new Error("Fake backend: dafrfr() is not implemented");
+    },
+    dafrda: () => {
+      throw new Error("Fake backend: dafrda() is not implemented");
+    },
+    dafgda: () => {
+      throw new Error("Fake backend: dafgda() is not implemented");
+    },
+    dafbbs: () => {
+      throw new Error("Fake backend: dafbbs() is not implemented");
+    },
+    dafcs: () => {
+      throw new Error("Fake backend: dafcs() is not implemented");
+    },
+    daffpa: () => {
+      throw new Error("Fake backend: daffpa() is not implemented");
+    },
+    dafgh: () => {
+      throw new Error("Fake backend: dafgh() is not implemented");
+    },
+    dafgn: () => {
+      throw new Error("Fake backend: dafgn() is not implemented");
+    },
+    dafgs: () => {
+      throw new Error("Fake backend: dafgs() is not implemented");
+    },
+    dafhsf: () => {
+      throw new Error("Fake backend: dafhsf() is not implemented");
+    },
+    dafopw: () => {
+      throw new Error("Fake backend: dafopw() is not implemented");
     },
     dafopr: (_path: string) => {
       throw new Error("Fake backend: dafopr() is not implemented");
@@ -2330,6 +2528,69 @@ export function createFakeBackend(
     },
     daffna: (_handle: SpiceHandle) => {
       throw new Error("Fake backend: daffna() is not implemented");
+    },
+    dasac: () => {
+      throw new Error("Fake backend does not model dasac");
+    },
+    dasdc: () => {
+      throw new Error("Fake backend does not model dasdc");
+    },
+    dasec: () => {
+      throw new Error("Fake backend does not model dasec");
+    },
+    dasadc: () => {
+      throw new Error("Fake backend does not model dasadc");
+    },
+    dasadd: () => {
+      throw new Error("Fake backend does not model dasadd");
+    },
+    dasadi: () => {
+      throw new Error("Fake backend does not model dasadi");
+    },
+    dasrdc: () => {
+      throw new Error("Fake backend does not model dasrdc");
+    },
+    dasrdd: () => {
+      throw new Error("Fake backend does not model dasrdd");
+    },
+    dasrdi: () => {
+      throw new Error("Fake backend does not model dasrdi");
+    },
+    dasudc: () => {
+      throw new Error("Fake backend does not model dasudc");
+    },
+    dasudd: () => {
+      throw new Error("Fake backend does not model dasudd");
+    },
+    dasudi: () => {
+      throw new Error("Fake backend does not model dasudi");
+    },
+    dasonw: () => {
+      throw new Error("Fake backend does not model dasonw");
+    },
+    dasops: () => {
+      throw new Error("Fake backend does not model dasops");
+    },
+    dasopw: () => {
+      throw new Error("Fake backend does not model dasopw");
+    },
+    dashfn: () => {
+      throw new Error("Fake backend does not model dashfn");
+    },
+    dashfs: () => {
+      throw new Error("Fake backend does not model dashfs");
+    },
+    daslla: () => {
+      throw new Error("Fake backend does not model daslla");
+    },
+    dasllc: () => {
+      throw new Error("Fake backend does not model dasllc");
+    },
+    dasrfr: () => {
+      throw new Error("Fake backend does not model dasrfr");
+    },
+    daswbr: () => {
+      throw new Error("Fake backend does not model daswbr");
     },
     dasopr: (_path: string) => {
       throw new Error("Fake backend: dasopr() is not implemented");
@@ -2345,6 +2606,18 @@ export function createFakeBackend(
     ) => {
       throw new Error("Fake backend: dlaopn() is not implemented");
     },
+    dlabbs: () => {
+      throw new Error("Fake backend: dlabbs() is not implemented");
+    },
+    dlabns: () => {
+      throw new Error("Fake backend: dlabns() is not implemented");
+    },
+    dlaens: () => {
+      throw new Error("Fake backend: dlaens() is not implemented");
+    },
+    dlafps: () => {
+      throw new Error("Fake backend: dlafps() is not implemented");
+    },
     dlabfs: (_handle: SpiceHandle) => {
       throw new Error("Fake backend: dlabfs() is not implemented");
     },
@@ -2356,6 +2629,27 @@ export function createFakeBackend(
     },
 
     // --- EK (not implemented in fake backend) ---
+    ekccnt: () => {
+      throw new Error("Fake backend does not model ekccnt");
+    },
+    ekcii: () => {
+      throw new Error("Fake backend does not model ekcii");
+    },
+    eklef: () => {
+      throw new Error("Fake backend does not model eklef");
+    },
+    eknelt: () => {
+      throw new Error("Fake backend does not model eknelt");
+    },
+    ekpsel: () => {
+      throw new Error("Fake backend does not model ekpsel");
+    },
+    ekssum: () => {
+      throw new Error("Fake backend does not model ekssum");
+    },
+    ekuef: () => {
+      throw new Error("Fake backend does not model ekuef");
+    },
     ekopr: (_path: string) => {
       throw new Error("Fake backend: ekopr() is not implemented");
     },
@@ -2392,6 +2686,48 @@ export function createFakeBackend(
       throw new Error("Fake backend: ekgi() is not implemented");
     },
 
+    ekacec: () => {
+      throw new Error("Fake backend does not model ekacec");
+    },
+    ekaced: () => {
+      throw new Error("Fake backend does not model ekaced");
+    },
+    ekacei: () => {
+      throw new Error("Fake backend does not model ekacei");
+    },
+    ekrcec: () => {
+      throw new Error("Fake backend does not model ekrcec");
+    },
+    ekrced: () => {
+      throw new Error("Fake backend does not model ekrced");
+    },
+    ekrcei: () => {
+      throw new Error("Fake backend does not model ekrcei");
+    },
+    ekucec: () => {
+      throw new Error("Fake backend does not model ekucec");
+    },
+    ekuced: () => {
+      throw new Error("Fake backend does not model ekuced");
+    },
+    ekucei: () => {
+      throw new Error("Fake backend does not model ekucei");
+    },
+    ekops: () => {
+      throw new Error("Fake backend does not model ekops");
+    },
+    ekbseg: () => {
+      throw new Error("Fake backend does not model ekbseg");
+    },
+    ekappr: () => {
+      throw new Error("Fake backend does not model ekappr");
+    },
+    ekinsr: () => {
+      throw new Error("Fake backend does not model ekinsr");
+    },
+    ekdelr: () => {
+      throw new Error("Fake backend does not model ekdelr");
+    },
     ekifld: (
       _handle: SpiceHandle,
       _tabnam: string,

@@ -1,3 +1,4 @@
+import { releaseTextReaders } from "@rybosome/tspice-core";
 import type { SpiceBackend } from "@rybosome/tspice-backend-contract";
 
 import type { CreateBackendOptions } from "./backend.js";
@@ -11,6 +12,17 @@ import type {
 } from "./kit/types/spice-types.js";
 import { createKit } from "./kit/spice/create-kit.js";
 
+const ekDisposers = new WeakMap<Spice | SpiceAsync, () => void>();
+/** Internal client lifecycle hook for direct EK loads, which survive KCLEAR. */
+export function releaseClientEkLoads(spice: Spice | SpiceAsync): void {
+  ekDisposers.get(spice)?.();
+}
+
+const ownedReaderCleanup = new WeakMap<Spice | SpiceAsync, () => void>();
+/** Release this facade's outstanding direct text read leases at client disposal. */
+export function releaseClientTextReaders(spice: Spice | SpiceAsync): void {
+  ownedReaderCleanup.get(spice)?.();
+}
 export type CreateSpiceOptions = CreateBackendOptions & {
   /**
    * If provided, `createSpice()` will wrap this backend instead of creating a new one.
@@ -30,6 +42,7 @@ export async function createSpice(options: CreateSpiceOptions): Promise<Spice> {
 
   // Track kernels loaded from bytes so `kit.unloadKernel()` can accept flexible
   // path forms (e.g. `/kernels/foo.tls`) across backends.
+  const queryLoads = new Set<ReturnType<SpiceRaw["eklef"]>>();
   const byteBackedKernelPaths = new Set<string>();
 
   // Keep `raw.kclear()` and `kit`'s internal tracking in sync.
@@ -46,6 +59,25 @@ export async function createSpice(options: CreateSpiceOptions): Promise<Spice> {
       // below to preserve `this` binding for methods.
       const value = Reflect.get(target, prop, target) as unknown;
 
+      if (prop === "eklef" || prop === "ekuef") {
+        const existing = boundMethods.get(prop);
+        if (existing) return existing;
+        if (prop === "eklef") {
+          const load = (path: string) => {
+            const h = target.eklef(path);
+            queryLoads.add(h);
+            return h;
+          };
+          boundMethods.set(prop, load);
+          return load;
+        }
+        const unload = (h: ReturnType<SpiceRaw["eklef"]>) => {
+          target.ekuef(h);
+          queryLoads.delete(h);
+        };
+        boundMethods.set(prop, unload);
+        return unload;
+      }
       if (prop === "kclear" && typeof value === "function") {
         const existing = boundMethods.get(prop);
         if (existing) {
@@ -92,7 +124,23 @@ export async function createSpice(options: CreateSpiceOptions): Promise<Spice> {
     { byteBackedKernelPaths },
   );
 
-  return { raw, kit };
+  const spice = { raw, kit };
+  ekDisposers.set(spice, () => {
+    for (const h of queryLoads) {
+      try {
+        backend.raw.ekuef(h);
+      } catch {
+        continue;
+      }
+      queryLoads.delete(h);
+    }
+  });
+  const release: unknown = Reflect.get(backend.raw, releaseTextReaders);
+  if (typeof release === "function")
+    ownedReaderCleanup.set(spice, () =>
+      Reflect.apply(release, backend.raw, []),
+    );
+  return spice;
 }
 
 function promisifyApi<T extends object>(target: T): PromisifyObject<T> {
@@ -136,10 +184,12 @@ function promisifyApi<T extends object>(target: T): PromisifyObject<T> {
 export async function createSpiceAsync(
   options: CreateSpiceAsyncOptions,
 ): Promise<SpiceAsync> {
-  const { raw, kit } = await createSpice(options);
-
-  return {
-    raw: promisifyApi(raw),
-    kit: promisifyApi(kit),
+  const sync = await createSpice(options);
+  const asyncSpice = {
+    raw: promisifyApi(sync.raw),
+    kit: promisifyApi(sync.kit),
   };
+  ekDisposers.set(asyncSpice, () => releaseClientEkLoads(sync));
+  ownedReaderCleanup.set(asyncSpice, () => releaseClientTextReaders(sync));
+  return asyncSpice;
 }

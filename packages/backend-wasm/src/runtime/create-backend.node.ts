@@ -471,7 +471,7 @@ export async function createWasmBackend(
   const spiceHandles = createSpiceHandleRegistry();
   const virtualOutputs = createVirtualOutputRegistry();
   const timeApi = createTimeApi(module, toolkitVersion);
-  const fileIoApi = createFileIoApi(module, spiceHandles);
+  const fileIoApi = createFileIoApi(module, spiceHandles, virtualOutputs);
 
   const backend = {
     kind: "wasm",
@@ -480,7 +480,7 @@ export async function createWasmBackend(
       ...createKernelsApi(module, fsApi),
       ...createKernelPoolApi(module),
       ...createIdsNamesApi(module),
-      ...createFramesApi(module),
+      ...createFramesApi(module, spiceHandles, virtualOutputs),
       ...createEphemerisApi(module, spiceHandles, virtualOutputs),
       ...createGeometryApi(module),
       ...createGeometryGfApi(module),

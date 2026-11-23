@@ -1,3 +1,24 @@
+import {
+  dasCommentTable,
+  dasCommentPageBytes,
+  dasCommentPage,
+  copyDasBytes,
+  copyDasValues,
+  dasReadCount,
+  dasFileTarget,
+  copyDlaDescriptor,
+  dasText,
+  decodeDasSummary,
+  decodeDasAddresses,
+  decodeDasFileRecord,
+  releaseTextReaders,
+  textBytes,
+  textWidth,
+  packCommandArgs,
+  verifyCommandArgs,
+  readTextResult,
+  normalizeVirtualKernelPath,
+} from "@rybosome/tspice-core";
 import type {
   DlaDescriptor,
   FileIoApi,
@@ -7,13 +28,31 @@ import type {
   VirtualOutput,
 } from "@rybosome/tspice-backend-contract";
 import {
+  dafCommentTable,
+  dafCommentPageBytes,
+  dafCommentPage,
+  dafReplacementBytes,
+  dafComponentLayout,
+  dafComponents,
+  dafBytes,
+  dafRecordBytes,
+  dafAddressWords,
+  dafFileNameCapacity,
+  DAF_MAX_SUMMARY_BYTES,
+  dafPathByteLength,
+  dafSummaryFormat,
   assertSpiceInt32,
   assertSpiceInt32NonNegative,
 } from "@rybosome/tspice-core";
 
 import type { EmscriptenModule } from "../lowlevel/exports.js";
 
-import { WASM_ERR_MAX_BYTES, withAllocs, withMalloc } from "../codec/alloc.js";
+import {
+  WASM_ERR_MAX_BYTES,
+  WASM_MAX_ALLOC_BYTES,
+  withAllocs,
+  withMalloc,
+} from "../codec/alloc.js";
 import { throwWasmSpiceError } from "../codec/errors.js";
 import { writeUtf8CString } from "../codec/strings.js";
 import { resolveKernelPath } from "../runtime/fs.js";
@@ -22,11 +61,12 @@ import type {
   SpiceHandleKind,
   SpiceHandleRegistry,
 } from "../runtime/spice-handles.js";
-import type { VirtualOutputRegistry } from "../runtime/virtual-outputs.js";
+import {
+  createVirtualOutputRegistry,
+  type VirtualOutputRegistry,
+} from "../runtime/virtual-outputs.js";
 
 const DAS_BACKED = ["DAS", "DLA"] as const satisfies readonly SpiceHandleKind[];
-const I32_MIN = -2147483648;
-const I32_MAX = 2147483647;
 
 // Fixed-size portion of the DSK type 2 spatial index double component.
 //
@@ -36,17 +76,6 @@ const DSK02_IXDFIX = 10;
 // Hard cap for DSK spatial index scratch sizes (worksz/spxisz).
 // Matches native-addon validation.
 const DSKMI2_MAX_SIZE = 5_000_000;
-
-const DESCR_KEYS = [
-  "bwdptr",
-  "fwdptr",
-  "ibase",
-  "isize",
-  "dbase",
-  "dsize",
-  "cbase",
-  "csize",
-] as const;
 
 function readHeapI32(
   module: EmscriptenModule,
@@ -134,34 +163,6 @@ function readDlaDescr8(module: EmscriptenModule, ptr: number): DlaDescriptor {
   };
 }
 
-function assertDlaDescriptor(
-  value: unknown,
-  context: string,
-): asserts value is DlaDescriptor {
-  if (typeof value !== "object" || value === null) {
-    throw new Error(`${context}: expected an object`);
-  }
-  const obj = value as Record<string, unknown>;
-  for (const key of DESCR_KEYS) {
-    const v = obj[key];
-    if (
-      typeof v !== "number" ||
-      !Number.isInteger(v) ||
-      v < I32_MIN ||
-      v > I32_MAX
-    ) {
-      throw new Error(
-        `${context}: expected ${key} to be a 32-bit signed integer`,
-      );
-    }
-
-    const min = key === "bwdptr" || key === "fwdptr" ? -1 : 0;
-    if (v < min) {
-      throw new Error(`${context}: expected ${key} to be >= ${min}`);
-    }
-  }
-}
-
 function callVoidHandle(
   module: EmscriptenModule,
   fn: (handle: number, errPtr: number, errMaxBytes: number) => number,
@@ -195,11 +196,60 @@ function assertString(value: unknown, label: string): void {
     throw new TypeError(`${label} must be a string`);
 }
 
+const dasEncoder = new TextEncoder();
+const dasDecoder = new TextDecoder("utf-8", { fatal: true, ignoreBOM: true });
+function dasString(
+  module: EmscriptenModule,
+  ptr: number,
+  length: number,
+): string {
+  const bytes = module.HEAPU8.subarray(ptr, ptr + length);
+  const end = bytes.indexOf(0);
+  if (end < 0) throw new Error("Unterminated DAS output string");
+  return dasDecoder.decode(bytes.subarray(0, end));
+}
+function dasWords(
+  module: EmscriptenModule,
+  ptr: number,
+  count: number,
+): number[] {
+  return Array.from(module.HEAP32.subarray(ptr / 4, ptr / 4 + count));
+}
+
 /** Create a {@link FileIoApi} implementation backed by a WASM Emscripten module. */
 export function createFileIoApi(
   module: EmscriptenModule,
   handles: SpiceHandleRegistry,
+  virtualOutputs: VirtualOutputRegistry = createVirtualOutputRegistry(),
 ): FileIoApi {
+  const knownDasOutputs = new Set<string>();
+  const dasOutputs = new Map<SpiceHandle, string>();
+  const dasHandle = (handle: SpiceHandle, method: string) =>
+    handles.lookup(handle, DAS_BACKED, method).nativeHandle;
+  function registerDas(nativeHandle: number, output?: string): SpiceHandle {
+    try {
+      const handle = handles.register("DAS", nativeHandle);
+      if (output !== undefined) {
+        try {
+          virtualOutputs.markOpen(output);
+          dasOutputs.set(handle, output);
+        } catch (error) {
+          handles.close(
+            handle,
+            DAS_BACKED,
+            () => {},
+            "DAS registration rollback",
+          );
+          throw error;
+        }
+      }
+      return handle;
+    } catch (error) {
+      callVoidHandle(module, module._tspice_dasllc, nativeHandle);
+      throw error;
+    }
+  }
+
   function closeDasBacked(handle: SpiceHandle, context: string): void {
     handles.close(
       handle,
@@ -207,13 +257,134 @@ export function createFileIoApi(
       (entry: SpiceHandleEntry) => {
         // In CSPICE, `dascls_c` closes both DAS and DLA handles, and `dlacls_c`
         // is just an alias.
-        callVoidHandle(module, module._tspice_dascls, entry.nativeHandle);
+        if (context === "dasllc")
+          callVoidHandle(module, module._tspice_dasllc, entry.nativeHandle);
+        else callVoidHandle(module, module._tspice_dascls, entry.nativeHandle);
       },
       context,
     );
+    const output = dasOutputs.get(handle);
+    if (output !== undefined) {
+      virtualOutputs.markClosed(output);
+      dasOutputs.delete(handle);
+    }
   }
 
-  return {
+  let owner: number | undefined;
+  const staged = new Map<string, string>();
+  function checked(code: number, err: number) {
+    if (code) throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, code);
+  }
+  function readPath(
+    file: import("@rybosome/tspice-backend-contract").KernelSource,
+  ) {
+    if (typeof file === "string") {
+      textBytes(file);
+      if (!file || /^ +$/.test(file)) return file;
+      return (
+        staged.get(normalizeVirtualKernelPath(file)) ?? resolveKernelPath(file)
+      );
+    }
+    if (!file || typeof file !== "object")
+      throw new TypeError("Expected a text path and bytes");
+    const { path: virtualPath, bytes } = file;
+    if (typeof virtualPath !== "string" || !(bytes instanceof Uint8Array))
+      throw new TypeError("Expected a text path and bytes");
+    textBytes(virtualPath);
+    const key = normalizeVirtualKernelPath(virtualPath),
+      prior = staged.get(key);
+    if (prior) {
+      const old = module.FS.readFile(prior, { encoding: "binary" });
+      if (old.length !== bytes.length || !old.every((b, i) => b === bytes[i]))
+        throw new Error("Text bytes changed for the staged path");
+      return prior;
+    }
+    const physical = "/tspice-text/" + owner + "-" + staged.size;
+    module.FS.mkdirTree("/tspice-text");
+    module.FS.writeFile(physical, bytes);
+    staged.set(key, physical);
+    return physical;
+  }
+  const api: FileIoApi & { [releaseTextReaders](): void } = {
+    [releaseTextReaders]: () => {
+      if (owner !== undefined) {
+        withMalloc(module, WASM_ERR_MAX_BYTES, (err) =>
+          checked(
+            module._tspice_release_text_owner(owner!, err, WASM_ERR_MAX_BYTES),
+            err,
+          ),
+        );
+        owner = undefined;
+      }
+      for (const p of staged.values()) module.FS.unlink(p);
+      staged.clear();
+    },
+    rdtext: (
+      file: import("@rybosome/tspice-backend-contract").KernelSource,
+      lineln = 1024,
+    ) => {
+      const width = textWidth(lineln);
+      owner ??= withAllocs(module, [WASM_ERR_MAX_BYTES, 4], (err, id) => {
+        checked(module._tspice_text_owner(id, err, WASM_ERR_MAX_BYTES), err);
+        return readHeapI32(module, (id >>> 0) / 4, "text reader owner");
+      });
+      const p = textBytes(readPath(file));
+      if (p.length > 255)
+        throw new RangeError("Resolved text path exceeds 255 bytes");
+      return withAllocs(
+        module,
+        [WASM_ERR_MAX_BYTES, p.length + 1, width, 4],
+        (err, name, out, eof) => {
+          module.HEAPU8.set(p, name >>> 0);
+          module.HEAPU8[(name >>> 0) + p.length] = 0;
+          checked(
+            module._tspice_rdtext(
+              owner!,
+              name,
+              lineln,
+              out,
+              eof,
+              err,
+              WASM_ERR_MAX_BYTES,
+            ),
+            err,
+          );
+          const bytes = module.HEAPU8.subarray(out >>> 0, (out >>> 0) + width),
+            end = bytes.indexOf(0);
+          if (end < 0) throw new Error("Unterminated actual text line");
+          return readTextResult(
+            bytes.subarray(0, end),
+            readHeapI32(module, (eof >>> 0) / 4, "text EOF") !== 0,
+          );
+        },
+      );
+    },
+    putcml: (argv: readonly string[]) => {
+      const { count, bytes } = packCommandArgs(argv),
+        size = Math.max(1, bytes.length);
+      withAllocs(
+        module,
+        [WASM_ERR_MAX_BYTES, size, size],
+        (err, input, out) => {
+          module.HEAPU8.set(bytes, input >>> 0);
+          checked(
+            module._tspice_putcml(
+              count,
+              bytes.length,
+              input,
+              out,
+              err,
+              WASM_ERR_MAX_BYTES,
+            ),
+            err,
+          );
+          verifyCommandArgs(
+            bytes,
+            module.HEAPU8.subarray(out >>> 0, (out >>> 0) + bytes.length),
+          );
+        },
+      );
+    },
     exists: (path: string) => {
       const resolved = resolveKernelPath(path);
       const pathPtr = writeUtf8CString(module, resolved);
@@ -279,6 +450,421 @@ export function createFileIoApi(
       }
     },
 
+    dafac: (handle, lines) => {
+      const { n, width, table } = dafCommentTable(lines);
+      const h = handles.lookup(handle, ["DAF"], "dafac").nativeHandle;
+      withAllocs(
+        module,
+        [WASM_ERR_MAX_BYTES, table.byteLength],
+        (err, data) => {
+          module.HEAPU8.set(table, data >>> 0);
+          const rc = module._tspice_dafac(
+            h,
+            n,
+            width,
+            data,
+            table.byteLength,
+            err,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (rc) throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, rc);
+        },
+      );
+    },
+    dafdc: (handle) =>
+      callVoidHandle(
+        module,
+        module._tspice_dafdc,
+        handles.lookup(handle, ["DAF"], "dafdc").nativeHandle,
+      ),
+    dafec: (handle, bufsiz, buffln = 1024) => {
+      const h = handles.lookup(handle, ["DAF"], "dafec").nativeHandle;
+      const size = dafCommentPageBytes(bufsiz, buffln);
+      return withAllocs(
+        module,
+        [WASM_ERR_MAX_BYTES, size, 4, 4],
+        (err, data, nPtr, donePtr) => {
+          const rc = module._tspice_dafec(
+            h,
+            bufsiz,
+            buffln,
+            data,
+            size,
+            nPtr,
+            donePtr,
+            err,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (rc) throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, rc);
+          const n = readHeapI32(module, nPtr >>> 2, "dafec(n)"),
+            done = readHeapI32(module, donePtr >>> 2, "dafec(done)");
+          if (n < 0 || n > bufsiz || (done !== 0 && done !== 1))
+            throw new TypeError("Invalid DAF comment page");
+          const start = data >>> 0;
+          return dafCommentPage(
+            n,
+            done === 1,
+            module.HEAPU8.subarray(start, start + n * buffln),
+            bufsiz,
+            buffln,
+          );
+        },
+      );
+    },
+    dafrs: (handle, summary) => {
+      const bytes = dafReplacementBytes(summary);
+      const h = handles.lookup(handle, ["DAF"], "dafrs").nativeHandle;
+      withAllocs(module, [WASM_ERR_MAX_BYTES, bytes.byteLength], (err, p) => {
+        module.HEAPU8.set(bytes, p >>> 0);
+        const rc = module._tspice_dafrs(
+          h,
+          p,
+          bytes.byteLength,
+          err,
+          WASM_ERR_MAX_BYTES,
+        );
+        if (rc) throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, rc);
+      });
+    },
+    dafps: (nd, ni, dc, ic) => {
+      const { n, m, bytes } = dafComponentLayout(nd, ni);
+      const doubles = dafComponents(dc, n, false),
+        ints = dafComponents(ic, m, true);
+      return withAllocs(
+        module,
+        [
+          Math.max(8, 8 * n),
+          Math.max(4, 4 * m),
+          Math.max(8, bytes),
+          WASM_ERR_MAX_BYTES,
+        ],
+        (d, i, out, e) => {
+          module.HEAPF64.set(doubles, d / 8);
+          module.HEAP32.set(ints, i / 4);
+          const rc = module._tspice_dafps(
+            nd,
+            ni,
+            d,
+            n,
+            i,
+            m,
+            out,
+            bytes,
+            e,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (rc) throwWasmSpiceError(module, e, WASM_ERR_MAX_BYTES, rc);
+          return module.HEAPU8.slice(out, out + bytes);
+        },
+      );
+    },
+    dafus: (summary, nd, ni) => {
+      const { n, m, bytes } = dafComponentLayout(nd, ni),
+        input = dafBytes(summary, bytes);
+      return withAllocs(
+        module,
+        [
+          Math.max(8, bytes),
+          Math.max(8, 8 * n),
+          Math.max(4, 4 * m),
+          WASM_ERR_MAX_BYTES,
+        ],
+        (s, d, i, e) => {
+          module.HEAPU8.set(input, s);
+          const rc = module._tspice_dafus(
+            s,
+            bytes,
+            nd,
+            ni,
+            d,
+            n,
+            i,
+            m,
+            e,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (rc) throwWasmSpiceError(module, e, WASM_ERR_MAX_BYTES, rc);
+          return {
+            dc: Array.from(module.HEAPF64.subarray(d / 8, d / 8 + n)),
+            ic: Array.from(module.HEAP32.subarray(i / 4, i / 4 + m)),
+          };
+        },
+      );
+    },
+    dafgsr: (handle, recno, begin, end) => {
+      const h = handles.lookup(handle, ["DAF"], "dafgsr").nativeHandle;
+      const bytes = dafRecordBytes(recno, begin, end, 2097152);
+      return withAllocs(
+        module,
+        [Math.max(8, bytes), 4, WASM_ERR_MAX_BYTES],
+        (out, f, e) => {
+          const rc = module._tspice_dafgsr(
+            h,
+            recno,
+            begin,
+            end,
+            out,
+            bytes,
+            f,
+            e,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (rc) throwWasmSpiceError(module, e, WASM_ERR_MAX_BYTES, rc);
+          const found = module.HEAP32[f / 4];
+          if (found === 0) return { found: false };
+          if (found !== 1) throw new TypeError("Invalid DAFGSR found flag");
+          return { found: true, data: module.HEAPU8.slice(out, out + bytes) };
+        },
+      );
+    },
+    dafrfr: (handle, ifnlen = 61) => {
+      const h = handles.lookup(handle, ["DAF"], "dafrfr").nativeHandle;
+      const cap = dafFileNameCapacity(ifnlen);
+      return withAllocs(
+        module,
+        [cap, 20, WASM_ERR_MAX_BYTES],
+        (name, fields, e) => {
+          const rc = module._tspice_dafrfr(
+            h,
+            cap,
+            name,
+            cap,
+            fields,
+            e,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (rc) throwWasmSpiceError(module, e, WASM_ERR_MAX_BYTES, rc);
+          const bytes = module.HEAPU8.subarray(name, name + cap),
+            end = bytes.indexOf(0);
+          if (end < 0) throw new TypeError("Missing DAFRFR name terminator");
+          const field = (i: number) =>
+            readHeapI32(
+              module,
+              heap32IndexFromPtr(fields, "dafrfr") + i,
+              "dafrfr",
+            );
+          return {
+            nd: field(0),
+            ni: field(1),
+            ifname: new TextDecoder("utf-8", {
+              fatal: true,
+              ignoreBOM: true,
+            }).decode(bytes.subarray(0, end)),
+            fward: field(2),
+            bward: field(3),
+            free: field(4),
+          };
+        },
+      );
+    },
+    dafrda: (handle, begin, end) => {
+      const h = handles.lookup(handle, ["DAF"], "dafrda").nativeHandle;
+      const words = dafAddressWords(begin, end, 268435456);
+      return withAllocs(
+        module,
+        [Math.max(8, 8 * words), WASM_ERR_MAX_BYTES],
+        (out, e) => {
+          const rc = module._tspice_dafrda(
+            h,
+            begin,
+            end,
+            out,
+            words,
+            e,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (rc) throwWasmSpiceError(module, e, WASM_ERR_MAX_BYTES, rc);
+          return module.HEAPU8.slice(out, out + 8 * words);
+        },
+      );
+    },
+    dafgda: (handle, begin, end) => {
+      const h = handles.lookup(handle, ["DAF"], "dafgda").nativeHandle;
+      const words = dafAddressWords(begin, end, 268435456);
+      return withAllocs(
+        module,
+        [Math.max(8, 8 * words), WASM_ERR_MAX_BYTES],
+        (out, e) => {
+          const rc = module._tspice_dafgda(
+            h,
+            begin,
+            end,
+            out,
+            words,
+            e,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (rc) throwWasmSpiceError(module, e, WASM_ERR_MAX_BYTES, rc);
+          return Array.from(module.HEAPF64.subarray(out / 8, out / 8 + words));
+        },
+      );
+    },
+    dafbbs: (handle: SpiceHandle) =>
+      callVoidHandle(
+        module,
+        module._tspice_dafbbs,
+        handles.lookup(handle, ["DAF"], "dafbbs").nativeHandle,
+      ),
+    dafcs: (handle: SpiceHandle) =>
+      callVoidHandle(
+        module,
+        module._tspice_dafcs,
+        handles.lookup(handle, ["DAF"], "dafcs").nativeHandle,
+      ),
+    daffpa: (handle: SpiceHandle) => {
+      const native = handles.lookup(handle, ["DAF"], "daffpa").nativeHandle;
+      return withAllocs(module, [WASM_ERR_MAX_BYTES, 4], (err, out) => {
+        const code = module._tspice_daffpa(
+          native,
+          out,
+          err,
+          WASM_ERR_MAX_BYTES,
+        );
+        if (code) throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, code);
+        const flag = readHeapI32(
+          module,
+          heap32IndexFromPtr(out, "daffpa"),
+          "daffpa",
+        );
+        if (flag !== 0 && flag !== 1)
+          throw new TypeError("Invalid DAF search flag");
+        return flag === 1;
+      });
+    },
+    dafgh: () =>
+      withAllocs(module, [WASM_ERR_MAX_BYTES, 4], (err, out) => {
+        const code = module._tspice_dafgh(out, err, WASM_ERR_MAX_BYTES);
+        if (code) throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, code);
+        return handles.findOwned(
+          "DAF",
+          readHeapI32(module, heap32IndexFromPtr(out, "dafgh"), "dafgh"),
+          "dafgh",
+        );
+      }),
+    dafgn: (handle: SpiceHandle, namlen = DAF_MAX_SUMMARY_BYTES + 1) => {
+      const native = handles.lookup(handle, ["DAF"], "dafgn").nativeHandle;
+      assertSpiceInt32(namlen, "dafgn(namlen)");
+      const capacity = Math.min(namlen, DAF_MAX_SUMMARY_BYTES + 1);
+      return withAllocs(
+        module,
+        [WASM_ERR_MAX_BYTES, Math.max(capacity, 1)],
+        (err, out) => {
+          const code = module._tspice_dafgn(
+            native,
+            capacity,
+            out,
+            err,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (code) throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, code);
+          const bytes = module.HEAPU8.subarray(out, out + capacity);
+          const end = bytes.indexOf(0);
+          if (end < 0) throw new RangeError("Missing DAF name terminator");
+          return new TextDecoder("utf-8", {
+            fatal: true,
+            ignoreBOM: true,
+          }).decode(bytes.subarray(0, end));
+        },
+      );
+    },
+    dafgs: (handle: SpiceHandle) => {
+      const native = handles.lookup(handle, ["DAF"], "dafgs").nativeHandle;
+      return withAllocs(
+        module,
+        [WASM_ERR_MAX_BYTES, DAF_MAX_SUMMARY_BYTES, 4],
+        (err, out, len) => {
+          const code = module._tspice_dafgs(
+            native,
+            out,
+            DAF_MAX_SUMMARY_BYTES,
+            len,
+            err,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (code) throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, code);
+          const count = readHeapI32(
+            module,
+            heap32IndexFromPtr(len, "dafgs"),
+            "dafgs",
+          );
+          if (count < 8 || count > DAF_MAX_SUMMARY_BYTES || count % 8)
+            throw new RangeError("Invalid packed DAF summary size");
+          return module.HEAPU8.slice(out, out + count);
+        },
+      );
+    },
+    dafhsf: (handle: SpiceHandle) => {
+      const native = handles.lookup(handle, ["DAF"], "dafhsf").nativeHandle;
+      return withAllocs(module, [WASM_ERR_MAX_BYTES, 4, 4], (err, nd, ni) => {
+        const code = module._tspice_dafhsf(
+          native,
+          nd,
+          ni,
+          err,
+          WASM_ERR_MAX_BYTES,
+        );
+        if (code) throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, code);
+        return dafSummaryFormat(
+          readHeapI32(
+            module,
+            heap32IndexFromPtr(nd, "dafhsf(nd)"),
+            "dafhsf(nd)",
+          ),
+          readHeapI32(
+            module,
+            heap32IndexFromPtr(ni, "dafhsf(ni)"),
+            "dafhsf(ni)",
+          ),
+        );
+      });
+    },
+    dafopw: (path: string) => {
+      dafPathByteLength(path, WASM_MAX_ALLOC_BYTES - 1);
+      const resolved = path.length ? resolveKernelPath(path) : path;
+      const size = dafPathByteLength(resolved, WASM_MAX_ALLOC_BYTES - 1) + 1;
+      return withAllocs(
+        module,
+        [WASM_ERR_MAX_BYTES, size, 4],
+        (err, pathPtr, out) => {
+          const bytes = new TextEncoder().encode(resolved);
+          module.HEAPU8.set(bytes, pathPtr);
+          module.HEAPU8[pathPtr + bytes.length] = 0;
+          const code = module._tspice_dafopw(
+            pathPtr,
+            out,
+            err,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (code) throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, code);
+          const handle = readHeapI32(
+            module,
+            heap32IndexFromPtr(out, "dafopw"),
+            "dafopw",
+          );
+          try {
+            return handles.register("DAF", handle);
+          } catch (error) {
+            // The open already acquired a DAF claim. Reuse the owned error buffer for rollback.
+            const closeCode = module._tspice_dafcls(
+              handle,
+              err,
+              WASM_ERR_MAX_BYTES,
+            );
+            if (closeCode) {
+              try {
+                throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, closeCode);
+              } catch (closeError) {
+                throw new AggregateError(
+                  [error, closeError],
+                  "Cannot register or close DAF writer",
+                );
+              }
+            }
+            throw error;
+          }
+        },
+      );
+    },
     dafopr: (path: string) => {
       const resolved = resolveKernelPath(path);
       const pathPtr = writeUtf8CString(module, resolved);
@@ -353,6 +939,516 @@ export function createFileIoApi(
       );
     },
 
+    dasac: (handle, lines) => {
+      const { n, width, table } = dasCommentTable(lines);
+      const h = dasHandle(handle, "dasac");
+      withAllocs(
+        module,
+        [WASM_ERR_MAX_BYTES, table.byteLength],
+        (err, data) => {
+          module.HEAPU8.set(table, data >>> 0);
+          const rc = module._tspice_dasac(
+            h,
+            n,
+            width,
+            data,
+            table.byteLength,
+            err,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (rc) throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, rc);
+        },
+      );
+    },
+    dasdc: (handle) =>
+      callVoidHandle(module, module._tspice_dasdc, dasHandle(handle, "dasdc")),
+    dasec: (handle, bufsiz, buffln = 1024) => {
+      const h = dasHandle(handle, "dasec");
+      const size = dasCommentPageBytes(bufsiz, buffln);
+      return withAllocs(
+        module,
+        [WASM_ERR_MAX_BYTES, size, 4, 4],
+        (err, data, nPtr, donePtr) => {
+          const rc = module._tspice_dasec(
+            h,
+            bufsiz,
+            buffln,
+            data,
+            size,
+            nPtr,
+            donePtr,
+            err,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (rc) throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, rc);
+          const n = readHeapI32(module, nPtr >>> 2, "dasec(n)"),
+            done = readHeapI32(module, donePtr >>> 2, "dasec(done)");
+          if (n < 0 || n > bufsiz || (done !== 0 && done !== 1))
+            throw new TypeError("Invalid DAS comment page");
+          const start = data >>> 0;
+          return dasCommentPage(
+            n,
+            done === 1,
+            module.HEAPU8.subarray(start, start + n * buffln),
+            bufsiz,
+            buffln,
+          );
+        },
+      );
+    },
+    dasadc: (
+      handle: SpiceHandle,
+      n: number,
+      bpos: number,
+      epos: number,
+      datlen: number,
+      data: Uint8Array,
+    ) => {
+      const id = dasHandle(handle, "dasadc");
+      assertSpiceInt32(n, "dasadc(n)");
+      assertSpiceInt32(bpos, "dasadc(bpos)");
+      assertSpiceInt32(epos, "dasadc(epos)");
+      assertSpiceInt32(datlen, "dasadc(datlen)");
+      const owned = copyDasBytes(data);
+      const count = owned.length;
+      return withAllocs(
+        module,
+        [WASM_ERR_MAX_BYTES, Math.max(1, count) * 1],
+        (err, ptr) => {
+          const start = (ptr >>> 0) / 1;
+          module.HEAPU8.set(owned, start);
+          const code = module._tspice_dasadc(
+            id,
+            n,
+            bpos,
+            epos,
+            datlen,
+            ptr,
+            count,
+            err,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (code !== 0)
+            throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, code);
+        },
+      );
+    },
+    dasadd: (handle: SpiceHandle, n: number, data: readonly number[]) => {
+      const id = dasHandle(handle, "dasadd");
+      assertSpiceInt32(n, "dasadd(n)");
+      const owned = copyDasValues(data, "double");
+      const count = owned.length;
+      return withAllocs(
+        module,
+        [WASM_ERR_MAX_BYTES, Math.max(1, count) * 8],
+        (err, ptr) => {
+          const start = (ptr >>> 0) / 8;
+          module.HEAPF64.set(owned, start);
+          const code = module._tspice_dasadd(
+            id,
+            n,
+            ptr,
+            count,
+            err,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (code !== 0)
+            throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, code);
+        },
+      );
+    },
+    dasadi: (handle: SpiceHandle, n: number, data: readonly number[]) => {
+      const id = dasHandle(handle, "dasadi");
+      assertSpiceInt32(n, "dasadi(n)");
+      const owned = copyDasValues(data, "integer");
+      const count = owned.length;
+      return withAllocs(
+        module,
+        [WASM_ERR_MAX_BYTES, Math.max(1, count) * 4],
+        (err, ptr) => {
+          const start = (ptr >>> 0) / 4;
+          module.HEAP32.set(owned, start);
+          const code = module._tspice_dasadi(
+            id,
+            n,
+            ptr,
+            count,
+            err,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (code !== 0)
+            throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, code);
+        },
+      );
+    },
+    dasrdc: (
+      handle: SpiceHandle,
+      first: number,
+      last: number,
+      bpos: number,
+      epos: number,
+      datlen: number,
+      data: Uint8Array,
+    ) => {
+      const id = dasHandle(handle, "dasrdc");
+      assertSpiceInt32(first, "dasrdc(first)");
+      assertSpiceInt32(last, "dasrdc(last)");
+      assertSpiceInt32(bpos, "dasrdc(bpos)");
+      assertSpiceInt32(epos, "dasrdc(epos)");
+      assertSpiceInt32(datlen, "dasrdc(datlen)");
+      const owned = copyDasBytes(data);
+      const count = owned.length;
+      return withAllocs(
+        module,
+        [WASM_ERR_MAX_BYTES, Math.max(1, count) * 1],
+        (err, ptr) => {
+          const start = (ptr >>> 0) / 1;
+          module.HEAPU8.set(owned, start);
+          const code = module._tspice_dasrdc(
+            id,
+            first,
+            last,
+            bpos,
+            epos,
+            datlen,
+            ptr,
+            count,
+            err,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (code !== 0)
+            throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, code);
+          return module.HEAPU8.slice(start, start + count);
+        },
+      );
+    },
+    dasrdd: (handle: SpiceHandle, first: number, last: number) => {
+      const id = dasHandle(handle, "dasrdd");
+      const count = dasReadCount(first, last, 8);
+      return withAllocs(
+        module,
+        [WASM_ERR_MAX_BYTES, Math.max(1, count) * 8],
+        (err, ptr) => {
+          const start = (ptr >>> 0) / 8;
+          const code = module._tspice_dasrdd(
+            id,
+            first,
+            last,
+            ptr,
+            count,
+            err,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (code !== 0)
+            throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, code);
+          return Array.from(module.HEAPF64.subarray(start, start + count));
+        },
+      );
+    },
+    dasrdi: (handle: SpiceHandle, first: number, last: number) => {
+      const id = dasHandle(handle, "dasrdi");
+      const count = dasReadCount(first, last, 4);
+      return withAllocs(
+        module,
+        [WASM_ERR_MAX_BYTES, Math.max(1, count) * 4],
+        (err, ptr) => {
+          const start = (ptr >>> 0) / 4;
+          const code = module._tspice_dasrdi(
+            id,
+            first,
+            last,
+            ptr,
+            count,
+            err,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (code !== 0)
+            throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, code);
+          return Array.from(module.HEAP32.subarray(start, start + count));
+        },
+      );
+    },
+    dasudc: (
+      handle: SpiceHandle,
+      first: number,
+      last: number,
+      bpos: number,
+      epos: number,
+      datlen: number,
+      data: Uint8Array,
+    ) => {
+      const id = dasHandle(handle, "dasudc");
+      assertSpiceInt32(first, "dasudc(first)");
+      assertSpiceInt32(last, "dasudc(last)");
+      assertSpiceInt32(bpos, "dasudc(bpos)");
+      assertSpiceInt32(epos, "dasudc(epos)");
+      assertSpiceInt32(datlen, "dasudc(datlen)");
+      const owned = copyDasBytes(data);
+      const count = owned.length;
+      return withAllocs(
+        module,
+        [WASM_ERR_MAX_BYTES, Math.max(1, count) * 1],
+        (err, ptr) => {
+          const start = (ptr >>> 0) / 1;
+          module.HEAPU8.set(owned, start);
+          const code = module._tspice_dasudc(
+            id,
+            first,
+            last,
+            bpos,
+            epos,
+            datlen,
+            ptr,
+            count,
+            err,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (code !== 0)
+            throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, code);
+        },
+      );
+    },
+    dasudd: (
+      handle: SpiceHandle,
+      first: number,
+      last: number,
+      data: readonly number[],
+    ) => {
+      const id = dasHandle(handle, "dasudd");
+      assertSpiceInt32(first, "dasudd(first)");
+      assertSpiceInt32(last, "dasudd(last)");
+      const owned = copyDasValues(data, "double");
+      const count = owned.length;
+      return withAllocs(
+        module,
+        [WASM_ERR_MAX_BYTES, Math.max(1, count) * 8],
+        (err, ptr) => {
+          const start = (ptr >>> 0) / 8;
+          module.HEAPF64.set(owned, start);
+          const code = module._tspice_dasudd(
+            id,
+            first,
+            last,
+            ptr,
+            count,
+            err,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (code !== 0)
+            throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, code);
+        },
+      );
+    },
+    dasudi: (
+      handle: SpiceHandle,
+      first: number,
+      last: number,
+      data: readonly number[],
+    ) => {
+      const id = dasHandle(handle, "dasudi");
+      assertSpiceInt32(first, "dasudi(first)");
+      assertSpiceInt32(last, "dasudi(last)");
+      const owned = copyDasValues(data, "integer");
+      const count = owned.length;
+      return withAllocs(
+        module,
+        [WASM_ERR_MAX_BYTES, Math.max(1, count) * 4],
+        (err, ptr) => {
+          const start = (ptr >>> 0) / 4;
+          module.HEAP32.set(owned, start);
+          const code = module._tspice_dasudi(
+            id,
+            first,
+            last,
+            ptr,
+            count,
+            err,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (code !== 0)
+            throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, code);
+        },
+      );
+    },
+    dasonw: (
+      file: string | VirtualOutput,
+      ftype: string,
+      ifname: string,
+      ncomr: number,
+    ) => {
+      const target = dasFileTarget(file);
+      const input = typeof target === "string" ? target : target.path;
+      // Preserve the C wrapper's empty/blank filename diagnostics.
+      const path = input.trim() === "" ? input : resolveKernelPath(input);
+      assertSpiceInt32(ncomr, "dasonw(ncomr)");
+      if (path.includes("/"))
+        module.FS.mkdirTree(path.slice(0, path.lastIndexOf("/")) || "/");
+      const pathBytes = dasEncoder.encode(dasText(path));
+      const ftypeBytes = dasEncoder.encode(dasText(ftype));
+      const ifnameBytes = dasEncoder.encode(dasText(ifname));
+      const nativeHandle = withAllocs(
+        module,
+        [
+          WASM_ERR_MAX_BYTES,
+          pathBytes.length + 1,
+          ftypeBytes.length + 1,
+          ifnameBytes.length + 1,
+          4,
+        ],
+        (err, pathPtr, ftypePtr, ifnamePtr, out) => {
+          module.HEAPU8.set(pathBytes, pathPtr);
+          module.HEAPU8[pathPtr + pathBytes.length] = 0;
+          module.HEAPU8.set(ftypeBytes, ftypePtr);
+          module.HEAPU8[ftypePtr + ftypeBytes.length] = 0;
+          module.HEAPU8.set(ifnameBytes, ifnamePtr);
+          module.HEAPU8[ifnamePtr + ifnameBytes.length] = 0;
+          const code = module._tspice_dasonw(
+            pathPtr,
+            ftypePtr,
+            ifnamePtr,
+            ncomr,
+            out,
+            err,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (code !== 0)
+            throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, code);
+          return module.HEAP32[out / 4]!;
+        },
+      );
+      const output =
+        typeof target !== "string" || knownDasOutputs.has(path)
+          ? path
+          : undefined;
+      const handle = registerDas(nativeHandle, output);
+      if (output !== undefined) knownDasOutputs.add(output);
+      return handle;
+    },
+    dasops: () => {
+      const nativeHandle = withAllocs(
+        module,
+        [WASM_ERR_MAX_BYTES, 4],
+        (err, out) => {
+          const code = module._tspice_dasops(out, err, WASM_ERR_MAX_BYTES);
+          if (code !== 0)
+            throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, code);
+          return module.HEAP32[out / 4]!;
+        },
+      );
+      return registerDas(nativeHandle);
+    },
+    dasopw: (file: string | VirtualOutput) => {
+      const target = dasFileTarget(file);
+      const input = typeof target === "string" ? target : target.path;
+      // Preserve the C wrapper's empty/blank filename diagnostics.
+      const path = input.trim() === "" ? input : resolveKernelPath(input);
+      if (typeof target !== "string" && !knownDasOutputs.has(path))
+        throw new RangeError(
+          "dasopw requires a VirtualOutput created by dasonw on this backend",
+        );
+      const pathBytes = dasEncoder.encode(dasText(path));
+      const nativeHandle = withAllocs(
+        module,
+        [WASM_ERR_MAX_BYTES, pathBytes.length + 1, 4],
+        (err, pathPtr, out) => {
+          module.HEAPU8.set(pathBytes, pathPtr);
+          module.HEAPU8[pathPtr + pathBytes.length] = 0;
+          const code = module._tspice_dasopw(
+            pathPtr,
+            out,
+            err,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (code !== 0)
+            throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, code);
+          return module.HEAP32[out / 4]!;
+        },
+      );
+      return registerDas(
+        nativeHandle,
+        knownDasOutputs.has(path) ? path : undefined,
+      );
+    },
+    dashfn: (handle: SpiceHandle, namlen = 256) => {
+      const id = dasHandle(handle, "dashfn");
+      assertSpiceInt32(namlen, "dashfn(namlen)");
+      const capacity = Math.min(namlen, 256);
+      return withAllocs(
+        module,
+        [WASM_ERR_MAX_BYTES, Math.max(1, capacity)],
+        (err, out) => {
+          const code = module._tspice_dashfn(
+            id,
+            capacity,
+            out,
+            err,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (code !== 0)
+            throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, code);
+          return dasString(module, out, capacity);
+        },
+      );
+    },
+    dashfs: (handle: SpiceHandle) => {
+      const id = dasHandle(handle, "dashfs");
+      return withAllocs(module, [WASM_ERR_MAX_BYTES, 56], (err, out) => {
+        const code = module._tspice_dashfs(id, out, err, WASM_ERR_MAX_BYTES);
+        if (code !== 0)
+          throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, code);
+        return decodeDasSummary(dasWords(module, out, 14));
+      });
+    },
+    daslla: (handle: SpiceHandle) => {
+      const id = dasHandle(handle, "daslla");
+      return withAllocs(module, [WASM_ERR_MAX_BYTES, 12], (err, out) => {
+        const code = module._tspice_daslla(id, out, err, WASM_ERR_MAX_BYTES);
+        if (code !== 0)
+          throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, code);
+        return decodeDasAddresses(dasWords(module, out, 3));
+      });
+    },
+    dasllc: (handle: SpiceHandle) => {
+      closeDasBacked(handle, "dasllc");
+    },
+    dasrfr: (handle: SpiceHandle, idwlen = 9, ifnlen = 61) => {
+      const id = dasHandle(handle, "dasrfr");
+      assertSpiceInt32(idwlen, "dasrfr(idwlen)");
+      assertSpiceInt32(ifnlen, "dasrfr(ifnlen)");
+      const idcap = Math.min(idwlen, 9),
+        namecap = Math.min(ifnlen, 61);
+      return withAllocs(
+        module,
+        [WASM_ERR_MAX_BYTES, Math.max(1, idcap), Math.max(1, namecap), 16],
+        (err, idPtr, namePtr, out) => {
+          const code = module._tspice_dasrfr(
+            id,
+            idcap,
+            namecap,
+            idPtr,
+            namePtr,
+            out,
+            err,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (code !== 0)
+            throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, code);
+          return decodeDasFileRecord(
+            dasString(module, idPtr, idcap),
+            dasString(module, namePtr, namecap),
+            dasWords(module, out, 4),
+          );
+        },
+      );
+    },
+    daswbr: (handle: SpiceHandle) => {
+      const id = dasHandle(handle, "daswbr");
+      return withAllocs(module, [WASM_ERR_MAX_BYTES], (err) => {
+        const code = module._tspice_daswbr(id, err, WASM_ERR_MAX_BYTES);
+        if (code !== 0)
+          throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, code);
+      });
+    },
     dasopr: (path: string) => {
       const resolved = resolveKernelPath(path);
       const pathPtr = writeUtf8CString(module, resolved);
@@ -474,7 +1570,7 @@ export function createFileIoApi(
     },
 
     dlafns: (handle: SpiceHandle, descr: DlaDescriptor): FoundDlaDescriptor => {
-      assertDlaDescriptor(descr, "dlafns(descr)");
+      const owned = copyDlaDescriptor(descr, "dlafns(descr)");
       const nativeHandle = handles.lookup(
         handle,
         DAS_BACKED,
@@ -485,7 +1581,7 @@ export function createFileIoApi(
         module,
         [32, 32, 4, WASM_ERR_MAX_BYTES],
         (inDescr8Ptr, outNextDescr8Ptr, outFoundPtr, errPtr) => {
-          writeDlaDescr8(module, inDescr8Ptr, descr);
+          writeDlaDescr8(module, inDescr8Ptr, owned);
           module.HEAP32[outFoundPtr >> 2] = 0;
 
           const code = module._tspice_dlafns(
@@ -514,6 +1610,93 @@ export function createFileIoApi(
       );
     },
 
+    dlabbs: (handle: SpiceHandle): FoundDlaDescriptor => {
+      const nativeHandle = handles.lookup(
+        handle,
+        DAS_BACKED,
+        "dlabbs",
+      ).nativeHandle;
+      return withAllocs(
+        module,
+        [32, 4, WASM_ERR_MAX_BYTES],
+        (outDescr8Ptr, outFoundPtr, errPtr) => {
+          module.HEAP32[outFoundPtr >> 2] = 0;
+
+          const code = module._tspice_dlabbs(
+            nativeHandle,
+            outDescr8Ptr,
+            outFoundPtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (code !== 0) {
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, code);
+          }
+
+          const found =
+            readHeapI32(module, outFoundPtr >> 2, "dlabbs(outFoundPtr)") !== 0;
+          if (!found) {
+            return { found: false };
+          }
+
+          return { found: true, descr: readDlaDescr8(module, outDescr8Ptr) };
+        },
+      );
+    },
+
+    dlafps: (handle: SpiceHandle, descr: DlaDescriptor): FoundDlaDescriptor => {
+      const owned = copyDlaDescriptor(descr, "dlafps(descr)");
+      const nativeHandle = handles.lookup(
+        handle,
+        DAS_BACKED,
+        "dlafps",
+      ).nativeHandle;
+
+      return withAllocs(
+        module,
+        [32, 32, 4, WASM_ERR_MAX_BYTES],
+        (inDescr8Ptr, outNextDescr8Ptr, outFoundPtr, errPtr) => {
+          writeDlaDescr8(module, inDescr8Ptr, owned);
+          module.HEAP32[outFoundPtr >> 2] = 0;
+
+          const code = module._tspice_dlafps(
+            nativeHandle,
+            inDescr8Ptr,
+            outNextDescr8Ptr,
+            outFoundPtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (code !== 0) {
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, code);
+          }
+
+          const found =
+            readHeapI32(module, outFoundPtr >> 2, "dlafps(outFoundPtr)") !== 0;
+          if (!found) {
+            return { found: false };
+          }
+
+          return {
+            found: true,
+            descr: readDlaDescr8(module, outNextDescr8Ptr),
+          };
+        },
+      );
+    },
+
+    dlabns: (handle) =>
+      callVoidHandle(
+        module,
+        module._tspice_dlabns,
+        handles.lookup(handle, DAS_BACKED, "dlabns").nativeHandle,
+      ),
+    dlaens: (handle) =>
+      callVoidHandle(
+        module,
+        module._tspice_dlaens,
+        handles.lookup(handle, DAS_BACKED, "dlaens").nativeHandle,
+      ),
     dlacls: (handle: SpiceHandle) => closeDasBacked(handle, "dlacls"),
 
     dskopn: (path: string, ifname: string, ncomch: number) => {
@@ -894,7 +2077,8 @@ export function createFileIoApi(
         module._free(framePtr);
       }
     },
-  } satisfies FileIoApi;
+  };
+  return api;
 }
 
 /** Create a {@link FileIoKitApi} implementation for virtual output reads. */

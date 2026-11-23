@@ -37,6 +37,16 @@ export type NativeAddon = {
   tyear(): number;
 
   // --- error/status utilities ---
+  errdev(op: string, value: string, capacity: number): string;
+  errprt(op: string, value: string, capacity: number): string;
+  trcoff(): void;
+  errch(marker: string, value: string): void;
+  errdp(marker: string, value: number): void;
+  errint(marker: string, value: number): void;
+  qcktrc(tracelen: number): string;
+  return(): boolean;
+  trcdep(): number;
+  trcnam(index: number, namlen: number): string;
   failed(): boolean;
   reset(): void;
   getmsg(which: "SHORT" | "LONG" | "EXPLAIN"): string;
@@ -134,6 +144,18 @@ export type NativeAddon = {
   swpool(agent: string, names: readonly string[]): void;
   cvpool(agent: string): boolean;
   expool(name: string): boolean;
+  etcal(et: number, callen: number): string;
+  utc2et(utcstr: string): number;
+  tparch(type: string): void;
+  tsetyr(year: number): void;
+  et2lst(
+    et: number,
+    body: number,
+    lon: number,
+    type: string,
+    timlen: number,
+    ampmlen: number,
+  ): { hr: number; mn: number; sc: number; time: string; ampm: string };
   str2et(utc: string): number;
   et2utc(et: number, format: string, prec: number): string;
   timout(et: number, picture: string): string;
@@ -147,18 +169,141 @@ export type NativeAddon = {
 
   // --- file i/o primitives ---
 
+  text_owner(): number;
+  release_text_owner(owner: number): void;
+  rdtext(
+    owner: number,
+    path: string,
+    width: number,
+  ): { bytes: Uint8Array; eof: boolean };
+  putcml(argc: number, bytes: Uint8Array): Uint8Array;
   exists(path: string): boolean;
   getfat(path: string): { arch: string; type: string };
 
+  dafac(handle: number, rows: number, width: number, table: Uint8Array): void;
+  dafdc(handle: number): void;
+  dafec(
+    handle: number,
+    rows: number,
+    width: number,
+  ): { n: number; bytes: Uint8Array; done: boolean };
+  dafrs(handle: number, summary: Uint8Array): void;
+  dafps(
+    nd: number,
+    ni: number,
+    dc: readonly number[],
+    ic: readonly number[],
+  ): Uint8Array;
+  dafus(
+    summary: Uint8Array,
+    nd: number,
+    ni: number,
+  ): { dc: number[]; ic: number[] };
+  dafgsr(
+    handle: number,
+    recno: number,
+    begin: number,
+    end: number,
+  ): { found: false } | { found: true; data: Uint8Array };
+  dafrfr(
+    handle: number,
+    ifnlen: number,
+  ): {
+    nd: number;
+    ni: number;
+    ifname: Uint8Array;
+    fward: number;
+    bward: number;
+    free: number;
+  };
+  dafrda(handle: number, begin: number, end: number): Uint8Array;
+  dafgda(handle: number, begin: number, end: number): number[];
+  dafbbs(handle: number): void;
+  dafcs(handle: number): void;
+  daffpa(handle: number): boolean;
+  dafgh(): number;
+  dafgn(handle: number, namlen: number): Uint8Array;
+  dafgs(handle: number): Uint8Array;
+  dafhsf(handle: number): { nd: number; ni: number };
+  dafopw(path: string): number;
   dafopr(path: string): number;
   dafcls(handle: number): void;
   dafbfs(handle: number): void;
   daffna(handle: number): boolean;
 
+  dasac(handle: number, n: number, width: number, rows: Uint8Array): void;
+  dasdc(handle: number): void;
+  dasec(
+    handle: number,
+    bufsiz: number,
+    buffln: number,
+  ): { n: number; done: boolean; bytes: Uint8Array };
+  dasadc(
+    handle: number,
+    n: number,
+    bpos: number,
+    epos: number,
+    datlen: number,
+    data: Uint8Array,
+  ): void;
+  dasadd(handle: number, n: number, data: readonly number[]): void;
+  dasadi(handle: number, n: number, data: readonly number[]): void;
+  dasrdc(
+    handle: number,
+    first: number,
+    last: number,
+    bpos: number,
+    epos: number,
+    datlen: number,
+    data: Uint8Array,
+  ): Uint8Array;
+  dasrdd(handle: number, first: number, last: number): number[];
+  dasrdi(handle: number, first: number, last: number): number[];
+  dasudc(
+    handle: number,
+    first: number,
+    last: number,
+    bpos: number,
+    epos: number,
+    datlen: number,
+    data: Uint8Array,
+  ): void;
+  dasudd(
+    handle: number,
+    first: number,
+    last: number,
+    data: readonly number[],
+  ): void;
+  dasudi(
+    handle: number,
+    first: number,
+    last: number,
+    data: readonly number[],
+  ): void;
+  dasonw(path: string, ftype: string, ifname: string, ncomr: number): number;
+  dasops(): number;
+  dasopw(path: string): number;
+  dashfn(handle: number, namlen: number): string;
+  dashfs(handle: number): number[];
+  daslla(handle: number): number[];
+  dasllc(handle: number): void;
+  dasrfr(
+    handle: number,
+    idwlen: number,
+    ifnlen: number,
+  ): { idword: string; ifname: string; counts: number[] };
+  daswbr(handle: number): void;
   dasopr(path: string): number;
   dascls(handle: number): void;
 
   dlaopn(path: string, ftype: string, ifname: string, ncomch: number): number;
+  dlabbs(handle: number): { found: boolean; descr?: Record<string, unknown> };
+  dlafps(
+    handle: number,
+    descr: Record<string, unknown>,
+  ): { found: boolean; descr?: Record<string, unknown> };
+  dlabns(handle: number): void;
+  dlaens(handle: number): void;
   dlabfs(handle: number): { found: boolean; descr?: Record<string, unknown> };
   dlafns(
     handle: number,
@@ -167,6 +312,22 @@ export type NativeAddon = {
   dlacls(handle: number): void;
 
   // --- EK ---
+  ekccnt(table: string): number;
+  ekcii(
+    table: string,
+    cindex: number,
+    collen: number,
+  ): import("@rybosome/tspice-core").EkMetadataBuffers;
+  eklef(path: string): number;
+  eknelt(selidx: number, row: number): number;
+  ekpsel(query: string): import("@rybosome/tspice-core").EkMetadataBuffers;
+  ekssum(
+    id: number,
+    loaded: number,
+    segment: number,
+  ): import("@rybosome/tspice-core").EkMetadataBuffers;
+  ekuef(generation: number): void;
+  ekload_nseg(generation: number): number;
   ekopr(path: string): number;
   ekopw(path: string): number;
   ekopn(path: string, ifname: string, ncomch: number): number;
@@ -204,6 +365,100 @@ export type NativeAddon = {
     | { found: false }
     | { found: true; isNull: true }
     | { found: true; isNull: false; value: number };
+  ekacec(
+    handle: number,
+    segno: number,
+    recno: number,
+    column: string,
+    count: number,
+    width: number,
+    bytes: Uint8Array,
+    isNull: boolean,
+  ): void;
+  ekaced(
+    handle: number,
+    segno: number,
+    recno: number,
+    column: string,
+    count: number,
+    width: number,
+    bytes: Uint8Array,
+    isNull: boolean,
+  ): void;
+  ekacei(
+    handle: number,
+    segno: number,
+    recno: number,
+    column: string,
+    count: number,
+    width: number,
+    bytes: Uint8Array,
+    isNull: boolean,
+  ): void;
+  ekrcec(
+    handle: number,
+    segno: number,
+    recno: number,
+    column: string,
+    width: number,
+  ): { nvals: number; isNull: boolean; bytes: Uint8Array };
+  ekrced(
+    handle: number,
+    segno: number,
+    recno: number,
+    column: string,
+    width: number,
+  ): { nvals: number; isNull: boolean; bytes: Uint8Array };
+  ekrcei(
+    handle: number,
+    segno: number,
+    recno: number,
+    column: string,
+    width: number,
+  ): { nvals: number; isNull: boolean; bytes: Uint8Array };
+  ekucec(
+    handle: number,
+    segno: number,
+    recno: number,
+    column: string,
+    count: number,
+    width: number,
+    bytes: Uint8Array,
+    isNull: boolean,
+  ): void;
+  ekuced(
+    handle: number,
+    segno: number,
+    recno: number,
+    column: string,
+    count: number,
+    width: number,
+    bytes: Uint8Array,
+    isNull: boolean,
+  ): void;
+  ekucei(
+    handle: number,
+    segno: number,
+    recno: number,
+    column: string,
+    count: number,
+    width: number,
+    bytes: Uint8Array,
+    isNull: boolean,
+  ): void;
+  ekops(): number;
+  ekbseg(
+    handle: number,
+    table: string,
+    count: number,
+    nameWidth: number,
+    names: Uint8Array,
+    declWidth: number,
+    decls: Uint8Array,
+  ): number;
+  ekappr(handle: number, segno: number): number;
+  ekinsr(handle: number, segno: number, recno: number): void;
+  ekdelr(handle: number, segno: number, recno: number): void;
   ekifld(
     handle: number,
     tabnam: string,
@@ -294,6 +549,10 @@ export type NativeAddon = {
 
   bodn2c(name: string): { found: boolean; code?: number };
   bodc2n(code: number): { found: boolean; name?: string };
+  srfc2s(code: number, bodyId: number, srflen: number): unknown;
+  srfcss(code: number, body: string, srflen: number): unknown;
+  srfs2c(surface: string, body: string): { found: boolean; code?: number };
+  srfscc(surface: string, bodyId: number): { found: boolean; code?: number };
   bodc2s(code: number): string;
   bods2c(name: string): { found: boolean; code?: number };
   boddef(name: string, code: number): void;
@@ -319,6 +578,11 @@ export type NativeAddon = {
   ): { found: boolean; frcode?: number; frname?: string; center?: number };
 
   scs2e(sc: number, sclkch: string): number;
+  sce2t(sc: number, et: number): number;
+  scfmt(sc: number, ticks: number, clklen: number): string;
+  scpart(sc: number): { pstart: number[]; pstop: number[] };
+  sctiks(sc: number, clkstr: string): number;
+
   sce2s(sc: number, et: number): string;
   scencd(sc: number, sclkch: string): number;
   scdecd(sc: number, sclkdp: number): string;
@@ -337,6 +601,88 @@ export type NativeAddon = {
     ref: string,
   ): { found: boolean; cmat?: number[]; av?: number[]; clkout?: number };
 
+  pckcls(handle: number): void;
+  pckcov(path: string, classId: number, cover: number): void;
+  pckfrm(path: string, ids: number): void;
+  pcklof(path: string): number;
+  pckopn(path: string, ifname: string, ncomch: number): number;
+  pckuof(handle: number): void;
+  pckw02(
+    handle: number,
+    classId: number,
+    frame: string,
+    first: number,
+    last: number,
+    segid: string,
+    intlen: number,
+    n: number,
+    degree: number,
+    coefficients: readonly number[],
+    btime: number,
+  ): void;
+  ckopn(path: string, ifname: string, ncomch: number): number;
+  ckcls(handle: number): void;
+  ckw01(
+    handle: number,
+    beg: number,
+    end: number,
+    inst: number,
+    ref: string,
+    av: boolean,
+    segid: string,
+    n: number,
+    data: Float64Array,
+  ): void;
+  ckw02(
+    handle: number,
+    beg: number,
+    end: number,
+    inst: number,
+    ref: string,
+    segid: string,
+    n: number,
+    data: Float64Array,
+  ): void;
+  ckw03(
+    handle: number,
+    beg: number,
+    end: number,
+    inst: number,
+    ref: string,
+    av: boolean,
+    segid: string,
+    n: number,
+    nints: number,
+    data: Float64Array,
+  ): void;
+  ckw05(
+    handle: number,
+    subtype: number,
+    degree: number,
+    beg: number,
+    end: number,
+    inst: number,
+    ref: string,
+    av: boolean,
+    segid: string,
+    n: number,
+    nints: number,
+    rate: number,
+    data: Float64Array,
+  ): void;
+  ckfrot(
+    inst: number,
+    et: number,
+  ): { found: false } | { found: true; ref: number; rotate: number[] };
+  ckfxfm(
+    inst: number,
+    et: number,
+  ): { found: false } | { found: true; ref: number; xform: number[] };
+  ckgr02(handle: number, descr: Uint8Array, recno: number): number[];
+  ckgr03(handle: number, descr: Uint8Array, recno: number): number[];
+  ckmeta(ckid: number, meta: string): number;
+  cknr02(handle: number, descr: Uint8Array): number;
+  cknr03(handle: number, descr: Uint8Array): number;
   cklpf(ck: string): number;
   ckupf(handle: number): void;
   ckobj(ck: string, idsCellHandle: number): void;
@@ -580,6 +926,17 @@ export type NativeAddon = {
     cnfine: SpiceWindow,
     result: SpiceWindow,
   ): void;
+  bltfrm(frameClass: number, ids: number): void;
+  pxfrm2(from: string, to: string, etfrom: number, etto: number): number[];
+  tipbod(ref: string, body: number, et: number): number[];
+  tisbod(ref: string, body: number, et: number): number[];
+  tkfram(typeId: number): { found: boolean; rot?: number[]; frame?: number };
+  xfmsta(
+    state: readonly number[],
+    from: string,
+    to: string,
+    body: string,
+  ): number[];
   pxform(from: string, to: string, et: number): number[];
   frame(x: number[]): { x: unknown; y: unknown; z: unknown };
   twovec(

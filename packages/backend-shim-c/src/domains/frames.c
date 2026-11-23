@@ -2,9 +2,19 @@
 
 #include "SpiceZfc.h"
 #include "SpiceUsr.h"
+#include "SpiceZfc.h"
 
 #include "../handle_validation.h"
 
+#include <limits.h>
+#include <limits.h>
+#include <math.h>
+#include <limits.h>
+#include <math.h>
+#include "SpiceZfc.h"
+#include <limits.h>
+#include <math.h>
+#include <stdint.h>
 #include <stddef.h>
 #include <stdio.h>
 #include <string.h>
@@ -832,6 +842,419 @@ static int tspice_frames_validate_cell_handle(
   return 0;
 }
 
+static int pck_status(char *err, int errMaxBytes) {
+  if (!failed_c()) return 0;
+  tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+  return 1;
+}
+
+// On a capacity error inside their DAF search, PCKCOV/PCKFRM call DAFCLS
+// while FAILED is set. N0067 DAFCLS returns immediately. Balance exactly
+// that reader link plus our temporary lookup link after saving the error.
+static int pck_query_status(const char *path, const char *excess, char *err, int errMaxBytes) {
+  if (!failed_c()) return 0;
+  char shortMsg[64] = {0};
+  getmsg_c("SHORT", sizeof(shortMsg), shortMsg);
+  tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+  if (strcmp(shortMsg, excess) == 0) {
+    SpiceInt h = 0;
+    dafopr_c(path, &h);
+    if (!failed_c()) {
+      dafcls_c(h);
+      dafcls_c(h);
+    }
+    if (failed_c()) reset_c();
+  }
+  return 1;
+}
+
+int tspice_pckcls(int handle, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (handle >= 0) return tspice_frames_invalid_arg(err, errMaxBytes, "Expected a PCK writer handle");
+  pckcls_c(handle);
+  return pck_status(err, errMaxBytes);
+}
+
+int tspice_pckcov(const char *path, int classId, uintptr_t dest, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (!path) return tspice_frames_invalid_arg(err, errMaxBytes, "Expected a PCK path");
+  SpiceCell *window = tspice_validate_input_window(dest, err, errMaxBytes);
+  if (!window) return 1;
+  if (window->size % 2 || window->size > INT_MAX - SPICE_CELL_CTRLSZ - 2)
+    return tspice_frames_invalid_arg(err, errMaxBytes, "Invalid PCK coverage window capacity");
+  pckcov_c(path, classId, window);
+  if (failed_c()) {
+    if (window->init) tspice_set_window_control_preserved(window, 1);
+    return pck_query_status(path, "SPICE(WINDOWEXCESS)", err, errMaxBytes);
+  }
+  tspice_set_window_control_preserved(window, 0);
+  return pck_status(err, errMaxBytes);
+}
+
+int tspice_pckfrm(const char *path, uintptr_t dest, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (!path) return tspice_frames_invalid_arg(err, errMaxBytes, "Expected a PCK path");
+  SpiceCell *ids = tspice_validate_handle(dest, "cell", "pckfrm", err, errMaxBytes);
+  if (!ids) return 1;
+  if (ids->dtype != SPICE_INT || !ids->isSet || ids->card < 0 || ids->size < ids->card ||
+      ids->size > INT_MAX - SPICE_CELL_CTRLSZ ||
+      tspice_validate_cell_capacity(ids, ids->size, "pckfrm", err, errMaxBytes))
+    return tspice_frames_invalid_arg(err, errMaxBytes, "Expected a bounded integer set");
+  if (ids->init && (((SpiceInt *)ids->base)[4] != ids->size || ((SpiceInt *)ids->base)[5] != ids->card))
+    return tspice_frames_invalid_arg(err, errMaxBytes, "Reset the integer set cardinality after a partial result");
+  const SpiceInt *members = ids->data;
+  for (int i = 1; i < ids->card; ++i) if (members[i-1] >= members[i])
+    return tspice_frames_invalid_arg(err, errMaxBytes, "Expected a sorted integer set");
+  pckfrm_c(path, ids);
+  if (failed_c()) return pck_query_status(path, "SPICE(SETEXCESS)", err, errMaxBytes);
+  return pck_status(err, errMaxBytes);
+}
+
+// A repeated physical load reorders a single PCK search-table entry. Track its
+// generation so an owner with an older alias cannot unload a later load after
+// another owner removes the entry. Node serializes this table with CSPICE.
+// 5000 is N0067 PCKBSR's FTSIZE. The number of active DAF handles is smaller.
+static struct { SpiceInt daf; int generation; } pck_loads[5000];
+static int pck_load_count = 0;
+static int pck_generation = 0;
+
+int tspice_pcklof(const char *path, int *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (!out || !path) return tspice_frames_invalid_arg(err, errMaxBytes, "Invalid PCK load argument");
+  *out = 0;
+  // PCKLOF registers any readable DAF. Only binary PCKs have the descriptor
+  // and record layout expected by the subsequent orientation evaluators.
+  if (path[0]) {
+    SpiceChar arch[8] = {0}, type[8] = {0};
+    getfat_c(path, sizeof(arch), sizeof(type), arch, type);
+    if (failed_c()) reset_c();  // Let PCKLOF issue its own path diagnostic.
+    else if (!strcmp(arch, "DAF") && strcmp(type, "PCK"))
+      return tspice_frames_invalid_arg(err, errMaxBytes, "PCK load requires a binary PCK DAF");
+  }
+  if (pck_generation == INT_MAX) return tspice_frames_invalid_arg(err, errMaxBytes, "PCK load generations exhausted");
+  SpiceInt daf = 0;
+  pcklof_c(path, &daf);
+  if (failed_c()) return pck_status(err, errMaxBytes);
+  for (int i = 0; i < pck_load_count; ++i) {
+    if (pck_loads[i].daf == daf) { *out = pck_loads[i].generation; return 0; }
+  }
+  if (pck_load_count == 5000) {
+    pckuof_c(daf);
+    return tspice_frames_invalid_arg(err, errMaxBytes, "PCK load registry capacity exceeded");
+  }
+  *out = ++pck_generation;
+  pck_loads[pck_load_count].daf = daf;
+  pck_loads[pck_load_count++].generation = *out;
+  return 0;
+}
+
+int tspice_pckopn(const char *path, const char *ifname, int ncomch, int *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (!out || !path || !ifname) return tspice_frames_invalid_arg(err, errMaxBytes, "Invalid PCK open argument");
+  *out = 0;
+  pckopn_c(path, ifname, ncomch, out);
+  return pck_status(err, errMaxBytes);
+}
+
+int tspice_pckuof(int handle, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  for (int i = 0; i < pck_load_count; ++i) {
+    if (pck_loads[i].generation == handle) {
+      pckuof_c(pck_loads[i].daf);
+      if (failed_c()) return pck_status(err, errMaxBytes);
+      pck_loads[i] = pck_loads[--pck_load_count];
+      break;
+    }
+  }
+  // PCKUOF itself ignores an already unloaded file. A retired alias must not
+  // unload a subsequent registration with the same DAF handle.
+  return 0;
+}
+
+int tspice_pckw02(int handle, int classId, const char *frame, double first, double last, const char *segid, double intlen, int n, int degree, const double *coefficients, int count, double btime, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (!frame || !segid || !coefficients || degree < 0 || degree > 41 || count < 0 ||
+      count > 33554432 || (int64_t)(n > 0 ? n : 0) * 3 * (degree + 1) != count ||
+      !isfinite(first) || !isfinite(last) || !isfinite(intlen) || !isfinite(btime))
+    return tspice_frames_invalid_arg(err, errMaxBytes, "Invalid type 2 PCK coefficient dimensions or epochs");
+  for (int i = 0; i < count; ++i) if (!isfinite(coefficients[i]))
+    return tspice_frames_invalid_arg(err, errMaxBytes, "PCK coefficients must be finite");
+  if (n > 0 && intlen > 0) {
+    double span = n * intlen;
+    if (!isfinite(span) || !isfinite(btime + span) || intlen / 2 == 0 ||
+        !isfinite(btime + intlen/2 + (n-1)*intlen) ||
+        (first <= last && first >= btime && last <= btime + span &&
+         !((last - btime) / intlen < INT_MAX - 1)))
+      return tspice_frames_invalid_arg(err, errMaxBytes, "PCK epochs exceed the type 2 reader range");
+    SpiceInt nd = 0, ni = 0, fwd = 0, back = 0, next = 0;
+    SpiceChar name[61] = {0};
+    dafrfr_c(handle, sizeof(name), &nd, &ni, name, &fwd, &back, &next);
+    if (failed_c()) return pck_status(err, errMaxBytes);
+    // DAF may add a summary/name record pair and align the next free address.
+    if ((int64_t)next + count + 2*(int64_t)n + 4 + 3*128 > INT_MAX)
+      return tspice_frames_invalid_arg(err, errMaxBytes, "PCK segment exceeds DAF address space");
+  }
+  pckw02_c(handle, classId, frame, first, last, segid, intlen, n, degree, coefficients, btime);
+  return pck_status(err, errMaxBytes);
+}
+
+static int ck_writer_status(char *err, int errMaxBytes) {
+  if (!failed_c()) return 0;
+  tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+  return 1;
+}
+
+static int ck_writer_data(int handle, const char *ref, const char *segid, double beg, double end,
+                          const double *data, int count, int64_t expected, int n, int nints,
+                          char *err, int errMaxBytes) {
+  if (handle >= 0 || !ref || !segid || !data || n < 0 || nints < 0 ||
+      !isfinite(beg) || !isfinite(end) || count < 0 || count > 33554432 || count != expected)
+    return tspice_frames_invalid_arg(err, errMaxBytes, "Invalid CK writer dimensions or epochs");
+  for (int i = 0; i < count; ++i) if (!isfinite(data[i]))
+    return tspice_frames_invalid_arg(err, errMaxBytes, "CK data must contain finite numbers");
+  SpiceInt nd = 0, ni = 0, fwd = 0, back = 0, next = 0;
+  SpiceChar name[61] = {0};
+  dafrfr_c(handle, sizeof(name), &nd, &ni, name, &fwd, &back, &next);
+  if (failed_c()) return ck_writer_status(err, errMaxBytes);
+  // Count ordinary payload, both time directories, trailers and space for a
+  // new DAF summary/name record pair and alignment before any segment write.
+  if ((int64_t)next + count + n/100 + nints/100 + 5 + 3*128 > INT_MAX)
+    return tspice_frames_invalid_arg(err, errMaxBytes, "CK segment exceeds DAF address space");
+  return 0;
+}
+
+int tspice_ckopn(const char *path, const char *ifname, int ncomch, int *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (!path || !ifname || !out) return tspice_frames_invalid_arg(err, errMaxBytes, "Invalid CK open arguments");
+  *out = 0;
+  ckopn_c(path, ifname, ncomch, out);
+  return ck_writer_status(err, errMaxBytes);
+}
+
+int tspice_ckcls(int handle, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (handle >= 0) return tspice_frames_invalid_arg(err, errMaxBytes, "Expected CK writer handle");
+  ckcls_c(handle);
+  return ck_writer_status(err, errMaxBytes);
+}
+
+int tspice_ckw01(int handle, double beg, double end, int inst, const char *ref, int av, const char *segid, int n, const double *data, int count, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (ck_writer_data(handle, ref, segid, beg, end, data, count, (int64_t)n*(av ? 8 : 5) + 0, n, 0, err, errMaxBytes)) return 1;
+  ckw01_c(handle, beg, end, inst, ref, av, segid, n, data, (const double (*)[4])(data + n), (const double (*)[3])(av ? data + 5*n : data));
+  return ck_writer_status(err, errMaxBytes);
+}
+
+int tspice_ckw02(int handle, double beg, double end, int inst, const char *ref, const char *segid, int n, const double *data, int count, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (ck_writer_data(handle, ref, segid, beg, end, data, count, (int64_t)n*10 + 0, n, 0, err, errMaxBytes)) return 1;
+  ckw02_c(handle, beg, end, inst, ref, segid, n, data, data + n, (const double (*)[4])(data + 2*n), (const double (*)[3])(data + 6*n), data + 9*n);
+  return ck_writer_status(err, errMaxBytes);
+}
+
+int tspice_ckw03(int handle, double beg, double end, int inst, const char *ref, int av, const char *segid, int n, int nints, const double *data, int count, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (ck_writer_data(handle, ref, segid, beg, end, data, count, (int64_t)n*(av ? 8 : 5) + nints, n, nints, err, errMaxBytes)) return 1;
+  ckw03_c(handle, beg, end, inst, ref, av, segid, n, data, (const double (*)[4])(data + n), (const double (*)[3])(av ? data + 5*n : data), nints, data + n*(av ? 8 : 5));
+  return ck_writer_status(err, errMaxBytes);
+}
+
+int tspice_ckw05(int handle, int subtype, int degree, double beg, double end, int inst, const char *ref, int av, const char *segid, int n, int nints, double rate, const double *data, int count, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  static const int widths[4] = {8, 4, 14, 7};
+  const int width = subtype >= 0 && subtype < 4 ? widths[subtype] : 0;
+  if (degree == INT_MAX || !isfinite(rate)) return tspice_frames_invalid_arg(err, errMaxBytes, "Invalid CK type 5 degree or rate");
+  if (ck_writer_data(handle, ref, segid, beg, end, data, count, (int64_t)n*(1+width) + nints, n, nints, err, errMaxBytes)) return 1;
+  // CKR05 searches for an interval start at or before every packet. CKW05
+  // itself checks membership but omits the required first-packet start.
+  if (n && nints && data[n*(1+width)] != data[0])
+    return tspice_frames_invalid_arg(err, errMaxBytes, "First CK type 5 interval must start at the first packet");
+  ckw05_c(handle, (SpiceCK05Subtype)subtype, degree, beg, end, inst, ref, av, segid, n, data, data + n, rate, nints, data + n*(1+width));
+  return ck_writer_status(err, errMaxBytes);
+}
+
+static int ck_record_status(char *err, int room) {
+  if (!failed_c()) return 0;
+  tspice_get_spice_error_message_and_reset(err, room);
+  return 1;
+}
+
+// Resolve the same metadata CKFROT/CKFXFM read before ZZSCLK negates it.
+// A prior error in CKMETA may also leave their local SCLK ID undefined.
+static int ck_frame_clock(int inst, char *err, int room) {
+  int clock = 0;
+  ckmeta_c(inst, "SCLK", &clock);
+  if (ck_record_status(err, room)) return 1;
+  if (clock == INT_MIN) {
+    logical have = SPICEFALSE;
+    ckhave_(&have);
+    if (ck_record_status(err, room)) return 1;
+    if (have) return tspice_frames_invalid_arg(err, room, "CK SCLK ID cannot be negated");
+  }
+  return 0;
+}
+
+// Locate the exact five packed words in this file without selecting or moving
+// any DAF search. C02's reader also checks non-native summary translation.
+static int ck_record_descriptor(int handle, const unsigned char *bytes, int size,
+                                double words[5], int *freeAddr, char *err, int room) {
+  if (!bytes || size != 40) return tspice_frames_invalid_arg(err, room, "Expected 40 CK descriptor bytes");
+  char path[256] = {0}, arch[8] = {0}, type[8] = {0};
+  dafhfn_(&handle, path, 255);
+  if (ck_record_status(err, room)) return 1;
+  for (int i = 254; i >= 0 && path[i] == ' '; --i) path[i] = 0;
+  getfat_c(path, sizeof(arch), sizeof(type), arch, type);
+  if (ck_record_status(err, room)) return 1;
+  if (strcmp(arch,"DAF") || strcmp(type,"CK")) return tspice_frames_invalid_arg(err, room, "Expected a CK DAF");
+  char ifname[61] = {0};
+  int fields[5] = {0};
+  if (tspice_dafrfr(handle, sizeof(ifname), ifname, sizeof(ifname), fields, err, room)) return 1;
+  if (fields[0] != 2 || fields[1] != 6 || fields[4] < 2)
+    return tspice_frames_invalid_arg(err, room, "Invalid CK DAF summary format");
+  *freeAddr = fields[4];
+  const int lastRecord = (*freeAddr-2)/128+1;
+  int rec = fields[2], prev = 0;
+  for (int visited = 0; rec && visited < lastRecord; ++visited) {
+    double row[128] = {0};
+    int found = 0;
+    if (rec < 2 || rec > lastRecord) break;
+    if (tspice_dafgsr(handle, rec, 1, 128, (unsigned char *)row, sizeof(row), &found, err, room)) return 1;
+    if (!found || row[1] != prev || !(row[0] >= 0 && row[0] <= lastRecord && trunc(row[0]) == row[0]) ||
+        !(row[2] >= 0 && row[2] <= 25 && trunc(row[2]) == row[2])) break;
+    for (int i = 0; i < (int)row[2]; ++i) {
+      if (!memcmp(row+3+5*i, bytes, 40)) { memcpy(words,bytes,40); return 0; }
+    }
+    prev = rec;
+    rec = (int)row[0];
+  }
+  return tspice_frames_invalid_arg(err, room, "CK descriptor does not belong to this DAF");
+}
+
+// N0067 uses on-disk counts in signed address arithmetic without checking
+// their representability. Check the physical layout before the actual read.
+static int ck_record_layout(int handle, const double words[5], int freeAddr, int type,
+                            int recno, int *av, char *err, int room) {
+  double dc[2] = {0};
+  int ic[6] = {0};
+  dafus_c(words, 2, 6, dc, ic);
+  if (ck_record_status(err,room)) return 1;
+  if (ic[2] != type) return 0; // Canonical routine signals CKWRONGDATATYPE.
+  const int beg = ic[4], end = ic[5];
+  if (beg < 1 || end < beg || end >= freeAddr || (ic[3] != 0 && ic[3] != 1))
+    return tspice_frames_invalid_arg(err,room,"Invalid CK segment addresses or AV flag");
+  const int64_t span = (int64_t)end-beg+1;
+  int64_t n, length;
+  *av = ic[3];
+  if (type == 2) {
+    n = (span*100+501)/1001;
+    length = n*10+(n-1)/100;
+  } else {
+    if (span < 2) return tspice_frames_invalid_arg(err,room,"Missing CK type 3 trailer");
+    double tail[2] = {0};
+    if (tspice_dafgda(handle,end-1,end,tail,2,err,room)) return 1;
+    if (!(tail[1] >= 1 && tail[1] <= INT_MAX && trunc(tail[1]) == tail[1] &&
+          tail[0] >= 1 && tail[0] <= tail[1] && trunc(tail[0]) == tail[0]))
+      return tspice_frames_invalid_arg(err,room,"Invalid CK type 3 trailer");
+    n = (int)tail[1];
+    const int64_t intervals = (int)tail[0];
+    length = (ic[3] ? 8 : 5)*n + (n-1)/100 + intervals + (intervals-1)/100 + 2;
+  }
+  if (n < 1 || length != span) return tspice_frames_invalid_arg(err,room,"Invalid CK record layout");
+  if (type == 2 && recno >= 1 && recno <= n) {
+    // CKGR02 copies a local pointing packet immediately after DAFGDA. Check
+    // that exact range first so an unreadable physical record is not consumed.
+    const int first = beg+8*(recno-1);
+    double packet[8] = {0};
+    if (tspice_dafgda(handle,first,first+7,packet,8,err,room)) return 1;
+  }
+  return 0;
+}
+
+int tspice_ckfrot(int inst, double et, double *out, int *ref, int *found, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (ck_record_status(err,errMaxBytes)) return 1;
+  if (!out || !ref || !found || !isfinite(et)) return tspice_frames_invalid_arg(err,errMaxBytes,"Invalid CK frame inputs");
+  if (ck_frame_clock(inst,err,errMaxBytes)) return 1;
+  SpiceDouble matrix[3][3] = {0};
+  *found = SPICEFALSE;
+  *ref = 0;
+  ckfrot_c(inst, et, matrix, ref, found);
+  if (ck_record_status(err,errMaxBytes)) return 1;
+  if (*found) memcpy(out,matrix,sizeof(matrix));
+  return 0;
+}
+
+int tspice_ckfxfm(int inst, double et, double *out, int *ref, int *found, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (ck_record_status(err,errMaxBytes)) return 1;
+  if (!out || !ref || !found || !isfinite(et)) return tspice_frames_invalid_arg(err,errMaxBytes,"Invalid CK frame inputs");
+  if (ck_frame_clock(inst,err,errMaxBytes)) return 1;
+  SpiceDouble matrix[6][6] = {0};
+  *found = SPICEFALSE;
+  *ref = 0;
+  ckfxfm_c(inst, et, matrix, ref, found);
+  if (ck_record_status(err,errMaxBytes)) return 1;
+  if (*found) memcpy(out,matrix,sizeof(matrix));
+  return 0;
+}
+
+int tspice_ckgr02(int handle, const unsigned char *bytes, int size, int recno, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (ck_record_status(err,errMaxBytes)) return 1;
+  if (!out) return tspice_frames_invalid_arg(err,errMaxBytes,"Missing CK record output");
+  double words[5] = {0};
+  int freeAddr = 0, av = 0;
+  if (ck_record_descriptor(handle,bytes,size,words,&freeAddr,err,errMaxBytes) ||
+      ck_record_layout(handle,words,freeAddr,2,recno,&av,err,errMaxBytes)) return 1;
+  ckgr02_c(handle,words,recno,out);
+  return ck_record_status(err,errMaxBytes);
+}
+
+int tspice_ckgr03(int handle, const unsigned char *bytes, int size, int recno, double *out, int *nwords, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (ck_record_status(err,errMaxBytes)) return 1;
+  if (!out || !nwords) return tspice_frames_invalid_arg(err,errMaxBytes,"Missing CK record output");
+  double words[5] = {0};
+  int freeAddr = 0, av = 0;
+  if (ck_record_descriptor(handle,bytes,size,words,&freeAddr,err,errMaxBytes) ||
+      ck_record_layout(handle,words,freeAddr,3,recno,&av,err,errMaxBytes)) return 1;
+  ckgr03_c(handle,words,recno,out);
+  *nwords = av ? 8 : 5;
+  return ck_record_status(err,errMaxBytes);
+}
+
+int tspice_ckmeta(int ckid, const char *meta, int *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (ck_record_status(err,errMaxBytes)) return 1;
+  if (!meta || !out) return tspice_frames_invalid_arg(err,errMaxBytes,"Invalid CKMETA inputs");
+  ckmeta_c(ckid,meta,out);
+  return ck_record_status(err,errMaxBytes);
+}
+
+int tspice_cknr02(int handle, const unsigned char *bytes, int size, int *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (ck_record_status(err,errMaxBytes)) return 1;
+  if (!out) return tspice_frames_invalid_arg(err,errMaxBytes,"Missing CK record output");
+  double words[5] = {0};
+  int freeAddr = 0, av = 0;
+  if (ck_record_descriptor(handle,bytes,size,words,&freeAddr,err,errMaxBytes) ||
+      ck_record_layout(handle,words,freeAddr,2,0,&av,err,errMaxBytes)) return 1;
+  cknr02_c(handle,words,out);
+  return ck_record_status(err,errMaxBytes);
+}
+
+int tspice_cknr03(int handle, const unsigned char *bytes, int size, int *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (ck_record_status(err,errMaxBytes)) return 1;
+  if (!out) return tspice_frames_invalid_arg(err,errMaxBytes,"Missing CK record output");
+  double words[5] = {0};
+  int freeAddr = 0, av = 0;
+  if (ck_record_descriptor(handle,bytes,size,words,&freeAddr,err,errMaxBytes) ||
+      ck_record_layout(handle,words,freeAddr,3,0,&av,err,errMaxBytes)) return 1;
+  cknr03_c(handle,words,out);
+  return ck_record_status(err,errMaxBytes);
+}
+
 int tspice_cklpf(const char *ck, int *outHandle, char *err, int errMaxBytes) {
   tspice_init_cspice_error_handling_once();
 
@@ -961,5 +1384,195 @@ int tspice_ckcov(
     return 1;
   }
 
+  return 0;
+}
+
+static int finish_frame_call(char *err, int errMaxBytes) {
+  if (!failed_c()) return 0;
+  tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+  return 1;
+}
+
+// ZZBODKER builds the ID hash from paired name/code mappings. N0067
+// ZZHASHI takes signed abs(code), which has no representation for INT_MIN.
+static int check_body_mapping_codes(char *err, int errMaxBytes) {
+  SpiceBoolean found = SPICEFALSE;
+  SpiceInt names = 0, codes = 0;
+  SpiceChar type[2] = {0};
+  dtpool_c("NAIF_BODY_NAME", &found, &names, type);
+  if (failed_c()) return finish_frame_call(err, errMaxBytes);
+  if (!found || type[0] != 'C' || names > 14983) return 0;
+  dtpool_c("NAIF_BODY_CODE", &found, &codes, type);
+  if (failed_c()) return finish_frame_call(err, errMaxBytes);
+  if (!found || type[0] != 'N' || names != codes) return 0;
+  int unsafe = 0;
+  for (SpiceInt start = 0; start < codes; start += 64) {
+    SpiceDouble values[64];
+    SpiceInt used = 0;
+    gdpool_c("NAIF_BODY_CODE", start, 64, &used, values, &found);
+    if (failed_c()) return finish_frame_call(err, errMaxBytes);
+    for (SpiceInt i = 0; i < used; ++i) {
+      // GIPOOL validates and rounds all codes before any hashes are built.
+      // Let it report its own conversion error, including in a mixed table.
+      if (!(values[i] >= (double)INT_MIN && values[i] <= (double)INT_MAX)) return 0;
+      if (values[i] <= (double)INT_MIN + 0.5) unsafe = 1;
+    }
+  }
+  if (!unsafe) return 0;
+  // ZZBODKER also diagnoses blank names (in a 36-byte record) before
+  // entering ZZBODINI. Preserve that ordinary error and its traceback.
+  for (SpiceInt start = 0; start < names; start += 64) {
+    SpiceChar rows[64][37];
+    SpiceInt used = 0;
+    gcpool_c("NAIF_BODY_NAME", start, 64, 37, &used, rows, &found);
+    if (failed_c()) return finish_frame_call(err, errMaxBytes);
+    for (SpiceInt i = 0; i < used; ++i) {
+      if (!rows[i][0]) return 0;
+    }
+  }
+  return tspice_frames_invalid_arg(err, errMaxBytes, "NAIF_BODY_CODE outside the safe N0067 body hash range");
+}
+
+
+// A text PCK phase degree is converted by i_dnnt before TISBOD checks it.
+// Require exactly one readable, safely roundable value when the phase table
+// is present. Ordinary representable unsupported degrees keep CSPICE errors.
+static int check_phase_degree(int body, char *err, int errMaxBytes) {
+  int system = body >= 100 && body <= 999 ? body / 100 :
+               body >= 10000 && body <= 99999 ? body / 10000 : body;
+  char item[48], type[2];
+  SpiceBoolean found = SPICEFALSE;
+  SpiceInt n = 0;
+  snprintf(item, sizeof(item), "BODY%d_NUT_PREC_ANGLES", system);
+  dtpool_c(item, &found, &n, type);
+  if (failed_c()) return finish_frame_call(err, errMaxBytes);
+  if (!found) return 0;
+  snprintf(item, sizeof(item), "BODY%d_MAX_PHASE_DEGREE", system);
+  dtpool_c(item, &found, &n, type);
+  if (failed_c()) return finish_frame_call(err, errMaxBytes);
+  if (!found) return 0;
+  if (type[0] == 'N' && n == 1) {
+    SpiceDouble degree = 0;
+    gdpool_c(item, 0, 1, &n, &degree, &found);
+    if (failed_c()) return finish_frame_call(err, errMaxBytes);
+    if (degree > (double)INT_MIN - 0.5 && degree < (double)INT_MAX + 0.5) return 0;
+  }
+  return tspice_frames_invalid_arg(err, errMaxBytes, "Invalid N0067 PCK phase degree storage or integer range");
+}
+
+int tspice_bltfrm(int frameClass, uintptr_t handle, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (failed_c()) return finish_frame_call(err, errMaxBytes);
+  SpiceCell *ids = NULL;
+  int status = tspice_frames_validate_cell_handle(handle, SPICE_INT, "cell", "bltfrm()", &ids, err, errMaxBytes);
+  if (status != 0) return status;
+  bltfrm_c(frameClass, ids);
+  return finish_frame_call(err, errMaxBytes);
+}
+
+int tspice_pxfrm2(const char *from, const char *to, double etfrom, double etto, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (failed_c()) return finish_frame_call(err, errMaxBytes);
+  if (!out || !from || !to) return tspice_frames_invalid_arg(err, errMaxBytes, "Missing pxfrm2 argument storage");
+  // PXFRM2 multiplies two automatic arrays unconditionally. REFCHG can
+  // return without writing one after an orientation error. Preflight both
+  // exact legs in order, under the caller's SPICE lock, before dispatch.
+  if (*from && *to) {
+    integer fromId = 0, toId = 0, j2000 = 1;
+    SpiceDouble scratch[9] = {0};
+    chkin_c("pxfrm2_c");
+    chkin_c("PXFRM2");
+    namfrm_c(from, &fromId);
+    if (!failed_c()) namfrm_c(to, &toId);
+    if (!failed_c() && fromId && toId) {
+      if (fromId == INT_MIN || toId == INT_MIN) {
+        chkout_c("PXFRM2");
+        chkout_c("pxfrm2_c");
+        return tspice_frames_invalid_arg(err, errMaxBytes, "ID outside the N0067 frame hash range");
+      }
+      refchg_(&fromId, &j2000, &etfrom, scratch);
+      if (!failed_c()) refchg_(&j2000, &toId, &etto, scratch);
+    }
+    chkout_c("PXFRM2");
+    chkout_c("pxfrm2_c");
+    if (failed_c()) return finish_frame_call(err, errMaxBytes);
+  }
+  SpiceDouble result[3][3] = {0};
+  pxfrm2_c(from, to, etfrom, etto, result);
+  if (failed_c()) return finish_frame_call(err, errMaxBytes);
+  memcpy(out, result, sizeof(result));
+  return 0;
+}
+
+int tspice_tipbod(const char *ref, int body, double et, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (failed_c()) return finish_frame_call(err, errMaxBytes);
+  if (!out || !ref) return tspice_frames_invalid_arg(err, errMaxBytes, "Missing tipbod argument storage");
+  // ZZHASHI uses signed abs() on the lookup ID.
+  if (body == INT_MIN) return tspice_frames_invalid_arg(err, errMaxBytes, "ID outside the N0067 frame hash range");
+  int status = check_phase_degree(body, err, errMaxBytes);
+  if (status != 0) return status;
+  SpiceDouble result[3][3] = {0};
+  tipbod_c(ref, body, et, result);
+  if (failed_c()) return finish_frame_call(err, errMaxBytes);
+  memcpy(out, result, sizeof(result));
+  return 0;
+}
+
+int tspice_tisbod(const char *ref, int body, double et, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (failed_c()) return finish_frame_call(err, errMaxBytes);
+  if (!out || !ref) return tspice_frames_invalid_arg(err, errMaxBytes, "Missing tisbod argument storage");
+  // ZZHASHI uses signed abs() on the lookup ID.
+  if (body == INT_MIN) return tspice_frames_invalid_arg(err, errMaxBytes, "ID outside the N0067 frame hash range");
+  int status = check_phase_degree(body, err, errMaxBytes);
+  if (status != 0) return status;
+  SpiceDouble result[6][6] = {0};
+  tisbod_c(ref, body, et, result);
+  if (failed_c()) return finish_frame_call(err, errMaxBytes);
+  memcpy(out, result, sizeof(result));
+  return 0;
+}
+
+int tspice_tkfram(int typeId, double *out, int *frame, int *found, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (failed_c()) return finish_frame_call(err, errMaxBytes);
+  if (!out || !frame || !found) return tspice_frames_invalid_arg(err, errMaxBytes, "Missing tkfram argument storage");
+  // ZZHASHI uses signed abs() on the lookup ID.
+  if (typeId == INT_MIN) return tspice_frames_invalid_arg(err, errMaxBytes, "ID outside the N0067 frame hash range");
+  SpiceBoolean hasRotation = SPICEFALSE;
+  SpiceInt baseFrame = 0;
+  *found = 0;
+  SpiceDouble result[3][3] = {0};
+  tkfram_c(typeId, result, &baseFrame, &hasRotation);
+  if (failed_c()) return finish_frame_call(err, errMaxBytes);
+  if (!hasRotation) return 0;
+  *found = 1;
+  *frame = baseFrame;
+  memcpy(out, result, sizeof(result));
+  return 0;
+}
+
+int tspice_xfmsta(const double *state, const char *from, const char *to, const char *body, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (failed_c()) return finish_frame_call(err, errMaxBytes);
+  if (!out || !state || !from || !to || !body) return tspice_frames_invalid_arg(err, errMaxBytes, "Missing xfmsta argument storage");
+  // Only unequal coordinate systems involving a spheroid resolve the body.
+  if (*from && *to && *body && !eqstr_c(from, to) &&
+      (eqstr_c(from, "GEODETIC") || eqstr_c(to, "GEODETIC") ||
+       eqstr_c(from, "PLANETOGRAPHIC") || eqstr_c(to, "PLANETOGRAPHIC"))) {
+    int status = check_body_mapping_codes(err, errMaxBytes);
+    if (status != 0) return status;
+  }
+  SpiceDouble result[6] = {0};
+  xfmsta_c(state, from, to, body, result);
+  if (failed_c()) return finish_frame_call(err, errMaxBytes);
+  memcpy(out, result, sizeof(result));
   return 0;
 }

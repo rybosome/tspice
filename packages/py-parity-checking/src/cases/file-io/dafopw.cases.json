@@ -1,0 +1,415 @@
+[
+  {
+    "caseId": "file-io-dafopw-scratch-reopen-read",
+    "description": "Open a generated SPK for write, navigate its array, close, and reopen the same file for read.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "handleId": "creator",
+        "file": {
+          "kind": "scratch",
+          "rel": "c01-readback.bsp"
+        },
+        "ifname": "TSPICE C01",
+        "ncomch": 0
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "creator",
+        "body": -777777,
+        "center": -99,
+        "frame": "J2000",
+        "first": -1,
+        "last": 1,
+        "segid": "C01 Writeable DAF 08",
+        "degree": 1,
+        "states": [1, 2, 3, 4, 5, 6, 2, 3, 4, 5, 6, 7],
+        "epoch1": -1,
+        "step": 2
+      },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "creator"
+      },
+      {
+        "op": "file-io.dafopw",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c01-readback.bsp"
+        }
+      },
+      {
+        "op": "file-io.dafhsf",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafbbs",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.daffpa",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafgn",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafgs",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafcls",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafopr",
+        "handleId": "reader",
+        "path": {
+          "kind": "scratch",
+          "rel": "c01-readback.bsp"
+        }
+      },
+      {
+        "op": "file-io.dafbfs",
+        "handleId": "reader"
+      },
+      {
+        "op": "file-io.daffna",
+        "handleId": "reader"
+      },
+      {
+        "op": "file-io.dafgn",
+        "handleId": "reader"
+      },
+      {
+        "op": "file-io.dafgs",
+        "handleId": "reader"
+      },
+      {
+        "op": "file-io.dafcls",
+        "handleId": "reader"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dafopw-writer-after-close",
+    "description": "A new write claim is permitted once the prior write claim closes.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "handleId": "creator",
+        "file": {
+          "kind": "scratch",
+          "rel": "c01-write-again.bsp"
+        },
+        "ifname": "TSPICE C01",
+        "ncomch": 0
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "creator",
+        "body": -777777,
+        "center": -99,
+        "frame": "J2000",
+        "first": -1,
+        "last": 1,
+        "segid": "C01 Writeable DAF 08",
+        "degree": 1,
+        "states": [1, 2, 3, 4, 5, 6, 2, 3, 4, 5, 6, 7],
+        "epoch1": -1,
+        "step": 2
+      },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "creator"
+      },
+      {
+        "op": "file-io.dafopw",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c01-write-again.bsp"
+        }
+      },
+      {
+        "op": "file-io.dafcls",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafopw",
+        "handleId": "b",
+        "path": {
+          "kind": "scratch",
+          "rel": "c01-write-again.bsp"
+        }
+      },
+      {
+        "op": "file-io.dafhsf",
+        "handleId": "b"
+      },
+      {
+        "op": "file-io.dafbbs",
+        "handleId": "b"
+      },
+      {
+        "op": "file-io.daffpa",
+        "handleId": "b"
+      },
+      {
+        "op": "file-io.dafgn",
+        "handleId": "b"
+      },
+      {
+        "op": "file-io.dafcls",
+        "handleId": "b"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dafopw-repeated-writer-conflict",
+    "description": "An existing writable claim prevents a second write open on the same generated file.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "handleId": "creator",
+        "file": {
+          "kind": "scratch",
+          "rel": "c01-write-conflict.bsp"
+        },
+        "ifname": "TSPICE C01",
+        "ncomch": 0
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "creator",
+        "body": -777777,
+        "center": -99,
+        "frame": "J2000",
+        "first": -1,
+        "last": 1,
+        "segid": "C01 Writeable DAF 08",
+        "degree": 1,
+        "states": [1, 2, 3, 4, 5, 6, 2, 3, 4, 5, 6, 7],
+        "epoch1": -1,
+        "step": 2
+      },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "creator"
+      },
+      {
+        "op": "file-io.dafopw",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c01-write-conflict.bsp"
+        }
+      },
+      {
+        "op": "file-io.dafopw",
+        "handleId": "b",
+        "path": {
+          "kind": "scratch",
+          "rel": "c01-write-conflict.bsp"
+        }
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["FILEOPENCONFLICT"]
+    }
+  },
+  {
+    "caseId": "file-io-dafopw-read-open-conflict",
+    "description": "A read claim on an existing generated file prevents a write open.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "handleId": "creator",
+        "file": {
+          "kind": "scratch",
+          "rel": "c01-read-conflict.bsp"
+        },
+        "ifname": "TSPICE C01",
+        "ncomch": 0
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "creator",
+        "body": -777777,
+        "center": -99,
+        "frame": "J2000",
+        "first": -1,
+        "last": 1,
+        "segid": "C01 Writeable DAF 08",
+        "degree": 1,
+        "states": [1, 2, 3, 4, 5, 6, 2, 3, 4, 5, 6, 7],
+        "epoch1": -1,
+        "step": 2
+      },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "creator"
+      },
+      {
+        "op": "file-io.dafopr",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c01-read-conflict.bsp"
+        }
+      },
+      {
+        "op": "file-io.dafopw",
+        "handleId": "b",
+        "path": {
+          "kind": "scratch",
+          "rel": "c01-read-conflict.bsp"
+        }
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["FILEOPENCONFLICT"]
+    }
+  },
+  {
+    "caseId": "file-io-dafopw-read-during-write",
+    "description": "Opening an existing file for read while it has a write claim produces the actual read/write conflict.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "handleId": "creator",
+        "file": {
+          "kind": "scratch",
+          "rel": "c01-read-during-write.bsp"
+        },
+        "ifname": "TSPICE C01",
+        "ncomch": 0
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "creator",
+        "body": -777777,
+        "center": -99,
+        "frame": "J2000",
+        "first": -1,
+        "last": 1,
+        "segid": "C01 Writeable DAF 08",
+        "degree": 1,
+        "states": [1, 2, 3, 4, 5, 6, 2, 3, 4, 5, 6, 7],
+        "epoch1": -1,
+        "step": 2
+      },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "creator"
+      },
+      {
+        "op": "file-io.dafopw",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c01-read-during-write.bsp"
+        }
+      },
+      {
+        "op": "file-io.dafopr",
+        "handleId": "b",
+        "path": {
+          "kind": "scratch",
+          "rel": "c01-read-during-write.bsp"
+        }
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["RWCONFLICT"]
+    }
+  },
+  {
+    "caseId": "file-io-dafopw-missing-scratch",
+    "description": "Opening a nonexistent file for write does not create a DAF.",
+    "workflow": [
+      {
+        "op": "file-io.dafopw",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c01-missing.bsp"
+        }
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["FILENOTFOUND"]
+    }
+  },
+  {
+    "caseId": "file-io-dafopw-generated-path-alias",
+    "description": "Resolve the logical SPK writer path to its unique generated scratch file before a DAF write open.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "handleId": "creator",
+        "file": "kernels/c01-generated-alias.bsp",
+        "ifname": "TSPICE C01",
+        "ncomch": 0
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "creator",
+        "body": -777777,
+        "center": -99,
+        "frame": "J2000",
+        "first": -1,
+        "last": 1,
+        "segid": "C01 Writeable DAF 08",
+        "degree": 1,
+        "states": [1, 2, 3, 4, 5, 6, 2, 3, 4, 5, 6, 7],
+        "epoch1": -1,
+        "step": 2
+      },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "creator"
+      },
+      {
+        "op": "file-io.dafopw",
+        "handleId": "a",
+        "path": "kernels/c01-generated-alias.bsp"
+      },
+      {
+        "op": "file-io.dafhsf",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafbbs",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.daffpa",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafgn",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafcls",
+        "handleId": "a"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

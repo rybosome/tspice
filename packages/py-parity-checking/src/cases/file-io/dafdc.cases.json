@@ -1,0 +1,793 @@
+[
+  {
+    "caseId": "file-io-dafdc-empty",
+    "description": "Delete this entire comment area and read a fresh page after reopening. Check the DAF header and surviving arrays.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "handleId": "creator",
+        "file": {
+          "kind": "scratch",
+          "rel": "c03-a.bsp"
+        },
+        "ifname": "C03 AUTHOR",
+        "ncomch": 0
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "creator",
+        "body": -777777,
+        "center": -99,
+        "frame": "J2000",
+        "first": -1,
+        "last": 1,
+        "segid": "C03 -777777",
+        "degree": 1,
+        "states": [1, 2, 3, 4, 5, 6, 2, 3, 4, 5, 6, 7],
+        "epoch1": -1,
+        "step": 2
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "creator",
+        "body": -888888,
+        "center": -99,
+        "frame": "J2000",
+        "first": -1,
+        "last": 1,
+        "segid": "C03 -888888",
+        "degree": 1,
+        "states": [1, 2, 3, 4, 5, 6, 2, 3, 4, 5, 6, 7],
+        "epoch1": -1,
+        "step": 2
+      },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "creator"
+      },
+      {
+        "op": "file-io.dafopw",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c03-a.bsp"
+        }
+      },
+      {
+        "op": "file-io.dafrfr",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafdc",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafrfr",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafcls",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafopr",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c03-a.bsp"
+        }
+      },
+      {
+        "op": "file-io.dafec",
+        "handleId": "a",
+        "bufsiz": 8,
+        "buffln": 72
+      },
+      {
+        "op": "file-io.dafbfs",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.daffna",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafgn",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafgs",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafcls",
+        "handleId": "a"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dafdc-populated",
+    "description": "Delete this entire comment area and read a fresh page after reopening. Check the DAF header and surviving arrays.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "handleId": "creator",
+        "file": {
+          "kind": "scratch",
+          "rel": "c03-a.bsp"
+        },
+        "ifname": "C03 AUTHOR",
+        "ncomch": 0
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "creator",
+        "body": -777777,
+        "center": -99,
+        "frame": "J2000",
+        "first": -1,
+        "last": 1,
+        "segid": "C03 -777777",
+        "degree": 1,
+        "states": [1, 2, 3, 4, 5, 6, 2, 3, 4, 5, 6, 7],
+        "epoch1": -1,
+        "step": 2
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "creator",
+        "body": -888888,
+        "center": -99,
+        "frame": "J2000",
+        "first": -1,
+        "last": 1,
+        "segid": "C03 -888888",
+        "degree": 1,
+        "states": [1, 2, 3, 4, 5, 6, 2, 3, 4, 5, 6, 7],
+        "epoch1": -1,
+        "step": 2
+      },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "creator"
+      },
+      {
+        "op": "file-io.dafopw",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c03-a.bsp"
+        }
+      },
+      {
+        "op": "file-io.dafac",
+        "handleId": "a",
+        "lines": ["a", "b", "c"]
+      },
+      {
+        "op": "file-io.dafrfr",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafdc",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafrfr",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafcls",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafopr",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c03-a.bsp"
+        }
+      },
+      {
+        "op": "file-io.dafec",
+        "handleId": "a",
+        "bufsiz": 8,
+        "buffln": 72
+      },
+      {
+        "op": "file-io.dafbfs",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.daffna",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafgn",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafgs",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafcls",
+        "handleId": "a"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dafdc-reserved-only",
+    "description": "Delete this entire comment area and read a fresh page after reopening. Check the DAF header and surviving arrays.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "handleId": "creator",
+        "file": {
+          "kind": "scratch",
+          "rel": "c03-a.bsp"
+        },
+        "ifname": "C03 AUTHOR",
+        "ncomch": 2000
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "creator",
+        "body": -777777,
+        "center": -99,
+        "frame": "J2000",
+        "first": -1,
+        "last": 1,
+        "segid": "C03 -777777",
+        "degree": 1,
+        "states": [1, 2, 3, 4, 5, 6, 2, 3, 4, 5, 6, 7],
+        "epoch1": -1,
+        "step": 2
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "creator",
+        "body": -888888,
+        "center": -99,
+        "frame": "J2000",
+        "first": -1,
+        "last": 1,
+        "segid": "C03 -888888",
+        "degree": 1,
+        "states": [1, 2, 3, 4, 5, 6, 2, 3, 4, 5, 6, 7],
+        "epoch1": -1,
+        "step": 2
+      },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "creator"
+      },
+      {
+        "op": "file-io.dafopw",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c03-a.bsp"
+        }
+      },
+      {
+        "op": "file-io.dafrfr",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafdc",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafrfr",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafcls",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafopr",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c03-a.bsp"
+        }
+      },
+      {
+        "op": "file-io.dafec",
+        "handleId": "a",
+        "bufsiz": 8,
+        "buffln": 72
+      },
+      {
+        "op": "file-io.dafbfs",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.daffna",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafgn",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafgs",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafcls",
+        "handleId": "a"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dafdc-spanning",
+    "description": "Delete this entire comment area and read a fresh page after reopening. Check the DAF header and surviving arrays.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "handleId": "creator",
+        "file": {
+          "kind": "scratch",
+          "rel": "c03-a.bsp"
+        },
+        "ifname": "C03 AUTHOR",
+        "ncomch": 0
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "creator",
+        "body": -777777,
+        "center": -99,
+        "frame": "J2000",
+        "first": -1,
+        "last": 1,
+        "segid": "C03 -777777",
+        "degree": 1,
+        "states": [1, 2, 3, 4, 5, 6, 2, 3, 4, 5, 6, 7],
+        "epoch1": -1,
+        "step": 2
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "creator",
+        "body": -888888,
+        "center": -99,
+        "frame": "J2000",
+        "first": -1,
+        "last": 1,
+        "segid": "C03 -888888",
+        "degree": 1,
+        "states": [1, 2, 3, 4, 5, 6, 2, 3, 4, 5, 6, 7],
+        "epoch1": -1,
+        "step": 2
+      },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "creator"
+      },
+      {
+        "op": "file-io.dafopw",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c03-a.bsp"
+        }
+      },
+      {
+        "op": "file-io.dafac",
+        "handleId": "a",
+        "lines": [
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "third"
+        ]
+      },
+      {
+        "op": "file-io.dafrfr",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafdc",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafrfr",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafcls",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafopr",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c03-a.bsp"
+        }
+      },
+      {
+        "op": "file-io.dafec",
+        "handleId": "a",
+        "bufsiz": 8,
+        "buffln": 72
+      },
+      {
+        "op": "file-io.dafbfs",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.daffna",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafgn",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafgs",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafcls",
+        "handleId": "a"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dafdc-repeat-and-append",
+    "description": "Delete twice, append again, and observe only the new lines on the independent read claim.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "handleId": "creator",
+        "file": {
+          "kind": "scratch",
+          "rel": "c03-a.bsp"
+        },
+        "ifname": "C03 AUTHOR",
+        "ncomch": 0
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "creator",
+        "body": -777777,
+        "center": -99,
+        "frame": "J2000",
+        "first": -1,
+        "last": 1,
+        "segid": "C03 -777777",
+        "degree": 1,
+        "states": [1, 2, 3, 4, 5, 6, 2, 3, 4, 5, 6, 7],
+        "epoch1": -1,
+        "step": 2
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "creator",
+        "body": -888888,
+        "center": -99,
+        "frame": "J2000",
+        "first": -1,
+        "last": 1,
+        "segid": "C03 -888888",
+        "degree": 1,
+        "states": [1, 2, 3, 4, 5, 6, 2, 3, 4, 5, 6, 7],
+        "epoch1": -1,
+        "step": 2
+      },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "creator"
+      },
+      {
+        "op": "file-io.dafopw",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c03-a.bsp"
+        }
+      },
+      {
+        "op": "file-io.dafac",
+        "handleId": "a",
+        "lines": ["old"]
+      },
+      {
+        "op": "file-io.dafdc",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafdc",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafac",
+        "handleId": "a",
+        "lines": [" new ", " !"]
+      },
+      {
+        "op": "file-io.dafcls",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafopr",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c03-a.bsp"
+        }
+      },
+      {
+        "op": "file-io.dafec",
+        "handleId": "a",
+        "bufsiz": 8,
+        "buffln": 72
+      },
+      {
+        "op": "file-io.dafcls",
+        "handleId": "a"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dafdc-independent-files",
+    "description": "Delete one of two writable files and observe both comment areas after reopening.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "handleId": "creator",
+        "file": {
+          "kind": "scratch",
+          "rel": "c03-a.bsp"
+        },
+        "ifname": "C03 AUTHOR",
+        "ncomch": 0
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "creator",
+        "body": -777777,
+        "center": -99,
+        "frame": "J2000",
+        "first": -1,
+        "last": 1,
+        "segid": "C03 -777777",
+        "degree": 1,
+        "states": [1, 2, 3, 4, 5, 6, 2, 3, 4, 5, 6, 7],
+        "epoch1": -1,
+        "step": 2
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "creator",
+        "body": -888888,
+        "center": -99,
+        "frame": "J2000",
+        "first": -1,
+        "last": 1,
+        "segid": "C03 -888888",
+        "degree": 1,
+        "states": [1, 2, 3, 4, 5, 6, 2, 3, 4, 5, 6, 7],
+        "epoch1": -1,
+        "step": 2
+      },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "creator"
+      },
+      {
+        "op": "file-io.dafopw",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c03-a.bsp"
+        }
+      },
+      {
+        "op": "file-io.dafac",
+        "handleId": "a",
+        "lines": ["A", "a"]
+      },
+      {
+        "op": "ephemeris.spkopn",
+        "handleId": "creator",
+        "file": {
+          "kind": "scratch",
+          "rel": "c03-b.bsp"
+        },
+        "ifname": "C03 AUTHOR",
+        "ncomch": 0
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "creator",
+        "body": -777777,
+        "center": -99,
+        "frame": "J2000",
+        "first": -1,
+        "last": 1,
+        "segid": "C03 -777777",
+        "degree": 1,
+        "states": [1, 2, 3, 4, 5, 6, 2, 3, 4, 5, 6, 7],
+        "epoch1": -1,
+        "step": 2
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "creator",
+        "body": -888888,
+        "center": -99,
+        "frame": "J2000",
+        "first": -1,
+        "last": 1,
+        "segid": "C03 -888888",
+        "degree": 1,
+        "states": [1, 2, 3, 4, 5, 6, 2, 3, 4, 5, 6, 7],
+        "epoch1": -1,
+        "step": 2
+      },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "creator"
+      },
+      {
+        "op": "file-io.dafopw",
+        "handleId": "b",
+        "path": {
+          "kind": "scratch",
+          "rel": "c03-b.bsp"
+        }
+      },
+      {
+        "op": "file-io.dafac",
+        "handleId": "b",
+        "lines": ["B"]
+      },
+      {
+        "op": "file-io.dafdc",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafcls",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafopr",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c03-a.bsp"
+        }
+      },
+      {
+        "op": "file-io.dafcls",
+        "handleId": "b"
+      },
+      {
+        "op": "file-io.dafopr",
+        "handleId": "b",
+        "path": {
+          "kind": "scratch",
+          "rel": "c03-b.bsp"
+        }
+      },
+      {
+        "op": "file-io.dafec",
+        "handleId": "a",
+        "bufsiz": 8,
+        "buffln": 72
+      },
+      {
+        "op": "file-io.dafec",
+        "handleId": "b",
+        "bufsiz": 8,
+        "buffln": 72
+      },
+      {
+        "op": "file-io.dafcls",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafcls",
+        "handleId": "b"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dafdc-read-only",
+    "description": "Deletion requires a writable file even when its comment area is empty.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "handleId": "creator",
+        "file": {
+          "kind": "scratch",
+          "rel": "c03-a.bsp"
+        },
+        "ifname": "C03 AUTHOR",
+        "ncomch": 0
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "creator",
+        "body": -777777,
+        "center": -99,
+        "frame": "J2000",
+        "first": -1,
+        "last": 1,
+        "segid": "C03 -777777",
+        "degree": 1,
+        "states": [1, 2, 3, 4, 5, 6, 2, 3, 4, 5, 6, 7],
+        "epoch1": -1,
+        "step": 2
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "creator",
+        "body": -888888,
+        "center": -99,
+        "frame": "J2000",
+        "first": -1,
+        "last": 1,
+        "segid": "C03 -888888",
+        "degree": 1,
+        "states": [1, 2, 3, 4, 5, 6, 2, 3, 4, 5, 6, 7],
+        "epoch1": -1,
+        "step": 2
+      },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "creator"
+      },
+      {
+        "op": "file-io.dafopw",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c03-a.bsp"
+        }
+      },
+      {
+        "op": "file-io.dafcls",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafopr",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c03-a.bsp"
+        }
+      },
+      {
+        "op": "file-io.dafdc",
+        "handleId": "a"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["DAFINVALIDACCESS"]
+    }
+  }
+]

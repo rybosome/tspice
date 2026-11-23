@@ -1,4 +1,6 @@
 import {
+  releaseClientEkLoads,
+  releaseClientTextReaders,
   createSpice,
   createSpiceAsync,
   type CreateSpiceAsyncOptions,
@@ -420,6 +422,10 @@ function createBuilder(state: BuilderState): SpiceClientsBuilder {
             }
           }
 
+          // Release explicitly loaded query files before KEEPER removes staged paths.
+          releaseClientEkLoads(baseSpice);
+          // Close this client’s remaining shared text-reader claims before deleting staged paths.
+          releaseClientTextReaders(baseSpice);
           // In-process: best-effort kernel cleanup.
           try {
             raw.kit.kclear();
@@ -493,6 +499,10 @@ function createBuilder(state: BuilderState): SpiceClientsBuilder {
             }
           }
 
+          // Release explicitly loaded query files before KEEPER removes staged paths.
+          releaseClientEkLoads(baseSpice);
+          // Close this client’s remaining shared text-reader claims before deleting staged paths.
+          releaseClientTextReaders(baseSpice);
           // In-process: best-effort kernel cleanup.
           try {
             await spice.kit.kclear();

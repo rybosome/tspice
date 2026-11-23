@@ -13,6 +13,27 @@ import type {
   StepEkEkifld,
   StepEkEknseg,
   StepEkEkntab,
+  StepEkEkops,
+  StepEkEkbseg,
+  StepEkEkappr,
+  StepEkEkinsr,
+  StepEkEkdelr,
+  StepEkEkacec,
+  StepEkEkaced,
+  StepEkEkacei,
+  StepEkEkrcec,
+  StepEkEkrced,
+  StepEkEkrcei,
+  StepEkEkucec,
+  StepEkEkuced,
+  StepEkEkucei,
+  StepEkEkccnt,
+  StepEkEkcii,
+  StepEkEklef,
+  StepEkEknelt,
+  StepEkEkpsel,
+  StepEkEkssum,
+  StepEkEkuef,
   StepEkEkopn,
   StepEkEkopr,
   StepEkEkopw,
@@ -32,6 +53,27 @@ import {
 import { normalizePathRefRelativePath } from "../../runtime/path-ref.js";
 
 type EkStep =
+  | StepEkEkops
+  | StepEkEkbseg
+  | StepEkEkappr
+  | StepEkEkinsr
+  | StepEkEkdelr
+  | StepEkEkacec
+  | StepEkEkaced
+  | StepEkEkacei
+  | StepEkEkrcec
+  | StepEkEkrced
+  | StepEkEkrcei
+  | StepEkEkucec
+  | StepEkEkuced
+  | StepEkEkucei
+  | StepEkEkccnt
+  | StepEkEkcii
+  | StepEkEklef
+  | StepEkEknelt
+  | StepEkEkpsel
+  | StepEkEkssum
+  | StepEkEkuef
   | StepEkEkopn
   | StepEkEkopr
   | StepEkEkopw
@@ -66,6 +108,187 @@ function resolveEkPath(rawPath: PathRefLike): string {
 /** Execute one `ek.*` workflow step in tspice. */
 export function runEkStep(context: RunTspiceContext, step: EkStep): StepOutput {
   switch (step.op) {
+    case "ek.ekops": {
+      registerEkHandle(context, step.handleId, context.spice.raw.ekops());
+      return { op: step.op, value: { handleId: step.handleId } };
+    }
+    case "ek.ekbseg": {
+      return {
+        op: step.op,
+        value: context.spice.raw.ekbseg(
+          requireEkHandle(context, step.handleId),
+          step.tabnam,
+          step.cnames,
+          step.decls,
+        ),
+      };
+    }
+    case "ek.ekappr": {
+      return {
+        op: step.op,
+        value: context.spice.raw.ekappr(
+          requireEkHandle(context, step.handleId),
+          step.segno,
+        ),
+      };
+    }
+    case "ek.ekinsr": {
+      context.spice.raw.ekinsr(
+        requireEkHandle(context, step.handleId),
+        step.segno,
+        step.recno,
+      );
+      return { op: step.op, value: null };
+    }
+    case "ek.ekdelr": {
+      context.spice.raw.ekdelr(
+        requireEkHandle(context, step.handleId),
+        step.segno,
+        step.recno,
+      );
+      return { op: step.op, value: null };
+    }
+    case "ek.ekacec": {
+      context.spice.raw.ekacec(
+        requireEkHandle(context, step.handleId),
+        step.segno,
+        step.recno,
+        step.column,
+        step.values,
+        step.isNull,
+      );
+      return { op: step.op, value: null };
+    }
+    case "ek.ekaced": {
+      context.spice.raw.ekaced(
+        requireEkHandle(context, step.handleId),
+        step.segno,
+        step.recno,
+        step.column,
+        step.values,
+        step.isNull,
+      );
+      return { op: step.op, value: null };
+    }
+    case "ek.ekacei": {
+      context.spice.raw.ekacei(
+        requireEkHandle(context, step.handleId),
+        step.segno,
+        step.recno,
+        step.column,
+        step.values,
+        step.isNull,
+      );
+      return { op: step.op, value: null };
+    }
+    case "ek.ekrcec": {
+      return {
+        op: step.op,
+        value: context.spice.raw.ekrcec(
+          requireEkHandle(context, step.handleId),
+          step.segno,
+          step.recno,
+          step.column,
+          step.lenout,
+        ),
+      };
+    }
+    case "ek.ekrced": {
+      return {
+        op: step.op,
+        value: context.spice.raw.ekrced(
+          requireEkHandle(context, step.handleId),
+          step.segno,
+          step.recno,
+          step.column,
+        ),
+      };
+    }
+    case "ek.ekrcei": {
+      return {
+        op: step.op,
+        value: context.spice.raw.ekrcei(
+          requireEkHandle(context, step.handleId),
+          step.segno,
+          step.recno,
+          step.column,
+        ),
+      };
+    }
+    case "ek.ekucec": {
+      context.spice.raw.ekucec(
+        requireEkHandle(context, step.handleId),
+        step.segno,
+        step.recno,
+        step.column,
+        step.values,
+        step.isNull,
+      );
+      return { op: step.op, value: null };
+    }
+    case "ek.ekuced": {
+      context.spice.raw.ekuced(
+        requireEkHandle(context, step.handleId),
+        step.segno,
+        step.recno,
+        step.column,
+        step.values,
+        step.isNull,
+      );
+      return { op: step.op, value: null };
+    }
+    case "ek.ekucei": {
+      context.spice.raw.ekucei(
+        requireEkHandle(context, step.handleId),
+        step.segno,
+        step.recno,
+        step.column,
+        step.values,
+        step.isNull,
+      );
+      return { op: step.op, value: null };
+    }
+    case "ek.ekccnt": {
+      return { op: step.op, value: context.spice.raw.ekccnt(step.table) };
+    }
+    case "ek.ekcii": {
+      return {
+        op: step.op,
+        value: context.spice.raw.ekcii(step.table, step.cindex, step.collen),
+      };
+    }
+    case "ek.eklef": {
+      if (context.state.ek.handles.has(step.handleId))
+        throw new Error("Duplicate EK workflow handle");
+      const h = context.spice.raw.eklef(resolveEkPath(step.path));
+      registerEkHandle(context, step.handleId, h, true);
+      return { op: step.op, value: { handleId: step.handleId } };
+    }
+    case "ek.eknelt": {
+      return {
+        op: step.op,
+        value: context.spice.raw.eknelt(step.selidx, step.row),
+      };
+    }
+    case "ek.ekpsel": {
+      return { op: step.op, value: context.spice.raw.ekpsel(step.query) };
+    }
+    case "ek.ekssum": {
+      return {
+        op: step.op,
+        value: context.spice.raw.ekssum(
+          requireEkHandle(context, step.handleId),
+          step.segno,
+        ),
+      };
+    }
+    case "ek.ekuef": {
+      const h = requireEkHandle(context, step.handleId);
+      context.spice.raw.ekuef(h);
+      for (const [id, token] of context.state.ek.handles)
+        if (token === h) context.state.ek.handles.delete(id);
+      return { op: step.op, value: null };
+    }
     case "ek.ekopn": {
       const handle = context.spice.raw.ekopn(
         resolveEkPath(step.path),

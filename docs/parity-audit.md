@@ -430,3 +430,93 @@ Parent A18 executions remain historical on their original source.
 ## Character list parsing
 
 B04 adds LPARSS on the A20 string parsing prerequisite. The reference shares one independent cell across steps so both replacement and empty-list insertion are observable. [Semantics and evidence](step8-string-set.md)
+
+## Surface-name translations
+
+D04 covers four surface-name and code translations in 46 registered workflows.
+The audit checks complete output text, separate name and found flags, pool
+precedence and refresh, byte capacities and genuine malformed-table errors.
+[Surface translation semantics and supported bounds](step8-surface-names.md)
+
+## Spacecraft clock details
+
+Four new time routines use 49 registered workflows. The SCE2T route is a
+reviewed SPICELIB alias with initialized result storage and an independent
+oracle. The other three use their corresponding public CSPICE entrypoints.
+[Clock routes, fixtures and numerical bounds](step8-sclk-additions.md)
+
+## Frame metadata and transformations
+
+D03 adds six methods to the 162-routine baseline, including the two-epoch orientation error guard. [Scientific and lifecycle evidence](step8-frame-metadata.md) [Routine audit](../data/parity-audits/d03-frame-additions.json)
+
+## Civil time and local solar time expansion
+
+D01 adds five time methods to the immutable 162-routine Step 7 assignment. The reviewed source covers parser effects, exact text, leap-second increments, independent geometry, kernel/error order and safe representation boundaries. Older executions remain tied to their original sources. [Scientific observations and fixture provenance](step8-civil-time.md) [Maintained routine review](../data/parity-audits/d01-time-additions.json)
+
+## DAF navigation
+
+Eight new file operations cover reverse and interleaved searches, owned handles,
+array names, binary summaries, file dimensions and write-open access. The
+independent oracle follows the same pinned SPICELIB operation for DAFFPA and
+reads exact CSPICE bytes for DAFGN. Each backend judgment is source-bound.
+[DAF routes, state, fixtures and focused evidence](step8-daf-navigation.md)
+
+## DAF records
+
+C02 adds summary packing and unpacking, physical summary records, file headers and two address-read routines. The 42 registered workflows contain 198 steps and 103 calls to these routines. Five expected errors come from CSPICE and four from closed-handle checks. [DAF records and format restrictions](step8-daf-records.md) [Routine audit](../data/parity-audits/c02-daf-records.json)
+
+## DAF mutation
+
+C03 adds comment appending, deletion and paging, plus packed summary replacement against a selected writable array. The workflows use separately created scratch DAFs. Independent readers inspect both backends’ completed output files. [Mutation semantics and measurements](step8-daf-mutation.md) [Routine audit](../data/parity-audits/c03-daf-mutation.json)
+
+## DAS creation and file state
+
+C04 adds nine raw DAS operations to the original 162-routine surface. The reviewed scientific coverage includes 46 workflows, 133 new-method calls and 13 expected diagnostic exits. [Lifecycle and data persistence](step8-das-lifecycle.md) [Per-routine record](../data/parity-audits/c04-das-lifecycle.json)
+
+## DAS comment records
+
+The C06 workflows exercise separately created and reopened DAS files, packed fixed-width input rows, shared-reader paging and file-data relocation. Both writers exchange persisted files with an independent SpiceyPy process. [DAS comment observations](step8-das-comments.md) [Routine audit](../data/parity-audits/c06-das-comments.json)
+
+## DAS typed data transfers
+
+C05 adds nine routines on the C04 file lifecycle. All 54 registered workflows compare actual logical data and diagnostics through the locked oracle. Public cross-reads also inspect independently authored persisted files on both backends. [Binary data, address boundaries and physical padding](step8-das-data.md) [Per-routine record](../data/parity-audits/c05-das-data.json)
+
+## DLA linked segments
+
+C07 uses the C04 lifecycle and C05 typed component writers to construct generic, independent multi-segment DLAs. Both writer and reader directions compare every descriptor word and constituent value. [Segment layout, errors and runtime evidence](step8-dla-segments.md) [Routine audit](../data/parity-audits/c07-dla-segments.json)
+
+## Binary PCK orientation files
+
+The seven C11 routines use independent binary fixtures and writers. Both compiled backends export physical DAF records for an independent reader and evaluate complete state and rotation matrices. [Binary PCK behavior and scoped observations](step8-pck-binary.md) [Per-routine audit](../data/parity-audits/c11-pck-binary.json)
+
+## CK writer lifecycle and segment formats
+
+C12 writes binary CK files through both compiled backends, reads complete independent pointing and angular velocity results, and exports complete physical segments for separate SpiceyPy readback. [Record layouts and source limits](step8-ck-writers.md) [Per-routine audit](../data/parity-audits/c12-ck-writers.json)
+
+## EK scratch files and record edits
+
+C08 compares the five added record routines through 38 workflows and reads independent completed EKs across the actual backends. [Scratch lifecycle, file schema and indexed deletion](step8-ek-records.md) [Per-routine audit](../data/parity-audits/c08-ek-records.json)
+
+## Physical EK entry values
+
+C09 compares nine typed record operations through independently created, updated and reopened EK files. [Entry semantics, canonical error handling and observed cross-file persistence](step8-ek-entries.md) [Per-routine evidence](../data/parity-audits/c09-ek-entries.json)
+
+## CK frame and record access
+
+C13 compares complete CK rotations, state transforms, metadata IDs and type 2/3 records against locked SpiceyPy, with independent physical units and cursor checks. [Scientific evidence and fixture provenance](step8-ck-records.md) [Per-routine judgments](../data/parity-audits/c13-ck-records.json)
+
+## Event kernel metadata
+
+C10 compares loaded tables, physical segment descriptors, SELECT projections, result extents and direct EK lifecycle across independent toolkits. [Metadata findings and acceptance evidence](step8-ek-metadata.md) [Per-routine audit](../data/parity-audits/c10-ek-metadata.json)
+
+## Text readers and command initialization
+
+C14 checks physical record boundaries, errors, shared cursor cleanup and the once-per-runtime command state. [Source review and test observations](step8-text-command-state.md) [Per-routine audit](../data/parity-audits/c14-text-command-state.json)
+
+## Diagnostic substitution and traceback observation
+
+B06 adds seven routines with 33 workflows, 767 steps, 92 target calls and 10 expected diagnostics. Complete messages, current and frozen trace and the immediate-return indicator are compared. [State, cleanup and independent evidence](step8-error-observation.md)
+
+## Error devices, print masks and traceback lifetime
+
+Three canonical controls add 29 isolated workflows, 161 steps and 114 targeted calls, including 10 terminal diagnostics. Dedicated children compare byte-exact reports and irreversible trace behavior against the independent N0067 toolkit. [Policy evidence](step8-error-devices.md)

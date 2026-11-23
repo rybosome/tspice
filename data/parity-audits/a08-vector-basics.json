@@ -620,7 +620,8 @@
       ],
       "id": "local-cp02-44c6136d16c7-node",
       "kind": "local",
-      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 44c6136d16c7325e07e5e233988ffb02dab543ee. The native-required lane completed 5264 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45043538272/job/137273010344"
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 44c6136d16c7325e07e5e233988ffb02dab543ee. The native-required lane completed 5264 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45043538272/job/137273010344",
+      "historical": true
     },
     {
       "backend": "node",
@@ -666,7 +667,8 @@
       "kind": "ci",
       "commit": "b826f8e1b3d9afff24f291c885b6380ff82a8689",
       "url": "https://github.com/rybosome/tspice/actions/runs/45048703356/job/137288855808",
-      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 5264 live comparisons without unexpected skips."
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 5264 live comparisons without unexpected skips.",
+      "historical": true
     },
     {
       "backend": "wasm",
@@ -710,7 +712,8 @@
       ],
       "id": "local-cp02-44c6136d16c7-wasm",
       "kind": "local",
-      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 44c6136d16c7325e07e5e233988ffb02dab543ee. The native-required lane completed 5264 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45043538272/job/137273010344"
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 44c6136d16c7325e07e5e233988ffb02dab543ee. The native-required lane completed 5264 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45043538272/job/137273010344",
+      "historical": true
     },
     {
       "backend": "wasm",
@@ -756,7 +759,8 @@
       "kind": "ci",
       "commit": "b826f8e1b3d9afff24f291c885b6380ff82a8689",
       "url": "https://github.com/rybosome/tspice/actions/runs/45048703356/job/137288855808",
-      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 5264 live comparisons without unexpected skips."
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 5264 live comparisons without unexpected skips.",
+      "historical": true
     }
   ],
   "routines": [
@@ -768,22 +772,33 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-vdist-mixed-and-reversed",
-          "coverage": ["success"],
+          "coverage": [
+            "success"
+          ],
           "observes": "Compare scalar distance for asymmetric mixed components in both operand orders; a dot product, omitted component or sign mistake gives a different value. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; all result fields are retained."
         },
         {
           "caseId": "coords-vectors-vdist-identical-and-zero",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe exact zero for equal vectors and the complete norm to/from the origin. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; all result fields are retained."
         },
         {
           "caseId": "coords-vectors-vdist-scaled-magnitudes",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Compare tiny/huge distance outputs; focused scale-normalized assertions separately prevent accepting zero for tiny distance. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; all result fields are retained."
         },
         {
           "caseId": "coords-vectors-vdist-nearby-large-components",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe the 13-unit difference between vectors near 1e15, retaining cancellation before norm computation. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; all result fields are retained."
         }
       ],
@@ -805,7 +820,9 @@
             "packages/backend-node/test/vector-basics-domain.test.ts",
             "packages/backend-wasm/test/vector-basics-allocations.test.ts"
           ],
-          "caseIds": ["coords-vectors-vdist-mixed-and-reversed"]
+          "caseIds": [
+            "coords-vectors-vdist-mixed-and-reversed"
+          ]
         }
       ],
       "backends": {
@@ -820,14 +837,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vdist -> Node typed adapter -> registered native handler under global CSPICE mutex -> tspice_vdist shared C shim -> vdist_c; complete scalar/vector/object result copied and propagated.",
-          "executions": [
-            "local-cp02-44c6136d16c7-node",
-            "ci-cp02-44c6136d16c7-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -840,14 +855,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vdist -> WASM typed adapter -> configured _tspice_vdist export -> tspice_vdist shared C shim -> vdist_c; all result components copied from typed heap storage before withAllocs cleanup. Binary regeneration/export and execution verification remain required.",
-          "executions": [
-            "local-cp02-44c6136d16c7-wasm",
-            "ci-cp02-44c6136d16c7-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -859,17 +872,25 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-vequ-ordered-mixed-components",
-          "coverage": ["success"],
+          "coverage": [
+            "success"
+          ],
           "observes": "Observe each copied component in its original position and sign; no vector normalization. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; all result fields are retained."
         },
         {
           "caseId": "coords-vectors-vequ-zero-and-axes",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe all-zero and a single negative-axis component. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; all result fields are retained."
         },
         {
           "caseId": "coords-vectors-vequ-finite-extremes",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Retain maximum doubles, minimum subnormal and mixed magnitudes; the focused live test compares these complete outputs exactly. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; all result fields are retained."
         }
       ],
@@ -891,7 +912,9 @@
             "packages/backend-node/test/vector-basics-domain.test.ts",
             "packages/backend-wasm/test/vector-basics-allocations.test.ts"
           ],
-          "caseIds": ["coords-vectors-vequ-ordered-mixed-components"]
+          "caseIds": [
+            "coords-vectors-vequ-ordered-mixed-components"
+          ]
         }
       ],
       "backends": {
@@ -906,14 +929,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vequ -> Node typed adapter -> registered native handler under global CSPICE mutex -> tspice_vequ shared C shim -> vequ_c; complete scalar/vector/object result copied and propagated.",
-          "executions": [
-            "local-cp02-44c6136d16c7-node",
-            "ci-cp02-44c6136d16c7-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -926,14 +947,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vequ -> WASM typed adapter -> configured _tspice_vequ export -> tspice_vequ shared C shim -> vequ_c; all result components copied from typed heap storage before withAllocs cleanup. Binary regeneration/export and execution verification remain required.",
-          "executions": [
-            "local-cp02-44c6136d16c7-wasm",
-            "ci-cp02-44c6136d16c7-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -945,17 +964,25 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-vpack-ordered-mixed-components",
-          "coverage": ["success"],
+          "coverage": [
+            "success"
+          ],
           "observes": "Observe x/y/z scalar order in all three output slots. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; all result fields are retained."
         },
         {
           "caseId": "coords-vectors-vpack-zero-and-axes",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe exact zero slots and negative y-axis placement. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; all result fields are retained."
         },
         {
           "caseId": "coords-vectors-vpack-finite-extremes",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Retain maximum doubles, minimum subnormal and mixed magnitudes in their intended slots; exact focused live comparison supplements tolerance. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; all result fields are retained."
         }
       ],
@@ -977,14 +1004,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vpack -> Node typed adapter -> registered native handler under global CSPICE mutex -> tspice_vpack shared C shim -> vpack_c; complete scalar/vector/object result copied and propagated.",
-          "executions": [
-            "local-cp02-44c6136d16c7-node",
-            "ci-cp02-44c6136d16c7-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -996,14 +1021,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vpack -> WASM typed adapter -> configured _tspice_vpack export -> tspice_vpack shared C shim -> vpack_c; all result components copied from typed heap storage before withAllocs cleanup. Binary regeneration/export and execution verification remain required.",
-          "executions": [
-            "local-cp02-44c6136d16c7-wasm",
-            "ci-cp02-44c6136d16c7-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1015,17 +1038,25 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-vupack-ordered-mixed-components",
-          "coverage": ["success"],
+          "coverage": [
+            "success"
+          ],
           "observes": "Observe each vector slot as its corresponding named x/y/z field. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; all result fields are retained."
         },
         {
           "caseId": "coords-vectors-vupack-zero-and-axes",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe all named zero fields and a negative y value. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; all result fields are retained."
         },
         {
           "caseId": "coords-vectors-vupack-finite-extremes",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe maximum/subnormal/mixed values in every named field, with exact focused live comparison. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; all result fields are retained."
         }
       ],
@@ -1047,7 +1078,9 @@
             "packages/backend-node/test/vector-basics-domain.test.ts",
             "packages/backend-wasm/test/vector-basics-allocations.test.ts"
           ],
-          "caseIds": ["coords-vectors-vupack-ordered-mixed-components"]
+          "caseIds": [
+            "coords-vectors-vupack-ordered-mixed-components"
+          ]
         }
       ],
       "backends": {
@@ -1062,14 +1095,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vupack -> Node typed adapter -> registered native handler under global CSPICE mutex -> tspice_vupack shared C shim -> vupack_c; complete scalar/vector/object result copied and propagated.",
-          "executions": [
-            "local-cp02-44c6136d16c7-node",
-            "ci-cp02-44c6136d16c7-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1082,14 +1113,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vupack -> WASM typed adapter -> configured _tspice_vupack export -> tspice_vupack shared C shim -> vupack_c; all result components copied from typed heap storage before withAllocs cleanup. Binary regeneration/export and execution verification remain required.",
-          "executions": [
-            "local-cp02-44c6136d16c7-wasm",
-            "ci-cp02-44c6136d16c7-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1101,22 +1130,34 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-vzero-zero",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe the true result for exactly zero in all slots. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; all result fields are retained."
         },
         {
           "caseId": "coords-vectors-vzero-each-nonzero-slot",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe false separately when x, y or z alone is nonzero. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; all result fields are retained."
         },
         {
           "caseId": "coords-vectors-vzero-subnormal-nonzero",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe false for the minimum nonzero double in each slot, including a negative component. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; all result fields are retained."
         },
         {
           "caseId": "coords-vectors-vzero-mixed-components",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe false for cancelling mixed signs and huge components; a sum-based predicate would incorrectly accept one case. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; all result fields are retained."
         }
       ],
@@ -1138,7 +1179,9 @@
             "packages/backend-node/test/vector-basics-domain.test.ts",
             "packages/backend-wasm/test/vector-basics-allocations.test.ts"
           ],
-          "caseIds": ["coords-vectors-vzero-zero"]
+          "caseIds": [
+            "coords-vectors-vzero-zero"
+          ]
         }
       ],
       "backends": {
@@ -1153,14 +1196,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vzero -> Node typed adapter -> registered native handler under global CSPICE mutex -> tspice_vzero shared C shim -> vzero_c; complete scalar/vector/object result copied and propagated.",
-          "executions": [
-            "local-cp02-44c6136d16c7-node",
-            "ci-cp02-44c6136d16c7-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1173,14 +1214,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vzero -> WASM typed adapter -> configured _tspice_vzero export -> tspice_vzero shared C shim -> vzero_c; all result components copied from typed heap storage before withAllocs cleanup. Binary regeneration/export and execution verification remain required.",
-          "executions": [
-            "local-cp02-44c6136d16c7-wasm",
-            "ci-cp02-44c6136d16c7-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1192,22 +1231,33 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-unorm-mixed-and-negative",
-          "coverage": ["success"],
+          "coverage": [
+            "success"
+          ],
           "observes": "Compare all unit direction components and norm together, distinguishing sign loss or output swaps. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; all result fields are retained."
         },
         {
           "caseId": "coords-vectors-unorm-zero-and-axes",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Compare the zero result and each signed-axis unit vector plus its magnitude. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; all result fields are retained."
         },
         {
           "caseId": "coords-vectors-unorm-scaled-magnitudes",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Compare order-one directions and tiny/huge norms; focused norm/scale assertions separately distinguish a zero norm. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; all result fields are retained."
         },
         {
           "caseId": "coords-vectors-unorm-subnormal-axis",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Compare the nonzero unit direction for a minimum-subnormal component; exact focused norm assertion supplements the small scalar comparison. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; all result fields are retained."
         }
       ],
@@ -1229,7 +1279,9 @@
             "packages/backend-node/test/vector-basics-domain.test.ts",
             "packages/backend-wasm/test/vector-basics-allocations.test.ts"
           ],
-          "caseIds": ["coords-vectors-unorm-mixed-and-negative"]
+          "caseIds": [
+            "coords-vectors-unorm-mixed-and-negative"
+          ]
         }
       ],
       "backends": {
@@ -1244,14 +1296,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.unorm -> Node typed adapter -> registered native handler under global CSPICE mutex -> tspice_unorm shared C shim -> unorm_c; complete scalar/vector/object result copied and propagated.",
-          "executions": [
-            "local-cp02-44c6136d16c7-node",
-            "ci-cp02-44c6136d16c7-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1264,14 +1314,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.unorm -> WASM typed adapter -> configured _tspice_unorm export -> tspice_unorm shared C shim -> unorm_c; all result components copied from typed heap storage before withAllocs cleanup. Binary regeneration/export and execution verification remain required.",
-          "executions": [
-            "local-cp02-44c6136d16c7-wasm",
-            "ci-cp02-44c6136d16c7-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1283,27 +1331,41 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-ucrss-mixed-handedness",
-          "coverage": ["success"],
+          "coverage": [
+            "success"
+          ],
           "observes": "Compare all normalized cross components and sign reversal after swapping operands. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; all result fields are retained."
         },
         {
           "caseId": "coords-vectors-ucrss-zero-parallel-opposed",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Compare the zero-vector result for either zero input and [1,2,4] paired with [2,4,8] or [-2,-4,-8]. The scaled components [1/4,1/2,1] have exactly representable products, exercising the computed-zero branch without the compiler-dependent thirds-product residual documented for the original inputs. The tspice dispatcher invokes raw.ucrss and the independent sidecar invokes locked SpiceyPy ucrss; all three output components are retained with no tolerance exception."
         },
         {
           "caseId": "coords-vectors-ucrss-axis-handedness",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe opposite signed z unit vectors for swapped x/y axes. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; all result fields are retained."
         },
         {
           "caseId": "coords-vectors-ucrss-scaled-magnitudes",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Compare normalized cross components for large/large, tiny/tiny and large/tiny inputs; naive unscaled products would overflow or disappear. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; all result fields are retained."
         },
         {
           "caseId": "coords-vectors-ucrss-near-parallel",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Compare the finite order-one direction of a cross product whose unnormalized components are around 1e-12. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; all result fields are retained."
         }
       ],
@@ -1343,7 +1405,9 @@
             "packages/backend-node/test/vector-basics-domain.test.ts",
             "packages/backend-wasm/test/vector-basics-allocations.test.ts"
           ],
-          "caseIds": ["coords-vectors-ucrss-mixed-handedness"]
+          "caseIds": [
+            "coords-vectors-ucrss-mixed-handedness"
+          ]
         }
       ],
       "backends": {
@@ -1359,14 +1423,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.ucrss -> Node typed adapter -> registered native handler under global CSPICE mutex -> tspice_ucrss shared C shim -> ucrss_c; complete scalar/vector/object result copied and propagated.",
-          "executions": [
-            "local-cp02-44c6136d16c7-node",
-            "ci-cp02-44c6136d16c7-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1380,14 +1442,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.ucrss -> WASM typed adapter -> configured _tspice_ucrss export -> tspice_ucrss shared C shim -> ucrss_c; all result components copied from typed heap storage before withAllocs cleanup. Binary regeneration/export and execution verification remain required.",
-          "executions": [
-            "local-cp02-44c6136d16c7-wasm",
-            "ci-cp02-44c6136d16c7-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1399,32 +1459,49 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-vsep-acute-obtuse-reversed",
-          "coverage": ["success"],
+          "coverage": [
+            "success"
+          ],
           "observes": "Compare scalar radians for mixed acute/obtuse cases and reversal symmetry. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; all result fields are retained."
         },
         {
           "caseId": "coords-vectors-vsep-zero",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe zero when either or both inputs are zero. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; all result fields are retained."
         },
         {
           "caseId": "coords-vectors-vsep-parallel-opposed",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe zero versus pi for parallel versus opposed vectors. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; all result fields are retained."
         },
         {
           "caseId": "coords-vectors-vsep-orthogonal",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe pi/2 for orthogonal vectors. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; all result fields are retained."
         },
         {
           "caseId": "coords-vectors-vsep-scaled-magnitudes",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Compare the same angle for tiny and huge versions of the same directions. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; all result fields are retained."
         },
         {
           "caseId": "coords-vectors-vsep-near-parallel-opposed",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Compare small nonzero and near-pi angles at 1e-9 perturbations; the focused scaled-angle assertion strengthens the small-angle observation. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; all result fields are retained."
         }
       ],
@@ -1446,7 +1523,9 @@
             "packages/backend-node/test/vector-basics-domain.test.ts",
             "packages/backend-wasm/test/vector-basics-allocations.test.ts"
           ],
-          "caseIds": ["coords-vectors-vsep-acute-obtuse-reversed"]
+          "caseIds": [
+            "coords-vectors-vsep-acute-obtuse-reversed"
+          ]
         }
       ],
       "backends": {
@@ -1461,14 +1540,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vsep -> Node typed adapter -> registered native handler under global CSPICE mutex -> tspice_vsep shared C shim -> vsep_c; complete scalar/vector/object result copied and propagated.",
-          "executions": [
-            "local-cp02-44c6136d16c7-node",
-            "ci-cp02-44c6136d16c7-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1481,14 +1558,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vsep -> WASM typed adapter -> configured _tspice_vsep export -> tspice_vsep shared C shim -> vsep_c; all result components copied from typed heap storage before withAllocs cleanup. Binary regeneration/export and execution verification remain required.",
-          "executions": [
-            "local-cp02-44c6136d16c7-wasm",
-            "ci-cp02-44c6136d16c7-wasm"
-          ]
+          "executions": []
         }
       }
     }

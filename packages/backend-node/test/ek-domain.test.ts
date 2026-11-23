@@ -7,6 +7,14 @@ import { createSpiceHandleRegistry } from "../src/runtime/spice-handles.js";
 
 type EkNativeDeps = Pick<
   NativeAddon,
+  | "ekccnt"
+  | "ekcii"
+  | "eklef"
+  | "eknelt"
+  | "ekpsel"
+  | "ekssum"
+  | "ekuef"
+  | "ekload_nseg"
   | "ekopr"
   | "ekopw"
   | "ekopn"
@@ -18,6 +26,20 @@ type EkNativeDeps = Pick<
   | "ekgc"
   | "ekgd"
   | "ekgi"
+  | "ekacec"
+  | "ekaced"
+  | "ekacei"
+  | "ekrcec"
+  | "ekrced"
+  | "ekrcei"
+  | "ekucec"
+  | "ekuced"
+  | "ekucei"
+  | "ekops"
+  | "ekbseg"
+  | "ekappr"
+  | "ekinsr"
+  | "ekdelr"
   | "ekifld"
   | "ekacli"
   | "ekacld"
@@ -33,6 +55,14 @@ function makeNativeDeps(overrides: Partial<EkNativeDeps>): EkNativeDeps {
   };
 
   return {
+    ekccnt: notImplemented("ekccnt"),
+    ekcii: notImplemented("ekcii"),
+    eklef: notImplemented("eklef"),
+    eknelt: notImplemented("eknelt"),
+    ekpsel: notImplemented("ekpsel"),
+    ekssum: notImplemented("ekssum"),
+    ekuef: notImplemented("ekuef"),
+    ekload_nseg: notImplemented("ekload_nseg"),
     ekopr: notImplemented("ekopr"),
     ekopw: notImplemented("ekopw"),
     ekopn: notImplemented("ekopn"),
@@ -44,6 +74,20 @@ function makeNativeDeps(overrides: Partial<EkNativeDeps>): EkNativeDeps {
     ekgc: notImplemented("ekgc"),
     ekgd: notImplemented("ekgd"),
     ekgi: notImplemented("ekgi"),
+    ekacec: notImplemented("ekacec"),
+    ekaced: notImplemented("ekaced"),
+    ekacei: notImplemented("ekacei"),
+    ekrcec: notImplemented("ekrcec"),
+    ekrced: notImplemented("ekrced"),
+    ekrcei: notImplemented("ekrcei"),
+    ekucec: notImplemented("ekucec"),
+    ekuced: notImplemented("ekuced"),
+    ekucei: notImplemented("ekucei"),
+    ekops: notImplemented("ekops"),
+    ekbseg: notImplemented("ekbseg"),
+    ekappr: notImplemented("ekappr"),
+    ekinsr: notImplemented("ekinsr"),
+    ekdelr: notImplemented("ekdelr"),
     ekifld: notImplemented("ekifld"),
     ekacli: notImplemented("ekacli"),
     ekacld: notImplemented("ekacld"),

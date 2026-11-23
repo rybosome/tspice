@@ -1,6 +1,7 @@
 import type {
   SpiceStateVector,
   SpiceMatrix6x6,
+  SpiceRawBackend,
   FoundDlaDescriptor,
   KernelKindInput,
 } from "@rybosome/tspice-backend-contract";
@@ -320,6 +321,19 @@ export type StepTimeUnitim = {
   outsys: string;
 };
 
+export type StepTimeEtcal = { op: "time.etcal"; et: number; callen?: number };
+export type StepTimeUtc2et = { op: "time.utc2et"; utcstr: string };
+export type StepTimeTparch = { op: "time.tparch"; type: string };
+export type StepTimeTsetyr = { op: "time.tsetyr"; year: number };
+export type StepTimeEt2lst = {
+  op: "time.et2lst";
+  et: number;
+  body: number;
+  lon: number;
+  type: string;
+  timlen?: number;
+  ampmlen?: number;
+};
 export type StepTimeTparse = {
   op: "time.tparse";
   timstr: string;
@@ -361,6 +375,30 @@ export type StepTimeSct2e = {
   sclkdp: number;
 };
 
+export type StepTimeSce2t = {
+  op: "time.sce2t";
+  sc: number;
+  et: number;
+};
+
+export type StepTimeScfmt = {
+  op: "time.scfmt";
+  sc: number;
+  ticks: number;
+  clklen?: number;
+};
+
+export type StepTimeScpart = {
+  op: "time.scpart";
+  sc: number;
+};
+
+export type StepTimeSctiks = {
+  op: "time.sctiks";
+  sc: number;
+  clkstr: string;
+};
+
 export type StepTimeSce2c = {
   op: "time.sce2c";
   sc: number;
@@ -380,6 +418,28 @@ export type StepTimeTimdefSet = {
   value: string;
 };
 
+export type StepIdsNamesSrfc2s = {
+  op: "ids-names.srfc2s";
+  code: number;
+  bodyId: number;
+  srflen?: number;
+};
+export type StepIdsNamesSrfcss = {
+  op: "ids-names.srfcss";
+  code: number;
+  body: string;
+  srflen?: number;
+};
+export type StepIdsNamesSrfs2c = {
+  op: "ids-names.srfs2c";
+  surface: string;
+  body: string;
+};
+export type StepIdsNamesSrfscc = {
+  op: "ids-names.srfscc";
+  surface: string;
+  bodyId: number;
+};
 export type StepIdsNamesBodn2c = {
   op: "ids-names.bodn2c";
   name: string;
@@ -2154,6 +2214,13 @@ export type StepEphemerisSpkw08 = {
   step: number;
 };
 
+export type StepFileIoRdtext = {
+  op: "file-io.rdtext";
+  fileId: string;
+  text: string;
+  lineln: number;
+};
+export type StepFileIoPutcml = { op: "file-io.putcml"; argv: string[] };
 export type StepFileIoExists = {
   op: "file-io.exists";
   path: PathRefLike;
@@ -2166,6 +2233,104 @@ export type StepFileIoGetfat = {
   alias?: string;
 };
 
+export type StepFileIoDafbbs = {
+  op: "file-io.dafbbs";
+  handleId: string;
+};
+
+export type StepFileIoDafcs = {
+  op: "file-io.dafcs";
+  handleId: string;
+};
+
+export type StepFileIoDaffpa = {
+  op: "file-io.daffpa";
+  handleId: string;
+};
+
+export type StepFileIoDafgh = {
+  op: "file-io.dafgh";
+};
+
+export type StepFileIoDafgn = {
+  op: "file-io.dafgn";
+  handleId: string;
+  namlen?: number;
+  captureError?: boolean;
+};
+
+export type StepFileIoDafgs = {
+  op: "file-io.dafgs";
+  handleId: string;
+  summaryId?: string;
+};
+
+export type StepFileIoDafhsf = {
+  op: "file-io.dafhsf";
+  handleId: string;
+};
+
+export type StepFileIoDafopw = {
+  op: "file-io.dafopw";
+  path: PathRefLike;
+  handleId: string;
+  alias?: string;
+};
+
+export type StepFileIoDafac = {
+  op: "file-io.dafac";
+  handleId: string;
+  lines: string[];
+};
+export type StepFileIoDafdc = { op: "file-io.dafdc"; handleId: string };
+export type StepFileIoDafec = {
+  op: "file-io.dafec";
+  handleId: string;
+  bufsiz: number;
+  buffln?: number;
+};
+export type StepFileIoDafrs = {
+  op: "file-io.dafrs";
+  handleId: string;
+  summary: number[];
+};
+export type StepFileIoDafps = {
+  op: "file-io.dafps";
+  nd: number;
+  ni: number;
+  dc: number[];
+  ic: number[];
+};
+export type StepFileIoDafus = {
+  op: "file-io.dafus";
+  summary: number[];
+  nd: number;
+  ni: number;
+};
+export type StepFileIoDafgsr = {
+  op: "file-io.dafgsr";
+  handleId: string;
+  recno: number;
+  begin: number;
+  end: number;
+};
+export type StepFileIoDafrfr = {
+  op: "file-io.dafrfr";
+  handleId: string;
+  ifnlen?: number;
+};
+export type StepFileIoDafrda = {
+  op: "file-io.dafrda";
+  handleId: string;
+  begin: number;
+  end: number;
+};
+export type StepFileIoDafgda = {
+  op: "file-io.dafgda";
+  handleId: string;
+  begin: number;
+  end: number;
+};
 export type StepFileIoDafopr = {
   op: "file-io.dafopr";
   path: PathRefLike;
@@ -2195,6 +2360,147 @@ export type StepFileIoDasopr = {
   handleId: string;
 };
 
+export type StepFileIoDasac = {
+  op: "file-io.dasac";
+  handleId: string;
+  lines: string[];
+};
+export type StepFileIoDasdc = { op: "file-io.dasdc"; handleId: string };
+export type StepFileIoDasec = {
+  op: "file-io.dasec";
+  handleId: string;
+  bufsiz: number;
+  buffln?: number;
+};
+export type StepFileIoDasadc = {
+  op: "file-io.dasadc";
+  handleId: string;
+  n: number;
+  bpos: number;
+  epos: number;
+  datlen: number;
+  data: number[];
+};
+
+export type StepFileIoDasadd = {
+  op: "file-io.dasadd";
+  handleId: string;
+  n: number;
+  data: number[];
+};
+
+export type StepFileIoDasadi = {
+  op: "file-io.dasadi";
+  handleId: string;
+  n: number;
+  data: number[];
+};
+
+export type StepFileIoDasrdc = {
+  op: "file-io.dasrdc";
+  handleId: string;
+  first: number;
+  last: number;
+  bpos: number;
+  epos: number;
+  datlen: number;
+  data: number[];
+};
+
+export type StepFileIoDasrdd = {
+  op: "file-io.dasrdd";
+  handleId: string;
+  first: number;
+  last: number;
+};
+
+export type StepFileIoDasrdi = {
+  op: "file-io.dasrdi";
+  handleId: string;
+  first: number;
+  last: number;
+};
+
+export type StepFileIoDasudc = {
+  op: "file-io.dasudc";
+  handleId: string;
+  first: number;
+  last: number;
+  bpos: number;
+  epos: number;
+  datlen: number;
+  data: number[];
+};
+
+export type StepFileIoDasudd = {
+  op: "file-io.dasudd";
+  handleId: string;
+  first: number;
+  last: number;
+  data: number[];
+};
+
+export type StepFileIoDasudi = {
+  op: "file-io.dasudi";
+  handleId: string;
+  first: number;
+  last: number;
+  data: number[];
+};
+
+export type StepFileIoDasonw = {
+  op: "file-io.dasonw";
+  handleId: string;
+  path: PathRefLike;
+  ftype: string;
+  ifname: string;
+  ncomr: number;
+};
+
+export type StepFileIoDasops = {
+  op: "file-io.dasops";
+  handleId: string;
+};
+
+export type StepFileIoDasopw = {
+  op: "file-io.dasopw";
+  handleId: string;
+  path: PathRefLike;
+};
+
+export type StepFileIoDashfn = {
+  op: "file-io.dashfn";
+  handleId: string;
+  namlen?: number;
+};
+
+export type StepFileIoDashfs = {
+  op: "file-io.dashfs";
+  handleId: string;
+};
+
+export type StepFileIoDaslla = {
+  op: "file-io.daslla";
+  handleId: string;
+};
+
+export type StepFileIoDasllc = {
+  op: "file-io.dasllc";
+  handleId: string;
+};
+
+export type StepFileIoDasrfr = {
+  op: "file-io.dasrfr";
+  handleId: string;
+  idwlen?: number;
+  ifnlen?: number;
+};
+
+export type StepFileIoDaswbr = {
+  op: "file-io.daswbr";
+  handleId: string;
+};
+
 export type StepFileIoDascls = {
   op: "file-io.dascls";
   handleId: string;
@@ -2210,6 +2516,18 @@ export type StepFileIoDlaopn = {
   handleId: string;
 };
 
+export type StepFileIoDlabbs = {
+  op: "file-io.dlabbs";
+  handleId: string;
+  descrId: string;
+};
+export type StepFileIoDlabns = { op: "file-io.dlabns"; handleId: string };
+export type StepFileIoDlaens = { op: "file-io.dlaens"; handleId: string };
+export type StepFileIoDlafps = {
+  op: "file-io.dlafps";
+  handleId: string;
+  descrId: string;
+};
 export type StepFileIoDlabfs = {
   op: "file-io.dlabfs";
   handleId: string;
@@ -2274,6 +2592,53 @@ export type StepFileIoDskw02 = {
   np: number;
   plates: number[];
   spaixId: string;
+};
+
+export type StepErrorErrdev = { op: "error.errdev" } & (
+  { operation: "GET"; capacity?: number } | { operation: "SET"; value: string }
+);
+
+export type StepErrorErrprt = { op: "error.errprt" } & (
+  { operation: "GET"; capacity?: number } | { operation: "SET"; value: string }
+);
+
+export type StepErrorTrcoff = { op: "error.trcoff" };
+
+export type StepErrorErrch = {
+  op: "error.errch";
+  marker: string;
+  value: string;
+};
+
+export type StepErrorErrdp = {
+  op: "error.errdp";
+  marker: string;
+  value: number;
+};
+
+export type StepErrorErrint = {
+  op: "error.errint";
+  marker: string;
+  value: number;
+};
+
+export type StepErrorQcktrc = {
+  op: "error.qcktrc";
+  tracelen?: number;
+};
+
+export type StepErrorReturn = {
+  op: "error.return";
+};
+
+export type StepErrorTrcdep = {
+  op: "error.trcdep";
+};
+
+export type StepErrorTrcnam = {
+  op: "error.trcnam";
+  index: number;
+  namlen?: number;
 };
 
 export type StepErrorFailed = {
@@ -2361,6 +2726,180 @@ export type StepFramesCkgpav = {
   ref: string;
 };
 
+export type StepFramesCkfrot = {
+  op: "frames.ckfrot";
+  inst: number;
+  et: number;
+};
+
+export type StepFramesCkfxfm = {
+  op: "frames.ckfxfm";
+  inst: number;
+  et: number;
+};
+
+export type StepFramesCkgr02 = {
+  op: "frames.ckgr02";
+  handleId: string;
+  summaryId: string;
+  recno: number;
+};
+
+export type StepFramesCkgr03 = {
+  op: "frames.ckgr03";
+  handleId: string;
+  summaryId: string;
+  recno: number;
+};
+
+export type StepFramesCkmeta = {
+  op: "frames.ckmeta";
+  ckid: number;
+  meta: string;
+};
+
+export type StepFramesCknr02 = {
+  op: "frames.cknr02";
+  handleId: string;
+  summaryId: string;
+};
+
+export type StepFramesCknr03 = {
+  op: "frames.cknr03";
+  handleId: string;
+  summaryId: string;
+};
+
+export type StepFramesPckcls = {
+  op: "frames.pckcls";
+  handleId: string;
+};
+
+export type StepFramesPckcov = {
+  op: "frames.pckcov";
+  path: PathRefLike;
+  classId: number;
+  coverId: string;
+  maxIntervals: number;
+  reset: boolean;
+};
+
+export type StepFramesPckfrm = {
+  op: "frames.pckfrm";
+  path: PathRefLike;
+  idsId: string;
+  maxCard: number;
+  reset: boolean;
+};
+
+export type StepFramesPcklof = {
+  op: "frames.pcklof";
+  handleId: string;
+  path: PathRefLike;
+};
+
+export type StepFramesPckopn = {
+  op: "frames.pckopn";
+  handleId: string;
+  path: PathRefLike;
+  ifname: string;
+  ncomch: number;
+};
+
+export type StepFramesPckuof = {
+  op: "frames.pckuof";
+  handleId: string;
+};
+
+export type StepFramesPckw02 = {
+  op: "frames.pckw02";
+  handleId: string;
+  classId: number;
+  frame: string;
+  first: number;
+  last: number;
+  segid: string;
+  intlen: number;
+  n: number;
+  degree: number;
+  coefficients: number[];
+  btime: number;
+};
+
+export type StepFramesCkopn = {
+  op: "frames.ckopn";
+  handleId: string;
+  path: PathRefLike;
+  ifname: string;
+  ncomch: number;
+};
+
+export type StepFramesCkcls = {
+  op: "frames.ckcls";
+  handleId: string;
+};
+
+export type StepFramesCkw01 = {
+  op: "frames.ckw01";
+  handleId: string;
+  beg: number;
+  end: number;
+  inst: number;
+  ref: string;
+  av: boolean;
+  segid: string;
+  ticks: number[];
+  quats: number[];
+  avvs: number[];
+};
+
+export type StepFramesCkw02 = {
+  op: "frames.ckw02";
+  handleId: string;
+  beg: number;
+  end: number;
+  inst: number;
+  ref: string;
+  segid: string;
+  starts: number[];
+  stops: number[];
+  quats: number[];
+  avvs: number[];
+  rates: number[];
+};
+
+export type StepFramesCkw03 = {
+  op: "frames.ckw03";
+  handleId: string;
+  beg: number;
+  end: number;
+  inst: number;
+  ref: string;
+  av: boolean;
+  segid: string;
+  ticks: number[];
+  quats: number[];
+  avvs: number[];
+  intervalStarts: number[];
+};
+
+export type StepFramesCkw05 = {
+  op: "frames.ckw05";
+  handleId: string;
+  subtype: number;
+  degree: number;
+  beg: number;
+  end: number;
+  inst: number;
+  ref: string;
+  av: boolean;
+  segid: string;
+  ticks: number[];
+  packets: number[];
+  rate: number;
+  intervalStarts: number[];
+};
+
 export type StepFramesCklpf = {
   op: "frames.cklpf";
   ck: PathRefLike;
@@ -2393,6 +2932,48 @@ export type StepFramesCkcov = {
   maxIntervals?: number;
   /** Clear before inspection by default; false accumulates raw window output. */
   reset?: boolean;
+};
+
+export type StepFramesBltfrm = {
+  op: "frames.bltfrm";
+  frameClass: number;
+  idsId: string;
+  maxCard: number;
+};
+
+export type StepFramesPxfrm2 = {
+  op: "frames.pxfrm2";
+  from: string;
+  to: string;
+  etfrom: number;
+  etto: number;
+};
+
+export type StepFramesTipbod = {
+  op: "frames.tipbod";
+  ref: string;
+  body: number;
+  et: number;
+};
+
+export type StepFramesTisbod = {
+  op: "frames.tisbod";
+  ref: string;
+  body: number;
+  et: number;
+};
+
+export type StepFramesTkfram = {
+  op: "frames.tkfram";
+  typeId: number;
+};
+
+export type StepFramesXfmsta = {
+  op: "frames.xfmsta";
+  state: [number, number, number, number, number, number];
+  from: string;
+  to: string;
+  body: string;
 };
 
 export type StepFramesPxform = {
@@ -2493,6 +3074,126 @@ export type StepEkEkgi = {
   elment: number;
 };
 
+export type StepEkEkops = {
+  op: "ek.ekops";
+  handleId: string;
+};
+export type StepEkEkbseg = {
+  op: "ek.ekbseg";
+  handleId: string;
+  tabnam: string;
+  cnames: string[];
+  decls: string[];
+};
+export type StepEkEkappr = {
+  op: "ek.ekappr";
+  handleId: string;
+  segno: number;
+};
+export type StepEkEkinsr = {
+  op: "ek.ekinsr";
+  handleId: string;
+  segno: number;
+  recno: number;
+};
+export type StepEkEkdelr = {
+  op: "ek.ekdelr";
+  handleId: string;
+  segno: number;
+  recno: number;
+};
+export type StepEkEkacec = {
+  op: "ek.ekacec";
+  handleId: string;
+  segno: number;
+  recno: number;
+  column: string;
+  values: string[];
+  isNull: boolean;
+};
+export type StepEkEkaced = {
+  op: "ek.ekaced";
+  handleId: string;
+  segno: number;
+  recno: number;
+  column: string;
+  values: number[];
+  isNull: boolean;
+};
+export type StepEkEkacei = {
+  op: "ek.ekacei";
+  handleId: string;
+  segno: number;
+  recno: number;
+  column: string;
+  values: number[];
+  isNull: boolean;
+};
+export type StepEkEkrcec = {
+  op: "ek.ekrcec";
+  handleId: string;
+  segno: number;
+  recno: number;
+  column: string;
+  lenout: number;
+};
+export type StepEkEkrced = {
+  op: "ek.ekrced";
+  handleId: string;
+  segno: number;
+  recno: number;
+  column: string;
+};
+export type StepEkEkrcei = {
+  op: "ek.ekrcei";
+  handleId: string;
+  segno: number;
+  recno: number;
+  column: string;
+};
+export type StepEkEkucec = {
+  op: "ek.ekucec";
+  handleId: string;
+  segno: number;
+  recno: number;
+  column: string;
+  values: string[];
+  isNull: boolean;
+};
+export type StepEkEkuced = {
+  op: "ek.ekuced";
+  handleId: string;
+  segno: number;
+  recno: number;
+  column: string;
+  values: number[];
+  isNull: boolean;
+};
+export type StepEkEkucei = {
+  op: "ek.ekucei";
+  handleId: string;
+  segno: number;
+  recno: number;
+  column: string;
+  values: number[];
+  isNull: boolean;
+};
+export type StepEkEkccnt = { op: "ek.ekccnt"; table: string };
+export type StepEkEkcii = {
+  op: "ek.ekcii";
+  table: string;
+  cindex: number;
+  collen: number;
+};
+export type StepEkEklef = {
+  op: "ek.eklef";
+  path: PathRefLike;
+  handleId: string;
+};
+export type StepEkEknelt = { op: "ek.eknelt"; selidx: number; row: number };
+export type StepEkEkpsel = { op: "ek.ekpsel"; query: string };
+export type StepEkEkssum = { op: "ek.ekssum"; handleId: string; segno: number };
+export type StepEkEkuef = { op: "ek.ekuef"; handleId: string };
 export type StepEkEkopn = {
   op: "ek.ekopn";
   path: PathRefLike;
@@ -2877,6 +3578,11 @@ export type WorkflowStep =
   | StepTimeTimout
   | StepTimeDeltet
   | StepTimeUnitim
+  | StepTimeEtcal
+  | StepTimeUtc2et
+  | StepTimeTparch
+  | StepTimeTsetyr
+  | StepTimeEt2lst
   | StepTimeTparse
   | StepTimeTpictr
   | StepTimeTimdefGet
@@ -2886,7 +3592,15 @@ export type WorkflowStep =
   | StepTimeScencd
   | StepTimeScdecd
   | StepTimeSct2e
+  | StepTimeSce2t
+  | StepTimeScfmt
+  | StepTimeScpart
+  | StepTimeSctiks
   | StepTimeSce2c
+  | StepIdsNamesSrfc2s
+  | StepIdsNamesSrfcss
+  | StepIdsNamesSrfs2c
+  | StepIdsNamesSrfscc
   | StepIdsNamesBodn2c
   | StepIdsNamesBodc2n
   | StepIdsNamesBodc2s
@@ -3151,21 +3865,76 @@ export type WorkflowStep =
   | StepEphemerisSpkssb
   | StepEphemerisSpkuds
   | StepEphemerisSpkw08
+  | StepFileIoRdtext
+  | StepFileIoPutcml
   | StepFileIoExists
   | StepFileIoGetfat
+  | StepFileIoDafbbs
+  | StepFileIoDafcs
+  | StepFileIoDaffpa
+  | StepFileIoDafgh
+  | StepFileIoDafgn
+  | StepFileIoDafgs
+  | StepFileIoDafhsf
+  | StepFileIoDafopw
+  | StepFileIoDafac
+  | StepFileIoDafdc
+  | StepFileIoDafec
+  | StepFileIoDafrs
+  | StepFileIoDafps
+  | StepFileIoDafus
+  | StepFileIoDafgsr
+  | StepFileIoDafrfr
+  | StepFileIoDafrda
+  | StepFileIoDafgda
   | StepFileIoDafopr
   | StepFileIoDafcls
   | StepFileIoDafbfs
   | StepFileIoDaffna
   | StepFileIoDasopr
+  | StepFileIoDasac
+  | StepFileIoDasdc
+  | StepFileIoDasec
+  | StepFileIoDasadc
+  | StepFileIoDasadd
+  | StepFileIoDasadi
+  | StepFileIoDasrdc
+  | StepFileIoDasrdd
+  | StepFileIoDasrdi
+  | StepFileIoDasudc
+  | StepFileIoDasudd
+  | StepFileIoDasudi
+  | StepFileIoDasonw
+  | StepFileIoDasops
+  | StepFileIoDasopw
+  | StepFileIoDashfn
+  | StepFileIoDashfs
+  | StepFileIoDaslla
+  | StepFileIoDasllc
+  | StepFileIoDasrfr
+  | StepFileIoDaswbr
   | StepFileIoDascls
   | StepFileIoDlaopn
+  | StepFileIoDlabbs
+  | StepFileIoDlabns
+  | StepFileIoDlaens
+  | StepFileIoDlafps
   | StepFileIoDlabfs
   | StepFileIoDlafns
   | StepFileIoDlacls
   | StepFileIoDskopn
   | StepFileIoDskmi2
   | StepFileIoDskw02
+  | StepErrorErrdev
+  | StepErrorErrprt
+  | StepErrorTrcoff
+  | StepErrorErrch
+  | StepErrorErrdp
+  | StepErrorErrint
+  | StepErrorQcktrc
+  | StepErrorReturn
+  | StepErrorTrcdep
+  | StepErrorTrcnam
   | StepErrorFailed
   | StepErrorReset
   | StepErrorGetmsg
@@ -3181,10 +3950,36 @@ export type WorkflowStep =
   | StepFramesCcifrm
   | StepFramesCkgp
   | StepFramesCkgpav
+  | StepFramesPckcls
+  | StepFramesPckcov
+  | StepFramesPckfrm
+  | StepFramesPcklof
+  | StepFramesPckopn
+  | StepFramesPckuof
+  | StepFramesPckw02
+  | StepFramesCkopn
+  | StepFramesCkcls
+  | StepFramesCkw01
+  | StepFramesCkw02
+  | StepFramesCkw03
+  | StepFramesCkw05
+  | StepFramesCkfrot
+  | StepFramesCkfxfm
+  | StepFramesCkgr02
+  | StepFramesCkgr03
+  | StepFramesCkmeta
+  | StepFramesCknr02
+  | StepFramesCknr03
   | StepFramesCklpf
   | StepFramesCkupf
   | StepFramesCkobj
   | StepFramesCkcov
+  | StepFramesBltfrm
+  | StepFramesPxfrm2
+  | StepFramesTipbod
+  | StepFramesTisbod
+  | StepFramesTkfram
+  | StepFramesXfmsta
   | StepFramesPxform
   | StepFramesFrame
   | StepFramesTwovec
@@ -3196,6 +3991,27 @@ export type WorkflowStep =
   | StepFramesInvstm
   | StepFramesXpose6
   | StepFramesSxform
+  | StepEkEkops
+  | StepEkEkbseg
+  | StepEkEkappr
+  | StepEkEkinsr
+  | StepEkEkdelr
+  | StepEkEkacec
+  | StepEkEkaced
+  | StepEkEkacei
+  | StepEkEkrcec
+  | StepEkEkrced
+  | StepEkEkrcei
+  | StepEkEkucec
+  | StepEkEkuced
+  | StepEkEkucei
+  | StepEkEkccnt
+  | StepEkEkcii
+  | StepEkEklef
+  | StepEkEknelt
+  | StepEkEkpsel
+  | StepEkEkssum
+  | StepEkEkuef
   | StepEkEkopn
   | StepEkEkopr
   | StepEkEkopw
@@ -3497,6 +4313,14 @@ export type StepOutput =
   | { op: "time.timout"; value: string }
   | { op: "time.deltet"; value: number }
   | { op: "time.unitim"; value: { epoch: number; secondsPastJ2000: number } }
+  | { op: "time.etcal"; value: string }
+  | { op: "time.utc2et"; value: number }
+  | { op: "time.tparch"; value: null }
+  | { op: "time.tsetyr"; value: null }
+  | {
+      op: "time.et2lst";
+      value: { hr: number; mn: number; sc: number; time: string; ampm: string };
+    }
   | { op: "time.tparse"; value: number }
   | { op: "time.tpictr"; value: string }
   | { op: "time.timdef"; value: string | null }
@@ -3505,6 +4329,10 @@ export type StepOutput =
   | { op: "time.scencd"; value: number }
   | { op: "time.scdecd"; value: string }
   | { op: "time.sct2e"; value: number }
+  | { op: "time.sce2t"; value: number }
+  | { op: "time.scfmt"; value: string }
+  | { op: "time.scpart"; value: { pstart: number[]; pstop: number[] } }
+  | { op: "time.sctiks"; value: number }
   | { op: "time.sce2c"; value: number }
   | {
       op: "ids-names.bodn2c";
@@ -3513,6 +4341,16 @@ export type StepOutput =
   | {
       op: "ids-names.bodc2n";
       value: { found: false } | { found: true; name: string };
+    }
+  | { op: "ids-names.srfc2s"; value: { surface: string; isName: boolean } }
+  | { op: "ids-names.srfcss"; value: { surface: string; isName: boolean } }
+  | {
+      op: "ids-names.srfs2c";
+      value: { found: false } | { found: true; code: number };
+    }
+  | {
+      op: "ids-names.srfscc";
+      value: { found: false } | { found: true; code: number };
     }
   | { op: "ids-names.bodc2s"; value: string }
   | { op: "ids-names.boddef"; value: null }
@@ -3749,15 +4587,74 @@ export type StepOutput =
       };
     }
   | { op: "ephemeris.spkw08"; value: null }
+  | { op: "file-io.rdtext"; value: { line: string; eof: boolean } }
+  | { op: "file-io.putcml"; value: null }
   | { op: "file-io.exists"; value: boolean }
   | { op: "file-io.getfat"; value: { arch: string; type: string } }
+  | { op: "file-io.dafbbs"; value: null }
+  | { op: "file-io.dafcs"; value: null }
+  | { op: "file-io.daffpa"; value: boolean }
+  | { op: "file-io.dafgh"; value: { handleId: string } }
+  | { op: "file-io.dafgn"; value: string | { short: string } }
+  | { op: "file-io.dafgs"; value: number[] }
+  | { op: "file-io.dafhsf"; value: { nd: number; ni: number } }
+  | { op: "file-io.dafopw"; value: null }
+  | { op: "file-io.dafac" | "file-io.dafdc" | "file-io.dafrs"; value: null }
+  | {
+      op: "file-io.dafec";
+      value: { n: number; lines: string[]; done: boolean };
+    }
+  | { op: "file-io.dafps"; value: number[] }
+  | { op: "file-io.dafus"; value: { dc: number[]; ic: number[] } }
+  | {
+      op: "file-io.dafgsr";
+      value: { found: false } | { found: true; data: number[] };
+    }
+  | {
+      op: "file-io.dafrfr";
+      value: {
+        nd: number;
+        ni: number;
+        ifname: string;
+        fward: number;
+        bward: number;
+        free: number;
+      };
+    }
+  | { op: "file-io.dafrda"; value: number[] }
+  | { op: "file-io.dafgda"; value: number[] }
   | { op: "file-io.dafopr"; value: null }
   | { op: "file-io.dafcls"; value: null }
   | { op: "file-io.dafbfs"; value: null }
   | { op: "file-io.daffna"; value: boolean }
   | { op: "file-io.dasopr"; value: null }
+  | { op: "file-io.dasac"; value: null }
+  | { op: "file-io.dasdc"; value: null }
+  | { op: "file-io.dasec"; value: ReturnType<SpiceRawBackend["dasec"]> }
+  | { op: "file-io.dasadc"; value: null }
+  | { op: "file-io.dasadd"; value: null }
+  | { op: "file-io.dasadi"; value: null }
+  | { op: "file-io.dasrdc"; value: number[] }
+  | { op: "file-io.dasrdd"; value: number[] }
+  | { op: "file-io.dasrdi"; value: number[] }
+  | { op: "file-io.dasudc"; value: null }
+  | { op: "file-io.dasudd"; value: null }
+  | { op: "file-io.dasudi"; value: null }
+  | { op: "file-io.dasonw"; value: null }
+  | { op: "file-io.dasops"; value: null }
+  | { op: "file-io.dasopw"; value: null }
+  | { op: "file-io.dashfn"; value: { name: string; prefixMatches: boolean } }
+  | { op: "file-io.dashfs"; value: ReturnType<SpiceRawBackend["dashfs"]> }
+  | { op: "file-io.daslla"; value: ReturnType<SpiceRawBackend["daslla"]> }
+  | { op: "file-io.dasllc"; value: null }
+  | { op: "file-io.dasrfr"; value: ReturnType<SpiceRawBackend["dasrfr"]> }
+  | { op: "file-io.daswbr"; value: null }
   | { op: "file-io.dascls"; value: null }
   | { op: "file-io.dlaopn"; value: null }
+  | { op: "file-io.dlabbs"; value: FoundDlaDescriptor }
+  | { op: "file-io.dlabns"; value: null }
+  | { op: "file-io.dlaens"; value: null }
+  | { op: "file-io.dlafps"; value: FoundDlaDescriptor }
   | { op: "file-io.dlabfs"; value: FoundDlaDescriptor }
   | { op: "file-io.dlafns"; value: FoundDlaDescriptor }
   | { op: "file-io.dlacls"; value: null }
@@ -3770,6 +4667,16 @@ export type StepOutput =
       };
     }
   | { op: "file-io.dskw02"; value: null }
+  | { op: "error.errch"; value: string }
+  | { op: "error.errdp"; value: string }
+  | { op: "error.errint"; value: string }
+  | { op: "error.qcktrc"; value: string }
+  | { op: "error.return"; value: boolean }
+  | { op: "error.trcdep"; value: number }
+  | { op: "error.trcnam"; value: string }
+  | { op: "error.errdev"; value: string | null }
+  | { op: "error.errprt"; value: string | null }
+  | { op: "error.trcoff"; value: null }
   | { op: "error.failed"; value: boolean }
   | { op: "error.reset"; value: null }
   | { op: "error.getmsg"; value: string }
@@ -3829,6 +4736,47 @@ export type StepOutput =
             clkout: number;
           };
     }
+  | { op: "frames.pckcls"; value: { closed: true } }
+  | {
+      op: "frames.pckcov";
+      value: { intervals: Array<{ left: number; right: number }> };
+    }
+  | { op: "frames.pckfrm"; value: { ids: number[] } }
+  | { op: "frames.pcklof"; value: { opened: true } }
+  | { op: "frames.pckopn"; value: { opened: true } }
+  | { op: "frames.pckuof"; value: { closed: true } }
+  | { op: "frames.pckw02"; value: null }
+  | { op: "frames.ckopn"; value: { opened: true } }
+  | { op: "frames.ckcls"; value: { closed: true } }
+  | { op: "frames.ckw01"; value: null }
+  | { op: "frames.ckw02"; value: null }
+  | { op: "frames.ckw03"; value: null }
+  | { op: "frames.ckw05"; value: null }
+  | {
+      op: "frames.ckfrot";
+      value: { found: false } | { found: true; ref: number; rotate: number[] };
+    }
+  | {
+      op: "frames.ckfxfm";
+      value: { found: false } | { found: true; ref: number; xform: number[] };
+    }
+  | {
+      op: "frames.ckgr02";
+      value: {
+        start: number;
+        stop: number;
+        rate: number;
+        quaternion: number[];
+        av: number[];
+      };
+    }
+  | {
+      op: "frames.ckgr03";
+      value: { sclkdp: number; quaternion: number[]; av: number[] | null };
+    }
+  | { op: "frames.ckmeta"; value: number }
+  | { op: "frames.cknr02"; value: number }
+  | { op: "frames.cknr03"; value: number }
   | { op: "frames.cklpf"; value: { opened: true } }
   | { op: "frames.ckupf"; value: { closed: true } }
   | { op: "frames.ckobj"; value: { ids: number[] } }
@@ -3837,6 +4785,18 @@ export type StepOutput =
       value: {
         intervals: Array<{ left: number; right: number }>;
       };
+    }
+  | { op: "frames.bltfrm"; value: { ids: number[] } }
+  | { op: "frames.pxfrm2"; value: Matrix3x3 }
+  | { op: "frames.tipbod"; value: Matrix3x3 }
+  | { op: "frames.tisbod"; value: Matrix6x6 }
+  | {
+      op: "frames.tkfram";
+      value: { found: false } | { found: true; rot: Matrix3x3; frame: number };
+    }
+  | {
+      op: "frames.xfmsta";
+      value: [number, number, number, number, number, number];
     }
   | { op: "frames.pxform"; value: Matrix3x3 }
   | { op: "frames.frame"; value: { x: Vector3; y: Vector3; z: Vector3 } }
@@ -3852,6 +4812,48 @@ export type StepOutput =
   | { op: "frames.invstm"; value: Matrix6x6 }
   | { op: "frames.xpose6"; value: Matrix6x6 }
   | { op: "frames.sxform"; value: Matrix6x6 }
+  | { op: "ek.ekops"; value: { handleId: string } }
+  | { op: "ek.ekbseg"; value: number }
+  | { op: "ek.ekappr"; value: number }
+  | { op: "ek.ekinsr"; value: null }
+  | { op: "ek.ekdelr"; value: null }
+  | { op: "ek.ekacec"; value: null }
+  | { op: "ek.ekaced"; value: null }
+  | { op: "ek.ekacei"; value: null }
+  | {
+      op: "ek.ekrcec";
+      value: { nvals: number; isNull: boolean; values: string[] };
+    }
+  | {
+      op: "ek.ekrced";
+      value: { nvals: number; isNull: boolean; values: number[] };
+    }
+  | {
+      op: "ek.ekrcei";
+      value: { nvals: number; isNull: boolean; values: number[] };
+    }
+  | { op: "ek.ekucec"; value: null }
+  | { op: "ek.ekuced"; value: null }
+  | { op: "ek.ekucei"; value: null }
+  | { op: "ek.ekccnt"; value: number }
+  | {
+      op: "ek.ekcii";
+      value: {
+        column: string;
+        attdsc: import("@rybosome/tspice-backend-contract").EkAttributeDescriptor;
+      };
+    }
+  | { op: "ek.eklef"; value: { handleId: string } }
+  | { op: "ek.eknelt"; value: number }
+  | {
+      op: "ek.ekpsel";
+      value: import("@rybosome/tspice-backend-contract").EkSelectResult;
+    }
+  | {
+      op: "ek.ekssum";
+      value: import("@rybosome/tspice-backend-contract").EkSegmentSummary;
+    }
+  | { op: "ek.ekuef"; value: null }
   | {
       op: "ek.ekopn";
       value: { handleId: string };

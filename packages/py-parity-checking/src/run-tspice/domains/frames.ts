@@ -9,6 +9,26 @@ import type {
   StepFramesCkcov,
   StepFramesCkgp,
   StepFramesCkgpav,
+  StepFramesPckcls,
+  StepFramesPckcov,
+  StepFramesPckfrm,
+  StepFramesPcklof,
+  StepFramesPckopn,
+  StepFramesPckuof,
+  StepFramesPckw02,
+  StepFramesCkopn,
+  StepFramesCkcls,
+  StepFramesCkw01,
+  StepFramesCkw02,
+  StepFramesCkw03,
+  StepFramesCkw05,
+  StepFramesCkfrot,
+  StepFramesCkfxfm,
+  StepFramesCkgr02,
+  StepFramesCkgr03,
+  StepFramesCkmeta,
+  StepFramesCknr02,
+  StepFramesCknr03,
   StepFramesCklpf,
   StepFramesCkobj,
   StepFramesCkupf,
@@ -16,6 +36,12 @@ import type {
   StepFramesFrinfo,
   StepFramesFrmnam,
   StepFramesNamfrm,
+  StepFramesBltfrm,
+  StepFramesPxfrm2,
+  StepFramesTipbod,
+  StepFramesTisbod,
+  StepFramesTkfram,
+  StepFramesXfmsta,
   StepFramesPxform,
   StepFramesFrame,
   StepFramesTwovec,
@@ -51,10 +77,36 @@ type FramesStep =
   | StepFramesCcifrm
   | StepFramesCkgp
   | StepFramesCkgpav
+  | StepFramesPckcls
+  | StepFramesPckcov
+  | StepFramesPckfrm
+  | StepFramesPcklof
+  | StepFramesPckopn
+  | StepFramesPckuof
+  | StepFramesPckw02
+  | StepFramesCkopn
+  | StepFramesCkcls
+  | StepFramesCkw01
+  | StepFramesCkw02
+  | StepFramesCkw03
+  | StepFramesCkw05
+  | StepFramesCkfrot
+  | StepFramesCkfxfm
+  | StepFramesCkgr02
+  | StepFramesCkgr03
+  | StepFramesCkmeta
+  | StepFramesCknr02
+  | StepFramesCknr03
   | StepFramesCklpf
   | StepFramesCkupf
   | StepFramesCkobj
   | StepFramesCkcov
+  | StepFramesBltfrm
+  | StepFramesPxfrm2
+  | StepFramesTipbod
+  | StepFramesTisbod
+  | StepFramesTkfram
+  | StepFramesXfmsta
   | StepFramesPxform
   | StepFramesFrame
   | StepFramesTwovec
@@ -97,7 +149,7 @@ function canonicalizeFramesCkPath(
   return canonical;
 }
 
-function ensureVirtualCkPath(
+function ensureVirtualFramePath(
   context: RunTspiceContext,
   pathRef: PathRefLike,
 ): string {
@@ -107,7 +159,7 @@ function ensureVirtualCkPath(
     if (!fs.existsSync(resolvedPath)) return virtualPath;
     const bytes = fs.readFileSync(resolvedPath);
 
-    // Stage CK bytes into virtual FS once, then unload; cklpf controls loaded state thereafter.
+    // Stage fixture bytes once. Low-level CK and PCK loads control subsequent priority.
     context.spice.raw.furnsh({ path: virtualPath, bytes });
     context.spice.raw.unload(virtualPath);
     context.state.frames.stagedVirtualKernelPaths.add(virtualPath);
@@ -221,6 +273,13 @@ function toMatrix6x6(values: readonly number[]): Matrix6x6 {
     ],
   ];
   return rows;
+}
+
+function pckPath(context: RunTspiceContext, source: PathRefLike) {
+  const ref = toPathRef(source);
+  if (ref.kind === "scratch")
+    return { kind: "virtual-output" as const, path: toVirtualKernelPath(ref) };
+  return ensureVirtualFramePath(context, ref);
 }
 
 /** Execute one `frames.*` workflow step in tspice. */
@@ -348,10 +407,260 @@ export function runFramesStep(
       };
     }
 
+    case "frames.pckopn":
+    case "frames.pcklof": {
+      const tracked = context.state.frames.pckHandles;
+      if (tracked.has(step.handleId))
+        throw new Error("PCK handle already registered");
+      const file = pckPath(context, step.path);
+      const writer = step.op === "frames.pckopn";
+      const handle =
+        step.op === "frames.pckopn"
+          ? context.spice.raw.pckopn(file, step.ifname, step.ncomch)
+          : context.spice.raw.pcklof(file);
+      tracked.set(step.handleId, { handle, writer });
+      registerFinalizer(context, `PCK:${step.handleId}`, () => {
+        if (!tracked.has(step.handleId)) return;
+        if (writer) context.spice.raw.pckcls(handle);
+        else context.spice.raw.pckuof(handle);
+        for (const [id, entry] of tracked)
+          if (entry.handle === handle) tracked.delete(id);
+      });
+      return { op: step.op, value: { opened: true } };
+    }
+    case "frames.pckcls":
+    case "frames.pckuof":
+    case "frames.pckw02": {
+      const tracked = context.state.frames.pckHandles;
+      const entry = tracked.get(step.handleId);
+      if (!entry) throw new Error("Missing PCK handle");
+      if (step.op === "frames.pckw02") {
+        context.spice.raw.pckw02(
+          entry.handle,
+          step.classId,
+          step.frame,
+          step.first,
+          step.last,
+          step.segid,
+          step.intlen,
+          step.n,
+          step.degree,
+          step.coefficients,
+          step.btime,
+        );
+        return { op: step.op, value: null };
+      }
+      if (step.op === "frames.pckcls") context.spice.raw.pckcls(entry.handle);
+      else context.spice.raw.pckuof(entry.handle);
+      for (const [id, other] of tracked)
+        if (other.handle === entry.handle) tracked.delete(id);
+      return { op: step.op, value: { closed: true } };
+    }
+    case "frames.pckfrm": {
+      const ids = getOrCreateIntCell(context, step.idsId, step.maxCard);
+      if (step.reset) context.spice.raw.scard(0, ids);
+      context.spice.raw.pckfrm(pckPath(context, step.path), ids);
+      const values = Array.from(
+        { length: context.spice.raw.card(ids) },
+        (_, i) => context.spice.kit.cellGeti(ids, i),
+      );
+      return { op: step.op, value: { ids: values } };
+    }
+    case "frames.pckcov": {
+      const cover = getOrCreateWindow(context, step.coverId, step.maxIntervals);
+      if (step.reset) context.spice.raw.scard(0, cover);
+      context.spice.raw.pckcov(
+        pckPath(context, step.path),
+        step.classId,
+        cover,
+      );
+      const intervals = Array.from(
+        { length: context.spice.raw.wncard(cover) },
+        (_, i) => {
+          const [left, right] = context.spice.raw.wnfetd(cover, i);
+          return { left, right };
+        },
+      );
+      return { op: step.op, value: { intervals } };
+    }
+    case "frames.ckopn": {
+      const ref = toPathRef(step.path);
+      if (ref.kind !== "scratch")
+        throw new Error("CK writers require an owned scratch path");
+      const writers = context.state.frames.writers;
+      if (writers.has(step.handleId)) throw new Error("Duplicate CK writer ID");
+      const path = toVirtualKernelPath(ref),
+        physical = resolvePathRef(context.paths, ref);
+      const handle = context.spice.raw.ckopn(
+        { kind: "virtual-output", path },
+        step.ifname,
+        step.ncomch,
+      );
+      writers.set(step.handleId, { handle, path, physical });
+      registerFinalizer(context, `CK writer:${step.handleId}`, () => {
+        if (writers.has(step.handleId)) {
+          context.spice.raw.ckcls(handle);
+          writers.delete(step.handleId);
+        }
+      });
+      return { op: step.op, value: { opened: true } };
+    }
+    case "frames.ckcls": {
+      const writers = context.state.frames.writers,
+        entry = writers.get(step.handleId);
+      if (!entry) throw new Error("Unknown CK writer");
+      context.spice.raw.ckcls(entry.handle);
+      writers.delete(step.handleId);
+      fs.writeFileSync(
+        entry.physical,
+        context.spice.kit.readVirtualOutput({
+          kind: "virtual-output",
+          path: entry.path,
+        }),
+      );
+      return { op: step.op, value: { closed: true } };
+    }
+    case "frames.ckw01": {
+      const entry = context.state.frames.writers.get(step.handleId);
+      if (!entry) throw new Error("Unknown CK writer");
+      context.spice.raw.ckw01(
+        entry.handle,
+        step.beg,
+        step.end,
+        step.inst,
+        step.ref,
+        step.av,
+        step.segid,
+        step.ticks,
+        step.quats,
+        step.avvs,
+      );
+      return { op: step.op, value: null };
+    }
+    case "frames.ckw02": {
+      const entry = context.state.frames.writers.get(step.handleId);
+      if (!entry) throw new Error("Unknown CK writer");
+      context.spice.raw.ckw02(
+        entry.handle,
+        step.beg,
+        step.end,
+        step.inst,
+        step.ref,
+        step.segid,
+        step.starts,
+        step.stops,
+        step.quats,
+        step.avvs,
+        step.rates,
+      );
+      return { op: step.op, value: null };
+    }
+    case "frames.ckw03": {
+      const entry = context.state.frames.writers.get(step.handleId);
+      if (!entry) throw new Error("Unknown CK writer");
+      context.spice.raw.ckw03(
+        entry.handle,
+        step.beg,
+        step.end,
+        step.inst,
+        step.ref,
+        step.av,
+        step.segid,
+        step.ticks,
+        step.quats,
+        step.avvs,
+        step.intervalStarts,
+      );
+      return { op: step.op, value: null };
+    }
+    case "frames.ckw05": {
+      const entry = context.state.frames.writers.get(step.handleId);
+      if (!entry) throw new Error("Unknown CK writer");
+      context.spice.raw.ckw05(
+        entry.handle,
+        step.subtype,
+        step.degree,
+        step.beg,
+        step.end,
+        step.inst,
+        step.ref,
+        step.av,
+        step.segid,
+        step.ticks,
+        step.packets,
+        step.rate,
+        step.intervalStarts,
+      );
+      return { op: step.op, value: null };
+    }
+    case "frames.ckfrot": {
+      const out = context.spice.raw.ckfrot(step.inst, step.et);
+      return {
+        op: step.op,
+        value: out.found
+          ? { found: true, ref: out.ref, rotate: Array.from(out.rotate) }
+          : { found: false },
+      };
+    }
+    case "frames.ckfxfm": {
+      const out = context.spice.raw.ckfxfm(step.inst, step.et);
+      return {
+        op: step.op,
+        value: out.found
+          ? { found: true, ref: out.ref, xform: Array.from(out.xform) }
+          : { found: false },
+      };
+    }
+    case "frames.ckgr02": {
+      const entry = context.state.fileIo.handles.get(step.handleId),
+        desc = context.state.fileIo.ckSummaries.get(step.summaryId);
+      if (!entry?.isOpen || !desc || desc.handle !== entry.handle)
+        throw new Error("Expected live CK descriptor and owning DAF");
+      return {
+        op: step.op,
+        value: context.spice.raw.ckgr02(entry.handle, desc.bytes, step.recno),
+      };
+    }
+    case "frames.ckgr03": {
+      const entry = context.state.fileIo.handles.get(step.handleId),
+        desc = context.state.fileIo.ckSummaries.get(step.summaryId);
+      if (!entry?.isOpen || !desc || desc.handle !== entry.handle)
+        throw new Error("Expected live CK descriptor and owning DAF");
+      return {
+        op: step.op,
+        value: context.spice.raw.ckgr03(entry.handle, desc.bytes, step.recno),
+      };
+    }
+    case "frames.ckmeta": {
+      return {
+        op: step.op,
+        value: context.spice.raw.ckmeta(step.ckid, step.meta),
+      };
+    }
+    case "frames.cknr02": {
+      const entry = context.state.fileIo.handles.get(step.handleId),
+        desc = context.state.fileIo.ckSummaries.get(step.summaryId);
+      if (!entry?.isOpen || !desc || desc.handle !== entry.handle)
+        throw new Error("Expected live CK descriptor and owning DAF");
+      return {
+        op: step.op,
+        value: context.spice.raw.cknr02(entry.handle, desc.bytes),
+      };
+    }
+    case "frames.cknr03": {
+      const entry = context.state.fileIo.handles.get(step.handleId),
+        desc = context.state.fileIo.ckSummaries.get(step.summaryId);
+      if (!entry?.isOpen || !desc || desc.handle !== entry.handle)
+        throw new Error("Expected live CK descriptor and owning DAF");
+      return {
+        op: step.op,
+        value: context.spice.raw.cknr03(entry.handle, desc.bytes),
+      };
+    }
     case "frames.cklpf": {
       if (context.state.frames.ckHandles.has(step.handleId))
         throw new Error(`CK handle already exists: ${step.handleId}`);
-      const ck = ensureVirtualCkPath(
+      const ck = ensureVirtualFramePath(
         context,
         canonicalizeFramesCkPath(context, step),
       );
@@ -368,7 +677,7 @@ export function runFramesStep(
     }
 
     case "frames.ckobj": {
-      const ck = ensureVirtualCkPath(
+      const ck = ensureVirtualFramePath(
         context,
         canonicalizeFramesCkPath(context, step),
       );
@@ -382,7 +691,7 @@ export function runFramesStep(
     }
 
     case "frames.ckcov": {
-      const ck = ensureVirtualCkPath(
+      const ck = ensureVirtualFramePath(
         context,
         canonicalizeFramesCkPath(context, step),
       );
@@ -415,6 +724,54 @@ export function runFramesStep(
       };
     }
 
+    case "frames.bltfrm": {
+      const ids = getOrCreateIntCell(context, step.idsId, step.maxCard);
+      context.spice.raw.bltfrm(step.frameClass, ids);
+      const count = context.spice.raw.card(ids);
+      return {
+        op: step.op,
+        value: {
+          ids: Array.from({ length: count }, (_, i) =>
+            context.spice.kit.cellGeti(ids, i),
+          ),
+        },
+      };
+    }
+    case "frames.pxfrm2": {
+      const out = context.spice.raw.pxfrm2(
+        step.from,
+        step.to,
+        step.etfrom,
+        step.etto,
+      );
+      return { op: step.op, value: unflattenMatrix(out) };
+    }
+    case "frames.tipbod": {
+      const out = context.spice.raw.tipbod(step.ref, step.body, step.et);
+      return { op: step.op, value: unflattenMatrix(out) };
+    }
+    case "frames.tisbod": {
+      const out = context.spice.raw.tisbod(step.ref, step.body, step.et);
+      return { op: step.op, value: toMatrix6x6(out) };
+    }
+    case "frames.tkfram": {
+      const out = context.spice.raw.tkfram(step.typeId);
+      return {
+        op: step.op,
+        value: out.found
+          ? { found: true, rot: unflattenMatrix(out.rot), frame: out.frame }
+          : { found: false },
+      };
+    }
+    case "frames.xfmsta": {
+      const out = context.spice.raw.xfmsta(
+        step.state,
+        step.from,
+        step.to,
+        step.body,
+      );
+      return { op: step.op, value: out };
+    }
     case "frames.pxform": {
       const matrix = context.spice.raw.pxform(step.from, step.to, step.et);
       return { op: step.op, value: unflattenMatrix(matrix) };

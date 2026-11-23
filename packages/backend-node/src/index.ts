@@ -3,7 +3,7 @@ import type {
   SpiceHandle,
   SpiceHandleEntry,
 } from "@rybosome/tspice-backend-contract";
-import { invariant } from "@rybosome/tspice-core";
+import { invariant, releaseTextReaders } from "@rybosome/tspice-core";
 
 import { getNativeAddon } from "./native.js";
 
@@ -48,8 +48,12 @@ export function createNodeBackend(): SpiceBackend & { kind: "node" } {
   const spiceHandles = createSpiceHandleRegistry();
   const charCells = new Set<number>();
   const outputs = createVirtualOutputStager();
+  const pckDestinations = {
+    ids: new Set<number>(),
+    windows: new Set<number>(),
+  };
   const timeApi = createTimeApi(native);
-  const fileIoApi = createFileIoApi(native, spiceHandles, stager);
+  const fileIoApi = createFileIoApi(native, spiceHandles, stager, outputs);
 
   const backend: SpiceBackend & { kind: "node" } = {
     kind: "node",
@@ -58,7 +62,14 @@ export function createNodeBackend(): SpiceBackend & { kind: "node" } {
       ...createKernelsApi(native, stager),
       ...createKernelPoolApi(native, stager),
       ...createIdsNamesApi(native),
-      ...createFramesApi(native, stager),
+      ...createFramesApi(
+        native,
+        stager,
+        pckDestinations.ids,
+        spiceHandles,
+        outputs,
+        pckDestinations,
+      ),
       ...createEphemerisApi(native, spiceHandles, stager, outputs),
       ...createGeometryApi(native),
       ...createGeometryGfApi(native),
@@ -73,7 +84,7 @@ export function createNodeBackend(): SpiceBackend & { kind: "node" } {
     kit: {
       ...createTimeKitApi(native),
       ...createFileIoKitApi(outputs),
-      ...createCellsWindowsKitApi(native, charCells),
+      ...createCellsWindowsKitApi(native, charCells, pckDestinations),
     },
   };
 
@@ -86,6 +97,13 @@ export function createNodeBackend(): SpiceBackend & { kind: "node" } {
   Object.defineProperty(backend, "disposeAll", {
     value: () => {
       const errors: unknown[] = [];
+      try {
+        const release: unknown = Reflect.get(fileIoApi, releaseTextReaders);
+        if (typeof release === "function")
+          Reflect.apply(release, fileIoApi, []);
+      } catch (error) {
+        errors.push(error);
+      }
       const entries =
         (
           spiceHandles as typeof spiceHandles & {
@@ -97,10 +115,16 @@ export function createNodeBackend(): SpiceBackend & { kind: "node" } {
 
       for (const [handle, entry] of entries) {
         try {
-          if (entry.kind === "SPK") {
+          if (entry.kind === "PCK-LOADED") {
+            backend.raw.pckuof(handle);
+            continue;
+          }
+          if (entry.kind === "SPK" || entry.kind === "PCK-WRITER" || entry.kind === "CK-WRITER") {
             // Ensure VirtualOutputStager bookkeeping stays consistent.
             try {
-              backend.raw.spkcls(handle);
+              if (entry.kind === "SPK") backend.raw.spkcls(handle);
+              else if (entry.kind === "PCK-WRITER") backend.raw.pckcls(handle);
+              else backend.raw.ckcls(handle);
             } catch (error) {
               if (
                 typeof error !== "object" ||
@@ -115,7 +139,7 @@ export function createNodeBackend(): SpiceBackend & { kind: "node" } {
               // still release its underlying DAF without manufacturing data.
               spiceHandles.close(
                 handle,
-                ["SPK"],
+                [entry.kind],
                 (e) => native.dafcls(e.nativeHandle),
                 "disposeAll:dafcls-empty-spk",
               );
@@ -130,6 +154,8 @@ export function createNodeBackend(): SpiceBackend & { kind: "node" } {
               (e) => native.dafcls(e.nativeHandle),
               "disposeAll:dafcls",
             );
+          } else if (entry.kind === "EK-LOAD") {
+            backend.raw.ekuef(handle);
           } else if (entry.kind === "EK") {
             spiceHandles.close(
               handle,

@@ -700,7 +700,8 @@
       ],
       "id": "local-cp02-44c6136d16c7-node",
       "kind": "local",
-      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 44c6136d16c7325e07e5e233988ffb02dab543ee. The native-required lane completed 5264 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45043538272/job/137273010344"
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 44c6136d16c7325e07e5e233988ffb02dab543ee. The native-required lane completed 5264 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45043538272/job/137273010344",
+      "historical": true
     },
     {
       "backend": "node",
@@ -774,7 +775,8 @@
       "kind": "ci",
       "commit": "b826f8e1b3d9afff24f291c885b6380ff82a8689",
       "url": "https://github.com/rybosome/tspice/actions/runs/45048703356/job/137288855808",
-      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 5264 live comparisons without unexpected skips."
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 5264 live comparisons without unexpected skips.",
+      "historical": true
     },
     {
       "backend": "wasm",
@@ -846,7 +848,8 @@
       ],
       "id": "local-cp02-44c6136d16c7-wasm",
       "kind": "local",
-      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 44c6136d16c7325e07e5e233988ffb02dab543ee. The native-required lane completed 5264 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45043538272/job/137273010344"
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 44c6136d16c7325e07e5e233988ffb02dab543ee. The native-required lane completed 5264 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45043538272/job/137273010344",
+      "historical": true
     },
     {
       "backend": "wasm",
@@ -920,7 +923,8 @@
       "kind": "ci",
       "commit": "b826f8e1b3d9afff24f291c885b6380ff82a8689",
       "url": "https://github.com/rybosome/tspice/actions/runs/45048703356/job/137288855808",
-      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 5264 live comparisons without unexpected skips."
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 5264 live comparisons without unexpected skips.",
+      "historical": true
     }
   ],
   "routines": [
@@ -932,32 +936,50 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-mequg-unequal-rectangles",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Read every row-major element of asymmetric 2×3 and 3×2 inputs backed by the same six values."
         },
         {
           "caseId": "coords-vectors-mequg-row-column-scalar",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Exercise separately allocated singletons, one row, one column and a strongly nonsymmetric square."
         },
         {
           "caseId": "coords-vectors-mequg-stride-and-interior-cycles",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "A 3×5 rectangle with unique interior values distinguishes row stride and transpose cycles."
         },
         {
           "caseId": "coords-vectors-mequg-growing-and-shrinking",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Alternate sizes including empty to detect retained results from prior calls."
         },
         {
           "caseId": "coords-vectors-mequg-empty-axes",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Call the real routine for zero rows, zero columns and both zero with initialized sentinel storage."
         },
         {
           "caseId": "coords-vectors-mequg-small-and-large",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Preserve complete tiny, large and ordinary entries when copying or transposing."
         }
       ],
@@ -973,7 +995,9 @@
           "summary": "SpiceyPy 6.0.3 swaps nr and nc in its MEQUG call. Their product preserves ordinary copy length, hiding the ordering issue. Its nested NumPy signature also does not retain the full exposed rectangular empty-shape domain.",
           "repair": "Call the reviewed independent mequg_c ABI in C argument order with owned non-null storage. Separately compare a positive nonsquare call with the ordinary wrapper byte for byte, including negative zero.",
           "status": "repaired",
-          "caseIds": ["coords-vectors-mequg-empty-axes"],
+          "caseIds": [
+            "coords-vectors-mequg-empty-axes"
+          ],
           "evidence": [
             "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/general_matrix_oracle.py",
             "packages/py-parity-checking/test/general-matrices.test.ts",
@@ -991,14 +1015,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.mequg -> finite shape-checked, owned Node snapshots and mutex-serialized native addon -> tspice_mequg -> mequg_c. Independent oracle: exact locked C copy ABI.",
-          "executions": [
-            "local-cp02-44c6136d16c7-node",
-            "ci-cp02-44c6136d16c7-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1009,14 +1031,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.mequg -> module-local shape-checked snapshots, transactional allocation and typed WASM export -> tspice_mequg -> mequg_c. Independent oracle: exact locked C copy ABI.",
-          "executions": [
-            "local-cp02-44c6136d16c7-wasm",
-            "ci-cp02-44c6136d16c7-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1028,47 +1048,74 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-mtxmg-unequal-rectangles",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe all outputs from asymmetric unequal extents, including different signs, unequal left/right factors and row-major strides."
         },
         {
           "caseId": "coords-vectors-mtxmg-scalar-row-and-column",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Exercise a scalar product, a single output row and a length-one contraction with differing magnitudes and signs."
         },
         {
           "caseId": "coords-vectors-mtxmg-row-selection",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Sparse and permuted basis rows isolate two indices of the input independently."
         },
         {
           "caseId": "coords-vectors-mtxmg-ordered-cancellation",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "A unit term beside 2⁵³ rounds away before cancellation, distinguishing the ordered dot product from a reordered sum."
         },
         {
           "caseId": "coords-vectors-mtxmg-scaled-fractions",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Mixed dyadic and small-magnitude factors exercise every contracted component without rounding-sensitive cancellation."
         },
         {
           "caseId": "coords-vectors-mtxmg-zero-contraction",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Zero inner extent with nonzero outer dimensions produces a complete zero output; the independent canonical call receives allocated input sentinels."
         },
         {
           "caseId": "coords-vectors-mtxmg-zero-outer",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Zero output rows and both zero dimensions retain the explicit shape in the actual toolkit call."
         },
         {
           "caseId": "coords-vectors-mtxmg-zero-columns",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Zero right-hand output width has an empty result even with nonempty left storage and inner extent."
         },
         {
           "caseId": "coords-vectors-mtxmg-negative-inner",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "The pinned routine performs an empty contraction for a negative inner dimension, writing exact zeros for all output rows and columns."
         }
       ],
@@ -1106,14 +1153,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.mtxmg -> finite shape-checked, owned Node snapshots and mutex-serialized native addon -> tspice_mtxmg -> mtxmg_c. Independent oracle: locked SpiceyPy wrapper on positive shapes, exact locked C ABI on degenerate shapes.",
-          "executions": [
-            "local-cp02-44c6136d16c7-node",
-            "ci-cp02-44c6136d16c7-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1124,14 +1169,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.mtxmg -> module-local shape-checked snapshots, transactional allocation and typed WASM export -> tspice_mtxmg -> mtxmg_c. Independent oracle: locked SpiceyPy wrapper on positive shapes, exact locked C ABI on degenerate shapes.",
-          "executions": [
-            "local-cp02-44c6136d16c7-wasm",
-            "ci-cp02-44c6136d16c7-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1143,37 +1186,58 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-mtxvg-unequal-rectangles",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe all outputs from asymmetric unequal extents, including different signs, unequal left/right factors and row-major strides."
         },
         {
           "caseId": "coords-vectors-mtxvg-scalar-row-and-column",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Exercise a scalar product, a single output row and a length-one contraction with differing magnitudes and signs."
         },
         {
           "caseId": "coords-vectors-mtxvg-row-selection",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Sparse and permuted basis rows isolate two indices of the input independently."
         },
         {
           "caseId": "coords-vectors-mtxvg-ordered-cancellation",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "A unit term beside 2⁵³ rounds away before cancellation, distinguishing the ordered dot product from a reordered sum."
         },
         {
           "caseId": "coords-vectors-mtxvg-scaled-fractions",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Mixed dyadic and small-magnitude factors exercise every contracted component without rounding-sensitive cancellation."
         },
         {
           "caseId": "coords-vectors-mtxvg-zero-contraction",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Zero inner extent with nonzero outer dimensions produces a complete zero output; the independent canonical call receives allocated input sentinels."
         },
         {
           "caseId": "coords-vectors-mtxvg-zero-outer",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Zero output rows and both zero dimensions retain the explicit shape in the actual toolkit call."
         }
       ],
@@ -1210,14 +1274,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.mtxvg -> finite shape-checked, owned Node snapshots and mutex-serialized native addon -> tspice_mtxvg -> mtxvg_c. Independent oracle: locked SpiceyPy wrapper on positive shapes, exact locked C ABI on degenerate shapes.",
-          "executions": [
-            "local-cp02-44c6136d16c7-node",
-            "ci-cp02-44c6136d16c7-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1228,14 +1290,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.mtxvg -> module-local shape-checked snapshots, transactional allocation and typed WASM export -> tspice_mtxvg -> mtxvg_c. Independent oracle: locked SpiceyPy wrapper on positive shapes, exact locked C ABI on degenerate shapes.",
-          "executions": [
-            "local-cp02-44c6136d16c7-wasm",
-            "ci-cp02-44c6136d16c7-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1247,47 +1307,74 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-mxmg-unequal-rectangles",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe all outputs from asymmetric unequal extents, including different signs, unequal left/right factors and row-major strides."
         },
         {
           "caseId": "coords-vectors-mxmg-scalar-row-and-column",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Exercise a scalar product, a single output row and a length-one contraction with differing magnitudes and signs."
         },
         {
           "caseId": "coords-vectors-mxmg-row-selection",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Sparse and permuted basis rows isolate two indices of the input independently."
         },
         {
           "caseId": "coords-vectors-mxmg-ordered-cancellation",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "A unit term beside 2⁵³ rounds away before cancellation, distinguishing the ordered dot product from a reordered sum."
         },
         {
           "caseId": "coords-vectors-mxmg-scaled-fractions",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Mixed dyadic and small-magnitude factors exercise every contracted component without rounding-sensitive cancellation."
         },
         {
           "caseId": "coords-vectors-mxmg-zero-contraction",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Zero inner extent with nonzero outer dimensions produces a complete zero output; the independent canonical call receives allocated input sentinels."
         },
         {
           "caseId": "coords-vectors-mxmg-zero-outer",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Zero output rows and both zero dimensions retain the explicit shape in the actual toolkit call."
         },
         {
           "caseId": "coords-vectors-mxmg-zero-columns",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Zero right-hand output width has an empty result even with nonempty left storage and inner extent."
         },
         {
           "caseId": "coords-vectors-mxmg-negative-inner",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "The pinned routine performs an empty contraction for a negative inner dimension, writing exact zeros for all output rows and columns."
         }
       ],
@@ -1325,14 +1412,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.mxmg -> finite shape-checked, owned Node snapshots and mutex-serialized native addon -> tspice_mxmg -> mxmg_c. Independent oracle: locked SpiceyPy wrapper on positive shapes, exact locked C ABI on degenerate shapes.",
-          "executions": [
-            "local-cp02-44c6136d16c7-node",
-            "ci-cp02-44c6136d16c7-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1343,14 +1428,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.mxmg -> module-local shape-checked snapshots, transactional allocation and typed WASM export -> tspice_mxmg -> mxmg_c. Independent oracle: locked SpiceyPy wrapper on positive shapes, exact locked C ABI on degenerate shapes.",
-          "executions": [
-            "local-cp02-44c6136d16c7-wasm",
-            "ci-cp02-44c6136d16c7-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1362,42 +1445,66 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-mxmtg-unequal-rectangles",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe all outputs from asymmetric unequal extents, including different signs, unequal left/right factors and row-major strides."
         },
         {
           "caseId": "coords-vectors-mxmtg-scalar-row-and-column",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Exercise a scalar product, a single output row and a length-one contraction with differing magnitudes and signs."
         },
         {
           "caseId": "coords-vectors-mxmtg-row-selection",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Sparse and permuted basis rows isolate two indices of the input independently."
         },
         {
           "caseId": "coords-vectors-mxmtg-ordered-cancellation",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "A unit term beside 2⁵³ rounds away before cancellation, distinguishing the ordered dot product from a reordered sum."
         },
         {
           "caseId": "coords-vectors-mxmtg-scaled-fractions",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Mixed dyadic and small-magnitude factors exercise every contracted component without rounding-sensitive cancellation."
         },
         {
           "caseId": "coords-vectors-mxmtg-zero-contraction",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Zero inner extent with nonzero outer dimensions produces a complete zero output; the independent canonical call receives allocated input sentinels."
         },
         {
           "caseId": "coords-vectors-mxmtg-zero-outer",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Zero output rows and both zero dimensions retain the explicit shape in the actual toolkit call."
         },
         {
           "caseId": "coords-vectors-mxmtg-zero-columns",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Zero right-hand output width has an empty result even with nonempty left storage and inner extent."
         }
       ],
@@ -1434,14 +1541,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.mxmtg -> finite shape-checked, owned Node snapshots and mutex-serialized native addon -> tspice_mxmtg -> mxmtg_c. Independent oracle: locked SpiceyPy wrapper on positive shapes, exact locked C ABI on degenerate shapes.",
-          "executions": [
-            "local-cp02-44c6136d16c7-node",
-            "ci-cp02-44c6136d16c7-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1452,14 +1557,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.mxmtg -> module-local shape-checked snapshots, transactional allocation and typed WASM export -> tspice_mxmtg -> mxmtg_c. Independent oracle: locked SpiceyPy wrapper on positive shapes, exact locked C ABI on degenerate shapes.",
-          "executions": [
-            "local-cp02-44c6136d16c7-wasm",
-            "ci-cp02-44c6136d16c7-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1471,37 +1574,58 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-mxvg-unequal-rectangles",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe all outputs from asymmetric unequal extents, including different signs, unequal left/right factors and row-major strides."
         },
         {
           "caseId": "coords-vectors-mxvg-scalar-row-and-column",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Exercise a scalar product, a single output row and a length-one contraction with differing magnitudes and signs."
         },
         {
           "caseId": "coords-vectors-mxvg-row-selection",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Sparse and permuted basis rows isolate two indices of the input independently."
         },
         {
           "caseId": "coords-vectors-mxvg-ordered-cancellation",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "A unit term beside 2⁵³ rounds away before cancellation, distinguishing the ordered dot product from a reordered sum."
         },
         {
           "caseId": "coords-vectors-mxvg-scaled-fractions",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Mixed dyadic and small-magnitude factors exercise every contracted component without rounding-sensitive cancellation."
         },
         {
           "caseId": "coords-vectors-mxvg-zero-contraction",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Zero inner extent with nonzero outer dimensions produces a complete zero output; the independent canonical call receives allocated input sentinels."
         },
         {
           "caseId": "coords-vectors-mxvg-zero-outer",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Zero output rows and both zero dimensions retain the explicit shape in the actual toolkit call."
         }
       ],
@@ -1538,14 +1662,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.mxvg -> finite shape-checked, owned Node snapshots and mutex-serialized native addon -> tspice_mxvg -> mxvg_c. Independent oracle: locked SpiceyPy wrapper on positive shapes, exact locked C ABI on degenerate shapes.",
-          "executions": [
-            "local-cp02-44c6136d16c7-node",
-            "ci-cp02-44c6136d16c7-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1556,14 +1678,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.mxvg -> module-local shape-checked snapshots, transactional allocation and typed WASM export -> tspice_mxvg -> mxvg_c. Independent oracle: locked SpiceyPy wrapper on positive shapes, exact locked C ABI on degenerate shapes.",
-          "executions": [
-            "local-cp02-44c6136d16c7-wasm",
-            "ci-cp02-44c6136d16c7-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1575,37 +1695,58 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-vtmvg-unequal-rectangles",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe all outputs from asymmetric unequal extents, including different signs, unequal left/right factors and row-major strides."
         },
         {
           "caseId": "coords-vectors-vtmvg-scalar-row-and-column",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Exercise a scalar product, a single output row and a length-one contraction with differing magnitudes and signs."
         },
         {
           "caseId": "coords-vectors-vtmvg-row-selection",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Sparse and permuted basis rows isolate two indices of the input independently."
         },
         {
           "caseId": "coords-vectors-vtmvg-ordered-cancellation",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "A unit term beside 2⁵³ rounds away before cancellation, distinguishing the ordered dot product from a reordered sum."
         },
         {
           "caseId": "coords-vectors-vtmvg-scaled-fractions",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Mixed dyadic and small-magnitude factors exercise every contracted component without rounding-sensitive cancellation."
         },
         {
           "caseId": "coords-vectors-vtmvg-zero-contraction",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Zero inner extent with nonzero outer dimensions produces a complete zero output; the independent canonical call receives allocated input sentinels."
         },
         {
           "caseId": "coords-vectors-vtmvg-zero-outer",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Zero output rows and both zero dimensions retain the explicit shape in the actual toolkit call."
         }
       ],
@@ -1642,14 +1783,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vtmvg -> finite shape-checked, owned Node snapshots and mutex-serialized native addon -> tspice_vtmvg -> vtmvg_c. Independent oracle: locked SpiceyPy wrapper on positive shapes, exact locked C ABI on degenerate shapes.",
-          "executions": [
-            "local-cp02-44c6136d16c7-node",
-            "ci-cp02-44c6136d16c7-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1660,14 +1799,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vtmvg -> module-local shape-checked snapshots, transactional allocation and typed WASM export -> tspice_vtmvg -> vtmvg_c. Independent oracle: locked SpiceyPy wrapper on positive shapes, exact locked C ABI on degenerate shapes.",
-          "executions": [
-            "local-cp02-44c6136d16c7-wasm",
-            "ci-cp02-44c6136d16c7-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1679,37 +1816,58 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-xposeg-unequal-rectangles",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Read every row-major element of asymmetric 2×3 and 3×2 inputs backed by the same six values."
         },
         {
           "caseId": "coords-vectors-xposeg-row-column-scalar",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Exercise separately allocated singletons, one row, one column and a strongly nonsymmetric square."
         },
         {
           "caseId": "coords-vectors-xposeg-stride-and-interior-cycles",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "A 3×5 rectangle with unique interior values distinguishes row stride and transpose cycles."
         },
         {
           "caseId": "coords-vectors-xposeg-growing-and-shrinking",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Alternate sizes including empty to detect retained results from prior calls."
         },
         {
           "caseId": "coords-vectors-xposeg-empty-axes",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Call the real routine for zero rows, zero columns and both zero with initialized sentinel storage."
         },
         {
           "caseId": "coords-vectors-xposeg-small-and-large",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Preserve complete tiny, large and ordinary entries when copying or transposing."
         },
         {
           "caseId": "coords-vectors-xposeg-nonpositive-no-write",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Pinned XPOSEG returns without writing if either dimension is nonpositive, including signed-minimum."
         }
       ],
@@ -1746,14 +1904,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.xposeg -> finite shape-checked, owned Node snapshots and mutex-serialized native addon -> tspice_xposeg -> xposeg_c. Independent oracle: locked SpiceyPy wrapper on positive shapes, exact locked C ABI on degenerate shapes.",
-          "executions": [
-            "local-cp02-44c6136d16c7-node",
-            "ci-cp02-44c6136d16c7-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1764,14 +1920,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.xposeg -> module-local shape-checked snapshots, transactional allocation and typed WASM export -> tspice_xposeg -> xposeg_c. Independent oracle: locked SpiceyPy wrapper on positive shapes, exact locked C ABI on degenerate shapes.",
-          "executions": [
-            "local-cp02-44c6136d16c7-wasm",
-            "ci-cp02-44c6136d16c7-wasm"
-          ]
+          "executions": []
         }
       }
     }
