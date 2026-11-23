@@ -12726,27 +12726,17 @@
       "scenarios": [
         {
           "caseId": "kernel-pool-cvpool-update-detection-lifecycle",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Each actual returned boolean reaches comparison across registration, consumption, unrelated writes, per-agent independent notifications, additive registration and an unregistered agent. Case: cvpool reports the expected update flags before and after a tracked variable change"
         },
         {
           "caseId": "kernel-pool-cvpool-empty-agent-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Existing invalid-name/room case exercises documented typed validation or the Python wrapper boundary; two failures alone are not claimed as CSPICE diagnostic equivalence."
         },
         {
           "caseId": "kernel-pool-cvpool-audit-independent-agents-unrelated-writes-and-reregistration",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Each actual returned boolean reaches comparison across registration, consumption, unrelated writes, per-agent independent notifications, additive registration and an unregistered agent. Case: cvpool: independent agents unrelated writes and reregistration, observe actual pool contents or notification flags with live SpiceyPy"
         }
       ],
@@ -12841,20 +12831,12 @@
       "scenarios": [
         {
           "caseId": "kernel-pool-dtpool-report-type-size-and-miss",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Actual found, n and C/N type reach comparison across absent, integer, character and fractional replacements, including case mismatch and empty-write preservation. Case: dtpool reports type and cardinality for numeric and character variables and misses unknown names"
         },
         {
           "caseId": "kernel-pool-dtpool-audit-type-replacement-size-and-case",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Actual found, n and C/N type reach comparison across absent, integer, character and fractional replacements, including case mismatch and empty-write preservation. Case: dtpool: type replacement size and case, observe actual pool contents or notification flags with live SpiceyPy"
         }
       ],
@@ -12934,27 +12916,17 @@
       "scenarios": [
         {
           "caseId": "kernel-pool-expool-numeric-existence-semantics",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Actual booleans reach comparison across absent/case-mismatched names, numeric and character replacement, with dtpool proving a character variable still exists even when expool is false. Case: expool reports existence for numeric variables only and false for character or missing names"
         },
         {
           "caseId": "kernel-pool-expool-empty-name-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Existing invalid-name/room case exercises documented typed validation or the Python wrapper boundary; two failures alone are not claimed as CSPICE diagnostic equivalence."
         },
         {
           "caseId": "kernel-pool-expool-audit-numeric-versus-character-and-case",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Actual booleans reach comparison across absent/case-mismatched names, numeric and character replacement, with dtpool proving a character variable still exists even when expool is false. Case: expool: numeric versus character and case, observe actual pool contents or notification flags with live SpiceyPy"
         }
       ],
@@ -13034,27 +13006,17 @@
       "scenarios": [
         {
           "caseId": "kernel-pool-gcpool-read-char-values-and-miss",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Every actual found flag and complete ordered string page reaches live comparison, including blank/empty values, significant leading blanks, padding, offsets, past-end and numeric-type replacement. Case: gcpool returns inserted character values and reports missing variables"
         },
         {
           "caseId": "kernel-pool-gcpool-invalid-room-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Existing invalid-name/room case exercises documented typed validation or the Python wrapper boundary; two failures alone are not claimed as CSPICE diagnostic equivalence."
         },
         {
           "caseId": "kernel-pool-gcpool-audit-paging-rounding-and-wrong-type",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Every actual found flag and complete ordered string page reaches live comparison, including blank/empty values, significant leading blanks, padding, offsets, past-end and numeric-type replacement. Case: gcpool: paging rounding and wrong type, observe actual pool contents or notification flags with live SpiceyPy"
         }
       ],
@@ -13152,27 +13114,17 @@
       "scenarios": [
         {
           "caseId": "kernel-pool-gdpool-read-double-values-and-miss",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Every actual returned found flag, array length and double value reaches recursive live comparison, including offsets/room, past-end pages and wrong-type lookup after type replacement. Case: gdpool returns a numeric slice from inserted doubles and misses unknown variables"
         },
         {
           "caseId": "kernel-pool-gdpool-invalid-room-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Existing invalid-name/room case exercises documented typed validation or the Python wrapper boundary; two failures alone are not claimed as CSPICE diagnostic equivalence."
         },
         {
           "caseId": "kernel-pool-gdpool-audit-paging-rounding-and-wrong-type",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Every actual returned found flag, array length and double value reaches recursive live comparison, including offsets/room, past-end pages and wrong-type lookup after type replacement. Case: gdpool: paging rounding and wrong type, observe actual pool contents or notification flags with live SpiceyPy"
         }
       ],
@@ -13270,34 +13222,22 @@
       "scenarios": [
         {
           "caseId": "kernel-pool-gipool-read-integer-values-and-miss",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Every actual found flag, integer value and page length reaches live comparison, including negative/positive fractional rounding and halfway ties, both signed boundaries, wrong type/past end and the named INTOUTOFRANGE error. Case: gipool returns inserted integer values and misses unknown variables"
         },
         {
           "caseId": "kernel-pool-gipool-invalid-room-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Existing invalid-name/room case exercises documented typed validation or the Python wrapper boundary; two failures alone are not claimed as CSPICE diagnostic equivalence."
         },
         {
           "caseId": "kernel-pool-gipool-audit-paging-rounding-and-wrong-type",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Every actual found flag, integer value and page length reaches live comparison, including negative/positive fractional rounding and halfway ties, both signed boundaries, wrong type/past end and the named INTOUTOFRANGE error. Case: gipool: paging rounding and wrong type, observe actual pool contents or notification flags with live SpiceyPy"
         },
         {
           "caseId": "kernel-pool-gipool-audit-integer-conversion-overflow",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Every actual found flag, integer value and page length reaches live comparison, including negative/positive fractional rounding and halfway ties, both signed boundaries, wrong type/past end and the named INTOUTOFRANGE error. Case: gipool: integer conversion overflow, observe actual pool contents or notification flags with live SpiceyPy"
         }
       ],
@@ -13395,27 +13335,17 @@
       "scenarios": [
         {
           "caseId": "kernel-pool-gnpool-template-match-and-miss",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "All returned names, their CSPICE order and found/page lengths reach live comparison; percent/star patterns distinguish one-character/subsequence matching, case-sensitive names, paging and no matches. Neither dispatcher sorts results. Case: gnpool matches names inserted in the kernel pool and reports template misses"
         },
         {
           "caseId": "kernel-pool-gnpool-invalid-room-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Existing invalid-name/room case exercises documented typed validation or the Python wrapper boundary; two failures alone are not claimed as CSPICE diagnostic equivalence."
         },
         {
           "caseId": "kernel-pool-gnpool-audit-percent-wildcard-paging-case-and-miss",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "All returned names, their CSPICE order and found/page lengths reach live comparison; percent/star patterns distinguish one-character/subsequence matching, case-sensitive names, paging and no matches. Neither dispatcher sorts results. Case: gnpool: percent wildcard paging case and miss, observe actual pool contents or notification flags with live SpiceyPy"
         }
       ],
@@ -13513,34 +13443,22 @@
       "scenarios": [
         {
           "caseId": "kernel-pool-pcpool-write-and-overwrite-lifecycle",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Mutation is observed by actual gcpool/dtpool, with type replacement, empty/blank/leading/trailing strings, unchanged contents/type after an empty write and named BADVARNAME. The zero-count oracle invokes the same CSPICE library through SpiceyPy because its Python pcpool wrapper calls max() on the empty list. Case: pcpool writes character values and later overwrite is visible to read/type checks"
         },
         {
           "caseId": "kernel-pool-pcpool-empty-name-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Existing invalid-name/room case exercises documented typed validation or the Python wrapper boundary; two failures alone are not claimed as CSPICE diagnostic equivalence."
         },
         {
           "caseId": "kernel-pool-pcpool-audit-empty-is-noop-and-type-replacement",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Mutation is observed by actual gcpool/dtpool, with type replacement, empty/blank/leading/trailing strings, unchanged contents/type after an empty write and named BADVARNAME. The zero-count oracle invokes the same CSPICE library through SpiceyPy because its Python pcpool wrapper calls max() on the empty list. Case: pcpool: empty is noop and type replacement, observe actual pool contents or notification flags with live SpiceyPy"
         },
         {
           "caseId": "kernel-pool-pcpool-audit-long-variable-name",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Mutation is observed by actual gcpool/dtpool, with type replacement, empty/blank/leading/trailing strings, unchanged contents/type after an empty write and named BADVARNAME. The zero-count oracle invokes the same CSPICE library through SpiceyPy because its Python pcpool wrapper calls max() on the empty list. Case: pcpool: long variable name, observe actual pool contents or notification flags with live SpiceyPy"
         }
       ],
@@ -13679,34 +13597,22 @@
       "scenarios": [
         {
           "caseId": "kernel-pool-pdpool-write-and-overwrite-lifecycle",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Mutation is observed by subsequent actual gdpool/dtpool, with replacement, signed binary-exact fractions, unchanged contents/type after an empty write and named BADVARNAME. Case: pdpool writes numeric values and later overwrite is visible to read/type checks"
         },
         {
           "caseId": "kernel-pool-pdpool-empty-name-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Existing invalid-name/room case exercises documented typed validation or the Python wrapper boundary; two failures alone are not claimed as CSPICE diagnostic equivalence."
         },
         {
           "caseId": "kernel-pool-pdpool-audit-empty-is-noop-and-type-replacement",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Mutation is observed by subsequent actual gdpool/dtpool, with replacement, signed binary-exact fractions, unchanged contents/type after an empty write and named BADVARNAME. Case: pdpool: empty is noop and type replacement, observe actual pool contents or notification flags with live SpiceyPy"
         },
         {
           "caseId": "kernel-pool-pdpool-audit-long-variable-name",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Mutation is observed by subsequent actual gdpool/dtpool, with replacement, signed binary-exact fractions, unchanged contents/type after an empty write and named BADVARNAME. Case: pdpool: long variable name, observe actual pool contents or notification flags with live SpiceyPy"
         }
       ],
@@ -13802,34 +13708,22 @@
       "scenarios": [
         {
           "caseId": "kernel-pool-pipool-write-and-overwrite-lifecycle",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Mutation is observed by actual gipool/gdpool/dtpool, with replacement, signed boundaries, unchanged contents/type after an empty write and named BADVARNAME. Case: pipool writes integer values and later overwrite is visible to read/type checks"
         },
         {
           "caseId": "kernel-pool-pipool-empty-name-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Existing invalid-name/room case exercises documented typed validation or the Python wrapper boundary; two failures alone are not claimed as CSPICE diagnostic equivalence."
         },
         {
           "caseId": "kernel-pool-pipool-audit-empty-is-noop-and-type-replacement",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Mutation is observed by actual gipool/gdpool/dtpool, with replacement, signed boundaries, unchanged contents/type after an empty write and named BADVARNAME. Case: pipool: empty is noop and type replacement, observe actual pool contents or notification flags with live SpiceyPy"
         },
         {
           "caseId": "kernel-pool-pipool-audit-long-variable-name",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Mutation is observed by actual gipool/gdpool/dtpool, with replacement, signed boundaries, unchanged contents/type after an empty write and named BADVARNAME. Case: pipool: long variable name, observe actual pool contents or notification flags with live SpiceyPy"
         }
       ],
@@ -13925,27 +13819,17 @@
       "scenarios": [
         {
           "caseId": "kernel-pool-swpool-watcher-lifecycle-and-empty-watch",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Registration effects are observed through actual cvpool booleans before/after watched/unrelated writes, two independent agents, unknown variables, empty lists and additive re-registration; the void return alone is not used as success evidence. Case: swpool establishes watch agents, including empty names watchlists, with expected cvpool toggling"
         },
         {
           "caseId": "kernel-pool-swpool-empty-agent-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Existing invalid-name/room case exercises documented typed validation or the Python wrapper boundary; two failures alone are not claimed as CSPICE diagnostic equivalence."
         },
         {
           "caseId": "kernel-pool-swpool-audit-independent-agents-unrelated-writes-and-reregistration",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Registration effects are observed through actual cvpool booleans before/after watched/unrelated writes, two independent agents, unknown variables, empty lists and additive re-registration; the void return alone is not used as success evidence. Case: swpool: independent agents unrelated writes and reregistration, observe actual pool contents or notification flags with live SpiceyPy"
         }
       ],

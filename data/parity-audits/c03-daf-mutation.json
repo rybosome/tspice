@@ -310,101 +310,67 @@
       "scenarios": [
         {
           "caseId": "file-io-dafac-whitespace",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe every leading and internal space, right blank, empty row and ASCII punctuation after reopening."
         },
         {
           "caseId": "file-io-dafac-all-blank",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "A nonempty batch of empty and blank lines survives as actual distinct empty comments."
         },
         {
           "caseId": "file-io-dafac-single",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Read back one line from a file whose comment area was initially absent."
         },
         {
           "caseId": "file-io-dafac-pre-reserved",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Append using already reserved comment records and compare the before/after file header."
         },
         {
           "caseId": "file-io-dafac-multi-record",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe a long line and its neighbors across two physical comment records."
         },
         {
           "caseId": "file-io-dafac-record-ends",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "An end-of-line or an end-of-comments marker at a physical record boundary preserves every byte."
         },
         {
           "caseId": "file-io-dafac-append-twice",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Append across batches while preserving previous contents and repeated identical rows."
         },
         {
           "caseId": "file-io-dafac-relocated-summaries",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare the two summaries and array names before and after adding comment records to an unreserved file."
         },
         {
           "caseId": "file-io-dafac-no-rows",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Observe the original toolkit error for this comment input on a writable scratch DAF."
         },
         {
           "caseId": "file-io-dafac-tab",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Observe the original toolkit error for this comment input on a writable scratch DAF."
         },
         {
           "caseId": "file-io-dafac-unicode",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Observe the original toolkit error for this comment input on a writable scratch DAF."
         },
         {
           "caseId": "file-io-dafac-del",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Observe the original toolkit error for this comment input on a writable scratch DAF."
         },
         {
           "caseId": "file-io-dafac-read-only",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "A file opened for read cannot accept new comments."
         }
       ],
@@ -476,57 +442,37 @@
       "scenarios": [
         {
           "caseId": "file-io-dafdc-empty",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Delete this entire comment area and read a fresh page after reopening. Check the DAF header and surviving arrays."
         },
         {
           "caseId": "file-io-dafdc-populated",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Delete this entire comment area and read a fresh page after reopening. Check the DAF header and surviving arrays."
         },
         {
           "caseId": "file-io-dafdc-reserved-only",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Delete this entire comment area and read a fresh page after reopening. Check the DAF header and surviving arrays."
         },
         {
           "caseId": "file-io-dafdc-spanning",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Delete this entire comment area and read a fresh page after reopening. Check the DAF header and surviving arrays."
         },
         {
           "caseId": "file-io-dafdc-repeat-and-append",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Delete twice, append again, and observe only the new lines on the independent read claim."
         },
         {
           "caseId": "file-io-dafdc-independent-files",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Delete one of two writable files and observe both comment areas after reopening."
         },
         {
           "caseId": "file-io-dafdc-read-only",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Deletion requires a writable file even when its comment area is empty."
         }
       ],
@@ -598,124 +544,82 @@
       "scenarios": [
         {
           "caseId": "file-io-dafec-empty",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Repeated empty pages have zero count and done true."
         },
         {
           "caseId": "file-io-dafec-single-default-width",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Read one line using the default row width and restart after exact EOF."
         },
         {
           "caseId": "file-io-dafec-exact-final-page",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "A page exactly full can already have done true; the next call restarts."
         },
         {
           "caseId": "file-io-dafec-short-final-page",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Return only defined rows from an oversized final page, preserving empty lines."
         },
         {
           "caseId": "file-io-dafec-changing-page-size",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Change page counts and widths across the same cursor, including exact NUL-inclusive fits."
         },
         {
           "caseId": "file-io-dafec-cross-record",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Extract an authored line crossing the physical record boundary with a complete subsequent page."
         },
         {
           "caseId": "file-io-dafec-blank-pages",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Preserve complete blank rows and leading spaces while clipping only trailing spaces."
         },
         {
           "caseId": "file-io-dafec-aliases",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Alias opens share one actual DAFEC cursor. Closing the first token leaves the remaining cursor in place."
         },
         {
           "caseId": "file-io-dafec-interleaved-files",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Alternate genuine pages across two files, complete both, then restart each at row one."
         },
         {
           "caseId": "file-io-dafec-close-incomplete",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Close after a partial page, reopen independently, edit after finishing, and check fresh content."
         },
         {
           "caseId": "file-io-dafec-zero-count",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Observe the documented native count/width error with valid storage and a live read handle."
         },
         {
           "caseId": "file-io-dafec-negative-count",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Observe the documented native count/width error with valid storage and a live read handle."
         },
         {
           "caseId": "file-io-dafec-width-one",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Observe the documented native count/width error with valid storage and a live read handle."
         },
         {
           "caseId": "file-io-dafec-negative-width",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Observe the documented native count/width error with valid storage and a live read handle."
         },
         {
           "caseId": "file-io-dafec-width-precedes-count",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Observe the documented native count/width error with valid storage and a live read handle."
         },
         {
           "caseId": "file-io-dafec-row-too-long",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "An exact three-character row needs four bytes including NUL. Capture the true line number on row two."
         }
       ],
@@ -788,78 +692,52 @@
       "scenarios": [
         {
           "caseId": "file-io-dafrs-first",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe complete packed bytes and original addresses before replacement, immediately afterward and via a reopened reader."
         },
         {
           "caseId": "file-io-dafrs-last",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe complete packed bytes and original addresses before replacement, immediately afterward and via a reopened reader."
         },
         {
           "caseId": "file-io-dafrs-preserve-addresses",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Alternate supplied address extrema, signed IDs, and nonintegral double components; original array data and field order survive."
         },
         {
           "caseId": "file-io-dafrs-first-vs-second",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Replace two distinct summaries with distinguishing signed IDs, then reopen and inspect both positions."
         },
         {
           "caseId": "file-io-dafrs-select-file",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "An unrelated current search cannot redirect this explicit writable token. Reopen both files and compare all summary bytes."
         },
         {
           "caseId": "file-io-dafrs-after-relocation",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Use actual new addresses after DAFAC moves the segment. Replacement preserves the relocated pair."
         },
         {
           "caseId": "file-io-dafrs-no-search",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Observe original DAF search/position failure using a correctly sized packed summary."
         },
         {
           "caseId": "file-io-dafrs-before-first",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Observe original DAF search/position failure using a correctly sized packed summary."
         },
         {
           "caseId": "file-io-dafrs-after-last",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Observe original DAF search/position failure using a correctly sized packed summary."
         },
         {
           "caseId": "file-io-dafrs-read-only",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Replacing an actual current array in a read-only file yields the toolkit write-access error."
         }
       ],

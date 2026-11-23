@@ -9652,17 +9652,12 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-vadd-happy-componentwise-sum",
-          "coverage": [
-            "success"
-          ],
+          "coverage": ["success"],
           "observes": "vadd adds vectors componentwise with mixed signs; the raw return reaches StepOutput.value and is recursively compared including vector length/order. No harness substitute."
         },
         {
           "caseId": "coords-vectors-vadd-audit-cancellation-and-fractions",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "vadd: cancellation and fractions; compare every scalar/vector component with live SpiceyPy; the raw return reaches StepOutput.value and is recursively compared including vector length/order. No harness substitute."
         }
       ],
@@ -9681,9 +9676,7 @@
           "evidence": [
             "packages/py-parity-checking/src/cases/coords-vectors/vadd.cases.json"
           ],
-          "caseIds": [
-            "coords-vectors-vadd-audit-cancellation-and-fractions"
-          ]
+          "caseIds": ["coords-vectors-vadd-audit-cancellation-and-fractions"]
         }
       ],
       "backends": {
@@ -9761,25 +9754,17 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-vcrss-happy-right-handed-basis",
-          "coverage": [
-            "success"
-          ],
+          "coverage": ["success"],
           "observes": "vcrss computes right-handed cross product of x-hat and y-hat; the raw return reaches StepOutput.value and is recursively compared including vector length/order. No harness substitute."
         },
         {
           "caseId": "coords-vectors-vcrss-audit-mixed-and-reversed",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "vcrss: mixed and reversed; compare every scalar/vector component with live SpiceyPy; the raw return reaches StepOutput.value and is recursively compared including vector length/order. No harness substitute."
         },
         {
           "caseId": "coords-vectors-vcrss-audit-parallel-and-zero",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "vcrss: parallel and zero; compare every scalar/vector component with live SpiceyPy; the raw return reaches StepOutput.value and is recursively compared including vector length/order. No harness substitute."
         }
       ],
@@ -9879,17 +9864,12 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-vdot-happy-basic-dot",
-          "coverage": [
-            "success"
-          ],
+          "coverage": ["success"],
           "observes": "vdot computes scalar dot product for simple integer vectors; the raw return reaches StepOutput.value and is recursively compared including vector length/order. No harness substitute."
         },
         {
           "caseId": "coords-vectors-vdot-audit-orthogonal-and-cancellation",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "vdot: orthogonal and cancellation; compare every scalar/vector component with live SpiceyPy; the raw return reaches StepOutput.value and is recursively compared including vector length/order. No harness substitute."
         }
       ],
@@ -9908,9 +9888,7 @@
           "evidence": [
             "packages/py-parity-checking/src/cases/coords-vectors/vdot.cases.json"
           ],
-          "caseIds": [
-            "coords-vectors-vdot-audit-orthogonal-and-cancellation"
-          ]
+          "caseIds": ["coords-vectors-vdot-audit-orthogonal-and-cancellation"]
         }
       ],
       "backends": {
@@ -9988,26 +9966,17 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-vhat-happy-zero-vector",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "vhat preserves CSPICE zero-vector behavior by returning zero vector; the raw return reaches StepOutput.value and is recursively compared including vector length/order. No harness substitute."
         },
         {
           "caseId": "coords-vectors-vhat-audit-mixed-normalization",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "vhat: mixed normalization; compare every scalar/vector component with live SpiceyPy; the raw return reaches StepOutput.value and is recursively compared including vector length/order. No harness substitute."
         },
         {
           "caseId": "coords-vectors-vhat-audit-wide-dynamic-range",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "vhat: wide dynamic range; compare every scalar/vector component with live SpiceyPy; the raw return reaches StepOutput.value and is recursively compared including vector length/order. No harness substitute."
         }
       ],
@@ -10107,17 +10076,12 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-vminus-happy-negation",
-          "coverage": [
-            "success"
-          ],
+          "coverage": ["success"],
           "observes": "vminus negates each component of an input vector; the raw return reaches StepOutput.value and is recursively compared including vector length/order. No harness substitute."
         },
         {
           "caseId": "coords-vectors-vminus-audit-zero-and-fractions",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "vminus: zero and fractions; compare every scalar/vector component with live SpiceyPy; the raw return reaches StepOutput.value and is recursively compared including vector length/order. No harness substitute."
         }
       ],
@@ -10136,9 +10100,7 @@
           "evidence": [
             "packages/py-parity-checking/src/cases/coords-vectors/vminus.cases.json"
           ],
-          "caseIds": [
-            "coords-vectors-vminus-audit-zero-and-fractions"
-          ]
+          "caseIds": ["coords-vectors-vminus-audit-zero-and-fractions"]
         }
       ],
       "backends": {
@@ -10216,25 +10178,17 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-vnorm-happy-pythagorean",
-          "coverage": [
-            "success"
-          ],
+          "coverage": ["success"],
           "observes": "vnorm computes Euclidean magnitude for a 3-4-12 vector; the raw return reaches StepOutput.value and is recursively compared including vector length/order. No harness substitute."
         },
         {
           "caseId": "coords-vectors-vnorm-audit-zero",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "vnorm: zero; compare every scalar/vector component with live SpiceyPy; the raw return reaches StepOutput.value and is recursively compared including vector length/order. No harness substitute."
         },
         {
           "caseId": "coords-vectors-vnorm-audit-large-mixed",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "vnorm: large mixed; compare every scalar/vector component with live SpiceyPy; the raw return reaches StepOutput.value and is recursively compared including vector length/order. No harness substitute."
         }
       ],
@@ -10334,17 +10288,12 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-vscl-happy-negative-scale",
-          "coverage": [
-            "success"
-          ],
+          "coverage": ["success"],
           "observes": "vscl scales a vector by a negative scalar; the raw return reaches StepOutput.value and is recursively compared including vector length/order. No harness substitute."
         },
         {
           "caseId": "coords-vectors-vscl-audit-zero-and-fractional-scale",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "vscl: zero and fractional scale; compare every scalar/vector component with live SpiceyPy; the raw return reaches StepOutput.value and is recursively compared including vector length/order. No harness substitute."
         }
       ],
@@ -10363,9 +10312,7 @@
           "evidence": [
             "packages/py-parity-checking/src/cases/coords-vectors/vscl.cases.json"
           ],
-          "caseIds": [
-            "coords-vectors-vscl-audit-zero-and-fractional-scale"
-          ]
+          "caseIds": ["coords-vectors-vscl-audit-zero-and-fractional-scale"]
         }
       ],
       "backends": {
@@ -10443,17 +10390,12 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-vsub-happy-componentwise-difference",
-          "coverage": [
-            "success"
-          ],
+          "coverage": ["success"],
           "observes": "vsub subtracts vectors componentwise with mixed signs; the raw return reaches StepOutput.value and is recursively compared including vector length/order. No harness substitute."
         },
         {
           "caseId": "coords-vectors-vsub-audit-equal-and-reversed",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "vsub: equal and reversed; compare every scalar/vector component with live SpiceyPy; the raw return reaches StepOutput.value and is recursively compared including vector length/order. No harness substitute."
         }
       ],
@@ -10472,9 +10414,7 @@
           "evidence": [
             "packages/py-parity-checking/src/cases/coords-vectors/vsub.cases.json"
           ],
-          "caseIds": [
-            "coords-vectors-vsub-audit-equal-and-reversed"
-          ]
+          "caseIds": ["coords-vectors-vsub-audit-equal-and-reversed"]
         }
       ],
       "backends": {

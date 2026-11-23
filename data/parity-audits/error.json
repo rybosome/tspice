@@ -9429,25 +9429,17 @@
       "scenarios": [
         {
           "caseId": "error-chkin-trace-stack-success",
-          "coverage": [
-            "success"
-          ],
+          "coverage": ["success"],
           "observes": "chkin/chkout updates traceback stack without setting failure status; dispatcher invokes each actual raw operation. Scalars/complete strings reach StepOutput; captured signal short/long/trace and post-error flag reach recursive exact comparison against SpiceyPy. Named error cases require the matching diagnostic, not merely two failures."
         },
         {
           "caseId": "error-chkin-empty-name-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Representative chkin error path for empty traceback name; dispatcher invokes each actual raw operation. Scalars/complete strings reach StepOutput; captured signal short/long/trace and post-error flag reach recursive exact comparison against SpiceyPy. Named error cases require the matching diagnostic, not merely two failures."
         },
         {
           "caseId": "error-chkin-audit-nested-visible-trace",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Complete real captured traceback includes both active names before checkout; after explicit pops the next captured signal has no user frames. All short/long/trace fields and recovered flag reach the live exact comparison."
         }
       ],
@@ -9469,9 +9461,7 @@
             "packages/py-parity-checking/test/error-capture.test.ts",
             "packages/py-parity-checking/src/cases/error/chkin.cases.json"
           ],
-          "caseIds": [
-            "error-chkin-audit-nested-visible-trace"
-          ]
+          "caseIds": ["error-chkin-audit-nested-visible-trace"]
         },
         {
           "id": "trace-leaks-between-native-cases",
@@ -9484,9 +9474,7 @@
             "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/error.py",
             "packages/py-parity-checking/test/error-capture.test.ts"
           ],
-          "caseIds": [
-            "error-chkin-audit-nested-visible-trace"
-          ]
+          "caseIds": ["error-chkin-audit-nested-visible-trace"]
         }
       ],
       "backends": {
@@ -9560,34 +9548,22 @@
       "scenarios": [
         {
           "caseId": "error-chkout-balanced-trace-success",
-          "coverage": [
-            "success"
-          ],
+          "coverage": ["success"],
           "observes": "chkout removes prior chkin entry and keeps error status clear; dispatcher invokes each actual raw operation. Scalars/complete strings reach StepOutput; captured signal short/long/trace and post-error flag reach recursive exact comparison against SpiceyPy. Named error cases require the matching diagnostic, not merely two failures."
         },
         {
           "caseId": "error-chkout-empty-name-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Representative chkout error path for empty traceback name; dispatcher invokes each actual raw operation. Scalars/complete strings reach StepOutput; captured signal short/long/trace and post-error flag reach recursive exact comparison against SpiceyPy. Named error cases require the matching diagnostic, not merely two failures."
         },
         {
           "caseId": "error-chkout-audit-pop-child-preserve-parent",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Checking out a child removes only that frame; a captured real error retains the parent.; dispatcher invokes each actual raw operation. Scalars/complete strings reach StepOutput; captured signal short/long/trace and post-error flag reach recursive exact comparison against SpiceyPy. Named error cases require the matching diagnostic, not merely two failures."
         },
         {
           "caseId": "error-chkout-audit-balanced-empty-trace",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Balanced push/pop leaves no user frame in the captured signal.; dispatcher invokes each actual raw operation. Scalars/complete strings reach StepOutput; captured signal short/long/trace and post-error flag reach recursive exact comparison against SpiceyPy. Named error cases require the matching diagnostic, not merely two failures."
         }
       ],
@@ -9702,29 +9678,17 @@
       "scenarios": [
         {
           "caseId": "error-failed-clean-state-success",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "failed reports false after explicit reset; dispatcher invokes each actual raw operation. Scalars/complete strings reach StepOutput; captured signal short/long/trace and post-error flag reach recursive exact comparison against SpiceyPy. Named error cases require the matching diagnostic, not merely two failures."
         },
         {
           "caseId": "error-failed-setmsg-does-not-fail-success",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "setmsg alone does not set failed state; dispatcher invokes each actual raw operation. Scalars/complete strings reach StepOutput; captured signal short/long/trace and post-error flag reach recursive exact comparison against SpiceyPy. Named error cases require the matching diagnostic, not merely two failures."
         },
         {
           "caseId": "error-failed-audit-post-signal-recovery",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "failed remains clear after the shim captures and resets a real signaled error.; dispatcher invokes each actual raw operation. Scalars/complete strings reach StepOutput; captured signal short/long/trace and post-error flag reach recursive exact comparison against SpiceyPy. Named error cases require the matching diagnostic, not merely two failures."
         }
       ],
@@ -9804,29 +9768,17 @@
       "scenarios": [
         {
           "caseId": "error-getmsg-long-roundtrip-success",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "getmsg(LONG) returns value previously set via setmsg; dispatcher invokes each actual raw operation. Scalars/complete strings reach StepOutput; captured signal short/long/trace and post-error flag reach recursive exact comparison against SpiceyPy. Named error cases require the matching diagnostic, not merely two failures."
         },
         {
           "caseId": "error-getmsg-invalid-selector-error",
-          "coverage": [
-            "error",
-            "edge",
-            "state"
-          ],
+          "coverage": ["error", "edge", "state"],
           "observes": "Representative getmsg selector validation error path; dispatcher invokes each actual raw operation. Scalars/complete strings reach StepOutput; captured signal short/long/trace and post-error flag reach recursive exact comparison against SpiceyPy. Named error cases require the matching diagnostic, not merely two failures."
         },
         {
           "caseId": "error-getmsg-audit-all-selectors-clean-and-reset",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Each selector is observed before signaling, after automatic error recovery, and after explicit reset.; dispatcher invokes each actual raw operation. Scalars/complete strings reach StepOutput; captured signal short/long/trace and post-error flag reach recursive exact comparison against SpiceyPy. Named error cases require the matching diagnostic, not merely two failures."
         }
       ],
@@ -9925,20 +9877,12 @@
       "scenarios": [
         {
           "caseId": "error-reset-clears-long-message-success",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "reset clears previously set long message and failed state; dispatcher invokes each actual raw operation. Scalars/complete strings reach StepOutput; captured signal short/long/trace and post-error flag reach recursive exact comparison against SpiceyPy. Named error cases require the matching diagnostic, not merely two failures."
         },
         {
           "caseId": "error-reset-audit-repeat-reenable-message",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Repeated reset clears prepared text and allows replacement before another signal.; dispatcher invokes each actual raw operation. Scalars/complete strings reach StepOutput; captured signal short/long/trace and post-error flag reach recursive exact comparison against SpiceyPy. Named error cases require the matching diagnostic, not merely two failures."
         }
       ],
@@ -10018,38 +9962,22 @@
       "scenarios": [
         {
           "caseId": "error-setmsg-long-roundtrip-success",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "setmsg updates the LONG message buffer; dispatcher invokes each actual raw operation. Scalars/complete strings reach StepOutput; captured signal short/long/trace and post-error flag reach recursive exact comparison against SpiceyPy. Named error cases require the matching diagnostic, not merely two failures."
         },
         {
           "caseId": "error-setmsg-empty-message-error",
-          "coverage": [
-            "error",
-            "edge",
-            "state"
-          ],
+          "coverage": ["error", "edge", "state"],
           "observes": "Representative setmsg empty-string error path; dispatcher invokes each actual raw operation. Scalars/complete strings reach StepOutput; captured signal short/long/trace and post-error flag reach recursive exact comparison against SpiceyPy. Named error cases require the matching diagnostic, not merely two failures."
         },
         {
           "caseId": "error-setmsg-audit-replace-and-leading-blanks",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Long messages preserve leading blanks and replacement; messages alone do not set failure.; dispatcher invokes each actual raw operation. Scalars/complete strings reach StepOutput; captured signal short/long/trace and post-error flag reach recursive exact comparison against SpiceyPy. Named error cases require the matching diagnostic, not merely two failures."
         },
         {
           "caseId": "error-setmsg-audit-long-buffer-boundary",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "A 1900-character authored ASCII message is truncated to CSPICE's 1840-character LONG buffer; the entire buffer reaches the comparison.; dispatcher invokes each actual raw operation. Scalars/complete strings reach StepOutput; captured signal short/long/trace and post-error flag reach recursive exact comparison against SpiceyPy. Named error cases require the matching diagnostic, not merely two failures."
         }
       ],
@@ -10129,36 +10057,22 @@
       "scenarios": [
         {
           "caseId": "error-sigerr-signals-error-path",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "sigerr triggers representative SPICE error status/failure behavior; dispatcher invokes each actual raw operation. Scalars/complete strings reach StepOutput; captured signal short/long/trace and post-error flag reach recursive exact comparison against SpiceyPy. Named error cases require the matching diagnostic, not merely two failures."
         },
         {
           "caseId": "error-sigerr-audit-details-and-recovery",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Signal twice with distinct messages/codes and compare complete captured details and automatic recovery.; dispatcher invokes each actual raw operation. Scalars/complete strings reach StepOutput; captured signal short/long/trace and post-error flag reach recursive exact comparison against SpiceyPy. Named error cases require the matching diagnostic, not merely two failures."
         },
         {
           "caseId": "error-sigerr-audit-empty-code",
-          "coverage": [
-            "error",
-            "edge",
-            "state"
-          ],
+          "coverage": ["error", "edge", "state"],
           "observes": "Empty short-code wrapper error is distinguishable from a valid user signal.; dispatcher invokes each actual raw operation. Scalars/complete strings reach StepOutput; captured signal short/long/trace and post-error flag reach recursive exact comparison against SpiceyPy. Named error cases require the matching diagnostic, not merely two failures."
         },
         {
           "caseId": "error-sigerr-audit-short-buffer-boundary",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "An overlength authored short code is truncated to CSPICE's 25-character buffer and captured without hiding recovery.; dispatcher invokes each actual raw operation. Scalars/complete strings reach StepOutput; captured signal short/long/trace and post-error flag reach recursive exact comparison against SpiceyPy. Named error cases require the matching diagnostic, not merely two failures."
         }
       ],

@@ -415,17 +415,12 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-pi-constant-value",
-          "coverage": [
-            "success"
-          ],
+          "coverage": ["success"],
           "observes": "Actual raw.pi return is propagated as StepOutput.value and compared with direct locked SpiceyPy pi execution; full double scalar is retained without normalization."
         },
         {
           "caseId": "coords-vectors-pi-constant-repeat-after-reset",
-          "coverage": [
-            "success",
-            "state"
-          ],
+          "coverage": ["success", "state"],
           "observes": "Actual raw.pi return is propagated as StepOutput.value and compared with direct locked SpiceyPy pi execution; repeat around kclear/reset observes unchanged value without kernels."
         }
       ],
@@ -477,17 +472,12 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-twopi-constant-value",
-          "coverage": [
-            "success"
-          ],
+          "coverage": ["success"],
           "observes": "Actual raw.twopi return is propagated as StepOutput.value and compared with direct locked SpiceyPy twopi execution; full double scalar is retained without normalization."
         },
         {
           "caseId": "coords-vectors-twopi-constant-repeat-after-reset",
-          "coverage": [
-            "success",
-            "state"
-          ],
+          "coverage": ["success", "state"],
           "observes": "Actual raw.twopi return is propagated as StepOutput.value and compared with direct locked SpiceyPy twopi execution; repeat around kclear/reset observes unchanged value without kernels."
         }
       ],
@@ -539,17 +529,12 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-halfpi-constant-value",
-          "coverage": [
-            "success"
-          ],
+          "coverage": ["success"],
           "observes": "Actual raw.halfpi return is propagated as StepOutput.value and compared with direct locked SpiceyPy halfpi execution; full double scalar is retained without normalization."
         },
         {
           "caseId": "coords-vectors-halfpi-constant-repeat-after-reset",
-          "coverage": [
-            "success",
-            "state"
-          ],
+          "coverage": ["success", "state"],
           "observes": "Actual raw.halfpi return is propagated as StepOutput.value and compared with direct locked SpiceyPy halfpi execution; repeat around kclear/reset observes unchanged value without kernels."
         }
       ],
@@ -601,17 +586,12 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-dpr-constant-value",
-          "coverage": [
-            "success"
-          ],
+          "coverage": ["success"],
           "observes": "Actual raw.dpr return is propagated as StepOutput.value and compared with direct locked SpiceyPy dpr execution; full double scalar is retained without normalization."
         },
         {
           "caseId": "coords-vectors-dpr-constant-repeat-after-reset",
-          "coverage": [
-            "success",
-            "state"
-          ],
+          "coverage": ["success", "state"],
           "observes": "Actual raw.dpr return is propagated as StepOutput.value and compared with direct locked SpiceyPy dpr execution; repeat around kclear/reset observes unchanged value without kernels."
         }
       ],
@@ -663,17 +643,12 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-rpd-constant-value",
-          "coverage": [
-            "success"
-          ],
+          "coverage": ["success"],
           "observes": "Actual raw.rpd return is propagated as StepOutput.value and compared with direct locked SpiceyPy rpd execution; full double scalar is retained without normalization."
         },
         {
           "caseId": "coords-vectors-rpd-constant-repeat-after-reset",
-          "coverage": [
-            "success",
-            "state"
-          ],
+          "coverage": ["success", "state"],
           "observes": "Actual raw.rpd return is propagated as StepOutput.value and compared with direct locked SpiceyPy rpd execution; repeat around kclear/reset observes unchanged value without kernels."
         }
       ],
@@ -725,17 +700,12 @@
       "scenarios": [
         {
           "caseId": "time-spd-constant-value",
-          "coverage": [
-            "success"
-          ],
+          "coverage": ["success"],
           "observes": "Actual raw.spd return is propagated as StepOutput.value and compared with direct locked SpiceyPy spd execution; full double scalar is retained without normalization."
         },
         {
           "caseId": "time-spd-constant-repeat-after-reset",
-          "coverage": [
-            "success",
-            "state"
-          ],
+          "coverage": ["success", "state"],
           "observes": "Actual raw.spd return is propagated as StepOutput.value and compared with direct locked SpiceyPy spd execution; repeat around kclear/reset observes unchanged value without kernels."
         }
       ],
@@ -787,17 +757,12 @@
       "scenarios": [
         {
           "caseId": "time-j2000-constant-value",
-          "coverage": [
-            "success"
-          ],
+          "coverage": ["success"],
           "observes": "Actual raw.j2000 return is propagated as StepOutput.value and compared with direct locked SpiceyPy j2000 execution; full double scalar is retained without normalization."
         },
         {
           "caseId": "time-j2000-constant-repeat-after-reset",
-          "coverage": [
-            "success",
-            "state"
-          ],
+          "coverage": ["success", "state"],
           "observes": "Actual raw.j2000 return is propagated as StepOutput.value and compared with direct locked SpiceyPy j2000 execution; repeat around kclear/reset observes unchanged value without kernels."
         }
       ],
@@ -849,17 +814,12 @@
       "scenarios": [
         {
           "caseId": "time-j1900-constant-value",
-          "coverage": [
-            "success"
-          ],
+          "coverage": ["success"],
           "observes": "Actual raw.j1900 return is propagated as StepOutput.value and compared with direct locked SpiceyPy j1900 execution; full double scalar is retained without normalization."
         },
         {
           "caseId": "time-j1900-constant-repeat-after-reset",
-          "coverage": [
-            "success",
-            "state"
-          ],
+          "coverage": ["success", "state"],
           "observes": "Actual raw.j1900 return is propagated as StepOutput.value and compared with direct locked SpiceyPy j1900 execution; repeat around kclear/reset observes unchanged value without kernels."
         }
       ],
@@ -911,17 +871,12 @@
       "scenarios": [
         {
           "caseId": "time-b1950-constant-value",
-          "coverage": [
-            "success"
-          ],
+          "coverage": ["success"],
           "observes": "Actual raw.b1950 return is propagated as StepOutput.value and compared with direct locked SpiceyPy b1950 execution; full double scalar is retained without normalization."
         },
         {
           "caseId": "time-b1950-constant-repeat-after-reset",
-          "coverage": [
-            "success",
-            "state"
-          ],
+          "coverage": ["success", "state"],
           "observes": "Actual raw.b1950 return is propagated as StepOutput.value and compared with direct locked SpiceyPy b1950 execution; repeat around kclear/reset observes unchanged value without kernels."
         }
       ],

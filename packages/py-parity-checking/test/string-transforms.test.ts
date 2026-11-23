@@ -1,6 +1,6 @@
 import { execFileSync } from "node:child_process";
 import path from "node:path";
-import { describe, expect, it } from "vitest";
+import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { spiceClients } from "@rybosome/tspice";
 import type { ParityCase, WorkflowStep } from "../src/case-types.js";
 import { stringsCases } from "../src/cases/index.js";
@@ -160,36 +160,48 @@ describe("public raw string transforms", () => {
         }
       },
     );
-    run(
-      `${backend} recovers after actual CSPICE EMPTYSTRING and STRINGTOOSHORT errors`,
-      async () => {
-        const { spice, dispose } = await spiceClients.toSync({ backend });
-        try {
-          for (const c of stringsCases.filter(
-            (c) => c.expectation.kind === "error",
-          )) {
-            const oracle = await runCaseInSidecar(c, fixtures),
-              actual = runCaseInTspice(spice, c, fixtures);
-            if (oracle.ok || actual.ok || c.expectation.kind !== "error")
-              throw new Error("Missing actual SPICE diagnostic " + c.caseId);
-            for (const fragment of c.expectation.errorMessageIncludes ?? []) {
-              expect(oracle.error.message).toContain(fragment);
-              expect(actual.error.message).toContain(fragment);
-            }
-            expect(spice.raw.failed()).toBe(false);
-            expect(spice.raw.ucase("a ")).toBe("A ");
-            expect(spice.raw.matchi("a", "A", "*", "?")).toBe(true);
-          }
-        } finally {
+    describe.skipIf(backend === "node" && !nodeBackendAvailable)(
+      `${backend} recovers after actual CSPICE string errors`,
+      () => {
+        let client: Awaited<ReturnType<typeof spiceClients.toSync>> | undefined;
+
+        beforeAll(async () => {
+          client = await spiceClients.toSync({ backend });
+        });
+
+        afterAll(async () => {
+          if (!client) return;
+          const { spice, dispose } = client;
           try {
             spice.raw.reset();
             spice.raw.kclear();
           } finally {
             await dispose();
           }
-        }
+        });
+
+        it.each(stringsCases.filter((c) => c.expectation.kind === "error"))(
+          "reports $caseId and recovers on the same client",
+          async (c) => {
+            if (!client) throw new Error("Missing string-recovery client");
+            const { spice } = client;
+            const oracle = await runCaseInSidecar(c, fixtures);
+            const actual = runCaseInTspice(spice, c, fixtures);
+            if (oracle.ok || actual.ok || c.expectation.kind !== "error")
+              throw new Error("Missing actual SPICE diagnostic " + c.caseId);
+
+            for (const fragment of c.expectation.errorMessageIncludes ?? []) {
+              expect(oracle.error.message).toContain(fragment);
+              expect(actual.error.message).toContain(fragment);
+            }
+
+            expect(spice.raw.failed()).toBe(false);
+            expect(spice.raw.ucase("a ")).toBe("A ");
+            expect(spice.raw.matchi("a", "A", "*", "?")).toBe(true);
+          },
+          15_000,
+        );
       },
-      40_000,
     );
     run(
       `${backend} distinguishes malformed UTF-8 result bytes from toolkit errors`,

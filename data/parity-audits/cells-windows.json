@@ -13029,27 +13029,17 @@
       "scenarios": [
         {
           "caseId": "cells-windows-card-window-cardinality-success",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Actual raw cardinality is returned for all four cell types; window endpoint count and cardinality after clearing are compared to live SpiceyPy card. Case: card reports endpoint cardinality for a tracked window"
         },
         {
           "caseId": "cells-windows-card-missing-target-error",
-          "coverage": [
-            "edge"
-          ],
+          "coverage": ["edge"],
           "observes": "Existing missing-target case is harness preflight only: neither actual raw operation is reached; it does not establish raw CSPICE diagnostic parity."
         },
         {
           "caseId": "cells-windows-card-audit-all-cell-types-and-zero",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Actual raw cardinality is returned for all four cell types; window endpoint count and cardinality after clearing are compared to live SpiceyPy card. Case: Cardinality is observed for int/double/char cells before and after clearing."
         }
       ],
@@ -13125,52 +13115,32 @@
       "scenarios": [
         {
           "caseId": "cells-windows-insrtc-dedupe-success",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Every insertion returns the complete ordered string set through kit getters and card, compared to list(SpiceyPy cell), distinguishing ordering, significant leading blanks, trailing-blank equivalence, empty keys and truncation collisions. Case: insrtc inserts into char set cell with de-dupe behavior"
         },
         {
           "caseId": "cells-windows-insrtc-capacity-overflow-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Every insertion returns the complete ordered string set through kit getters and card, compared to list(SpiceyPy cell), distinguishing ordering, significant leading blanks, trailing-blank equivalence, empty keys and truncation collisions. Case: Representative insrtc overflow error"
         },
         {
           "caseId": "cells-windows-insrtc-audit-complete-sorted-values",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Every insertion returns the complete ordered string set through kit getters and card, compared to list(SpiceyPy cell), distinguishing ordering, significant leading blanks, trailing-blank equivalence, empty keys and truncation collisions. Case: Observe every ordered unique value, including signed/fractional inputs or significant leading/insignificant trailing blanks."
         },
         {
           "caseId": "cells-windows-insrtc-audit-duplicate-at-full-capacity",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Every insertion returns the complete ordered string set through kit getters and card, compared to list(SpiceyPy cell), distinguishing ordering, significant leading blanks, trailing-blank equivalence, empty keys and truncation collisions. Case: Duplicate insertion into a full set succeeds without changing contents."
         },
         {
           "caseId": "cells-windows-insrtc-audit-zero-capacity",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Every insertion returns the complete ordered string set through kit getters and card, compared to list(SpiceyPy cell), distinguishing ordering, significant leading blanks, trailing-blank equivalence, empty keys and truncation collisions. Case: Explicit zero capacity must not become the default and insertion must fail in CSPICE."
         },
         {
           "caseId": "cells-windows-insrtc-audit-truncation-deduplication",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Every insertion returns the complete ordered string set through kit getters and card, compared to list(SpiceyPy cell), distinguishing ordering, significant leading blanks, trailing-blank equivalence, empty keys and truncation collisions. Case: Truncated character keys determine order and deduplication."
         }
       ],
@@ -13209,9 +13179,7 @@
             "packages/py-parity-checking/src/cases/cells-windows/insrtc.cases.json",
             "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/cells_windows.py"
           ],
-          "caseIds": [
-            "cells-windows-insrtc-audit-zero-capacity"
-          ]
+          "caseIds": ["cells-windows-insrtc-audit-zero-capacity"]
         },
         {
           "id": "wasm-string-input-coercion",
@@ -13297,43 +13265,27 @@
       "scenarios": [
         {
           "caseId": "cells-windows-insrtd-dedupe-success",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Every insertion returns a copied complete ordered double set through kit getters and card, compared to list(SpiceyPy cell), distinguishing ordering, exact duplicates and binary-exact signed fractions. Case: insrtd inserts into double set cell with de-dupe behavior"
         },
         {
           "caseId": "cells-windows-insrtd-capacity-overflow-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Every insertion returns a copied complete ordered double set through kit getters and card, compared to list(SpiceyPy cell), distinguishing ordering, exact duplicates and binary-exact signed fractions. Case: Representative insrtd overflow error"
         },
         {
           "caseId": "cells-windows-insrtd-audit-complete-sorted-values",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Every insertion returns a copied complete ordered double set through kit getters and card, compared to list(SpiceyPy cell), distinguishing ordering, exact duplicates and binary-exact signed fractions. Case: Observe every ordered unique value, including signed/fractional inputs or significant leading/insignificant trailing blanks."
         },
         {
           "caseId": "cells-windows-insrtd-audit-duplicate-at-full-capacity",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Every insertion returns a copied complete ordered double set through kit getters and card, compared to list(SpiceyPy cell), distinguishing ordering, exact duplicates and binary-exact signed fractions. Case: Duplicate insertion into a full set succeeds without changing contents."
         },
         {
           "caseId": "cells-windows-insrtd-audit-zero-capacity",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Every insertion returns a copied complete ordered double set through kit getters and card, compared to list(SpiceyPy cell), distinguishing ordering, exact duplicates and binary-exact signed fractions. Case: Explicit zero capacity must not become the default and insertion must fail in CSPICE."
         }
       ],
@@ -13371,9 +13323,7 @@
             "packages/py-parity-checking/src/cases/cells-windows/insrtd.cases.json",
             "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/cells_windows.py"
           ],
-          "caseIds": [
-            "cells-windows-insrtd-audit-zero-capacity"
-          ]
+          "caseIds": ["cells-windows-insrtd-audit-zero-capacity"]
         }
       ],
       "backends": {
@@ -13443,43 +13393,27 @@
       "scenarios": [
         {
           "caseId": "cells-windows-insrti-dedupe-success",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Every insertion returns a copied complete ordered integer set through kit getters and card, compared to list(SpiceyPy cell), distinguishing insertion, sorting and duplicate elimination including signed extrema. Case: insrti inserts into int set cell with de-dupe behavior"
         },
         {
           "caseId": "cells-windows-insrti-capacity-overflow-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Every insertion returns a copied complete ordered integer set through kit getters and card, compared to list(SpiceyPy cell), distinguishing insertion, sorting and duplicate elimination including signed extrema. Case: Representative insrti overflow error"
         },
         {
           "caseId": "cells-windows-insrti-audit-complete-sorted-values",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Every insertion returns a copied complete ordered integer set through kit getters and card, compared to list(SpiceyPy cell), distinguishing insertion, sorting and duplicate elimination including signed extrema. Case: Observe every ordered unique value, including signed/fractional inputs or significant leading/insignificant trailing blanks."
         },
         {
           "caseId": "cells-windows-insrti-audit-duplicate-at-full-capacity",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Every insertion returns a copied complete ordered integer set through kit getters and card, compared to list(SpiceyPy cell), distinguishing insertion, sorting and duplicate elimination including signed extrema. Case: Duplicate insertion into a full set succeeds without changing contents."
         },
         {
           "caseId": "cells-windows-insrti-audit-zero-capacity",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Every insertion returns a copied complete ordered integer set through kit getters and card, compared to list(SpiceyPy cell), distinguishing insertion, sorting and duplicate elimination including signed extrema. Case: Explicit zero capacity must not become the default and insertion must fail in CSPICE."
         }
       ],
@@ -13517,9 +13451,7 @@
             "packages/py-parity-checking/src/cases/cells-windows/insrti.cases.json",
             "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/cells_windows.py"
           ],
-          "caseIds": [
-            "cells-windows-insrti-audit-zero-capacity"
-          ]
+          "caseIds": ["cells-windows-insrti-audit-zero-capacity"]
         }
       ],
       "backends": {
@@ -13589,34 +13521,22 @@
       "scenarios": [
         {
           "caseId": "cells-windows-scard-truncates-success",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Actual raw scard mutation is followed by card and further operations; truncation, clearing/refilling every element type and windows, retained size, and above-capacity diagnostic reach live comparison. Case: scard shrinks a populated set cell cardinality"
         },
         {
           "caseId": "cells-windows-scard-negative-card-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Typed wrapper rejects negative cardinality; this is argument validation, not CSPICE diagnostic equivalence. A separate live above-capacity case requires INVALIDCARDINALITY."
         },
         {
           "caseId": "cells-windows-scard-audit-clear-refill-all-types",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Actual raw scard mutation is followed by card and further operations; truncation, clearing/refilling every element type and windows, retained size, and above-capacity diagnostic reach live comparison. Case: Zero cardinality restores an empty set that can be refilled for all element types."
         },
         {
           "caseId": "cells-windows-scard-audit-above-logical-capacity",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Actual raw scard mutation is followed by card and further operations; truncation, clearing/refilling every element type and windows, retained size, and above-capacity diagnostic reach live comparison. Case: CSPICE rejects a cardinality exceeding the actual logical size."
         }
       ],
@@ -13712,27 +13632,17 @@
       "scenarios": [
         {
           "caseId": "cells-windows-size-window-capacity-success",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Actual raw size is returned for three distinct element capacities and a window endpoint capacity before/after insertions and clearing; live SpiceyPy size observes the same state. Case: size reports tracked window capacity"
         },
         {
           "caseId": "cells-windows-size-missing-target-error",
-          "coverage": [
-            "edge"
-          ],
+          "coverage": ["edge"],
           "observes": "Existing missing-target case is harness preflight only: neither actual raw operation is reached; it does not establish raw CSPICE diagnostic parity."
         },
         {
           "caseId": "cells-windows-size-audit-independent-of-cardinality",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Actual raw size is returned for three distinct element capacities and a window endpoint capacity before/after insertions and clearing; live SpiceyPy size observes the same state. Case: Distinct declared capacities survive insertion and cardinality clearing."
         }
       ],
@@ -13808,27 +13718,17 @@
       "scenarios": [
         {
           "caseId": "cells-windows-wncard-window-lifecycle-success",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Actual raw interval count is observed through insert/merge/clear states, alongside endpoint card to distinguish the factor of two. Three disjoint intervals and singleton bounds prevent constant-one/endpoint-count substitutes. Case: Window lifecycle: insert, inspect, clear via scard, inspect"
         },
         {
           "caseId": "cells-windows-wncard-missing-window-error",
-          "coverage": [
-            "edge"
-          ],
+          "coverage": ["edge"],
           "observes": "Existing missing-target case is harness preflight only: neither actual raw operation is reached; it does not establish raw CSPICE diagnostic parity."
         },
         {
           "caseId": "cells-windows-wncard-audit-three-and-empty",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Actual raw interval count is observed through insert/merge/clear states, alongside endpoint card to distinguish the factor of two. Three disjoint intervals and singleton bounds prevent constant-one/endpoint-count substitutes. Case: Interval cardinality differs from endpoint cardinality and returns zero after clearing."
         }
       ],
@@ -13904,34 +13804,22 @@
       "scenarios": [
         {
           "caseId": "cells-windows-wninsd-wnfetd-success",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Every selected raw [left,right] pair reaches live comparison: all zero-based indices of a three-interval window, signed endpoints and singleton, plus named NOINTERVAL on out-of-range and empty windows. Case: Stateful wninsd -> wnfetd workflow"
         },
         {
           "caseId": "cells-windows-wnfetd-out-of-range-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Every selected raw [left,right] pair reaches live comparison: all zero-based indices of a three-interval window, signed endpoints and singleton, plus named NOINTERVAL on out-of-range and empty windows. Case: Representative wnfetd bounds error"
         },
         {
           "caseId": "cells-windows-wnfetd-audit-zero-based-first-last",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Every selected raw [left,right] pair reaches live comparison: all zero-based indices of a three-interval window, signed endpoints and singleton, plus named NOINTERVAL on out-of-range and empty windows. Case: Every interval is fetched using zero-based indices across negative and positive endpoints."
         },
         {
           "caseId": "cells-windows-wnfetd-audit-empty-window",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Every selected raw [left,right] pair reaches live comparison: all zero-based indices of a three-interval window, signed endpoints and singleton, plus named NOINTERVAL on out-of-range and empty windows. Case: An empty real window has no interval zero."
         }
       ],
@@ -14007,41 +13895,27 @@
       "scenarios": [
         {
           "caseId": "cells-windows-wninsd-merge-success",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Insertion effects reach assertions through raw interval count and fetched endpoint pairs. Touching/contained/bridging/singleton intervals and full-window insertion distinguish merge/sort semantics; actual reversed/overflow errors require named CSPICE codes. Case: wninsd merges overlapping intervals in a tracked window"
         },
         {
           "caseId": "cells-windows-wninsd-invalid-interval-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Insertion effects reach assertions through raw interval count and fetched endpoint pairs. Touching/contained/bridging/singleton intervals and full-window insertion distinguish merge/sort semantics; actual reversed/overflow errors require named CSPICE codes. Case: Representative wninsd invalid interval bounds error"
         },
         {
           "caseId": "cells-windows-wninsd-audit-touching-containing-singletons",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Insertion effects reach assertions through raw interval count and fetched endpoint pairs. Touching/contained/bridging/singleton intervals and full-window insertion distinguish merge/sort semantics; actual reversed/overflow errors require named CSPICE codes. Case: Closed touching intervals merge, containing intervals are idempotent, and point intervals survive."
         },
         {
           "caseId": "cells-windows-wninsd-audit-overflow",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Insertion effects reach assertions through raw interval count and fetched endpoint pairs. Touching/contained/bridging/singleton intervals and full-window insertion distinguish merge/sort semantics; actual reversed/overflow errors require named CSPICE codes. Case: A disjoint interval beyond fixed endpoint capacity raises WINDOWEXCESS."
         },
         {
           "caseId": "cells-windows-wninsd-audit-zero-capacity",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Insertion effects reach assertions through raw interval count and fetched endpoint pairs. Touching/contained/bridging/singleton intervals and full-window insertion distinguish merge/sort semantics; actual reversed/overflow errors require named CSPICE codes. Case: Explicit zero interval capacity must reach the raw overflow path."
         }
       ],
@@ -14061,9 +13935,7 @@
             "packages/py-parity-checking/src/cases/cells-windows/wninsd.cases.json",
             "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/cells_windows.py"
           ],
-          "caseIds": [
-            "cells-windows-wninsd-audit-zero-capacity"
-          ]
+          "caseIds": ["cells-windows-wninsd-audit-zero-capacity"]
         }
       ],
       "backends": {

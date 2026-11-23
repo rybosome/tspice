@@ -967,74 +967,47 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-lstlec-empty-array",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Pass an inferred count of zero using actual valid storage and compare exact −1 at several keys."
         },
         {
           "caseId": "coords-vectors-lstlec-singleton",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Query below, equal to and above the single entry. Distinguish −1 from valid index zero."
         },
         {
           "caseId": "coords-vectors-lstlec-duplicates-at-beginning-interior-and-end",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Search repeated values at multiple positions, retaining the exact index of the last qualifying entry for equal and surrounding queries."
         },
         {
           "caseId": "coords-vectors-lstlec-all-equal-with-trailing-blanks",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Use rows differing only by trailing ASCII spaces. Observe rightmost inclusive equality and strict predecessor behavior."
         },
         {
           "caseId": "coords-vectors-lstlec-empty-rows-and-blank-keys",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Use empty/blank keys and rows under blank extension and compare exact index results."
         },
         {
           "caseId": "coords-vectors-lstlec-control-byte-before-padding",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Use a tab byte smaller than ASCII space, including an interior row. The fixture discriminates space-padded rows from early-NUL or zero-padded representations."
         },
         {
           "caseId": "coords-vectors-lstlec-punctuation-and-case",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Distinguish byte order of punctuation, digits, uppercase and lowercase ASCII entries without locale collation or case folding."
         },
         {
           "caseId": "coords-vectors-lstlec-utf8-byte-order",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe sorted unsigned UTF-8 order including multi-byte and supplementary characters whose JS UTF-16 order differs."
         },
         {
           "caseId": "coords-vectors-lstlec-long-keys-and-prefixes",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare longer keys with rows that are common prefixes, retaining blank-extension comparison and exact index."
         }
       ],
@@ -1120,58 +1093,37 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-lstled-empty-array",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Pass an inferred count of zero using actual valid storage and compare exact −1 at several keys."
         },
         {
           "caseId": "coords-vectors-lstled-singleton",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Query below, equal to and above the single entry. Distinguish −1 from valid index zero."
         },
         {
           "caseId": "coords-vectors-lstled-duplicates-at-beginning-interior-and-end",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Search repeated values at multiple positions, retaining the exact index of the last qualifying entry for equal and surrounding queries."
         },
         {
           "caseId": "coords-vectors-lstled-all-equal",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Use an all-equal array and keys below, equal to and above it. Inclusive search accepts the rightmost equal entry, strict search excludes the equality group."
         },
         {
           "caseId": "coords-vectors-lstled-odd-even-and-inner-gaps",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Exercise even and odd binary-search lengths and keys between interior values as well as both ends."
         },
         {
           "caseId": "coords-vectors-lstled-binary64-neighbors",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Search adjacent representable binary64 values without a floating equality tolerance."
         },
         {
           "caseId": "coords-vectors-lstled-finite-extremes-and-subnormals",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare exact indices at finite extrema, subnormals and signed zero neighborhoods."
         }
       ],
@@ -1238,50 +1190,32 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-lstlei-empty-array",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Pass an inferred count of zero using actual valid storage and compare exact −1 at several keys."
         },
         {
           "caseId": "coords-vectors-lstlei-singleton",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Query below, equal to and above the single entry. Distinguish −1 from valid index zero."
         },
         {
           "caseId": "coords-vectors-lstlei-duplicates-at-beginning-interior-and-end",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Search repeated values at multiple positions, retaining the exact index of the last qualifying entry for equal and surrounding queries."
         },
         {
           "caseId": "coords-vectors-lstlei-all-equal",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Use an all-equal array and keys below, equal to and above it. Inclusive search accepts the rightmost equal entry, strict search excludes the equality group."
         },
         {
           "caseId": "coords-vectors-lstlei-odd-even-and-inner-gaps",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Exercise even and odd binary-search lengths and keys between interior values as well as both ends."
         },
         {
           "caseId": "coords-vectors-lstlei-signed-int32-extremes",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare exact indices around signed32 minimum and maximum and locations between extreme entries."
         }
       ],
@@ -1348,74 +1282,47 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-lstltc-empty-array",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Pass an inferred count of zero using actual valid storage and compare exact −1 at several keys."
         },
         {
           "caseId": "coords-vectors-lstltc-singleton",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Query below, equal to and above the single entry. Distinguish −1 from valid index zero."
         },
         {
           "caseId": "coords-vectors-lstltc-duplicates-at-beginning-interior-and-end",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Search repeated values at multiple positions, retaining the exact index of the last qualifying entry for equal and surrounding queries."
         },
         {
           "caseId": "coords-vectors-lstltc-all-equal-with-trailing-blanks",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Use rows differing only by trailing ASCII spaces. Observe rightmost inclusive equality and strict predecessor behavior."
         },
         {
           "caseId": "coords-vectors-lstltc-empty-rows-and-blank-keys",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Use empty/blank keys and rows under blank extension and compare exact index results."
         },
         {
           "caseId": "coords-vectors-lstltc-control-byte-before-padding",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Use a tab byte smaller than ASCII space, including an interior row. The fixture discriminates space-padded rows from early-NUL or zero-padded representations."
         },
         {
           "caseId": "coords-vectors-lstltc-punctuation-and-case",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Distinguish byte order of punctuation, digits, uppercase and lowercase ASCII entries without locale collation or case folding."
         },
         {
           "caseId": "coords-vectors-lstltc-utf8-byte-order",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe sorted unsigned UTF-8 order including multi-byte and supplementary characters whose JS UTF-16 order differs."
         },
         {
           "caseId": "coords-vectors-lstltc-long-keys-and-prefixes",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare longer keys with rows that are common prefixes, retaining blank-extension comparison and exact index."
         }
       ],
@@ -1482,58 +1389,37 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-lstltd-empty-array",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Pass an inferred count of zero using actual valid storage and compare exact −1 at several keys."
         },
         {
           "caseId": "coords-vectors-lstltd-singleton",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Query below, equal to and above the single entry. Distinguish −1 from valid index zero."
         },
         {
           "caseId": "coords-vectors-lstltd-duplicates-at-beginning-interior-and-end",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Search repeated values at multiple positions, retaining the exact index of the last qualifying entry for equal and surrounding queries."
         },
         {
           "caseId": "coords-vectors-lstltd-all-equal",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Use an all-equal array and keys below, equal to and above it. Inclusive search accepts the rightmost equal entry, strict search excludes the equality group."
         },
         {
           "caseId": "coords-vectors-lstltd-odd-even-and-inner-gaps",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Exercise even and odd binary-search lengths and keys between interior values as well as both ends."
         },
         {
           "caseId": "coords-vectors-lstltd-binary64-neighbors",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Search adjacent representable binary64 values without a floating equality tolerance."
         },
         {
           "caseId": "coords-vectors-lstltd-finite-extremes-and-subnormals",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare exact indices at finite extrema, subnormals and signed zero neighborhoods."
         }
       ],
@@ -1600,50 +1486,32 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-lstlti-empty-array",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Pass an inferred count of zero using actual valid storage and compare exact −1 at several keys."
         },
         {
           "caseId": "coords-vectors-lstlti-singleton",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Query below, equal to and above the single entry. Distinguish −1 from valid index zero."
         },
         {
           "caseId": "coords-vectors-lstlti-duplicates-at-beginning-interior-and-end",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Search repeated values at multiple positions, retaining the exact index of the last qualifying entry for equal and surrounding queries."
         },
         {
           "caseId": "coords-vectors-lstlti-all-equal",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Use an all-equal array and keys below, equal to and above it. Inclusive search accepts the rightmost equal entry, strict search excludes the equality group."
         },
         {
           "caseId": "coords-vectors-lstlti-odd-even-and-inner-gaps",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Exercise even and odd binary-search lengths and keys between interior values as well as both ends."
         },
         {
           "caseId": "coords-vectors-lstlti-signed-int32-extremes",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare exact indices around signed32 minimum and maximum and locations between extreme entries."
         }
       ],

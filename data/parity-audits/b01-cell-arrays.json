@@ -1043,92 +1043,52 @@
       "scenarios": [
         {
           "caseId": "cells-windows-appndc-ordered-and-missing",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Ordered cell; inspect each new value and each membership result."
         },
         {
           "caseId": "cells-windows-appndc-independent-handles",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Interleave two independent typed cells; queries must honor the addressed storage."
         },
         {
           "caseId": "cells-windows-appndc-equal-repeat",
-          "coverage": [
-            "error",
-            "edge",
-            "state"
-          ],
+          "coverage": ["error", "edge", "state"],
           "observes": "Preserve duplicate data but signal NOTASET when membership requires a set. Observe the actual toolkit diagnostic SPICE(NOTASET)."
         },
         {
           "caseId": "cells-windows-appndc-descending-then-valid",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Revalidate unsorted appended data and duplicates before testing membership."
         },
         {
           "caseId": "cells-windows-appndc-exact-capacity",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Use every storage slot, inspect ordered and repeated physical values."
         },
         {
           "caseId": "cells-windows-appndc-full",
-          "coverage": [
-            "error",
-            "edge",
-            "state"
-          ],
+          "coverage": ["error", "edge", "state"],
           "observes": "Overflow after successful mutation reports the toolkit capacity error. Observe the actual toolkit diagnostic SPICE(CELLTOOSMALL)."
         },
         {
           "caseId": "cells-windows-appndc-zero-capacity",
-          "coverage": [
-            "error",
-            "edge",
-            "state"
-          ],
+          "coverage": ["error", "edge", "state"],
           "observes": "An ordinary zero-capacity cell cannot accept an element. Observe the actual toolkit diagnostic SPICE(CELLTOOSMALL)."
         },
         {
           "caseId": "cells-windows-appndc-complete-bytes",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Observe fitting multibyte scalar, truncation after whole scalar and exact stored byte membership."
         },
         {
           "caseId": "cells-windows-appndc-terminal-tab",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Public kit snapshot normalizes trailing whitespace; compare tabbed and untabbed probes on the actual stored cell."
         },
         {
           "caseId": "cells-windows-appndc-fortran-blanks",
-          "coverage": [
-            "error",
-            "edge",
-            "state"
-          ],
+          "coverage": ["error", "edge", "state"],
           "observes": "A padded item compares equal in orderedness, clearing set status on duplicate. Observe the actual toolkit diagnostic SPICE(NOTASET)."
         }
       ],
@@ -1199,74 +1159,42 @@
       "scenarios": [
         {
           "caseId": "cells-windows-appndd-ordered-and-missing",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Ordered cell; inspect each new value and each membership result."
         },
         {
           "caseId": "cells-windows-appndd-independent-handles",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Interleave two independent typed cells; queries must honor the addressed storage."
         },
         {
           "caseId": "cells-windows-appndd-equal-repeat",
-          "coverage": [
-            "error",
-            "edge",
-            "state"
-          ],
+          "coverage": ["error", "edge", "state"],
           "observes": "Preserve duplicate data but signal NOTASET when membership requires a set. Observe the actual toolkit diagnostic SPICE(NOTASET)."
         },
         {
           "caseId": "cells-windows-appndd-descending-then-valid",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Revalidate unsorted appended data and duplicates before testing membership."
         },
         {
           "caseId": "cells-windows-appndd-exact-capacity",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Use every storage slot, inspect ordered and repeated physical values."
         },
         {
           "caseId": "cells-windows-appndd-full",
-          "coverage": [
-            "error",
-            "edge",
-            "state"
-          ],
+          "coverage": ["error", "edge", "state"],
           "observes": "Overflow after successful mutation reports the toolkit capacity error. Observe the actual toolkit diagnostic SPICE(CELLTOOSMALL)."
         },
         {
           "caseId": "cells-windows-appndd-zero-capacity",
-          "coverage": [
-            "error",
-            "edge",
-            "state"
-          ],
+          "coverage": ["error", "edge", "state"],
           "observes": "An ordinary zero-capacity cell cannot accept an element. Observe the actual toolkit diagnostic SPICE(CELLTOOSMALL)."
         },
         {
           "caseId": "cells-windows-appndd-signed-zero",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Toolkit equality treats signed zero values as duplicates; observation follows revalidation."
         }
       ],
@@ -1318,65 +1246,37 @@
       "scenarios": [
         {
           "caseId": "cells-windows-appndi-ordered-and-missing",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Ordered cell; inspect each new value and each membership result."
         },
         {
           "caseId": "cells-windows-appndi-independent-handles",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Interleave two independent typed cells; queries must honor the addressed storage."
         },
         {
           "caseId": "cells-windows-appndi-equal-repeat",
-          "coverage": [
-            "error",
-            "edge",
-            "state"
-          ],
+          "coverage": ["error", "edge", "state"],
           "observes": "Preserve duplicate data but signal NOTASET when membership requires a set. Observe the actual toolkit diagnostic SPICE(NOTASET)."
         },
         {
           "caseId": "cells-windows-appndi-descending-then-valid",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Revalidate unsorted appended data and duplicates before testing membership."
         },
         {
           "caseId": "cells-windows-appndi-exact-capacity",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Use every storage slot, inspect ordered and repeated physical values."
         },
         {
           "caseId": "cells-windows-appndi-full",
-          "coverage": [
-            "error",
-            "edge",
-            "state"
-          ],
+          "coverage": ["error", "edge", "state"],
           "observes": "Overflow after successful mutation reports the toolkit capacity error. Observe the actual toolkit diagnostic SPICE(CELLTOOSMALL)."
         },
         {
           "caseId": "cells-windows-appndi-zero-capacity",
-          "coverage": [
-            "error",
-            "edge",
-            "state"
-          ],
+          "coverage": ["error", "edge", "state"],
           "observes": "An ordinary zero-capacity cell cannot accept an element. Observe the actual toolkit diagnostic SPICE(CELLTOOSMALL)."
         }
       ],
@@ -1428,164 +1328,92 @@
       "scenarios": [
         {
           "caseId": "cells-windows-copy-char-overwrite",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Copy replaces the destination contents but retains its capacity; both cells remain independent."
         },
         {
           "caseId": "cells-windows-copy-char-self",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Self-copy on initialized data retains canonical contents and membership."
         },
         {
           "caseId": "cells-windows-copy-char-small",
-          "coverage": [
-            "error",
-            "edge",
-            "state"
-          ],
+          "coverage": ["error", "edge", "state"],
           "observes": "Target cannot hold all source values. Observe the actual toolkit diagnostic SPICE(CELLTOOSMALL)."
         },
         {
           "caseId": "cells-windows-copy-char-empty",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Empty source clears the target cardinality without changing its capacity."
         },
         {
           "caseId": "cells-windows-copy-char-target-not-a-set",
-          "coverage": [
-            "error",
-            "edge",
-            "state"
-          ],
+          "coverage": ["error", "edge", "state"],
           "observes": "Target set flag remains false even when source data was sorted. Observe the actual toolkit diagnostic SPICE(NOTASET)."
         },
         {
           "caseId": "cells-windows-copy-double-overwrite",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Copy replaces the destination contents but retains its capacity; both cells remain independent."
         },
         {
           "caseId": "cells-windows-copy-double-self",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Self-copy on initialized data retains canonical contents and membership."
         },
         {
           "caseId": "cells-windows-copy-double-small",
-          "coverage": [
-            "error",
-            "edge",
-            "state"
-          ],
+          "coverage": ["error", "edge", "state"],
           "observes": "Target cannot hold all source values. Observe the actual toolkit diagnostic SPICE(CELLTOOSMALL)."
         },
         {
           "caseId": "cells-windows-copy-double-empty",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Empty source clears the target cardinality without changing its capacity."
         },
         {
           "caseId": "cells-windows-copy-double-target-not-a-set",
-          "coverage": [
-            "error",
-            "edge",
-            "state"
-          ],
+          "coverage": ["error", "edge", "state"],
           "observes": "Target set flag remains false even when source data was sorted. Observe the actual toolkit diagnostic SPICE(NOTASET)."
         },
         {
           "caseId": "cells-windows-copy-int-overwrite",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Copy replaces the destination contents but retains its capacity; both cells remain independent."
         },
         {
           "caseId": "cells-windows-copy-int-self",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Self-copy on initialized data retains canonical contents and membership."
         },
         {
           "caseId": "cells-windows-copy-int-small",
-          "coverage": [
-            "error",
-            "edge",
-            "state"
-          ],
+          "coverage": ["error", "edge", "state"],
           "observes": "Target cannot hold all source values. Observe the actual toolkit diagnostic SPICE(CELLTOOSMALL)."
         },
         {
           "caseId": "cells-windows-copy-int-empty",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Empty source clears the target cardinality without changing its capacity."
         },
         {
           "caseId": "cells-windows-copy-int-target-not-a-set",
-          "coverage": [
-            "error",
-            "edge",
-            "state"
-          ],
+          "coverage": ["error", "edge", "state"],
           "observes": "Target set flag remains false even when source data was sorted. Observe the actual toolkit diagnostic SPICE(NOTASET)."
         },
         {
           "caseId": "cells-windows-copy-char-short-row",
-          "coverage": [
-            "error",
-            "edge",
-            "state"
-          ],
+          "coverage": ["error", "edge", "state"],
           "observes": "Widths differ and significant source data cannot fit. Observe the actual toolkit diagnostic SPICE(ELEMENTSTOOSHORT)."
         },
         {
           "caseId": "cells-windows-copy-char-small-control-width",
-          "coverage": [
-            "error",
-            "edge",
-            "state"
-          ],
+          "coverage": ["error", "edge", "state"],
           "observes": "Fortran character-cell controls require five physical text characters; a four-byte C row cannot represent them. Observe the actual toolkit diagnostic SPICE(INSUFFLEN)."
         },
         {
           "caseId": "cells-windows-copy-char-blank-tail",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "A narrower target can still represent significant bytes when remaining bytes are only spaces."
         }
       ],
@@ -1661,92 +1489,52 @@
       "scenarios": [
         {
           "caseId": "cells-windows-elemc-ordered-and-missing",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Ordered cell; inspect each new value and each membership result."
         },
         {
           "caseId": "cells-windows-elemc-independent-handles",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Interleave two independent typed cells; queries must honor the addressed storage."
         },
         {
           "caseId": "cells-windows-elemc-equal-repeat",
-          "coverage": [
-            "error",
-            "edge",
-            "state"
-          ],
+          "coverage": ["error", "edge", "state"],
           "observes": "Preserve duplicate data but signal NOTASET when membership requires a set. Observe the actual toolkit diagnostic SPICE(NOTASET)."
         },
         {
           "caseId": "cells-windows-elemc-descending-then-valid",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Revalidate unsorted appended data and duplicates before testing membership."
         },
         {
           "caseId": "cells-windows-elemc-empty",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Legitimate absence on an empty allocated cell with no insert."
         },
         {
           "caseId": "cells-windows-elemc-descending-reject",
-          "coverage": [
-            "error",
-            "edge",
-            "state"
-          ],
+          "coverage": ["error", "edge", "state"],
           "observes": "Distinct out-of-order values clear the flag even without a duplicate. Observe the actual toolkit diagnostic SPICE(NOTASET)."
         },
         {
           "caseId": "cells-windows-elemc-singleton",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Compare equal, smaller and greater values on a single element."
         },
         {
           "caseId": "cells-windows-elemc-complete-bytes",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Observe fitting multibyte scalar, truncation after whole scalar and exact stored byte membership."
         },
         {
           "caseId": "cells-windows-elemc-terminal-tab",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Public kit snapshot normalizes trailing whitespace; compare tabbed and untabbed probes on the actual stored cell."
         },
         {
           "caseId": "cells-windows-elemc-fortran-blanks",
-          "coverage": [
-            "error",
-            "edge",
-            "state"
-          ],
+          "coverage": ["error", "edge", "state"],
           "observes": "A padded item compares equal in orderedness, clearing set status on duplicate. Observe the actual toolkit diagnostic SPICE(NOTASET)."
         }
       ],
@@ -1817,74 +1605,42 @@
       "scenarios": [
         {
           "caseId": "cells-windows-elemd-ordered-and-missing",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Ordered cell; inspect each new value and each membership result."
         },
         {
           "caseId": "cells-windows-elemd-independent-handles",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Interleave two independent typed cells; queries must honor the addressed storage."
         },
         {
           "caseId": "cells-windows-elemd-equal-repeat",
-          "coverage": [
-            "error",
-            "edge",
-            "state"
-          ],
+          "coverage": ["error", "edge", "state"],
           "observes": "Preserve duplicate data but signal NOTASET when membership requires a set. Observe the actual toolkit diagnostic SPICE(NOTASET)."
         },
         {
           "caseId": "cells-windows-elemd-descending-then-valid",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Revalidate unsorted appended data and duplicates before testing membership."
         },
         {
           "caseId": "cells-windows-elemd-empty",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Legitimate absence on an empty allocated cell with no insert."
         },
         {
           "caseId": "cells-windows-elemd-descending-reject",
-          "coverage": [
-            "error",
-            "edge",
-            "state"
-          ],
+          "coverage": ["error", "edge", "state"],
           "observes": "Distinct out-of-order values clear the flag even without a duplicate. Observe the actual toolkit diagnostic SPICE(NOTASET)."
         },
         {
           "caseId": "cells-windows-elemd-singleton",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Compare equal, smaller and greater values on a single element."
         },
         {
           "caseId": "cells-windows-elemd-signed-zero",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Toolkit equality treats signed zero values as duplicates; observation follows revalidation."
         }
       ],
@@ -1936,65 +1692,37 @@
       "scenarios": [
         {
           "caseId": "cells-windows-elemi-ordered-and-missing",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Ordered cell; inspect each new value and each membership result."
         },
         {
           "caseId": "cells-windows-elemi-independent-handles",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Interleave two independent typed cells; queries must honor the addressed storage."
         },
         {
           "caseId": "cells-windows-elemi-equal-repeat",
-          "coverage": [
-            "error",
-            "edge",
-            "state"
-          ],
+          "coverage": ["error", "edge", "state"],
           "observes": "Preserve duplicate data but signal NOTASET when membership requires a set. Observe the actual toolkit diagnostic SPICE(NOTASET)."
         },
         {
           "caseId": "cells-windows-elemi-descending-then-valid",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Revalidate unsorted appended data and duplicates before testing membership."
         },
         {
           "caseId": "cells-windows-elemi-empty",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Legitimate absence on an empty allocated cell with no insert."
         },
         {
           "caseId": "cells-windows-elemi-descending-reject",
-          "coverage": [
-            "error",
-            "edge",
-            "state"
-          ],
+          "coverage": ["error", "edge", "state"],
           "observes": "Distinct out-of-order values clear the flag even without a duplicate. Observe the actual toolkit diagnostic SPICE(NOTASET)."
         },
         {
           "caseId": "cells-windows-elemi-singleton",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Compare equal, smaller and greater values on a single element."
         }
       ],

@@ -972,8 +972,6 @@ function localClock(spice: SpiceSync, utc: string): string {
 }
 void localClock;
 
-
-
 function inspectDaf(spice: SpiceSync, path: string): Uint8Array | undefined {
   const handle = spice.raw.dafopw(path);
   try {

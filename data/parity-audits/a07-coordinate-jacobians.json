@@ -1179,50 +1179,32 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-dazldr-mixed-positions",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare all nine derivative entries at three asymmetric locations, including both signs and unequal angular and distance derivatives. Compare every row and column against the independent reference."
         },
         {
           "caseId": "coords-vectors-dazldr-origin",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "The inverse coordinate chart has undefined angular derivatives on the exact Z-axis. Require POINTONZAXIS."
         },
         {
           "caseId": "coords-vectors-dazldr-z-axis",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "The inverse coordinate chart has undefined angular derivatives on the exact Z-axis. Require POINTONZAXIS."
         },
         {
           "caseId": "coords-vectors-dazldr-near-axis",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare a defined nearby direction with distinct small nonzero X and Y and verify every angular derivative and sign. Compare every row and column against the independent reference."
         },
         {
           "caseId": "coords-vectors-dazldr-directions",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Independently reverse azimuth and elevation, then both, holding the physical coordinates fixed. Compare every row and column against the independent reference."
         },
         {
           "caseId": "coords-vectors-dazldr-distance-scales",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Separate distance-independent direction cosines from derivatives that scale with distance or reciprocal distance. Compare every row and column against the independent reference."
         }
       ],
@@ -1274,42 +1256,27 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-dcyldr-mixed-positions",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare all nine derivative entries at three asymmetric locations, including both signs and unequal angular and distance derivatives. Compare every row and column against the independent reference."
         },
         {
           "caseId": "coords-vectors-dcyldr-origin",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "The inverse coordinate chart has undefined angular derivatives on the exact Z-axis. Require POINTONZAXIS."
         },
         {
           "caseId": "coords-vectors-dcyldr-z-axis",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "The inverse coordinate chart has undefined angular derivatives on the exact Z-axis. Require POINTONZAXIS."
         },
         {
           "caseId": "coords-vectors-dcyldr-near-axis",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare a defined nearby direction with distinct small nonzero X and Y and verify every angular derivative and sign. Compare every row and column against the independent reference."
         },
         {
           "caseId": "coords-vectors-dcyldr-distance-scales",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Separate distance-independent direction cosines from derivatives that scale with distance or reciprocal distance. Compare every row and column against the independent reference."
         }
       ],
@@ -1361,66 +1328,42 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-dgeodr-mixed-positions",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare all nine derivative entries at three asymmetric locations, including both signs and unequal angular and distance derivatives. Compare every row and column against the independent reference."
         },
         {
           "caseId": "coords-vectors-dgeodr-origin",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "The inverse coordinate chart has undefined angular derivatives on the exact Z-axis. Require POINTONZAXIS."
         },
         {
           "caseId": "coords-vectors-dgeodr-z-axis",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "The inverse coordinate chart has undefined angular derivatives on the exact Z-axis. Require POINTONZAXIS."
         },
         {
           "caseId": "coords-vectors-dgeodr-near-axis",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare a defined nearby direction with distinct small nonzero X and Y and verify every angular derivative and sign. Compare every row and column against the independent reference."
         },
         {
           "caseId": "coords-vectors-dgeodr-reference-shapes",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Differentiate the same point on spherical, oblate and prolate reference figures using caller-supplied radii and flattening. Compare every row and column against the independent reference."
         },
         {
           "caseId": "coords-vectors-dgeodr-zero-equator",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Use the original toolkit diagnostic for an invalid reference figure. Require BADRADIUS."
         },
         {
           "caseId": "coords-vectors-dgeodr-unit-flattening",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Use the original toolkit diagnostic for an invalid reference figure. Require VALUEOUTOFRANGE."
         },
         {
           "caseId": "coords-vectors-dgeodr-nearest-point-bound",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "The scaled position is too large for the nearest-point operation. Observe its genuine error before the parent transformation consumes an unavailable normal. Require INPUTSTOOLARGE."
         }
       ],
@@ -1442,9 +1385,7 @@
             "docs/step8-coordinate-jacobians.md",
             "packages/py-parity-checking/test/coordinate-jacobians.test.ts"
           ],
-          "caseIds": [
-            "coords-vectors-dgeodr-nearest-point-bound"
-          ]
+          "caseIds": ["coords-vectors-dgeodr-nearest-point-bound"]
         }
       ],
       "backends": {
@@ -1490,42 +1431,27 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-dlatdr-mixed-positions",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare all nine derivative entries at three asymmetric locations, including both signs and unequal angular and distance derivatives. Compare every row and column against the independent reference."
         },
         {
           "caseId": "coords-vectors-dlatdr-origin",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "The inverse coordinate chart has undefined angular derivatives on the exact Z-axis. Require POINTONZAXIS."
         },
         {
           "caseId": "coords-vectors-dlatdr-z-axis",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "The inverse coordinate chart has undefined angular derivatives on the exact Z-axis. Require POINTONZAXIS."
         },
         {
           "caseId": "coords-vectors-dlatdr-near-axis",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare a defined nearby direction with distinct small nonzero X and Y and verify every angular derivative and sign. Compare every row and column against the independent reference."
         },
         {
           "caseId": "coords-vectors-dlatdr-distance-scales",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Separate distance-independent direction cosines from derivatives that scale with distance or reciprocal distance. Compare every row and column against the independent reference."
         }
       ],
@@ -1577,114 +1503,72 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-dpgrdr-mixed-positions",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare all nine derivative entries at three asymmetric locations, including both signs and unequal angular and distance derivatives. Compare every row and column against the independent reference."
         },
         {
           "caseId": "coords-vectors-dpgrdr-origin",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "The inverse coordinate chart has undefined angular derivatives on the exact Z-axis. Require POINTONZAXIS."
         },
         {
           "caseId": "coords-vectors-dpgrdr-z-axis",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "The inverse coordinate chart has undefined angular derivatives on the exact Z-axis. Require POINTONZAXIS."
         },
         {
           "caseId": "coords-vectors-dpgrdr-near-axis",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare a defined nearby direction with distinct small nonzero X and Y and verify every angular derivative and sign. Compare every row and column against the independent reference."
         },
         {
           "caseId": "coords-vectors-dpgrdr-reference-shapes",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Differentiate the same point on spherical, oblate and prolate reference figures using caller-supplied radii and flattening. Compare every row and column against the independent reference."
         },
         {
           "caseId": "coords-vectors-dpgrdr-zero-equator",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Use the original toolkit diagnostic for an invalid reference figure. Require VALUEOUTOFRANGE."
         },
         {
           "caseId": "coords-vectors-dpgrdr-unit-flattening",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Use the original toolkit diagnostic for an invalid reference figure. Require VALUEOUTOFRANGE."
         },
         {
           "caseId": "coords-vectors-dpgrdr-spin-and-overrides",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Change the loaded prime-meridian rate from positive to negative and zero, then override it with explicit east and west settings. Observe all nine entries after each pool mutation. Compare every row and column against the independent reference."
         },
         {
           "caseId": "coords-vectors-dpgrdr-earth-moon-sun",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Test east-positive Earth, Sun and Moon, including prograde values for the latter two, and an explicit west override for Earth. Compare every row and column against the independent reference."
         },
         {
           "caseId": "coords-vectors-dpgrdr-blank-body",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Observe the body resolution or longitude-policy diagnostic before any matrix is published. Require EMPTYSTRING."
         },
         {
           "caseId": "coords-vectors-dpgrdr-unknown-body",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Observe the body resolution or longitude-policy diagnostic before any matrix is published. Require IDCODENOTFOUND."
         },
         {
           "caseId": "coords-vectors-dpgrdr-no-orientation",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Observe the body resolution or longitude-policy diagnostic before any matrix is published. Require MISSINGDATA."
         },
         {
           "caseId": "coords-vectors-dpgrdr-invalid-override",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Observe the body resolution or longitude-policy diagnostic before any matrix is published. Require INVALIDOPTION."
         },
         {
           "caseId": "coords-vectors-dpgrdr-nearest-point-bound",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "The scaled position is too large for the nearest-point operation. Observe its genuine error before the parent transformation consumes an unavailable normal. Require INPUTSTOOLARGE."
         }
       ],
@@ -1706,9 +1590,7 @@
             "docs/step8-coordinate-jacobians.md",
             "packages/py-parity-checking/test/coordinate-jacobians.test.ts"
           ],
-          "caseIds": [
-            "coords-vectors-dpgrdr-unknown-body"
-          ]
+          "caseIds": ["coords-vectors-dpgrdr-unknown-body"]
         },
         {
           "id": "dpgrdr-nearest-point",
@@ -1721,9 +1603,7 @@
             "docs/step8-coordinate-jacobians.md",
             "packages/py-parity-checking/test/coordinate-jacobians.test.ts"
           ],
-          "caseIds": [
-            "coords-vectors-dpgrdr-nearest-point-bound"
-          ]
+          "caseIds": ["coords-vectors-dpgrdr-nearest-point-bound"]
         }
       ],
       "backends": {
@@ -1769,50 +1649,32 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-drdazl-mixed-positions",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare all nine derivative entries at three asymmetric locations, including both signs and unequal angular and distance derivatives. Compare every row and column against the independent reference."
         },
         {
           "caseId": "coords-vectors-drdazl-zero-radius",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe rank-deficient derivatives at zero radius while retaining each derivative with respect to radius. Compare every row and column against the independent reference."
         },
         {
           "caseId": "coords-vectors-drdazl-angular-periods",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Evaluate actual derivatives with unwrapped angles, quadrant changes and pole conventions. Compare every row and column against the independent reference."
         },
         {
           "caseId": "coords-vectors-drdazl-negative-radius",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Distinguish the routine-specific signed-radius domain and the signs of its angular derivative columns. Require VALUEOUTOFRANGE."
         },
         {
           "caseId": "coords-vectors-drdazl-directions",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Independently reverse azimuth and elevation, then both, holding the physical coordinates fixed. Compare every row and column against the independent reference."
         },
         {
           "caseId": "coords-vectors-drdazl-distance-scales",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Separate distance-independent direction cosines from derivatives that scale with distance or reciprocal distance. Compare every row and column against the independent reference."
         }
       ],
@@ -1864,42 +1726,27 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-drdcyl-mixed-positions",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare all nine derivative entries at three asymmetric locations, including both signs and unequal angular and distance derivatives. Compare every row and column against the independent reference."
         },
         {
           "caseId": "coords-vectors-drdcyl-zero-radius",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe rank-deficient derivatives at zero radius while retaining each derivative with respect to radius. Compare every row and column against the independent reference."
         },
         {
           "caseId": "coords-vectors-drdcyl-angular-periods",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Evaluate actual derivatives with unwrapped angles, quadrant changes and pole conventions. Compare every row and column against the independent reference."
         },
         {
           "caseId": "coords-vectors-drdcyl-negative-radius",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Distinguish the routine-specific signed-radius domain and the signs of its angular derivative columns. Compare every row and column against the independent reference."
         },
         {
           "caseId": "coords-vectors-drdcyl-distance-scales",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Separate distance-independent direction cosines from derivatives that scale with distance or reciprocal distance. Compare every row and column against the independent reference."
         }
       ],
@@ -1951,42 +1798,27 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-drdgeo-mixed-positions",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare all nine derivative entries at three asymmetric locations, including both signs and unequal angular and distance derivatives. Compare every row and column against the independent reference."
         },
         {
           "caseId": "coords-vectors-drdgeo-poles-below-surface",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare positive and negative polar latitudes at distinct longitudes and negative altitude, retaining the finite precision of trigonometric evaluation. Compare every row and column against the independent reference."
         },
         {
           "caseId": "coords-vectors-drdgeo-reference-shapes",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Differentiate the same point on spherical, oblate and prolate reference figures using caller-supplied radii and flattening. Compare every row and column against the independent reference."
         },
         {
           "caseId": "coords-vectors-drdgeo-zero-equator",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Use the original toolkit diagnostic for an invalid reference figure. Require BADRADIUS."
         },
         {
           "caseId": "coords-vectors-drdgeo-unit-flattening",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Use the original toolkit diagnostic for an invalid reference figure. Require VALUEOUTOFRANGE."
         }
       ],
@@ -2038,42 +1870,27 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-drdlat-mixed-positions",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare all nine derivative entries at three asymmetric locations, including both signs and unequal angular and distance derivatives. Compare every row and column against the independent reference."
         },
         {
           "caseId": "coords-vectors-drdlat-zero-radius",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe rank-deficient derivatives at zero radius while retaining each derivative with respect to radius. Compare every row and column against the independent reference."
         },
         {
           "caseId": "coords-vectors-drdlat-angular-periods",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Evaluate actual derivatives with unwrapped angles, quadrant changes and pole conventions. Compare every row and column against the independent reference."
         },
         {
           "caseId": "coords-vectors-drdlat-negative-radius",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Distinguish the routine-specific signed-radius domain and the signs of its angular derivative columns. Compare every row and column against the independent reference."
         },
         {
           "caseId": "coords-vectors-drdlat-distance-scales",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Separate distance-independent direction cosines from derivatives that scale with distance or reciprocal distance. Compare every row and column against the independent reference."
         }
       ],
@@ -2125,90 +1942,57 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-drdpgr-mixed-positions",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare all nine derivative entries at three asymmetric locations, including both signs and unequal angular and distance derivatives. Compare every row and column against the independent reference."
         },
         {
           "caseId": "coords-vectors-drdpgr-poles-below-surface",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare positive and negative polar latitudes at distinct longitudes and negative altitude, retaining the finite precision of trigonometric evaluation. Compare every row and column against the independent reference."
         },
         {
           "caseId": "coords-vectors-drdpgr-reference-shapes",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Differentiate the same point on spherical, oblate and prolate reference figures using caller-supplied radii and flattening. Compare every row and column against the independent reference."
         },
         {
           "caseId": "coords-vectors-drdpgr-zero-equator",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Use the original toolkit diagnostic for an invalid reference figure. Require VALUEOUTOFRANGE."
         },
         {
           "caseId": "coords-vectors-drdpgr-unit-flattening",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Use the original toolkit diagnostic for an invalid reference figure. Require VALUEOUTOFRANGE."
         },
         {
           "caseId": "coords-vectors-drdpgr-spin-and-overrides",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Change the loaded prime-meridian rate from positive to negative and zero, then override it with explicit east and west settings. Observe all nine entries after each pool mutation. Compare every row and column against the independent reference."
         },
         {
           "caseId": "coords-vectors-drdpgr-earth-moon-sun",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Test east-positive Earth, Sun and Moon, including prograde values for the latter two, and an explicit west override for Earth. Compare every row and column against the independent reference."
         },
         {
           "caseId": "coords-vectors-drdpgr-blank-body",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Observe the body resolution or longitude-policy diagnostic before any matrix is published. Require EMPTYSTRING."
         },
         {
           "caseId": "coords-vectors-drdpgr-unknown-body",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Observe the body resolution or longitude-policy diagnostic before any matrix is published. Require IDCODENOTFOUND."
         },
         {
           "caseId": "coords-vectors-drdpgr-no-orientation",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Observe the body resolution or longitude-policy diagnostic before any matrix is published. Require MISSINGDATA."
         },
         {
           "caseId": "coords-vectors-drdpgr-invalid-override",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Observe the body resolution or longitude-policy diagnostic before any matrix is published. Require INVALIDOPTION."
         }
       ],
@@ -2230,9 +2014,7 @@
             "docs/step8-coordinate-jacobians.md",
             "packages/py-parity-checking/test/coordinate-jacobians.test.ts"
           ],
-          "caseIds": [
-            "coords-vectors-drdpgr-unknown-body"
-          ]
+          "caseIds": ["coords-vectors-drdpgr-unknown-body"]
         }
       ],
       "backends": {
@@ -2278,42 +2060,27 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-drdsph-mixed-positions",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare all nine derivative entries at three asymmetric locations, including both signs and unequal angular and distance derivatives. Compare every row and column against the independent reference."
         },
         {
           "caseId": "coords-vectors-drdsph-zero-radius",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe rank-deficient derivatives at zero radius while retaining each derivative with respect to radius. Compare every row and column against the independent reference."
         },
         {
           "caseId": "coords-vectors-drdsph-angular-periods",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Evaluate actual derivatives with unwrapped angles, quadrant changes and pole conventions. Compare every row and column against the independent reference."
         },
         {
           "caseId": "coords-vectors-drdsph-negative-radius",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Distinguish the routine-specific signed-radius domain and the signs of its angular derivative columns. Compare every row and column against the independent reference."
         },
         {
           "caseId": "coords-vectors-drdsph-distance-scales",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Separate distance-independent direction cosines from derivatives that scale with distance or reciprocal distance. Compare every row and column against the independent reference."
         }
       ],
@@ -2365,42 +2132,27 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-dsphdr-mixed-positions",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare all nine derivative entries at three asymmetric locations, including both signs and unequal angular and distance derivatives. Compare every row and column against the independent reference."
         },
         {
           "caseId": "coords-vectors-dsphdr-origin",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "The inverse coordinate chart has undefined angular derivatives on the exact Z-axis. Require POINTONZAXIS."
         },
         {
           "caseId": "coords-vectors-dsphdr-z-axis",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "The inverse coordinate chart has undefined angular derivatives on the exact Z-axis. Require POINTONZAXIS."
         },
         {
           "caseId": "coords-vectors-dsphdr-near-axis",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare a defined nearby direction with distinct small nonzero X and Y and verify every angular derivative and sign. Compare every row and column against the independent reference."
         },
         {
           "caseId": "coords-vectors-dsphdr-distance-scales",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Separate distance-independent direction cosines from derivatives that scale with distance or reciprocal distance. Compare every row and column against the independent reference."
         }
       ],

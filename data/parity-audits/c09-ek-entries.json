@@ -461,74 +461,47 @@
       "scenarios": [
         {
           "caseId": "ek-ekacec-persisted-vector",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Fill two variable rows out of order, close and reopen, and compare the independent complete entries, order and null flags."
         },
         {
           "caseId": "ek-ekacec-fixed-null",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Write a fixed-size null with three placeholders and observe its actual count."
         },
         {
           "caseId": "ek-ekacec-non-nullable",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Adding a null to a non-nullable variable entry diagnoses the attribute."
         },
         {
           "caseId": "ek-ekacec-bad-count",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Write the wrong number of elements into a newly created fixed-size vector."
         },
         {
           "caseId": "ek-ekacec-empty-vector",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "A zero-element variable entry cannot be added, even with a non-null supplied storage sentinel."
         },
         {
           "caseId": "ek-ekacec-wrong-type",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Request a different storage type in an existing segment and row."
         },
         {
           "caseId": "ek-ekacec-unknown-column",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Try a nonempty undeclared column and observe the pinned descriptor lookup error."
         },
         {
           "caseId": "ek-ekacec-invalid-segment",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "An out-of-range segment is diagnosed before any descriptor or entry access."
         },
         {
           "caseId": "ek-ekacec-invalid-row",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "A negative row is outside the segment record tree."
         }
       ],
@@ -541,23 +514,13 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": [
-            "unreviewed",
-            "reviewed",
-            "verified",
-            "reviewed"
-          ],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "EkApi.ekacec -> serialized native addon -> tspice_ekacec -> ekacec_c on canonical writes; length, class and ownership guards. Recover from real type and ordinal errors, validate the physical input storage, and persist the actual mutation before an independent reader opens the file.",
           "executions": []
         },
         "wasm": {
-          "history": [
-            "unreviewed",
-            "reviewed",
-            "verified",
-            "reviewed"
-          ],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "EkApi.ekacec -> required WASM export and scoped buffers -> tspice_ekacec -> ekacec_c on canonical writes; length, class and ownership guards. Recover from real type and ordinal errors, validate the physical input storage, and persist the actual mutation before an independent reader opens the file.",
           "executions": []
@@ -572,82 +535,52 @@
       "scenarios": [
         {
           "caseId": "ek-ekaced-persisted-vector",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Fill two variable rows out of order, close and reopen, and compare the independent complete entries, order and null flags."
         },
         {
           "caseId": "ek-ekaced-fixed-null",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Write a fixed-size null with three placeholders and observe its actual count."
         },
         {
           "caseId": "ek-ekaced-non-nullable",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Adding a null to a non-nullable variable entry diagnoses the attribute."
         },
         {
           "caseId": "ek-ekaced-bad-count",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Write the wrong number of elements into a newly created fixed-size vector."
         },
         {
           "caseId": "ek-ekaced-empty-vector",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "A zero-element variable entry cannot be added, even with a non-null supplied storage sentinel."
         },
         {
           "caseId": "ek-ekaced-scalar-duplicate",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "A second add to an assigned scalar reports NONEMPTYENTRY."
         },
         {
           "caseId": "ek-ekaced-wrong-type",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Request a different storage type in an existing segment and row."
         },
         {
           "caseId": "ek-ekaced-unknown-column",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Try a nonempty undeclared column and observe the pinned descriptor lookup error."
         },
         {
           "caseId": "ek-ekaced-invalid-segment",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "An out-of-range segment is diagnosed before any descriptor or entry access."
         },
         {
           "caseId": "ek-ekaced-invalid-row",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "A negative row is outside the segment record tree."
         }
       ],
@@ -660,23 +593,13 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": [
-            "unreviewed",
-            "reviewed",
-            "verified",
-            "reviewed"
-          ],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "EkApi.ekaced -> serialized native addon -> tspice_ekaced -> ekaced_c on canonical writes; length, class and ownership guards. Recover from real type and ordinal errors, validate the physical input storage, and persist the actual mutation before an independent reader opens the file.",
           "executions": []
         },
         "wasm": {
-          "history": [
-            "unreviewed",
-            "reviewed",
-            "verified",
-            "reviewed"
-          ],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "EkApi.ekaced -> required WASM export and scoped buffers -> tspice_ekaced -> ekaced_c on canonical writes; length, class and ownership guards. Recover from real type and ordinal errors, validate the physical input storage, and persist the actual mutation before an independent reader opens the file.",
           "executions": []
@@ -691,82 +614,52 @@
       "scenarios": [
         {
           "caseId": "ek-ekacei-persisted-vector",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Fill two variable rows out of order, close and reopen, and compare the independent complete entries, order and null flags."
         },
         {
           "caseId": "ek-ekacei-fixed-null",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Write a fixed-size null with three placeholders and observe its actual count."
         },
         {
           "caseId": "ek-ekacei-non-nullable",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Adding a null to a non-nullable variable entry diagnoses the attribute."
         },
         {
           "caseId": "ek-ekacei-bad-count",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Write the wrong number of elements into a newly created fixed-size vector."
         },
         {
           "caseId": "ek-ekacei-empty-vector",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "A zero-element variable entry cannot be added, even with a non-null supplied storage sentinel."
         },
         {
           "caseId": "ek-ekacei-scalar-duplicate",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "A second add to an assigned scalar reports NONEMPTYENTRY."
         },
         {
           "caseId": "ek-ekacei-wrong-type",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Request a different storage type in an existing segment and row."
         },
         {
           "caseId": "ek-ekacei-unknown-column",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Try a nonempty undeclared column and observe the pinned descriptor lookup error."
         },
         {
           "caseId": "ek-ekacei-invalid-segment",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "An out-of-range segment is diagnosed before any descriptor or entry access."
         },
         {
           "caseId": "ek-ekacei-invalid-row",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "A negative row is outside the segment record tree."
         }
       ],
@@ -779,23 +672,13 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": [
-            "unreviewed",
-            "reviewed",
-            "verified",
-            "reviewed"
-          ],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "EkApi.ekacei -> serialized native addon -> tspice_ekacei -> ekacei_c on canonical writes; length, class and ownership guards. Recover from real type and ordinal errors, validate the physical input storage, and persist the actual mutation before an independent reader opens the file.",
           "executions": []
         },
         "wasm": {
-          "history": [
-            "unreviewed",
-            "reviewed",
-            "verified",
-            "reviewed"
-          ],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "EkApi.ekacei -> required WASM export and scoped buffers -> tspice_ekacei -> ekacei_c on canonical writes; length, class and ownership guards. Recover from real type and ordinal errors, validate the physical input storage, and persist the actual mutation before an independent reader opens the file.",
           "executions": []
@@ -810,98 +693,62 @@
       "scenarios": [
         {
           "caseId": "ek-ekrcec-element-order",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Read two variable arrays by physical row in reverse order, then read the first again."
         },
         {
           "caseId": "ek-ekrcec-null-extents",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Read fixed and variable nulls from two segments; the fixed count survives and the variable null has count one."
         },
         {
           "caseId": "ek-ekrcec-uninitialized-scalar",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Reading the newly appended uninitialized scalar raises its real toolkit diagnostic."
         },
         {
           "caseId": "ek-ekrcec-past-row",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "The default row tree diagnoses a row past the final valid ordinal."
         },
         {
           "caseId": "ek-ekrcec-row-padding",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Read UTF-8, retained leading and trailing control characters, and all-blank values in individually padded output rows."
         },
         {
           "caseId": "ek-ekrcec-short-row",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "The pinned scalar reader returns the initial four bytes when supplied a five-byte row."
         },
         {
           "caseId": "ek-ekrcec-short-vector-row",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "The class-six vector reader requires enough output width for the entire declared character row."
         },
         {
           "caseId": "ek-ekrcec-short-buffer",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "The canonical C-level output width check precedes the entry read."
         },
         {
           "caseId": "ek-ekrcec-wrong-type",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Request a different storage type in an existing segment and row."
         },
         {
           "caseId": "ek-ekrcec-unknown-column",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Try a nonempty undeclared column and observe the pinned descriptor lookup error."
         },
         {
           "caseId": "ek-ekrcec-invalid-segment",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "An out-of-range segment is diagnosed before any descriptor or entry access."
         },
         {
           "caseId": "ek-ekrcec-fast-count-segment",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Read both scalar records of a finalized fixed-count segment through its original class-specific reader."
         }
       ],
@@ -923,30 +770,18 @@
             "packages/py-parity-checking/test/ek-entry-content.test.ts",
             "packages/py-parity-checking/src/cases/ek/ekrcec.cases.json"
           ],
-          "caseIds": [
-            "ek-ekrcec-element-order"
-          ]
+          "caseIds": ["ek-ekrcec-element-order"]
         }
       ],
       "backends": {
         "node": {
-          "history": [
-            "unreviewed",
-            "reviewed",
-            "verified",
-            "reviewed"
-          ],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "composed",
           "trace": "EkApi.ekrcec -> serialized native addon -> tspice_ekrcec -> ekrcec_ initialized SPICELIB reader; canonical C string checks and original physical file.Pinned C readers copy a private logical even after an inner error. Measure actual buffer capacity before invoking initialized, traced SPICELIB; preserve the early C-level checks.",
           "executions": []
         },
         "wasm": {
-          "history": [
-            "unreviewed",
-            "reviewed",
-            "verified",
-            "reviewed"
-          ],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "composed",
           "trace": "EkApi.ekrcec -> required WASM export and scoped buffers -> tspice_ekrcec -> ekrcec_ initialized SPICELIB reader; canonical C string checks and original physical file.Pinned C readers copy a private logical even after an inner error. Measure actual buffer capacity before invoking initialized, traced SPICELIB; preserve the early C-level checks.",
           "executions": []
@@ -961,74 +796,47 @@
       "scenarios": [
         {
           "caseId": "ek-ekrced-element-order",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Read two variable arrays by physical row in reverse order, then read the first again."
         },
         {
           "caseId": "ek-ekrced-null-extents",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Read fixed and variable nulls from two segments; the fixed count survives and the variable null has count one."
         },
         {
           "caseId": "ek-ekrced-uninitialized-scalar",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Reading the newly appended uninitialized scalar raises its real toolkit diagnostic."
         },
         {
           "caseId": "ek-ekrced-past-row",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "The default row tree diagnoses a row past the final valid ordinal."
         },
         {
           "caseId": "ek-ekrced-time",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Read a TIME column as double precision ET seconds under retained storage semantics."
         },
         {
           "caseId": "ek-ekrced-wrong-type",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Request a different storage type in an existing segment and row."
         },
         {
           "caseId": "ek-ekrced-unknown-column",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Try a nonempty undeclared column and observe the pinned descriptor lookup error."
         },
         {
           "caseId": "ek-ekrced-invalid-segment",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "An out-of-range segment is diagnosed before any descriptor or entry access."
         },
         {
           "caseId": "ek-ekrced-fast-count-segment",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Read both scalar records of a finalized fixed-count segment through its original class-specific reader."
         }
       ],
@@ -1050,30 +858,18 @@
             "packages/py-parity-checking/test/ek-entry-content.test.ts",
             "packages/py-parity-checking/src/cases/ek/ekrced.cases.json"
           ],
-          "caseIds": [
-            "ek-ekrced-element-order"
-          ]
+          "caseIds": ["ek-ekrced-element-order"]
         }
       ],
       "backends": {
         "node": {
-          "history": [
-            "unreviewed",
-            "reviewed",
-            "verified",
-            "reviewed"
-          ],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "composed",
           "trace": "EkApi.ekrced -> serialized native addon -> tspice_ekrced -> ekrced_ initialized SPICELIB reader; canonical C string checks and original physical file.Pinned C readers copy a private logical even after an inner error. Measure actual buffer capacity before invoking initialized, traced SPICELIB; preserve the early C-level checks.",
           "executions": []
         },
         "wasm": {
-          "history": [
-            "unreviewed",
-            "reviewed",
-            "verified",
-            "reviewed"
-          ],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "composed",
           "trace": "EkApi.ekrced -> required WASM export and scoped buffers -> tspice_ekrced -> ekrced_ initialized SPICELIB reader; canonical C string checks and original physical file.Pinned C readers copy a private logical even after an inner error. Measure actual buffer capacity before invoking initialized, traced SPICELIB; preserve the early C-level checks.",
           "executions": []
@@ -1088,66 +884,42 @@
       "scenarios": [
         {
           "caseId": "ek-ekrcei-element-order",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Read two variable arrays by physical row in reverse order, then read the first again."
         },
         {
           "caseId": "ek-ekrcei-null-extents",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Read fixed and variable nulls from two segments; the fixed count survives and the variable null has count one."
         },
         {
           "caseId": "ek-ekrcei-uninitialized-scalar",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Reading the newly appended uninitialized scalar raises its real toolkit diagnostic."
         },
         {
           "caseId": "ek-ekrcei-past-row",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "The default row tree diagnoses a row past the final valid ordinal."
         },
         {
           "caseId": "ek-ekrcei-wrong-type",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Request a different storage type in an existing segment and row."
         },
         {
           "caseId": "ek-ekrcei-unknown-column",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Try a nonempty undeclared column and observe the pinned descriptor lookup error."
         },
         {
           "caseId": "ek-ekrcei-invalid-segment",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "An out-of-range segment is diagnosed before any descriptor or entry access."
         },
         {
           "caseId": "ek-ekrcei-fast-count-segment",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Read both scalar records of a finalized fixed-count segment through its original class-specific reader."
         }
       ],
@@ -1169,30 +941,18 @@
             "packages/py-parity-checking/test/ek-entry-content.test.ts",
             "packages/py-parity-checking/src/cases/ek/ekrcei.cases.json"
           ],
-          "caseIds": [
-            "ek-ekrcei-element-order"
-          ]
+          "caseIds": ["ek-ekrcei-element-order"]
         }
       ],
       "backends": {
         "node": {
-          "history": [
-            "unreviewed",
-            "reviewed",
-            "verified",
-            "reviewed"
-          ],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "composed",
           "trace": "EkApi.ekrcei -> serialized native addon -> tspice_ekrcei -> ekrcei_ initialized SPICELIB reader; canonical C string checks and original physical file.Pinned C readers copy a private logical even after an inner error. Measure actual buffer capacity before invoking initialized, traced SPICELIB; preserve the early C-level checks.",
           "executions": []
         },
         "wasm": {
-          "history": [
-            "unreviewed",
-            "reviewed",
-            "verified",
-            "reviewed"
-          ],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "composed",
           "trace": "EkApi.ekrcei -> required WASM export and scoped buffers -> tspice_ekrcei -> ekrcei_ initialized SPICELIB reader; canonical C string checks and original physical file.Pinned C readers copy a private logical even after an inner error. Measure actual buffer capacity before invoking initialized, traced SPICELIB; preserve the early C-level checks.",
           "executions": []
@@ -1207,66 +967,42 @@
       "scenarios": [
         {
           "caseId": "ek-ekucec-persisted-resize",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Replace a variable entry, toggle its null flag, restore a different size and compare both rows after physical reopen."
         },
         {
           "caseId": "ek-ekucec-scalar-update",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Replace a populated scalar in the second of two independently addressed segments, retaining the first segment."
         },
         {
           "caseId": "ek-ekucec-fixed-size",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Update all three ordered components of a fixed-size vector, and compare its reopened null transition."
         },
         {
           "caseId": "ek-ekucec-read-only",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Attempt an update on an initialized entry reopened for reading."
         },
         {
           "caseId": "ek-ekucec-wrong-type",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Request a different storage type in an existing segment and row."
         },
         {
           "caseId": "ek-ekucec-unknown-column",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Try a nonempty undeclared column and observe the pinned descriptor lookup error."
         },
         {
           "caseId": "ek-ekucec-invalid-segment",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "An out-of-range segment is diagnosed before any descriptor or entry access."
         },
         {
           "caseId": "ek-ekucec-invalid-row",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "A negative row is outside the segment record tree."
         }
       ],
@@ -1279,23 +1015,13 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": [
-            "unreviewed",
-            "reviewed",
-            "verified",
-            "reviewed"
-          ],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "EkApi.ekucec -> serialized native addon -> tspice_ekucec -> ekucec_c on canonical writes; length, class and ownership guards. Recover from real type and ordinal errors, validate the physical input storage, and persist the actual mutation before an independent reader opens the file.",
           "executions": []
         },
         "wasm": {
-          "history": [
-            "unreviewed",
-            "reviewed",
-            "verified",
-            "reviewed"
-          ],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "EkApi.ekucec -> required WASM export and scoped buffers -> tspice_ekucec -> ekucec_c on canonical writes; length, class and ownership guards. Recover from real type and ordinal errors, validate the physical input storage, and persist the actual mutation before an independent reader opens the file.",
           "executions": []
@@ -1310,66 +1036,42 @@
       "scenarios": [
         {
           "caseId": "ek-ekuced-persisted-resize",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Replace a variable entry, toggle its null flag, restore a different size and compare both rows after physical reopen."
         },
         {
           "caseId": "ek-ekuced-scalar-update",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Replace a populated scalar in the second of two independently addressed segments, retaining the first segment."
         },
         {
           "caseId": "ek-ekuced-fixed-size",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Update all three ordered components of a fixed-size vector, and compare its reopened null transition."
         },
         {
           "caseId": "ek-ekuced-read-only",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Attempt an update on an initialized entry reopened for reading."
         },
         {
           "caseId": "ek-ekuced-wrong-type",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Request a different storage type in an existing segment and row."
         },
         {
           "caseId": "ek-ekuced-unknown-column",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Try a nonempty undeclared column and observe the pinned descriptor lookup error."
         },
         {
           "caseId": "ek-ekuced-invalid-segment",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "An out-of-range segment is diagnosed before any descriptor or entry access."
         },
         {
           "caseId": "ek-ekuced-invalid-row",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "A negative row is outside the segment record tree."
         }
       ],
@@ -1391,9 +1093,7 @@
             "packages/py-parity-checking/test/ek-entry-content.test.ts",
             "packages/py-parity-checking/src/cases/ek/ekuced.cases.json"
           ],
-          "caseIds": [
-            "ek-ekuced-persisted-resize"
-          ]
+          "caseIds": ["ek-ekuced-persisted-resize"]
         },
         {
           "id": "ekuced-populated-nonnullable",
@@ -1406,30 +1106,18 @@
             "packages/py-parity-checking/test/ek-entry-content.test.ts",
             "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/ek_entry_oracle.py"
           ],
-          "caseIds": [
-            "ek-ekuced-scalar-update"
-          ]
+          "caseIds": ["ek-ekuced-scalar-update"]
         }
       ],
       "backends": {
         "node": {
-          "history": [
-            "unreviewed",
-            "reviewed",
-            "verified",
-            "reviewed"
-          ],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "EkApi.ekuced -> serialized native addon -> tspice_ekuced -> ekuced_c on canonical writes; length, class and ownership guards. Recover from real type and ordinal errors, validate the physical input storage, and persist the actual mutation before an independent reader opens the file.",
           "executions": []
         },
         "wasm": {
-          "history": [
-            "unreviewed",
-            "reviewed",
-            "verified",
-            "reviewed"
-          ],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "EkApi.ekuced -> required WASM export and scoped buffers -> tspice_ekuced -> ekuced_c on canonical writes; length, class and ownership guards. Recover from real type and ordinal errors, validate the physical input storage, and persist the actual mutation before an independent reader opens the file.",
           "executions": []
@@ -1444,66 +1132,42 @@
       "scenarios": [
         {
           "caseId": "ek-ekucei-persisted-resize",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Replace a variable entry, toggle its null flag, restore a different size and compare both rows after physical reopen."
         },
         {
           "caseId": "ek-ekucei-scalar-update",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Replace a populated scalar in the second of two independently addressed segments, retaining the first segment."
         },
         {
           "caseId": "ek-ekucei-fixed-size",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Update all three ordered components of a fixed-size vector, and compare its reopened null transition."
         },
         {
           "caseId": "ek-ekucei-read-only",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Attempt an update on an initialized entry reopened for reading."
         },
         {
           "caseId": "ek-ekucei-wrong-type",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Request a different storage type in an existing segment and row."
         },
         {
           "caseId": "ek-ekucei-unknown-column",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Try a nonempty undeclared column and observe the pinned descriptor lookup error."
         },
         {
           "caseId": "ek-ekucei-invalid-segment",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "An out-of-range segment is diagnosed before any descriptor or entry access."
         },
         {
           "caseId": "ek-ekucei-invalid-row",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "A negative row is outside the segment record tree."
         }
       ],
@@ -1525,30 +1189,18 @@
             "packages/py-parity-checking/test/ek-entry-content.test.ts",
             "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/ek_entry_oracle.py"
           ],
-          "caseIds": [
-            "ek-ekucei-scalar-update"
-          ]
+          "caseIds": ["ek-ekucei-scalar-update"]
         }
       ],
       "backends": {
         "node": {
-          "history": [
-            "unreviewed",
-            "reviewed",
-            "verified",
-            "reviewed"
-          ],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "EkApi.ekucei -> serialized native addon -> tspice_ekucei -> ekucei_c on canonical writes; length, class and ownership guards. Recover from real type and ordinal errors, validate the physical input storage, and persist the actual mutation before an independent reader opens the file.",
           "executions": []
         },
         "wasm": {
-          "history": [
-            "unreviewed",
-            "reviewed",
-            "verified",
-            "reviewed"
-          ],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "EkApi.ekucei -> required WASM export and scoped buffers -> tspice_ekucei -> ekucei_c on canonical writes; length, class and ownership guards. Recover from real type and ordinal errors, validate the physical input storage, and persist the actual mutation before an independent reader opens the file.",
           "executions": []

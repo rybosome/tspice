@@ -29553,52 +29553,32 @@
       "scenarios": [
         {
           "caseId": "geometry-gf-gfsstp-success",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "gfsstp updates the constant step size used by gfstep; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfsstp-invalid-step-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Representative gfsstp invalid step size error; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfsstp-audit-0",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Observe distinct stored step values and updates through actual GFSTEP; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfsstp-audit-1",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Observe distinct stored step values and updates through actual GFSTEP; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfsstp-audit-2",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Observe distinct stored step values and updates through actual GFSTEP; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfsstp-audit-zero",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Require actual INVALIDSTEP; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         }
       ],
@@ -29687,45 +29667,27 @@
       "scenarios": [
         {
           "caseId": "geometry-gf-gfstep-uninitialized-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Representative gfstep error when no constant step has been configured; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfstep-success",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "gfstep returns the current constant step size; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfstep-audit-0",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Time is ignored and the configured GF step persists across kernel clear; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfstep-audit-1",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Time is ignored and the configured GF step persists across kernel clear; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfstep-audit-2",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Time is ignored and the configured GF step persists across kernel clear; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         }
       ],
@@ -29813,34 +29775,22 @@
       "scenarios": [
         {
           "caseId": "geometry-gf-gfstol-success",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Observe actual coarse/fine search endpoints; GFREFN alone cannot establish tolerance effects; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfstol-invalid-value-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Representative gfstol invalid tolerance error; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfstol-audit-zero",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Require actual INVALIDTOLERANCE; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfstol-audit-kernel-clear-persistence",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Actual coarse endpoints persist across kernel clear; harness finalization restores the documented default; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         }
       ],
@@ -29938,90 +29888,52 @@
       "scenarios": [
         {
           "caseId": "geometry-gf-gfrefn-success",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "gfrefn midpoint-style refinement estimate for a simple interval; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfrefn-invalid-flags-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Representative gfrefn error when refinement flags are not booleans; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfrefn-audit-flags-False-False",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "All valid boolean combinations give the same actual bisection midpoint; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfrefn-audit-flags-False-True",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "All valid boolean combinations give the same actual bisection midpoint; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfrefn-audit-flags-True-False",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "All valid boolean combinations give the same actual bisection midpoint; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfrefn-audit-flags-True-True",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "All valid boolean combinations give the same actual bisection midpoint; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfrefn-audit-reversed",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Observe the complete midpoint under error-free CSPICE semantics; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfrefn-audit-equal",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Observe the complete midpoint under error-free CSPICE semantics; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfrefn-audit-fractional",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Observe the complete midpoint under error-free CSPICE semantics; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfrefn-audit-large",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Observe the complete midpoint under error-free CSPICE semantics; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         }
       ],
@@ -30114,78 +30026,52 @@
       "scenarios": [
         {
           "caseId": "geometry-gf-gfrepi-success",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "gfrepi initializes progress reporting for an existing window without mutating interval contents; registered null/window effects supplement real stdout tests; null alone is not reporter evidence."
         },
         {
           "caseId": "geometry-gf-gfrepi-missing-window-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Representative gfrepi missing-window error; registered null/window effects supplement real stdout tests; null alone is not reporter evidence."
         },
         {
           "caseId": "geometry-gf-gfrepi-audit-init-only",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Initialize through the actual raw routine without finalization; supplementary child tests compare the complete observable stdout; registered null/window effects supplement real stdout tests; null alone is not reporter evidence."
         },
         {
           "caseId": "geometry-gf-gfrepi-audit-empty-prefix",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Require the named actual CSPICE message validation error; registered null/window effects supplement real stdout tests; null alone is not reporter evidence."
         },
         {
           "caseId": "geometry-gf-gfrepi-audit-empty-suffix",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Require the named actual CSPICE message validation error; registered null/window effects supplement real stdout tests; null alone is not reporter evidence."
         },
         {
           "caseId": "geometry-gf-gfrepi-audit-long-prefix",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Require the named actual CSPICE message validation error; registered null/window effects supplement real stdout tests; null alone is not reporter evidence."
         },
         {
           "caseId": "geometry-gf-gfrepi-audit-long-suffix",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Require the named actual CSPICE message validation error; registered null/window effects supplement real stdout tests; null alone is not reporter evidence."
         },
         {
           "caseId": "geometry-gf-gfrepi-audit-nonprinting-prefix",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Require the named actual CSPICE message validation error; registered null/window effects supplement real stdout tests; null alone is not reporter evidence."
         },
         {
           "caseId": "geometry-gf-gfrepi-audit-nonprinting-suffix",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Require the named actual CSPICE message validation error; registered null/window effects supplement real stdout tests; null alone is not reporter evidence."
         },
         {
           "caseId": "geometry-gf-gfrepi-audit-singleton",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Initialize/finalize a genuine zero-duration singleton window; real stdout is separately compared in isolated child probes; registered null/window effects supplement real stdout tests; null alone is not reporter evidence."
         }
       ],
@@ -30251,9 +30137,7 @@
             "packages/backend-wasm/emscripten/tspice_backend_wasm.wasm",
             "packages/py-parity-checking/test/gf-reporter-output.test.ts"
           ],
-          "caseIds": [
-            "geometry-gf-gfrepi-audit-init-only"
-          ]
+          "caseIds": ["geometry-gf-gfrepi-audit-init-only"]
         },
         {
           "id": "sidecar-native-output-json-corruption",
@@ -30264,9 +30148,7 @@
             "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/geometry_gf.py",
             "packages/py-parity-checking/src/cases/geometry-gf/gfrepi.cases.json"
           ],
-          "caseIds": [
-            "geometry-gf-gfrepi-audit-init-only"
-          ]
+          "caseIds": ["geometry-gf-gfrepi-audit-init-only"]
         }
       ],
       "backends": {
@@ -30328,29 +30210,17 @@
       "scenarios": [
         {
           "caseId": "geometry-gf-gfrepf-success",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "gfrepf finalizes progress reporting without perturbing previously configured gfstep behavior; registered null/window effects supplement real stdout tests; null alone is not reporter evidence."
         },
         {
           "caseId": "geometry-gf-gfrepf-without-init-success",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "gfrepf is currently a no-op when called without prior gfrepi setup; registered null/window effects supplement real stdout tests; null alone is not reporter evidence."
         },
         {
           "caseId": "geometry-gf-gfrepf-audit-reinitialize",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Reinitialize/finalize twice without changing the actual window; supplementary live stdout comparison observes finalization; registered null/window effects supplement real stdout tests; null alone is not reporter evidence."
         }
       ],
@@ -30436,275 +30306,167 @@
       "scenarios": [
         {
           "caseId": "geometry-gf-gfdist-success",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Runs gfdist over a confined interval and inspects the first result interval; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfdist-invalid-nintvls-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Representative gfdist nintvls range validation error; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfdist-audit-relation-less",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Compare every result endpoint and unchanged confinement for <; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfdist-audit-relation-greater",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Compare every result endpoint and unchanged confinement for >; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfdist-audit-relation-equal",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Compare every result endpoint and unchanged confinement for =; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfdist-audit-relation-absmin",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Compare every result endpoint and unchanged confinement for ABSMIN; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfdist-audit-relation-absmax",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Compare every result endpoint and unchanged confinement for ABSMAX; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfdist-audit-relation-locmin",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Compare every result endpoint and unchanged confinement for LOCMIN; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfdist-audit-relation-locmax",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Compare every result endpoint and unchanged confinement for LOCMAX; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfdist-audit-absmin-adjust",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Positive adjustment expands absolute-extremum solutions into intervals; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfdist-audit-absmax-adjust",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Positive adjustment expands absolute-extremum solutions into intervals; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfdist-audit-empty-result",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "A valid condition with no events produces an empty complete output; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfdist-audit-result-replacement",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Search discards existing result intervals rather than unioning them; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfdist-audit-split-confinement",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Every interval respects disjoint confinement gaps; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfdist-audit-correction-lt",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Observe complete nontrivial event windows with moving target/observer for LT; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfdist-audit-correction-lt-s",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Observe complete nontrivial event windows with moving target/observer for LT+S; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfdist-audit-correction-cn",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Observe complete nontrivial event windows with moving target/observer for CN; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfdist-audit-correction-cn-s",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Observe complete nontrivial event windows with moving target/observer for CN+S; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfdist-audit-correction-xlt",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Observe complete nontrivial event windows with moving target/observer for XLT; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfdist-audit-correction-xlt-s",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Observe complete nontrivial event windows with moving target/observer for XLT+S; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfdist-audit-correction-xcn",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Observe complete nontrivial event windows with moving target/observer for XCN; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfdist-audit-correction-xcn-s",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Observe complete nontrivial event windows with moving target/observer for XCN+S; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfdist-audit-zero-step",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Require a specific actual toolkit error for zero-step; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfdist-audit-negative-step",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Require a specific actual toolkit error for negative-step; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfdist-audit-zero-workspace",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Require a specific actual toolkit error for zero-workspace; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfdist-audit-negative-workspace",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Require a specific actual toolkit error for negative-workspace; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfdist-audit-bad-relation",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Require a specific actual toolkit error for bad-relation; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfdist-audit-bad-correction",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Require a specific actual toolkit error for bad-correction; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfdist-audit-negative-adjust",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Require a specific actual toolkit error for negative-adjust; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfdist-audit-unknown-observer",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Require a specific actual toolkit error for unknown-observer; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfdist-audit-zero-result-capacity",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Require a specific actual toolkit error for zero-result-capacity; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfdist-audit-insufficient-result",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Require a specific actual toolkit error for insufficient-result; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfdist-audit-insufficient-workspace",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Internal workspace is separate from ample output capacity; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         }
       ],
@@ -30937,318 +30699,192 @@
       "scenarios": [
         {
           "caseId": "geometry-gf-gfsep-success",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Runs gfsep and verifies the first returned separation interval; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfsep-invalid-relate-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Representative gfsep invalid relation operator error; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfsep-audit-relation-less",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Compare every result endpoint and unchanged confinement for <; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfsep-audit-relation-greater",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Compare every result endpoint and unchanged confinement for >; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfsep-audit-relation-equal",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Compare every result endpoint and unchanged confinement for =; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfsep-audit-relation-absmin",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Compare every result endpoint and unchanged confinement for ABSMIN; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfsep-audit-relation-absmax",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Compare every result endpoint and unchanged confinement for ABSMAX; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfsep-audit-relation-locmin",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Compare every result endpoint and unchanged confinement for LOCMIN; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfsep-audit-relation-locmax",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Compare every result endpoint and unchanged confinement for LOCMAX; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfsep-audit-absmin-adjust",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Positive adjustment expands absolute-extremum solutions into intervals; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfsep-audit-absmax-adjust",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Positive adjustment expands absolute-extremum solutions into intervals; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfsep-audit-empty-result",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "A valid condition with no events produces an empty complete output; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfsep-audit-result-replacement",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Search discards existing result intervals rather than unioning them; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfsep-audit-split-confinement",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Every interval respects disjoint confinement gaps; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfsep-audit-correction-lt",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Observe complete nontrivial event windows with moving target/observer for LT; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfsep-audit-correction-lt-s",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Observe complete nontrivial event windows with moving target/observer for LT+S; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfsep-audit-correction-cn",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Observe complete nontrivial event windows with moving target/observer for CN; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfsep-audit-correction-cn-s",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Observe complete nontrivial event windows with moving target/observer for CN+S; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfsep-audit-correction-xlt",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Observe complete nontrivial event windows with moving target/observer for XLT; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfsep-audit-correction-xlt-s",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Observe complete nontrivial event windows with moving target/observer for XLT+S; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfsep-audit-correction-xcn",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Observe complete nontrivial event windows with moving target/observer for XCN; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfsep-audit-correction-xcn-s",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Observe complete nontrivial event windows with moving target/observer for XCN+S; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfsep-audit-zero-step",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Require a specific actual toolkit error for zero-step; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfsep-audit-negative-step",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Require a specific actual toolkit error for negative-step; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfsep-audit-zero-workspace",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Require a specific actual toolkit error for zero-workspace; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfsep-audit-negative-workspace",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Require a specific actual toolkit error for negative-workspace; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfsep-audit-bad-relation",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Require a specific actual toolkit error for bad-relation; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfsep-audit-bad-correction",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Require a specific actual toolkit error for bad-correction; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfsep-audit-negative-adjust",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Require a specific actual toolkit error for negative-adjust; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfsep-audit-unknown-observer",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Require a specific actual toolkit error for unknown-observer; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfsep-audit-zero-result-capacity",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Require a specific actual toolkit error for zero-result-capacity; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfsep-audit-insufficient-result",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Require a specific actual toolkit error for insufficient-result; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfsep-audit-insufficient-workspace",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Internal workspace is separate from ample output capacity; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfsep-audit-zero-equality-limitation",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "NAIF documents equality-to-zero cannot detect point alignment; extrema cases cover it; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfsep-audit-sphere-point",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Sphere limb separation differs from point-center separation; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfsep-audit-two-spheres",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Both authored radii affect the returned limb-separation event window; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfsep-audit-ignored-point-frames",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Current point shape has no orientation dependence; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfsep-audit-bad-shape",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Reject an unsupported shape through actual GFSEP; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         }
       ],

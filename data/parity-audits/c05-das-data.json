@@ -605,58 +605,37 @@
       "scenarios": [
         {
           "caseId": "file-io-dasadc-independent-address-streams",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Interleave character, double and integer appends; observe independent addresses and read each selected prefix. Compare all selected values and neighbors against the independent file."
         },
         {
           "caseId": "file-io-dasadc-empty-and-negative",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Transfer zero and negative counts before and after a positive append and inspect logical data. Compare all selected values and neighbors against the independent file."
         },
         {
           "caseId": "file-io-dasadc-physical-boundary",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Append across the end of a typed data record after another data type creates an intervening cluster. Compare all selected values and neighbors against the independent file."
         },
         {
           "caseId": "file-io-dasadc-write-access",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "A read-only handle rejects a positive append. Require DASINVALIDACCESS."
         },
         {
           "caseId": "file-io-dasadc-row-slices",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Full stride exceeds substring width; NUL, high bytes, trailing blank and final partial row survive. Compare all selected values and neighbors against the independent file."
         },
         {
           "caseId": "file-io-dasadc-zero-stride",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Canonical wrapper diagnoses a nonpositive row width before processing a binary row. Require NODATA."
         },
         {
           "caseId": "file-io-dasadc-invalid-bounds",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "The source diagnoses out-of-order substring columns before copying row bytes. Require BADSUBSTRINGBOUNDS."
         }
       ],
@@ -684,9 +663,7 @@
             "packages/py-parity-checking/test/das-data-public.test.ts",
             "packages/py-parity-checking/src/cases/file-io/dasadc.cases.json"
           ],
-          "caseIds": [
-            "file-io-dasadc-physical-boundary"
-          ]
+          "caseIds": ["file-io-dasadc-physical-boundary"]
         },
         {
           "id": "dasadc-binary-row-oracle",
@@ -699,9 +676,7 @@
             "packages/py-parity-checking/test/das-data-public.test.ts",
             "packages/py-parity-checking/src/cases/file-io/dasadc.cases.json"
           ],
-          "caseIds": [
-            "file-io-dasadc-row-slices"
-          ]
+          "caseIds": ["file-io-dasadc-row-slices"]
         }
       ],
       "backends": {
@@ -741,34 +716,22 @@
       "scenarios": [
         {
           "caseId": "file-io-dasadd-independent-address-streams",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Interleave character, double and integer appends; observe independent addresses and read each selected prefix. Compare all selected values and neighbors against the independent file."
         },
         {
           "caseId": "file-io-dasadd-empty-and-negative",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Transfer zero and negative counts before and after a positive append and inspect logical data. Compare all selected values and neighbors against the independent file."
         },
         {
           "caseId": "file-io-dasadd-physical-boundary",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Append across the end of a typed data record after another data type creates an intervening cluster. Compare all selected values and neighbors against the independent file."
         },
         {
           "caseId": "file-io-dasadd-write-access",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "A read-only handle rejects a positive append. Require DASINVALIDACCESS."
         }
       ],
@@ -796,9 +759,7 @@
             "packages/py-parity-checking/test/das-data-public.test.ts",
             "packages/py-parity-checking/src/cases/file-io/dasadd.cases.json"
           ],
-          "caseIds": [
-            "file-io-dasadd-physical-boundary"
-          ]
+          "caseIds": ["file-io-dasadd-physical-boundary"]
         }
       ],
       "backends": {
@@ -838,34 +799,22 @@
       "scenarios": [
         {
           "caseId": "file-io-dasadi-independent-address-streams",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Interleave character, double and integer appends; observe independent addresses and read each selected prefix. Compare all selected values and neighbors against the independent file."
         },
         {
           "caseId": "file-io-dasadi-empty-and-negative",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Transfer zero and negative counts before and after a positive append and inspect logical data. Compare all selected values and neighbors against the independent file."
         },
         {
           "caseId": "file-io-dasadi-physical-boundary",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Append across the end of a typed data record after another data type creates an intervening cluster. Compare all selected values and neighbors against the independent file."
         },
         {
           "caseId": "file-io-dasadi-write-access",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "A read-only handle rejects a positive append. Require DASINVALIDACCESS."
         }
       ],
@@ -893,9 +842,7 @@
             "packages/py-parity-checking/test/das-data-public.test.ts",
             "packages/py-parity-checking/src/cases/file-io/dasadi.cases.json"
           ],
-          "caseIds": [
-            "file-io-dasadi-physical-boundary"
-          ]
+          "caseIds": ["file-io-dasadi-physical-boundary"]
         }
       ],
       "backends": {
@@ -935,74 +882,47 @@
       "scenarios": [
         {
           "caseId": "file-io-dasrdc-endpoints",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Read the beginning, interior and final address separately and preserve signed values and binary bytes. Compare all selected values and neighbors against the independent file."
         },
         {
           "caseId": "file-io-dasrdc-persisted-read-claims",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Flush and reopen the file twice, close the original token and use the surviving independent read claim. Compare all selected values and neighbors against the independent file."
         },
         {
           "caseId": "file-io-dasrdc-noncontiguous-records",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Read logical addresses spanning two typed records separated by another physical data type. Compare all selected values and neighbors against the independent file."
         },
         {
           "caseId": "file-io-dasrdc-reversed",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Two valid endpoints in the same record with first greater than last leave the destination untouched. Compare all selected values and neighbors against the independent file."
         },
         {
           "caseId": "file-io-dasrdc-before-first",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Check each logical endpoint before reading typed record storage. Require DASNOSUCHADDRESS."
         },
         {
           "caseId": "file-io-dasrdc-past-logical-end",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Check each logical endpoint before reading typed record storage. Require DASNOSUCHADDRESS."
         },
         {
           "caseId": "file-io-dasrdc-destination-sentinels",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Select two bytes per row in a larger initialized buffer with an untouched suffix and partial final row. Compare all selected values and neighbors against the independent file."
         },
         {
           "caseId": "file-io-dasrdc-zero-stride",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Canonical wrapper diagnoses a nonpositive row width before processing a binary row. Require NOROOMFORDATA."
         },
         {
           "caseId": "file-io-dasrdc-invalid-bounds",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "The source diagnoses out-of-order substring columns before copying row bytes. Require BADSUBSTRINGBOUNDS."
         }
       ],
@@ -1046,9 +966,7 @@
             "packages/py-parity-checking/test/das-data-public.test.ts",
             "packages/py-parity-checking/src/cases/file-io/dasrdc.cases.json"
           ],
-          "caseIds": [
-            "file-io-dasrdc-destination-sentinels"
-          ]
+          "caseIds": ["file-io-dasrdc-destination-sentinels"]
         }
       ],
       "backends": {
@@ -1088,50 +1006,32 @@
       "scenarios": [
         {
           "caseId": "file-io-dasrdd-endpoints",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Read the beginning, interior and final address separately and preserve signed values and binary bytes. Compare all selected values and neighbors against the independent file."
         },
         {
           "caseId": "file-io-dasrdd-persisted-read-claims",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Flush and reopen the file twice, close the original token and use the surviving independent read claim. Compare all selected values and neighbors against the independent file."
         },
         {
           "caseId": "file-io-dasrdd-noncontiguous-records",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Read logical addresses spanning two typed records separated by another physical data type. Compare all selected values and neighbors against the independent file."
         },
         {
           "caseId": "file-io-dasrdd-reversed",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Two valid endpoints in the same record with first greater than last leave the destination untouched. Compare all selected values and neighbors against the independent file."
         },
         {
           "caseId": "file-io-dasrdd-before-first",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Check each logical endpoint before reading typed record storage. Require DASNOSUCHADDRESS."
         },
         {
           "caseId": "file-io-dasrdd-past-logical-end",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Check each logical endpoint before reading typed record storage. Require DASNOSUCHADDRESS."
         }
       ],
@@ -1202,50 +1102,32 @@
       "scenarios": [
         {
           "caseId": "file-io-dasrdi-endpoints",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Read the beginning, interior and final address separately and preserve signed values and binary bytes. Compare all selected values and neighbors against the independent file."
         },
         {
           "caseId": "file-io-dasrdi-persisted-read-claims",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Flush and reopen the file twice, close the original token and use the surviving independent read claim. Compare all selected values and neighbors against the independent file."
         },
         {
           "caseId": "file-io-dasrdi-noncontiguous-records",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Read logical addresses spanning two typed records separated by another physical data type. Compare all selected values and neighbors against the independent file."
         },
         {
           "caseId": "file-io-dasrdi-reversed",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Two valid endpoints in the same record with first greater than last leave the destination untouched. Compare all selected values and neighbors against the independent file."
         },
         {
           "caseId": "file-io-dasrdi-before-first",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Check each logical endpoint before reading typed record storage. Require DASNOSUCHADDRESS."
         },
         {
           "caseId": "file-io-dasrdi-past-logical-end",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Check each logical endpoint before reading typed record storage. Require DASNOSUCHADDRESS."
         }
       ],
@@ -1316,66 +1198,42 @@
       "scenarios": [
         {
           "caseId": "file-io-dasudc-middle-sentinels",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Overwrite an interior range with a longer source, observe both neighbors and all selected values. Compare all selected values and neighbors against the independent file."
         },
         {
           "caseId": "file-io-dasudc-cross-record",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Update and read through a typed record transition; logical neighbors on both sides remain observable. Compare all selected values and neighbors against the independent file."
         },
         {
           "caseId": "file-io-dasudc-reversed",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "A valid reversed address interval leaves initialized data untouched. Compare all selected values and neighbors against the independent file."
         },
         {
           "caseId": "file-io-dasudc-bad-address",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "An update beyond the last allocated logical address reports the canonical update error. Require INVALIDADDRESS."
         },
         {
           "caseId": "file-io-dasudc-read-only",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "A valid addressed update on a reader takes the toolkit access error. Require DASINVALIDACCESS."
         },
         {
           "caseId": "file-io-dasudc-nonzero-column-record-cursor",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "N0067 tests the continued column against substring width across a physical record. Distinct extra source rows expose the cursor. Compare all selected values and neighbors against the independent file."
         },
         {
           "caseId": "file-io-dasudc-zero-stride",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Canonical wrapper diagnoses a nonpositive row width before processing a binary row. Require NODATA."
         },
         {
           "caseId": "file-io-dasudc-invalid-bounds",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "The source diagnoses out-of-order substring columns before copying row bytes. Require INDICESOUTOFORDER."
         }
       ],
@@ -1403,9 +1261,7 @@
             "packages/py-parity-checking/test/das-data-public.test.ts",
             "packages/py-parity-checking/src/cases/file-io/dasudc.cases.json"
           ],
-          "caseIds": [
-            "file-io-dasudc-nonzero-column-record-cursor"
-          ]
+          "caseIds": ["file-io-dasudc-nonzero-column-record-cursor"]
         },
         {
           "id": "dasudc-binary-row-oracle",
@@ -1418,9 +1274,7 @@
             "packages/py-parity-checking/test/das-data-public.test.ts",
             "packages/py-parity-checking/src/cases/file-io/dasudc.cases.json"
           ],
-          "caseIds": [
-            "file-io-dasudc-nonzero-column-record-cursor"
-          ]
+          "caseIds": ["file-io-dasudc-nonzero-column-record-cursor"]
         }
       ],
       "backends": {
@@ -1460,42 +1314,27 @@
       "scenarios": [
         {
           "caseId": "file-io-dasudd-middle-sentinels",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Overwrite an interior range with a longer source, observe both neighbors and all selected values. Compare all selected values and neighbors against the independent file."
         },
         {
           "caseId": "file-io-dasudd-cross-record",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Update and read through a typed record transition; logical neighbors on both sides remain observable. Compare all selected values and neighbors against the independent file."
         },
         {
           "caseId": "file-io-dasudd-reversed",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "A valid reversed address interval leaves initialized data untouched. Compare all selected values and neighbors against the independent file."
         },
         {
           "caseId": "file-io-dasudd-bad-address",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "An update beyond the last allocated logical address reports the canonical update error. Require INVALIDADDRESS."
         },
         {
           "caseId": "file-io-dasudd-read-only",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "A valid addressed update on a reader takes the toolkit access error. Require DASINVALIDACCESS."
         }
       ],
@@ -1549,42 +1388,27 @@
       "scenarios": [
         {
           "caseId": "file-io-dasudi-middle-sentinels",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Overwrite an interior range with a longer source, observe both neighbors and all selected values. Compare all selected values and neighbors against the independent file."
         },
         {
           "caseId": "file-io-dasudi-cross-record",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Update and read through a typed record transition; logical neighbors on both sides remain observable. Compare all selected values and neighbors against the independent file."
         },
         {
           "caseId": "file-io-dasudi-reversed",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "A valid reversed address interval leaves initialized data untouched. Compare all selected values and neighbors against the independent file."
         },
         {
           "caseId": "file-io-dasudi-bad-address",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "An update beyond the last allocated logical address reports the canonical update error. Require INVALIDADDRESS."
         },
         {
           "caseId": "file-io-dasudi-read-only",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "A valid addressed update on a reader takes the toolkit access error. Require DASINVALIDACCESS."
         }
       ],

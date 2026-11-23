@@ -842,72 +842,47 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-hrmesp-single-point",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Query the sole sample and points on either side; distinguish the one-node Hermite tangent from a single Lagrange ordinate, and observe the physical derivative where returned."
         },
         {
           "caseId": "coords-vectors-hrmesp-cubic-at-nodes",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Recover the supplied cubic values at the sampled abscissae. Where returned, the physical slope is compared independently at each sampled point."
         },
         {
           "caseId": "coords-vectors-hrmesp-cubic-interior-and-extrapolation",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Evaluate the authored cubic away from sample nodes and outside the grid. Compare all returned components, so passing through samples alone cannot satisfy this case."
         },
         {
           "caseId": "coords-vectors-hrmesp-zero-and-constant",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Retain full outputs for zero and constant tables; verify zero derivatives where the routine returns them."
         },
         {
           "caseId": "coords-vectors-hrmesp-scaled-ordinates",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Scale the ordinates (or both qderiv endpoint vectors) by 1e100 and 1e−100. Focused comparisons divide every output by the input scale and compare the full results."
         },
         {
           "caseId": "coords-vectors-hrmesp-scaled-abscissas",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Scale the node spacing or qderiv half-interval by 1e100 and 1e−100. Focused comparisons retain interpolated values and compensate reciprocal derivative scaling to keep tiny slopes observable."
         },
         {
           "caseId": "coords-vectors-hrmesp-shifted-forward-and-reversed-grid",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare positive and negative spacing on shifted grids with appropriately reversed ordinates. Preserve the query in physical x units, node ordering and all returned fields."
         },
         {
           "caseId": "coords-vectors-hrmesp-zero-step-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Observe actual INVALIDSTEPSIZE from zero spacing with a nonempty table, distinct from an empty/invalidly shaped input."
         },
         {
           "caseId": "coords-vectors-hrmesp-empty-table-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Observe actual INVALIDSIZE with zero points and valid storage, distinguishing the canonical table-size error from malformed paired lengths."
         }
       ],
@@ -959,80 +934,52 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-hrmint-single-point",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Query the sole sample and points on either side; distinguish the one-node Hermite tangent from a single Lagrange ordinate, and observe the physical derivative where returned."
         },
         {
           "caseId": "coords-vectors-hrmint-cubic-at-nodes",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Recover the supplied cubic values at the sampled abscissae. Where returned, the physical slope is compared independently at each sampled point."
         },
         {
           "caseId": "coords-vectors-hrmint-cubic-interior-and-extrapolation",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Evaluate the authored cubic away from sample nodes and outside the grid. Compare all returned components, so passing through samples alone cannot satisfy this case."
         },
         {
           "caseId": "coords-vectors-hrmint-zero-and-constant",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Retain full outputs for zero and constant tables; verify zero derivatives where the routine returns them."
         },
         {
           "caseId": "coords-vectors-hrmint-scaled-ordinates",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Scale the ordinates (or both qderiv endpoint vectors) by 1e100 and 1e−100. Focused comparisons divide every output by the input scale and compare the full results."
         },
         {
           "caseId": "coords-vectors-hrmint-scaled-abscissas",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Scale the node spacing or qderiv half-interval by 1e100 and 1e−100. Focused comparisons retain interpolated values and compensate reciprocal derivative scaling to keep tiny slopes observable."
         },
         {
           "caseId": "coords-vectors-hrmint-irregular-distinct-grid",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Evaluate an irregular distinct grid away from sampled points, preserving corresponding ordinates and every returned field."
         },
         {
           "caseId": "coords-vectors-hrmint-permuted-distinct-nodes",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Preserve nonmonotonic distinct Hermite nodes and move each value/derivative pair with its abscissa; off-node value and derivative remain observable."
         },
         {
           "caseId": "coords-vectors-hrmint-duplicate-node-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Observe actual DIVIDEBYZERO for a repeated abscissa; preserve real duplicate-node failure without adapter deduplication or interpolation fallback."
         },
         {
           "caseId": "coords-vectors-hrmint-empty-table-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Observe actual INVALIDSIZE with zero points and valid storage, distinguishing the canonical table-size error from malformed paired lengths."
         }
       ],
@@ -1053,9 +1000,7 @@
             "packages/backend-node/test/interpolation-domain.test.ts",
             "docs/step8-interpolation.md"
           ],
-          "caseIds": [
-            "coords-vectors-hrmint-irregular-distinct-grid"
-          ]
+          "caseIds": ["coords-vectors-hrmint-irregular-distinct-grid"]
         }
       ],
       "backends": {
@@ -1100,72 +1045,47 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-lgresp-single-point",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Query the sole sample and points on either side; distinguish the one-node Hermite tangent from a single Lagrange ordinate, and observe the physical derivative where returned."
         },
         {
           "caseId": "coords-vectors-lgresp-cubic-at-nodes",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Recover the supplied cubic values at the sampled abscissae. Where returned, the physical slope is compared independently at each sampled point."
         },
         {
           "caseId": "coords-vectors-lgresp-cubic-interior-and-extrapolation",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Evaluate the authored cubic away from sample nodes and outside the grid. Compare all returned components, so passing through samples alone cannot satisfy this case."
         },
         {
           "caseId": "coords-vectors-lgresp-zero-and-constant",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Retain full outputs for zero and constant tables; verify zero derivatives where the routine returns them."
         },
         {
           "caseId": "coords-vectors-lgresp-scaled-ordinates",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Scale the ordinates (or both qderiv endpoint vectors) by 1e100 and 1e−100. Focused comparisons divide every output by the input scale and compare the full results."
         },
         {
           "caseId": "coords-vectors-lgresp-scaled-abscissas",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Scale the node spacing or qderiv half-interval by 1e100 and 1e−100. Focused comparisons retain interpolated values and compensate reciprocal derivative scaling to keep tiny slopes observable."
         },
         {
           "caseId": "coords-vectors-lgresp-shifted-forward-and-reversed-grid",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare positive and negative spacing on shifted grids with appropriately reversed ordinates. Preserve the query in physical x units, node ordering and all returned fields."
         },
         {
           "caseId": "coords-vectors-lgresp-zero-step-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Observe actual INVALIDSTEPSIZE from zero spacing with a nonempty table, distinct from an empty/invalidly shaped input."
         },
         {
           "caseId": "coords-vectors-lgresp-empty-table-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Observe actual INVALIDSIZE with zero points and valid storage, distinguishing the canonical table-size error from malformed paired lengths."
         }
       ],
@@ -1217,72 +1137,47 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-lgrind-single-point",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Query the sole sample and points on either side; distinguish the one-node Hermite tangent from a single Lagrange ordinate, and observe the physical derivative where returned."
         },
         {
           "caseId": "coords-vectors-lgrind-cubic-at-nodes",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Recover the supplied cubic values at the sampled abscissae. Where returned, the physical slope is compared independently at each sampled point."
         },
         {
           "caseId": "coords-vectors-lgrind-cubic-interior-and-extrapolation",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Evaluate the authored cubic away from sample nodes and outside the grid. Compare all returned components, so passing through samples alone cannot satisfy this case."
         },
         {
           "caseId": "coords-vectors-lgrind-zero-and-constant",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Retain full outputs for zero and constant tables; verify zero derivatives where the routine returns them."
         },
         {
           "caseId": "coords-vectors-lgrind-scaled-ordinates",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Scale the ordinates (or both qderiv endpoint vectors) by 1e100 and 1e−100. Focused comparisons divide every output by the input scale and compare the full results."
         },
         {
           "caseId": "coords-vectors-lgrind-scaled-abscissas",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Scale the node spacing or qderiv half-interval by 1e100 and 1e−100. Focused comparisons retain interpolated values and compensate reciprocal derivative scaling to keep tiny slopes observable."
         },
         {
           "caseId": "coords-vectors-lgrind-irregular-distinct-grid",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Evaluate an irregular distinct grid away from sampled points, preserving corresponding ordinates and every returned field."
         },
         {
           "caseId": "coords-vectors-lgrind-duplicate-node-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Observe actual DIVIDEBYZERO for a repeated abscissa; preserve real duplicate-node failure without adapter deduplication or interpolation fallback."
         },
         {
           "caseId": "coords-vectors-lgrind-empty-table-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Observe actual INVALIDSIZE with zero points and valid storage, distinguishing the canonical table-size error from malformed paired lengths."
         }
       ],
@@ -1303,9 +1198,7 @@
             "packages/backend-node/test/interpolation-domain.test.ts",
             "docs/step8-interpolation.md"
           ],
-          "caseIds": [
-            "coords-vectors-lgrind-irregular-distinct-grid"
-          ]
+          "caseIds": ["coords-vectors-lgrind-irregular-distinct-grid"]
         }
       ],
       "backends": {
@@ -1350,72 +1243,47 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-lgrint-single-point",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Query the sole sample and points on either side; distinguish the one-node Hermite tangent from a single Lagrange ordinate, and observe the physical derivative where returned."
         },
         {
           "caseId": "coords-vectors-lgrint-cubic-at-nodes",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Recover the supplied cubic values at the sampled abscissae. Where returned, the physical slope is compared independently at each sampled point."
         },
         {
           "caseId": "coords-vectors-lgrint-cubic-interior-and-extrapolation",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Evaluate the authored cubic away from sample nodes and outside the grid. Compare all returned components, so passing through samples alone cannot satisfy this case."
         },
         {
           "caseId": "coords-vectors-lgrint-zero-and-constant",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Retain full outputs for zero and constant tables; verify zero derivatives where the routine returns them."
         },
         {
           "caseId": "coords-vectors-lgrint-scaled-ordinates",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Scale the ordinates (or both qderiv endpoint vectors) by 1e100 and 1e−100. Focused comparisons divide every output by the input scale and compare the full results."
         },
         {
           "caseId": "coords-vectors-lgrint-scaled-abscissas",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Scale the node spacing or qderiv half-interval by 1e100 and 1e−100. Focused comparisons retain interpolated values and compensate reciprocal derivative scaling to keep tiny slopes observable."
         },
         {
           "caseId": "coords-vectors-lgrint-irregular-distinct-grid",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Evaluate an irregular distinct grid away from sampled points, preserving corresponding ordinates and every returned field."
         },
         {
           "caseId": "coords-vectors-lgrint-duplicate-node-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Observe actual DIVIDEBYZERO for a repeated abscissa; preserve real duplicate-node failure without adapter deduplication or interpolation fallback."
         },
         {
           "caseId": "coords-vectors-lgrint-empty-table-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Observe actual INVALIDSIZE with zero points and valid storage, distinguishing the canonical table-size error from malformed paired lengths."
         }
       ],
@@ -1436,9 +1304,7 @@
             "packages/backend-node/test/interpolation-domain.test.ts",
             "docs/step8-interpolation.md"
           ],
-          "caseIds": [
-            "coords-vectors-lgrint-irregular-distinct-grid"
-          ]
+          "caseIds": ["coords-vectors-lgrint-irregular-distinct-grid"]
         }
       ],
       "backends": {
@@ -1483,57 +1349,37 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-qderiv-half-interval-and-orientation",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Use scalar/vector endpoints with signed half-spacing and reversed endpoints. Compare every derivative sign and factor of two."
         },
         {
           "caseId": "coords-vectors-qderiv-variable-dimensions",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare each component and the exact inferred output length at several positive dimensions, including dimensions greater than three."
         },
         {
           "caseId": "coords-vectors-qderiv-constant-endpoints",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare zero derivatives for identical endpoints across all vector components; preserve the dynamic length."
         },
         {
           "caseId": "coords-vectors-qderiv-scaled-ordinates",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Scale the ordinates (or both qderiv endpoint vectors) by 1e100 and 1e−100. Focused comparisons divide every output by the input scale and compare the full results."
         },
         {
           "caseId": "coords-vectors-qderiv-scaled-abscissas",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Scale the node spacing or qderiv half-interval by 1e100 and 1e−100. Focused comparisons retain interpolated values and compensate reciprocal derivative scaling to keep tiny slopes observable."
         },
         {
           "caseId": "coords-vectors-qderiv-balanced-extreme-endpoints",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Opposite maximum-finite endpoints with maximum-finite half-spacing keep two components near ±1 and a third nonzero subnormal. Focused rescaling observes the small component separately."
         },
         {
           "caseId": "coords-vectors-qderiv-zero-delta-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Observe actual DIVIDEBYZERO with equal positive-length endpoint arrays and zero half-spacing; empty-vector rejection instead belongs to caller validation."
         }
       ],
@@ -1554,9 +1400,7 @@
             "packages/backend-node/test/interpolation-domain.test.ts",
             "docs/step8-interpolation.md"
           ],
-          "caseIds": [
-            "coords-vectors-qderiv-variable-dimensions"
-          ]
+          "caseIds": ["coords-vectors-qderiv-variable-dimensions"]
         }
       ],
       "backends": {

@@ -331,74 +331,47 @@
       "scenarios": [
         {
           "caseId": "frames-bltfrm-all",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Every built-in ID is compared at the exact N0067 capacity. Compare each returned value on both compiled backends."
         },
         {
           "caseId": "frames-bltfrm-classes",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare complete sorted sets in the same cell as the class changes, including empty sets. Compare each returned value on both compiled backends."
         },
         {
           "caseId": "frames-bltfrm-replace",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "A previously inserted unrelated ID disappears when BLTFRM overwrites the caller cell. Compare each returned value on both compiled backends."
         },
         {
           "caseId": "frames-bltfrm-loaded-fk",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Kernel-defined frames do not enter the built-in IDs. Compare each returned value on both compiled backends."
         },
         {
           "caseId": "frames-bltfrm-undersized",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "N0067 requires the full built-in capacity even for a class with no members. Require SETTOOSMALL."
         },
         {
           "caseId": "frames-bltfrm-zero-room",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Zero room signals the actual capacity diagnostic. Require SETTOOSMALL."
         },
         {
           "caseId": "frames-bltfrm-invalid-minus2",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "An unsupported class precedes capacity validation. Require BADFRAMECLASS."
         },
         {
           "caseId": "frames-bltfrm-invalid-0",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "An unsupported class precedes capacity validation. Require BADFRAMECLASS."
         },
         {
           "caseId": "frames-bltfrm-invalid-7",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "An unsupported class precedes capacity validation. Require BADFRAMECLASS."
         }
       ],
@@ -417,23 +390,13 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": [
-            "unreviewed",
-            "reviewed",
-            "verified",
-            "reviewed"
-          ],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.bltfrm -> FramesApi serialized Node native registration -> tspice_bltfrm -> bltfrm_c. Independent oracle calls locked SpiceyPy.",
           "executions": []
         },
         "wasm": {
-          "history": [
-            "unreviewed",
-            "reviewed",
-            "verified",
-            "reviewed"
-          ],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.bltfrm -> FramesApi WASM export with scoped buffers -> tspice_bltfrm -> bltfrm_c. Independent oracle calls locked SpiceyPy.",
           "executions": []
@@ -448,66 +411,42 @@
       "scenarios": [
         {
           "caseId": "frames-pxfrm2-inertial",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare complete inertial rotations in both directions at distinct epochs. Compare each returned value on both compiled backends."
         },
         {
           "caseId": "frames-pxfrm2-dynamic",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "One evolving frame at different epochs need not map to itself by identity. Compare each returned value on both compiled backends."
         },
         {
           "caseId": "frames-pxfrm2-mixed-epochs",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Map between independently moving frames and vary each time separately. Compare each returned value on both compiled backends."
         },
         {
           "caseId": "frames-pxfrm2-missing-from",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "The first known frame lacks orientation coverage. Require FRAMEDATANOTFOUND."
         },
         {
           "caseId": "frames-pxfrm2-missing-to",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "The second known frame lacks orientation coverage. Require FRAMEDATANOTFOUND."
         },
         {
           "caseId": "frames-pxfrm2-unknown-before-coverage",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Unknown names are diagnosed before evaluating either leg. Require UNKNOWNFRAME."
         },
         {
           "caseId": "frames-pxfrm2-empty",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "An empty name signals the original C string error. Require EMPTYSTRING."
         },
         {
           "caseId": "frames-pxfrm2-unloaded",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Unloading a resolved rotating frame invalidates its transform. Require UNKNOWNFRAME."
         }
       ],
@@ -539,10 +478,7 @@
             "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/frame_transform_oracle.py",
             "docs/step8-frame-metadata.md"
           ],
-          "caseIds": [
-            "frames-pxfrm2-missing-from",
-            "frames-pxfrm2-missing-to"
-          ]
+          "caseIds": ["frames-pxfrm2-missing-from", "frames-pxfrm2-missing-to"]
         }
       ],
       "backends": {
@@ -580,58 +516,37 @@
       "scenarios": [
         {
           "caseId": "frames-tipbod-earth-epochs",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare every row-major component for a rotating Earth at negative, zero and positive ET. Compare each returned value on both compiled backends."
         },
         {
           "caseId": "frames-tipbod-reference-bodies",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Change the inertial reference and PCK body class ID independently. Compare each returned value on both compiled backends."
         },
         {
           "caseId": "frames-tipbod-missing",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "A missing orientation kernel produces the real toolkit message. Require FRAMEDATANOTFOUND."
         },
         {
           "caseId": "frames-tipbod-ref-error",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "A loaded body orientation does not make a body-fixed reference inertial. Require IRFNOTREC."
         },
         {
           "caseId": "frames-tipbod-frame-not-body",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "An IAU frame ID is distinct from its PCK body class ID. Require FRAMEDATANOTFOUND."
         },
         {
           "caseId": "frames-tipbod-reloaded",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "PCK unload and reload invalidate and rebuild orientation caches. Compare each returned value on both compiled backends."
         },
         {
           "caseId": "frames-tipbod-empty",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "An empty inertial reference signals EMPTYSTRING. Require EMPTYSTRING."
         }
       ],
@@ -650,23 +565,13 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": [
-            "unreviewed",
-            "reviewed",
-            "verified",
-            "reviewed"
-          ],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.tipbod -> FramesApi serialized Node native registration -> tspice_tipbod -> tipbod_c. Independent oracle calls locked SpiceyPy.",
           "executions": []
         },
         "wasm": {
-          "history": [
-            "unreviewed",
-            "reviewed",
-            "verified",
-            "reviewed"
-          ],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.tipbod -> FramesApi WASM export with scoped buffers -> tspice_tipbod -> tipbod_c. Independent oracle calls locked SpiceyPy.",
           "executions": []
@@ -681,58 +586,37 @@
       "scenarios": [
         {
           "caseId": "frames-tisbod-earth-epochs",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare every row-major component for a rotating Earth at negative, zero and positive ET. Compare each returned value on both compiled backends."
         },
         {
           "caseId": "frames-tisbod-reference-bodies",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Change the inertial reference and PCK body class ID independently. Compare each returned value on both compiled backends."
         },
         {
           "caseId": "frames-tisbod-missing",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "A missing orientation kernel produces the real toolkit message. Require FRAMEDATANOTFOUND."
         },
         {
           "caseId": "frames-tisbod-ref-error",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "A loaded body orientation does not make a body-fixed reference inertial. Require IRFNOTREC."
         },
         {
           "caseId": "frames-tisbod-frame-not-body",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "An IAU frame ID is distinct from its PCK body class ID. Require FRAMEDATANOTFOUND."
         },
         {
           "caseId": "frames-tisbod-reloaded",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "PCK unload and reload invalidate and rebuild orientation caches. Compare each returned value on both compiled backends."
         },
         {
           "caseId": "frames-tisbod-empty",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "An empty inertial reference signals EMPTYSTRING. Require EMPTYSTRING."
         }
       ],
@@ -751,23 +635,13 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": [
-            "unreviewed",
-            "reviewed",
-            "verified",
-            "reviewed"
-          ],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.tisbod -> FramesApi serialized Node native registration -> tspice_tisbod -> tisbod_c. Independent oracle calls locked SpiceyPy.",
           "executions": []
         },
         "wasm": {
-          "history": [
-            "unreviewed",
-            "reviewed",
-            "verified",
-            "reviewed"
-          ],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.tisbod -> FramesApi WASM export with scoped buffers -> tspice_tisbod -> tisbod_c. Independent oracle calls locked SpiceyPy.",
           "executions": []
@@ -782,66 +656,42 @@
       "scenarios": [
         {
           "caseId": "frames-tkfram-class-not-frame",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Resolve the explicit class ID distinct from the frame identification code. Compare each returned value on both compiled backends."
         },
         {
           "caseId": "frames-tkfram-angles-and-matrix",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Check both matrix and angle specifications with asymmetric rotation and base ID. Compare each returned value on both compiled backends."
         },
         {
           "caseId": "frames-tkfram-reload",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "The same fixed frame responds to a live kernel angle change. Compare each returned value on both compiled backends."
         },
         {
           "caseId": "frames-tkfram-zero",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Zero is an invalid frame class ID. Require ZEROFRAMEID."
         },
         {
           "caseId": "frames-tkfram-unknown",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "An unknown frame signals a real incomplete-frame exception. Require INCOMPLETEFRAME."
         },
         {
           "caseId": "frames-tkfram-mismatched-id",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Looking up the frame code instead of its distinct class ID lacks a required definition. Require VARIABLENOTFOUND."
         },
         {
           "caseId": "frames-tkfram-invalid-relative",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "An unknown base frame triggers a toolkit diagnostic. Require BADFRAMESPEC."
         },
         {
           "caseId": "frames-tkfram-unloaded",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Unloading this FK expires both class metadata and cached fixed rotations. Require INCOMPLETEFRAME."
         }
       ],
@@ -865,23 +715,13 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": [
-            "unreviewed",
-            "reviewed",
-            "verified",
-            "reviewed"
-          ],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.tkfram -> FramesApi serialized Node native registration -> tspice_tkfram -> tkfram_c. Independent oracle calls locked SpiceyPy.",
           "executions": []
         },
         "wasm": {
-          "history": [
-            "unreviewed",
-            "reviewed",
-            "verified",
-            "reviewed"
-          ],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.tkfram -> FramesApi WASM export with scoped buffers -> tspice_tkfram -> tkfram_c. Independent oracle calls locked SpiceyPy.",
           "executions": []
@@ -896,122 +736,77 @@
       "scenarios": [
         {
           "caseId": "frames-xfmsta-rectangular-to-all",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare each coordinate, ordering and derivative for every destination. Compare each returned value on both compiled backends."
         },
         {
           "caseId": "frames-xfmsta-cylindrical-to-rect",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare the six output components and all three velocity contributions. Compare each returned value on both compiled backends."
         },
         {
           "caseId": "frames-xfmsta-latitudinal-to-rect",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare the six output components and all three velocity contributions. Compare each returned value on both compiled backends."
         },
         {
           "caseId": "frames-xfmsta-spherical-to-rect",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare the six output components and all three velocity contributions. Compare each returned value on both compiled backends."
         },
         {
           "caseId": "frames-xfmsta-geodetic-to-rect",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare the six output components and all three velocity contributions. Compare each returned value on both compiled backends."
         },
         {
           "caseId": "frames-xfmsta-planetographic-to-rect",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare the six output components and all three velocity contributions. Compare each returned value on both compiled backends."
         },
         {
           "caseId": "frames-xfmsta-same-system",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Identical systems copy before resolving radii or checking singularities. Compare each returned value on both compiled backends."
         },
         {
           "caseId": "frames-xfmsta-axis",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "A purely axial velocity has directly specified rates even at a pole or origin. Compare each returned value on both compiled backends."
         },
         {
           "caseId": "frames-xfmsta-transverse",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "A nonzero transverse velocity at a pole makes the coordinate derivative undefined. Require INVALIDSTATE."
         },
         {
           "caseId": "frames-xfmsta-bad-system",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Unknown coordinate system produces the CSPICE protocol error. Require COORDSYSNOTREC."
         },
         {
           "caseId": "frames-xfmsta-empty-body",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "The C wrapper requires nonempty body even for rectangular identity. Require EMPTYSTRING."
         },
         {
           "caseId": "frames-xfmsta-missing-radii",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "A known body can lack required spheroid radii. Require KERNELVARNOTFOUND."
         },
         {
           "caseId": "frames-xfmsta-unknown-body",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Conversion involving planetographic coordinates resolves actual body IDs. Require IDCODENOTFOUND."
         },
         {
           "caseId": "frames-xfmsta-triaxial",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "The loaded triaxial body has unequal equatorial radii. Require NOTSUPPORTED."
         },
         {
           "caseId": "frames-xfmsta-longitude-override",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Explicit east-positive Mars longitude changes planetographic coordinates and angular rates. Compare each returned value on both compiled backends."
         }
       ],
@@ -1035,23 +830,13 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": [
-            "unreviewed",
-            "reviewed",
-            "verified",
-            "reviewed"
-          ],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.xfmsta -> FramesApi serialized Node native registration -> tspice_xfmsta -> xfmsta_c. Independent oracle calls locked SpiceyPy.",
           "executions": []
         },
         "wasm": {
-          "history": [
-            "unreviewed",
-            "reviewed",
-            "verified",
-            "reviewed"
-          ],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.xfmsta -> FramesApi WASM export with scoped buffers -> tspice_xfmsta -> xfmsta_c. Independent oracle calls locked SpiceyPy.",
           "executions": []

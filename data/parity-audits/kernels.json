@@ -13314,61 +13314,37 @@
       "scenarios": [
         {
           "caseId": "kernels-furnsh-loads-text-kernel-success",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "furnsh loads a text kernel that is visible through ktotal/kdata The actual furnsh effect is observed through loaded metadata/counts or all returned pool values. Missing/malformed loads require the specific CSPICE error name; partial effects/recovery are additionally compared live in kernel-boundaries.test.ts."
         },
         {
           "caseId": "kernels-furnsh-missing-file-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Representative furnsh missing-file error path The actual furnsh effect is observed through loaded metadata/counts or all returned pool values. Missing/malformed loads require the specific CSPICE error name; partial effects/recovery are additionally compared live in kernel-boundaries.test.ts."
         },
         {
           "caseId": "kernels-furnsh-audit-duplicate-byte-loads",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Repeated identical loads remain separate CSPICE database entries; one unload removes one reference. The actual furnsh effect is observed through loaded metadata/counts or all returned pool values. Missing/malformed loads require the specific CSPICE error name; partial effects/recovery are additionally compared live in kernel-boundaries.test.ts."
         },
         {
           "caseId": "kernels-furnsh-audit-binary-and-text",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Binary and text registrations preserve order, paths and zero/nonzero metadata handles. The actual furnsh effect is observed through loaded metadata/counts or all returned pool values. Missing/malformed loads require the specific CSPICE error name; partial effects/recovery are additionally compared live in kernel-boundaries.test.ts."
         },
         {
           "caseId": "kernels-furnsh-audit-empty-meta",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "An authored empty meta-kernel is registered as TEXT, with its actual filtyp/handle. The actual furnsh effect is observed through loaded metadata/counts or all returned pool values. Missing/malformed loads require the specific CSPICE error name; partial effects/recovery are additionally compared live in kernel-boundaries.test.ts."
         },
         {
           "caseId": "kernels-furnsh-audit-malformed-text",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "A malformed kernel reaches CSPICE after assigning an earlier variable; supplemental tests inspect retained partial pool state. The actual furnsh effect is observed through loaded metadata/counts or all returned pool values. Missing/malformed loads require the specific CSPICE error name; partial effects/recovery are additionally compared live in kernel-boundaries.test.ts."
         },
         {
           "caseId": "kernels-furnsh-audit-observable-pool-values",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Loading the corrected authored text fixture must populate actual numeric, integer and character pool values. The actual furnsh effect is observed through loaded metadata/counts or all returned pool values. Missing/malformed loads require the specific CSPICE error name; partial effects/recovery are additionally compared live in kernel-boundaries.test.ts."
         }
       ],
@@ -13439,9 +13415,7 @@
             "packages/backend-node/test/kernel-staging.test.ts",
             "packages/py-parity-checking/src/cases/kernels/furnsh.cases.json"
           ],
-          "caseIds": [
-            "kernels-furnsh-loads-text-kernel-success"
-          ]
+          "caseIds": ["kernels-furnsh-loads-text-kernel-success"]
         }
       ],
       "backends": {
@@ -13511,36 +13485,22 @@
       "scenarios": [
         {
           "caseId": "kernels-unload-removes-loaded-kernel-success",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "unload removes a previously loaded kernel from lookup results Actual raw unload effects reach the assertion through counts, metadata and/or remaining pool values; errors require named EMPTYSTRING."
         },
         {
           "caseId": "kernels-unload-empty-path-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Representative unload invalid empty-path error Actual raw unload effects reach the assertion through counts, metadata and/or remaining pool values; errors require named EMPTYSTRING."
         },
         {
           "caseId": "kernels-unload-audit-unknown-and-repeat",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Unknown and repeated non-empty unloads are harmless actual CSPICE operations. Actual raw unload effects reach the assertion through counts, metadata and/or remaining pool values; errors require named EMPTYSTRING."
         },
         {
           "caseId": "kernels-unload-audit-text-pool-reload",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Unloading one text kernel rereads the retained staged kernel without deleting its backing file. Actual raw unload effects reach the assertion through counts, metadata and/or remaining pool values; errors require named EMPTYSTRING."
         }
       ],
@@ -13593,9 +13553,7 @@
             "packages/backend-node/test/kernel-staging.test.ts",
             "packages/py-parity-checking/src/cases/kernels/furnsh.cases.json"
           ],
-          "caseIds": [
-            "kernels-unload-removes-loaded-kernel-success"
-          ]
+          "caseIds": ["kernels-unload-removes-loaded-kernel-success"]
         }
       ],
       "backends": {
@@ -13665,20 +13623,12 @@
       "scenarios": [
         {
           "caseId": "kernels-kclear-clears-loaded-kernels-success",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "kclear clears previously loaded kernels from the kernel database Counts, metadata misses and pool absence after actual raw clear reach the assertions; later load shows usable state."
         },
         {
           "caseId": "kernels-kclear-audit-pool-and-repeat",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Clear removes both registrations and user pool values and supports repeated clear/reload. Counts, metadata misses and pool absence after actual raw clear reach the assertions; later load shows usable state."
         }
       ],
@@ -13729,9 +13679,7 @@
             "packages/backend-node/test/kernel-staging.test.ts",
             "packages/py-parity-checking/src/cases/kernels/furnsh.cases.json"
           ],
-          "caseIds": [
-            "kernels-kclear-clears-loaded-kernels-success"
-          ]
+          "caseIds": ["kernels-kclear-clears-loaded-kernels-success"]
         }
       ],
       "backends": {
@@ -13801,27 +13749,17 @@
       "scenarios": [
         {
           "caseId": "kernels-kdata-found-and-miss-success",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "kdata returns metadata for loaded kernels and found=false when out of range The actual raw Found result, full relative file/source, type and handle zero/nonzero are recursively compared, with filtered indexing preserved."
         },
         {
           "caseId": "kernels-kdata-audit-index-and-filters",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Zero-based filtered indexing, negative/end misses, subtype composition and default ALL. The actual raw Found result, full relative file/source, type and handle zero/nonzero are recursively compared, with filtered indexing preserved."
         },
         {
           "caseId": "kernels-kdata-audit-invalid-kind",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Unknown public contract selector is rejected by both adapters. The actual raw Found result, full relative file/source, type and handle zero/nonzero are recursively compared, with filtered indexing preserved."
         }
       ],
@@ -13877,9 +13815,7 @@
             "packages/backend-wasm/src/domains/kernels.ts",
             "packages/backend-wasm/test/kernel-allocation-cleanup.test.ts"
           ],
-          "caseIds": [
-            "kernels-kdata-found-and-miss-success"
-          ]
+          "caseIds": ["kernels-kdata-found-and-miss-success"]
         }
       ],
       "backends": {
@@ -13949,29 +13885,17 @@
       "scenarios": [
         {
           "caseId": "kernels-kinfo-found-and-miss-success",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "kinfo returns metadata for loaded kernels and found=false for unknown kernels The actual raw Found result, type and full relative source are compared; handle zero/nonzero and same-runtime kdata correspondence are observed."
         },
         {
           "caseId": "kernels-kinfo-audit-cache-invalidation",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Cached misses/hits are invalidated by load, unload, clear and reloading on the same backend. The actual raw Found result, type and full relative source are compared; handle zero/nonzero and same-runtime kdata correspondence are observed."
         },
         {
           "caseId": "kernels-kinfo-audit-empty-path",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Empty lookup follows the actual raw contract. The actual raw Found result, type and full relative source are compared; handle zero/nonzero and same-runtime kdata correspondence are observed."
         }
       ],
@@ -14081,27 +14005,17 @@
       "scenarios": [
         {
           "caseId": "kernels-ktotal-counts-loaded-kernels-success",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "ktotal reports loaded kernels across ALL and TEXT selectors The raw returned count is directly compared with actual SpiceyPy ktotal for ordinary selectors; contract subtype/union composition uses independent filtering of actual oracle metadata."
         },
         {
           "caseId": "kernels-ktotal-audit-subtypes-and-unions",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Distinct files make OR/deduplication/subtype/default selector errors visible. The raw returned count is directly compared with actual SpiceyPy ktotal for ordinary selectors; contract subtype/union composition uses independent filtering of actual oracle metadata."
         },
         {
           "caseId": "kernels-ktotal-audit-invalid-kind",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Unknown public contract selector is rejected by both adapters. The raw returned count is directly compared with actual SpiceyPy ktotal for ordinary selectors; contract subtype/union composition uses independent filtering of actual oracle metadata."
         }
       ],
@@ -14157,9 +14071,7 @@
             "packages/backend-wasm/src/domains/kernels.ts",
             "packages/backend-wasm/test/kernel-allocation-cleanup.test.ts"
           ],
-          "caseIds": [
-            "kernels-ktotal-counts-loaded-kernels-success"
-          ]
+          "caseIds": ["kernels-ktotal-counts-loaded-kernels-success"]
         }
       ],
       "backends": {
@@ -14229,145 +14141,92 @@
       "scenarios": [
         {
           "caseId": "kernels-kxtrct-found-success",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "kxtrct extracts a matching substring Both actual mutated wordsq and substr reach the exact-string assertion, including significant whitespace; Found misses and documented keyword errors remain distinct."
         },
         {
           "caseId": "kernels-kxtrct-not-found-success",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "kxtrct miss returns found=false Both actual mutated wordsq and substr reach the exact-string assertion, including significant whitespace; Found misses and documented keyword errors remain distinct."
         },
         {
           "caseId": "kernels-kxtrct-audit-terminator-last",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe both mutated wordsq and substr: terminator-last Both actual mutated wordsq and substr reach the exact-string assertion, including significant whitespace; Found misses and documented keyword errors remain distinct."
         },
         {
           "caseId": "kernels-kxtrct-audit-key-last",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe both mutated wordsq and substr: key-last Both actual mutated wordsq and substr reach the exact-string assertion, including significant whitespace; Found misses and documented keyword errors remain distinct."
         },
         {
           "caseId": "kernels-kxtrct-audit-immediate-terminator",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe both mutated wordsq and substr: immediate-terminator Both actual mutated wordsq and substr reach the exact-string assertion, including significant whitespace; Found misses and documented keyword errors remain distinct."
         },
         {
           "caseId": "kernels-kxtrct-audit-tabs-are-not-blanks",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe both mutated wordsq and substr: tabs-are-not-blanks Both actual mutated wordsq and substr reach the exact-string assertion, including significant whitespace; Found misses and documented keyword errors remain distinct."
         },
         {
           "caseId": "kernels-kxtrct-audit-tab-within-value",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe both mutated wordsq and substr: tab-within-value Both actual mutated wordsq and substr reach the exact-string assertion, including significant whitespace; Found misses and documented keyword errors remain distinct."
         },
         {
           "caseId": "kernels-kxtrct-audit-newline-within-value",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe both mutated wordsq and substr: newline-within-value Both actual mutated wordsq and substr reach the exact-string assertion, including significant whitespace; Found misses and documented keyword errors remain distinct."
         },
         {
           "caseId": "kernels-kxtrct-audit-multiple-and-case",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe both mutated wordsq and substr: multiple-and-case Both actual mutated wordsq and substr reach the exact-string assertion, including significant whitespace; Found misses and documented keyword errors remain distinct."
         },
         {
           "caseId": "kernels-kxtrct-audit-no-terminators",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe both mutated wordsq and substr: no-terminators Both actual mutated wordsq and substr reach the exact-string assertion, including significant whitespace; Found misses and documented keyword errors remain distinct."
         },
         {
           "caseId": "kernels-kxtrct-audit-repeated-keyword",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe both mutated wordsq and substr: repeated-keyword Both actual mutated wordsq and substr reach the exact-string assertion, including significant whitespace; Found misses and documented keyword errors remain distinct."
         },
         {
           "caseId": "kernels-kxtrct-audit-trailing-tab",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare actual CSPICE mutated wordsq and substring for trailing-tab Both actual mutated wordsq and substr reach the exact-string assertion, including significant whitespace; Found misses and documented keyword errors remain distinct."
         },
         {
           "caseId": "kernels-kxtrct-audit-trailing-newline",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare actual CSPICE mutated wordsq and substring for trailing-newline Both actual mutated wordsq and substr reach the exact-string assertion, including significant whitespace; Found misses and documented keyword errors remain distinct."
         },
         {
           "caseId": "kernels-kxtrct-audit-non-ascii-space",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare actual CSPICE mutated wordsq and substring for non-ascii-space Both actual mutated wordsq and substr reach the exact-string assertion, including significant whitespace; Found misses and documented keyword errors remain distinct."
         },
         {
           "caseId": "kernels-kxtrct-audit-unicode-words",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare actual CSPICE mutated wordsq and substring for unicode-words Both actual mutated wordsq and substr reach the exact-string assertion, including significant whitespace; Found misses and documented keyword errors remain distinct."
         },
         {
           "caseId": "kernels-kxtrct-audit-nul-sequence",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare actual CSPICE mutated wordsq and substring for nul-sequence Both actual mutated wordsq and substr reach the exact-string assertion, including significant whitespace; Found misses and documented keyword errors remain distinct."
         },
         {
           "caseId": "kernels-kxtrct-audit-nul-key-term",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare actual CSPICE mutated wordsq and substring for nul-key-term Both actual mutated wordsq and substr reach the exact-string assertion, including significant whitespace; Found misses and documented keyword errors remain distinct."
         },
         {
           "caseId": "kernels-kxtrct-audit-blank-key",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Compare actual CSPICE mutated wordsq and substring for blank-key Both actual mutated wordsq and substr reach the exact-string assertion, including significant whitespace; Found misses and documented keyword errors remain distinct."
         }
       ],

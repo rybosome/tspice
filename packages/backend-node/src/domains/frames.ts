@@ -28,7 +28,10 @@ import {
   invariant,
 } from "@rybosome/tspice-core";
 
-import { createVirtualOutputStager, type VirtualOutputStager } from "../runtime/virtual-output-staging.js";
+import {
+  createVirtualOutputStager,
+  type VirtualOutputStager,
+} from "../runtime/virtual-output-staging.js";
 import type { NativeAddon } from "../runtime/addon.js";
 import type { KernelStager } from "../runtime/kernel-staging.js";
 import { createSpiceHandleRegistry } from "../runtime/spice-handles.js";

@@ -30,8 +30,23 @@ import type {
   SpiceHandle,
   VirtualOutput,
 } from "@rybosome/tspice-backend-contract";
-import { invariant, assertSpiceInt32, dafCommentTable, dafCommentPageBytes, dafCommentPage, dafReplacementBytes, dafComponentLayout, dafComponents, dafBytes, dafRecordBytes, dafAddressWords, dafFileNameCapacity, DAF_MAX_SUMMARY_BYTES, dafPathByteLength, dafSummaryFormat } from "@rybosome/tspice-core";
-
+import {
+  invariant,
+  assertSpiceInt32,
+  dafCommentTable,
+  dafCommentPageBytes,
+  dafCommentPage,
+  dafReplacementBytes,
+  dafComponentLayout,
+  dafComponents,
+  dafBytes,
+  dafRecordBytes,
+  dafAddressWords,
+  dafFileNameCapacity,
+  DAF_MAX_SUMMARY_BYTES,
+  dafPathByteLength,
+  dafSummaryFormat,
+} from "@rybosome/tspice-core";
 
 import type { NativeAddon } from "../runtime/addon.js";
 import type { KernelStager } from "../runtime/kernel-staging.js";

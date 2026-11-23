@@ -1926,80 +1926,52 @@
       "scenarios": [
         {
           "caseId": "strings-cmprss-delimiter-run-lengths",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare full output for short/long, separated and boundary runs under several retained-count limits."
         },
         {
           "caseId": "strings-cmprss-whitespace-delimiters",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Use space and control whitespace as distinct single-byte delimiters and retain all other whitespace exactly."
         },
         {
           "caseId": "strings-cmprss-empty-all-delimiter-or-absent",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe empty input, exhausted delimiter-only input and unchanged absent-delimiter input."
         },
         {
           "caseId": "strings-cmprss-utf8-and-bom",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare exact UTF-8 text including initial BOM, multibyte characters and trailing whitespace."
         },
         {
           "caseId": "strings-cmprss-capacity-and-order",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Truncate the compressed stream to the available bytes plus terminator, observing where runs occur relative to the truncation."
         },
         {
           "caseId": "strings-cmprss-complete-utf8-boundaries",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Use capacities terminating on complete multibyte boundaries and preserve every resulting character."
         },
         {
           "caseId": "strings-cmprss-zero-capacity-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Compare actual STRINGTOOSHORT for zero output capacity and require subsequent recovery."
         },
         {
           "caseId": "strings-cmprss-negative-capacity-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Pass a negative signed32 capacity to actual CSPICE with valid sentinel storage and compare STRINGTOOSHORT."
         },
         {
           "caseId": "strings-cmprss-nul-delimiter",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Pass NUL as a scalar delimiter. Complete non-NUL text and its spaces remain observable."
         },
         {
           "caseId": "strings-cmprss-int32-capacity-limits",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Use a very large valid signed32 capacity on a bounded input and observe the complete output using sufficient actual storage."
         }
       ],
@@ -2020,9 +1992,7 @@
             "packages/py-parity-checking/test/string-transforms.test.ts",
             "docs/step8-string-transforms.md"
           ],
-          "caseIds": [
-            "strings-cmprss-utf8-and-bom"
-          ]
+          "caseIds": ["strings-cmprss-utf8-and-bom"]
         }
       ],
       "backends": {
@@ -2072,50 +2042,32 @@
       "scenarios": [
         {
           "caseId": "strings-eqstr-case-and-punctuation",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare exact equality outcomes for ASCII case variants, punctuation, reordered and changed characters."
         },
         {
           "caseId": "strings-eqstr-internal-whitespace",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe skipped whitespace occurring between significant bytes as well as changes to significant contents."
         },
         {
           "caseId": "strings-eqstr-all-c-whitespace",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Exercise portable C whitespace bytes individually and together and compare exact equality outcomes."
         },
         {
           "caseId": "strings-eqstr-empty-and-nonempty",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Exercise empty text and nonempty text including whitespace-only inputs. Preserve the canonical result for each combination."
         },
         {
           "caseId": "strings-eqstr-leading-and-trailing",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Vary whitespace on either side of the significant text and observe both equivalent and unequal pairs."
         },
         {
           "caseId": "strings-eqstr-utf8-byte-comparison",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare multibyte text without Unicode case-folding or normalization. Preserve changed/same byte-sequence outcomes."
         }
       ],
@@ -2171,34 +2123,22 @@
       "scenarios": [
         {
           "caseId": "strings-iswhsp-empty-and-control-whitespace",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe true for empty input and each portable C whitespace/control combination."
         },
         {
           "caseId": "strings-iswhsp-nonwhite-controls",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe actual false results when bytes outside the whitespace set occur."
         },
         {
           "caseId": "strings-iswhsp-visible-amid-whitespace",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Place a visible byte among surrounding whitespace; exact false distinguishes checking the complete text."
         },
         {
           "caseId": "strings-iswhsp-nonascii-space-and-visible",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe actual byte classification for UTF-8 space-like characters, BOM and visible text in the test locale."
         }
       ],
@@ -2254,34 +2194,22 @@
       "scenarios": [
         {
           "caseId": "strings-lastnb-zero-based-or-minus-one",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe exact −1 for empty/all-space and exact zero-based indices at several positions."
         },
         {
           "caseId": "strings-lastnb-blank-versus-whitespace",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Distinguish terminal ASCII spaces from tabs and other control bytes in the returned index."
         },
         {
           "caseId": "strings-lastnb-mixed-leading-interior-and-tail",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Retain leading/interior positions when scanning only the terminal run of ASCII spaces."
         },
         {
           "caseId": "strings-lastnb-utf8-byte-indices",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare exact last significant byte offsets for multibyte and supplementary text independently from JavaScript UTF-16 indices."
         }
       ],
@@ -2337,79 +2265,52 @@
       "scenarios": [
         {
           "caseId": "strings-lcase-ascii-letter-range",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare ASCII endpoints, mixed letters, punctuation and numeric characters, retaining all unchanged bytes."
         },
         {
           "caseId": "strings-lcase-preserved-terminal-whitespace",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare exact terminal spaces, tabs, newlines and carriage returns directly from the canonical output buffer."
         },
         {
           "caseId": "strings-lcase-empty-and-nonempty",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Exercise empty text and nonempty text including whitespace-only inputs. Preserve the canonical result for each combination."
         },
         {
           "caseId": "strings-lcase-utf8-and-bom",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare exact UTF-8 text including initial BOM, multibyte characters and trailing whitespace."
         },
         {
           "caseId": "strings-lcase-capacity-includes-nul",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe actual transformed right prefix at lenout boundaries; one byte of capacity is reserved for NUL."
         },
         {
           "caseId": "strings-lcase-utf8-byte-boundaries",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Use capacities ending on complete UTF-8 boundaries, with leading BOM and multibyte values retained."
         },
         {
           "caseId": "strings-lcase-one-capacity-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Observe actual STRINGTOOSHORT when only a NUL fits and the canonical case conversion requires capacity 2."
         },
         {
           "caseId": "strings-lcase-zero-capacity-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Compare actual STRINGTOOSHORT for zero output capacity and require subsequent recovery."
         },
         {
           "caseId": "strings-lcase-negative-capacity-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Pass a negative signed32 capacity to actual CSPICE with valid sentinel storage and compare STRINGTOOSHORT."
         },
         {
           "caseId": "strings-lcase-int32-capacity-limits",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Use a very large valid signed32 capacity on a bounded input and observe the complete output using sufficient actual storage."
         }
       ],
@@ -2483,79 +2384,52 @@
       "scenarios": [
         {
           "caseId": "strings-ucase-ascii-letter-range",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare ASCII endpoints, mixed letters, punctuation and numeric characters, retaining all unchanged bytes."
         },
         {
           "caseId": "strings-ucase-preserved-terminal-whitespace",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare exact terminal spaces, tabs, newlines and carriage returns directly from the canonical output buffer."
         },
         {
           "caseId": "strings-ucase-empty-and-nonempty",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Exercise empty text and nonempty text including whitespace-only inputs. Preserve the canonical result for each combination."
         },
         {
           "caseId": "strings-ucase-utf8-and-bom",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare exact UTF-8 text including initial BOM, multibyte characters and trailing whitespace."
         },
         {
           "caseId": "strings-ucase-capacity-includes-nul",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe actual transformed right prefix at lenout boundaries; one byte of capacity is reserved for NUL."
         },
         {
           "caseId": "strings-ucase-utf8-byte-boundaries",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Use capacities ending on complete UTF-8 boundaries, with leading BOM and multibyte values retained."
         },
         {
           "caseId": "strings-ucase-one-capacity-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Observe actual STRINGTOOSHORT when only a NUL fits and the canonical case conversion requires capacity 2."
         },
         {
           "caseId": "strings-ucase-zero-capacity-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Compare actual STRINGTOOSHORT for zero output capacity and require subsequent recovery."
         },
         {
           "caseId": "strings-ucase-negative-capacity-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Pass a negative signed32 capacity to actual CSPICE with valid sentinel storage and compare STRINGTOOSHORT."
         },
         {
           "caseId": "strings-ucase-int32-capacity-limits",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Use a very large valid signed32 capacity on a bounded input and observe the complete output using sufficient actual storage."
         }
       ],
@@ -2629,80 +2503,52 @@
       "scenarios": [
         {
           "caseId": "strings-matchi-literal-case-and-order",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare full-string literal matching, changed case and reordered or additional literal bytes."
         },
         {
           "caseId": "strings-matchi-zero-or-many-versus-one",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Distinguish zero/multiple-byte string-wildcard matches from the exactly-one-byte character wildcard."
         },
         {
           "caseId": "strings-matchi-multiple-wildcards-and-anchors",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe adjacent and separated wildcard runs with anchored initial/trailing literals and both truth values."
         },
         {
           "caseId": "strings-matchi-blanks-and-controls",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare all-space, outer-space and internal/control-whitespace inputs and preserve the exact blank-padding rules."
         },
         {
           "caseId": "strings-matchi-custom-wildcards",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe user-selected wildcard bytes, including case-sensitive alphabetic token recognition."
         },
         {
           "caseId": "strings-matchi-coincident-wildcards",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Supply the same wildcard byte for both roles and observe the canonical matching order on multiple lengths."
         },
         {
           "caseId": "strings-matchi-empty-input-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Observe actual EMPTYSTRING from the empty input argument with the template supplied."
         },
         {
           "caseId": "strings-matchi-empty-template-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Observe actual EMPTYSTRING from an empty template with nonempty input."
         },
         {
           "caseId": "strings-matchi-utf8-single-byte-wildcard",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare multi-byte scalar inputs against templates with differing numbers of one-byte wildcard tokens."
         },
         {
           "caseId": "strings-matchi-nul-wildcards",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Pass NUL as a scalar wildcard to disable the corresponding token and observe remaining literal/wildcard behavior."
         }
       ],
@@ -2758,80 +2604,52 @@
       "scenarios": [
         {
           "caseId": "strings-matchw-literal-case-and-order",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare full-string literal matching, changed case and reordered or additional literal bytes."
         },
         {
           "caseId": "strings-matchw-zero-or-many-versus-one",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Distinguish zero/multiple-byte string-wildcard matches from the exactly-one-byte character wildcard."
         },
         {
           "caseId": "strings-matchw-multiple-wildcards-and-anchors",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe adjacent and separated wildcard runs with anchored initial/trailing literals and both truth values."
         },
         {
           "caseId": "strings-matchw-blanks-and-controls",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare all-space, outer-space and internal/control-whitespace inputs and preserve the exact blank-padding rules."
         },
         {
           "caseId": "strings-matchw-custom-wildcards",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe user-selected wildcard bytes, including case-sensitive alphabetic token recognition."
         },
         {
           "caseId": "strings-matchw-coincident-wildcards",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Supply the same wildcard byte for both roles and observe the canonical matching order on multiple lengths."
         },
         {
           "caseId": "strings-matchw-empty-input-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Observe actual EMPTYSTRING from the empty input argument with the template supplied."
         },
         {
           "caseId": "strings-matchw-empty-template-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Observe actual EMPTYSTRING from an empty template with nonempty input."
         },
         {
           "caseId": "strings-matchw-utf8-single-byte-wildcard",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare multi-byte scalar inputs against templates with differing numbers of one-byte wildcard tokens."
         },
         {
           "caseId": "strings-matchw-nul-wildcards",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Pass NUL as a scalar wildcard to disable the corresponding token and observe remaining literal/wildcard behavior."
         }
       ],

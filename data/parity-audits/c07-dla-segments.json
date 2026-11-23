@@ -256,65 +256,42 @@
       "scenarios": [
         {
           "caseId": "file-io-dlabbs-empty",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Both a fresh writer and a reopened reader report an empty list."
         },
         {
           "caseId": "file-io-dlabbs-pending",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "All eight provisional descriptor words are visible before finalization."
         },
         {
           "caseId": "file-io-dlabbs-one-empty",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "A genuine empty segment has three zero sizes and null endpoints, distinct from an empty file."
         },
         {
           "caseId": "file-io-dlabbs-mixed",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Read all eight last words plus actual terminal logical data across dissimilar component sizes."
         },
         {
           "caseId": "file-io-dlabbs-repeat",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Restart from the tail twice around backward movement without a global search cursor."
         },
         {
           "caseId": "file-io-dlabbs-independent-files",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Interleave two DAS writers with unequal tails; each handle selects its own header."
         },
         {
           "caseId": "file-io-dlabbs-synthetic-dsk",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Read actual last descriptor from independent four-segment synthetic tetrahedron DSK."
         },
         {
           "caseId": "file-io-dlabbs-without-controls",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "A normal empty plain DAS has no integer address three."
         }
       ],
@@ -388,72 +365,47 @@
       "scenarios": [
         {
           "caseId": "file-io-dlabns-first-word-state",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Separate begin from finalization. Observe real control words, descriptor storage, all pending sizes and last addresses."
         },
         {
           "caseId": "file-io-dlabns-successive-links",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe the old and new forward/backward links when beginning a subsequent segment."
         },
         {
           "caseId": "file-io-dlabns-character-only",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Append arbitrary binary bytes in a generic DLA segment and retain them beyond close/reopen."
         },
         {
           "caseId": "file-io-dlabns-integer-only",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Append signed integer extrema to the segment following the real descriptor."
         },
         {
           "caseId": "file-io-dlabns-double-only",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Append signed and fractional double words independent of character or integer payloads."
         },
         {
           "caseId": "file-io-dlabns-reopened-writer",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Continue a previously finalized file with DASOPW; observe its old descriptor link and appended component."
         },
         {
           "caseId": "file-io-dlabns-physical-crossing",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Begin after 245 payload integers so the descriptor crosses the 256-word physical integer record."
         },
         {
           "caseId": "file-io-dlabns-read-only",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "The original DASSIH access check rejects an append to a read-only DLA."
         },
         {
           "caseId": "file-io-dlabns-without-header",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "A writable plain DAS lacks the DLA header pointers read by DLABNS."
         }
       ],
@@ -521,71 +473,47 @@
       "scenarios": [
         {
           "caseId": "file-io-dlaens-three-components",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare provisional and finalized sizes and bases for separately written integer/double/character payloads."
         },
         {
           "caseId": "file-io-dlaens-no-data",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Finalizing a begun segment with no component data writes three zero sizes."
         },
         {
           "caseId": "file-io-dlaens-recompute-last",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Finalizing an existing last descriptor again recomputes sizes; newly appended data and prior links survive."
         },
         {
           "caseId": "file-io-dlaens-reopened-pending",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Close and reopen an unfinished writer, then finalize its persisted component bases."
         },
         {
           "caseId": "file-io-dlaens-logical-ranges",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Multiple batches per component and exact logical endpoint values survive a completed mixed segment."
         },
         {
           "caseId": "file-io-dlaens-empty-last",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "A middle segment with no parts and a final populated segment have independent bases, sizes and links."
         },
         {
           "caseId": "file-io-dlaens-read-only",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "A read-only populated file retains the original DASUDI access failure while finalizing."
         },
         {
           "caseId": "file-io-dlaens-no-segment",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "An initialized empty list contains the null pointer, which is not a readable last descriptor."
         },
         {
           "caseId": "file-io-dlaens-without-header",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "A plain DAS lacks integer address three for finalization."
         }
       ],
@@ -653,65 +581,42 @@
       "scenarios": [
         {
           "caseId": "file-io-dlafps-one-end",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "The first and only descriptor has no preceding segment."
         },
         {
           "caseId": "file-io-dlafps-complete-backward",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Walk three uneven segments to the null backward link, comparing every owned word."
         },
         {
           "caseId": "file-io-dlafps-forward-to-back",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Start backward from a descriptor found by the forward iterator; no separate backward initialization is required."
         },
         {
           "caseId": "file-io-dlafps-reverse-to-forward",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Reverse direction at the middle, advancing back to the same terminal descriptor."
         },
         {
           "caseId": "file-io-dlafps-writer-pending",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Traverse backward from a provisional segment with size words of minus one to its completed predecessor."
         },
         {
           "caseId": "file-io-dlafps-independent-descriptors",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Retain two descriptor references in one file and traverse from each independently."
         },
         {
           "caseId": "file-io-dlafps-synthetic-dsk",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Walk every descriptor of the repository-authored four-segment tetrahedron DSK and terminate at its first link."
         },
         {
           "caseId": "file-io-dlafps-closed-token",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Use an actual valid descriptor after its token has been explicitly closed. Ownership rejects the call before native access."
         }
       ],

@@ -459,8 +459,14 @@ export function buildLedger(root = defaultRoot, options = {}) {
         );
       if (
         symbol.endsWith("_c") ||
-        (!definition && (symbol === "eul2m_" || symbol === "sce2t_" || symbol === "daffpa_")) ||
-        (!definition && ["ekrcec_", "ekrced_", "ekrcei_", "ekcii_", "eknelt_"].includes(symbol)) ||
+        (!definition &&
+          (symbol === "eul2m_" ||
+            symbol === "sce2t_" ||
+            symbol === "daffpa_")) ||
+        (!definition &&
+          ["ekrcec_", "ekrced_", "ekrcei_", "ekcii_", "eknelt_"].includes(
+            symbol,
+          )) ||
         dafExtraction ||
         dasExtraction
       ) {
@@ -675,7 +681,8 @@ export function buildLedger(root = defaultRoot, options = {}) {
         // The public C calls check widths. Initialized SPICELIB calls supply EK data.
         const isEkEntryRead = ["ekrcec", "ekrced", "ekrcei"].includes(name);
         const ekMetadataInner = ["ekcii", "eknelt"].includes(name);
-        const sameNamed = !isEkEntryRead && !ekMetadataInner && targets.includes(routine.name);
+        const sameNamed =
+          !isEkEntryRead && !ekMetadataInner && targets.includes(routine.name);
         if (isEkEntryRead && !targets.includes(name + "_"))
           errors.push(
             `Missing scientific SPICELIB reader for ${backend}.${name}`,

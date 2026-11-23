@@ -440,17 +440,12 @@
       "scenarios": [
         {
           "caseId": "time-b1900-constant-value",
-          "coverage": [
-            "success"
-          ],
+          "coverage": ["success"],
           "observes": "Actual raw.b1900 scalar reaches StepOutput.value unchanged and is compared with the matching direct locked SpiceyPy operation; repeated calls observe unchanged result across kernel clear and error reset."
         },
         {
           "caseId": "time-b1900-constant-repeat-after-reset",
-          "coverage": [
-            "success",
-            "state"
-          ],
+          "coverage": ["success", "state"],
           "observes": "Actual raw.b1900 scalar reaches StepOutput.value unchanged and is compared with the matching direct locked SpiceyPy operation; repeated calls observe unchanged result across kernel clear and error reset."
         }
       ],
@@ -502,17 +497,12 @@
       "scenarios": [
         {
           "caseId": "time-j1950-constant-value",
-          "coverage": [
-            "success"
-          ],
+          "coverage": ["success"],
           "observes": "Actual raw.j1950 scalar reaches StepOutput.value unchanged and is compared with the matching direct locked SpiceyPy operation; repeated calls observe unchanged result across kernel clear and error reset."
         },
         {
           "caseId": "time-j1950-constant-repeat-after-reset",
-          "coverage": [
-            "success",
-            "state"
-          ],
+          "coverage": ["success", "state"],
           "observes": "Actual raw.j1950 scalar reaches StepOutput.value unchanged and is compared with the matching direct locked SpiceyPy operation; repeated calls observe unchanged result across kernel clear and error reset."
         }
       ],
@@ -564,17 +554,12 @@
       "scenarios": [
         {
           "caseId": "time-j2100-constant-value",
-          "coverage": [
-            "success"
-          ],
+          "coverage": ["success"],
           "observes": "Actual raw.j2100 scalar reaches StepOutput.value unchanged and is compared with the matching direct locked SpiceyPy operation; repeated calls observe unchanged result across kernel clear and error reset."
         },
         {
           "caseId": "time-j2100-constant-repeat-after-reset",
-          "coverage": [
-            "success",
-            "state"
-          ],
+          "coverage": ["success", "state"],
           "observes": "Actual raw.j2100 scalar reaches StepOutput.value unchanged and is compared with the matching direct locked SpiceyPy operation; repeated calls observe unchanged result across kernel clear and error reset."
         }
       ],
@@ -626,17 +611,12 @@
       "scenarios": [
         {
           "caseId": "time-jyear-constant-value",
-          "coverage": [
-            "success"
-          ],
+          "coverage": ["success"],
           "observes": "Actual raw.jyear scalar reaches StepOutput.value unchanged and is compared with the matching direct locked SpiceyPy operation; repeated calls observe unchanged result across kernel clear and error reset."
         },
         {
           "caseId": "time-jyear-constant-repeat-after-reset",
-          "coverage": [
-            "success",
-            "state"
-          ],
+          "coverage": ["success", "state"],
           "observes": "Actual raw.jyear scalar reaches StepOutput.value unchanged and is compared with the matching direct locked SpiceyPy operation; repeated calls observe unchanged result across kernel clear and error reset."
         }
       ],
@@ -688,17 +668,12 @@
       "scenarios": [
         {
           "caseId": "time-tyear-constant-value",
-          "coverage": [
-            "success"
-          ],
+          "coverage": ["success"],
           "observes": "Actual raw.tyear scalar reaches StepOutput.value unchanged and is compared with the matching direct locked SpiceyPy operation; repeated calls observe unchanged result across kernel clear and error reset."
         },
         {
           "caseId": "time-tyear-constant-repeat-after-reset",
-          "coverage": [
-            "success",
-            "state"
-          ],
+          "coverage": ["success", "state"],
           "observes": "Actual raw.tyear scalar reaches StepOutput.value unchanged and is compared with the matching direct locked SpiceyPy operation; repeated calls observe unchanged result across kernel clear and error reset."
         }
       ],
@@ -750,17 +725,12 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-clight-constant-value",
-          "coverage": [
-            "success"
-          ],
+          "coverage": ["success"],
           "observes": "Actual raw.clight scalar reaches StepOutput.value unchanged and is compared with the matching direct locked SpiceyPy operation; repeated calls observe unchanged result across kernel clear and error reset."
         },
         {
           "caseId": "coords-vectors-clight-constant-repeat-after-reset",
-          "coverage": [
-            "success",
-            "state"
-          ],
+          "coverage": ["success", "state"],
           "observes": "Actual raw.clight scalar reaches StepOutput.value unchanged and is compared with the matching direct locked SpiceyPy operation; repeated calls observe unchanged result across kernel clear and error reset."
         }
       ],
@@ -812,17 +782,12 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-dpmax-constant-value",
-          "coverage": [
-            "success"
-          ],
+          "coverage": ["success"],
           "observes": "Actual raw.dpmax scalar reaches StepOutput.value unchanged and is compared with the matching direct locked SpiceyPy operation; repeated calls observe unchanged result across kernel clear and error reset."
         },
         {
           "caseId": "coords-vectors-dpmax-constant-repeat-after-reset",
-          "coverage": [
-            "success",
-            "state"
-          ],
+          "coverage": ["success", "state"],
           "observes": "Actual raw.dpmax scalar reaches StepOutput.value unchanged and is compared with the matching direct locked SpiceyPy operation; repeated calls observe unchanged result across kernel clear and error reset."
         }
       ],
@@ -874,17 +839,12 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-dpmin-constant-value",
-          "coverage": [
-            "success"
-          ],
+          "coverage": ["success"],
           "observes": "Actual raw.dpmin scalar reaches StepOutput.value unchanged and is compared with the matching direct locked SpiceyPy operation; repeated calls observe unchanged result across kernel clear and error reset."
         },
         {
           "caseId": "coords-vectors-dpmin-constant-repeat-after-reset",
-          "coverage": [
-            "success",
-            "state"
-          ],
+          "coverage": ["success", "state"],
           "observes": "Actual raw.dpmin scalar reaches StepOutput.value unchanged and is compared with the matching direct locked SpiceyPy operation; repeated calls observe unchanged result across kernel clear and error reset."
         }
       ],
@@ -936,17 +896,12 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-intmax-constant-value",
-          "coverage": [
-            "success"
-          ],
+          "coverage": ["success"],
           "observes": "Actual raw.intmax scalar reaches StepOutput.value unchanged and is compared with the matching direct locked SpiceyPy operation; repeated calls observe unchanged result across kernel clear and error reset."
         },
         {
           "caseId": "coords-vectors-intmax-constant-repeat-after-reset",
-          "coverage": [
-            "success",
-            "state"
-          ],
+          "coverage": ["success", "state"],
           "observes": "Actual raw.intmax scalar reaches StepOutput.value unchanged and is compared with the matching direct locked SpiceyPy operation; repeated calls observe unchanged result across kernel clear and error reset."
         }
       ],
@@ -998,17 +953,12 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-intmin-constant-value",
-          "coverage": [
-            "success"
-          ],
+          "coverage": ["success"],
           "observes": "Actual raw.intmin scalar reaches StepOutput.value unchanged and is compared with the matching direct locked SpiceyPy operation; repeated calls observe unchanged result across kernel clear and error reset."
         },
         {
           "caseId": "coords-vectors-intmin-constant-repeat-after-reset",
-          "coverage": [
-            "success",
-            "state"
-          ],
+          "coverage": ["success", "state"],
           "observes": "Actual raw.intmin scalar reaches StepOutput.value unchanged and is compared with the matching direct locked SpiceyPy operation; repeated calls observe unchanged result across kernel clear and error reset."
         }
       ],

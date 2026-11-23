@@ -302,119 +302,67 @@
       "scenarios": [
         {
           "caseId": "time-sce2t-integral-rounding",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Compare integral encoded ticks at half-tick and adjacent dyadic ET values."
         },
         {
           "caseId": "time-sce2t-raw-partition-boundaries",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Convert ET around the shared encoded boundary and final representable tick."
         },
         {
           "caseId": "time-sce2t-first-half-tick",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "A slightly negative ET can still round to the first encoded tick."
         },
         {
           "caseId": "time-sce2t-lower-and-upper-clock-rates",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Separate the single-field one-second clock from a 256-ticks-per-second clock."
         },
         {
           "caseId": "time-sce2t-piecewise-coefficients",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "An updated coefficient set changes the rate at encoded tick 512."
         },
         {
           "caseId": "time-sce2t-missing-clock",
-          "coverage": [
-            "error",
-            "edge",
-            "state"
-          ],
+          "coverage": ["error", "edge", "state"],
           "observes": "A spacecraft without loaded SCLK data reports a toolkit error. Actual SPICE diagnostic KERNELVARNOTFOUND."
         },
         {
           "caseId": "time-sce2t-unknown-spacecraft",
-          "coverage": [
-            "error",
-            "edge",
-            "state"
-          ],
+          "coverage": ["error", "edge", "state"],
           "observes": "Loading a clock for another spacecraft does not define this clock. Actual SPICE diagnostic KERNELVARNOTFOUND."
         },
         {
           "caseId": "time-sce2t-before-clock",
-          "coverage": [
-            "error",
-            "edge",
-            "state"
-          ],
+          "coverage": ["error", "edge", "state"],
           "observes": "An ET rounding below the minimum count is rejected. Actual SPICE diagnostic VALUEOUTOFRANGE."
         },
         {
           "caseId": "time-sce2t-after-clock",
-          "coverage": [
-            "error",
-            "edge",
-            "state"
-          ],
+          "coverage": ["error", "edge", "state"],
           "observes": "An ET rounding above the maximum encoded count is rejected. Actual SPICE diagnostic VALUEOUTOFRANGE."
         },
         {
           "caseId": "time-sce2t-non-tdb-clock-no-lsk",
-          "coverage": [
-            "error",
-            "edge",
-            "state"
-          ],
+          "coverage": ["error", "edge", "state"],
           "observes": "A non-TDB correlation needs conversion data. Actual SPICE diagnostic MISSINGTIMEINFO."
         },
         {
           "caseId": "time-sce2t-non-tdb-clock-with-lsk",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Evaluate a TDT correlation with the leap-seconds kernel loaded."
         },
         {
           "caseId": "time-sce2t-invalid-rate",
-          "coverage": [
-            "error",
-            "edge",
-            "state"
-          ],
+          "coverage": ["error", "edge", "state"],
           "observes": "A zero coefficient rate is rejected by the linked SCLK conversion. Actual SPICE diagnostic VALUEOUTOFRANGE."
         },
         {
           "caseId": "time-sce2t-unsupported-clock-type",
-          "coverage": [
-            "error",
-            "edge",
-            "state"
-          ],
+          "coverage": ["error", "edge", "state"],
           "observes": "Changing only the spacecraft clock type to two rejects a fresh type-dependent lookup. Actual SPICE diagnostic NOTSUPPORTED."
         }
       ],
@@ -496,137 +444,77 @@
       "scenarios": [
         {
           "caseId": "time-scfmt-fractional-and-half-ticks",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Round fractional raw ticks before formatting both fields, including a major-field carry."
         },
         {
           "caseId": "time-scfmt-raw-partition-boundaries",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Format raw per-partition ticks with no partition prefix, including counts beyond the partition stops."
         },
         {
           "caseId": "time-scfmt-single-field-clock",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "The single-field result retains zero-padding and all ten digits at its inclusive stop."
         },
         {
           "caseId": "time-scfmt-all-output-delimiters",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Change the same clock through all five type-1 output separators."
         },
         {
           "caseId": "time-scfmt-field-offsets",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Nonzero field offsets change the zero-padded spelling for raw zero and the next two fields."
         },
         {
           "caseId": "time-scfmt-exact-and-generous-capacities",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "A nominal ten-byte result fits a capacity of eleven including NUL."
         },
         {
           "caseId": "time-scfmt-above-major-modulus",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "A major field with an extra digit fills the nominal-width buffer and uses the extra byte when available."
         },
         {
           "caseId": "time-scfmt-nominal-truncation",
-          "coverage": [
-            "error",
-            "edge",
-            "state"
-          ],
+          "coverage": ["error", "edge", "state"],
           "observes": "Capacity leaves one fewer byte than the configured field widths require. Actual SPICE diagnostic SCLKTRUNCATED."
         },
         {
           "caseId": "time-scfmt-negative-ticks",
-          "coverage": [
-            "error",
-            "edge",
-            "state"
-          ],
+          "coverage": ["error", "edge", "state"],
           "observes": "A negative half tick rounds away from the first tick. Actual SPICE diagnostic VALUEOUTOFRANGE."
         },
         {
           "caseId": "time-scfmt-short-capacity",
-          "coverage": [
-            "error",
-            "edge",
-            "state"
-          ],
+          "coverage": ["error", "edge", "state"],
           "observes": "The C wrapper checks its output buffer minimum before formatting. Actual SPICE diagnostic STRINGTOOSHORT."
         },
         {
           "caseId": "time-scfmt-zero-capacity",
-          "coverage": [
-            "error",
-            "edge",
-            "state"
-          ],
+          "coverage": ["error", "edge", "state"],
           "observes": "A zero logical capacity still receives real required pointer storage. Actual SPICE diagnostic STRINGTOOSHORT."
         },
         {
           "caseId": "time-scfmt-negative-capacity",
-          "coverage": [
-            "error",
-            "edge",
-            "state"
-          ],
+          "coverage": ["error", "edge", "state"],
           "observes": "The signed capacity reaches the canonical output-length check. Actual SPICE diagnostic STRINGTOOSHORT."
         },
         {
           "caseId": "time-scfmt-missing-clock",
-          "coverage": [
-            "error",
-            "edge",
-            "state"
-          ],
+          "coverage": ["error", "edge", "state"],
           "observes": "The type lookup needs a clock for this spacecraft. Actual SPICE diagnostic KERNELVARNOTFOUND."
         },
         {
           "caseId": "time-scfmt-invalid-output-delimiter",
-          "coverage": [
-            "error",
-            "edge",
-            "state"
-          ],
+          "coverage": ["error", "edge", "state"],
           "observes": "A delimiter code outside the configured five choices is rejected by type-1 metadata validation. Actual SPICE diagnostic VALUEOUTOFRANGE."
         },
         {
           "caseId": "time-scfmt-unsupported-clock-type",
-          "coverage": [
-            "error",
-            "edge",
-            "state"
-          ],
+          "coverage": ["error", "edge", "state"],
           "observes": "Changing only the spacecraft clock type to two rejects a fresh type-dependent lookup. Actual SPICE diagnostic NOTSUPPORTED."
         }
       ],
@@ -716,74 +604,42 @@
       "scenarios": [
         {
           "caseId": "time-scpart-single-and-multiple-partitions",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Compare every raw partition start/stop for two independently loaded clocks, including a stop above signed32."
         },
         {
           "caseId": "time-scpart-fractional-boundaries",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Read fractional start and stop values verbatim, in their original order."
         },
         {
           "caseId": "time-scpart-overlapping-resets",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Raw partition readings may repeat or decrease when a spacecraft clock resets."
         },
         {
           "caseId": "time-scpart-reload-original",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Pool edits change the returned partition count and reloading after kclear restores the original arrays."
         },
         {
           "caseId": "time-scpart-unequal-cardinalities",
-          "coverage": [
-            "error",
-            "edge",
-            "state"
-          ],
+          "coverage": ["error", "edge", "state"],
           "observes": "Mismatch is diagnosed before partition arrays are copied. Actual SPICE diagnostic NUMPARTSUNEQUAL."
         },
         {
           "caseId": "time-scpart-missing-clock",
-          "coverage": [
-            "error",
-            "edge",
-            "state"
-          ],
+          "coverage": ["error", "edge", "state"],
           "observes": "No partition information is available without SCLK data. Actual SPICE diagnostic KERNELVARNOTFOUND."
         },
         {
           "caseId": "time-scpart-clock-cleared",
-          "coverage": [
-            "error",
-            "edge",
-            "state"
-          ],
+          "coverage": ["error", "edge", "state"],
           "observes": "A prior successful lookup cannot mask a subsequent kernel clear. Actual SPICE diagnostic KERNELVARNOTFOUND."
         },
         {
           "caseId": "time-scpart-type-cache-followup",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "SCPR01 reads type-1 partition metadata directly. After this successful read the same-clock SCTY01 cache supplies type 1 to the next formatter."
         }
       ],
@@ -832,9 +688,7 @@
             "packages/py-parity-checking/src/cases/time/scpart.cases.json",
             "docs/step8-sclk-additions.md"
           ],
-          "caseIds": [
-            "time-scpart-type-cache-followup"
-          ]
+          "caseIds": ["time-scpart-type-cache-followup"]
         }
       ],
       "backends": {
@@ -872,119 +726,67 @@
       "scenarios": [
         {
           "caseId": "time-sctiks-raw-field-separators",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "All five input separators and mixed whitespace encode the same two raw clock fields."
         },
         {
           "caseId": "time-sctiks-absent-fields-and-carry",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Omitted, trailing and leading fields plus an oversized minor field reveal positional units."
         },
         {
           "caseId": "time-sctiks-outside-partition",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "String counts beyond a partition boundary remain raw readings."
         },
         {
           "caseId": "time-sctiks-single-field-clock",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "The lexical count may use leading zeros and exceed signed32."
         },
         {
           "caseId": "time-sctiks-nonzero-field-offsets",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "The parser subtracts each field offset and an omitted field contributes zero."
         },
         {
           "caseId": "time-sctiks-below-field-offset",
-          "coverage": [
-            "error",
-            "edge",
-            "state"
-          ],
+          "coverage": ["error", "edge", "state"],
           "observes": "An explicitly supplied minor field is below its minimum. Actual SPICE diagnostic INVALIDSCLKSTRING."
         },
         {
           "caseId": "time-sctiks-partition-prefix",
-          "coverage": [
-            "error",
-            "edge",
-            "state"
-          ],
+          "coverage": ["error", "edge", "state"],
           "observes": "Raw clock parser diagnoses an encoded-clock partition prefix. Actual SPICE diagnostic INVALIDSCLKSTRING."
         },
         {
           "caseId": "time-sctiks-extra-field",
-          "coverage": [
-            "error",
-            "edge",
-            "state"
-          ],
+          "coverage": ["error", "edge", "state"],
           "observes": "Three fields exceed the two-field clock. Actual SPICE diagnostic INVALIDSCLKSTRING."
         },
         {
           "caseId": "time-sctiks-invalid-character",
-          "coverage": [
-            "error",
-            "edge",
-            "state"
-          ],
+          "coverage": ["error", "edge", "state"],
           "observes": "An unsupported separator is part of an unparseable field. Actual SPICE diagnostic INVALIDSCLKSTRING."
         },
         {
           "caseId": "time-sctiks-empty-string",
-          "coverage": [
-            "error",
-            "edge",
-            "state"
-          ],
+          "coverage": ["error", "edge", "state"],
           "observes": "Empty NUL-terminated input is diagnosed by the C wrapper. Actual SPICE diagnostic EMPTYSTRING."
         },
         {
           "caseId": "time-sctiks-blank-string",
-          "coverage": [
-            "error",
-            "edge",
-            "state"
-          ],
+          "coverage": ["error", "edge", "state"],
           "observes": "A nonempty string consisting only of blanks reaches the clock parser. Actual SPICE diagnostic INVALIDSCLKSTRING."
         },
         {
           "caseId": "time-sctiks-missing-clock",
-          "coverage": [
-            "error",
-            "edge",
-            "state"
-          ],
+          "coverage": ["error", "edge", "state"],
           "observes": "A nonempty clock string still needs the spacecraft-specific definition. Actual SPICE diagnostic KERNELVARNOTFOUND."
         },
         {
           "caseId": "time-sctiks-unsupported-clock-type",
-          "coverage": [
-            "error",
-            "edge",
-            "state"
-          ],
+          "coverage": ["error", "edge", "state"],
           "observes": "Changing only the spacecraft clock type to two rejects a fresh type-dependent lookup. Actual SPICE diagnostic NOTSUPPORTED."
         }
       ],
@@ -1008,23 +810,13 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": [
-            "unreviewed",
-            "reviewed",
-            "verified",
-            "reviewed"
-          ],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.sctiks -> Node adapter -> native addon under the shared SPICE lock -> shared tspice_sctiks -> sctiks_c; independent matching locked SpiceyPy wrapper on supported inputs.",
           "executions": []
         },
         "wasm": {
-          "history": [
-            "unreviewed",
-            "reviewed",
-            "verified",
-            "reviewed"
-          ],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.sctiks -> WASM adapter -> owned bounded linear-memory buffers and checked export -> shared tspice_sctiks -> sctiks_c; independent matching locked SpiceyPy wrapper on supported inputs.",
           "executions": []

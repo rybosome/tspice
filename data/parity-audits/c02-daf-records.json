@@ -64,50 +64,32 @@
       "scenarios": [
         {
           "caseId": "file-io-dafps-packed-bits",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare the entire packed output, including negative halves resembling NaN when viewed as doubles."
         },
         {
           "caseId": "file-io-dafps-odd-padding",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe canonicalized unused half words after differently sized preceding calls."
         },
         {
           "caseId": "file-io-dafps-trailing-input",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Preserve requested prefix and ignore unused entries."
         },
         {
           "caseId": "file-io-dafps-empty-components",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Nonpositive expected counts produce empty component lists or unpaired doubles."
         },
         {
           "caseId": "file-io-dafps-max-layout",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "The 125-word ceiling clips the integer count after doubles and ignores further requested doubles."
         },
         {
           "caseId": "file-io-dafps-small-and-large-values",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Preserve the signed and scaled IEEE bytes of each declared double."
         }
       ],
@@ -123,10 +105,7 @@
           "status": "repaired",
           "summary": "DAFPS visits one private scratch word even when there are no integer components, and publishes an undefined half-word from persistent scratch on odd integer counts.",
           "repair": "Allocate 126 aligned private words, publish only logical bytes and clear exactly the unused four bytes after a successful actual DAFPS_C call.",
-          "caseIds": [
-            "file-io-dafps-odd-padding",
-            "file-io-dafps-max-layout"
-          ],
+          "caseIds": ["file-io-dafps-odd-padding", "file-io-dafps-max-layout"],
           "evidence": [
             "packages/backend-shim-c/src/domains/file_io.c",
             "packages/backend-node/test/daf-records-domain.test.ts",
@@ -176,42 +155,27 @@
       "scenarios": [
         {
           "caseId": "file-io-dafus-packed-bits",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Recover every double and both signed integer halves from project-authored packed bytes."
         },
         {
           "caseId": "file-io-dafus-unobserved-padding",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Ignore the arbitrary final four padding bytes and all bytes after the requested summary."
         },
         {
           "caseId": "file-io-dafus-empty",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Test no-double and no-integer component results, including empty physical summary."
         },
         {
           "caseId": "file-io-dafus-max-layout",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Independent packed words stress clipping at every edge of the 125-word scratch area."
         },
         {
           "caseId": "file-io-dafus-nonzero-offset-content",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Change each field independently, including very different magnitudes."
         }
       ],
@@ -227,10 +191,7 @@
           "status": "repaired",
           "summary": "The translated DAFUS reads a whole scratch word when m=0, including the one after the logical end at n=125.",
           "repair": "Copy the exact user-supplied byte prefix to 126 aligned initialized private words before the canonical DAFUS_C call.",
-          "caseIds": [
-            "file-io-dafus-empty",
-            "file-io-dafus-max-layout"
-          ],
+          "caseIds": ["file-io-dafus-empty", "file-io-dafus-max-layout"],
           "evidence": [
             "packages/backend-shim-c/src/domains/file_io.c",
             "packages/backend-node/test/daf-records-domain.test.ts",
@@ -280,64 +241,37 @@
       "scenarios": [
         {
           "caseId": "file-io-dafgsr-native-summary-words",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Read control words, signed packed halves and the complete summary record."
         },
         {
           "caseId": "file-io-dafgsr-clipped-slices",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Clip both bounds; empty slices still expose successful record lookup."
         },
         {
           "caseId": "file-io-dafgsr-absent",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "An unreadable record yields a miss even when the slice is empty."
         },
         {
           "caseId": "file-io-dafgsr-empty-file",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Read the physical summary control words of a DAF with zero arrays."
         },
         {
           "caseId": "file-io-dafgsr-foreign-summary",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "The existing BIG-IEEE CK requires native-order translation of each packed summary field."
         },
         {
           "caseId": "file-io-dafgsr-active-cursor",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Reading a record leaves the current array name and search position observable."
         },
         {
           "caseId": "file-io-dafgsr-closed",
-          "coverage": [
-            "error",
-            "state"
-          ],
+          "coverage": ["error", "state"],
           "observes": "Resolving an already-closed backend token fails before it can address another file. Expected diagnostic: closed."
         }
       ],
@@ -422,64 +356,37 @@
       "scenarios": [
         {
           "caseId": "file-io-dafrfr-file-audit-two-segment",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Compare summary layout, internal name, both list pointers and first free address."
         },
         {
           "caseId": "file-io-dafrfr-file-audit-empty-daf",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Compare summary layout, internal name, both list pointers and first free address."
         },
         {
           "caseId": "file-io-dafrfr-file-mgs_hga_hinge_v2",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Compare summary layout, internal name, both list pointers and first free address."
         },
         {
           "caseId": "file-io-dafrfr-file-audit-pointing",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Compare summary layout, internal name, both list pointers and first free address."
         },
         {
           "caseId": "file-io-dafrfr-ifname-capacities",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Name truncation in bytes leaves all integer fields intact."
         },
         {
           "caseId": "file-io-dafrfr-two-live-handles",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Explicit DAF handles select distinct headers independently of the active array search."
         },
         {
           "caseId": "file-io-dafrfr-closed",
-          "coverage": [
-            "error",
-            "state"
-          ],
+          "coverage": ["error", "state"],
           "observes": "Resolving an already-closed backend token fails before it can address another file. Expected diagnostic: closed."
         }
       ],
@@ -548,79 +455,47 @@
       "scenarios": [
         {
           "caseId": "file-io-dafrda-data-words",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Read successively narrowed ranges from known type-8 segment storage."
         },
         {
           "caseId": "file-io-dafrda-cross-record",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Cross the 128-double physical record boundary entirely within numeric segment storage."
         },
         {
           "caseId": "file-io-dafrda-outside-file",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Physically absent DAF data words read as zeros."
         },
         {
           "caseId": "file-io-dafrda-ck-data",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Read signed CK double components through a separately opened file."
         },
         {
           "caseId": "file-io-dafrda-negative-address",
-          "coverage": [
-            "error",
-            "state"
-          ],
+          "coverage": ["error", "state"],
           "observes": "Observe the actual toolkit range error with a live handle. Expected diagnostic: DAFNEGADDR."
         },
         {
           "caseId": "file-io-dafrda-reversed",
-          "coverage": [
-            "error",
-            "state"
-          ],
+          "coverage": ["error", "state"],
           "observes": "Observe the actual toolkit range error with a live handle. Expected diagnostic: DAFBEGGTEND."
         },
         {
           "caseId": "file-io-dafrda-physical-summary",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "The legacy native-only reader preserves raw packed integer word payloads."
         },
         {
           "caseId": "file-io-dafrda-foreign-unsupported",
-          "coverage": [
-            "error",
-            "state"
-          ],
+          "coverage": ["error", "state"],
           "observes": "Legacy DAFRDA rejects the foreign binary format even when a data interval is valid. Expected diagnostic: UNSUPPORTEDBFF."
         },
         {
           "caseId": "file-io-dafrda-closed",
-          "coverage": [
-            "error",
-            "state"
-          ],
+          "coverage": ["error", "state"],
           "observes": "Resolving an already-closed backend token fails before it can address another file. Expected diagnostic: closed."
         }
       ],
@@ -689,71 +564,42 @@
       "scenarios": [
         {
           "caseId": "file-io-dafgda-data-words",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Read successively narrowed ranges from known type-8 segment storage."
         },
         {
           "caseId": "file-io-dafgda-cross-record",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Cross the 128-double physical record boundary entirely within numeric segment storage."
         },
         {
           "caseId": "file-io-dafgda-outside-file",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Physically absent DAF data words read as zeros."
         },
         {
           "caseId": "file-io-dafgda-ck-data",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Read signed CK double components through a separately opened file."
         },
         {
           "caseId": "file-io-dafgda-negative-address",
-          "coverage": [
-            "error",
-            "state"
-          ],
+          "coverage": ["error", "state"],
           "observes": "Observe the actual toolkit range error with a live handle. Expected diagnostic: DAFNEGADDR."
         },
         {
           "caseId": "file-io-dafgda-reversed",
-          "coverage": [
-            "error",
-            "state"
-          ],
+          "coverage": ["error", "state"],
           "observes": "Observe the actual toolkit range error with a live handle. Expected diagnostic: DAFBEGGTEND."
         },
         {
           "caseId": "file-io-dafgda-foreign-data",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Translate the signed numeric values from an existing BIG-IEEE CK segment."
         },
         {
           "caseId": "file-io-dafgda-closed",
-          "coverage": [
-            "error",
-            "state"
-          ],
+          "coverage": ["error", "state"],
           "observes": "Resolving an already-closed backend token fails before it can address another file. Expected diagnostic: closed."
         }
       ],

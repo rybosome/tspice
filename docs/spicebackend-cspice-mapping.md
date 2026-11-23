@@ -94,7 +94,6 @@ For generic solar system work, these NAIF standards are commonly used:
 
 ## Domain: `time` (`TimeApi`)
 
-
 The additional clock methods use an explicit spacecraft ID and the existing
 kernel lifecycle. `sce2t` converts ET to rounded, partition-aware encoded
 ticks. The remaining methods format or parse raw clock fields or read the

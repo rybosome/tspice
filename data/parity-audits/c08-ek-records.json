@@ -485,34 +485,22 @@
       "scenarios": [
         {
           "caseId": "ek-ekops-empty",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "A scratch file starts with zero segments and ordinary explicit close releases its claim. Compare the complete independent file workflow, including returned ordinals or persisted effects."
         },
         {
           "caseId": "ek-ekops-independent",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Two scratch writers retain different schema counts when one closes. Compare the complete independent file workflow, including returned ordinals or persisted effects."
         },
         {
           "caseId": "ek-ekops-scratch-vs-named",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "The named file and the scratch file can both create segment zero and close independently. Compare the complete independent file workflow, including returned ordinals or persisted effects."
         },
         {
           "caseId": "ek-ekops-cleanup-on-scientific-error",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "A genuine bad segment on a temporary writer leaves an owned claim for the workflow finalizer. Require INVALIDINDEX."
         }
       ],
@@ -540,9 +528,7 @@
             "packages/py-parity-checking/test/ek-record-content.test.ts",
             "packages/py-parity-checking/src/cases/ek/ekops.cases.json"
           ],
-          "caseIds": [
-            "ek-ekops-independent"
-          ]
+          "caseIds": ["ek-ekops-independent"]
         }
       ],
       "backends": {
@@ -582,98 +568,62 @@
       "scenarios": [
         {
           "caseId": "ek-ekbseg-schema",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Build distinct scalar integer, time, double and variable character descriptors. Compare segment ordinal, count and record edits. Compare the complete independent file workflow, including returned ordinals or persisted effects."
         },
         {
           "caseId": "ek-ekbseg-multiple",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Repeated logical table names occupy separate physical segments. Named file close/reopen preserves all three. Compare the complete independent file workflow, including returned ordinals or persisted effects."
         },
         {
           "caseId": "ek-ekbseg-hundred-columns",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Create a segment at the 100-column schema limit and operate on its zero-based record ordinal. Compare the complete independent file workflow, including returned ordinals or persisted effects."
         },
         {
           "caseId": "ek-ekbseg-fixed-schema",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "All-fixed scalar declarations create a separate supported segment type. Inspect its count without individual edits. Compare the complete independent file workflow, including returned ordinals or persisted effects."
         },
         {
           "caseId": "ek-ekbseg-blank-table",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Compare the exact pinned schema diagnostic on an independently allocated scratch file. Require EMPTYSTRING."
         },
         {
           "caseId": "ek-ekbseg-bad-name",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Compare the exact pinned schema diagnostic on an independently allocated scratch file. Require INVALIDNAME."
         },
         {
           "caseId": "ek-ekbseg-long-column",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Compare the exact pinned schema diagnostic on an independently allocated scratch file. Require STRINGTOOLONG."
         },
         {
           "caseId": "ek-ekbseg-non-ascii-column",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Compare the exact pinned schema diagnostic on an independently allocated scratch file. Require NONPRINTABLECHARS."
         },
         {
           "caseId": "ek-ekbseg-missing-type",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Compare the exact pinned schema diagnostic on an independently allocated scratch file. Require BADCOLUMDECL."
         },
         {
           "caseId": "ek-ekbseg-bad-index",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Compare the exact pinned schema diagnostic on an independently allocated scratch file. Require BADCOLUMNDECL."
         },
         {
           "caseId": "ek-ekbseg-mixed-count",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Compare the exact pinned schema diagnostic on an independently allocated scratch file. Require BADATTRIBUTES."
         },
         {
           "caseId": "ek-ekbseg-reader",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "A valid schema cannot be added to a named file reopened in read mode. Require DASINVALIDACCESS."
         }
       ],
@@ -701,9 +651,7 @@
             "packages/py-parity-checking/test/ek-record-content.test.ts",
             "packages/py-parity-checking/src/cases/ek/ekbseg.cases.json"
           ],
-          "caseIds": [
-            "ek-ekbseg-non-ascii-column"
-          ]
+          "caseIds": ["ek-ekbseg-non-ascii-column"]
         },
         {
           "id": "ekbseg-summary-name-stride",
@@ -716,9 +664,7 @@
             "packages/py-parity-checking/test/ek-record-content.test.ts",
             "packages/py-parity-checking/src/cases/ek/ekbseg.cases.json"
           ],
-          "caseIds": [
-            "ek-ekbseg-schema"
-          ]
+          "caseIds": ["ek-ekbseg-schema"]
         }
       ],
       "backends": {
@@ -758,50 +704,32 @@
       "scenarios": [
         {
           "caseId": "ek-ekappr-growth",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Append three empty records, observe indices, remove them all, and reuse zero. Compare the complete independent file workflow, including returned ordinals or persisted effects."
         },
         {
           "caseId": "ek-ekappr-segment-isolation",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "New record ordinals are per-segment and follow insertions and deletions in that segment. Compare the complete independent file workflow, including returned ordinals or persisted effects."
         },
         {
           "caseId": "ek-ekappr-populated-file",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Finish an independently populated three-row table, edit it, reopen and query both surviving rows and their double values. Compare the complete independent file workflow, including returned ordinals or persisted effects."
         },
         {
           "caseId": "ek-ekappr-negative-segment",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "A segment outside the created range reports the actual zero-based ordinal diagnostic. Require INVALIDINDEX."
         },
         {
           "caseId": "ek-ekappr-past-segment",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "A segment outside the created range reports the actual zero-based ordinal diagnostic. Require INVALIDINDEX."
         },
         {
           "caseId": "ek-ekappr-read-only",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "A valid segment of a reopened reader rejects row mutations. Require DASINVALIDACCESS."
         }
       ],
@@ -829,9 +757,7 @@
             "packages/py-parity-checking/test/ek-record-content.test.ts",
             "packages/py-parity-checking/src/cases/ek/ekappr.cases.json"
           ],
-          "caseIds": [
-            "ek-ekappr-populated-file"
-          ]
+          "caseIds": ["ek-ekappr-populated-file"]
         }
       ],
       "backends": {
@@ -871,66 +797,42 @@
       "scenarios": [
         {
           "caseId": "ek-ekinsr-locations",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Insert at the front, middle and one-past-last. Subsequent append returns the updated count. Compare the complete independent file workflow, including returned ordinals or persisted effects."
         },
         {
           "caseId": "ek-ekinsr-second-segment",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Insertions into a second segment leave the first row ordinal independent. Compare the complete independent file workflow, including returned ordinals or persisted effects."
         },
         {
           "caseId": "ek-ekinsr-populated-file",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Finish an independently populated three-row table, edit it, reopen and query both surviving rows and their double values. Compare the complete independent file workflow, including returned ordinals or persisted effects."
         },
         {
           "caseId": "ek-ekinsr-negative-segment",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "A segment outside the created range reports the actual zero-based ordinal diagnostic. Require INVALIDINDEX."
         },
         {
           "caseId": "ek-ekinsr-past-segment",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "A segment outside the created range reports the actual zero-based ordinal diagnostic. Require INVALIDINDEX."
         },
         {
           "caseId": "ek-ekinsr-read-only",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "A valid segment of a reopened reader rejects row mutations. Require DASINVALIDACCESS."
         },
         {
           "caseId": "ek-ekinsr-negative-record",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "With one allocated record, an out-of-range record is diagnosed before editing the ordinal tree. Require INVALIDINDEX."
         },
         {
           "caseId": "ek-ekinsr-past-record",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "With one allocated record, an out-of-range record is diagnosed before editing the ordinal tree. Require INVALIDINDEX."
         }
       ],
@@ -958,9 +860,7 @@
             "packages/py-parity-checking/test/ek-record-content.test.ts",
             "packages/py-parity-checking/src/cases/ek/ekinsr.cases.json"
           ],
-          "caseIds": [
-            "ek-ekinsr-populated-file"
-          ]
+          "caseIds": ["ek-ekinsr-populated-file"]
         }
       ],
       "backends": {
@@ -1000,66 +900,42 @@
       "scenarios": [
         {
           "caseId": "ek-ekdelr-newly-empty",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Delete newly created rows with uninitialized native entry pointers; append confirms the new ordinal. Compare the complete independent file workflow, including returned ordinals or persisted effects."
         },
         {
           "caseId": "ek-ekdelr-populated-file",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Finish an independently populated three-row table, edit it, reopen and query both surviving rows and their double values. Compare the complete independent file workflow, including returned ordinals or persisted effects."
         },
         {
           "caseId": "ek-ekdelr-negative-segment",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "A segment outside the created range reports the actual zero-based ordinal diagnostic. Require INVALIDINDEX."
         },
         {
           "caseId": "ek-ekdelr-past-segment",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "A segment outside the created range reports the actual zero-based ordinal diagnostic. Require INVALIDINDEX."
         },
         {
           "caseId": "ek-ekdelr-read-only",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "A valid segment of a reopened reader rejects row mutations. Require DASINVALIDACCESS."
         },
         {
           "caseId": "ek-ekdelr-negative-record",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "With one allocated record, an out-of-range record is diagnosed before editing the ordinal tree. Require INVALIDINDEX."
         },
         {
           "caseId": "ek-ekdelr-past-record",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "With one allocated record, an out-of-range record is diagnosed before editing the ordinal tree. Require INVALIDINDEX."
         },
         {
           "caseId": "ek-ekdelr-empty-segment",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "No record is available for deletion immediately after a segment begins. Require INVALIDINDEX."
         }
       ],
@@ -1087,9 +963,7 @@
             "packages/py-parity-checking/test/ek-record-content.test.ts",
             "packages/py-parity-checking/src/cases/ek/ekdelr.cases.json"
           ],
-          "caseIds": [
-            "ek-ekdelr-populated-file"
-          ]
+          "caseIds": ["ek-ekdelr-populated-file"]
         }
       ],
       "backends": {

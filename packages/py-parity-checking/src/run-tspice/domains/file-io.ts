@@ -67,7 +67,11 @@ import type {
   StepFileIoGetfat,
   StepOutput,
 } from "../../case-types.js";
-import { resolvePathRef, toPathRef, toVirtualKernelPath } from "../../fixtures.js";
+import {
+  resolvePathRef,
+  toPathRef,
+  toVirtualKernelPath,
+} from "../../fixtures.js";
 
 import type { RunTspiceContext } from "../context.js";
 

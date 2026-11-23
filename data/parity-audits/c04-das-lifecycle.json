@@ -1020,66 +1020,42 @@
       "scenarios": [
         {
           "caseId": "file-io-dasonw-record-and-persistence",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Inspect all header fields and counters, close, and reopen the same file. Compare all exposed fields against the independent paired file workflow."
         },
         {
           "caseId": "file-io-dasonw-type-and-name-width",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Mixed-case type truncation and a 60-byte internal name survive close/reopen. Compare all exposed fields against the independent paired file workflow."
         },
         {
           "caseId": "file-io-dasonw-two-new-files",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Distinct same-basename paths keep their names, headers and reservation counts. Compare all exposed fields against the independent paired file workflow."
         },
         {
           "caseId": "file-io-dasonw-negative-records",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "The new-file entrypoint preserves its own input diagnostic. Require INVALIDCOUNT."
         },
         {
           "caseId": "file-io-dasonw-empty-type",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "The new-file entrypoint preserves its own input diagnostic. Require EMPTYSTRING."
         },
         {
           "caseId": "file-io-dasonw-blank-type",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "The new-file entrypoint preserves its own input diagnostic. Require BLANKFILETYPE."
         },
         {
           "caseId": "file-io-dasonw-empty-name",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "The new-file entrypoint preserves its own input diagnostic. Require EMPTYSTRING."
         },
         {
           "caseId": "file-io-dasonw-existing-file",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "A closed file cannot be created anew. Require FILEOPENFAIL."
         }
       ],
@@ -1131,26 +1107,17 @@
       "scenarios": [
         {
           "caseId": "file-io-dasops-scratch-metadata",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Control the prior ID word before reading the N0067 scratch record and complete descriptors. Compare all exposed fields against the independent paired file workflow."
         },
         {
           "caseId": "file-io-dasops-two-claims",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Two anonymous files are independent; the second remains usable after a low-level close. Compare all exposed fields against the independent paired file workflow."
         },
         {
           "caseId": "file-io-dasops-cleanup-on-failure",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "An anonymous file is still owned by the workflow after a downstream error. Require STRINGTOOSHORT."
         }
       ],
@@ -1171,9 +1138,7 @@
             "packages/py-parity-checking/src/cases/file-io/dasops.cases.json",
             "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/das_file_oracle.py"
           ],
-          "caseIds": [
-            "file-io-dasops-scratch-metadata"
-          ]
+          "caseIds": ["file-io-dasops-scratch-metadata"]
         }
       ],
       "backends": {
@@ -1219,34 +1184,22 @@
       "scenarios": [
         {
           "caseId": "file-io-dasopw-reopen-modify",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Reopen a named file for writing, observe the full header, flush, close and reread. Compare all exposed fields against the independent paired file workflow."
         },
         {
           "caseId": "file-io-dasopw-missing",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Write-open on a nonexistent named file reports the canonical diagnostic. Require FILENOTFOUND."
         },
         {
           "caseId": "file-io-dasopw-read-conflict",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "An existing read claim prevents opening for write. Require FILEOPENCONFLICT."
         },
         {
           "caseId": "file-io-dasopw-write-conflict",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "A second independent write open conflicts with the first writer. Require FILEOPENCONFLICT."
         }
       ],
@@ -1298,42 +1251,27 @@
       "scenarios": [
         {
           "caseId": "file-io-dashfn-full-logical-path",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Distinguish two identical basenames beneath different staged directories. Compare all exposed fields against the independent paired file workflow."
         },
         {
           "caseId": "file-io-dashfn-width",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Check raw physical prefixes at multiple capacities and compare every component of the logical name. Compare all exposed fields against the independent paired file workflow."
         },
         {
           "caseId": "file-io-dashfn-reader",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe the existing kernel path after the writer and reader paths have been separated. Compare all exposed fields against the independent paired file workflow."
         },
         {
           "caseId": "file-io-dashfn-unnamed",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "A scratch file has no external filename in the pinned C runtime. Compare all exposed fields against the independent paired file workflow."
         },
         {
           "caseId": "file-io-dashfn-short",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "One byte has no room for both text and terminator. Require STRINGTOOSHORT."
         }
       ],
@@ -1391,42 +1329,27 @@
       "scenarios": [
         {
           "caseId": "file-io-dashfs-full-ek",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Read the existing independently generated full-ek; preserve every named output. Compare all exposed fields against the independent paired file workflow."
         },
         {
           "caseId": "file-io-dashfs-dsk-with-comments",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Read the existing independently generated dsk-with-comments; preserve every named output. Compare all exposed fields against the independent paired file workflow."
         },
         {
           "caseId": "file-io-dashfs-authored-mesh",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Read the existing independently generated authored-mesh; preserve every named output. Compare all exposed fields against the independent paired file workflow."
         },
         {
           "caseId": "file-io-dashfs-zero",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "A newly opened empty file has zero addresses and reserved comment records. Compare all exposed fields against the independent paired file workflow."
         },
         {
           "caseId": "file-io-dashfs-two-claims",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Closing one read claim leaves the duplicate claim usable. Compare all exposed fields against the independent paired file workflow."
         }
       ],
@@ -1494,42 +1417,27 @@
       "scenarios": [
         {
           "caseId": "file-io-daslla-full-ek",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Read the existing independently generated full-ek; preserve every named output. Compare all exposed fields against the independent paired file workflow."
         },
         {
           "caseId": "file-io-daslla-dsk-with-comments",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Read the existing independently generated dsk-with-comments; preserve every named output. Compare all exposed fields against the independent paired file workflow."
         },
         {
           "caseId": "file-io-daslla-authored-mesh",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Read the existing independently generated authored-mesh; preserve every named output. Compare all exposed fields against the independent paired file workflow."
         },
         {
           "caseId": "file-io-daslla-zero",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "A newly opened empty file has zero addresses and reserved comment records. Compare all exposed fields against the independent paired file workflow."
         },
         {
           "caseId": "file-io-daslla-two-claims",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Closing one read claim leaves the duplicate claim usable. Compare all exposed fields against the independent paired file workflow."
         }
       ],
@@ -1597,34 +1505,22 @@
       "scenarios": [
         {
           "caseId": "file-io-dasllc-clean-writer",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Close the empty writer without segregation; reopen and inspect its persisted header and address counters. Compare all exposed fields against the independent paired file workflow."
         },
         {
           "caseId": "file-io-dasllc-flush",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Inspect actual reopen addresses to distinguish buffered, explicitly flushed and normally closed file state. Compare all exposed fields against the independent paired file workflow."
         },
         {
           "caseId": "file-io-dasllc-scratch",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Closing an anonymous file releases its claim; open another and inspect its addresses. Compare all exposed fields against the independent paired file workflow."
         },
         {
           "caseId": "file-io-dasllc-read-claim",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Release exactly one duplicate read claim while continuing to use the remaining one. Compare all exposed fields against the independent paired file workflow."
         }
       ],
@@ -1703,66 +1599,42 @@
       "scenarios": [
         {
           "caseId": "file-io-dasrfr-full-ek",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Read the existing independently generated full-ek; preserve every named output. Compare all exposed fields against the independent paired file workflow."
         },
         {
           "caseId": "file-io-dasrfr-dsk-with-comments",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Read the existing independently generated dsk-with-comments; preserve every named output. Compare all exposed fields against the independent paired file workflow."
         },
         {
           "caseId": "file-io-dasrfr-authored-mesh",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Read the existing independently generated authored-mesh; preserve every named output. Compare all exposed fields against the independent paired file workflow."
         },
         {
           "caseId": "file-io-dasrfr-zero",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "A newly opened empty file has zero addresses and reserved comment records. Compare all exposed fields against the independent paired file workflow."
         },
         {
           "caseId": "file-io-dasrfr-two-claims",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Closing one read claim leaves the duplicate claim usable. Compare all exposed fields against the independent paired file workflow."
         },
         {
           "caseId": "file-io-dasrfr-independent-widths",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Fixed ID word and file name have independent widths and preserve leading blanks. Compare all exposed fields against the independent paired file workflow."
         },
         {
           "caseId": "file-io-dasrfr-idwlen-short",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "A one-byte output returns the toolkit capacity error. Require STRINGTOOSHORT."
         },
         {
           "caseId": "file-io-dasrfr-ifnlen-short",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "A one-byte output returns the toolkit capacity error. Require STRINGTOOSHORT."
         }
       ],
@@ -1830,34 +1702,22 @@
       "scenarios": [
         {
           "caseId": "file-io-daswbr-ordinary",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Inspect actual reopen addresses to distinguish buffered, explicitly flushed and normally closed file state. Compare all exposed fields against the independent paired file workflow."
         },
         {
           "caseId": "file-io-daswbr-flush",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Inspect actual reopen addresses to distinguish buffered, explicitly flushed and normally closed file state. Compare all exposed fields against the independent paired file workflow."
         },
         {
           "caseId": "file-io-daswbr-reader",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "A read-only file rejects buffer flushing and is cleaned up after failure. Require DASINVALIDACCESS."
         },
         {
           "caseId": "file-io-daswbr-scratch",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Scratch storage allows explicit buffer flushing, and its summary remains readable. Compare all exposed fields against the independent paired file workflow."
         }
       ],

@@ -13519,24 +13519,17 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-axisar-happy-z-axis-quarter-turn",
-          "coverage": [
-            "success"
-          ],
+          "coverage": ["success"],
           "observes": "axisar converts axis-angle form to rotation matrix; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
         },
         {
           "caseId": "coords-vectors-axisar-audit-nonunit-general-axis",
-          "coverage": [
-            "success"
-          ],
+          "coverage": ["success"],
           "observes": "axisar: nonunit general axis; observe every returned field/component with live SpiceyPy; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
         },
         {
           "caseId": "coords-vectors-axisar-audit-zero-axis-and-angle",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "axisar: zero axis and angle; observe every returned field/component with live SpiceyPy; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
         }
       ],
@@ -13629,47 +13622,32 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-georec-happy-spherical-equator",
-          "coverage": [
-            "success"
-          ],
+          "coverage": ["success"],
           "observes": "georec converts geodetic lon/lat/alt to rectangular coordinates; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
         },
         {
           "caseId": "coords-vectors-georec-invalid-flattening-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Representative georec invalid flattening error; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
         },
         {
           "caseId": "coords-vectors-georec-audit-oblate-and-prolate",
-          "coverage": [
-            "success"
-          ],
+          "coverage": ["success"],
           "observes": "georec: oblate and prolate; observe every returned field/component with live SpiceyPy; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
         },
         {
           "caseId": "coords-vectors-georec-audit-pole-and-negative-altitude",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "georec: pole and negative altitude; observe every returned field/component with live SpiceyPy; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
         },
         {
           "caseId": "coords-vectors-georec-audit-flattening-boundary-error",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "georec: reject flattening boundary with the specific SPICE diagnostic; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
         },
         {
           "caseId": "coords-vectors-georec-audit-zero-radius-error",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "georec: reject zero radius with the specific SPICE diagnostic; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
         }
       ],
@@ -13765,24 +13743,17 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-latrec-happy-equatorial-quarter-turn",
-          "coverage": [
-            "success"
-          ],
+          "coverage": ["success"],
           "observes": "latrec latitudinal-to-rectangular conversion on equator at +Y; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
         },
         {
           "caseId": "coords-vectors-latrec-audit-general-and-negative-radius",
-          "coverage": [
-            "success"
-          ],
+          "coverage": ["success"],
           "observes": "latrec: general and negative radius; observe every returned field/component with live SpiceyPy; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
         },
         {
           "caseId": "coords-vectors-latrec-audit-zero-and-pole",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "latrec: zero and pole; observe every returned field/component with live SpiceyPy; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
         }
       ],
@@ -13875,17 +13846,12 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-mtxv-happy-fixed-transpose-matrix-vector-product",
-          "coverage": [
-            "success"
-          ],
+          "coverage": ["success"],
           "observes": "mtxv multiplies transpose(matrix) by a vector; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
         },
         {
           "caseId": "coords-vectors-mtxv-audit-basis-and-zero",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "mtxv: basis and zero; observe every returned field/component with live SpiceyPy; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
         }
       ],
@@ -13905,9 +13871,7 @@
             "packages/py-parity-checking/src/cases/coords-vectors/mtxv.cases.json",
             "packages/backend-wasm/test/coords-allocation-cleanup.test.ts"
           ],
-          "caseIds": [
-            "coords-vectors-mtxv-audit-basis-and-zero"
-          ]
+          "caseIds": ["coords-vectors-mtxv-audit-basis-and-zero"]
         }
       ],
       "backends": {
@@ -13977,24 +13941,17 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-mxm-happy-fixed-matrix-product",
-          "coverage": [
-            "success"
-          ],
+          "coverage": ["success"],
           "observes": "mxm matrix multiplication fixed case; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
         },
         {
           "caseId": "coords-vectors-mxm-audit-order-and-fractions",
-          "coverage": [
-            "success"
-          ],
+          "coverage": ["success"],
           "observes": "mxm: order and fractions; observe every returned field/component with live SpiceyPy; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
         },
         {
           "caseId": "coords-vectors-mxm-audit-identity-and-zero",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "mxm: identity and zero; observe every returned field/component with live SpiceyPy; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
         }
       ],
@@ -14087,17 +14044,12 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-mxv-happy-fixed-matrix-vector-product",
-          "coverage": [
-            "success"
-          ],
+          "coverage": ["success"],
           "observes": "mxv multiplies row-major matrix by a vector; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
         },
         {
           "caseId": "coords-vectors-mxv-audit-basis-and-zero",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "mxv: basis and zero; observe every returned field/component with live SpiceyPy; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
         }
       ],
@@ -14117,9 +14069,7 @@
             "packages/py-parity-checking/src/cases/coords-vectors/mxv.cases.json",
             "packages/backend-wasm/test/coords-allocation-cleanup.test.ts"
           ],
-          "caseIds": [
-            "coords-vectors-mxv-audit-basis-and-zero"
-          ]
+          "caseIds": ["coords-vectors-mxv-audit-basis-and-zero"]
         }
       ],
       "backends": {
@@ -14189,47 +14139,32 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-recgeo-happy-axis-aligned",
-          "coverage": [
-            "success"
-          ],
+          "coverage": ["success"],
           "observes": "recgeo deterministic axis-aligned case; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
         },
         {
           "caseId": "coords-vectors-recgeo-invalid-flattening-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Representative recgeo invalid flattening error; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
         },
         {
           "caseId": "coords-vectors-recgeo-audit-oblate-and-prolate",
-          "coverage": [
-            "success"
-          ],
+          "coverage": ["success"],
           "observes": "recgeo: oblate and prolate; observe every returned field/component with live SpiceyPy; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
         },
         {
           "caseId": "coords-vectors-recgeo-audit-negative-pole-and-spherical",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "recgeo: negative pole and spherical; observe every returned field/component with live SpiceyPy; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
         },
         {
           "caseId": "coords-vectors-recgeo-audit-flattening-boundary-error",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "recgeo: reject flattening boundary with the specific SPICE diagnostic; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
         },
         {
           "caseId": "coords-vectors-recgeo-audit-zero-radius-error",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "recgeo: reject zero radius with the specific SPICE diagnostic; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
         }
       ],
@@ -14325,24 +14260,17 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-reclat-happy-axis-y",
-          "coverage": [
-            "success"
-          ],
+          "coverage": ["success"],
           "observes": "reclat rectangular-to-latitudinal conversion for +Y unit axis; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
         },
         {
           "caseId": "coords-vectors-reclat-audit-quadrants",
-          "coverage": [
-            "success"
-          ],
+          "coverage": ["success"],
           "observes": "reclat: quadrants; observe every returned field/component with live SpiceyPy; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
         },
         {
           "caseId": "coords-vectors-reclat-audit-origin-and-poles",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "reclat: origin and poles; observe every returned field/component with live SpiceyPy; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
         }
       ],
@@ -14435,24 +14363,17 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-recsph-happy-positive-z",
-          "coverage": [
-            "success"
-          ],
+          "coverage": ["success"],
           "observes": "recsph rectangular-to-spherical conversion for +Z axis point; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
         },
         {
           "caseId": "coords-vectors-recsph-audit-quadrants",
-          "coverage": [
-            "success"
-          ],
+          "coverage": ["success"],
           "observes": "recsph: quadrants; observe every returned field/component with live SpiceyPy; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
         },
         {
           "caseId": "coords-vectors-recsph-audit-origin-and-negative-pole",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "recsph: origin and negative pole; observe every returned field/component with live SpiceyPy; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
         }
       ],
@@ -14545,24 +14466,17 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-rotate-happy-z-axis-quarter-turn",
-          "coverage": [
-            "success"
-          ],
+          "coverage": ["success"],
           "observes": "rotate builds a +90 degree rotation matrix about the Z axis; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
         },
         {
           "caseId": "coords-vectors-rotate-audit-all-axes-radians",
-          "coverage": [
-            "success"
-          ],
+          "coverage": ["success"],
           "observes": "rotate: all axes radians; observe every returned field/component with live SpiceyPy; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
         },
         {
           "caseId": "coords-vectors-rotate-audit-zero-and-modulo-axes",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "rotate: zero and modulo axes; observe every returned field/component with live SpiceyPy; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
         }
       ],
@@ -14671,25 +14585,17 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-rotmat-happy-z-axis-quarter-turn",
-          "coverage": [
-            "success"
-          ],
+          "coverage": ["success"],
           "observes": "rotmat rotates identity matrix by +90 degrees about Z axis; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
         },
         {
           "caseId": "coords-vectors-rotmat-audit-nonidentity-left-product",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "rotmat: nonidentity left product; observe every returned field/component with live SpiceyPy; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
         },
         {
           "caseId": "coords-vectors-rotmat-audit-zero-and-modulo-axes",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "rotmat: zero and modulo axes; observe every returned field/component with live SpiceyPy; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
         }
       ],
@@ -14798,24 +14704,17 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-sphrec-happy-equatorial-quarter-turn",
-          "coverage": [
-            "success"
-          ],
+          "coverage": ["success"],
           "observes": "sphrec spherical-to-rectangular conversion on equator at +Y; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
         },
         {
           "caseId": "coords-vectors-sphrec-audit-general-and-negative-radius",
-          "coverage": [
-            "success"
-          ],
+          "coverage": ["success"],
           "observes": "sphrec: general and negative radius; observe every returned field/component with live SpiceyPy; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
         },
         {
           "caseId": "coords-vectors-sphrec-audit-zero-and-poles",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "sphrec: zero and poles; observe every returned field/component with live SpiceyPy; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
         }
       ],

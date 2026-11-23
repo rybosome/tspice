@@ -299,146 +299,92 @@
       "scenarios": [
         {
           "caseId": "cells-windows-lparss-mixed",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Sort bytewise and remove repeated items before returning the full caller cell."
         },
         {
           "caseId": "cells-windows-lparss-separator-rules",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Repeated blanks and adjacent nonblank separators follow different rules."
         },
         {
           "caseId": "cells-windows-lparss-mixed-delimiter-order",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "The order and multiplicity of delimiter bytes do not change the resulting set."
         },
         {
           "caseId": "cells-windows-lparss-empty-and-blank",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "An empty input inserts an empty member; an all-blank list replaces the old set."
         },
         {
           "caseId": "cells-windows-lparss-replace",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe replacement, sorting, duplicates and a subsequent insertion on the same nonempty caller-owned set."
         },
         {
           "caseId": "cells-windows-lparss-capacity-after-dedup",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Repeated items may exceed the item count before deduplication while the actual set fits."
         },
         {
           "caseId": "cells-windows-lparss-width-collision",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Rows of width eight retain seven content bytes; equal truncated prefixes collapse."
         },
         {
           "caseId": "cells-windows-lparss-utf8",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "UTF-8 scalar sequences and a BOM are retained inside nontruncated rows."
         },
         {
           "caseId": "cells-windows-lparss-nonblank-whitespace",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Embedded tab and vertical tab are ordinary bytes unless explicitly designated delimiters."
         },
         {
           "caseId": "cells-windows-lparss-no-delimiter",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Absence of a delimiter yields one trimmed or width-limited item."
         },
         {
           "caseId": "cells-windows-lparss-split-full",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Trailing and leading delimiters share the same empty member."
         },
         {
           "caseId": "cells-windows-lparss-empty-full",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "An empty C list on a full cell inserts through INSRTC and reports capacity exhaustion."
         },
         {
           "caseId": "cells-windows-lparss-nonempty-delims-required",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "A nonempty list with zero-length delimiter string returns the CSPICE diagnostic."
         },
         {
           "caseId": "cells-windows-lparss-blank-delims-required",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "An all-blank nonempty list still checks the delimiter length."
         },
         {
           "caseId": "cells-windows-lparss-late-excess",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "A full destination receives distinct tokens past capacity after an early duplicate."
         },
         {
           "caseId": "cells-windows-lparss-zero-capacity",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "A zero-capacity cell cannot accommodate the one blank member."
         },
         {
           "caseId": "cells-windows-lparss-control-length",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "The translated character control words need sufficient width."
         },
         {
           "caseId": "cells-windows-lparss-narrow-empty-bypass",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "The C empty-list branch inserts directly and bypasses translated cell controls."
         }
       ],

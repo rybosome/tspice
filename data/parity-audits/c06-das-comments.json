@@ -295,132 +295,87 @@
       "scenarios": [
         {
           "caseId": "file-io-dasac-new",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Append these distinct rows, check all four header counts and the file summary, then reopen for actual text and completion."
         },
         {
           "caseId": "file-io-dasac-reserved",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Append these distinct rows, check all four header counts and the file summary, then reopen for actual text and completion."
         },
         {
           "caseId": "file-io-dasac-empty-lines",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Append these distinct rows, check all four header counts and the file summary, then reopen for actual text and completion."
         },
         {
           "caseId": "file-io-dasac-printable",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Append these distinct rows, check all four header counts and the file summary, then reopen for actual text and completion."
         },
         {
           "caseId": "file-io-dasac-exact-record",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Append these distinct rows, check all four header counts and the file summary, then reopen for actual text and completion."
         },
         {
           "caseId": "file-io-dasac-record-split",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Append these distinct rows, check all four header counts and the file summary, then reopen for actual text and completion."
         },
         {
           "caseId": "file-io-dasac-many-records",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Append these distinct rows, check all four header counts and the file summary, then reopen for actual text and completion."
         },
         {
           "caseId": "file-io-dasac-right-blanks",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Append these distinct rows, check all four header counts and the file summary, then reopen for actual text and completion."
         },
         {
           "caseId": "file-io-dasac-append-after-boundary",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Grow a previously full 1024-byte record and preserve its final terminator and all appended lines."
         },
         {
           "caseId": "file-io-dasac-scratch",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Initialize the toolkit DAS type via a named file, then append to an unnamed scratch DAS and verify each row before close."
         },
         {
           "caseId": "file-io-dasac-dla-logical-data",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Append to a DLA writer and preserve its three logical integer addresses across record movement."
         },
         {
           "caseId": "file-io-dasac-no-rows",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Obtain the original error for the input on a live writable DAS."
         },
         {
           "caseId": "file-io-dasac-tab",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Obtain the original error for the input on a live writable DAS."
         },
         {
           "caseId": "file-io-dasac-utf8",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Obtain the original error for the input on a live writable DAS."
         },
         {
           "caseId": "file-io-dasac-del",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Obtain the original error for the input on a live writable DAS."
         },
         {
           "caseId": "file-io-dasac-read-only",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Observe the original DASAC check order for this read-only claim."
         },
         {
           "caseId": "file-io-dasac-zero-before-access",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Observe the original DASAC check order for this read-only claim."
         }
       ],
@@ -494,65 +449,42 @@
       "scenarios": [
         {
           "caseId": "file-io-dasdc-empty",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Delete the comment area, observe the header and directory counters, then reopen and check the empty page."
         },
         {
           "caseId": "file-io-dasdc-reserved-only",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Delete the comment area, observe the header and directory counters, then reopen and check the empty page."
         },
         {
           "caseId": "file-io-dasdc-populated",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Delete the comment area, observe the header and directory counters, then reopen and check the empty page."
         },
         {
           "caseId": "file-io-dasdc-multiple-records",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Delete the comment area, observe the header and directory counters, then reopen and check the empty page."
         },
         {
           "caseId": "file-io-dasdc-repeated",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Repeated deletion and a fresh append leave only new comments."
         },
         {
           "caseId": "file-io-dasdc-isolated-files",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Delete on one of two simultaneously open writers while preserving the other file’s header and text."
         },
         {
           "caseId": "file-io-dasdc-dla-addresses",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Delete allocated records in a DLA, then reopen to observe preserved logical addresses and reclaimed records."
         },
         {
           "caseId": "file-io-dasdc-read-only",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Deleting via a live read claim reports the actual write-access diagnostic."
         }
       ],
@@ -625,140 +557,92 @@
       "scenarios": [
         {
           "caseId": "file-io-dasec-empty",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Repeated initial extraction of a reserved but empty DAS returns zero rows and done."
         },
         {
           "caseId": "file-io-dasec-full-final",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare every defined row, count and completion flag across successive real pages, including an exact fit or restart."
         },
         {
           "caseId": "file-io-dasec-partial-final",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare every defined row, count and completion flag across successive real pages, including an exact fit or restart."
         },
         {
           "caseId": "file-io-dasec-blank-order",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare every defined row, count and completion flag across successive real pages, including an exact fit or restart."
         },
         {
           "caseId": "file-io-dasec-changing-width",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare every defined row, count and completion flag across successive real pages, including an exact fit or restart."
         },
         {
           "caseId": "file-io-dasec-default-width",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare every defined row, count and completion flag across successive real pages, including an exact fit or restart."
         },
         {
           "caseId": "file-io-dasec-across-record",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare every defined row, count and completion flag across successive real pages, including an exact fit or restart."
         },
         {
           "caseId": "file-io-dasec-terminating-boundary",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare every defined row, count and completion flag across successive real pages, including an exact fit or restart."
         },
         {
           "caseId": "file-io-dasec-read-aliases",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Two open read tokens advance one cursor; closing one link preserves the remaining page position."
         },
         {
           "caseId": "file-io-dasec-interleaved",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Interleave two different physical files and observe independent pages and EOF."
         },
         {
           "caseId": "file-io-dasec-low-close-partial",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Close an incomplete read with DASLLC and observe row one again after reopening."
         },
         {
           "caseId": "file-io-dasec-writer-reopen",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Read on a writable claim, close the partial extraction, append after reopening and read the full new area."
         },
         {
           "caseId": "file-io-dasec-zero-count",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Observe the genuine signed-capacity diagnostic for this live DAS input."
         },
         {
           "caseId": "file-io-dasec-negative-count",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Observe the genuine signed-capacity diagnostic for this live DAS input."
         },
         {
           "caseId": "file-io-dasec-width-one",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Observe the genuine signed-capacity diagnostic for this live DAS input."
         },
         {
           "caseId": "file-io-dasec-negative-width",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Observe the genuine signed-capacity diagnostic for this live DAS input."
         },
         {
           "caseId": "file-io-dasec-width-before-count",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Observe the genuine signed-capacity diagnostic for this live DAS input."
         },
         {
           "caseId": "file-io-dasec-narrow-second-row",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "The pinned long message uses the page-relative row number when its second output row is too short."
         }
       ],

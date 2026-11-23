@@ -62,50 +62,32 @@
       "scenarios": [
         {
           "caseId": "time-etcal-tdb-milliseconds",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare formal TDB calendar output around midday and both sides of the fractional-second boundary. Compare all observable workflow outputs to the independent implementation."
         },
         {
           "caseId": "time-etcal-day-transitions",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Midnight boundaries, leap day and a non-leap century use fixed 86400-second days. Compare all observable workflow outputs to the independent implementation."
         },
         {
           "caseId": "time-etcal-historical-dates",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare full A.D. and B.C. strings including multiword era labels. Compare all observable workflow outputs to the independent implementation."
         },
         {
           "caseId": "time-etcal-capacity",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Expose byte prefixes, trimmed outer blanks and full formatted text. Compare all observable workflow outputs to the independent implementation."
         },
         {
           "caseId": "time-etcal-short-0",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "CSPICE detects insufficient output space. Require diagnostic STRINGTOOSHORT."
         },
         {
           "caseId": "time-etcal-short-1",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "CSPICE detects insufficient output space. Require diagnostic STRINGTOOSHORT."
         }
       ],
@@ -118,23 +100,13 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": [
-            "unreviewed",
-            "reviewed",
-            "verified",
-            "reviewed"
-          ],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.etcal through TimeApi, the serialized native addon and shared tspice_etcal to actual etcal_c. The locked oracle calls the exact ETCAL_C export with an initialized bounded string buffer.",
           "executions": []
         },
         "wasm": {
-          "history": [
-            "unreviewed",
-            "reviewed",
-            "verified",
-            "reviewed"
-          ],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.etcal through TimeApi, the regenerated, checked WASM export and shared tspice_etcal to actual etcal_c. The locked oracle calls the exact ETCAL_C export with an initialized bounded string buffer.",
           "executions": []
@@ -149,74 +121,42 @@
       "scenarios": [
         {
           "caseId": "time-utc2et-epochs",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Calendar, ordinal and Julian UTC expressions identify the same J2000 noon instant. Compare all observable workflow outputs to the independent implementation."
         },
         {
           "caseId": "time-utc2et-leap-second",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Three successive UTC instants include an inserted second before 2017. Compare all observable workflow outputs to the independent implementation."
         },
         {
           "caseId": "time-utc2et-fractional",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Nonintegral seconds and mixed date formats yield distinguishable ET. Compare all observable workflow outputs to the independent implementation."
         },
         {
           "caseId": "time-utc2et-missing-lsk",
-          "coverage": [
-            "error",
-            "edge",
-            "state"
-          ],
+          "coverage": ["error", "edge", "state"],
           "observes": "Recognized UTC without required leap seconds signals a missing kernel. Require diagnostic NOLEAPSECONDS."
         },
         {
           "caseId": "time-utc2et-empty",
-          "coverage": [
-            "error",
-            "edge",
-            "state"
-          ],
+          "coverage": ["error", "edge", "state"],
           "observes": "Observe the legacy UTC parser diagnostic for empty. Require diagnostic EMPTYSTRING."
         },
         {
           "caseId": "time-utc2et-label",
-          "coverage": [
-            "error",
-            "edge",
-            "state"
-          ],
+          "coverage": ["error", "edge", "state"],
           "observes": "Observe the legacy UTC parser diagnostic for label. Require diagnostic INVALIDTIMESTRING."
         },
         {
           "caseId": "time-utc2et-text",
-          "coverage": [
-            "error",
-            "edge",
-            "state"
-          ],
+          "coverage": ["error", "edge", "state"],
           "observes": "Observe the legacy UTC parser diagnostic for text. Require diagnostic INVALIDTIMESTRING."
         },
         {
           "caseId": "time-utc2et-timezone",
-          "coverage": [
-            "error",
-            "edge",
-            "state"
-          ],
+          "coverage": ["error", "edge", "state"],
           "observes": "Observe the legacy UTC parser diagnostic for timezone. Require diagnostic INVALIDTIMESTRING."
         }
       ],
@@ -288,56 +228,32 @@
       "scenarios": [
         {
           "caseId": "time-tparch-normalize",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Changing from strict to permissive restores overflow-component handling. Compare all observable workflow outputs to the independent implementation."
         },
         {
           "caseId": "time-tparch-other-value",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "A non-YES word re-enables normalized date input after strict parsing. Compare all observable workflow outputs to the independent implementation."
         },
         {
           "caseId": "time-tparch-strict-tparse",
-          "coverage": [
-            "error",
-            "edge",
-            "state"
-          ],
+          "coverage": ["error", "edge", "state"],
           "observes": "Observe parser restriction through the original formal-time helper. Require diagnostic day of the month."
         },
         {
           "caseId": "time-tparch-strict-utc",
-          "coverage": [
-            "error",
-            "edge",
-            "state"
-          ],
+          "coverage": ["error", "edge", "state"],
           "observes": "Strict policy changes the actual downstream UTC2ET result. Require diagnostic INVALIDTIMESTRING."
         },
         {
           "caseId": "time-tparch-permissive-utc",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Permissive input resolves the day overflow through the live UTC scale conversion. Compare all observable workflow outputs to the independent implementation."
         },
         {
           "caseId": "time-tparch-empty",
-          "coverage": [
-            "error",
-            "edge",
-            "state"
-          ],
+          "coverage": ["error", "edge", "state"],
           "observes": "The C wrapper checks empty mode text before changing state. Require diagnostic EMPTYSTRING."
         }
       ],
@@ -356,23 +272,13 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": [
-            "unreviewed",
-            "reviewed",
-            "verified",
-            "reviewed"
-          ],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.tparch through TimeApi, the serialized native addon and shared tspice_tparch to actual tparch_c. The locked oracle calls sp.tparch with subsequent real TPARSE/UTC2ET behavior.",
           "executions": []
         },
         "wasm": {
-          "history": [
-            "unreviewed",
-            "reviewed",
-            "verified",
-            "reviewed"
-          ],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.tparch through TimeApi, the regenerated, checked WASM export and shared tspice_tparch to actual tparch_c. The locked oracle calls sp.tparch with subsequent real TPARSE/UTC2ET behavior.",
           "executions": []
@@ -387,65 +293,37 @@
       "scenarios": [
         {
           "caseId": "time-tsetyr-lower-1950",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Observe two-digit expansion throughout the chosen century window. Compare all observable workflow outputs to the independent implementation."
         },
         {
           "caseId": "time-tsetyr-lower-1969",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Observe two-digit expansion throughout the chosen century window. Compare all observable workflow outputs to the independent implementation."
         },
         {
           "caseId": "time-tsetyr-lower-2000",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Observe two-digit expansion throughout the chosen century window. Compare all observable workflow outputs to the independent implementation."
         },
         {
           "caseId": "time-tsetyr-lower-2050",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Observe two-digit expansion throughout the chosen century window. Compare all observable workflow outputs to the independent implementation."
         },
         {
           "caseId": "time-tsetyr-lower-1",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Observe two-digit expansion throughout the chosen century window. Compare all observable workflow outputs to the independent implementation."
         },
         {
           "caseId": "time-tsetyr-successive",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "A nonpositive bound leaves the preceding positive selection active; later reset is observable. Compare all observable workflow outputs to the independent implementation."
         },
         {
           "caseId": "time-tsetyr-utc-window",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "The same pivot changes legacy UTC conversion and leaves four-digit input stable. Compare all observable workflow outputs to the independent implementation."
         }
       ],
@@ -467,10 +345,7 @@
           "status": "repaired",
           "summary": "A stored high TSETYR century can make even an ordinary two-digit TPARSE date overflow its signed 367*year expression.",
           "repair": "Allow a lower bound through floor(INT_MAX/367) minus 99, check before changing shared state, and preserve nonpositive no-ops.",
-          "caseIds": [
-            "time-tsetyr-successive",
-            "time-tsetyr-lower-1"
-          ],
+          "caseIds": ["time-tsetyr-successive", "time-tsetyr-lower-1"],
           "evidence": [
             "packages/backend-shim-c/src/domains/time.c",
             "packages/backend-node/test/time-additions-domain.test.ts",
@@ -516,101 +391,57 @@
       "scenarios": [
         {
           "caseId": "time-et2lst-sun",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "The Sun has noon solar time for every planetocentric longitude without any supplied kernels. Compare all observable workflow outputs to the independent implementation."
         },
         {
           "caseId": "time-et2lst-time-widths",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Truncate time and AM/PM independently while preserving numeric components. Compare all observable workflow outputs to the independent implementation."
         },
         {
           "caseId": "time-et2lst-east-west",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Compare all five components at signed east and west longitudes, modulo a full rotation. Compare all observable workflow outputs to the independent implementation."
         },
         {
           "caseId": "time-et2lst-time-change",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Sun and synthetic body have independently evolving positions at separated ET instants. Compare all observable workflow outputs to the independent implementation."
         },
         {
           "caseId": "time-et2lst-planetographic",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Longitude definition and the sign of the PM rate affect direction and reported solar time. Compare all observable workflow outputs to the independent implementation."
         },
         {
           "caseId": "time-et2lst-unknown-coordinates",
-          "coverage": [
-            "error",
-            "edge",
-            "state"
-          ],
+          "coverage": ["error", "edge", "state"],
           "observes": "Unrecognized coordinate system precedes body orientation work. Require diagnostic UNKNOWNSYSTEM."
         },
         {
           "caseId": "time-et2lst-frame-missing",
-          "coverage": [
-            "error",
-            "edge",
-            "state"
-          ],
+          "coverage": ["error", "edge", "state"],
           "observes": "Missing frame association is an actual toolkit error. Require diagnostic CANTFINDFRAME."
         },
         {
           "caseId": "time-et2lst-missing-spk",
-          "coverage": [
-            "error",
-            "edge",
-            "state"
-          ],
+          "coverage": ["error", "edge", "state"],
           "observes": "Registered body-fixed frame without solar ephemeris reports missing SPK data. Require diagnostic NOLOADEDFILES."
         },
         {
           "caseId": "time-et2lst-missing-rotation",
-          "coverage": [
-            "error",
-            "edge",
-            "state"
-          ],
+          "coverage": ["error", "edge", "state"],
           "observes": "The ephemeris succeeds but the simulation has no PM rate. Require diagnostic CANTGETROTATIONTYPE."
         },
         {
           "caseId": "time-et2lst-short-time",
-          "coverage": [
-            "error",
-            "edge",
-            "state"
-          ],
+          "coverage": ["error", "edge", "state"],
           "observes": "Each output width has its own capacity check before scientific evaluation. Require diagnostic STRINGTOOSHORT."
         },
         {
           "caseId": "time-et2lst-short-ampm",
-          "coverage": [
-            "error",
-            "edge",
-            "state"
-          ],
+          "coverage": ["error", "edge", "state"],
           "observes": "Each output width has its own capacity check before scientific evaluation. Require diagnostic STRINGTOOSHORT."
         }
       ],

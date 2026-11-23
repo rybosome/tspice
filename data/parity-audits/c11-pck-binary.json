@@ -288,26 +288,17 @@
       "scenarios": [
         {
           "caseId": "frames-pckcls-empty",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Closing an empty writer reports NOSEGMENTSFOUND; cleanup releases the independent scratch handle. Require NOSEGMENTSFOUND."
         },
         {
           "caseId": "frames-pckcls-two-classes",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Finalize a writer containing two class IDs and retain the exact set and independent windows. Compare the complete independent workflow outputs."
         },
         {
           "caseId": "frames-pckcls-empty-then-write",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "A writer with a valid single degree-zero constant segment can close and load. Compare the complete independent workflow outputs."
         }
       ],
@@ -326,23 +317,13 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": [
-            "unreviewed",
-            "reviewed",
-            "verified",
-            "reviewed"
-          ],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "FramesApi.pckcls -> owner-local adapter and serialized Node addon -> tspice_pckcls -> pckcls_c. The independent handler uses the actual locked SpiceyPy pckcls wrapper.",
           "executions": []
         },
         "wasm": {
-          "history": [
-            "unreviewed",
-            "reviewed",
-            "verified",
-            "reviewed"
-          ],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "FramesApi.pckcls -> owner-local adapter and required WASM export -> tspice_pckcls -> pckcls_c. The independent handler uses the actual locked SpiceyPy pckcls wrapper.",
           "executions": []
@@ -357,66 +338,42 @@
       "scenarios": [
         {
           "caseId": "frames-pckcov-gapped",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare all closed coverage intervals using the selected class ID. Compare the complete independent workflow outputs."
         },
         {
           "caseId": "frames-pckcov-lunar",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare all closed coverage intervals using the selected class ID. Compare the complete independent workflow outputs."
         },
         {
           "caseId": "frames-pckcov-body-not-class",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare all closed coverage intervals using the selected class ID. Compare the complete independent workflow outputs."
         },
         {
           "caseId": "frames-pckcov-frame-not-class",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare all closed coverage intervals using the selected class ID. Compare the complete independent workflow outputs."
         },
         {
           "caseId": "frames-pckcov-accumulate",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Append coverage to a nonempty window, including bridges, overlap and deduplication. Compare the complete independent workflow outputs."
         },
         {
           "caseId": "frames-pckcov-capacity",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "The second disjoint interval exceeds a one-interval window. Require WINDOWEXCESS."
         },
         {
           "caseId": "frames-pckcov-missing",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "A missing PCK path reports actual toolkit error. Require FILENOTFOUND."
         },
         {
           "caseId": "frames-pckcov-text",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "A text kernel has no DAF binary coverage. Require INVALIDARCHTYPE."
         }
       ],
@@ -444,9 +401,7 @@
             "packages/backend-shim-c/src/domains/frames.c",
             "packages/py-parity-checking/src/cases/frames/pckcov.cases.json"
           ],
-          "caseIds": [
-            "frames-pckcov-capacity"
-          ]
+          "caseIds": ["frames-pckcov-capacity"]
         }
       ],
       "backends": {
@@ -484,50 +439,32 @@
       "scenarios": [
         {
           "caseId": "frames-pckfrm-fixture-classes",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe sorted class IDs from three physical segments, two sharing one ID. Compare the complete independent workflow outputs."
         },
         {
           "caseId": "frames-pckfrm-accumulate",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Owned output preserves the original duplicate classes and a new negative class across files. Compare the complete independent workflow outputs."
         },
         {
           "caseId": "frames-pckfrm-tight",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "A two-element cell exactly fits both distinct fixture classes. Compare the complete independent workflow outputs."
         },
         {
           "caseId": "frames-pckfrm-capacity",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "A second distinct ID exceeds the one-element integer set. Require SETEXCESS."
         },
         {
           "caseId": "frames-pckfrm-missing",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Missing binary PCK path produces actual file diagnostics. Require FILENOTFOUND."
         },
         {
           "caseId": "frames-pckfrm-text",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Text PCK is a valid kernel but has no DAF segment IDs. Require INVALIDARCHTYPE."
         }
       ],
@@ -555,9 +492,7 @@
             "packages/backend-shim-c/src/domains/frames.c",
             "packages/py-parity-checking/src/cases/frames/pckfrm.cases.json"
           ],
-          "caseIds": [
-            "frames-pckfrm-capacity"
-          ]
+          "caseIds": ["frames-pckfrm-capacity"]
         }
       ],
       "backends": {
@@ -595,34 +530,22 @@
       "scenarios": [
         {
           "caseId": "frames-pcklof-endpoints",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Independently evaluate inclusive endpoints, two record midpoints, a record crossover, and a separate segment. Compare the complete independent workflow outputs."
         },
         {
           "caseId": "frames-pcklof-inverse",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Evaluate complete inverse state and orientation matrices separately on a nonstationary record. Compare the complete independent workflow outputs."
         },
         {
           "caseId": "frames-pcklof-gap",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "A genuine between-segment gap has no Earth orientation. Require FRAMEDATANOTFOUND."
         },
         {
           "caseId": "frames-pcklof-missing",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "A missing low-level PCK leaves no usable handle. Require FILENOTFOUND."
         }
       ],
@@ -650,9 +573,7 @@
             "packages/backend-shim-c/src/domains/frames.c",
             "packages/py-parity-checking/src/cases/frames/pcklof.cases.json"
           ],
-          "caseIds": [
-            "frames-pcklof-endpoints"
-          ]
+          "caseIds": ["frames-pcklof-endpoints"]
         }
       ],
       "backends": {
@@ -690,42 +611,27 @@
       "scenarios": [
         {
           "caseId": "frames-pckopn-roundtrip",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Open a new PCK, write two angular records, close and reopen for independent frame, coverage and matrix observations. Compare the complete independent workflow outputs."
         },
         {
           "caseId": "frames-pckopn-negative",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Exercise the actual comment reservation rule and inspect a finalized orientation. Compare the complete independent workflow outputs."
         },
         {
           "caseId": "frames-pckopn-reserved",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Exercise the actual comment reservation rule and inspect a finalized orientation. Compare the complete independent workflow outputs."
         },
         {
           "caseId": "frames-pckopn-existing",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Opening a second writer on an existing physical file produces the real new-file diagnostic. Require FILEOPENFAIL."
         },
         {
           "caseId": "frames-pckopn-empty-internal-name",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "An empty internal name is diagnosed before opening any writer. Require EMPTYSTRING."
         }
       ],
@@ -744,23 +650,13 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": [
-            "unreviewed",
-            "reviewed",
-            "verified",
-            "reviewed"
-          ],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "FramesApi.pckopn -> owner-local adapter and serialized Node addon -> tspice_pckopn -> pckopn_c. The independent handler uses the actual locked SpiceyPy pckopn wrapper.",
           "executions": []
         },
         "wasm": {
-          "history": [
-            "unreviewed",
-            "reviewed",
-            "verified",
-            "reviewed"
-          ],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "FramesApi.pckopn -> owner-local adapter and required WASM export -> tspice_pckopn -> pckopn_c. The independent handler uses the actual locked SpiceyPy pckopn wrapper.",
           "executions": []
@@ -775,34 +671,22 @@
       "scenarios": [
         {
           "caseId": "frames-pckuof-priority",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "At a shared epoch the latest file wins. Reloading the original promotes it, then one unload exposes the authored lower-priority orientation. Compare the complete independent workflow outputs."
         },
         {
           "caseId": "frames-pckuof-last-unload",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Unloading the only directly loaded PCK removes its frame data. Require FRAMEDATANOTFOUND."
         },
         {
           "caseId": "frames-pckuof-reload",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "A fresh load after unloading restores complete orientation and derivative. Compare the complete independent workflow outputs."
         },
         {
           "caseId": "frames-pckuof-keeper",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Direct binary PCK loading and unloading do not add entries to KEEPER. Compare the complete independent workflow outputs."
         }
       ],
@@ -830,9 +714,7 @@
             "packages/backend-shim-c/src/domains/frames.c",
             "packages/py-parity-checking/src/cases/frames/pckuof.cases.json"
           ],
-          "caseIds": [
-            "frames-pckuof-priority"
-          ]
+          "caseIds": ["frames-pckuof-priority"]
         }
       ],
       "backends": {
@@ -870,106 +752,67 @@
       "scenarios": [
         {
           "caseId": "frames-pckw02-two-records",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Distinct angle groups, slopes, records, endpoints and inclusive crossover are preserved in the full rotation and state matrices. Compare the complete independent workflow outputs."
         },
         {
           "caseId": "frames-pckw02-degree-41",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Evaluate every angle at the maximum degree supported by the pinned fixed record reader. Compare the complete independent workflow outputs."
         },
         {
           "caseId": "frames-pckw02-trim",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Descriptor bounds can trim the full Chebyshev record interval. Compare the complete independent workflow outputs."
         },
         {
           "caseId": "frames-pckw02-singleton",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "An equal descriptor endpoint is a one-instant segment with a defined orientation. Compare the complete independent workflow outputs."
         },
         {
           "caseId": "frames-pckw02-segment-priority",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "A later overlapping segment supersedes the earlier segment within a single file. Compare the complete independent workflow outputs."
         },
         {
           "caseId": "frames-pckw02-count",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "An already valid writer receives a rejected segment, comparing the canonical scientific diagnostic. Require NUMCOEFFSNOTPOS."
         },
         {
           "caseId": "frames-pckw02-interval",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "An already valid writer receives a rejected segment, comparing the canonical scientific diagnostic. Require INTLENNOTPOS."
         },
         {
           "caseId": "frames-pckw02-bad-frame",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "An already valid writer receives a rejected segment, comparing the canonical scientific diagnostic. Require INVALIDREFFRAME."
         },
         {
           "caseId": "frames-pckw02-reversed",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "An already valid writer receives a rejected segment, comparing the canonical scientific diagnostic. Require BADDESCRTIMES."
         },
         {
           "caseId": "frames-pckw02-early",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "An already valid writer receives a rejected segment, comparing the canonical scientific diagnostic. Require BADDESCRTIMES."
         },
         {
           "caseId": "frames-pckw02-late",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "An already valid writer receives a rejected segment, comparing the canonical scientific diagnostic. Require BADDESCRTIMES."
         },
         {
           "caseId": "frames-pckw02-long-segid",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "An already valid writer receives a rejected segment, comparing the canonical scientific diagnostic. Require IDSTRINGTOOLONG."
         },
         {
           "caseId": "frames-pckw02-nonprinting",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "An already valid writer receives a rejected segment, comparing the canonical scientific diagnostic. Require NONPRINTABLECHARS."
         }
       ],
@@ -997,9 +840,7 @@
             "packages/backend-shim-c/src/domains/frames.c",
             "packages/py-parity-checking/src/cases/frames/pckw02.cases.json"
           ],
-          "caseIds": [
-            "frames-pckw02-degree-41"
-          ]
+          "caseIds": ["frames-pckw02-degree-41"]
         }
       ],
       "backends": {
