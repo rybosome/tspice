@@ -57,6 +57,7 @@ jobs:
           pnpm --version
           pnpm install --frozen-lockfile
           node "$RUNNER_TEMP/step8-input/reconcile-report.mjs"
+          cp "$RUNNER_TEMP/step8-input/string-transforms.test.ts" packages/py-parity-checking/test/string-transforms.test.ts
           pnpm format
           node scripts/build-backend-wasm.mjs
           node scripts/generate-cspice-inventory.mjs
@@ -80,6 +81,11 @@ jobs:
           pnpm check:coverage-ledger
           git diff --exit-code
           pnpm docs:build
+      - name: Check the string recovery regression on the rebuilt WASM
+        run: |
+          set -euo pipefail
+          pnpm -C packages/py-parity-checking run pretest
+          pnpm -C packages/py-parity-checking exec vitest run test/string-transforms.test.ts
       - name: Execute the required JavaScript lane
         run: |
           set -euo pipefail
