@@ -1,0 +1,450 @@
+[
+  {
+    "caseId": "time-scfmt-fractional-and-half-ticks",
+    "description": "Round fractional raw ticks before formatting both fields, including a major-field carry.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-two-partition.tsc"
+      },
+      {
+        "op": "time.scfmt",
+        "sc": -12345,
+        "ticks": -0.49
+      },
+      {
+        "op": "time.scfmt",
+        "sc": -12345,
+        "ticks": 0
+      },
+      {
+        "op": "time.scfmt",
+        "sc": -12345,
+        "ticks": 0.49
+      },
+      {
+        "op": "time.scfmt",
+        "sc": -12345,
+        "ticks": 0.5
+      },
+      {
+        "op": "time.scfmt",
+        "sc": -12345,
+        "ticks": 1.5
+      },
+      {
+        "op": "time.scfmt",
+        "sc": -12345,
+        "ticks": 255.49
+      },
+      {
+        "op": "time.scfmt",
+        "sc": -12345,
+        "ticks": 255.5
+      },
+      {
+        "op": "time.scfmt",
+        "sc": -12345,
+        "ticks": 256
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "time-scfmt-raw-partition-boundaries",
+    "description": "Format raw per-partition ticks with no partition prefix, including counts beyond the partition stops.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-two-partition.tsc"
+      },
+      {
+        "op": "time.scfmt",
+        "sc": -12345,
+        "ticks": 1023
+      },
+      {
+        "op": "time.scfmt",
+        "sc": -12345,
+        "ticks": 1024
+      },
+      {
+        "op": "time.scfmt",
+        "sc": -12345,
+        "ticks": 4094
+      },
+      {
+        "op": "time.scfmt",
+        "sc": -12345,
+        "ticks": 4095
+      },
+      {
+        "op": "time.scfmt",
+        "sc": -12345,
+        "ticks": 4096
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "time-scfmt-single-field-clock",
+    "description": "The single-field result retains zero-padding and all ten digits at its inclusive stop.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-ck-clock.tsc"
+      },
+      {
+        "op": "time.scfmt",
+        "sc": -123,
+        "ticks": 0
+      },
+      {
+        "op": "time.scfmt",
+        "sc": -123,
+        "ticks": 1
+      },
+      {
+        "op": "time.scfmt",
+        "sc": -123,
+        "ticks": 4294967295
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "time-scfmt-all-output-delimiters",
+    "description": "Change the same clock through all five type-1 output separators.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-two-partition.tsc"
+      },
+      {
+        "op": "kernel-pool.pipool",
+        "name": "SCLK01_OUTPUT_DELIM_12345",
+        "values": [1]
+      },
+      {
+        "op": "time.scfmt",
+        "sc": -12345,
+        "ticks": 258
+      },
+      {
+        "op": "kernel-pool.pipool",
+        "name": "SCLK01_OUTPUT_DELIM_12345",
+        "values": [2]
+      },
+      {
+        "op": "time.scfmt",
+        "sc": -12345,
+        "ticks": 258
+      },
+      {
+        "op": "kernel-pool.pipool",
+        "name": "SCLK01_OUTPUT_DELIM_12345",
+        "values": [3]
+      },
+      {
+        "op": "time.scfmt",
+        "sc": -12345,
+        "ticks": 258
+      },
+      {
+        "op": "kernel-pool.pipool",
+        "name": "SCLK01_OUTPUT_DELIM_12345",
+        "values": [4]
+      },
+      {
+        "op": "time.scfmt",
+        "sc": -12345,
+        "ticks": 258
+      },
+      {
+        "op": "kernel-pool.pipool",
+        "name": "SCLK01_OUTPUT_DELIM_12345",
+        "values": [5]
+      },
+      {
+        "op": "time.scfmt",
+        "sc": -12345,
+        "ticks": 258
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "time-scfmt-field-offsets",
+    "description": "Nonzero field offsets change the zero-padded spelling for raw zero and the next two fields.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-two-partition.tsc"
+      },
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "SCLK01_OFFSETS_12345",
+        "values": [1, 5]
+      },
+      {
+        "op": "time.scfmt",
+        "sc": -12345,
+        "ticks": 0
+      },
+      {
+        "op": "time.scfmt",
+        "sc": -12345,
+        "ticks": 2
+      },
+      {
+        "op": "time.scfmt",
+        "sc": -12345,
+        "ticks": 255
+      },
+      {
+        "op": "time.scfmt",
+        "sc": -12345,
+        "ticks": 256
+      },
+      {
+        "op": "time.scfmt",
+        "sc": -12345,
+        "ticks": 258
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "time-scfmt-exact-and-generous-capacities",
+    "description": "A nominal ten-byte result fits a capacity of eleven including NUL.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-two-partition.tsc"
+      },
+      {
+        "op": "time.scfmt",
+        "sc": -12345,
+        "ticks": 258,
+        "clklen": 11
+      },
+      {
+        "op": "time.scfmt",
+        "sc": -12345,
+        "ticks": 258,
+        "clklen": 12
+      },
+      {
+        "op": "time.scfmt",
+        "sc": -12345,
+        "ticks": 258,
+        "clklen": 2048
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "time-scfmt-above-major-modulus",
+    "description": "A major field with an extra digit fills the nominal-width buffer and uses the extra byte when available.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-two-partition.tsc"
+      },
+      {
+        "op": "time.scfmt",
+        "sc": -12345,
+        "ticks": 256000000,
+        "clklen": 11
+      },
+      {
+        "op": "time.scfmt",
+        "sc": -12345,
+        "ticks": 256000000,
+        "clklen": 12
+      },
+      {
+        "op": "time.scfmt",
+        "sc": -12345,
+        "ticks": 256000000
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "time-scfmt-nominal-truncation",
+    "description": "Capacity leaves one fewer byte than the configured field widths require.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-two-partition.tsc"
+      },
+      {
+        "op": "time.scfmt",
+        "sc": -12345,
+        "ticks": 0,
+        "clklen": 10
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SCLKTRUNCATED"]
+    }
+  },
+  {
+    "caseId": "time-scfmt-negative-ticks",
+    "description": "A negative half tick rounds away from the first tick.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-two-partition.tsc"
+      },
+      {
+        "op": "time.scfmt",
+        "sc": -12345,
+        "ticks": -0.5
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["VALUEOUTOFRANGE"]
+    }
+  },
+  {
+    "caseId": "time-scfmt-short-capacity",
+    "description": "The C wrapper checks its output buffer minimum before formatting.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-two-partition.tsc"
+      },
+      {
+        "op": "time.scfmt",
+        "sc": -12345,
+        "ticks": 1,
+        "clklen": 1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["STRINGTOOSHORT"]
+    }
+  },
+  {
+    "caseId": "time-scfmt-zero-capacity",
+    "description": "A zero logical capacity still receives real required pointer storage.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-two-partition.tsc"
+      },
+      {
+        "op": "time.scfmt",
+        "sc": -12345,
+        "ticks": 1,
+        "clklen": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["STRINGTOOSHORT"]
+    }
+  },
+  {
+    "caseId": "time-scfmt-negative-capacity",
+    "description": "The signed capacity reaches the canonical output-length check.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-two-partition.tsc"
+      },
+      {
+        "op": "time.scfmt",
+        "sc": -12345,
+        "ticks": 1,
+        "clklen": -3
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["STRINGTOOSHORT"]
+    }
+  },
+  {
+    "caseId": "time-scfmt-missing-clock",
+    "description": "The type lookup needs a clock for this spacecraft.",
+    "workflow": [
+      {
+        "op": "time.scfmt",
+        "sc": -12345,
+        "ticks": 1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["KERNELVARNOTFOUND"]
+    }
+  },
+  {
+    "caseId": "time-scfmt-invalid-output-delimiter",
+    "description": "A delimiter code outside the configured five choices is rejected by type-1 metadata validation.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-two-partition.tsc"
+      },
+      {
+        "op": "kernel-pool.pipool",
+        "name": "SCLK01_OUTPUT_DELIM_12345",
+        "values": [6]
+      },
+      {
+        "op": "time.scfmt",
+        "sc": -12345,
+        "ticks": 1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["VALUEOUTOFRANGE"]
+    }
+  },
+  {
+    "caseId": "time-scfmt-unsupported-clock-type",
+    "description": "Changing only the spacecraft clock type to two rejects a fresh type-dependent lookup.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-two-partition.tsc"
+      },
+      {
+        "op": "kernel-pool.pipool",
+        "name": "SCLK_DATA_TYPE_12345",
+        "values": [2]
+      },
+      {
+        "op": "time.scfmt",
+        "sc": -12345,
+        "ticks": 258
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["NOTSUPPORTED"]
+    }
+  }
+]

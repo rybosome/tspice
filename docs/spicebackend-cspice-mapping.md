@@ -94,6 +94,33 @@ For generic solar system work, these NAIF standards are commonly used:
 
 ## Domain: `time` (`TimeApi`)
 
+The additional clock methods use an explicit spacecraft ID and the existing
+kernel lifecycle. `sce2t` converts ET to rounded, partition-aware encoded
+ticks. The remaining methods format or parse raw clock fields or read the
+partition table.
+
+| Raw method                  | Scientific route                                               | Observable result                                                                                      |
+| --------------------------- | -------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `sce2t(sc, et)`             | Linked SPICELIB `sce2t_` with the public wrapper’s trace frame | Rounded encoded tick count as a number.                                                                |
+| `scfmt(sc, ticks, clklen?)` | `scfmt_c`                                                      | Clock field string without a partition prefix. Optional capacity defaults to 2048 bytes including NUL. |
+| `scpart(sc)`                | `scpart_c`                                                     | Owned `{pstart, pstop}` arrays, with every returned raw start and stop in original order.              |
+| `sctiks(sc, clkstr)`        | `sctiks_c`                                                     | Raw tick count from a clock field string using the configured field moduli and offsets.                |
+
+The `sce2t_` alias preserves the pinned implementation with defined storage
+on early errors. Clock-field formatting also has a bounded numeric domain
+derived from the implementation’s fixed field workspace.
+[Clock semantics and reviewed source routes](step8-sclk-additions.md)
+
+D01 adds five direct Node and WASM mappings in this domain. Signed capacities include the C terminator. CSPICE parser controls persist across calls. [Detailed civil-time semantics and evidence](step8-civil-time.md)
+
+| Raw method | Canonical routine | Observable result                                                     |
+| ---------- | ----------------- | --------------------------------------------------------------------- |
+| `etcal`    | `etcal_c`         | Formal calendar string, including truncated and extreme-epoch outputs |
+| `utc2et`   | `utc2et_c`        | ET from a legacy UTC string using loaded leap data                    |
+| `tparch`   | `tparch_c`        | Persistent strict/permissive parsing setting                          |
+| `tsetyr`   | `tsetyr_c`        | Persistent two-digit-year lower bound                                 |
+| `et2lst`   | `et2lst_c`        | Local solar clock fields and both formatted time strings              |
+
 | domain.method                       | CSPICE entrypoint(s)  | Args (TS shape)                                          | Returns (TS shape) | Comparison notes (tolerance/normalization)                                                                | Statefulness / required kernels                                                                                                       |
 | ----------------------------------- | --------------------- | -------------------------------------------------------- | ------------------ | --------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
 | `time.spiceVersion()`               | `tkvrsn_c("TOOLKIT")` | `(): string`                                             | `string`           | exact string match                                                                                        | none                                                                                                                                  |
@@ -132,6 +159,23 @@ Notes:
 
 ## Domain: `ids-names` (`IdsNamesApi`)
 
+Surface translations use the current body-specific kernel pool mappings.
+The optional output byte capacity includes the NUL terminator. It defaults
+to 37. Both string-returning methods retain the name flag even when the
+observable text is a truncated prefix or the decimal fallback.
+
+| Raw call                        | Canonical routine | Observable output                                                               |
+| ------------------------------- | ----------------- | ------------------------------------------------------------------------------- |
+| `srfc2s(code, bodyId, srflen?)` | `srfc2s_c`        | `{surface, isName}` for a signed body ID.                                       |
+| `srfcss(code, body, srflen?)`   | `srfcss_c`        | `{surface, isName}` for a body string.                                          |
+| `srfs2c(surface, body)`         | `srfs2c_c`        | Discriminated found result with a code on success after body-string resolution. |
+| `srfscc(surface, bodyId)`       | `srfscc_c`        | Discriminated found result with a code on success for a signed body ID.         |
+
+The pinned surface hash imposes a bound on direct and pool-supplied surface
+IDs. The parity workflows independently check the defined lookup results,
+state changes, exact bytes and genuine malformed-map errors.
+[Surface translations and signed hash limits](step8-surface-names.md)
+
 | domain.method            | CSPICE entrypoint(s) | Args (TS shape)                           | Returns (TS shape)        | Comparison notes (tolerance/normalization) | Statefulness / required kernels                                                                                                     |
 | ------------------------ | -------------------- | ----------------------------------------- | ------------------------- | ------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------- |
 | `ids-names.bodn2c(name)` | `bodn2c_c`           | `(name: string): Found<{ code: number }>` | `Found<{ code: number }>` | exact integer match                        | requires kernels defining body names/IDs (commonly PCK/SPK and/or mission kernels); “not found” is reported via `found` output flag |
@@ -154,6 +198,52 @@ A15 extends the same frame domain as `pxform` and `sxform`. All nine methods acc
 | `rav2xf(rot,av)`                     | `rav2xf_c`              | SpiceMatrix6x6                              |
 | `invstm(mat)`                        | `invstm_c`              | SpiceMatrix6x6                              |
 | `xpose6(m1)`                         | `xpose6_c`              | SpiceMatrix6x6                              |
+
+D03 maps six raw methods through their matching public C entry points. PXFRM2 preflights its two actual REFCHG legs before evaluating the two-epoch rotation. [Frame metadata and transformations](step8-frame-metadata.md)
+
+| Raw method | CSPICE     | Result                                                                                                                                                              |
+| ---------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `bltfrm`   | `bltfrm_c` | Replace a live integer cell with all built-in IDs for class or −1. N0067 requires room for 145 including empty classes.                                             |
+| `pxfrm2`   | `pxfrm2_c` | Evaluate orientation of two named frames at independently specified TDB epochs and return nine row-major components.                                                |
+| `tipbod`   | `tipbod_c` | Rotate inertial positions into a body-fixed PCK class frame at ET, which is measured in TDB seconds past J2000.                                                     |
+| `tisbod`   | `tisbod_c` | Return 36 row-major components transforming position/velocity, including the derivative per second.                                                                 |
+| `tkfram`   | `tkfram_c` | Look up a TK class ID and publish rotation to the base frame and its numeric ID on a successful true flag.                                                          |
+| `xfmsta`   | `xfmsta_c` | Transform position components and rates between six coordinate systems with km, radians and seconds, including kernel-dependent spheroid shape and longitude sense. |
+
+[Binary PCK records, limits and independent observations](step8-pck-binary.md)
+
+| Raw method | CSPICE     | Result or effect                                                                                                                                                             |
+| ---------- | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `pckcls`   | `pckcls_c` | Finalize a writer with at least one segment. Empty close reports NOSEGMENTSFOUND and the writer can be retried.                                                              |
+| `pckcov`   | `pckcov_c` | Append the closed coverage intervals for a frame class ID to a live normalized window. An absent class leaves existing intervals intact.                                     |
+| `pckfrm`   | `pckfrm_c` | Insert distinct frame class IDs into an existing sorted integer set.                                                                                                         |
+| `pcklof`   | `pcklof_c` | Register a binary PCK with the low-level orientation search. A duplicate promotes priority and a single unload removes its search entry.                                     |
+| `pckopn`   | `pckopn_c` | Create a binary PCK writer with a caller internal name and comment reservation; a virtual output becomes readable after close.                                               |
+| `pckuof`   | `pckuof_c` | Unload the physical low-level PCK registration and restore eligible lower-priority data; a retired alias cannot affect a later generation.                                   |
+| `pckw02`   | `pckw02_c` | Write consecutive equal-duration records with three Chebyshev Euler series per record, preserving descriptor trims, midpoint/radius, degree and trailer in the physical DAF. |
+
+[Binary CK writer lifecycle and record formats](step8-ck-writers.md)
+
+| Raw method | CSPICE    | Contract effect                                                                                                        |
+| ---------- | --------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `ckopn`    | `ckopn_c` | Create an owned binary CK writer with a caller-specified internal name and comment reservation.                        |
+| `ckcls`    | `ckcls_c` | Finalize the CK writer and allow readback. A NOSEGMENTSFOUND writer stays open and can be retried.                     |
+| `ckw01`    | `ckw01_c` | Append discrete scalar-first quaternion samples and optional reference-frame angular velocities at encoded SCLK ticks. |
+| `ckw02`    | `ckw02_c` | Append constant-angular-velocity intervals using individual start/stop times and seconds-per-tick rates.               |
+| `ckw03`    | `ckw03_c` | Append interpolated quaternion samples and optional angular velocity with explicit interval breaks.                    |
+| `ckw05`    | `ckw05_c` | Append one of four quaternion/derivative/AV packet subtypes with rate, polynomial window degree and interval starts.   |
+
+[CK record and frame access](step8-ck-records.md)
+
+| Raw method | CSPICE     | Contract effect                                                                                |
+| ---------- | ---------- | ---------------------------------------------------------------------------------------------- |
+| `ckfrot`   | `ckfrot_c` | Search in ET for zero-tolerance instrument-to-base rotation and reference frame ID.            |
+| `ckfxfm`   | `ckfxfm_c` | Search AV-bearing segments for the instrument-to-base state transform and derivative at ET.    |
+| `ckgr02`   | `ckgr02_c` | Read every field in a one-based type 2 interval including the stored seconds per tick.         |
+| `ckgr03`   | `ckgr03_c` | Read a one-based tick and quaternion and return AV only when the descriptor declares it.       |
+| `ckmeta`   | `ckmeta_c` | Resolve the selected SCLK or SPK ID with live pool overrides and signed conventional defaults. |
+| `cknr02`   | `cknr02_c` | Read the number of constant-rate intervals in a genuine packed type 2 segment.                 |
+| `cknr03`   | `cknr03_c` | Read the number of discrete pointing records across the interpolation intervals.               |
 
 | domain.method                           | CSPICE entrypoint(s) | Args (TS shape)                                                                                                             | Returns (TS shape)                                                | Comparison notes (tolerance/normalization)                    | Statefulness / required kernels                                                                                                                                                                                                                                                                                                                                                        |
 | --------------------------------------- | -------------------- | --------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------- | ------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -225,6 +315,26 @@ Notes:
 The public contract and batch review describe native and WASM buffer limits, file staging, error precedence, source-derived guards and independent oracle routes. [Kernel-pool review](step8-kernel-pool.md)
 
 ## Domain: `error` (`ErrorApi`)
+
+GET/SET error policy and permanent trace disabling are direct toolkit operations with process/module lifetime. [Diagnostic devices, print masks and trace state](step8-error-devices.md)
+
+| Raw method | CSPICE     | Effect                                                                                                                              |
+| ---------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| `errdev`   | `errdev_c` | Get/set caller-owned diagnostic device names. Preserve byte truncation and real file creation, scoped to host or module filesystem. |
+| `errprt`   | `errprt_c` | Apply ordered message selections, observing accumulated state, reset tokens and complete returned ordered mask.                     |
+| `trcoff`   | `trcoff_c` | Irreversibly disable traceback collection and clear its current stack in the toolkit instance.                                      |
+
+The following direct operations extend the original error API. [Prepared and frozen diagnostic state](step8-error-observation.md)
+
+| Raw method | CSPICE     | Effect                                                                                                                                                                               |
+| ---------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `errch`    | `errch_c`  | Replace the leftmost nonblank marker in the prepared long diagnostic with a character field. Blank replacement inserts one space, and the toolkit applies its 1840-byte field width. |
+| `errdp`    | `errdp_c`  | Substitute a finite double into the prepared message with the exact N0067 14-significant-digit diagnostic rendering.                                                                 |
+| `errint`   | `errint_c` | Substitute a signed SpiceInt into the prepared message, including both endpoints and zero.                                                                                           |
+| `qcktrc`   | `qcktrc_c` | Observe the printable current traceback, or the frozen traceback while an error is pending. Explicit byte capacity includes NUL.                                                     |
+| `return`   | `return_c` | Read the immediate-return indicator. With the backend’s RETURN action it is true exactly while failure is pending.                                                                   |
+| `trcdep`   | `trcdep_c` | Read the logical depth of the current or frozen traceback, including overflow entries beyond the 100 stored names.                                                                   |
+| `trcnam`   | `trcnam_c` | Read one zero-based module name, bounded by caller byte capacity. Observe legitimate overflow placeholders and genuine index and capacity errors.                                    |
 
 | domain.method           | CSPICE entrypoint(s) | Args (TS shape)                                   | Returns (TS shape) | Comparison notes (tolerance/normalization) | Statefulness / required kernels                                                                                                                                            |
 | ----------------------- | -------------------- | ------------------------------------------------- | ------------------ | ------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -719,16 +829,98 @@ lengths depend on each routine's dimension order. [Shapes, signed dimensions and
 
 ## Domain: `file-io` readers (`FileIoApi`)
 
-| Raw method       | Actual CSPICE route        | Semantic observations                                                                                                |
-| ---------------- | -------------------------- | -------------------------------------------------------------------------------------------------------------------- |
-| `dafopr(path)`   | `dafopr_c`                 | Backend-owned opaque token; duplicate native read claims share a file/search state.                                  |
-| `dafcls(handle)` | `dafcls_c`                 | Release one read claim; public tokens close once and are rejected after close.                                       |
-| `dafbfs(handle)` | `dafbfs_c`                 | Start/restart search; authored two-segment and empty files distinguish its effect.                                   |
-| `daffna(handle)` | `dafcs_c` then `daffna_c`  | Select the file before each global next operation; compare interleaved true/false sequences, exhaustion and restart. |
-| `dasopr(path)`   | `dasopr_c`                 | Open DAS/DLA/DSK for read; close-one/retain-another claims and real wrong-format/missing-file errors.                |
-| `dascls(handle)` | `dascls_c`                 | Finalize DAS/DLA output and release read claims; reopening proves a valid flushed empty DLA.                         |
-| `dlabfs(handle)` | `dlabfs_c`                 | Return a miss or all eight signed-integer descriptor fields, valid only on a hit.                                    |
-| `dlacls(handle)` | tspice alias of `dascls_c` | Same DAS/DLA ownership/close behavior. N0067 has no separate `dlacls_c` C entrypoint.                                |
+| Raw method | Linked N0067 entry | Result or effect                                                                                                                                                                                                                                                |
+| ---------- | ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `rdtext`   | `rdtext_c`         | Read one formatted physical record, advancing the cursor even after truncation. Return exact UTF-8 string bytes and EOF. EOF releases the unit and permits restart. Independently owned clients share an actual native file cursor until its last lease closes. |
+| `putcml`   | `putcml_c`         | Initialize process-local or WASM-instance-local arguments exactly once, returning void. Observe the actual count and privately copied argument bytes immediately and retain canonical repeated-call errors across reset and kernel clear.                       |
+
+[Text record semantics, ownership and command state](step8-text-command-state.md)
+
+| Raw call                         | CSPICE entry                                                                            | Observable effect                                               |
+| -------------------------------- | --------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
+| `dasac(handle, lines)`           | `dasac_c`                                                                               | Append complete printable comment rows to an owned DAS writer.  |
+| `dasdc(handle)`                  | `dasdc_c`                                                                               | Remove all comment records and preserve logical data addresses. |
+| `dasec(handle, bufsiz, buffln?)` | Traced N0067 `dasec_`, actual physical record reader and original defined-row converter | Return `{ n, lines, done }` for the shared per-file cursor.     |
+
+The first DAS writer can have the same native ID as N0067's private no-record sentinel. The adapter reads that writer's actual comment records. [Cursor handling and file-format evidence](step8-das-comments.md)
+
+| Raw method              | CSPICE entry | Observable effect                                                      |
+| ----------------------- | ------------ | ---------------------------------------------------------------------- |
+| `dlabbs(handle)`        | `dlabbs_c`   | Last descriptor or a miss on an empty list.                            |
+| `dlabns(handle)`        | `dlabns_c`   | Link a new segment immediately and establish its component bases.      |
+| `dlaens(handle)`        | `dlaens_c`   | Calculate and write the three actual component sizes.                  |
+| `dlafps(handle, descr)` | `dlafps_c`   | Follow a supplied backward link or return a miss at the first segment. |
+
+[Generic DLA file creation, provisional sizes and independent persisted traversal](step8-dla-segments.md)
+
+C05 adds typed binary DAS transfers through all nine canonical C entry points. [Address ranges, file persistence and record padding](step8-das-data.md)
+
+| Raw method | CSPICE     | Result or effect                                                                                                                                                    |
+| ---------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `dasadc`   | `dasadc_c` | Append n binary bytes from inclusive zero-based columns in full-stride rows. NUL, high bytes and incomplete final slices are preserved.                             |
+| `dasadd`   | `dasadd_c` | Append the first n IEEE doubles in caller order to the independent double address stream.                                                                           |
+| `dasadi`   | `dasadi_c` | Append the first n signed 32-bit integers to the independent integer address stream.                                                                                |
+| `dasrdc`   | `dasrdc_c` | Read inclusive one-based character addresses into selected columns of initialized rows. Return a full independent destination with every unselected byte preserved. |
+| `dasrdd`   | `dasrdd_c` | Read inclusive one-based double addresses into an independent number array, retaining signed zero, infinities and NaN.                                              |
+| `dasrdi`   | `dasrdi_c` | Read inclusive one-based integer addresses into an independent number array, including both signed 32-bit endpoints.                                                |
+| `dasudc`   | `dasudc_c` | Replace an inclusive character range from selected byte columns; guard the actual N0067 source cursor when continuing in another physical record.                   |
+| `dasudd`   | `dasudd_c` | Replace an inclusive allocated double address range from a validated owned numeric array.                                                                           |
+| `dasudi`   | `dasudi_c` | Replace an inclusive allocated integer address range from a validated owned signed 32-bit array.                                                                    |
+
+C04 exposes actual DAS writer, scratch and metadata routes. [Named/scratch DAS lifecycle, field widths and low-close behavior](step8-das-lifecycle.md)
+
+| Raw method | CSPICE     | Result or effect                                                                                                                                           |
+| ---------- | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `dasonw`   | `dasonw_c` | Create a named DAS writer with case-sensitive four-byte type and 60-byte internal name. Reserve ncomr fixed 1024-byte records for comments.                |
+| `dasops`   | `dasops_c` | Open an actual temporary DAS and return an owned writer claim. Its external name may be empty and its internal name is DAS SCRATCH FILE.                   |
+| `dasopw`   | `dasopw_c` | Open an existing DAS for exclusive write. Toolkit open conflicts and file absence are observed independently.                                              |
+| `dashfn`   | `dashfn_c` | Return the actual file name with caller namlen including NUL; the 255-byte toolkit field and unnamed scratch behavior are preserved.                       |
+| `dashfs`   | `dashfs_c` | Read four reserved/comment counters, the first free record and three ordered triples of logical addresses, directory record numbers and word locations.    |
+| `daslla`   | `daslla_c` | Return the last logical character, double and integer addresses. All three values are observed independently.                                              |
+| `dasllc`   | `dasllc_c` | Release just one claim without flushing or segregating. Dirty data and process buffers require explicit caller handling.                                   |
+| `dasrfr`   | `dasrfr_c` | Read the on-disk fixed header, including its eight-byte identification word, 60-byte internal name and all four counts. Output capacities are independent. |
+| `daswbr`   | `daswbr_c` | Flush updated buffered data records of a live writer. A reader signals the toolkit access diagnostic; the writer stays open.                               |
+
+| Raw call                       | CSPICE entry                                                                      | Observable effect                                                   |
+| ------------------------------ | --------------------------------------------------------------------------------- | ------------------------------------------------------------------- |
+| `dafac(handle,lines)`          | `dafac_c`                                                                         | Append printable comment lines to a writable DAF.                   |
+| `dafdc(handle)`                | `dafdc_c`                                                                         | Remove its complete comment area.                                   |
+| `dafec(handle,bufsiz,buffln?)` | Traced N0067 `dafec_` with initialized outputs and original `F2C_ConvertTrStrArr` | Return `{n,lines,done}` for the shared file cursor.                 |
+| `dafrs(handle,summary)`        | `dafcs_c`, `dafhsf_c`, `dafrs_c`                                                  | Replace the selected packed summary and retain the array addresses. |
+
+Read aliases share page position. Finishing or closing the final DAF read link releases the original extractor cursor. [DAF comment and descriptor semantics](step8-daf-mutation.md)
+
+| Raw call                         | CSPICE entry | Result                                                           |
+| -------------------------------- | ------------ | ---------------------------------------------------------------- |
+| `dafps(nd,ni,dc,ic)`             | `dafps_c`    | Native-order packed `Uint8Array`                                 |
+| `dafus(summary,nd,ni)`           | `dafus_c`    | Owned `{dc,ic}` arrays                                           |
+| `dafgsr(handle,recno,begin,end)` | `dafgsr_c`   | `{found:false}` or `{found:true,data:Uint8Array}`                |
+| `dafrfr(handle,ifnlen?)`         | `dafrfr_c`   | `{nd,ni,ifname,fward,bward,free}`                                |
+| `dafrda(handle,begin,end)`       | `dafrda_c`   | Native-format physical words as `Uint8Array`                     |
+| `dafgda(handle,begin,end)`       | `dafgda_c`   | Numeric data as `number[]`, including translated non-native DAFs |
+
+All four file operations use live DAF handles issued to the calling backend. Word positions, record numbers and addresses are one-based. [Boundary and byte semantics](step8-daf-records.md)
+
+| Raw method               | Actual CSPICE route                  | Semantic observations                                                                                                |
+| ------------------------ | ------------------------------------ | -------------------------------------------------------------------------------------------------------------------- |
+| `dafopr(path)`           | `dafopr_c`                           | Backend-owned opaque token; duplicate native read claims share a file/search state.                                  |
+| `dafcls(handle)`         | `dafcls_c`                           | Release one read or write claim; public tokens close once and are rejected after close.                              |
+| `dafbfs(handle)`         | `dafbfs_c`                           | Start/restart search; authored two-segment and empty files distinguish its effect.                                   |
+| `daffna(handle)`         | `dafcs_c` then `daffna_c`            | Select the file before each global next operation; compare interleaved true/false sequences, exhaustion and restart. |
+| `dafbbs(handle)`         | `dafbbs_c`                           | Begin or restart a backward search at the end of the selected DAF.                                                   |
+| `dafcs(handle)`          | `dafcs_c`                            | Select an already-started search without advancing its cursor.                                                       |
+| `daffpa(handle)`         | `dafcs_c`, traced SPICELIB `daffpa_` | Advance exactly once on the selected DAF using an initialized logical output.                                        |
+| `dafgh()`                | `dafgh_c`                            | Return the oldest surviving local DAF claim matching the toolkit’s current file.                                     |
+| `dafgn(handle, namlen?)` | `dafcs_c`, `dafgn_c`                 | Return the current name using a NUL-inclusive byte capacity and strict UTF-8.                                        |
+| `dafgs(handle)`          | `dafcs_c`, `dafhsf_c`, `dafgs_c`     | Return the packed summary as owned bytes, preserving integer pairs and NaN payloads.                                 |
+| `dafhsf(handle)`         | `dafhsf_c`                           | Return file-wide integer counts `{nd, ni}` independent of current array position.                                    |
+| `dafopw(path)`           | `dafopw_c`                           | Acquire a write claim on an existing native-format DAF and close it with `dafcls`.                                   |
+| `dasopr(path)`           | `dasopr_c`                           | Open DAS/DLA/DSK for read; close-one/retain-another claims and real wrong-format/missing-file errors.                |
+| `dascls(handle)`         | `dascls_c`                           | Finalize DAS/DLA output and release read claims; reopening proves a valid flushed empty DLA.                         |
+| `dlabfs(handle)`         | `dlabfs_c`                           | Return a miss or all eight signed-integer descriptor fields, valid only on a hit.                                    |
+| `dlacls(handle)`         | tspice alias of `dascls_c`           | Same DAS/DLA ownership/close behavior. N0067 has no separate `dlacls_c` C entrypoint.                                |
+
+The C01 review records the initialized DAFFPA alias, cross-client ownership, and exact byte evidence. [DAF navigation](step8-daf-navigation.md)
 
 The opaque-handle contract rejects foreign (within the same host realm), wrong-kind
 and already-closed tokens before FFI. CSPICE's numeric close primitives themselves
@@ -814,6 +1006,42 @@ and pending actual DSK claims close before scratch deletion. No C shim or checke
 WASM artifacts change in this batch; its writer/bounds prerequisite is #694.
 
 ## Domain: `ek` file and segment lifecycle (`EkApi`)
+
+[Physical EK entry values, nulls, byte widths and independent persisted reads](step8-ek-entries.md)
+
+| Raw method | Linked toolkit entry                     | Result or effect                                                                                                                   |
+| ---------- | ---------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| `ekacec`   | `ekacec_c`                               | Add the character entry of an owned writable EK using the observed array count and null flag.                                      |
+| `ekaced`   | `ekaced_c`                               | Add the double precision and TIME entry of an owned writable EK using the observed array count and null flag.                      |
+| `ekacei`   | `ekacei_c`                               | Add the integer entry of an owned writable EK using the observed array count and null flag.                                        |
+| `ekrcec`   | `ekrcec_` with checked C string handling | Read the entire character entry by physical segment/record, preserving null flag, element count and owned payload.                 |
+| `ekrced`   | `ekrced_` with checked C string handling | Read the entire double precision and TIME entry by physical segment/record, preserving null flag, element count and owned payload. |
+| `ekrcei`   | `ekrcei_` with checked C string handling | Read the entire integer entry by physical segment/record, preserving null flag, element count and owned payload.                   |
+| `ekucec`   | `ekucec_c`                               | Replace the character entry of an owned writable EK using the observed array count and null flag.                                  |
+| `ekuced`   | `ekuced_c`                               | Replace the double precision and TIME entry of an owned writable EK using the observed array count and null flag.                  |
+| `ekucei`   | `ekucei_c`                               | Replace the integer entry of an owned writable EK using the observed array count and null flag.                                    |
+
+[EK record edits, table schemas and writer constraints](step8-ek-records.md)
+
+| Raw method | CSPICE     | Result or effect                                                                                                                                                       |
+| ---------- | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `ekops`    | `ekops_c`  | Create a temporary EK writer and return an owned opaque handle. EKCLS closes the file and releases scratch storage.                                                    |
+| `ekbseg`   | `ekbseg_c` | Begin an EK segment from table name and complete column names/declarations; return the zero-based segment number. Fixed-count and editable schemas are distinguished.  |
+| `ekappr`   | `ekappr_c` | Append an unpopulated record in a variable-count segment and return its zero-based ordinal. Initialize its entries before querying or delete the empty record.         |
+| `ekinsr`   | `ekinsr_c` | Insert a new unpopulated record before the indicated zero-based ordinal. Insertion at the current row count extends the segment. Later record numbers shift upward.    |
+| `ekdelr`   | `ekdelr_c` | Delete the given zero-based record and column/index links from an editable segment. Surviving row ordinals shift down. A newly unpopulated record may also be deleted. |
+
+[Physical and logical EK metadata, SELECT storage and query-load ownership](step8-ek-metadata.md)
+
+| Raw method | Linked N0067 entry               | Result or effect                                                                                                                   |
+| ---------- | -------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| `ekccnt`   | `ekccnt_c`                       | Count the columns of an actual loaded logical table; opening its physical file alone does not register a table.                    |
+| `ekcii`    | `ekcii_` with canonical tracing  | Read the indexed column name and all six descriptor attributes, including type, storage class, fixed/variable size and both flags. |
+| `eklef`    | `eklef_c`                        | Create an idempotent direct query-file registration independent of explicit EK reader claims, with a client-owned token.           |
+| `eknelt`   | `eknelt_` with canonical tracing | Read the number of elements in a selected result row, including stored extents of SQL null and fixed/variable array entries.       |
+| `ekpsel`   | `ekpsel_c`                       | Parse SELECT names, aliases, inclusive zero-based byte offsets, type and class arrays, or return the actual language diagnostic.   |
+| `ekssum`   | `ekssum_c`                       | Read physical segment table/row/column counts and every column name and six-field storage descriptor.                              |
+| `ekuef`    | `ekuef_c`                        | Unload one direct physical query registration, preserve independent reader claims, and retire the owner-local token.               |
 
 | Raw method | Actual CSPICE route | Observations                                                                                                        |
 | ---------- | ------------------- | ------------------------------------------------------------------------------------------------------------------- |

@@ -81,6 +81,16 @@ int tspice_get_last_error_trace(char *out, int outMaxBytes);
 void tspice_clear_last_error_buffers(void);
 
 // --- CSPICE error/status utilities ---
+int tspice_errdev(const char *op, char *value, int length, char *out, char *err, int errMaxBytes);
+int tspice_errprt(const char *op, char *value, int length, char *out, char *err, int errMaxBytes);
+int tspice_trcoff(char *err, int errMaxBytes);
+int tspice_errch(const char *marker, const char *value, char *err, int errMaxBytes);
+int tspice_errdp(const char *marker, double value, char *err, int errMaxBytes);
+int tspice_errint(const char *marker, int value, char *err, int errMaxBytes);
+int tspice_qcktrc(int capacity, char *out, char *err, int errMaxBytes);
+int tspice_return(int *out, char *err, int errMaxBytes);
+int tspice_trcdep(int *out, char *err, int errMaxBytes);
+int tspice_trcnam(int index, int capacity, char *out, char *err, int errMaxBytes);
 int tspice_failed(int *outFailed, char *err, int errMaxBytes);
 int tspice_reset(char *err, int errMaxBytes);
 int tspice_getmsg(const char *which, char *out, int outMaxBytes, char *err, int errMaxBytes);
@@ -146,6 +156,11 @@ int tspice_ktotal_all(char *err, int errMaxBytes);
 
 // --- file i/o primitives ---------------------------------------------------
 
+int tspice_rdtext(int owner, const char *path, int width, char *line, int *eof, char *err, int errMaxBytes);
+int tspice_putcml(int argc, int packedBytes, const char *packed, char *observed, char *err, int errMaxBytes);
+int tspice_text_owner(int *owner, char *err, int errMaxBytes);
+int tspice_release_text_owner(int owner, char *err, int errMaxBytes);
+
 int tspice_exists(const char *path, int *outExists, char *err, int errMaxBytes);
 
 int tspice_getfat(
@@ -159,6 +174,34 @@ int tspice_getfat(
 
 // --- DAF -------------------------------------------------------------------
 
+// Pinned N0067 DAF summary uses at most 125 double words.
+#define TSPICE_DAF_SUMMARY_BYTES 1000
+#define TSPICE_DAF_NAME_BYTES (TSPICE_DAF_SUMMARY_BYTES + 1)
+int tspice_dafps(int nd, int ni, const double *dc, int dcCount, const int *ic, int icCount,
+                 unsigned char *out, int room, char *err, int errMaxBytes);
+int tspice_dafus(const unsigned char *summary, int size, int nd, int ni, double *dc, int dcRoom,
+                 int *ic, int icRoom, char *err, int errMaxBytes);
+int tspice_dafgsr(int handle, int recno, int begin, int end, unsigned char *out, int room,
+                  int *outFound, char *err, int errMaxBytes);
+int tspice_dafrfr(int handle, int ifnlen, char *ifname, int room, int *fields, char *err,
+                  int errMaxBytes);
+int tspice_dafrda(int handle, int begin, int end, double *words, int room, char *err,
+                  int errMaxBytes);
+int tspice_dafgda(int handle, int begin, int end, double *words, int room, char *err,
+                  int errMaxBytes);
+int tspice_dafbbs(int handle, char *err, int errMaxBytes);
+int tspice_dafcs(int handle, char *err, int errMaxBytes);
+int tspice_daffpa(int handle, int *outFound, char *err, int errMaxBytes);
+int tspice_dafgh(int *outHandle, char *err, int errMaxBytes);
+int tspice_dafgn(int handle, int namlen, char *out, char *err, int errMaxBytes);
+#define TSPICE_DAF_PAGE_BYTES (256 * 1024 * 1024)
+int tspice_dafac(int handle, int n, int width, const unsigned char *rows, int room, char *err, int errMaxBytes);
+int tspice_dafdc(int handle, char *err, int errMaxBytes);
+int tspice_dafec(int handle, int rows, int width, unsigned char *out, int room, int *n, int *done, char *err, int errMaxBytes);
+int tspice_dafrs(int handle, const unsigned char *summary, int bytes, char *err, int errMaxBytes);
+int tspice_dafgs(int handle, unsigned char *out, int room, int *bytes, char *err, int errMaxBytes);
+int tspice_dafhsf(int handle, int *nd, int *ni, char *err, int errMaxBytes);
+int tspice_dafopw(const char *path, int *outHandle, char *err, int errMaxBytes);
 int tspice_dafopr(const char *path, int *outHandle, char *err, int errMaxBytes);
 int tspice_dafcls(int handle, char *err, int errMaxBytes);
 int tspice_dafbfs(int handle, char *err, int errMaxBytes);
@@ -170,6 +213,36 @@ int tspice_dafbfs(int handle, char *err, int errMaxBytes);
 int tspice_daffna(int handle, int *outFound, char *err, int errMaxBytes);
 
 // --- DAS -------------------------------------------------------------------
+
+// Full N0067 DAS name/header byte capacities, including the C terminator.
+#define TSPICE_DAS_COMMENT_BYTES (256 * 1024 * 1024)
+int tspice_dasac(int handle, int n, int width, const unsigned char *rows, int room, char *err, int errMaxBytes);
+int tspice_dasdc(int handle, char *err, int errMaxBytes);
+int tspice_dasec(int handle, int rows, int width, unsigned char *out, int room, int *n, int *done, char *err, int errMaxBytes);
+#define TSPICE_DAS_PATH_BYTES 256
+#define TSPICE_DAS_ID_BYTES 9
+#define TSPICE_DAS_IFNAME_BYTES 61
+// Same transfer ceiling on native and wasm32; actual allocation may fail earlier.
+#define TSPICE_DAS_DATA_MAX_BYTES (256 * 1024 * 1024)
+int tspice_dasadc(int handle, int n, int bpos, int epos, int datlen, const unsigned char *data, int length, char *err, int errMaxBytes);
+int tspice_dasadd(int handle, int n, const double *data, int length, char *err, int errMaxBytes);
+int tspice_dasadi(int handle, int n, const int *data, int length, char *err, int errMaxBytes);
+int tspice_dasrdc(int handle, int first, int last, int bpos, int epos, int datlen, unsigned char *data, int length, char *err, int errMaxBytes);
+int tspice_dasrdd(int handle, int first, int last, double *data, int length, char *err, int errMaxBytes);
+int tspice_dasrdi(int handle, int first, int last, int *data, int length, char *err, int errMaxBytes);
+int tspice_dasudc(int handle, int first, int last, int bpos, int epos, int datlen, const unsigned char *data, int length, char *err, int errMaxBytes);
+int tspice_dasudd(int handle, int first, int last, const double *data, int length, char *err, int errMaxBytes);
+int tspice_dasudi(int handle, int first, int last, const int *data, int length, char *err, int errMaxBytes);
+
+int tspice_dasonw(const char *path, const char *ftype, const char *ifname, int ncomr, int *out, char *err, int errMaxBytes);
+int tspice_dasops(int *out, char *err, int errMaxBytes);
+int tspice_dasopw(const char *path, int *out, char *err, int errMaxBytes);
+int tspice_dashfn(int handle, int namlen, char *name, char *err, int errMaxBytes);
+int tspice_dashfs(int handle, int *out, char *err, int errMaxBytes);
+int tspice_daslla(int handle, int *out, char *err, int errMaxBytes);
+int tspice_dasllc(int handle, char *err, int errMaxBytes);
+int tspice_dasrfr(int handle, int idwlen, int ifnlen, char *idword, char *ifname, int *out, char *err, int errMaxBytes);
+int tspice_daswbr(int handle, char *err, int errMaxBytes);
 
 int tspice_dasopr(const char *path, int *outHandle, char *err, int errMaxBytes);
 int tspice_dascls(int handle, char *err, int errMaxBytes);
@@ -187,6 +260,10 @@ int tspice_dlaopn(
 
 // Writes a DLA descriptor as 8 int32s in this order:
 // [bwdptr, fwdptr, ibase, isize, dbase, dsize, cbase, csize]
+int tspice_dlabns(int handle, char *err, int room);
+int tspice_dlaens(int handle, char *err, int room);
+int tspice_dlabbs(int handle, int32_t *out, int32_t *found, char *err, int room);
+int tspice_dlafps(int handle, const int32_t *input, int32_t *out, int32_t *found, char *err, int room);
 int tspice_dlabfs(int handle, int32_t *outDescr8, int32_t *outFound, char *err, int errMaxBytes);
 int tspice_dlafns(
     int handle,
@@ -200,6 +277,32 @@ int tspice_dlafns(
 int tspice_dlacls(int handle, char *err, int errMaxBytes);
 
 // --- EK --------------------------------------------------------------------
+
+int tspice_ek_entry_extent(int handle, int segno, int recno, const char *column, int kind, int width, int *count, char *err, int errMaxBytes);
+int tspice_ekacec(int handle, int segno, int recno, const char *column, int count, int width, const char *values, int isNull, char *err, int errMaxBytes);
+int tspice_ekaced(int handle, int segno, int recno, const char *column, int count, const double *values, int isNull, char *err, int errMaxBytes);
+int tspice_ekacei(int handle, int segno, int recno, const char *column, int count, const int *values, int isNull, char *err, int errMaxBytes);
+int tspice_ekrcec(int handle, int segno, int recno, const char *column, int width, char *values, int capacity, int *nvals, int *isNull, char *err, int errMaxBytes);
+int tspice_ekrced(int handle, int segno, int recno, const char *column, double *values, int capacity, int *nvals, int *isNull, char *err, int errMaxBytes);
+int tspice_ekrcei(int handle, int segno, int recno, const char *column, int *values, int capacity, int *nvals, int *isNull, char *err, int errMaxBytes);
+int tspice_ekucec(int handle, int segno, int recno, const char *column, int count, int width, const char *values, int isNull, char *err, int errMaxBytes);
+int tspice_ekuced(int handle, int segno, int recno, const char *column, int count, const double *values, int isNull, char *err, int errMaxBytes);
+int tspice_ekucei(int handle, int segno, int recno, const char *column, int count, const int *values, int isNull, char *err, int errMaxBytes);
+
+int tspice_ekops(int *out, char *err, int errMaxBytes);
+int tspice_ekbseg(int handle, const char *table, int count, int nameWidth, const char *names, int declWidth, const char *decls, int *out, char *err, int errMaxBytes);
+int tspice_ekappr(int handle, int segment, int *out, char *err, int errMaxBytes);
+int tspice_ekinsr(int handle, int segment, int row, char *err, int errMaxBytes);
+int tspice_ekdelr(int handle, int segment, int row, char *err, int errMaxBytes);
+
+int tspice_ekccnt(const char *table, int *count, char *err, int errMaxBytes);
+int tspice_ekcii(const char *table, int index, int width, int *words, char *name, char *err, int errMaxBytes);
+int tspice_eklef(const char *path, int *generation, char *err, int errMaxBytes);
+int tspice_eknelt(int selectIndex, int row, int *count, char *err, int errMaxBytes);
+int tspice_ekpsel(const char *query, int *words, char *text, char *err, int errMaxBytes);
+int tspice_ekssum(int id, int loaded, int segment, int *words, char *text, char *err, int errMaxBytes);
+int tspice_ekuef(int generation, char *err, int errMaxBytes);
+int tspice_ekload_nseg(int generation, int *count, char *err, int errMaxBytes);
 
 int tspice_ekopr(const char *path, int *outHandle, char *err, int errMaxBytes);
 int tspice_ekopw(const char *path, int *outHandle, char *err, int errMaxBytes);
@@ -529,6 +632,12 @@ int tspice_expool(
 // --- low-level primitives ---
 
 // str2et_c: convert time string -> ET seconds past J2000.
+int tspice_etcal(double et, int callen, char *out, char *err, int errMaxBytes);
+int tspice_utc2et(const char *utc, double *et, char *err, int errMaxBytes);
+int tspice_tparch(const char *type, char *err, int errMaxBytes);
+int tspice_tsetyr(int year, char *err, int errMaxBytes);
+int tspice_et2lst(double et, int body, double lon, const char *type, int timlen, int ampmlen,
+                  int *hms, char *time, char *ampm, char *err, int errMaxBytes);
 int tspice_str2et(const char *time, double *outEt, char *err, int errMaxBytes);
 
 // et2utc_c: convert ET seconds past J2000 -> formatted UTC string.
@@ -610,6 +719,10 @@ int tspice_bodc2n(
     char *err,
     int errMaxBytes);
 
+int tspice_srfc2s(int code, int bodyId, int srflen, char *outText, int *outIsName, char *err, int errMaxBytes);
+int tspice_srfcss(int code, const char *body, int srflen, char *outText, int *outIsName, char *err, int errMaxBytes);
+int tspice_srfs2c(const char *surface, const char *body, int *outCode, int *outFound, char *err, int errMaxBytes);
+int tspice_srfscc(const char *surface, int bodyId, int *outCode, int *outFound, char *err, int errMaxBytes);
 // bodc2s_c: body code -> mapped name (or decimal string if unknown).
 int tspice_bodc2s(
     int code,
@@ -722,6 +835,13 @@ int tspice_ccifrm(
     int *outFound,
     char *err,
     int errMaxBytes);
+
+int tspice_bltfrm(int frameClass, uintptr_t handle, char *err, int errMaxBytes);
+int tspice_pxfrm2(const char *from, const char *to, double etfrom, double etto, double *out, char *err, int errMaxBytes);
+int tspice_tipbod(const char *ref, int body, double et, double *out, char *err, int errMaxBytes);
+int tspice_tisbod(const char *ref, int body, double et, double *out, char *err, int errMaxBytes);
+int tspice_tkfram(int typeId, double *out, int *frame, int *found, char *err, int errMaxBytes);
+int tspice_xfmsta(const double *state, const char *from, const char *to, const char *body, double *out, char *err, int errMaxBytes);
 
 // pxform_c: compute frame transformation matrix.
 //
@@ -1613,6 +1733,15 @@ int tspice_scs2e(
     char *err,
     int errMaxBytes);
 
+// N0067 SCPART has no room parameter. Supply full-size caller-owned arrays.
+#define TSPICE_SCLK_MAX_PARTITIONS 9999
+// A type-1 clock has at most 10 fields, each with nominal width <=309.
+#define TSPICE_SCLK_FORMAT_MAX_BYTES 3100
+int tspice_sce2t(int sc, double et, double *out, char *err, int errMaxBytes);
+int tspice_scfmt(int sc, double ticks, int clklen, char *out, char *err, int errMaxBytes);
+int tspice_scpart(int sc, int room, int *count, double *pstart, double *pstop, char *err, int errMaxBytes);
+int tspice_sctiks(int sc, const char *clkstr, double *out, char *err, int errMaxBytes);
+
 // sce2s_c: convert ET seconds past J2000 -> an encoded SCLK string.
 int tspice_sce2s(
     int sc,
@@ -1686,6 +1815,29 @@ int tspice_ckgpav(
     int errMaxBytes);
 
 // --- CK file query / management (read-only) --------------------------------
+
+int tspice_pckcls(int handle, char *err, int errMaxBytes);
+int tspice_pckcov(const char *path, int classId, uintptr_t dest, char *err, int errMaxBytes);
+int tspice_pckfrm(const char *path, uintptr_t dest, char *err, int errMaxBytes);
+int tspice_pcklof(const char *path, int *out, char *err, int errMaxBytes);
+int tspice_pckopn(const char *path, const char *ifname, int ncomch, int *out, char *err, int errMaxBytes);
+int tspice_pckuof(int handle, char *err, int errMaxBytes);
+int tspice_pckw02(int handle, int classId, const char *frame, double first, double last, const char *segid, double intlen, int n, int degree, const double *coefficients, int count, double btime, char *err, int errMaxBytes);
+
+int tspice_ckopn(const char *path, const char *ifname, int ncomch, int *out, char *err, int errMaxBytes);
+int tspice_ckcls(int handle, char *err, int errMaxBytes);
+int tspice_ckw01(int handle, double beg, double end, int inst, const char *ref, int av, const char *segid, int n, const double *data, int count, char *err, int errMaxBytes);
+int tspice_ckw02(int handle, double beg, double end, int inst, const char *ref, const char *segid, int n, const double *data, int count, char *err, int errMaxBytes);
+int tspice_ckw03(int handle, double beg, double end, int inst, const char *ref, int av, const char *segid, int n, int nints, const double *data, int count, char *err, int errMaxBytes);
+int tspice_ckw05(int handle, int subtype, int degree, double beg, double end, int inst, const char *ref, int av, const char *segid, int n, int nints, double rate, const double *data, int count, char *err, int errMaxBytes);
+
+int tspice_ckfrot(int inst, double et, double *out, int *ref, int *found, char *err, int errMaxBytes);
+int tspice_ckfxfm(int inst, double et, double *out, int *ref, int *found, char *err, int errMaxBytes);
+int tspice_ckgr02(int handle, const unsigned char *bytes, int size, int recno, double *out, char *err, int errMaxBytes);
+int tspice_ckgr03(int handle, const unsigned char *bytes, int size, int recno, double *out, int *nwords, char *err, int errMaxBytes);
+int tspice_ckmeta(int ckid, const char *meta, int *out, char *err, int errMaxBytes);
+int tspice_cknr02(int handle, const unsigned char *bytes, int size, int *out, char *err, int errMaxBytes);
+int tspice_cknr03(int handle, const unsigned char *bytes, int size, int *out, char *err, int errMaxBytes);
 
 // cklpf_c: load a CK file for access by pointing routines.
 int tspice_cklpf(const char *ck, int *outHandle, char *err, int errMaxBytes);

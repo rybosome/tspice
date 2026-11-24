@@ -1,0 +1,402 @@
+[
+  {
+    "caseId": "error-errprt-initial-capacities",
+    "description": "Read the established toolkit setting at one-character, intermediate, default and maximal signed capacities.",
+    "workflow": [
+      {
+        "op": "error.errprt",
+        "operation": "GET",
+        "capacity": 2
+      },
+      {
+        "op": "error.errprt",
+        "operation": "GET",
+        "capacity": 4
+      },
+      {
+        "op": "error.errprt",
+        "operation": "GET"
+      },
+      {
+        "op": "error.errprt",
+        "operation": "GET",
+        "capacity": 2147483647
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "error-errprt-length--2147483648",
+    "description": "Use physical sentinel storage while passing the signed length to the canonical C interface.",
+    "workflow": [
+      {
+        "op": "error.errprt",
+        "operation": "GET",
+        "capacity": -2147483648
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(STRINGTOOSHORT)"]
+    }
+  },
+  {
+    "caseId": "error-errprt-length-0",
+    "description": "Use physical sentinel storage while passing the signed length to the canonical C interface.",
+    "workflow": [
+      {
+        "op": "error.errprt",
+        "operation": "GET",
+        "capacity": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(STRINGTOOSHORT)"]
+    }
+  },
+  {
+    "caseId": "error-errprt-length-1",
+    "description": "Use physical sentinel storage while passing the signed length to the canonical C interface.",
+    "workflow": [
+      {
+        "op": "error.errprt",
+        "operation": "GET",
+        "capacity": 1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(STRINGTOOSHORT)"]
+    }
+  },
+  {
+    "caseId": "error-errprt-empty-setting",
+    "description": "Let CSPICE diagnose a zero-byte input string.",
+    "workflow": [
+      {
+        "op": "error.errprt",
+        "operation": "SET",
+        "value": ""
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(EMPTYSTRING)"]
+    }
+  },
+  {
+    "caseId": "error-errprt-ordered",
+    "description": "Observe the actual printable mask and output-buffer truncation after each ordered selection.",
+    "workflow": [
+      {
+        "op": "error.errprt",
+        "operation": "SET",
+        "value": "TRACEBACK"
+      },
+      {
+        "op": "error.errprt",
+        "operation": "GET"
+      },
+      {
+        "op": "error.errprt",
+        "operation": "GET",
+        "capacity": 8
+      },
+      {
+        "op": "error.errprt",
+        "operation": "SET",
+        "value": "long, Short"
+      },
+      {
+        "op": "error.errprt",
+        "operation": "GET"
+      },
+      {
+        "op": "error.errprt",
+        "operation": "GET",
+        "capacity": 8
+      },
+      {
+        "op": "error.errprt",
+        "operation": "SET",
+        "value": "EXPLAIN"
+      },
+      {
+        "op": "error.errprt",
+        "operation": "GET"
+      },
+      {
+        "op": "error.errprt",
+        "operation": "GET",
+        "capacity": 8
+      },
+      {
+        "op": "error.reset"
+      },
+      {
+        "op": "error.errprt",
+        "operation": "GET"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "error-errprt-all-default",
+    "description": "Observe the actual printable mask and output-buffer truncation after each ordered selection.",
+    "workflow": [
+      {
+        "op": "error.errprt",
+        "operation": "SET",
+        "value": "ALL"
+      },
+      {
+        "op": "error.errprt",
+        "operation": "GET"
+      },
+      {
+        "op": "error.errprt",
+        "operation": "GET",
+        "capacity": 8
+      },
+      {
+        "op": "error.errprt",
+        "operation": "SET",
+        "value": "DEFAULT"
+      },
+      {
+        "op": "error.errprt",
+        "operation": "GET"
+      },
+      {
+        "op": "error.errprt",
+        "operation": "GET",
+        "capacity": 8
+      },
+      {
+        "op": "error.errprt",
+        "operation": "SET",
+        "value": "ALL"
+      },
+      {
+        "op": "error.errprt",
+        "operation": "GET"
+      },
+      {
+        "op": "error.errprt",
+        "operation": "GET",
+        "capacity": 8
+      },
+      {
+        "op": "error.reset"
+      },
+      {
+        "op": "error.errprt",
+        "operation": "GET"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "error-errprt-clear-order",
+    "description": "Observe the actual printable mask and output-buffer truncation after each ordered selection.",
+    "workflow": [
+      {
+        "op": "error.errprt",
+        "operation": "SET",
+        "value": "DEFAULT"
+      },
+      {
+        "op": "error.errprt",
+        "operation": "GET"
+      },
+      {
+        "op": "error.errprt",
+        "operation": "GET",
+        "capacity": 8
+      },
+      {
+        "op": "error.errprt",
+        "operation": "SET",
+        "value": "ALL, NONE, SHORT, EXPLAIN"
+      },
+      {
+        "op": "error.errprt",
+        "operation": "GET"
+      },
+      {
+        "op": "error.errprt",
+        "operation": "GET",
+        "capacity": 8
+      },
+      {
+        "op": "error.reset"
+      },
+      {
+        "op": "error.errprt",
+        "operation": "GET"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "error-errprt-repeated",
+    "description": "Observe the actual printable mask and output-buffer truncation after each ordered selection.",
+    "workflow": [
+      {
+        "op": "error.errprt",
+        "operation": "SET",
+        "value": "short,SHORT"
+      },
+      {
+        "op": "error.errprt",
+        "operation": "GET"
+      },
+      {
+        "op": "error.errprt",
+        "operation": "GET",
+        "capacity": 8
+      },
+      {
+        "op": "error.errprt",
+        "operation": "SET",
+        "value": "NONE, long, LONG"
+      },
+      {
+        "op": "error.errprt",
+        "operation": "GET"
+      },
+      {
+        "op": "error.errprt",
+        "operation": "GET",
+        "capacity": 8
+      },
+      {
+        "op": "error.reset"
+      },
+      {
+        "op": "error.errprt",
+        "operation": "GET"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "error-errprt-blank",
+    "description": "Observe the actual printable mask and output-buffer truncation after each ordered selection.",
+    "workflow": [
+      {
+        "op": "error.errprt",
+        "operation": "SET",
+        "value": " "
+      },
+      {
+        "op": "error.errprt",
+        "operation": "GET"
+      },
+      {
+        "op": "error.errprt",
+        "operation": "GET",
+        "capacity": 8
+      },
+      {
+        "op": "error.errprt",
+        "operation": "SET",
+        "value": "SHORT"
+      },
+      {
+        "op": "error.errprt",
+        "operation": "GET"
+      },
+      {
+        "op": "error.errprt",
+        "operation": "GET",
+        "capacity": 8
+      },
+      {
+        "op": "error.errprt",
+        "operation": "SET",
+        "value": ",,"
+      },
+      {
+        "op": "error.errprt",
+        "operation": "GET"
+      },
+      {
+        "op": "error.errprt",
+        "operation": "GET",
+        "capacity": 8
+      },
+      {
+        "op": "error.reset"
+      },
+      {
+        "op": "error.errprt",
+        "operation": "GET"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "error-errprt-token-limit",
+    "description": "Observe the actual printable mask and output-buffer truncation after each ordered selection.",
+    "workflow": [
+      {
+        "op": "error.errprt",
+        "operation": "SET",
+        "value": "SHORT,SHORT,SHORT,SHORT,SHORT,SHORT,SHORT,SHORT,SHORT,SHORT,NONE"
+      },
+      {
+        "op": "error.errprt",
+        "operation": "GET"
+      },
+      {
+        "op": "error.errprt",
+        "operation": "GET",
+        "capacity": 8
+      },
+      {
+        "op": "error.reset"
+      },
+      {
+        "op": "error.errprt",
+        "operation": "GET"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "error-errprt-invalid-list",
+    "description": "Encounter an invalid item after an earlier valid selection.",
+    "workflow": [
+      {
+        "op": "error.errdev",
+        "operation": "SET",
+        "value": "NULL"
+      },
+      {
+        "op": "error.errprt",
+        "operation": "SET",
+        "value": "SHORT, bogus, LONG"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(INVALIDLISTITEM)"]
+    }
+  }
+]

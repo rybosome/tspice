@@ -23,7 +23,9 @@ anything lands on main; never report that increase as merged coverage.
 
 The 76 pinned source PRs cover all 487 expansion routines and passed CI at their accepted heads. The queue records the exact source heads, bases and CI runs.
 
-[Checkpoint 01](https://github.com/rybosome/tspice/pull/783) landed as `85375ed988b0a003247454f48a02a8173e06d53f` and passed [main CI](https://github.com/rybosome/tspice/actions/runs/45039222575). Its validated tree adds 145 routines to the baseline for a total of 307. The squash commit carries the implementation tree. Checkpoint 02 carries the 17 original source histories and adds 101 routines for an expected total of 408. Source review and validation for checkpoint 02 are pending.
+[Checkpoint 01](https://github.com/rybosome/tspice/pull/783) landed the implementation for 307 cumulative routines. [Checkpoint 02](https://github.com/rybosome/tspice/pull/784) brought the cumulative total to 408. Its [audit evidence](https://github.com/rybosome/tspice/pull/785) and [history follow-up](https://github.com/rybosome/tspice/pull/786) landed the validated implementation and evidence tree. [PR #787](https://github.com/rybosome/tspice/pull/787) then restored all 29 original source heads with a merge commit.
+
+Checkpoint 03 adds 115 routines and 895 registered case identities. Its merge commit will make the 20 additional original source heads reachable from main. The combined source has 523 routines and 3,527 registered cases. Current combined parity evidence follows the rebuilt WASM and both required execution lanes.
 
 ## Initial ownership and deliveries
 
@@ -193,3 +195,31 @@ The checkpoint also preserves source history and evidence for [#722](https://git
 The checkpoint also preserves source history and evidence for [#744](https://github.com/rybosome/tspice/pull/744).
 
 The checkpoint also preserves source history and evidence for [#735](https://github.com/rybosome/tspice/pull/735), [#746](https://github.com/rybosome/tspice/pull/746).
+
+The checkpoint also preserves source history and evidence for [#723](https://github.com/rybosome/tspice/pull/723).
+
+The checkpoint also preserves source history and evidence for [#724](https://github.com/rybosome/tspice/pull/724).
+
+The checkpoint also preserves source history and evidence for [#740](https://github.com/rybosome/tspice/pull/740).
+
+The checkpoint also preserves source history and evidence for [#741](https://github.com/rybosome/tspice/pull/741).
+
+The checkpoint also preserves source history and evidence for [#727](https://github.com/rybosome/tspice/pull/727), [#738](https://github.com/rybosome/tspice/pull/738), [#751](https://github.com/rybosome/tspice/pull/751).
+
+The checkpoint also preserves source history and evidence for [#743](https://github.com/rybosome/tspice/pull/743), [#755](https://github.com/rybosome/tspice/pull/755).
+
+The checkpoint also preserves source history and evidence for [#750](https://github.com/rybosome/tspice/pull/750), [#758](https://github.com/rybosome/tspice/pull/758).
+
+The checkpoint also preserves source history and evidence for [#759](https://github.com/rybosome/tspice/pull/759).
+
+The checkpoint also preserves source history and evidence for [#760](https://github.com/rybosome/tspice/pull/760).
+
+The checkpoint also preserves source history and evidence for [#753](https://github.com/rybosome/tspice/pull/753), [#762](https://github.com/rybosome/tspice/pull/762).
+
+The checkpoint also preserves source history and evidence for [#765](https://github.com/rybosome/tspice/pull/765).
+
+The checkpoint also preserves source history and evidence for [#767](https://github.com/rybosome/tspice/pull/767).
+
+The checkpoint also preserves source history and evidence for [#772](https://github.com/rybosome/tspice/pull/772).
+
+The checkpoint also preserves source history and evidence for [#749](https://github.com/rybosome/tspice/pull/749), [#779](https://github.com/rybosome/tspice/pull/779).

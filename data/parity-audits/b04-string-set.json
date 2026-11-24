@@ -189,7 +189,8 @@
       ],
       "id": "local-cp02-44c6136d16c7-node",
       "kind": "local",
-      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 44c6136d16c7325e07e5e233988ffb02dab543ee. The native-required lane completed 5264 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45043538272/job/137273010344"
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 44c6136d16c7325e07e5e233988ffb02dab543ee. The native-required lane completed 5264 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45043538272/job/137273010344",
+      "historical": true
     },
     {
       "backend": "node",
@@ -221,7 +222,8 @@
       "kind": "ci",
       "commit": "b826f8e1b3d9afff24f291c885b6380ff82a8689",
       "url": "https://github.com/rybosome/tspice/actions/runs/45048703356/job/137288855808",
-      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 5264 live comparisons without unexpected skips."
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 5264 live comparisons without unexpected skips.",
+      "historical": true
     },
     {
       "backend": "wasm",
@@ -251,7 +253,8 @@
       ],
       "id": "local-cp02-44c6136d16c7-wasm",
       "kind": "local",
-      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 44c6136d16c7325e07e5e233988ffb02dab543ee. The native-required lane completed 5264 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45043538272/job/137273010344"
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 44c6136d16c7325e07e5e233988ffb02dab543ee. The native-required lane completed 5264 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45043538272/job/137273010344",
+      "historical": true
     },
     {
       "backend": "wasm",
@@ -283,7 +286,132 @@
       "kind": "ci",
       "commit": "b826f8e1b3d9afff24f291c885b6380ff82a8689",
       "url": "https://github.com/rybosome/tspice/actions/runs/45048703356/job/137288855808",
-      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 5264 live comparisons without unexpected skips."
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 5264 live comparisons without unexpected skips.",
+      "historical": true
+    },
+    {
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "2b43b21f07ac9de46badeb771af45f82a32a75b4f0ab97800dbfb014d7aba2e6",
+      "caseIds": [
+        "cells-windows-lparss-blank-delims-required",
+        "cells-windows-lparss-capacity-after-dedup",
+        "cells-windows-lparss-control-length",
+        "cells-windows-lparss-empty-and-blank",
+        "cells-windows-lparss-empty-full",
+        "cells-windows-lparss-late-excess",
+        "cells-windows-lparss-mixed",
+        "cells-windows-lparss-mixed-delimiter-order",
+        "cells-windows-lparss-narrow-empty-bypass",
+        "cells-windows-lparss-no-delimiter",
+        "cells-windows-lparss-nonblank-whitespace",
+        "cells-windows-lparss-nonempty-delims-required",
+        "cells-windows-lparss-replace",
+        "cells-windows-lparss-separator-rules",
+        "cells-windows-lparss-split-full",
+        "cells-windows-lparss-utf8",
+        "cells-windows-lparss-width-collision",
+        "cells-windows-lparss-zero-capacity"
+      ],
+      "id": "local-cp03-779d6fd6ae41-node",
+      "kind": "local",
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 779d6fd6ae41c78017a8cf7ccaec5fef3100112c. The native-required lane completed 7054 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45097193130/job/137439518970"
+    },
+    {
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "2b43b21f07ac9de46badeb771af45f82a32a75b4f0ab97800dbfb014d7aba2e6",
+      "caseIds": [
+        "cells-windows-lparss-blank-delims-required",
+        "cells-windows-lparss-capacity-after-dedup",
+        "cells-windows-lparss-control-length",
+        "cells-windows-lparss-empty-and-blank",
+        "cells-windows-lparss-empty-full",
+        "cells-windows-lparss-late-excess",
+        "cells-windows-lparss-mixed",
+        "cells-windows-lparss-mixed-delimiter-order",
+        "cells-windows-lparss-narrow-empty-bypass",
+        "cells-windows-lparss-no-delimiter",
+        "cells-windows-lparss-nonblank-whitespace",
+        "cells-windows-lparss-nonempty-delims-required",
+        "cells-windows-lparss-replace",
+        "cells-windows-lparss-separator-rules",
+        "cells-windows-lparss-split-full",
+        "cells-windows-lparss-utf8",
+        "cells-windows-lparss-width-collision",
+        "cells-windows-lparss-zero-capacity"
+      ],
+      "id": "ci-cp03-779d6fd6ae41-node",
+      "kind": "ci",
+      "commit": "c4bd798cc20d13e8dfd51e7e83ba740ffe4418ff",
+      "url": "https://github.com/rybosome/tspice/actions/runs/45127597533/job/137535439275",
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 7054 live comparisons without unexpected skips."
+    },
+    {
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "2b43b21f07ac9de46badeb771af45f82a32a75b4f0ab97800dbfb014d7aba2e6",
+      "caseIds": [
+        "cells-windows-lparss-blank-delims-required",
+        "cells-windows-lparss-capacity-after-dedup",
+        "cells-windows-lparss-control-length",
+        "cells-windows-lparss-empty-and-blank",
+        "cells-windows-lparss-empty-full",
+        "cells-windows-lparss-late-excess",
+        "cells-windows-lparss-mixed",
+        "cells-windows-lparss-mixed-delimiter-order",
+        "cells-windows-lparss-narrow-empty-bypass",
+        "cells-windows-lparss-no-delimiter",
+        "cells-windows-lparss-nonblank-whitespace",
+        "cells-windows-lparss-nonempty-delims-required",
+        "cells-windows-lparss-replace",
+        "cells-windows-lparss-separator-rules",
+        "cells-windows-lparss-split-full",
+        "cells-windows-lparss-utf8",
+        "cells-windows-lparss-width-collision",
+        "cells-windows-lparss-zero-capacity"
+      ],
+      "id": "local-cp03-779d6fd6ae41-wasm",
+      "kind": "local",
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 779d6fd6ae41c78017a8cf7ccaec5fef3100112c. The native-required lane completed 7054 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45097193130/job/137439518970"
+    },
+    {
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "2b43b21f07ac9de46badeb771af45f82a32a75b4f0ab97800dbfb014d7aba2e6",
+      "caseIds": [
+        "cells-windows-lparss-blank-delims-required",
+        "cells-windows-lparss-capacity-after-dedup",
+        "cells-windows-lparss-control-length",
+        "cells-windows-lparss-empty-and-blank",
+        "cells-windows-lparss-empty-full",
+        "cells-windows-lparss-late-excess",
+        "cells-windows-lparss-mixed",
+        "cells-windows-lparss-mixed-delimiter-order",
+        "cells-windows-lparss-narrow-empty-bypass",
+        "cells-windows-lparss-no-delimiter",
+        "cells-windows-lparss-nonblank-whitespace",
+        "cells-windows-lparss-nonempty-delims-required",
+        "cells-windows-lparss-replace",
+        "cells-windows-lparss-separator-rules",
+        "cells-windows-lparss-split-full",
+        "cells-windows-lparss-utf8",
+        "cells-windows-lparss-width-collision",
+        "cells-windows-lparss-zero-capacity"
+      ],
+      "id": "ci-cp03-779d6fd6ae41-wasm",
+      "kind": "ci",
+      "commit": "c4bd798cc20d13e8dfd51e7e83ba740ffe4418ff",
+      "url": "https://github.com/rybosome/tspice/actions/runs/45127597533/job/137535439275",
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 7054 live comparisons without unexpected skips."
     }
   ],
   "routines": [
@@ -415,13 +543,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "CellsWindowsApi.lparss -> owned native token and serialized addon -> tspice_lparss -> lparss_c, independently compared with the locked SpiceyPy C symbol.",
           "executions": [
-            "local-cp02-44c6136d16c7-node",
-            "ci-cp02-44c6136d16c7-node"
+            "local-cp03-779d6fd6ae41-node",
+            "ci-cp03-779d6fd6ae41-node"
           ]
         },
         "wasm": {
@@ -431,13 +561,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "CellsWindowsApi.lparss -> owned WASM token and scoped UTF-8 buffers -> tspice_lparss -> lparss_c, independently compared with the locked SpiceyPy C symbol.",
           "executions": [
-            "local-cp02-44c6136d16c7-wasm",
-            "ci-cp02-44c6136d16c7-wasm"
+            "local-cp03-779d6fd6ae41-wasm",
+            "ci-cp03-779d6fd6ae41-wasm"
           ]
         }
       }

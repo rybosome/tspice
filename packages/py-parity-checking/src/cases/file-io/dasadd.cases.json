@@ -1,0 +1,206 @@
+[
+  {
+    "caseId": "file-io-dasadd-independent-address-streams",
+    "description": "Interleave character, double and integer appends; observe independent addresses and read each selected prefix.",
+    "workflow": [
+      {
+        "op": "file-io.dasops",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dasadd",
+        "handleId": "h",
+        "n": 4,
+        "data": [0.125, -0.5, 8192, -91.75, 1.25, 0.015625, 4.5]
+      },
+      {
+        "op": "file-io.daslla",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dasadc",
+        "handleId": "h",
+        "n": 3,
+        "data": [65, 0, 9],
+        "bpos": 0,
+        "epos": 2,
+        "datlen": 3
+      },
+      {
+        "op": "file-io.dasadd",
+        "handleId": "h",
+        "n": 1,
+        "data": [-1.5]
+      },
+      {
+        "op": "file-io.dasadi",
+        "handleId": "h",
+        "n": 1,
+        "data": [17]
+      },
+      {
+        "op": "file-io.dasadd",
+        "handleId": "h",
+        "n": 3,
+        "data": [1.25, 0.015625, 4.5]
+      },
+      {
+        "op": "file-io.daslla",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dasrdd",
+        "handleId": "h",
+        "first": 1,
+        "last": 4
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dasadd-empty-and-negative",
+    "description": "Transfer zero and negative counts before and after a positive append and inspect logical data.",
+    "workflow": [
+      {
+        "op": "file-io.dasops",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dasadd",
+        "handleId": "h",
+        "n": 0,
+        "data": []
+      },
+      {
+        "op": "file-io.daslla",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dasadd",
+        "handleId": "h",
+        "n": 7,
+        "data": [0.125, -0.5, 8192, -91.75, 1.25, 0.015625, 4.5]
+      },
+      {
+        "op": "file-io.dasadd",
+        "handleId": "h",
+        "n": -3,
+        "data": []
+      },
+      {
+        "op": "file-io.daslla",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dasrdd",
+        "handleId": "h",
+        "first": 1,
+        "last": 7
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dasadd-physical-boundary",
+    "description": "Append across the end of a typed data record after another data type creates an intervening cluster.",
+    "workflow": [
+      {
+        "op": "file-io.dasops",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dasadd",
+        "handleId": "h",
+        "n": 126,
+        "data": [
+          -2.75, -2.5, -2.25, -2.0, -1.75, -1.5, -1.25, -1.0, -0.75, -0.5,
+          -0.25, 0.0, 0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0, 2.25, 2.5,
+          2.75, -2.75, -2.5, -2.25, -2.0, -1.75, -1.5, -1.25, -1.0, -0.75, -0.5,
+          -0.25, 0.0, 0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0, 2.25, 2.5,
+          2.75, -2.75, -2.5, -2.25, -2.0, -1.75, -1.5, -1.25, -1.0, -0.75, -0.5,
+          -0.25, 0.0, 0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0, 2.25, 2.5,
+          2.75, -2.75, -2.5, -2.25, -2.0, -1.75, -1.5, -1.25, -1.0, -0.75, -0.5,
+          -0.25, 0.0, 0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0, 2.25, 2.5,
+          2.75, -2.75, -2.5, -2.25, -2.0, -1.75, -1.5, -1.25, -1.0, -0.75, -0.5,
+          -0.25, 0.0, 0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0, 2.25, 2.5,
+          2.75, -2.75, -2.5, -2.25, -2.0, -1.75, -1.5, -1.25, -1.0, -0.75, -0.5,
+          -0.25
+        ]
+      },
+      {
+        "op": "file-io.dasadi",
+        "handleId": "h",
+        "n": 1,
+        "data": [11]
+      },
+      {
+        "op": "file-io.dasadd",
+        "handleId": "h",
+        "n": 7,
+        "data": [0.0, 0.25, 0.5, 0.75, 1.0, 1.25, 1.5]
+      },
+      {
+        "op": "file-io.daslla",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dasrdd",
+        "handleId": "h",
+        "first": 124,
+        "last": 133
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dasadd-write-access",
+    "description": "A read-only handle rejects a positive append.",
+    "workflow": [
+      {
+        "op": "file-io.dasonw",
+        "handleId": "h",
+        "path": {
+          "kind": "scratch",
+          "rel": "observed/data.das"
+        },
+        "ftype": "DATA",
+        "ifname": "DAS DATA",
+        "ncomr": 0
+      },
+      {
+        "op": "file-io.dasadd",
+        "handleId": "h",
+        "n": 7,
+        "data": [0.125, -0.5, 8192, -91.75, 1.25, 0.015625, 4.5]
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dasopr",
+        "handleId": "h",
+        "path": {
+          "kind": "scratch",
+          "rel": "observed/data.das"
+        }
+      },
+      {
+        "op": "file-io.dasadd",
+        "handleId": "h",
+        "n": 1,
+        "data": [0.125]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["DASINVALIDACCESS"]
+    }
+  }
+]

@@ -1,9 +1,23 @@
 import type { TimeApi, TimeKitApi } from "@rybosome/tspice-backend-contract";
-import { assertNever, assertSpiceInt32 } from "@rybosome/tspice-core";
+import {
+  assertNever,
+  assertSpiceInt32,
+  spiceStringByteLength,
+  checkTimeNumber,
+  checkTimeText,
+  checkTimeYearWindow,
+  timeOutputCapacity,
+} from "@rybosome/tspice-core";
 
 import type { EmscriptenModule } from "../lowlevel/exports.js";
 
-import { WASM_ERR_MAX_BYTES, withAllocs, withMalloc } from "../codec/alloc.js";
+import { tspiceCall0, tspiceCall1Path } from "../codec/calls.js";
+import {
+  WASM_ERR_MAX_BYTES,
+  WASM_MAX_ALLOC_BYTES,
+  withAllocs,
+  withMalloc,
+} from "../codec/alloc.js";
 import { throwWasmSpiceError } from "../codec/errors.js";
 import { readFixedWidthCString, writeUtf8CString } from "../codec/strings.js";
 
@@ -503,6 +517,91 @@ export function createTimeApi(
       return timdef;
     })(),
 
+    etcal(et, callen = 181) {
+      checkTimeNumber(et, "etcal(et)");
+      const len = timeOutputCapacity(callen, 181);
+      return withAllocs(
+        module,
+        [Math.max(len, 1), WASM_ERR_MAX_BYTES],
+        (out, err) => {
+          const code = module._tspice_etcal(
+            et,
+            len,
+            out,
+            err,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (code) throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, code);
+          return module.UTF8ToString(out, len);
+        },
+      );
+    },
+    utc2et(utcstr) {
+      checkTimeText(utcstr, "utc2et(utcstr)", WASM_MAX_ALLOC_BYTES - 1);
+      return withUtf8CString(module, utcstr, (text) =>
+        withAllocs(module, [8, WASM_ERR_MAX_BYTES], (out, err) => {
+          const code = module._tspice_utc2et(
+            text,
+            out,
+            err,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (code) throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, code);
+          return module.HEAPF64[out / 8]!;
+        }),
+      );
+    },
+    tparch(type) {
+      checkTimeText(type, "tparch(type)", WASM_MAX_ALLOC_BYTES - 1);
+      tspiceCall1Path(
+        module,
+        (text, err, cap) => module._tspice_tparch(text, err, cap),
+        type,
+      );
+    },
+    tsetyr(year) {
+      checkTimeYearWindow(year);
+      tspiceCall0(module, (err, cap) => module._tspice_tsetyr(year, err, cap));
+    },
+    et2lst(et, body, lon, type, timlen = 9, ampmlen = 14) {
+      checkTimeNumber(et, "et2lst(et)");
+      assertSpiceInt32(body, "et2lst(body)");
+      checkTimeNumber(lon, "et2lst(lon)");
+      checkTimeText(type, "et2lst(type)", WASM_MAX_ALLOC_BYTES - 1);
+      const t = timeOutputCapacity(timlen, 9),
+        a = timeOutputCapacity(ampmlen, 14);
+      return withUtf8CString(module, type, (text) =>
+        withAllocs(
+          module,
+          [12, Math.max(1, t), Math.max(1, a), WASM_ERR_MAX_BYTES],
+          (hms, time, ampm, err) => {
+            const code = module._tspice_et2lst(
+              et,
+              body,
+              lon,
+              text,
+              t,
+              a,
+              hms,
+              time,
+              ampm,
+              err,
+              WASM_ERR_MAX_BYTES,
+            );
+            if (code)
+              throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, code);
+            const i = hms / 4;
+            return {
+              hr: module.HEAP32[i]!,
+              mn: module.HEAP32[i + 1]!,
+              sc: module.HEAP32[i + 2]!,
+              time: module.UTF8ToString(time, t),
+              ampm: module.UTF8ToString(ampm, a),
+            };
+          },
+        ),
+      );
+    },
     str2et: (utc) => tspiceCallStr2et(module, utc),
     et2utc: (et, format, prec) => {
       assertSpiceInt32(prec, "et2utc(prec)");
@@ -537,6 +636,116 @@ export function createTimeApi(
     scs2e: (sc, sclkch) => {
       assertSpiceInt32(sc, "scs2e(sc)");
       return tspiceCallScs2e(module, sc, sclkch);
+    },
+    sce2t: (sc, et) => {
+      assertSpiceInt32(sc, "sce2t(sc)", { min: -2147483647 });
+      if (!Number.isFinite(et))
+        throw new TypeError("sce2t(et) must be a finite number");
+      return withAllocs(module, [WASM_ERR_MAX_BYTES, 8], (err, out) => {
+        const status = module._tspice_sce2t(
+          sc,
+          et,
+          out,
+          err,
+          WASM_ERR_MAX_BYTES,
+        );
+        if (status !== 0)
+          throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, status);
+        return module.HEAPF64[out >>> 3]!;
+      });
+    },
+    scfmt: (sc, ticks, clklen = 2048) => {
+      assertSpiceInt32(sc, "scfmt(sc)", { min: -2147483647 });
+      if (!Number.isFinite(ticks))
+        throw new TypeError("scfmt(ticks) must be a finite number");
+      assertSpiceInt32(clklen, "scfmt(clklen)");
+      const capacity = Math.min(clklen, 3100),
+        room = Math.max(1, capacity);
+      return withAllocs(module, [WASM_ERR_MAX_BYTES, room], (err, out) => {
+        // F2C_ConvertStr also scans the supplied buffer on a CSPICE error.
+        module.HEAPU8.fill(0, out >>> 0, (out >>> 0) + room);
+        const status = module._tspice_scfmt(
+          sc,
+          ticks,
+          capacity,
+          out,
+          err,
+          WASM_ERR_MAX_BYTES,
+        );
+        if (status !== 0)
+          throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, status);
+        const bytes = module.HEAPU8.subarray(out >>> 0, (out >>> 0) + room);
+        const end = bytes.indexOf(0);
+        if (end < 0) throw new Error("Missing clock string terminator");
+        return new TextDecoder("utf-8", {
+          fatal: true,
+          ignoreBOM: true,
+        }).decode(bytes.subarray(0, end));
+      });
+    },
+    scpart: (sc) => {
+      assertSpiceInt32(sc, "scpart(sc)", { min: -2147483647 });
+      const maximum = 9999;
+      return withAllocs(
+        module,
+        [WASM_ERR_MAX_BYTES, 4, maximum * 8, maximum * 8],
+        (err, countPtr, start, stop) => {
+          const status = module._tspice_scpart(
+            sc,
+            maximum,
+            countPtr,
+            start,
+            stop,
+            err,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, status);
+          const count = module.HEAP32[countPtr >>> 2]!;
+          if (count < 0 || count > maximum)
+            throw new RangeError("Invalid clock partition count");
+          const startIndex = start >>> 3,
+            stopIndex = stop >>> 3;
+          return {
+            pstart: Array.from(
+              module.HEAPF64.subarray(startIndex, startIndex + count),
+            ),
+            pstop: Array.from(
+              module.HEAPF64.subarray(stopIndex, stopIndex + count),
+            ),
+          };
+        },
+      );
+    },
+    sctiks: (sc, clkstr) => {
+      assertSpiceInt32(sc, "sctiks(sc)", { min: -2147483647 });
+      const bytes = spiceStringByteLength(
+        clkstr,
+        "sctiks(clkstr)",
+        WASM_MAX_ALLOC_BYTES - 1,
+      );
+      return withAllocs(
+        module,
+        [WASM_ERR_MAX_BYTES, bytes + 1, 8],
+        (err, text, out) => {
+          const start = text >>> 0;
+          new TextEncoder().encodeInto(
+            clkstr,
+            module.HEAPU8.subarray(start, start + bytes),
+          );
+          module.HEAPU8[start + bytes] = 0;
+          const status = module._tspice_sctiks(
+            sc,
+            text,
+            out,
+            err,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, status);
+          return module.HEAPF64[out >>> 3]!;
+        },
+      );
     },
     sce2s: (sc, et) => {
       assertSpiceInt32(sc, "sce2s(sc)");

@@ -1,3 +1,27 @@
+import fs from "node:fs";
+import path from "node:path";
+import os from "node:os";
+import {
+  dasCommentTable,
+  dasCommentPageBytes,
+  dasCommentPage,
+  copyDasBytes,
+  copyDasValues,
+  dasReadCount,
+  dasFileTarget,
+  copyDlaDescriptor,
+  dasText,
+  decodeDasSummary,
+  decodeDasAddresses,
+  decodeDasFileRecord,
+  releaseTextReaders,
+  textBytes,
+  textWidth,
+  packCommandArgs,
+  verifyCommandArgs,
+  readTextResult,
+  normalizeVirtualKernelPath,
+} from "@rybosome/tspice-core";
 import type {
   DlaDescriptor,
   FileIoApi,
@@ -6,7 +30,23 @@ import type {
   SpiceHandle,
   VirtualOutput,
 } from "@rybosome/tspice-backend-contract";
-import { invariant } from "@rybosome/tspice-core";
+import {
+  invariant,
+  assertSpiceInt32,
+  dafCommentTable,
+  dafCommentPageBytes,
+  dafCommentPage,
+  dafReplacementBytes,
+  dafComponentLayout,
+  dafComponents,
+  dafBytes,
+  dafRecordBytes,
+  dafAddressWords,
+  dafFileNameCapacity,
+  DAF_MAX_SUMMARY_BYTES,
+  dafPathByteLength,
+  dafSummaryFormat,
+} from "@rybosome/tspice-core";
 
 import type { NativeAddon } from "../runtime/addon.js";
 import type { KernelStager } from "../runtime/kernel-staging.js";
@@ -15,43 +55,8 @@ import type {
   SpiceHandleRegistry,
   SpiceHandleKind,
 } from "../runtime/spice-handles.js";
-const I32_MIN = -2147483648;
-const I32_MAX = 2147483647;
 
 const DAS_BACKED = ["DAS", "DLA"] as const satisfies readonly SpiceHandleKind[];
-
-function assertDlaDescriptor(
-  value: unknown,
-  context: string,
-): asserts value is DlaDescriptor {
-  invariant(
-    typeof value === "object" && value !== null,
-    `${context}: expected an object`,
-  );
-  const obj = value as Record<string, unknown>;
-  for (const key of [
-    "bwdptr",
-    "fwdptr",
-    "ibase",
-    "isize",
-    "dbase",
-    "dsize",
-    "cbase",
-    "csize",
-  ] as const) {
-    const v = obj[key];
-    invariant(
-      typeof v === "number" &&
-        Number.isInteger(v) &&
-        v >= I32_MIN &&
-        v <= I32_MAX,
-      `${context}: expected ${key} to be a 32-bit signed integer`,
-    );
-
-    const min = key === "bwdptr" || key === "fwdptr" ? -1 : 0;
-    invariant(v >= min, `${context}: expected ${key} to be >= ${min}`);
-  }
-}
 
 function normalizeFoundDlaDescriptor(
   value: unknown,
@@ -71,8 +76,10 @@ function normalizeFoundDlaDescriptor(
     return { found: false };
   }
 
-  assertDlaDescriptor(obj.descr, `${context}.descr`);
-  return { found: true, descr: obj.descr };
+  return {
+    found: true,
+    descr: copyDlaDescriptor(obj.descr, `${context}.descr`),
+  };
 }
 
 /** Create a {@link FileIoApi} implementation backed by the native Node addon. */
@@ -80,8 +87,71 @@ export function createFileIoApi(
   native: NativeAddon,
   handles: SpiceHandleRegistry,
   stager: Pick<KernelStager, "resolvePathForSpice">,
+  outputs: VirtualOutputStager,
 ): FileIoApi {
+  let owner: number | undefined, root: string | undefined;
+  const staged = new Map<string, string>();
+  function readPath(
+    file: import("@rybosome/tspice-backend-contract").KernelSource,
+  ) {
+    if (typeof file === "string") {
+      textBytes(file);
+      if (!file || /^ +$/.test(file)) return file;
+      if (file.startsWith("/") && !file.startsWith("/kernels/"))
+        return resolvePath(file);
+      return staged.get(normalizeVirtualKernelPath(file)) ?? resolvePath(file);
+    }
+    if (!file || typeof file !== "object")
+      throw new TypeError("Expected a text path and bytes");
+    const { path: virtualPath, bytes } = file;
+    if (typeof virtualPath !== "string" || !(bytes instanceof Uint8Array))
+      throw new TypeError("Expected a text path and bytes");
+    textBytes(virtualPath);
+    const key = normalizeVirtualKernelPath(virtualPath),
+      prior = staged.get(key);
+    if (prior) {
+      if (!fs.readFileSync(prior).equals(bytes))
+        throw new Error("Text bytes changed for the staged path");
+      return prior;
+    }
+    root ??= fs.mkdtempSync(path.join(os.tmpdir(), "tspice-text-"));
+    const physical = path.join(root, String(staged.size));
+    fs.writeFileSync(physical, bytes, { flag: "wx" });
+    staged.set(key, physical);
+    return physical;
+  }
   const resolvePath = (path: string) => stager.resolvePathForSpice(path);
+
+  const knownDasOutputs = new Map<string, VirtualOutput>();
+  const dasOutputs = new Map<SpiceHandle, VirtualOutput>();
+  const dasHandle = (handle: SpiceHandle, method: string) =>
+    handles.lookup(handle, DAS_BACKED, method).nativeHandle;
+  function registerDas(
+    nativeHandle: number,
+    output?: VirtualOutput,
+  ): SpiceHandle {
+    try {
+      const handle = handles.register("DAS", nativeHandle);
+      if (output !== undefined) {
+        try {
+          outputs.markOpen(output);
+          dasOutputs.set(handle, output);
+        } catch (error) {
+          handles.close(
+            handle,
+            DAS_BACKED,
+            () => {},
+            "DAS registration rollback",
+          );
+          throw error;
+        }
+      }
+      return handle;
+    } catch (error) {
+      native.dasllc(nativeHandle);
+      throw error;
+    }
+  }
 
   function closeDasBacked(handle: SpiceHandle, context: string): void {
     handles.close(
@@ -90,13 +160,46 @@ export function createFileIoApi(
       (entry) => {
         // CSPICE dascls_c closes both DAS and DLA handles; tspice dlacls is
         // an alias, not a separate CSPICE C entrypoint.
-        native.dascls(entry.nativeHandle);
+        if (context === "dasllc") native.dasllc(entry.nativeHandle);
+        else native.dascls(entry.nativeHandle);
       },
       context,
     );
+    const output = dasOutputs.get(handle);
+    if (output !== undefined) {
+      outputs.markClosed(output);
+      dasOutputs.delete(handle);
+    }
   }
 
   const api = {
+    [releaseTextReaders]: () => {
+      if (owner !== undefined) {
+        native.release_text_owner(owner);
+        owner = undefined;
+      }
+      if (root) {
+        fs.rmSync(root, { recursive: true, force: true });
+        root = undefined;
+        staged.clear();
+      }
+    },
+    rdtext: (
+      file: import("@rybosome/tspice-backend-contract").KernelSource,
+      lineln = 1024,
+    ) => {
+      textWidth(lineln);
+      const physical = readPath(file);
+      if (textBytes(physical).length > 255)
+        throw new RangeError("Resolved text path exceeds 255 bytes");
+      owner ??= native.text_owner();
+      const result = native.rdtext(owner, physical, lineln);
+      return readTextResult(result.bytes, result.eof);
+    },
+    putcml: (argv: readonly string[]) => {
+      const { count, bytes } = packCommandArgs(argv);
+      verifyCommandArgs(bytes, native.putcml(count, bytes));
+    },
     exists: (path: string) => {
       const exists = native.exists(resolvePath(path));
       invariant(
@@ -124,6 +227,155 @@ export function createFileIoApi(
       return { arch: obj.arch, type: obj.type };
     },
 
+    dafac: (handle, lines) => {
+      const { n, width, table } = dafCommentTable(lines);
+      // Array accessors can close the original handle. Look it up after snapshotting.
+      const h = handles.lookup(handle, ["DAF"], "dafac").nativeHandle;
+      native.dafac(h, n, width, table);
+    },
+    dafdc: (handle) =>
+      native.dafdc(handles.lookup(handle, ["DAF"], "dafdc").nativeHandle),
+    dafec: (handle, bufsiz, buffln = 1024) => {
+      const h = handles.lookup(handle, ["DAF"], "dafec").nativeHandle;
+      dafCommentPageBytes(bufsiz, buffln);
+      const { n, done, bytes } = native.dafec(h, bufsiz, buffln);
+      return dafCommentPage(n, done, bytes, bufsiz, buffln);
+    },
+    dafrs: (handle, summary) => {
+      const bytes = dafReplacementBytes(summary);
+      native.dafrs(
+        handles.lookup(handle, ["DAF"], "dafrs").nativeHandle,
+        bytes,
+      );
+    },
+    dafps: (nd, ni, dc, ic) => {
+      const { n, m, bytes } = dafComponentLayout(nd, ni);
+      const result = native.dafps(
+        nd,
+        ni,
+        dafComponents(dc, n, false),
+        dafComponents(ic, m, true),
+      );
+      return dafBytes(result, bytes, true);
+    },
+    dafus: (summary, nd, ni) => {
+      const { n, m, bytes } = dafComponentLayout(nd, ni);
+      const result = native.dafus(dafBytes(summary, bytes), nd, ni);
+      if (result.dc.length !== n || result.ic.length !== m)
+        throw new TypeError("Invalid DAFUS component count");
+      return {
+        dc: dafComponents(result.dc, n, false),
+        ic: dafComponents(result.ic, m, true),
+      };
+    },
+    dafgsr: (handle, recno, begin, end) => {
+      const h = handles.lookup(handle, ["DAF"], "dafgsr").nativeHandle;
+      const bytes = dafRecordBytes(recno, begin, end, 2147483647);
+      const result = native.dafgsr(h, recno, begin, end);
+      if (result.found === false) return { found: false };
+      if (result.found !== true)
+        throw new TypeError("Invalid DAFGSR found flag");
+      return { found: true, data: dafBytes(result.data, bytes, true) };
+    },
+    dafrfr: (handle, ifnlen = 61) => {
+      const h = handles.lookup(handle, ["DAF"], "dafrfr").nativeHandle;
+      const cap = dafFileNameCapacity(ifnlen);
+      const { nd, ni, ifname, fward, bward, free } = native.dafrfr(h, cap);
+      for (const v of [nd, ni, fward, bward, free])
+        assertSpiceInt32(v, "DAFRFR file record integer");
+      if (!(ifname instanceof Uint8Array) || ifname.byteLength >= cap)
+        throw new TypeError("Invalid DAFRFR name bytes");
+      return {
+        nd,
+        ni,
+        ifname: new TextDecoder("utf-8", {
+          fatal: true,
+          ignoreBOM: true,
+        }).decode(ifname),
+        fward,
+        bward,
+        free,
+      };
+    },
+    dafrda: (handle, begin, end) => {
+      const h = handles.lookup(handle, ["DAF"], "dafrda").nativeHandle;
+      const words = dafAddressWords(begin, end, 2147483647);
+      return dafBytes(native.dafrda(h, begin, end), words * 8, true);
+    },
+    dafgda: (handle, begin, end) => {
+      const h = handles.lookup(handle, ["DAF"], "dafgda").nativeHandle;
+      const words = dafAddressWords(begin, end, 2147483647);
+      const values = native.dafgda(h, begin, end);
+      if (!Array.isArray(values) || values.length !== words)
+        throw new TypeError("Invalid DAFGDA output count");
+      return dafComponents(values, words, false);
+    },
+    dafbbs: (handle: SpiceHandle) =>
+      native.dafbbs(handles.lookup(handle, ["DAF"], "dafbbs").nativeHandle),
+    dafcs: (handle: SpiceHandle) =>
+      native.dafcs(handles.lookup(handle, ["DAF"], "dafcs").nativeHandle),
+    daffpa: (handle: SpiceHandle) => {
+      const found = native.daffpa(
+        handles.lookup(handle, ["DAF"], "daffpa").nativeHandle,
+      );
+      invariant(
+        typeof found === "boolean",
+        "Expected boolean DAF search result",
+      );
+      return found;
+    },
+    dafgh: () => handles.findOwned("DAF", native.dafgh(), "dafgh"),
+    dafgn: (handle: SpiceHandle, namlen = DAF_MAX_SUMMARY_BYTES + 1) => {
+      const entry = handles.lookup(handle, ["DAF"], "dafgn");
+      assertSpiceInt32(namlen, "dafgn(namlen)");
+      const capacity = Math.min(namlen, DAF_MAX_SUMMARY_BYTES + 1);
+      const bytes = native.dafgn(entry.nativeHandle, capacity);
+      invariant(
+        bytes instanceof Uint8Array && bytes.byteLength < capacity,
+        "Invalid DAF name bytes",
+      );
+      return new TextDecoder("utf-8", { fatal: true, ignoreBOM: true }).decode(
+        bytes,
+      );
+    },
+    dafgs: (handle: SpiceHandle) => {
+      const bytes = native.dafgs(
+        handles.lookup(handle, ["DAF"], "dafgs").nativeHandle,
+      );
+      invariant(
+        bytes instanceof Uint8Array &&
+          bytes.byteLength >= 8 &&
+          bytes.byteLength <= DAF_MAX_SUMMARY_BYTES &&
+          bytes.byteLength % 8 === 0,
+        "Invalid packed DAF summary size",
+      );
+      return new Uint8Array(bytes);
+    },
+    dafhsf: (handle: SpiceHandle) => {
+      const { nd, ni } = native.dafhsf(
+        handles.lookup(handle, ["DAF"], "dafhsf").nativeHandle,
+      );
+      return dafSummaryFormat(nd, ni);
+    },
+    dafopw: (path: string) => {
+      dafPathByteLength(path);
+      const resolved = path.length ? resolvePath(path) : path;
+      dafPathByteLength(resolved);
+      const handle = native.dafopw(resolved);
+      try {
+        return handles.register("DAF", handle);
+      } catch (error) {
+        try {
+          native.dafcls(handle);
+        } catch (closeError) {
+          throw new AggregateError(
+            [error, closeError],
+            "Cannot register or close DAF writer",
+          );
+        }
+        throw error;
+      }
+    },
     dafopr: (path: string) =>
       handles.register("DAF", native.dafopr(resolvePath(path))),
     dafcls: (handle: SpiceHandle) =>
@@ -146,6 +398,190 @@ export function createFileIoApi(
       return found;
     },
 
+    dasac: (handle, lines) => {
+      const { n, width, table } = dasCommentTable(lines);
+      // Array accessors can close the original claim. Look it up after snapshotting.
+      const h = dasHandle(handle, "dasac");
+      native.dasac(h, n, width, table);
+    },
+    dasdc: (handle) => native.dasdc(dasHandle(handle, "dasdc")),
+    dasec: (handle, bufsiz, buffln = 1024) => {
+      const h = dasHandle(handle, "dasec");
+      dasCommentPageBytes(bufsiz, buffln);
+      const { n, done, bytes } = native.dasec(h, bufsiz, buffln);
+      return dasCommentPage(n, done, bytes, bufsiz, buffln);
+    },
+    dasadc: (
+      handle: SpiceHandle,
+      n: number,
+      bpos: number,
+      epos: number,
+      datlen: number,
+      data: Uint8Array,
+    ) => {
+      const id = dasHandle(handle, "dasadc");
+      assertSpiceInt32(n, "dasadc(n)");
+      assertSpiceInt32(bpos, "dasadc(bpos)");
+      assertSpiceInt32(epos, "dasadc(epos)");
+      assertSpiceInt32(datlen, "dasadc(datlen)");
+      const owned = copyDasBytes(data);
+      native.dasadc(id, n, bpos, epos, datlen, owned);
+    },
+    dasadd: (handle: SpiceHandle, n: number, data: readonly number[]) => {
+      const id = dasHandle(handle, "dasadd");
+      assertSpiceInt32(n, "dasadd(n)");
+      const owned = copyDasValues(data, "double");
+      native.dasadd(id, n, owned);
+    },
+    dasadi: (handle: SpiceHandle, n: number, data: readonly number[]) => {
+      const id = dasHandle(handle, "dasadi");
+      assertSpiceInt32(n, "dasadi(n)");
+      const owned = copyDasValues(data, "integer");
+      native.dasadi(id, n, owned);
+    },
+    dasrdc: (
+      handle: SpiceHandle,
+      first: number,
+      last: number,
+      bpos: number,
+      epos: number,
+      datlen: number,
+      data: Uint8Array,
+    ) => {
+      const id = dasHandle(handle, "dasrdc");
+      assertSpiceInt32(first, "dasrdc(first)");
+      assertSpiceInt32(last, "dasrdc(last)");
+      assertSpiceInt32(bpos, "dasrdc(bpos)");
+      assertSpiceInt32(epos, "dasrdc(epos)");
+      assertSpiceInt32(datlen, "dasrdc(datlen)");
+      const owned = copyDasBytes(data);
+      const count = owned.length;
+      const result = copyDasBytes(
+        native.dasrdc(id, first, last, bpos, epos, datlen, owned),
+      );
+      if (result.length !== count)
+        throw new TypeError("Invalid DAS result length");
+      return result;
+    },
+    dasrdd: (handle: SpiceHandle, first: number, last: number) => {
+      const id = dasHandle(handle, "dasrdd");
+      const count = dasReadCount(first, last, 8);
+      const result = copyDasValues(native.dasrdd(id, first, last), "double");
+      if (result.length !== count)
+        throw new TypeError("Invalid DAS result length");
+      return result;
+    },
+    dasrdi: (handle: SpiceHandle, first: number, last: number) => {
+      const id = dasHandle(handle, "dasrdi");
+      const count = dasReadCount(first, last, 4);
+      const result = copyDasValues(native.dasrdi(id, first, last), "integer");
+      if (result.length !== count)
+        throw new TypeError("Invalid DAS result length");
+      return result;
+    },
+    dasudc: (
+      handle: SpiceHandle,
+      first: number,
+      last: number,
+      bpos: number,
+      epos: number,
+      datlen: number,
+      data: Uint8Array,
+    ) => {
+      const id = dasHandle(handle, "dasudc");
+      assertSpiceInt32(first, "dasudc(first)");
+      assertSpiceInt32(last, "dasudc(last)");
+      assertSpiceInt32(bpos, "dasudc(bpos)");
+      assertSpiceInt32(epos, "dasudc(epos)");
+      assertSpiceInt32(datlen, "dasudc(datlen)");
+      const owned = copyDasBytes(data);
+      native.dasudc(id, first, last, bpos, epos, datlen, owned);
+    },
+    dasudd: (
+      handle: SpiceHandle,
+      first: number,
+      last: number,
+      data: readonly number[],
+    ) => {
+      const id = dasHandle(handle, "dasudd");
+      assertSpiceInt32(first, "dasudd(first)");
+      assertSpiceInt32(last, "dasudd(last)");
+      const owned = copyDasValues(data, "double");
+      native.dasudd(id, first, last, owned);
+    },
+    dasudi: (
+      handle: SpiceHandle,
+      first: number,
+      last: number,
+      data: readonly number[],
+    ) => {
+      const id = dasHandle(handle, "dasudi");
+      assertSpiceInt32(first, "dasudi(first)");
+      assertSpiceInt32(last, "dasudi(last)");
+      const owned = copyDasValues(data, "integer");
+      native.dasudi(id, first, last, owned);
+    },
+    dasonw: (
+      file: string | VirtualOutput,
+      ftype: string,
+      ifname: string,
+      ncomr: number,
+    ) => {
+      const target = dasFileTarget(file);
+      assertSpiceInt32(ncomr, "dasonw(ncomr)");
+      const path =
+        typeof target === "string"
+          ? resolvePath(target)
+          : outputs.resolvePathForSpice(target);
+      const output =
+        typeof target === "string" ? knownDasOutputs.get(path) : target;
+      const handle = registerDas(
+        native.dasonw(path, dasText(ftype), dasText(ifname), ncomr),
+        output,
+      );
+      if (output) knownDasOutputs.set(path, output);
+      return handle;
+    },
+    dasops: () => registerDas(native.dasops()),
+    dasopw: (file: string | VirtualOutput) => {
+      const target = dasFileTarget(file);
+      const path =
+        typeof target === "string"
+          ? resolvePath(target)
+          : outputs.resolvePathForSpice(target);
+      const output = knownDasOutputs.get(path);
+      if (typeof target !== "string" && !output)
+        throw new RangeError(
+          "dasopw requires a VirtualOutput created by dasonw on this backend",
+        );
+      return registerDas(native.dasopw(path), output);
+    },
+    dashfn: (handle: SpiceHandle, namlen = 256) => {
+      assertSpiceInt32(namlen, "dashfn(namlen)");
+      const value = native.dashfn(
+        dasHandle(handle, "dashfn"),
+        Math.min(256, namlen),
+      );
+      if (typeof value !== "string")
+        throw new TypeError("Invalid DASHFN result");
+      return value;
+    },
+    dashfs: (handle: SpiceHandle) =>
+      decodeDasSummary(native.dashfs(dasHandle(handle, "dashfs"))),
+    daslla: (handle: SpiceHandle) =>
+      decodeDasAddresses(native.daslla(dasHandle(handle, "daslla"))),
+    dasllc: (handle: SpiceHandle) => closeDasBacked(handle, "dasllc"),
+    dasrfr: (handle: SpiceHandle, idwlen = 9, ifnlen = 61) => {
+      assertSpiceInt32(idwlen, "dasrfr(idwlen)");
+      assertSpiceInt32(ifnlen, "dasrfr(ifnlen)");
+      const record = native.dasrfr(
+        dasHandle(handle, "dasrfr"),
+        Math.min(9, idwlen),
+        Math.min(61, ifnlen),
+      );
+      return decodeDasFileRecord(record.idword, record.ifname, record.counts);
+    },
+    daswbr: (handle: SpiceHandle) => native.daswbr(dasHandle(handle, "daswbr")),
     dasopr: (path: string) =>
       handles.register("DAS", native.dasopr(resolvePath(path))),
     dascls: (handle: SpiceHandle) => closeDasBacked(handle, "dascls"),
@@ -165,16 +601,37 @@ export function createFileIoApi(
       ),
 
     dlafns: (handle: SpiceHandle, descr: DlaDescriptor) => {
-      assertDlaDescriptor(descr, "dlafns(descr)");
+      const owned = copyDlaDescriptor(descr, "dlafns(descr)");
       return normalizeFoundDlaDescriptor(
         native.dlafns(
           handles.lookup(handle, DAS_BACKED, "dlafns").nativeHandle,
-          descr,
+          owned,
         ),
         "dlafns()",
       );
     },
 
+    dlabbs: (handle: SpiceHandle) =>
+      normalizeFoundDlaDescriptor(
+        native.dlabbs(
+          handles.lookup(handle, DAS_BACKED, "dlabbs").nativeHandle,
+        ),
+        "dlabbs()",
+      ),
+
+    dlafps: (handle: SpiceHandle, descr: DlaDescriptor) => {
+      const owned = copyDlaDescriptor(descr, "dlafps(descr)");
+      return normalizeFoundDlaDescriptor(
+        native.dlafps(
+          handles.lookup(handle, DAS_BACKED, "dlafps").nativeHandle,
+          owned,
+        ),
+        "dlafps()",
+      );
+    },
+
+    dlabns: (handle) => native.dlabns(dasHandle(handle, "dlabns")),
+    dlaens: (handle) => native.dlaens(dasHandle(handle, "dlaens")),
     dlacls: (handle: SpiceHandle) => closeDasBacked(handle, "dlacls"),
 
     dskopn: (path: string, ifname: string, ncomch: number) =>
@@ -277,7 +734,7 @@ export function createFileIoApi(
         spaixd,
         spaixi,
       ),
-  } satisfies FileIoApi;
+  } satisfies FileIoApi & { [releaseTextReaders](): void };
 
   Object.defineProperty(api, "__debugOpenHandleCount", {
     value: () => handles.size(),

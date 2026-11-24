@@ -700,7 +700,8 @@
       ],
       "id": "local-cp02-44c6136d16c7-node",
       "kind": "local",
-      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 44c6136d16c7325e07e5e233988ffb02dab543ee. The native-required lane completed 5264 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45043538272/job/137273010344"
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 44c6136d16c7325e07e5e233988ffb02dab543ee. The native-required lane completed 5264 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45043538272/job/137273010344",
+      "historical": true
     },
     {
       "backend": "node",
@@ -774,7 +775,8 @@
       "kind": "ci",
       "commit": "b826f8e1b3d9afff24f291c885b6380ff82a8689",
       "url": "https://github.com/rybosome/tspice/actions/runs/45048703356/job/137288855808",
-      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 5264 live comparisons without unexpected skips."
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 5264 live comparisons without unexpected skips.",
+      "historical": true
     },
     {
       "backend": "wasm",
@@ -846,7 +848,8 @@
       ],
       "id": "local-cp02-44c6136d16c7-wasm",
       "kind": "local",
-      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 44c6136d16c7325e07e5e233988ffb02dab543ee. The native-required lane completed 5264 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45043538272/job/137273010344"
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 44c6136d16c7325e07e5e233988ffb02dab543ee. The native-required lane completed 5264 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45043538272/job/137273010344",
+      "historical": true
     },
     {
       "backend": "wasm",
@@ -920,7 +923,300 @@
       "kind": "ci",
       "commit": "b826f8e1b3d9afff24f291c885b6380ff82a8689",
       "url": "https://github.com/rybosome/tspice/actions/runs/45048703356/job/137288855808",
-      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 5264 live comparisons without unexpected skips."
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 5264 live comparisons without unexpected skips.",
+      "historical": true
+    },
+    {
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "150ae43481754db471659f741b74b51415ca72289f1b7c116ad4c1e169bcc6c3",
+      "caseIds": [
+        "coords-vectors-mequg-empty-axes",
+        "coords-vectors-mequg-growing-and-shrinking",
+        "coords-vectors-mequg-row-column-scalar",
+        "coords-vectors-mequg-small-and-large",
+        "coords-vectors-mequg-stride-and-interior-cycles",
+        "coords-vectors-mequg-unequal-rectangles",
+        "coords-vectors-mtxmg-negative-inner",
+        "coords-vectors-mtxmg-ordered-cancellation",
+        "coords-vectors-mtxmg-row-selection",
+        "coords-vectors-mtxmg-scalar-row-and-column",
+        "coords-vectors-mtxmg-scaled-fractions",
+        "coords-vectors-mtxmg-unequal-rectangles",
+        "coords-vectors-mtxmg-zero-columns",
+        "coords-vectors-mtxmg-zero-contraction",
+        "coords-vectors-mtxmg-zero-outer",
+        "coords-vectors-mtxvg-ordered-cancellation",
+        "coords-vectors-mtxvg-row-selection",
+        "coords-vectors-mtxvg-scalar-row-and-column",
+        "coords-vectors-mtxvg-scaled-fractions",
+        "coords-vectors-mtxvg-unequal-rectangles",
+        "coords-vectors-mtxvg-zero-contraction",
+        "coords-vectors-mtxvg-zero-outer",
+        "coords-vectors-mxmg-negative-inner",
+        "coords-vectors-mxmg-ordered-cancellation",
+        "coords-vectors-mxmg-row-selection",
+        "coords-vectors-mxmg-scalar-row-and-column",
+        "coords-vectors-mxmg-scaled-fractions",
+        "coords-vectors-mxmg-unequal-rectangles",
+        "coords-vectors-mxmg-zero-columns",
+        "coords-vectors-mxmg-zero-contraction",
+        "coords-vectors-mxmg-zero-outer",
+        "coords-vectors-mxmtg-ordered-cancellation",
+        "coords-vectors-mxmtg-row-selection",
+        "coords-vectors-mxmtg-scalar-row-and-column",
+        "coords-vectors-mxmtg-scaled-fractions",
+        "coords-vectors-mxmtg-unequal-rectangles",
+        "coords-vectors-mxmtg-zero-columns",
+        "coords-vectors-mxmtg-zero-contraction",
+        "coords-vectors-mxmtg-zero-outer",
+        "coords-vectors-mxvg-ordered-cancellation",
+        "coords-vectors-mxvg-row-selection",
+        "coords-vectors-mxvg-scalar-row-and-column",
+        "coords-vectors-mxvg-scaled-fractions",
+        "coords-vectors-mxvg-unequal-rectangles",
+        "coords-vectors-mxvg-zero-contraction",
+        "coords-vectors-mxvg-zero-outer",
+        "coords-vectors-vtmvg-ordered-cancellation",
+        "coords-vectors-vtmvg-row-selection",
+        "coords-vectors-vtmvg-scalar-row-and-column",
+        "coords-vectors-vtmvg-scaled-fractions",
+        "coords-vectors-vtmvg-unequal-rectangles",
+        "coords-vectors-vtmvg-zero-contraction",
+        "coords-vectors-vtmvg-zero-outer",
+        "coords-vectors-xposeg-empty-axes",
+        "coords-vectors-xposeg-growing-and-shrinking",
+        "coords-vectors-xposeg-nonpositive-no-write",
+        "coords-vectors-xposeg-row-column-scalar",
+        "coords-vectors-xposeg-small-and-large",
+        "coords-vectors-xposeg-stride-and-interior-cycles",
+        "coords-vectors-xposeg-unequal-rectangles"
+      ],
+      "id": "local-cp03-779d6fd6ae41-node",
+      "kind": "local",
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 779d6fd6ae41c78017a8cf7ccaec5fef3100112c. The native-required lane completed 7054 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45097193130/job/137439518970"
+    },
+    {
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "150ae43481754db471659f741b74b51415ca72289f1b7c116ad4c1e169bcc6c3",
+      "caseIds": [
+        "coords-vectors-mequg-empty-axes",
+        "coords-vectors-mequg-growing-and-shrinking",
+        "coords-vectors-mequg-row-column-scalar",
+        "coords-vectors-mequg-small-and-large",
+        "coords-vectors-mequg-stride-and-interior-cycles",
+        "coords-vectors-mequg-unequal-rectangles",
+        "coords-vectors-mtxmg-negative-inner",
+        "coords-vectors-mtxmg-ordered-cancellation",
+        "coords-vectors-mtxmg-row-selection",
+        "coords-vectors-mtxmg-scalar-row-and-column",
+        "coords-vectors-mtxmg-scaled-fractions",
+        "coords-vectors-mtxmg-unequal-rectangles",
+        "coords-vectors-mtxmg-zero-columns",
+        "coords-vectors-mtxmg-zero-contraction",
+        "coords-vectors-mtxmg-zero-outer",
+        "coords-vectors-mtxvg-ordered-cancellation",
+        "coords-vectors-mtxvg-row-selection",
+        "coords-vectors-mtxvg-scalar-row-and-column",
+        "coords-vectors-mtxvg-scaled-fractions",
+        "coords-vectors-mtxvg-unequal-rectangles",
+        "coords-vectors-mtxvg-zero-contraction",
+        "coords-vectors-mtxvg-zero-outer",
+        "coords-vectors-mxmg-negative-inner",
+        "coords-vectors-mxmg-ordered-cancellation",
+        "coords-vectors-mxmg-row-selection",
+        "coords-vectors-mxmg-scalar-row-and-column",
+        "coords-vectors-mxmg-scaled-fractions",
+        "coords-vectors-mxmg-unequal-rectangles",
+        "coords-vectors-mxmg-zero-columns",
+        "coords-vectors-mxmg-zero-contraction",
+        "coords-vectors-mxmg-zero-outer",
+        "coords-vectors-mxmtg-ordered-cancellation",
+        "coords-vectors-mxmtg-row-selection",
+        "coords-vectors-mxmtg-scalar-row-and-column",
+        "coords-vectors-mxmtg-scaled-fractions",
+        "coords-vectors-mxmtg-unequal-rectangles",
+        "coords-vectors-mxmtg-zero-columns",
+        "coords-vectors-mxmtg-zero-contraction",
+        "coords-vectors-mxmtg-zero-outer",
+        "coords-vectors-mxvg-ordered-cancellation",
+        "coords-vectors-mxvg-row-selection",
+        "coords-vectors-mxvg-scalar-row-and-column",
+        "coords-vectors-mxvg-scaled-fractions",
+        "coords-vectors-mxvg-unequal-rectangles",
+        "coords-vectors-mxvg-zero-contraction",
+        "coords-vectors-mxvg-zero-outer",
+        "coords-vectors-vtmvg-ordered-cancellation",
+        "coords-vectors-vtmvg-row-selection",
+        "coords-vectors-vtmvg-scalar-row-and-column",
+        "coords-vectors-vtmvg-scaled-fractions",
+        "coords-vectors-vtmvg-unequal-rectangles",
+        "coords-vectors-vtmvg-zero-contraction",
+        "coords-vectors-vtmvg-zero-outer",
+        "coords-vectors-xposeg-empty-axes",
+        "coords-vectors-xposeg-growing-and-shrinking",
+        "coords-vectors-xposeg-nonpositive-no-write",
+        "coords-vectors-xposeg-row-column-scalar",
+        "coords-vectors-xposeg-small-and-large",
+        "coords-vectors-xposeg-stride-and-interior-cycles",
+        "coords-vectors-xposeg-unequal-rectangles"
+      ],
+      "id": "ci-cp03-779d6fd6ae41-node",
+      "kind": "ci",
+      "commit": "c4bd798cc20d13e8dfd51e7e83ba740ffe4418ff",
+      "url": "https://github.com/rybosome/tspice/actions/runs/45127597533/job/137535439275",
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 7054 live comparisons without unexpected skips."
+    },
+    {
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "150ae43481754db471659f741b74b51415ca72289f1b7c116ad4c1e169bcc6c3",
+      "caseIds": [
+        "coords-vectors-mequg-empty-axes",
+        "coords-vectors-mequg-growing-and-shrinking",
+        "coords-vectors-mequg-row-column-scalar",
+        "coords-vectors-mequg-small-and-large",
+        "coords-vectors-mequg-stride-and-interior-cycles",
+        "coords-vectors-mequg-unequal-rectangles",
+        "coords-vectors-mtxmg-negative-inner",
+        "coords-vectors-mtxmg-ordered-cancellation",
+        "coords-vectors-mtxmg-row-selection",
+        "coords-vectors-mtxmg-scalar-row-and-column",
+        "coords-vectors-mtxmg-scaled-fractions",
+        "coords-vectors-mtxmg-unequal-rectangles",
+        "coords-vectors-mtxmg-zero-columns",
+        "coords-vectors-mtxmg-zero-contraction",
+        "coords-vectors-mtxmg-zero-outer",
+        "coords-vectors-mtxvg-ordered-cancellation",
+        "coords-vectors-mtxvg-row-selection",
+        "coords-vectors-mtxvg-scalar-row-and-column",
+        "coords-vectors-mtxvg-scaled-fractions",
+        "coords-vectors-mtxvg-unequal-rectangles",
+        "coords-vectors-mtxvg-zero-contraction",
+        "coords-vectors-mtxvg-zero-outer",
+        "coords-vectors-mxmg-negative-inner",
+        "coords-vectors-mxmg-ordered-cancellation",
+        "coords-vectors-mxmg-row-selection",
+        "coords-vectors-mxmg-scalar-row-and-column",
+        "coords-vectors-mxmg-scaled-fractions",
+        "coords-vectors-mxmg-unequal-rectangles",
+        "coords-vectors-mxmg-zero-columns",
+        "coords-vectors-mxmg-zero-contraction",
+        "coords-vectors-mxmg-zero-outer",
+        "coords-vectors-mxmtg-ordered-cancellation",
+        "coords-vectors-mxmtg-row-selection",
+        "coords-vectors-mxmtg-scalar-row-and-column",
+        "coords-vectors-mxmtg-scaled-fractions",
+        "coords-vectors-mxmtg-unequal-rectangles",
+        "coords-vectors-mxmtg-zero-columns",
+        "coords-vectors-mxmtg-zero-contraction",
+        "coords-vectors-mxmtg-zero-outer",
+        "coords-vectors-mxvg-ordered-cancellation",
+        "coords-vectors-mxvg-row-selection",
+        "coords-vectors-mxvg-scalar-row-and-column",
+        "coords-vectors-mxvg-scaled-fractions",
+        "coords-vectors-mxvg-unequal-rectangles",
+        "coords-vectors-mxvg-zero-contraction",
+        "coords-vectors-mxvg-zero-outer",
+        "coords-vectors-vtmvg-ordered-cancellation",
+        "coords-vectors-vtmvg-row-selection",
+        "coords-vectors-vtmvg-scalar-row-and-column",
+        "coords-vectors-vtmvg-scaled-fractions",
+        "coords-vectors-vtmvg-unequal-rectangles",
+        "coords-vectors-vtmvg-zero-contraction",
+        "coords-vectors-vtmvg-zero-outer",
+        "coords-vectors-xposeg-empty-axes",
+        "coords-vectors-xposeg-growing-and-shrinking",
+        "coords-vectors-xposeg-nonpositive-no-write",
+        "coords-vectors-xposeg-row-column-scalar",
+        "coords-vectors-xposeg-small-and-large",
+        "coords-vectors-xposeg-stride-and-interior-cycles",
+        "coords-vectors-xposeg-unequal-rectangles"
+      ],
+      "id": "local-cp03-779d6fd6ae41-wasm",
+      "kind": "local",
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 779d6fd6ae41c78017a8cf7ccaec5fef3100112c. The native-required lane completed 7054 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45097193130/job/137439518970"
+    },
+    {
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "150ae43481754db471659f741b74b51415ca72289f1b7c116ad4c1e169bcc6c3",
+      "caseIds": [
+        "coords-vectors-mequg-empty-axes",
+        "coords-vectors-mequg-growing-and-shrinking",
+        "coords-vectors-mequg-row-column-scalar",
+        "coords-vectors-mequg-small-and-large",
+        "coords-vectors-mequg-stride-and-interior-cycles",
+        "coords-vectors-mequg-unequal-rectangles",
+        "coords-vectors-mtxmg-negative-inner",
+        "coords-vectors-mtxmg-ordered-cancellation",
+        "coords-vectors-mtxmg-row-selection",
+        "coords-vectors-mtxmg-scalar-row-and-column",
+        "coords-vectors-mtxmg-scaled-fractions",
+        "coords-vectors-mtxmg-unequal-rectangles",
+        "coords-vectors-mtxmg-zero-columns",
+        "coords-vectors-mtxmg-zero-contraction",
+        "coords-vectors-mtxmg-zero-outer",
+        "coords-vectors-mtxvg-ordered-cancellation",
+        "coords-vectors-mtxvg-row-selection",
+        "coords-vectors-mtxvg-scalar-row-and-column",
+        "coords-vectors-mtxvg-scaled-fractions",
+        "coords-vectors-mtxvg-unequal-rectangles",
+        "coords-vectors-mtxvg-zero-contraction",
+        "coords-vectors-mtxvg-zero-outer",
+        "coords-vectors-mxmg-negative-inner",
+        "coords-vectors-mxmg-ordered-cancellation",
+        "coords-vectors-mxmg-row-selection",
+        "coords-vectors-mxmg-scalar-row-and-column",
+        "coords-vectors-mxmg-scaled-fractions",
+        "coords-vectors-mxmg-unequal-rectangles",
+        "coords-vectors-mxmg-zero-columns",
+        "coords-vectors-mxmg-zero-contraction",
+        "coords-vectors-mxmg-zero-outer",
+        "coords-vectors-mxmtg-ordered-cancellation",
+        "coords-vectors-mxmtg-row-selection",
+        "coords-vectors-mxmtg-scalar-row-and-column",
+        "coords-vectors-mxmtg-scaled-fractions",
+        "coords-vectors-mxmtg-unequal-rectangles",
+        "coords-vectors-mxmtg-zero-columns",
+        "coords-vectors-mxmtg-zero-contraction",
+        "coords-vectors-mxmtg-zero-outer",
+        "coords-vectors-mxvg-ordered-cancellation",
+        "coords-vectors-mxvg-row-selection",
+        "coords-vectors-mxvg-scalar-row-and-column",
+        "coords-vectors-mxvg-scaled-fractions",
+        "coords-vectors-mxvg-unequal-rectangles",
+        "coords-vectors-mxvg-zero-contraction",
+        "coords-vectors-mxvg-zero-outer",
+        "coords-vectors-vtmvg-ordered-cancellation",
+        "coords-vectors-vtmvg-row-selection",
+        "coords-vectors-vtmvg-scalar-row-and-column",
+        "coords-vectors-vtmvg-scaled-fractions",
+        "coords-vectors-vtmvg-unequal-rectangles",
+        "coords-vectors-vtmvg-zero-contraction",
+        "coords-vectors-vtmvg-zero-outer",
+        "coords-vectors-xposeg-empty-axes",
+        "coords-vectors-xposeg-growing-and-shrinking",
+        "coords-vectors-xposeg-nonpositive-no-write",
+        "coords-vectors-xposeg-row-column-scalar",
+        "coords-vectors-xposeg-small-and-large",
+        "coords-vectors-xposeg-stride-and-interior-cycles",
+        "coords-vectors-xposeg-unequal-rectangles"
+      ],
+      "id": "ci-cp03-779d6fd6ae41-wasm",
+      "kind": "ci",
+      "commit": "c4bd798cc20d13e8dfd51e7e83ba740ffe4418ff",
+      "url": "https://github.com/rybosome/tspice/actions/runs/45127597533/job/137535439275",
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 7054 live comparisons without unexpected skips."
     }
   ],
   "routines": [
@@ -991,13 +1287,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.mequg -> finite shape-checked, owned Node snapshots and mutex-serialized native addon -> tspice_mequg -> mequg_c. Independent oracle: exact locked C copy ABI.",
           "executions": [
-            "local-cp02-44c6136d16c7-node",
-            "ci-cp02-44c6136d16c7-node"
+            "local-cp03-779d6fd6ae41-node",
+            "ci-cp03-779d6fd6ae41-node"
           ]
         },
         "wasm": {
@@ -1009,13 +1307,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.mequg -> module-local shape-checked snapshots, transactional allocation and typed WASM export -> tspice_mequg -> mequg_c. Independent oracle: exact locked C copy ABI.",
           "executions": [
-            "local-cp02-44c6136d16c7-wasm",
-            "ci-cp02-44c6136d16c7-wasm"
+            "local-cp03-779d6fd6ae41-wasm",
+            "ci-cp03-779d6fd6ae41-wasm"
           ]
         }
       }
@@ -1106,13 +1406,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.mtxmg -> finite shape-checked, owned Node snapshots and mutex-serialized native addon -> tspice_mtxmg -> mtxmg_c. Independent oracle: locked SpiceyPy wrapper on positive shapes, exact locked C ABI on degenerate shapes.",
           "executions": [
-            "local-cp02-44c6136d16c7-node",
-            "ci-cp02-44c6136d16c7-node"
+            "local-cp03-779d6fd6ae41-node",
+            "ci-cp03-779d6fd6ae41-node"
           ]
         },
         "wasm": {
@@ -1124,13 +1426,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.mtxmg -> module-local shape-checked snapshots, transactional allocation and typed WASM export -> tspice_mtxmg -> mtxmg_c. Independent oracle: locked SpiceyPy wrapper on positive shapes, exact locked C ABI on degenerate shapes.",
           "executions": [
-            "local-cp02-44c6136d16c7-wasm",
-            "ci-cp02-44c6136d16c7-wasm"
+            "local-cp03-779d6fd6ae41-wasm",
+            "ci-cp03-779d6fd6ae41-wasm"
           ]
         }
       }
@@ -1210,13 +1514,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.mtxvg -> finite shape-checked, owned Node snapshots and mutex-serialized native addon -> tspice_mtxvg -> mtxvg_c. Independent oracle: locked SpiceyPy wrapper on positive shapes, exact locked C ABI on degenerate shapes.",
           "executions": [
-            "local-cp02-44c6136d16c7-node",
-            "ci-cp02-44c6136d16c7-node"
+            "local-cp03-779d6fd6ae41-node",
+            "ci-cp03-779d6fd6ae41-node"
           ]
         },
         "wasm": {
@@ -1228,13 +1534,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.mtxvg -> module-local shape-checked snapshots, transactional allocation and typed WASM export -> tspice_mtxvg -> mtxvg_c. Independent oracle: locked SpiceyPy wrapper on positive shapes, exact locked C ABI on degenerate shapes.",
           "executions": [
-            "local-cp02-44c6136d16c7-wasm",
-            "ci-cp02-44c6136d16c7-wasm"
+            "local-cp03-779d6fd6ae41-wasm",
+            "ci-cp03-779d6fd6ae41-wasm"
           ]
         }
       }
@@ -1325,13 +1633,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.mxmg -> finite shape-checked, owned Node snapshots and mutex-serialized native addon -> tspice_mxmg -> mxmg_c. Independent oracle: locked SpiceyPy wrapper on positive shapes, exact locked C ABI on degenerate shapes.",
           "executions": [
-            "local-cp02-44c6136d16c7-node",
-            "ci-cp02-44c6136d16c7-node"
+            "local-cp03-779d6fd6ae41-node",
+            "ci-cp03-779d6fd6ae41-node"
           ]
         },
         "wasm": {
@@ -1343,13 +1653,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.mxmg -> module-local shape-checked snapshots, transactional allocation and typed WASM export -> tspice_mxmg -> mxmg_c. Independent oracle: locked SpiceyPy wrapper on positive shapes, exact locked C ABI on degenerate shapes.",
           "executions": [
-            "local-cp02-44c6136d16c7-wasm",
-            "ci-cp02-44c6136d16c7-wasm"
+            "local-cp03-779d6fd6ae41-wasm",
+            "ci-cp03-779d6fd6ae41-wasm"
           ]
         }
       }
@@ -1434,13 +1746,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.mxmtg -> finite shape-checked, owned Node snapshots and mutex-serialized native addon -> tspice_mxmtg -> mxmtg_c. Independent oracle: locked SpiceyPy wrapper on positive shapes, exact locked C ABI on degenerate shapes.",
           "executions": [
-            "local-cp02-44c6136d16c7-node",
-            "ci-cp02-44c6136d16c7-node"
+            "local-cp03-779d6fd6ae41-node",
+            "ci-cp03-779d6fd6ae41-node"
           ]
         },
         "wasm": {
@@ -1452,13 +1766,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.mxmtg -> module-local shape-checked snapshots, transactional allocation and typed WASM export -> tspice_mxmtg -> mxmtg_c. Independent oracle: locked SpiceyPy wrapper on positive shapes, exact locked C ABI on degenerate shapes.",
           "executions": [
-            "local-cp02-44c6136d16c7-wasm",
-            "ci-cp02-44c6136d16c7-wasm"
+            "local-cp03-779d6fd6ae41-wasm",
+            "ci-cp03-779d6fd6ae41-wasm"
           ]
         }
       }
@@ -1538,13 +1854,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.mxvg -> finite shape-checked, owned Node snapshots and mutex-serialized native addon -> tspice_mxvg -> mxvg_c. Independent oracle: locked SpiceyPy wrapper on positive shapes, exact locked C ABI on degenerate shapes.",
           "executions": [
-            "local-cp02-44c6136d16c7-node",
-            "ci-cp02-44c6136d16c7-node"
+            "local-cp03-779d6fd6ae41-node",
+            "ci-cp03-779d6fd6ae41-node"
           ]
         },
         "wasm": {
@@ -1556,13 +1874,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.mxvg -> module-local shape-checked snapshots, transactional allocation and typed WASM export -> tspice_mxvg -> mxvg_c. Independent oracle: locked SpiceyPy wrapper on positive shapes, exact locked C ABI on degenerate shapes.",
           "executions": [
-            "local-cp02-44c6136d16c7-wasm",
-            "ci-cp02-44c6136d16c7-wasm"
+            "local-cp03-779d6fd6ae41-wasm",
+            "ci-cp03-779d6fd6ae41-wasm"
           ]
         }
       }
@@ -1642,13 +1962,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.vtmvg -> finite shape-checked, owned Node snapshots and mutex-serialized native addon -> tspice_vtmvg -> vtmvg_c. Independent oracle: locked SpiceyPy wrapper on positive shapes, exact locked C ABI on degenerate shapes.",
           "executions": [
-            "local-cp02-44c6136d16c7-node",
-            "ci-cp02-44c6136d16c7-node"
+            "local-cp03-779d6fd6ae41-node",
+            "ci-cp03-779d6fd6ae41-node"
           ]
         },
         "wasm": {
@@ -1660,13 +1982,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.vtmvg -> module-local shape-checked snapshots, transactional allocation and typed WASM export -> tspice_vtmvg -> vtmvg_c. Independent oracle: locked SpiceyPy wrapper on positive shapes, exact locked C ABI on degenerate shapes.",
           "executions": [
-            "local-cp02-44c6136d16c7-wasm",
-            "ci-cp02-44c6136d16c7-wasm"
+            "local-cp03-779d6fd6ae41-wasm",
+            "ci-cp03-779d6fd6ae41-wasm"
           ]
         }
       }
@@ -1746,13 +2070,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.xposeg -> finite shape-checked, owned Node snapshots and mutex-serialized native addon -> tspice_xposeg -> xposeg_c. Independent oracle: locked SpiceyPy wrapper on positive shapes, exact locked C ABI on degenerate shapes.",
           "executions": [
-            "local-cp02-44c6136d16c7-node",
-            "ci-cp02-44c6136d16c7-node"
+            "local-cp03-779d6fd6ae41-node",
+            "ci-cp03-779d6fd6ae41-node"
           ]
         },
         "wasm": {
@@ -1764,13 +2090,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.xposeg -> module-local shape-checked snapshots, transactional allocation and typed WASM export -> tspice_xposeg -> xposeg_c. Independent oracle: locked SpiceyPy wrapper on positive shapes, exact locked C ABI on degenerate shapes.",
           "executions": [
-            "local-cp02-44c6136d16c7-wasm",
-            "ci-cp02-44c6136d16c7-wasm"
+            "local-cp03-779d6fd6ae41-wasm",
+            "ci-cp03-779d6fd6ae41-wasm"
           ]
         }
       }

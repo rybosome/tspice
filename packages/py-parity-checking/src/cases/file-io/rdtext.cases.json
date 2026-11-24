@@ -1,0 +1,342 @@
+[
+  {
+    "caseId": "file-io-rdtext-records-and-restart",
+    "description": "Read distinct records, EOF and the first record of the reopened file.",
+    "workflow": [
+      {
+        "op": "file-io.rdtext",
+        "fileId": "lines.txt",
+        "text": "first\nsecond\n",
+        "lineln": 80
+      },
+      {
+        "op": "file-io.rdtext",
+        "fileId": "lines.txt",
+        "text": "first\nsecond\n",
+        "lineln": 80
+      },
+      {
+        "op": "file-io.rdtext",
+        "fileId": "lines.txt",
+        "text": "first\nsecond\n",
+        "lineln": 80
+      },
+      {
+        "op": "file-io.rdtext",
+        "fileId": "lines.txt",
+        "text": "first\nsecond\n",
+        "lineln": 80
+      },
+      {
+        "op": "file-io.rdtext",
+        "fileId": "lines.txt",
+        "text": "first\nsecond\n",
+        "lineln": 80
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-rdtext-empty-record",
+    "description": "Distinguish real empty and all-space records from end of file.",
+    "workflow": [
+      {
+        "op": "file-io.rdtext",
+        "fileId": "lines.txt",
+        "text": "\n   \nlast\n",
+        "lineln": 80
+      },
+      {
+        "op": "file-io.rdtext",
+        "fileId": "lines.txt",
+        "text": "\n   \nlast\n",
+        "lineln": 80
+      },
+      {
+        "op": "file-io.rdtext",
+        "fileId": "lines.txt",
+        "text": "\n   \nlast\n",
+        "lineln": 80
+      },
+      {
+        "op": "file-io.rdtext",
+        "fileId": "lines.txt",
+        "text": "\n   \nlast\n",
+        "lineln": 80
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-rdtext-empty-file",
+    "description": "Every read reopens the empty file and returns EOF.",
+    "workflow": [
+      {
+        "op": "file-io.rdtext",
+        "fileId": "lines.txt",
+        "text": "",
+        "lineln": 80
+      },
+      {
+        "op": "file-io.rdtext",
+        "fileId": "lines.txt",
+        "text": "",
+        "lineln": 80
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-rdtext-rightmost-controls",
+    "description": "Preserve a leading BOM, leading spaces, rightmost tab and carriage-return bytes.",
+    "workflow": [
+      {
+        "op": "file-io.rdtext",
+        "fileId": "lines.txt",
+        "text": "﻿A  \n  B\t  \nC\r\n",
+        "lineln": 80
+      },
+      {
+        "op": "file-io.rdtext",
+        "fileId": "lines.txt",
+        "text": "﻿A  \n  B\t  \nC\r\n",
+        "lineln": 80
+      },
+      {
+        "op": "file-io.rdtext",
+        "fileId": "lines.txt",
+        "text": "﻿A  \n  B\t  \nC\r\n",
+        "lineln": 80
+      },
+      {
+        "op": "file-io.rdtext",
+        "fileId": "lines.txt",
+        "text": "﻿A  \n  B\t  \nC\r\n",
+        "lineln": 80
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-rdtext-byte-capacity",
+    "description": "Truncate one record to the C byte capacity minus its terminator and advance the full record.",
+    "workflow": [
+      {
+        "op": "file-io.rdtext",
+        "fileId": "lines.txt",
+        "text": "123456\nµΔ\nlast\n",
+        "lineln": 4
+      },
+      {
+        "op": "file-io.rdtext",
+        "fileId": "lines.txt",
+        "text": "123456\nµΔ\nlast\n",
+        "lineln": 3
+      },
+      {
+        "op": "file-io.rdtext",
+        "fileId": "lines.txt",
+        "text": "123456\nµΔ\nlast\n",
+        "lineln": 2
+      },
+      {
+        "op": "file-io.rdtext",
+        "fileId": "lines.txt",
+        "text": "123456\nµΔ\nlast\n",
+        "lineln": 80
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-rdtext-unterminated-tail",
+    "description": "Observe the pinned formatted reader at EOF without a terminating newline.",
+    "workflow": [
+      {
+        "op": "file-io.rdtext",
+        "fileId": "lines.txt",
+        "text": "first\nunterminated",
+        "lineln": 80
+      },
+      {
+        "op": "file-io.rdtext",
+        "fileId": "lines.txt",
+        "text": "first\nunterminated",
+        "lineln": 80
+      },
+      {
+        "op": "file-io.rdtext",
+        "fileId": "lines.txt",
+        "text": "first\nunterminated",
+        "lineln": 80
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-rdtext-independent-files",
+    "description": "Interleave independent physical files, reaching and restarting each cursor.",
+    "workflow": [
+      {
+        "op": "file-io.rdtext",
+        "fileId": "a",
+        "text": "a1\na2\n",
+        "lineln": 80
+      },
+      {
+        "op": "file-io.rdtext",
+        "fileId": "b",
+        "text": "b1\nb2\n",
+        "lineln": 80
+      },
+      {
+        "op": "file-io.rdtext",
+        "fileId": "a",
+        "text": "a1\na2\n",
+        "lineln": 80
+      },
+      {
+        "op": "file-io.rdtext",
+        "fileId": "b",
+        "text": "b1\nb2\n",
+        "lineln": 80
+      },
+      {
+        "op": "file-io.rdtext",
+        "fileId": "a",
+        "text": "a1\na2\n",
+        "lineln": 80
+      },
+      {
+        "op": "file-io.rdtext",
+        "fileId": "b",
+        "text": "b1\nb2\n",
+        "lineln": 80
+      },
+      {
+        "op": "file-io.rdtext",
+        "fileId": "a",
+        "text": "a1\na2\n",
+        "lineln": 80
+      },
+      {
+        "op": "file-io.rdtext",
+        "fileId": "b",
+        "text": "b1\nb2\n",
+        "lineln": 80
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-rdtext-across-kclear",
+    "description": "Pool clearing and toolkit error reset leave the open text cursor in place.",
+    "workflow": [
+      {
+        "op": "file-io.rdtext",
+        "fileId": "lines.txt",
+        "text": "one\ntwo\n",
+        "lineln": 80
+      },
+      {
+        "op": "kernels.kclear"
+      },
+      {
+        "op": "error.reset"
+      },
+      {
+        "op": "file-io.rdtext",
+        "fileId": "lines.txt",
+        "text": "one\ntwo\n",
+        "lineln": 80
+      },
+      {
+        "op": "file-io.rdtext",
+        "fileId": "lines.txt",
+        "text": "one\ntwo\n",
+        "lineln": 80
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-rdtext-minimum-width",
+    "description": "The authentic C width check precedes an attempted read.",
+    "workflow": [
+      {
+        "op": "file-io.rdtext",
+        "fileId": "lines.txt",
+        "text": "x\n",
+        "lineln": 1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["STRINGTOOSHORT"]
+    }
+  },
+  {
+    "caseId": "file-io-rdtext-negative-width",
+    "description": "Forward signed negative length through a valid one-byte error buffer.",
+    "workflow": [
+      {
+        "op": "file-io.rdtext",
+        "fileId": "lines.txt",
+        "text": "x\n",
+        "lineln": -3
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["STRINGTOOSHORT"]
+    }
+  },
+  {
+    "caseId": "file-io-rdtext-empty-path",
+    "description": "The C input-string check on an empty name precedes reading.",
+    "workflow": [
+      {
+        "op": "file-io.rdtext",
+        "fileId": "",
+        "text": "",
+        "lineln": 32
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["EMPTYSTRING"]
+    }
+  },
+  {
+    "caseId": "file-io-rdtext-empty-path-width-order",
+    "description": "The empty input name is diagnosed before the invalid output width.",
+    "workflow": [
+      {
+        "op": "file-io.rdtext",
+        "fileId": "",
+        "text": "",
+        "lineln": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["EMPTYSTRING"]
+    }
+  }
+]

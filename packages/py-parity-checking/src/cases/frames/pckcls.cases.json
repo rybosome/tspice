@@ -1,0 +1,168 @@
+[
+  {
+    "caseId": "frames-pckcls-empty",
+    "description": "Closing an empty writer reports NOSEGMENTSFOUND; cleanup releases the independent scratch handle.",
+    "workflow": [
+      {
+        "op": "frames.pckopn",
+        "handleId": "w",
+        "path": {
+          "kind": "scratch",
+          "rel": "output.bpc"
+        },
+        "ifname": "TSPICE TEST",
+        "ncomch": 0
+      },
+      {
+        "op": "frames.pckcls",
+        "handleId": "w"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["NOSEGMENTSFOUND"]
+    }
+  },
+  {
+    "caseId": "frames-pckcls-two-classes",
+    "description": "Finalize a writer containing two class IDs and retain the exact set and independent windows.",
+    "workflow": [
+      {
+        "op": "frames.pckopn",
+        "handleId": "w",
+        "path": {
+          "kind": "scratch",
+          "rel": "output.bpc"
+        },
+        "ifname": "TSPICE TEST",
+        "ncomch": 0
+      },
+      {
+        "op": "frames.pckw02",
+        "handleId": "w",
+        "classId": 3000,
+        "frame": "J2000",
+        "first": 0,
+        "last": 20,
+        "segid": "TWO RECORDS",
+        "intlen": 10,
+        "n": 2,
+        "degree": 1,
+        "coefficients": [
+          0.2, 0.03, 0.5, -0.02, 0.7, 0.04, 0.4, -0.01, 0.8, 0.01, 1.1, -0.06
+        ],
+        "btime": 0
+      },
+      {
+        "op": "frames.pckw02",
+        "handleId": "w",
+        "classId": 301,
+        "frame": "J2000",
+        "first": 0,
+        "last": 20,
+        "segid": "TWO RECORDS",
+        "intlen": 10,
+        "n": 2,
+        "degree": 1,
+        "coefficients": [
+          0.2, 0.03, 0.5, -0.02, 0.7, 0.04, 0.4, -0.01, 0.8, 0.01, 1.1, -0.06
+        ],
+        "btime": 0
+      },
+      {
+        "op": "frames.pckcls",
+        "handleId": "w"
+      },
+      {
+        "op": "frames.pckfrm",
+        "path": {
+          "kind": "scratch",
+          "rel": "output.bpc"
+        },
+        "idsId": "ids",
+        "maxCard": 8,
+        "reset": true
+      },
+      {
+        "op": "frames.pckcov",
+        "path": {
+          "kind": "scratch",
+          "rel": "output.bpc"
+        },
+        "classId": 301,
+        "coverId": "cov",
+        "maxIntervals": 6,
+        "reset": true
+      },
+      {
+        "op": "frames.pckcov",
+        "path": {
+          "kind": "scratch",
+          "rel": "output.bpc"
+        },
+        "classId": 3000,
+        "coverId": "cov",
+        "maxIntervals": 6,
+        "reset": true
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-pckcls-empty-then-write",
+    "description": "A writer with a valid single degree-zero constant segment can close and load.",
+    "workflow": [
+      {
+        "op": "frames.pckopn",
+        "handleId": "w",
+        "path": {
+          "kind": "scratch",
+          "rel": "output.bpc"
+        },
+        "ifname": "TSPICE TEST",
+        "ncomch": 0
+      },
+      {
+        "op": "frames.pckw02",
+        "handleId": "w",
+        "classId": 3000,
+        "frame": "J2000",
+        "first": 0,
+        "last": 20,
+        "segid": "TWO RECORDS",
+        "intlen": 20,
+        "n": 1,
+        "degree": 0,
+        "coefficients": [0.125, -0.25, 0.75],
+        "btime": 0
+      },
+      {
+        "op": "frames.pckcls",
+        "handleId": "w"
+      },
+      {
+        "op": "frames.pcklof",
+        "path": {
+          "kind": "scratch",
+          "rel": "output.bpc"
+        },
+        "handleId": "p"
+      },
+      {
+        "op": "frames.sxform",
+        "from": "J2000",
+        "to": "ITRF93",
+        "et": 12
+      },
+      {
+        "op": "frames.pckuof",
+        "handleId": "p"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

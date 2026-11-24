@@ -1,0 +1,133 @@
+[
+  {
+    "caseId": "ek-ekccnt-all-logical-tables",
+    "description": "Physical segments with shared table names contribute one schema; count all logical tables across two EKs.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-tables-one.ek"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-tables-two.ek"
+      },
+      {
+        "op": "ek.ekccnt",
+        "table": "AUDIT_SHARED"
+      },
+      {
+        "op": "ek.ekccnt",
+        "table": "audit_alpha"
+      },
+      {
+        "op": "ek.ekccnt",
+        "table": "AUDIT_BETA"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ek-ekccnt-direct-membership",
+    "description": "Repeat counts across case folding, blank padding and an explicit unload.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-query.ek"
+      },
+      {
+        "op": "kernels.unload",
+        "path": "kernels/audit-query.ek"
+      },
+      {
+        "op": "ek.eklef",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/audit-query.ek"
+        },
+        "handleId": "h"
+      },
+      {
+        "op": "ek.ekccnt",
+        "table": "AUDIT_QUERY"
+      },
+      {
+        "op": "ek.ekccnt",
+        "table": "audit_query  "
+      },
+      {
+        "op": "ek.ekuef",
+        "handleId": "h"
+      },
+      {
+        "op": "ek.ekntab"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ek-ekccnt-absent",
+    "description": "Unknown named table signals TABLENOTLOADED.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-query.ek"
+      },
+      {
+        "op": "ek.ekccnt",
+        "table": "NO_TABLE"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(TABLENOTLOADED)"]
+    }
+  },
+  {
+    "caseId": "ek-ekccnt-empty-name",
+    "description": "A zero-byte table name signals the C string error.",
+    "workflow": [
+      {
+        "op": "ek.ekccnt",
+        "table": ""
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(EMPTYSTRING)"]
+    }
+  },
+  {
+    "caseId": "ek-ekccnt-explicit-reader-only",
+    "description": "Opening an EK for reading does not load its schema.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-query.ek"
+      },
+      {
+        "op": "kernels.unload",
+        "path": "kernels/audit-query.ek"
+      },
+      {
+        "op": "ek.ekopr",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/audit-query.ek"
+        },
+        "handleId": "r"
+      },
+      {
+        "op": "ek.ekccnt",
+        "table": "AUDIT_QUERY"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(TABLENOTLOADED)"]
+    }
+  }
+]

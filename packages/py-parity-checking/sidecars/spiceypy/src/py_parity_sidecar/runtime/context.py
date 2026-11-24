@@ -28,10 +28,13 @@ class FileIoHandleState:
     kind: str
     closeWith: str
     isOpen: bool
+    path: str | None = None
 
 
 @dataclass
 class FileIoState:
+    ckSummaries: dict[str, tuple[FileIoHandleState, bytes]] = field(default_factory=dict)
+    activeTextReaders: set[str] = field(default_factory=set)
     handles: dict[str, FileIoHandleState] = field(default_factory=dict)
     descriptors: dict[str, Any] = field(default_factory=dict)
     spatialIndexes: dict[str, tuple[Any, Any]] = field(default_factory=dict)
@@ -55,6 +58,10 @@ class EkSegmentState:
 
 @dataclass
 class EkState:
+    activeFast: tuple[int, int] | None = None
+    activeMetadataWrite: tuple[str,int] | None = None
+    expiredLoads: set[str] = field(default_factory=set)
+    loads: set[str] = field(default_factory=set)
     lastQuery: str | None = None
     lastSuccessfulFindNmrows: int | None = None
     handles: dict[str, int] = field(default_factory=dict)
@@ -73,6 +80,8 @@ class EphemerisState:
 class FramesState:
     requestedFrames: set[str] = field(default_factory=set)
     stagedVirtualKernelPaths: set[str] = field(default_factory=set)
+    pckHandles: dict[str, tuple[int, bool]] = field(default_factory=dict)
+    writers: dict[str,int] = field(default_factory=dict)
     ckHandles: dict[str, int] = field(default_factory=dict)
 
 

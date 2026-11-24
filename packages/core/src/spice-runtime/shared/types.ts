@@ -57,7 +57,16 @@ declare const __spiceHandleBrand: unique symbol;
  */
 export type SpiceHandle = number & { readonly [__spiceHandleBrand]: true };
 
-export type SpiceHandleKind = "DAF" | "DAS" | "DLA" | "SPK" | "EK";
+export type SpiceHandleKind =
+  | "DAF"
+  | "DAS"
+  | "DLA"
+  | "SPK"
+  | "EK"
+  | "PCK-WRITER"
+  | "PCK-LOADED"
+  | "CK-WRITER"
+  | "EK-LOAD";
 
 export type SpiceHandleEntry = {
   kind: SpiceHandleKind;
@@ -71,6 +80,12 @@ export type SpiceHandleRegistry = {
     expected: readonly SpiceHandleKind[],
     context: string,
   ) => SpiceHandleEntry;
+  /** Resolve an existing claim in insertion order without issuing a new token. */
+  findOwned: (
+    kind: SpiceHandleKind,
+    nativeHandle: number,
+    context: string,
+  ) => SpiceHandle;
   close: (
     handle: SpiceHandle,
     expected: readonly SpiceHandleKind[],

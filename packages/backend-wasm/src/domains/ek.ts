@@ -1,5 +1,16 @@
 import type { EkApi, SpiceHandle } from "@rybosome/tspice-backend-contract";
 import {
+  ekEntryColumn,
+  packEkEntry,
+  unpackEkEntry,
+  checkEkRecordIndex,
+  packEkRecordSchema,
+  decodeEkColumn,
+  decodeEkSummary,
+  decodeEkSelect,
+  ekMetadataText,
+  ekMetadataOrdinal,
+  ekMetadataLayout,
   assertSpiceInt32,
   assertSpiceInt32NonNegative,
 } from "@rybosome/tspice-core";
@@ -178,6 +189,25 @@ function callVoidHandle(
   });
 }
 
+function metadataCall<T>(
+  module: EmscriptenModule,
+  input: Uint8Array | undefined,
+  sizes: readonly number[],
+  run: (s: number, out: number[], err: number) => T,
+) {
+  return withAllocs(
+    module,
+    [WASM_ERR_MAX_BYTES, ...(input ? [input.length + 1] : []), ...sizes],
+    (err, ...pointers) => {
+      const s = input ? pointers.shift()! : 0;
+      if (input) {
+        module.HEAPU8.set(input, s >>> 0);
+        module.HEAPU8[(s >>> 0) + input.length] = 0;
+      }
+      return run(s, pointers, err);
+    },
+  );
+}
 function assertArray(value: unknown, label: string): void {
   if (!Array.isArray(value)) throw new TypeError(`${label} must be an array`);
 }
@@ -200,6 +230,129 @@ function assertStringArray(value: unknown, label: string): void {
   }
 }
 
+type EkEntryRead = (
+  h: number,
+  s: number,
+  r: number,
+  col: number,
+  width: number,
+  out: number,
+  capacity: number,
+  n: number,
+  nullPtr: number,
+  err: number,
+  errBytes: number,
+) => number;
+type EkEntryWrite = (
+  h: number,
+  s: number,
+  r: number,
+  col: number,
+  n: number,
+  width: number,
+  data: number,
+  nullFlag: number,
+  err: number,
+  errBytes: number,
+) => number;
+
+function readEntry(
+  module: EmscriptenModule,
+  id: number,
+  s: number,
+  r: number,
+  col: Uint8Array,
+  kind: number,
+  width: number,
+  read: EkEntryRead,
+) {
+  assertSpiceInt32(width, "EK output width");
+  return withAllocs(
+    module,
+    [WASM_ERR_MAX_BYTES, col.length + 1, 4, 4],
+    (err, colPtr, countPtr, nullPtr) => {
+      module.HEAPU8.set(col, colPtr >>> 0);
+      module.HEAPU8[(colPtr >>> 0) + col.length] = 0;
+      const status = module._tspice_ek_entry_extent(
+        id,
+        s,
+        r,
+        colPtr,
+        kind,
+        width,
+        countPtr,
+        err,
+        WASM_ERR_MAX_BYTES,
+      );
+      if (status) throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, status);
+      const cap = readHeapI32(module, (countPtr >>> 0) / 4, "EK extent");
+      return withMalloc(module, cap * width, (out) => {
+        const code = read(
+          id,
+          s,
+          r,
+          colPtr,
+          width,
+          out,
+          cap,
+          countPtr,
+          nullPtr,
+          err,
+          WASM_ERR_MAX_BYTES,
+        );
+        if (code) throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, code);
+        const nvals = readHeapI32(module, (countPtr >>> 0) / 4, "EK count");
+        const isNull =
+          readHeapI32(module, (nullPtr >>> 0) / 4, "EK null") !== 0;
+        return {
+          nvals,
+          isNull,
+          bytes: isNull
+            ? new Uint8Array(0)
+            : module.HEAPU8.slice(out >>> 0, (out >>> 0) + cap * width),
+        };
+      });
+    },
+  );
+}
+
+function writeEntry(
+  module: EmscriptenModule,
+  id: number,
+  s: number,
+  r: number,
+  col: Uint8Array,
+  data: ReturnType<typeof packEkEntry>,
+  isNull: boolean,
+  write: EkEntryWrite,
+) {
+  withAllocs(
+    module,
+    [
+      WASM_ERR_MAX_BYTES,
+      col.length + 1,
+      Math.max(data.width, data.bytes.length),
+    ],
+    (err, colPtr, payload) => {
+      module.HEAPU8.set(col, colPtr >>> 0);
+      module.HEAPU8[(colPtr >>> 0) + col.length] = 0;
+      module.HEAPU8.set(data.bytes, payload >>> 0);
+      const code = write(
+        id,
+        s,
+        r,
+        colPtr,
+        data.count,
+        data.width,
+        payload,
+        Number(isNull),
+        err,
+        WASM_ERR_MAX_BYTES,
+      );
+      if (code) throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, code);
+    },
+  );
+}
 /** Create an {@link EkApi} implementation backed by a WASM Emscripten module. */
 export function createEkApi(
   module: EmscriptenModule,
@@ -207,7 +360,410 @@ export function createEkApi(
 ): EkApi {
   const TABLE_NAME_MAX_BYTES = 256;
 
+  const loads = new Map<number, SpiceHandle>();
+  function loadToken(generation: number) {
+    const existing = loads.get(generation);
+    if (existing !== undefined) return existing;
+    const token = spiceHandles.register("EK-LOAD", generation);
+    loads.set(generation, token);
+    return token;
+  }
+  function checked(status: number, err: number) {
+    if (status) throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, status);
+  }
+  function scalar(
+    input: Uint8Array | undefined,
+    call: (s: number, out: number, err: number, cap: number) => number,
+  ) {
+    return metadataCall(module, input, [4], (s, [out], err) => {
+      checked(call(s, out!, err, WASM_ERR_MAX_BYTES), err);
+      return readHeapI32(module, (out! >>> 0) / 4, "EK metadata");
+    });
+  }
+  function result(
+    kind: keyof typeof ekMetadataLayout,
+    input: Uint8Array | undefined,
+    call: (s: number, w: number, b: number, err: number, cap: number) => number,
+  ) {
+    const [nw, nb] = ekMetadataLayout[kind];
+    return metadataCall(module, input, [nw * 4, nb], (s, [w, b], err) => {
+      checked(call(s, w!, b!, err, WASM_ERR_MAX_BYTES), err);
+      return {
+        words: module.HEAP32.slice((w! >>> 0) / 4, (w! >>> 0) / 4 + nw),
+        text: module.HEAPU8.slice(b! >>> 0, (b! >>> 0) + nb),
+      };
+    });
+  }
   const api = {
+    ekacec: (
+      handle: SpiceHandle,
+      segno: number,
+      recno: number,
+      column: string,
+      values: readonly string[],
+      isNull: boolean,
+    ) => {
+      const id = spiceHandles.lookup(handle, EK_ONLY, "ekacec").nativeHandle;
+      const col = ekEntryColumn(segno, recno, column);
+      const data = packEkEntry("character", values, isNull);
+      writeEntry(
+        module,
+        id,
+        segno,
+        recno,
+        col,
+        data,
+        isNull,
+        module._tspice_ekacec,
+      );
+    },
+    ekaced: (
+      handle: SpiceHandle,
+      segno: number,
+      recno: number,
+      column: string,
+      values: readonly number[],
+      isNull: boolean,
+    ) => {
+      const id = spiceHandles.lookup(handle, EK_ONLY, "ekaced").nativeHandle;
+      const col = ekEntryColumn(segno, recno, column);
+      const data = packEkEntry("double", values, isNull);
+      writeEntry(
+        module,
+        id,
+        segno,
+        recno,
+        col,
+        data,
+        isNull,
+        (h, s, r, c, count, _w, v, nullFlag, e, z) =>
+          module._tspice_ekaced(h, s, r, c, count, v, nullFlag, e, z),
+      );
+    },
+    ekacei: (
+      handle: SpiceHandle,
+      segno: number,
+      recno: number,
+      column: string,
+      values: readonly number[],
+      isNull: boolean,
+    ) => {
+      const id = spiceHandles.lookup(handle, EK_ONLY, "ekacei").nativeHandle;
+      const col = ekEntryColumn(segno, recno, column);
+      const data = packEkEntry("integer", values, isNull);
+      writeEntry(
+        module,
+        id,
+        segno,
+        recno,
+        col,
+        data,
+        isNull,
+        (h, s, r, c, count, _w, v, nullFlag, e, z) =>
+          module._tspice_ekacei(h, s, r, c, count, v, nullFlag, e, z),
+      );
+    },
+    ekrcec: (
+      handle: SpiceHandle,
+      segno: number,
+      recno: number,
+      column: string,
+      lenout = 1024,
+    ) => {
+      const id = spiceHandles.lookup(handle, EK_ONLY, "ekrcec").nativeHandle;
+      const col = ekEntryColumn(segno, recno, column);
+      return unpackEkEntry(
+        "character",
+        lenout,
+        readEntry(
+          module,
+          id,
+          segno,
+          recno,
+          col,
+          1,
+          lenout,
+          module._tspice_ekrcec,
+        ),
+      );
+    },
+    ekrced: (
+      handle: SpiceHandle,
+      segno: number,
+      recno: number,
+      column: string,
+    ) => {
+      const id = spiceHandles.lookup(handle, EK_ONLY, "ekrced").nativeHandle;
+      const col = ekEntryColumn(segno, recno, column);
+      return unpackEkEntry(
+        "double",
+        8,
+        readEntry(
+          module,
+          id,
+          segno,
+          recno,
+          col,
+          2,
+          8,
+          (h, s, r, c, _w, v, cap, count, nullPtr, e, z) =>
+            module._tspice_ekrced(h, s, r, c, v, cap, count, nullPtr, e, z),
+        ),
+      );
+    },
+    ekrcei: (
+      handle: SpiceHandle,
+      segno: number,
+      recno: number,
+      column: string,
+    ) => {
+      const id = spiceHandles.lookup(handle, EK_ONLY, "ekrcei").nativeHandle;
+      const col = ekEntryColumn(segno, recno, column);
+      return unpackEkEntry(
+        "integer",
+        4,
+        readEntry(
+          module,
+          id,
+          segno,
+          recno,
+          col,
+          3,
+          4,
+          (h, s, r, c, _w, v, cap, count, nullPtr, e, z) =>
+            module._tspice_ekrcei(h, s, r, c, v, cap, count, nullPtr, e, z),
+        ),
+      );
+    },
+    ekucec: (
+      handle: SpiceHandle,
+      segno: number,
+      recno: number,
+      column: string,
+      values: readonly string[],
+      isNull: boolean,
+    ) => {
+      const id = spiceHandles.lookup(handle, EK_ONLY, "ekucec").nativeHandle;
+      const col = ekEntryColumn(segno, recno, column);
+      const data = packEkEntry("character", values, isNull);
+      writeEntry(
+        module,
+        id,
+        segno,
+        recno,
+        col,
+        data,
+        isNull,
+        module._tspice_ekucec,
+      );
+    },
+    ekuced: (
+      handle: SpiceHandle,
+      segno: number,
+      recno: number,
+      column: string,
+      values: readonly number[],
+      isNull: boolean,
+    ) => {
+      const id = spiceHandles.lookup(handle, EK_ONLY, "ekuced").nativeHandle;
+      const col = ekEntryColumn(segno, recno, column);
+      const data = packEkEntry("double", values, isNull);
+      writeEntry(
+        module,
+        id,
+        segno,
+        recno,
+        col,
+        data,
+        isNull,
+        (h, s, r, c, count, _w, v, nullFlag, e, z) =>
+          module._tspice_ekuced(h, s, r, c, count, v, nullFlag, e, z),
+      );
+    },
+    ekucei: (
+      handle: SpiceHandle,
+      segno: number,
+      recno: number,
+      column: string,
+      values: readonly number[],
+      isNull: boolean,
+    ) => {
+      const id = spiceHandles.lookup(handle, EK_ONLY, "ekucei").nativeHandle;
+      const col = ekEntryColumn(segno, recno, column);
+      const data = packEkEntry("integer", values, isNull);
+      writeEntry(
+        module,
+        id,
+        segno,
+        recno,
+        col,
+        data,
+        isNull,
+        (h, s, r, c, count, _w, v, nullFlag, e, z) =>
+          module._tspice_ekucei(h, s, r, c, count, v, nullFlag, e, z),
+      );
+    },
+    ekops: () => {
+      const h = withAllocs(module, [WASM_ERR_MAX_BYTES, 4], (err, out) => {
+        const code = module._tspice_ekops(out, err, WASM_ERR_MAX_BYTES);
+        if (code !== 0)
+          throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, code);
+        return readHeapI32(module, (out >>> 0) / 4, "ekops result");
+      });
+      try {
+        return spiceHandles.register("EK", h);
+      } catch (error) {
+        callVoidHandle(module, module._tspice_ekcls, h);
+        throw error;
+      }
+    },
+    ekbseg: (
+      handle: SpiceHandle,
+      tabnam: string,
+      cnames: readonly string[],
+      decls: readonly string[],
+    ) => {
+      const id = spiceHandles.lookup(handle, EK_ONLY, "ekbseg").nativeHandle;
+      const schema = packEkRecordSchema(tabnam, cnames, decls);
+      const text = UTF8_ENCODER.encode(schema.table);
+      return withAllocs(
+        module,
+        [
+          WASM_ERR_MAX_BYTES,
+          text.length + 1,
+          schema.names.bytes.length,
+          schema.decls.bytes.length,
+          4,
+        ],
+        (err, table, cnamesPtr, declsPtr, out) => {
+          module.HEAPU8.set(text, table >>> 0);
+          module.HEAPU8[(table >>> 0) + text.length] = 0;
+          module.HEAPU8.set(schema.names.bytes, cnamesPtr >>> 0);
+          module.HEAPU8.set(schema.decls.bytes, declsPtr >>> 0);
+          const code = module._tspice_ekbseg(
+            id,
+            table,
+            schema.count,
+            schema.names.width,
+            cnamesPtr,
+            schema.decls.width,
+            declsPtr,
+            out,
+            err,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (code !== 0)
+            throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, code);
+          return readHeapI32(module, (out >>> 0) / 4, "ekbseg result");
+        },
+      );
+    },
+    ekappr: (handle: SpiceHandle, segno: number) => {
+      const id = spiceHandles.lookup(handle, EK_ONLY, "ekappr").nativeHandle;
+      checkEkRecordIndex(segno, "ekappr(segno)");
+      return withAllocs(module, [WASM_ERR_MAX_BYTES, 4], (err, out) => {
+        const code = module._tspice_ekappr(
+          id,
+          segno,
+          out,
+          err,
+          WASM_ERR_MAX_BYTES,
+        );
+        if (code !== 0)
+          throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, code);
+        return readHeapI32(module, (out >>> 0) / 4, "ekappr result");
+      });
+    },
+    ekinsr: (handle: SpiceHandle, segno: number, recno: number) => {
+      const id = spiceHandles.lookup(handle, EK_ONLY, "ekinsr").nativeHandle;
+      checkEkRecordIndex(segno, "ekinsr(segno)");
+      checkEkRecordIndex(recno, "ekinsr(recno)");
+      return withAllocs(module, [WASM_ERR_MAX_BYTES], (err) => {
+        const code = module._tspice_ekinsr(
+          id,
+          segno,
+          recno,
+          err,
+          WASM_ERR_MAX_BYTES,
+        );
+        if (code !== 0)
+          throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, code);
+      });
+    },
+    ekdelr: (handle: SpiceHandle, segno: number, recno: number) => {
+      const id = spiceHandles.lookup(handle, EK_ONLY, "ekdelr").nativeHandle;
+      checkEkRecordIndex(segno, "ekdelr(segno)");
+      checkEkRecordIndex(recno, "ekdelr(recno)");
+      return withAllocs(module, [WASM_ERR_MAX_BYTES], (err) => {
+        const code = module._tspice_ekdelr(
+          id,
+          segno,
+          recno,
+          err,
+          WASM_ERR_MAX_BYTES,
+        );
+        if (code !== 0)
+          throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, code);
+      });
+    },
+    ekccnt: (table: string) => {
+      return scalar(ekMetadataText(table), module._tspice_ekccnt);
+    },
+    ekcii: (table: string, cindex: number, collen = 33) => {
+      ekMetadataOrdinal(cindex);
+      assertSpiceInt32(collen, "EK column width");
+      return decodeEkColumn(
+        result("ekcii", ekMetadataText(table), (s, w, b, e, z) =>
+          module._tspice_ekcii(s, cindex, collen, w, b, e, z),
+        ),
+      );
+    },
+    eklef: (path: string) => {
+      ekMetadataText(path);
+      return loadToken(
+        scalar(
+          ekMetadataText(path ? resolveKernelPath(path) : path),
+          module._tspice_eklef,
+        ),
+      );
+    },
+    eknelt: (selidx: number, row: number) => {
+      ekMetadataOrdinal(selidx);
+      ekMetadataOrdinal(row);
+      return scalar(undefined, (_s, o, e, z) =>
+        module._tspice_eknelt(selidx, row, o, e, z),
+      );
+    },
+    ekpsel: (query: string) => {
+      return decodeEkSelect(
+        result("ekpsel", ekMetadataText(query), module._tspice_ekpsel),
+      );
+    },
+    ekssum: (handle: SpiceHandle, segno: number) => {
+      ekMetadataOrdinal(segno);
+      const { nativeHandle, kind } = spiceHandles.lookup(
+        handle,
+        ["EK", "EK-LOAD"],
+        "ekssum",
+      );
+      const loaded = Number(kind === "EK-LOAD");
+      return decodeEkSummary(
+        result("ekssum", undefined, (_s, w, b, e, z) =>
+          module._tspice_ekssum(nativeHandle, loaded, segno, w, b, e, z),
+        ),
+      );
+    },
+    ekuef: (handle: SpiceHandle) => {
+      spiceHandles.close(
+        handle,
+        ["EK-LOAD"],
+        ({ nativeHandle }) => {
+          callVoidHandle(module, module._tspice_ekuef, nativeHandle);
+          loads.delete(nativeHandle);
+        },
+        "ekuef",
+      );
+    },
     ekopr: (path: string) => {
       const resolved = resolveKernelPath(path);
       const pathPtr = writeUtf8CString(module, resolved);
@@ -367,22 +923,18 @@ export function createEkApi(
     },
 
     eknseg: (handle: SpiceHandle) => {
-      const nativeHandle = spiceHandles.lookup(
-        handle,
-        EK_ONLY,
-        "eknseg",
-      ).nativeHandle;
+      const entry = spiceHandles.lookup(handle, ["EK", "EK-LOAD"], "eknseg");
+      const nativeHandle = entry.nativeHandle;
       return withAllocs(
         module,
         [4, WASM_ERR_MAX_BYTES],
         (outNsegPtr, errPtr) => {
           module.HEAP32[outNsegPtr >> 2] = 0;
-          const code = module._tspice_eknseg(
-            nativeHandle,
-            outNsegPtr,
-            errPtr,
-            WASM_ERR_MAX_BYTES,
-          );
+          const code = (
+            entry.kind === "EK-LOAD"
+              ? module._tspice_ekload_nseg
+              : module._tspice_eknseg
+          )(nativeHandle, outNsegPtr, errPtr, WASM_ERR_MAX_BYTES);
           if (code !== 0) {
             throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, code);
           }

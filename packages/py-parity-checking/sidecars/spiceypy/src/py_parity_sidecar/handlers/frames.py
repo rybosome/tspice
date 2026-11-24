@@ -8,12 +8,33 @@ from spiceypy.utils.support_types import SPICEINT_CELL
 
 from .. import frame_algebra_oracle
 from ..window_algebra_oracle import allocate_window
+from ..ck_writer_oracle import write_ck_record_segment
 from ..models import (
     StepFramesCcifrm,
     StepFramesCidfrm,
     StepFramesCkcov,
     StepFramesCkgp,
     StepFramesCkgpav,
+    StepFramesPckcls,
+    StepFramesPckcov,
+    StepFramesPckfrm,
+    StepFramesPcklof,
+    StepFramesPckopn,
+    StepFramesPckuof,
+    StepFramesPckw02,
+    StepFramesCkopn,
+    StepFramesCkcls,
+    StepFramesCkw01,
+    StepFramesCkw02,
+    StepFramesCkw03,
+    StepFramesCkw05,
+    StepFramesCkfrot,
+    StepFramesCkfxfm,
+    StepFramesCkgr02,
+    StepFramesCkgr03,
+    StepFramesCkmeta,
+    StepFramesCknr02,
+    StepFramesCknr03,
     StepFramesCklpf,
     StepFramesCkobj,
     StepFramesCkupf,
@@ -21,6 +42,12 @@ from ..models import (
     StepFramesFrinfo,
     StepFramesFrmnam,
     StepFramesNamfrm,
+    StepFramesBltfrm,
+    StepFramesPxfrm2,
+    StepFramesTipbod,
+    StepFramesTisbod,
+    StepFramesTkfram,
+    StepFramesXfmsta,
     StepFramesPxform,
     StepFramesFrame,
     StepFramesTwovec,
@@ -35,7 +62,16 @@ from ..models import (
     StepOutput,
     WorkflowStep,
 )
+from ..frame_transform_oracle import checked_pxfrm2
 from ..runtime import SidecarRuntimeContext, resolve_path_ref
+
+
+def _release_pck_query_link(path: str) -> None:
+    # The checked wrapper has reset the scientific error. Balance the DAF link
+    # left by the interrupted canonical search and the temporary lookup link.
+    handle = sp.dafopr(path)
+    sp.dafcls(handle)
+    sp.dafcls(handle)
 
 
 def _to_matrix3(value: Any) -> list[list[float]]:
@@ -307,6 +343,136 @@ def run_frames_step(step: WorkflowStep, context: SidecarRuntimeContext) -> StepO
             out = _normalize_ckgpav(sp.ckgpav(step.inst, step.sclkdp, step.tol, step.ref))
         return StepOutput(op=step.op, value=out)
 
+    if isinstance(step, (StepFramesPckopn, StepFramesPcklof)):
+        entries = context.state.frames.pckHandles
+        if step.handleId in entries:
+            raise ValueError("PCK handle already registered")
+        path = resolve_path_ref(context.paths, step.path)
+        writer = isinstance(step, StepFramesPckopn)
+        h = sp.pckopn(path, step.ifname, step.ncomch) if isinstance(step, StepFramesPckopn) else sp.pcklof(path)
+        entries[step.handleId] = (h, writer)
+        def close_pending_pck() -> None:
+            if step.handleId in entries:
+                if writer:
+                    try:
+                        sp.pckcls(h)
+                    except sp.utils.exceptions.SpiceNOSEGMENTSFOUND:
+                        sp.dafcls(h)
+                else:
+                    sp.pckuof(h)
+                for key in [key for key, (other, _) in entries.items() if other == h]:
+                    del entries[key]
+        context.register_finalizer(f"PCK:{step.handleId}", close_pending_pck)
+        return StepOutput(op=step.op, value={"opened": True})
+
+    if isinstance(step, (StepFramesPckcls, StepFramesPckuof, StepFramesPckw02)):
+        entries = context.state.frames.pckHandles
+        h, writer = entries[step.handleId]
+        if writer != (not isinstance(step, StepFramesPckuof)):
+            raise ValueError("Unexpected PCK handle kind")
+        if isinstance(step, StepFramesPckw02):
+            if not 0 <= step.degree <= 41 or len(step.coefficients) != 3 * max(step.n, 0) * (step.degree + 1):
+                raise ValueError("Invalid PCK coefficient shape")
+            sp.pckw02(h, step.classId, step.frame, step.first, step.last, step.segid, step.intlen,
+                      step.n, step.degree, step.coefficients or [0.0], step.btime)
+            return StepOutput(op=step.op, value=None)
+        if isinstance(step, StepFramesPckcls):
+            sp.pckcls(h)
+        else:
+            sp.pckuof(h)
+        for key in [key for key, (other, _) in entries.items() if other == h]:
+            del entries[key]
+        return StepOutput(op=step.op, value={"closed": True})
+
+    if isinstance(step, StepFramesPckfrm):
+        cells = context.state.cellsWindows.intCells
+        if step.idsId not in cells:
+            cells[step.idsId] = SPICEINT_CELL(step.maxCard)
+        ids = cells[step.idsId]
+        if step.reset:
+            sp.scard(0, ids)
+        path = resolve_path_ref(context.paths, step.path)
+        try:
+            sp.pckfrm(path, ids)
+        except sp.utils.exceptions.SpiceSETEXCESS:
+            _release_pck_query_link(path)
+            raise
+        return StepOutput(op=step.op, value={"ids": [int(v) for v in ids]})
+
+    if isinstance(step, StepFramesPckcov):
+        cover = _get_or_create_window(context, step.coverId, max_intervals=step.maxIntervals)
+        if step.reset:
+            sp.scard(0, cover)
+        path = resolve_path_ref(context.paths, step.path)
+        try:
+            sp.pckcov(path, step.classId, cover)
+        except sp.utils.exceptions.SpiceWINDOWEXCESS:
+            _release_pck_query_link(path)
+            raise
+        return StepOutput(op=step.op, value={"intervals": _window_to_intervals(cover)})
+    if isinstance(step,StepFramesCkopn):
+        from ..models import PathRef
+        if not isinstance(step.path,PathRef) or step.path.kind != "scratch":
+            raise ValueError("CK writers require an owned scratch path")
+        writers=context.state.frames.writers
+        if step.handleId in writers: raise ValueError("Duplicate CK writer ID")
+        handle=sp.ckopn(resolve_path_ref(context.paths,step.path),step.ifname,step.ncomch)
+        writers[step.handleId]=handle
+        def close_pending_writer() -> None:
+            if step.handleId in writers:
+                try: sp.ckcls(handle)
+                except sp.utils.exceptions.SpiceNOSEGMENTSFOUND: sp.dafcls(handle)
+                del writers[step.handleId]
+        context.register_finalizer(f"CK writer:{step.handleId}",close_pending_writer)
+        return StepOutput(op=step.op,value={"opened":True})
+
+    if isinstance(step,StepFramesCkcls):
+        writers=context.state.frames.writers
+        sp.ckcls(writers[step.handleId]);del writers[step.handleId]
+        return StepOutput(op=step.op,value={"closed":True})
+
+    if isinstance(step,(StepFramesCkw01,StepFramesCkw02,StepFramesCkw03,StepFramesCkw05)):
+        write_ck_record_segment(context.state.frames.writers[step.handleId], step)
+        return StepOutput(op=step.op,value=None)
+    if isinstance(step, (StepFramesCkfrot, StepFramesCkfxfm)):
+        # A loaded CK requires ZZSCLK to negate the mapped clock. The
+        # registered oracle scenarios intentionally use representable clocks.
+        clock = sp.ckmeta(step.inst, "SCLK")
+        if clock == -2147483648:
+            raise ValueError("Unrepresentable CK SCLK negation in oracle workflow")
+        with sp.no_found_check():
+            if isinstance(step, StepFramesCkfrot):
+                matrix, ref, found = sp.ckfrot(step.inst, step.et)
+                key = "rotate"
+            else:
+                matrix, ref, found = sp.ckfxfm(step.inst, step.et)
+                key = "xform"
+        value = {"found": True, "ref": int(ref), key: matrix.ravel().tolist()} if found else {"found": False}
+        return StepOutput(op=step.op, value=value)
+
+    if isinstance(step, StepFramesCkmeta):
+        return StepOutput(op=step.op, value=sp.ckmeta(step.ckid, step.meta))
+
+    if isinstance(step, (StepFramesCkgr02, StepFramesCkgr03, StepFramesCknr02, StepFramesCknr03)):
+        import numpy as np
+        handle = context.state.fileIo.handles[step.handleId]
+        owner, packed = context.state.fileIo.ckSummaries[step.summaryId]
+        if not handle.isOpen or owner is not handle or len(packed) != 40:
+            raise ValueError("Expected live CK descriptor and owning DAF")
+        desc = np.frombuffer(packed, dtype=np.float64).copy()
+        if isinstance(step, StepFramesCknr02):
+            return StepOutput(op=step.op, value=sp.cknr02(handle.handle, desc))
+        if isinstance(step, StepFramesCknr03):
+            return StepOutput(op=step.op, value=sp.cknr03(handle.handle, desc))
+        if isinstance(step, StepFramesCkgr02):
+            record = sp.ckgr02(handle.handle, desc, step.recno).tolist()
+            return StepOutput(op=step.op, value={"start": record[0], "stop": record[1], "rate": record[2],
+                                                "quaternion": record[3:7], "av": record[7:10]})
+        record = sp.ckgr03(handle.handle, desc, step.recno).tolist()
+        _, ic = sp.dafus(desc, 2, 6)
+        return StepOutput(op=step.op, value={"sclkdp": record[0], "quaternion": record[1:5],
+                                             "av": record[5:8] if ic[3] else None})
+
     if isinstance(step, StepFramesCklpf):
         if step.handleId in context.state.frames.ckHandles:
             raise ValueError(f"CK handle already exists: {step.handleId}")
@@ -344,6 +510,42 @@ def run_frames_step(step: WorkflowStep, context: SidecarRuntimeContext) -> StepO
             sp.scard(0, cover)
         sp.ckcov(ck_path, step.idcode, step.needav, step.level, step.tol, step.timsys, cover)
         return StepOutput(op=step.op, value={"intervals": _window_to_intervals(cover)})
+
+    if isinstance(step, StepFramesBltfrm):
+        ids = context.state.cellsWindows.intCells.get(step.idsId)
+        if ids is None:
+            ids = SPICEINT_CELL(step.maxCard)
+            context.state.cellsWindows.intCells[step.idsId] = ids
+            context.register_finalizer(f"cellsWindows.release:{step.idsId}", lambda: context.state.cellsWindows.intCells.pop(step.idsId, None))
+        sp.bltfrm(step.frameClass, ids)
+        return StepOutput(op=step.op, value={"ids": [int(v) for v in ids]})
+
+    if isinstance(step, StepFramesPxfrm2):
+        out = checked_pxfrm2(step.from_, step.to, step.etfrom, step.etto)
+        return StepOutput(op=step.op, value=_to_matrix3(out))
+
+    if isinstance(step, StepFramesTipbod):
+        if step.body == -2147483648:
+            raise ValueError("ID outside N0067 frame hash range")
+        out = sp.tipbod(step.ref, step.body, step.et)
+        return StepOutput(op=step.op, value=_to_matrix3(out))
+
+    if isinstance(step, StepFramesTisbod):
+        if step.body == -2147483648:
+            raise ValueError("ID outside N0067 frame hash range")
+        out = sp.tisbod(step.ref, step.body, step.et)
+        return StepOutput(op=step.op, value=_to_matrix6(out))
+
+    if isinstance(step, StepFramesTkfram):
+        if step.typeId == -2147483648:
+            raise ValueError("ID outside N0067 frame hash range")
+        with sp.no_found_check():
+            rot, frame, found = sp.tkfram(step.typeId)
+        return StepOutput(op=step.op, value={"found": True, "rot": _to_matrix3(rot), "frame": int(frame)} if found else {"found": False})
+
+    if isinstance(step, StepFramesXfmsta):
+        out = sp.xfmsta(step.state, step.from_, step.to, step.body)
+        return StepOutput(op=step.op, value=out.tolist())
 
     if isinstance(step, StepFramesPxform):
         out = sp.pxform(step.from_, step.to, step.et)

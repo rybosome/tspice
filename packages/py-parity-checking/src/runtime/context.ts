@@ -29,6 +29,7 @@ export type FileIoHandleState = {
 };
 
 export type FileIoState = {
+  ckSummaries: Map<string, { handle: SpiceHandle; bytes: Uint8Array }>;
   handles: Map<string, FileIoHandleState>;
   descriptors: Map<string, DlaDescriptor>;
   spatialIndexes: Map<string, { spaixd: number[]; spaixi: number[] }>;
@@ -65,6 +66,8 @@ export type EphemerisState = {
 export type FramesState = {
   requestedFrames: Set<string>;
   stagedVirtualKernelPaths: Set<string>;
+  pckHandles: Map<string, { handle: SpiceHandle; writer: boolean }>;
+  writers: Map<string, { handle: SpiceHandle; path: string; physical: string }>;
   ckHandles: Map<string, number>;
 };
 
@@ -119,6 +122,7 @@ export function createRunTspiceContext(
         loadedVirtualKernelPaths: [],
       },
       fileIo: {
+        ckSummaries: new Map(),
         handles: new Map<string, FileIoHandleState>(),
         descriptors: new Map<string, DlaDescriptor>(),
         spatialIndexes: new Map<
@@ -151,6 +155,8 @@ export function createRunTspiceContext(
       frames: {
         requestedFrames: new Set<string>(),
         stagedVirtualKernelPaths: new Set<string>(),
+        pckHandles: new Map(),
+        writers: new Map(),
         ckHandles: new Map<string, number>(),
       },
     },

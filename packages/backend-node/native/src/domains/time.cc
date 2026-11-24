@@ -1,6 +1,15 @@
 #include "time.h"
 
+#include <algorithm>
+#include <cmath>
+#include <cstdint>
+#include <cstring>
+#include <limits>
+#include <memory>
+#include <new>
 #include <string>
+#include <cmath>
+#include <climits>
 
 #include "../addon_common.h"
 #include "../napi_helpers.h"
@@ -98,6 +107,287 @@ static Napi::Number Tyear(const Napi::CallbackInfo& info) {
   }
   std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
   return Napi::Number::New(env, tspice_tyear());
+}
+
+static bool ReadClockText(Napi::Env env, const Napi::Value& value, std::string* text) {
+  if (!value.IsString()) {
+    ThrowSpiceError(Napi::TypeError::New(env, "Expected a string"));
+    return false;
+  }
+  size_t bytes = 0;
+  if (napi_get_value_string_utf8(env, value, nullptr, 0, &bytes) != napi_ok || bytes >= std::numeric_limits<int>::max()) {
+    ThrowSpiceError(Napi::RangeError::New(env, "String exceeds its UTF-8 byte limit"));
+    return false;
+  }
+  const Napi::String input = value.As<Napi::String>();
+  // N-API replaces unpaired surrogates when encoding UTF-8. Validate the
+  // original UTF-16 units before making the C string.
+  const std::u16string units = input.Utf16Value();
+  for (size_t i = 0; i < units.size(); i++) {
+    const char16_t c = units[i];
+    if (c == 0) {
+      ThrowSpiceError(Napi::TypeError::New(env, "Input contains an embedded NUL"));
+      return false;
+    }
+    if (c >= 0xd800 && c <= 0xdfff) {
+      if (c > 0xdbff || i + 1 == units.size() || units[i+1] < 0xdc00 || units[i+1] > 0xdfff) {
+        ThrowSpiceError(Napi::TypeError::New(env, "Input contains an unpaired UTF-16 surrogate"));
+        return false;
+      }
+      i++;
+    }
+  }
+  *text = input.Utf8Value();
+  return true;
+}
+
+static bool ReadClockInt(Napi::Env env, const Napi::Value& value, int* out) {
+  if (value.IsNumber()) {
+    const double n = value.As<Napi::Number>().DoubleValue();
+    if (std::isfinite(n) && std::trunc(n) == n && n >= -2147483648.0 && n <= 2147483647.0) {
+      *out = static_cast<int>(n);
+      return true;
+    }
+  }
+  ThrowSpiceError(Napi::TypeError::New(env, "Expected a signed32 integer"));
+  return false;
+}
+
+static Napi::Value Sce2t(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 2) {
+    ThrowSpiceError(Napi::TypeError::New(env, "sce2t() expects 2 arguments"));
+    return env.Undefined();
+  }
+  int sc = 0;
+  if (!ReadClockInt(env, info[0], &sc)) return env.Undefined();
+  if (sc == INT32_MIN) {
+    ThrowSpiceError(Napi::RangeError::New(env, "Clock ID cannot be negated as a SpiceInt"));
+    return env.Undefined();
+  }
+  if (!info[1].IsNumber() || !std::isfinite(info[1].As<Napi::Number>().DoubleValue())) {
+    ThrowSpiceError(Napi::TypeError::New(env, "Expected a finite clock value"));
+    return env.Undefined();
+  }
+  const double value = info[1].As<Napi::Number>().DoubleValue();
+  double out = 0.0;
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
+  if (tspice_sce2t(sc, value, &out, err, static_cast<int>(sizeof(err))) != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling sce2t", err);
+    return env.Undefined();
+  }
+  return Napi::Number::New(env, out);
+}
+
+static Napi::Value Scfmt(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 3) {
+    ThrowSpiceError(Napi::TypeError::New(env, "scfmt() expects 3 arguments"));
+    return env.Undefined();
+  }
+  int sc = 0;
+  if (!ReadClockInt(env, info[0], &sc)) return env.Undefined();
+  if (sc == INT32_MIN) {
+    ThrowSpiceError(Napi::RangeError::New(env, "Clock ID cannot be negated as a SpiceInt"));
+    return env.Undefined();
+  }
+  if (!info[1].IsNumber() || !std::isfinite(info[1].As<Napi::Number>().DoubleValue())) {
+    ThrowSpiceError(Napi::TypeError::New(env, "Expected a finite clock value"));
+    return env.Undefined();
+  }
+  const double value = info[1].As<Napi::Number>().DoubleValue();
+  int clklen = 0;
+  if (!ReadClockInt(env, info[2], &clklen)) return env.Undefined();
+  clklen = std::min(clklen, TSPICE_SCLK_FORMAT_MAX_BYTES);
+  char out[TSPICE_SCLK_FORMAT_MAX_BYTES] = {};
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
+  if (tspice_scfmt(sc, value, clklen, out, err, static_cast<int>(sizeof(err))) != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling scfmt", err);
+    return env.Undefined();
+  }
+  const char* end = std::find(out, out + std::max(1, clklen), '\0');
+  if (end == out + std::max(1, clklen)) {
+    ThrowSpiceError(Napi::Error::New(env, "Missing clock string terminator"));
+    return env.Undefined();
+  }
+  return Napi::String::New(env, out, static_cast<size_t>(end - out));
+}
+
+static Napi::Value Scpart(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 1) {
+    ThrowSpiceError(Napi::TypeError::New(env, "scpart() expects 1 arguments"));
+    return env.Undefined();
+  }
+  int sc = 0;
+  if (!ReadClockInt(env, info[0], &sc)) return env.Undefined();
+  if (sc == INT32_MIN) {
+    ThrowSpiceError(Napi::RangeError::New(env, "Clock ID cannot be negated as a SpiceInt"));
+    return env.Undefined();
+  }
+  auto start = std::unique_ptr<double[]>(new (std::nothrow) double[TSPICE_SCLK_MAX_PARTITIONS]);
+  auto stop = std::unique_ptr<double[]>(new (std::nothrow) double[TSPICE_SCLK_MAX_PARTITIONS]);
+  if (!start || !stop) {
+    ThrowSpiceError(Napi::Error::New(env, "Clock partition buffer allocation failed"));
+    return env.Undefined();
+  }
+  int count = 0;
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
+  if (tspice_scpart(sc, TSPICE_SCLK_MAX_PARTITIONS, &count, start.get(), stop.get(), err, static_cast<int>(sizeof(err))) != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling scpart", err);
+    return env.Undefined();
+  }
+  Napi::Object result = Napi::Object::New(env);
+  result.Set("pstart", tspice_napi::MakeNumberArray(env, start.get(), static_cast<size_t>(count)));
+  result.Set("pstop", tspice_napi::MakeNumberArray(env, stop.get(), static_cast<size_t>(count)));
+  return result;
+}
+
+static Napi::Value Sctiks(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 2) {
+    ThrowSpiceError(Napi::TypeError::New(env, "sctiks() expects 2 arguments"));
+    return env.Undefined();
+  }
+  int sc = 0;
+  if (!ReadClockInt(env, info[0], &sc)) return env.Undefined();
+  if (sc == INT32_MIN) {
+    ThrowSpiceError(Napi::RangeError::New(env, "Clock ID cannot be negated as a SpiceInt"));
+    return env.Undefined();
+  }
+  std::string text;
+  if (!ReadClockText(env, info[1], &text)) return env.Undefined();
+  double out = 0.0;
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
+  if (tspice_sctiks(sc, text.c_str(), &out, err, static_cast<int>(sizeof(err))) != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling sctiks", err);
+    return env.Undefined();
+  }
+  return Napi::Number::New(env, out);
+}
+
+static bool timeNumber(const Napi::Value &v, double *out) {
+  if (!v.IsNumber())
+    return false;
+  *out = v.As<Napi::Number>().DoubleValue();
+  return std::isfinite(*out);
+}
+
+static bool timeInt(const Napi::Value &v, int *out) {
+  double x;
+  if (!timeNumber(v, &x) || std::trunc(x) != x || x < INT_MIN || x > INT_MAX)
+    return false;
+  *out = static_cast<int>(x);
+  return true;
+}
+
+static bool timeText(const Napi::Value &v, std::string *out) {
+  if (!v.IsString())
+    return false;
+  const auto text = v.As<Napi::String>();
+  // N-API's UTF-8 conversion replaces unpaired UTF-16 surrogates.
+  const auto chars = text.Utf16Value();
+  for (size_t i = 0; i < chars.size(); ++i) {
+    auto c = chars[i];
+    if (c == 0 || (c >= 0xdc00 && c <= 0xdfff))
+      return false;
+    if (c >= 0xd800 && c <= 0xdbff) {
+      if (++i >= chars.size() || chars[i] < 0xdc00 || chars[i] > 0xdfff)
+        return false;
+    }
+  }
+  *out = text.Utf8Value();
+  return out->size() < INT_MAX;
+}
+
+static Napi::Value timeBadArgs(Napi::Env env, const char *op) {
+  ThrowSpiceError(
+      Napi::TypeError::New(env, std::string("Invalid numeric or string arguments to ") + op));
+  return env.Undefined();
+}
+
+static Napi::Value Etcal(const Napi::CallbackInfo &info) {
+  const auto env = info.Env();
+  double et;
+  int len;
+  if (info.Length() != 2 || !timeNumber(info[0], &et) || !timeInt(info[1], &len))
+    return timeBadArgs(env, "etcal");
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char out[181] = {}, err[tspice_backend_node::kErrMaxBytes] = {};
+  if (tspice_etcal(et, len, out, err, sizeof(err))) {
+    ThrowSpiceError(env, "CSPICE failed while calling etcal", err);
+    return env.Undefined();
+  }
+  return Napi::String::New(env, out);
+}
+
+static Napi::Value Utc2et(const Napi::CallbackInfo &info) {
+  const auto env = info.Env();
+  std::string text;
+  if (info.Length() != 1 || !timeText(info[0], &text))
+    return timeBadArgs(env, "utc2et");
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  double et = 0;
+  if (tspice_utc2et(text.c_str(), &et, err, sizeof(err))) {
+    ThrowSpiceError(env, "CSPICE failed while calling utc2et", err);
+    return env.Undefined();
+  }
+  return Napi::Number::New(env, et);
+}
+
+static Napi::Value Tparch(const Napi::CallbackInfo &info) {
+  const auto env = info.Env();
+  std::string text;
+  if (info.Length() != 1 || !timeText(info[0], &text))
+    return timeBadArgs(env, "tparch");
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  if (tspice_tparch(text.c_str(), err, sizeof(err)))
+    ThrowSpiceError(env, "CSPICE failed while calling tparch", err);
+  return env.Undefined();
+}
+
+static Napi::Value Tsetyr(const Napi::CallbackInfo &info) {
+  const auto env = info.Env();
+  int year;
+  if (info.Length() != 1 || !timeInt(info[0], &year))
+    return timeBadArgs(env, "tsetyr");
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  if (tspice_tsetyr(year, err, sizeof(err)))
+    ThrowSpiceError(env, "CSPICE failed while calling tsetyr", err);
+  return env.Undefined();
+}
+
+static Napi::Value Et2lst(const Napi::CallbackInfo &info) {
+  const auto env = info.Env();
+  double et, lon;
+  int body, timlen, ampmlen;
+  std::string type;
+  if (info.Length() != 6 || !timeNumber(info[0], &et) || !timeInt(info[1], &body) ||
+      !timeNumber(info[2], &lon) || !timeText(info[3], &type) || !timeInt(info[4], &timlen) ||
+      !timeInt(info[5], &ampmlen))
+    return timeBadArgs(env, "et2lst");
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char time[9] = {}, ampm[14] = {}, err[tspice_backend_node::kErrMaxBytes] = {};
+  int hms[3] = {};
+  if (tspice_et2lst(et, body, lon, type.c_str(), timlen, ampmlen, hms, time, ampm, err,
+                    sizeof(err))) {
+    ThrowSpiceError(env, "CSPICE failed while calling et2lst", err);
+    return env.Undefined();
+  }
+  auto out = Napi::Object::New(env);
+  out.Set("hr", Napi::Number::New(env, hms[0]));
+  out.Set("mn", Napi::Number::New(env, hms[1]));
+  out.Set("sc", Napi::Number::New(env, hms[2]));
+  out.Set("time", Napi::String::New(env, time));
+  out.Set("ampm", Napi::String::New(env, ampm));
+  return out;
 }
 
 static Napi::Number Str2et(const Napi::CallbackInfo& info) {
@@ -474,6 +764,11 @@ void RegisterTime(Napi::Env env, Napi::Object exports) {
   if (!SetExportChecked(env, exports, "j2100", Napi::Function::New(env, J2100), __func__)) return;
   if (!SetExportChecked(env, exports, "jyear", Napi::Function::New(env, Jyear), __func__)) return;
   if (!SetExportChecked(env, exports, "tyear", Napi::Function::New(env, Tyear), __func__)) return;
+  if (!SetExportChecked(env, exports, "etcal", Napi::Function::New(env, Etcal), __func__)) return;
+  if (!SetExportChecked(env, exports, "utc2et", Napi::Function::New(env, Utc2et), __func__)) return;
+  if (!SetExportChecked(env, exports, "tparch", Napi::Function::New(env, Tparch), __func__)) return;
+  if (!SetExportChecked(env, exports, "tsetyr", Napi::Function::New(env, Tsetyr), __func__)) return;
+  if (!SetExportChecked(env, exports, "et2lst", Napi::Function::New(env, Et2lst), __func__)) return;
   if (!SetExportChecked(env, exports, "str2et", Napi::Function::New(env, Str2et), __func__)) return;
   if (!SetExportChecked(env, exports, "et2utc", Napi::Function::New(env, Et2utc), __func__)) return;
   if (!SetExportChecked(env, exports, "timout", Napi::Function::New(env, Timout), __func__)) return;
@@ -486,6 +781,10 @@ void RegisterTime(Napi::Env env, Napi::Object exports) {
   if (!SetExportChecked(env, exports, "timdefSet", Napi::Function::New(env, TimdefSet), __func__)) return;
 
   if (!SetExportChecked(env, exports, "scs2e", Napi::Function::New(env, Scs2e), __func__)) return;
+  if (!SetExportChecked(env, exports, "sce2t", Napi::Function::New(env, Sce2t), __func__)) return;
+  if (!SetExportChecked(env, exports, "scfmt", Napi::Function::New(env, Scfmt), __func__)) return;
+  if (!SetExportChecked(env, exports, "scpart", Napi::Function::New(env, Scpart), __func__)) return;
+  if (!SetExportChecked(env, exports, "sctiks", Napi::Function::New(env, Sctiks), __func__)) return;
   if (!SetExportChecked(env, exports, "sce2s", Napi::Function::New(env, Sce2s), __func__)) return;
   if (!SetExportChecked(env, exports, "scencd", Napi::Function::New(env, Scencd), __func__)) return;
   if (!SetExportChecked(env, exports, "scdecd", Napi::Function::New(env, Scdecd), __func__)) return;

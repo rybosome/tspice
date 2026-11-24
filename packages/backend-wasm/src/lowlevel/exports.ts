@@ -158,6 +158,56 @@ export type EmscriptenModule = {
   _tspice_get_last_error_long(outPtr: number, outMaxBytes: number): number;
   _tspice_get_last_error_trace(outPtr: number, outMaxBytes: number): number;
 
+  _tspice_errdev(
+    op: number,
+    value: number,
+    capacity: number,
+    out: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_errprt(
+    op: number,
+    value: number,
+    capacity: number,
+    out: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_trcoff(err: number, errMaxBytes: number): number;
+  _tspice_errch(
+    markerPtr: number,
+    valuePtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_errdp(
+    markerPtr: number,
+    value: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_errint(
+    markerPtr: number,
+    value: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_qcktrc(
+    capacity: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_return(outPtr: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_trcdep(outPtr: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_trcnam(
+    index: number,
+    capacity: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
   _tspice_failed(
     outFailedPtr: number,
     errPtr: number,
@@ -227,6 +277,29 @@ export type EmscriptenModule = {
     errMaxBytes: number,
   ): number;
 
+  _tspice_rdtext(
+    owner: number,
+    path: number,
+    width: number,
+    line: number,
+    eof: number,
+    err: number,
+    maxBytes: number,
+  ): number;
+  _tspice_putcml(
+    argc: number,
+    packedBytes: number,
+    packed: number,
+    observed: number,
+    err: number,
+    maxBytes: number,
+  ): number;
+  _tspice_text_owner(owner: number, err: number, maxBytes: number): number;
+  _tspice_release_text_owner(
+    owner: number,
+    err: number,
+    maxBytes: number,
+  ): number;
   _tspice_getfat(
     pathPtr: number,
     outArchPtr: number,
@@ -237,6 +310,133 @@ export type EmscriptenModule = {
     errMaxBytes: number,
   ): number;
 
+  _tspice_dafac(
+    handle: number,
+    rows: number,
+    width: number,
+    data: number,
+    room: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_dafdc(handle: number, err: number, errMaxBytes: number): number;
+  _tspice_dafec(
+    handle: number,
+    rows: number,
+    width: number,
+    data: number,
+    room: number,
+    n: number,
+    done: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_dafrs(
+    handle: number,
+    data: number,
+    bytes: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_dafps(
+    nd: number,
+    ni: number,
+    dc: number,
+    dcCount: number,
+    ic: number,
+    icCount: number,
+    out: number,
+    room: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_dafus(
+    summary: number,
+    size: number,
+    nd: number,
+    ni: number,
+    dc: number,
+    dcRoom: number,
+    ic: number,
+    icRoom: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_dafgsr(
+    handle: number,
+    recno: number,
+    begin: number,
+    end: number,
+    out: number,
+    room: number,
+    outFound: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_dafrfr(
+    handle: number,
+    ifnlen: number,
+    ifname: number,
+    room: number,
+    fields: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_dafrda(
+    handle: number,
+    begin: number,
+    end: number,
+    words: number,
+    room: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_dafgda(
+    handle: number,
+    begin: number,
+    end: number,
+    words: number,
+    room: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_dafbbs(handle: number, err: number, errMaxBytes: number): number;
+  _tspice_dafcs(handle: number, err: number, errMaxBytes: number): number;
+  _tspice_daffpa(
+    handle: number,
+    outFound: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_dafgh(outHandle: number, err: number, errMaxBytes: number): number;
+  _tspice_dafgn(
+    handle: number,
+    namlen: number,
+    out: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_dafgs(
+    handle: number,
+    out: number,
+    room: number,
+    bytes: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_dafhsf(
+    handle: number,
+    nd: number,
+    ni: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_dafopw(
+    path: number,
+    outHandle: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
   _tspice_dafopr(
     pathPtr: number,
     outHandlePtr: number,
@@ -252,6 +452,161 @@ export type EmscriptenModule = {
     errMaxBytes: number,
   ): number;
 
+  _tspice_dasac(
+    h: number,
+    n: number,
+    w: number,
+    data: number,
+    room: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_dasdc(h: number, err: number, errMaxBytes: number): number;
+  _tspice_dasec(
+    h: number,
+    rows: number,
+    w: number,
+    data: number,
+    room: number,
+    n: number,
+    done: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_dasadc(
+    handle: number,
+    n: number,
+    bpos: number,
+    epos: number,
+    datlen: number,
+    ptr: number,
+    length: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_dasadd(
+    handle: number,
+    n: number,
+    ptr: number,
+    length: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_dasadi(
+    handle: number,
+    n: number,
+    ptr: number,
+    length: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_dasrdc(
+    handle: number,
+    first: number,
+    last: number,
+    bpos: number,
+    epos: number,
+    datlen: number,
+    ptr: number,
+    length: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_dasrdd(
+    handle: number,
+    first: number,
+    last: number,
+    ptr: number,
+    length: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_dasrdi(
+    handle: number,
+    first: number,
+    last: number,
+    ptr: number,
+    length: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_dasudc(
+    handle: number,
+    first: number,
+    last: number,
+    bpos: number,
+    epos: number,
+    datlen: number,
+    ptr: number,
+    length: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_dasudd(
+    handle: number,
+    first: number,
+    last: number,
+    ptr: number,
+    length: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_dasudi(
+    handle: number,
+    first: number,
+    last: number,
+    ptr: number,
+    length: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_dasonw(
+    path: number,
+    ftype: number,
+    ifname: number,
+    ncomr: number,
+    out: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_dasops(out: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_dasopw(
+    path: number,
+    out: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_dashfn(
+    handle: number,
+    namlen: number,
+    name: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_dashfs(
+    handle: number,
+    out: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_daslla(
+    handle: number,
+    out: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_dasllc(handle: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_dasrfr(
+    handle: number,
+    idwlen: number,
+    ifnlen: number,
+    idword: number,
+    ifname: number,
+    out: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_daswbr(handle: number, errPtr: number, errMaxBytes: number): number;
   _tspice_dasopr(
     pathPtr: number,
     outHandlePtr: number,
@@ -270,6 +625,25 @@ export type EmscriptenModule = {
     errMaxBytes: number,
   ): number;
 
+  _tspice_dlabbs(
+    handle: number,
+    outDescr8Ptr: number,
+    outFoundPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_dlafps(
+    handle: number,
+    descr8Ptr: number,
+    outNextDescr8Ptr: number,
+    outFoundPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_dlabns(handle: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_dlaens(handle: number, errPtr: number, errMaxBytes: number): number;
   _tspice_dlabfs(
     handle: number,
     outDescr8Ptr: number,
@@ -291,6 +665,57 @@ export type EmscriptenModule = {
 
   // --- EK ---
 
+  _tspice_ekccnt(
+    table: number,
+    count: number,
+    err: number,
+    size: number,
+  ): number;
+  _tspice_ekcii(
+    table: number,
+    index: number,
+    width: number,
+    words: number,
+    name: number,
+    err: number,
+    size: number,
+  ): number;
+  _tspice_eklef(
+    path: number,
+    generation: number,
+    err: number,
+    size: number,
+  ): number;
+  _tspice_eknelt(
+    selectIndex: number,
+    row: number,
+    count: number,
+    err: number,
+    size: number,
+  ): number;
+  _tspice_ekpsel(
+    query: number,
+    words: number,
+    text: number,
+    err: number,
+    size: number,
+  ): number;
+  _tspice_ekssum(
+    id: number,
+    loaded: number,
+    segment: number,
+    words: number,
+    text: number,
+    err: number,
+    size: number,
+  ): number;
+  _tspice_ekuef(generation: number, err: number, size: number): number;
+  _tspice_ekload_nseg(
+    generation: number,
+    count: number,
+    err: number,
+    size: number,
+  ): number;
   _tspice_ekopr(
     pathPtr: number,
     outHandlePtr: number,
@@ -376,6 +801,156 @@ export type EmscriptenModule = {
     errMaxBytes: number,
   ): number;
 
+  _tspice_ekacec(
+    h: number,
+    s: number,
+    r: number,
+    col: number,
+    count: number,
+    width: number,
+    values: number,
+    nullFlag: number,
+    err: number,
+    errBytes: number,
+  ): number;
+  _tspice_ekaced(
+    h: number,
+    s: number,
+    r: number,
+    col: number,
+    count: number,
+    values: number,
+    nullFlag: number,
+    err: number,
+    errBytes: number,
+  ): number;
+  _tspice_ekacei(
+    h: number,
+    s: number,
+    r: number,
+    col: number,
+    count: number,
+    values: number,
+    nullFlag: number,
+    err: number,
+    errBytes: number,
+  ): number;
+  _tspice_ekrcec(
+    h: number,
+    s: number,
+    r: number,
+    col: number,
+    width: number,
+    values: number,
+    capacity: number,
+    count: number,
+    nullPtr: number,
+    err: number,
+    errBytes: number,
+  ): number;
+  _tspice_ekrced(
+    h: number,
+    s: number,
+    r: number,
+    col: number,
+    values: number,
+    capacity: number,
+    count: number,
+    nullPtr: number,
+    err: number,
+    errBytes: number,
+  ): number;
+  _tspice_ekrcei(
+    h: number,
+    s: number,
+    r: number,
+    col: number,
+    values: number,
+    capacity: number,
+    count: number,
+    nullPtr: number,
+    err: number,
+    errBytes: number,
+  ): number;
+  _tspice_ekucec(
+    h: number,
+    s: number,
+    r: number,
+    col: number,
+    count: number,
+    width: number,
+    values: number,
+    nullFlag: number,
+    err: number,
+    errBytes: number,
+  ): number;
+  _tspice_ekuced(
+    h: number,
+    s: number,
+    r: number,
+    col: number,
+    count: number,
+    values: number,
+    nullFlag: number,
+    err: number,
+    errBytes: number,
+  ): number;
+  _tspice_ekucei(
+    h: number,
+    s: number,
+    r: number,
+    col: number,
+    count: number,
+    values: number,
+    nullFlag: number,
+    err: number,
+    errBytes: number,
+  ): number;
+  _tspice_ek_entry_extent(
+    h: number,
+    s: number,
+    r: number,
+    col: number,
+    kind: number,
+    width: number,
+    count: number,
+    err: number,
+    errBytes: number,
+  ): number;
+  _tspice_ekops(out: number, err: number, errBytes: number): number;
+  _tspice_ekbseg(
+    handle: number,
+    table: number,
+    count: number,
+    nameWidth: number,
+    names: number,
+    declWidth: number,
+    decls: number,
+    out: number,
+    err: number,
+    errBytes: number,
+  ): number;
+  _tspice_ekappr(
+    handle: number,
+    segno: number,
+    out: number,
+    err: number,
+    errBytes: number,
+  ): number;
+  _tspice_ekinsr(
+    handle: number,
+    segno: number,
+    recno: number,
+    err: number,
+    errBytes: number,
+  ): number;
+  _tspice_ekdelr(
+    handle: number,
+    segno: number,
+    recno: number,
+    err: number,
+    errBytes: number,
+  ): number;
   _tspice_ekifld(
     handle: number,
     tabnamPtr: number,
@@ -618,6 +1193,38 @@ export type EmscriptenModule = {
     errMaxBytes: number,
   ): number;
 
+  _tspice_sce2t(
+    sc: number,
+    et: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_scfmt(
+    sc: number,
+    ticks: number,
+    clklen: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_scpart(
+    sc: number,
+    room: number,
+    countPtr: number,
+    startPtr: number,
+    stopPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_sctiks(
+    sc: number,
+    textPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
   _tspice_sce2s(
     sc: number,
     et: number,
@@ -652,6 +1259,54 @@ export type EmscriptenModule = {
     errMaxBytes: number,
   ): number;
 
+  _tspice_bltfrm(
+    frameClass: number,
+    ids: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_pxfrm2(
+    fromPtr: number,
+    toPtr: number,
+    etfrom: number,
+    etto: number,
+    out: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_tipbod(
+    refPtr: number,
+    body: number,
+    et: number,
+    out: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_tisbod(
+    refPtr: number,
+    body: number,
+    et: number,
+    out: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_tkfram(
+    typeId: number,
+    out: number,
+    frame: number,
+    found: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_xfmsta(
+    state: number,
+    fromPtr: number,
+    toPtr: number,
+    bodyPtr: number,
+    out: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
   _tspice_pxform(
     fromPtr: number,
     toPtr: number,
@@ -3131,6 +3786,29 @@ export type EmscriptenModule = {
     errPtr: number,
     errMaxBytes: number,
   ): number;
+  _tspice_etcal(
+    et: number,
+    callen: number,
+    out: number,
+    err: number,
+    cap: number,
+  ): number;
+  _tspice_utc2et(text: number, out: number, err: number, cap: number): number;
+  _tspice_tparch(text: number, err: number, cap: number): number;
+  _tspice_tsetyr(year: number, err: number, cap: number): number;
+  _tspice_et2lst(
+    et: number,
+    body: number,
+    lon: number,
+    type: number,
+    timlen: number,
+    ampmlen: number,
+    hms: number,
+    time: number,
+    ampm: number,
+    err: number,
+    cap: number,
+  ): number;
   _tspice_tparse(
     timstrPtr: number,
     outEtPtr: number,
@@ -3201,6 +3879,40 @@ export type EmscriptenModule = {
     outNamePtr: number,
     outNameMaxBytes: number,
     foundPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_srfc2s(
+    code: number,
+    bodyId: number,
+    srflen: number,
+    textPtr: number,
+    flagPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_srfcss(
+    code: number,
+    bodyPtr: number,
+    srflen: number,
+    textPtr: number,
+    flagPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_srfs2c(
+    surfacePtr: number,
+    bodyPtr: number,
+    codePtr: number,
+    flagPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_srfscc(
+    surfacePtr: number,
+    bodyId: number,
+    codePtr: number,
+    flagPtr: number,
     errPtr: number,
     errMaxBytes: number,
   ): number;
@@ -3311,6 +4023,38 @@ export type EmscriptenModule = {
     errMaxBytes: number,
   ): number;
 
+  _tspice_sce2t(
+    sc: number,
+    et: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_scfmt(
+    sc: number,
+    ticks: number,
+    clklen: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_scpart(
+    sc: number,
+    room: number,
+    countPtr: number,
+    startPtr: number,
+    stopPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_sctiks(
+    sc: number,
+    textPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
   _tspice_sce2s(
     sc: number,
     et: number,
@@ -3345,6 +4089,180 @@ export type EmscriptenModule = {
     errMaxBytes: number,
   ): number;
 
+  _tspice_pckcls(handle: number, err: number, errMaxBytes: number): number;
+  _tspice_pckcov(
+    path: number,
+    classId: number,
+    dest: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_pckfrm(
+    path: number,
+    dest: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_pcklof(
+    path: number,
+    out: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_pckopn(
+    path: number,
+    ifname: number,
+    ncomch: number,
+    out: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_pckuof(handle: number, err: number, errMaxBytes: number): number;
+  _tspice_pckw02(
+    handle: number,
+    classId: number,
+    frame: number,
+    first: number,
+    last: number,
+    segid: number,
+    intlen: number,
+    n: number,
+    degree: number,
+    coefficients: number,
+    count: number,
+    btime: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_ckopn(
+    path: number,
+    ifname: number,
+    ncomch: number,
+    out: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_ckcls(handle: number, err: number, errMaxBytes: number): number;
+  _tspice_ckw01(
+    handle: number,
+    beg: number,
+    end: number,
+    inst: number,
+    ref: number,
+    av: number,
+    segid: number,
+    n: number,
+    data: number,
+    count: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_ckw02(
+    handle: number,
+    beg: number,
+    end: number,
+    inst: number,
+    ref: number,
+    segid: number,
+    n: number,
+    data: number,
+    count: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_ckw03(
+    handle: number,
+    beg: number,
+    end: number,
+    inst: number,
+    ref: number,
+    av: number,
+    segid: number,
+    n: number,
+    nints: number,
+    data: number,
+    count: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_ckw05(
+    handle: number,
+    subtype: number,
+    degree: number,
+    beg: number,
+    end: number,
+    inst: number,
+    ref: number,
+    av: number,
+    segid: number,
+    n: number,
+    nints: number,
+    rate: number,
+    data: number,
+    count: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_ckfrot(
+    inst: number,
+    et: number,
+    out: number,
+    ref: number,
+    found: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_ckfxfm(
+    inst: number,
+    et: number,
+    out: number,
+    ref: number,
+    found: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_ckgr02(
+    handle: number,
+    bytes: number,
+    size: number,
+    recno: number,
+    out: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_ckgr03(
+    handle: number,
+    bytes: number,
+    size: number,
+    recno: number,
+    out: number,
+    nwords: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_ckmeta(
+    ckid: number,
+    meta: number,
+    out: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_cknr02(
+    handle: number,
+    bytes: number,
+    size: number,
+    out: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_cknr03(
+    handle: number,
+    bytes: number,
+    size: number,
+    out: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
   _tspice_cklpf(
     ckPathPtr: number,
     outHandlePtr: number,
@@ -5337,6 +6255,16 @@ const REQUIRED_FUNCTION_EXPORTS = [
   "_tspice_get_last_error_short",
   "_tspice_get_last_error_long",
   "_tspice_get_last_error_trace",
+  "_tspice_errdev",
+  "_tspice_errprt",
+  "_tspice_trcoff",
+  "_tspice_errch",
+  "_tspice_errdp",
+  "_tspice_errint",
+  "_tspice_qcktrc",
+  "_tspice_return",
+  "_tspice_trcdep",
+  "_tspice_trcnam",
   "_tspice_failed",
   "_tspice_reset",
   "_tspice_getmsg",
@@ -5354,14 +6282,61 @@ const REQUIRED_FUNCTION_EXPORTS = [
 
   // File I/O
   "_tspice_exists",
+  "_tspice_rdtext",
+  "_tspice_putcml",
+  "_tspice_text_owner",
+  "_tspice_release_text_owner",
   "_tspice_getfat",
+  "_tspice_dafac",
+  "_tspice_dafdc",
+  "_tspice_dafec",
+  "_tspice_dafrs",
+  "_tspice_dafps",
+  "_tspice_dafus",
+  "_tspice_dafgsr",
+  "_tspice_dafrfr",
+  "_tspice_dafrda",
+  "_tspice_dafgda",
+  "_tspice_dafbbs",
+  "_tspice_dafcs",
+  "_tspice_daffpa",
+  "_tspice_dafgh",
+  "_tspice_dafgn",
+  "_tspice_dafgs",
+  "_tspice_dafhsf",
+  "_tspice_dafopw",
   "_tspice_dafopr",
   "_tspice_dafcls",
   "_tspice_dafbfs",
   "_tspice_daffna",
+  "_tspice_dasac",
+  "_tspice_dasdc",
+  "_tspice_dasec",
+  "_tspice_dasadc",
+  "_tspice_dasadd",
+  "_tspice_dasadi",
+  "_tspice_dasrdc",
+  "_tspice_dasrdd",
+  "_tspice_dasrdi",
+  "_tspice_dasudc",
+  "_tspice_dasudd",
+  "_tspice_dasudi",
+  "_tspice_dasonw",
+  "_tspice_dasops",
+  "_tspice_dasopw",
+  "_tspice_dashfn",
+  "_tspice_dashfs",
+  "_tspice_daslla",
+  "_tspice_dasllc",
+  "_tspice_dasrfr",
+  "_tspice_daswbr",
   "_tspice_dasopr",
   "_tspice_dascls",
   "_tspice_dlaopn",
+  "_tspice_dlabbs",
+  "_tspice_dlabns",
+  "_tspice_dlaens",
+  "_tspice_dlafps",
   "_tspice_dlabfs",
   "_tspice_dlafns",
   "_tspice_dlacls",
@@ -5393,6 +6368,11 @@ const REQUIRED_FUNCTION_EXPORTS = [
   "_tspice_timout",
   "_tspice_deltet",
   "_tspice_unitim",
+  "_tspice_etcal",
+  "_tspice_utc2et",
+  "_tspice_tparch",
+  "_tspice_tsetyr",
+  "_tspice_et2lst",
   "_tspice_tparse",
   "_tspice_tpictr",
   "_tspice_timdef_get",
@@ -5403,6 +6383,10 @@ const REQUIRED_FUNCTION_EXPORTS = [
   "_tspice_sce2c",
   "_tspice_bodn2c",
   "_tspice_bodc2n",
+  "_tspice_srfc2s",
+  "_tspice_srfcss",
+  "_tspice_srfs2c",
+  "_tspice_srfscc",
   "_tspice_bodc2s",
   "_tspice_bods2c",
   "_tspice_boddef",
@@ -5415,13 +6399,43 @@ const REQUIRED_FUNCTION_EXPORTS = [
   "_tspice_frinfo",
   "_tspice_ccifrm",
   "_tspice_scs2e",
+  "_tspice_sce2t",
+  "_tspice_scfmt",
+  "_tspice_scpart",
+  "_tspice_sctiks",
   "_tspice_sce2s",
   "_tspice_ckgp",
   "_tspice_ckgpav",
+  "_tspice_pckcls",
+  "_tspice_pckcov",
+  "_tspice_pckfrm",
+  "_tspice_pcklof",
+  "_tspice_pckopn",
+  "_tspice_pckuof",
+  "_tspice_pckw02",
+  "_tspice_ckopn",
+  "_tspice_ckcls",
+  "_tspice_ckw01",
+  "_tspice_ckw02",
+  "_tspice_ckw03",
+  "_tspice_ckw05",
+  "_tspice_ckfrot",
+  "_tspice_ckfxfm",
+  "_tspice_ckgr02",
+  "_tspice_ckgr03",
+  "_tspice_ckmeta",
+  "_tspice_cknr02",
+  "_tspice_cknr03",
   "_tspice_cklpf",
   "_tspice_ckupf",
   "_tspice_ckobj",
   "_tspice_ckcov",
+  "_tspice_bltfrm",
+  "_tspice_pxfrm2",
+  "_tspice_tipbod",
+  "_tspice_tisbod",
+  "_tspice_tkfram",
+  "_tspice_xfmsta",
   "_tspice_pxform",
   "_tspice_frame",
   "_tspice_twovec",
@@ -5650,6 +6664,14 @@ const REQUIRED_FUNCTION_EXPORTS = [
   "_tspice_recgeo",
 
   // EK
+  "_tspice_ekccnt",
+  "_tspice_ekcii",
+  "_tspice_eklef",
+  "_tspice_eknelt",
+  "_tspice_ekpsel",
+  "_tspice_ekssum",
+  "_tspice_ekuef",
+  "_tspice_ekload_nseg",
   "_tspice_ekopr",
   "_tspice_ekopw",
   "_tspice_ekopn",
@@ -5661,6 +6683,21 @@ const REQUIRED_FUNCTION_EXPORTS = [
   "_tspice_ekgc",
   "_tspice_ekgd",
   "_tspice_ekgi",
+  "_tspice_ekacec",
+  "_tspice_ekaced",
+  "_tspice_ekacei",
+  "_tspice_ekrcec",
+  "_tspice_ekrced",
+  "_tspice_ekrcei",
+  "_tspice_ekucec",
+  "_tspice_ekuced",
+  "_tspice_ekucei",
+  "_tspice_ek_entry_extent",
+  "_tspice_ekops",
+  "_tspice_ekbseg",
+  "_tspice_ekappr",
+  "_tspice_ekinsr",
+  "_tspice_ekdelr",
   "_tspice_ekifld",
   "_tspice_ekacli",
   "_tspice_ekacld",

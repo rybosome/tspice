@@ -675,6 +675,20 @@
       "nextAction": "Verify the combined source on both required lanes and canonical CI."
     },
     {
+      "id": "d04-surface-names",
+      "routines": ["srfc2s_c", "srfcss_c", "srfs2c_c", "srfscc_c"],
+      "dependsOn": [],
+      "prs": ["https://github.com/rybosome/tspice/pull/723"],
+      "nextAction": "Verify the combined source on both required lanes and canonical CI."
+    },
+    {
+      "id": "d02-sclk-additions",
+      "routines": ["sce2t_c", "scfmt_c", "scpart_c", "sctiks_c"],
+      "dependsOn": [],
+      "prs": ["https://github.com/rybosome/tspice/pull/724"],
+      "nextAction": "Verify the combined source on both required lanes and canonical CI."
+    },
+    {
       "id": "a14-rotation-representations",
       "routines": [
         "eul2m_c",
@@ -702,6 +716,22 @@
       ],
       "dependsOn": ["a18-string-transform"],
       "prs": ["https://github.com/rybosome/tspice/pull/726"],
+      "nextAction": "Verify the combined source on both required lanes and canonical CI."
+    },
+    {
+      "id": "c01-daf-navigation",
+      "routines": [
+        "dafbbs_c",
+        "dafcs_c",
+        "daffpa_c",
+        "dafgh_c",
+        "dafgn_c",
+        "dafgs_c",
+        "dafhsf_c",
+        "dafopw_c"
+      ],
+      "dependsOn": [],
+      "prs": ["https://github.com/rybosome/tspice/pull/727"],
       "nextAction": "Verify the combined source on both required lanes and canonical CI."
     },
     {
@@ -822,6 +852,41 @@
       "nextAction": "Verify the combined source on both required lanes and canonical CI."
     },
     {
+      "id": "c02-daf-records",
+      "routines": [
+        "dafps_c",
+        "dafus_c",
+        "dafgsr_c",
+        "dafrfr_c",
+        "dafrda_c",
+        "dafgda_c"
+      ],
+      "dependsOn": ["c01-daf-navigation"],
+      "prs": ["https://github.com/rybosome/tspice/pull/738"],
+      "nextAction": "Verify the combined source on both required lanes and canonical CI."
+    },
+    {
+      "id": "d03-frame-additions",
+      "routines": [
+        "bltfrm_c",
+        "pxfrm2_c",
+        "tipbod_c",
+        "tisbod_c",
+        "tkfram_c",
+        "xfmsta_c"
+      ],
+      "dependsOn": [],
+      "prs": ["https://github.com/rybosome/tspice/pull/740"],
+      "nextAction": "Verify the combined source on both required lanes and canonical CI."
+    },
+    {
+      "id": "d01-time-additions",
+      "routines": ["etcal_c", "utc2et_c", "tparch_c", "tsetyr_c", "et2lst_c"],
+      "dependsOn": [],
+      "prs": ["https://github.com/rybosome/tspice/pull/741"],
+      "nextAction": "Verify the combined source on both required lanes and canonical CI."
+    },
+    {
       "id": "b02-set-algebra",
       "routines": [
         "diff_c",
@@ -838,6 +903,23 @@
       ],
       "dependsOn": ["b01-cell-arrays"],
       "prs": ["https://github.com/rybosome/tspice/pull/742"],
+      "nextAction": "Verify the combined source on both required lanes and canonical CI."
+    },
+    {
+      "id": "c04-das-lifecycle",
+      "routines": [
+        "dasonw_c",
+        "dasops_c",
+        "dasopw_c",
+        "dashfn_c",
+        "dashfs_c",
+        "daslla_c",
+        "dasllc_c",
+        "dasrfr_c",
+        "daswbr_c"
+      ],
+      "dependsOn": [],
+      "prs": ["https://github.com/rybosome/tspice/pull/743"],
       "nextAction": "Verify the combined source on both required lanes and canonical CI."
     },
     {
@@ -884,6 +966,156 @@
       ],
       "dependsOn": ["a12-fixed-matrices"],
       "prs": ["https://github.com/rybosome/tspice/pull/747"],
+      "nextAction": "Verify the combined source on both required lanes and canonical CI."
+    },
+    {
+      "id": "b06-error-observation",
+      "routines": [
+        "errch_c",
+        "errdp_c",
+        "errint_c",
+        "qcktrc_c",
+        "return_c",
+        "trcdep_c",
+        "trcnam_c"
+      ],
+      "dependsOn": [],
+      "prs": ["https://github.com/rybosome/tspice/pull/749"],
+      "nextAction": "Verify the combined source on both required lanes and canonical CI."
+    },
+    {
+      "id": "c05-das-data",
+      "routines": [
+        "dasadc_c",
+        "dasadd_c",
+        "dasadi_c",
+        "dasrdc_c",
+        "dasrdd_c",
+        "dasrdi_c",
+        "dasudc_c",
+        "dasudd_c",
+        "dasudi_c"
+      ],
+      "dependsOn": ["c04-das-lifecycle"],
+      "prs": ["https://github.com/rybosome/tspice/pull/750"],
+      "nextAction": "Verify the combined source on both required lanes and canonical CI."
+    },
+    {
+      "id": "c03-daf-mutation",
+      "routines": ["dafac_c", "dafdc_c", "dafec_c", "dafrs_c"],
+      "dependsOn": ["c01-daf-navigation", "c02-daf-records"],
+      "prs": ["https://github.com/rybosome/tspice/pull/751"],
+      "nextAction": "Verify the combined source on both required lanes and canonical CI."
+    },
+    {
+      "id": "c08-ek-records",
+      "routines": ["ekops_c", "ekbseg_c", "ekappr_c", "ekinsr_c", "ekdelr_c"],
+      "dependsOn": [],
+      "prs": ["https://github.com/rybosome/tspice/pull/753"],
+      "nextAction": "Verify the combined source on both required lanes and canonical CI."
+    },
+    {
+      "id": "c06-das-comments",
+      "routines": ["dasac_c", "dasdc_c", "dasec_c"],
+      "dependsOn": ["c04-das-lifecycle"],
+      "prs": ["https://github.com/rybosome/tspice/pull/755"],
+      "nextAction": "Verify the combined source on both required lanes and canonical CI."
+    },
+    {
+      "id": "c07-dla-segments",
+      "routines": ["dlabbs_c", "dlabns_c", "dlaens_c", "dlafps_c"],
+      "dependsOn": ["c04-das-lifecycle", "c05-das-data"],
+      "prs": ["https://github.com/rybosome/tspice/pull/758"],
+      "nextAction": "Verify the combined source on both required lanes and canonical CI."
+    },
+    {
+      "id": "c11-pck-binary",
+      "routines": [
+        "pckcls_c",
+        "pckcov_c",
+        "pckfrm_c",
+        "pcklof_c",
+        "pckopn_c",
+        "pckuof_c",
+        "pckw02_c"
+      ],
+      "dependsOn": ["b03-window-algebra"],
+      "prs": ["https://github.com/rybosome/tspice/pull/759"],
+      "nextAction": "Verify the combined source on both required lanes and canonical CI."
+    },
+    {
+      "id": "c12-ck-writers",
+      "routines": [
+        "ckopn_c",
+        "ckcls_c",
+        "ckw01_c",
+        "ckw02_c",
+        "ckw03_c",
+        "ckw05_c"
+      ],
+      "dependsOn": [],
+      "prs": ["https://github.com/rybosome/tspice/pull/760"],
+      "nextAction": "Verify the combined source on both required lanes and canonical CI."
+    },
+    {
+      "id": "c09-ek-entries",
+      "routines": [
+        "ekacec_c",
+        "ekaced_c",
+        "ekacei_c",
+        "ekrcec_c",
+        "ekrced_c",
+        "ekrcei_c",
+        "ekucec_c",
+        "ekuced_c",
+        "ekucei_c"
+      ],
+      "dependsOn": ["c08-ek-records"],
+      "prs": ["https://github.com/rybosome/tspice/pull/762"],
+      "nextAction": "Verify the combined source on both required lanes and canonical CI."
+    },
+    {
+      "id": "c13-ck-records",
+      "routines": [
+        "ckfrot_c",
+        "ckfxfm_c",
+        "ckgr02_c",
+        "ckgr03_c",
+        "ckmeta_c",
+        "cknr02_c",
+        "cknr03_c"
+      ],
+      "dependsOn": ["c01-daf-navigation", "c02-daf-records"],
+      "prs": ["https://github.com/rybosome/tspice/pull/765"],
+      "nextAction": "Verify the combined source on both required lanes and canonical CI."
+    },
+    {
+      "id": "c10-ek-metadata",
+      "routines": [
+        "ekccnt_c",
+        "ekcii_c",
+        "eklef_c",
+        "eknelt_c",
+        "ekpsel_c",
+        "ekssum_c",
+        "ekuef_c"
+      ],
+      "dependsOn": [],
+      "prs": ["https://github.com/rybosome/tspice/pull/767"],
+      "nextAction": "Verify the combined source on both required lanes and canonical CI."
+    },
+    {
+      "id": "c14-text-command-state",
+      "routines": ["rdtext_c", "putcml_c"],
+      "dependsOn": [],
+      "prs": ["https://github.com/rybosome/tspice/pull/772"],
+      "nextAction": "Verify the combined source on both required lanes and canonical CI."
+    },
+    {
+      "id": "b07-error-devices",
+      "routines": ["errdev_c", "errprt_c", "trcoff_c"],
+      "dependsOn": ["b06-error-observation"],
+      "prs": ["https://github.com/rybosome/tspice/pull/779"],
       "nextAction": "Verify the combined source on both required lanes and canonical CI."
     }
   ]

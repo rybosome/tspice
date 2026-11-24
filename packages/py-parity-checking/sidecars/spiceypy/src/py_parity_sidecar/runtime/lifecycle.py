@@ -2,6 +2,9 @@ from __future__ import annotations
 
 import spiceypy as sp
 
+from .. import daf_mutation_oracle
+from .. import das_comment_oracle
+
 from .context import SidecarRuntimeContext, register_default_finalizers
 
 
@@ -30,7 +33,11 @@ def _close_ek_handles_best_effort(context: SidecarRuntimeContext) -> None:
     _reset_best_effort()
     for handle_id, handle in list(context.state.ek.handles.items()):
         try:
-            sp.ekcls(handle)
+            if handle_id in context.state.ek.loads:
+                sp.ekuef(0 if handle_id in context.state.ek.expiredLoads else handle)
+                context.state.ek.loads.discard(handle_id)
+            else:
+                sp.ekcls(handle)
         except BaseException:
             continue
         context.state.ek.handles.pop(handle_id, None)
@@ -49,9 +56,9 @@ def _close_file_io_handles_best_effort(context: SidecarRuntimeContext) -> None:
             continue
         try:
             if entry.closeWith == "dafcls":
-                sp.dafcls(entry.handle)
+                daf_mutation_oracle.close(entry.handle)
             else:
-                sp.dascls(entry.handle)
+                das_comment_oracle.close(entry.handle)
             entry.isOpen = False
         except BaseException:
             # Keep the open marker if native close fails; process teardown is
@@ -82,6 +89,9 @@ def finalize_case_lifecycle(context: SidecarRuntimeContext) -> None:
                 # Preserve the claim for its registered retry before Scratch.
                 pass
 
+    if context.state.fileIo.activeTextReaders:
+        from ..text_command_oracle import finish_readers
+        finish_readers(context)
     _close_file_io_handles_best_effort(context)
     _close_dsk_handles_best_effort(context)
     _close_ek_handles_best_effort(context)

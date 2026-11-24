@@ -1,0 +1,331 @@
+[
+  {
+    "caseId": "ek-eknelt-all-query-entries",
+    "description": "Read entry extents of all seven selected columns and all three ordered rows, including fixed- and variable-size nulls.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-query.ek"
+      },
+      {
+        "op": "ek.ekfind",
+        "query": "SELECT KEY,CV,DV,IV,CF,DF,IFIX FROM AUDIT_QUERY ORDER BY KEY"
+      },
+      {
+        "op": "ek.eknelt",
+        "selidx": 0,
+        "row": 0
+      },
+      {
+        "op": "ek.eknelt",
+        "selidx": 1,
+        "row": 0
+      },
+      {
+        "op": "ek.eknelt",
+        "selidx": 2,
+        "row": 0
+      },
+      {
+        "op": "ek.eknelt",
+        "selidx": 3,
+        "row": 0
+      },
+      {
+        "op": "ek.eknelt",
+        "selidx": 4,
+        "row": 0
+      },
+      {
+        "op": "ek.eknelt",
+        "selidx": 5,
+        "row": 0
+      },
+      {
+        "op": "ek.eknelt",
+        "selidx": 6,
+        "row": 0
+      },
+      {
+        "op": "ek.eknelt",
+        "selidx": 0,
+        "row": 1
+      },
+      {
+        "op": "ek.eknelt",
+        "selidx": 1,
+        "row": 1
+      },
+      {
+        "op": "ek.eknelt",
+        "selidx": 2,
+        "row": 1
+      },
+      {
+        "op": "ek.eknelt",
+        "selidx": 3,
+        "row": 1
+      },
+      {
+        "op": "ek.eknelt",
+        "selidx": 4,
+        "row": 1
+      },
+      {
+        "op": "ek.eknelt",
+        "selidx": 5,
+        "row": 1
+      },
+      {
+        "op": "ek.eknelt",
+        "selidx": 6,
+        "row": 1
+      },
+      {
+        "op": "ek.eknelt",
+        "selidx": 0,
+        "row": 2
+      },
+      {
+        "op": "ek.eknelt",
+        "selidx": 1,
+        "row": 2
+      },
+      {
+        "op": "ek.eknelt",
+        "selidx": 2,
+        "row": 2
+      },
+      {
+        "op": "ek.eknelt",
+        "selidx": 3,
+        "row": 2
+      },
+      {
+        "op": "ek.eknelt",
+        "selidx": 4,
+        "row": 2
+      },
+      {
+        "op": "ek.eknelt",
+        "selidx": 5,
+        "row": 2
+      },
+      {
+        "op": "ek.eknelt",
+        "selidx": 6,
+        "row": 2
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ek-eknelt-replacement-query",
+    "description": "A new SELECT changes item order and row order. Observe size from both result sets.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-query.ek"
+      },
+      {
+        "op": "ek.ekfind",
+        "query": "SELECT CV,DF,DV FROM AUDIT_QUERY ORDER BY KEY"
+      },
+      {
+        "op": "ek.eknelt",
+        "selidx": 0,
+        "row": 2
+      },
+      {
+        "op": "ek.eknelt",
+        "selidx": 1,
+        "row": 0
+      },
+      {
+        "op": "ek.ekfind",
+        "query": "SELECT IFIX,CV FROM AUDIT_QUERY ORDER BY KEY DESC"
+      },
+      {
+        "op": "ek.eknelt",
+        "selidx": 0,
+        "row": 0
+      },
+      {
+        "op": "ek.eknelt",
+        "selidx": 1,
+        "row": 0
+      },
+      {
+        "op": "ek.eknelt",
+        "selidx": 1,
+        "row": 2
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ek-eknelt-psel-preserves-results",
+    "description": "Parsing a different SELECT leaves the current EKFIND result available.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-query.ek"
+      },
+      {
+        "op": "ek.ekfind",
+        "query": "SELECT CV,DF,DV FROM AUDIT_QUERY ORDER BY KEY"
+      },
+      {
+        "op": "ek.eknelt",
+        "selidx": 0,
+        "row": 2
+      },
+      {
+        "op": "ek.ekpsel",
+        "query": "SELECT KEY,CV, DV FROM AUDIT_QUERY"
+      },
+      {
+        "op": "ek.eknelt",
+        "selidx": 0,
+        "row": 2
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ek-eknelt-negative-row",
+    "description": "Read an invalid negative-row from the current successful query and inspect the real diagnostic.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-query.ek"
+      },
+      {
+        "op": "ek.ekfind",
+        "query": "SELECT CV,DF,DV FROM AUDIT_QUERY ORDER BY KEY"
+      },
+      {
+        "op": "ek.eknelt",
+        "selidx": 0,
+        "row": -1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(INVALIDINDEX)"]
+    }
+  },
+  {
+    "caseId": "ek-eknelt-past-row",
+    "description": "Read an invalid past-row from the current successful query and inspect the real diagnostic.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-query.ek"
+      },
+      {
+        "op": "ek.ekfind",
+        "query": "SELECT CV,DF,DV FROM AUDIT_QUERY ORDER BY KEY"
+      },
+      {
+        "op": "ek.eknelt",
+        "selidx": 0,
+        "row": 3
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(INVALIDINDEX)"]
+    }
+  },
+  {
+    "caseId": "ek-eknelt-past-item",
+    "description": "Read an invalid past-item from the current successful query and inspect the real diagnostic.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-query.ek"
+      },
+      {
+        "op": "ek.ekfind",
+        "query": "SELECT CV,DF,DV FROM AUDIT_QUERY ORDER BY KEY"
+      },
+      {
+        "op": "ek.eknelt",
+        "selidx": 3,
+        "row": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(INVALIDINDEX)"]
+    }
+  },
+  {
+    "caseId": "ek-eknelt-negative-item",
+    "description": "Read an invalid negative-item from the current successful query and inspect the real diagnostic.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-query.ek"
+      },
+      {
+        "op": "ek.ekfind",
+        "query": "SELECT CV,DF,DV FROM AUDIT_QUERY ORDER BY KEY"
+      },
+      {
+        "op": "ek.eknelt",
+        "selidx": -1,
+        "row": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(INVALIDINDEX)"]
+    }
+  },
+  {
+    "caseId": "ek-eknelt-zero-rows",
+    "description": "Read an invalid zero-rows from the current successful query and inspect the real diagnostic.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-query.ek"
+      },
+      {
+        "op": "ek.ekfind",
+        "query": "SELECT KEY FROM AUDIT_QUERY WHERE KEY > 999999"
+      },
+      {
+        "op": "ek.eknelt",
+        "selidx": 0,
+        "row": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(INVALIDINDEX)"]
+    }
+  },
+  {
+    "caseId": "ek-eknelt-no-files",
+    "description": "Empty query manager takes precedence over both invalid indices.",
+    "workflow": [
+      {
+        "op": "ek.eknelt",
+        "selidx": -1,
+        "row": -1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(NOLOADEDFILES)"]
+    }
+  }
+]

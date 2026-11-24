@@ -1,0 +1,257 @@
+[
+  {
+    "caseId": "file-io-dafrfr-file-audit-two-segment",
+    "description": "Compare summary layout, internal name, both list pointers and first free address.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-two-segment.bsp"
+      },
+      {
+        "op": "file-io.dafopr",
+        "path": "kernels/audit-two-segment.bsp",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafrfr",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafrfr",
+        "handleId": "a",
+        "ifnlen": 2147483647
+      },
+      {
+        "op": "file-io.dafcls",
+        "handleId": "a"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dafrfr-file-audit-empty-daf",
+    "description": "Compare summary layout, internal name, both list pointers and first free address.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-empty-daf.bsp"
+      },
+      {
+        "op": "file-io.dafopr",
+        "path": "kernels/audit-empty-daf.bsp",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafrfr",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafrfr",
+        "handleId": "a",
+        "ifnlen": 2147483647
+      },
+      {
+        "op": "file-io.dafcls",
+        "handleId": "a"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dafrfr-file-mgs_hga_hinge_v2",
+    "description": "Compare summary layout, internal name, both list pointers and first free address.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/mgs_hga_hinge_v2.bc"
+      },
+      {
+        "op": "file-io.dafopr",
+        "path": "kernels/mgs_hga_hinge_v2.bc",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafrfr",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafrfr",
+        "handleId": "a",
+        "ifnlen": 2147483647
+      },
+      {
+        "op": "file-io.dafcls",
+        "handleId": "a"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dafrfr-file-audit-pointing",
+    "description": "Compare summary layout, internal name, both list pointers and first free address.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-pointing.bc"
+      },
+      {
+        "op": "file-io.dafopr",
+        "path": "kernels/audit-pointing.bc",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafrfr",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafrfr",
+        "handleId": "a",
+        "ifnlen": 2147483647
+      },
+      {
+        "op": "file-io.dafcls",
+        "handleId": "a"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dafrfr-ifname-capacities",
+    "description": "Name truncation in bytes leaves all integer fields intact.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-two-segment.bsp"
+      },
+      {
+        "op": "file-io.dafopr",
+        "path": "kernels/audit-two-segment.bsp",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafrfr",
+        "handleId": "a",
+        "ifnlen": 1
+      },
+      {
+        "op": "file-io.dafrfr",
+        "handleId": "a",
+        "ifnlen": 2
+      },
+      {
+        "op": "file-io.dafrfr",
+        "handleId": "a",
+        "ifnlen": 6
+      },
+      {
+        "op": "file-io.dafrfr",
+        "handleId": "a",
+        "ifnlen": 11
+      },
+      {
+        "op": "file-io.dafrfr",
+        "handleId": "a",
+        "ifnlen": 60
+      },
+      {
+        "op": "file-io.dafrfr",
+        "handleId": "a",
+        "ifnlen": 61
+      },
+      {
+        "op": "file-io.dafrfr",
+        "handleId": "a",
+        "ifnlen": 62
+      },
+      {
+        "op": "file-io.dafcls",
+        "handleId": "a"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dafrfr-two-live-handles",
+    "description": "Explicit DAF handles select distinct headers independently of the active array search.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-two-segment.bsp"
+      },
+      {
+        "op": "file-io.dafopr",
+        "path": "kernels/audit-two-segment.bsp",
+        "handleId": "a"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/mgs_hga_hinge_v2.bc"
+      },
+      {
+        "op": "file-io.dafopr",
+        "path": "kernels/mgs_hga_hinge_v2.bc",
+        "handleId": "b"
+      },
+      {
+        "op": "file-io.dafrfr",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafrfr",
+        "handleId": "b"
+      },
+      {
+        "op": "file-io.dafrfr",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafcls",
+        "handleId": "b"
+      },
+      {
+        "op": "file-io.dafcls",
+        "handleId": "a"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dafrfr-closed",
+    "description": "Resolving an already-closed backend token fails before it can address another file.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-two-segment.bsp"
+      },
+      {
+        "op": "file-io.dafopr",
+        "path": "kernels/audit-two-segment.bsp",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafcls",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafrfr",
+        "handleId": "a"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["closed"]
+    }
+  }
+]

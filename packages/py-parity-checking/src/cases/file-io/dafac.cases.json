@@ -1,0 +1,1125 @@
+[
+  {
+    "caseId": "file-io-dafac-whitespace",
+    "description": "Observe every leading and internal space, right blank, empty row and ASCII punctuation after reopening.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "handleId": "creator",
+        "file": {
+          "kind": "scratch",
+          "rel": "c03-a.bsp"
+        },
+        "ifname": "C03 AUTHOR",
+        "ncomch": 0
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "creator",
+        "body": -777777,
+        "center": -99,
+        "frame": "J2000",
+        "first": -1,
+        "last": 1,
+        "segid": "C03 -777777",
+        "degree": 1,
+        "states": [1, 2, 3, 4, 5, 6, 2, 3, 4, 5, 6, 7],
+        "epoch1": -1,
+        "step": 2
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "creator",
+        "body": -888888,
+        "center": -99,
+        "frame": "J2000",
+        "first": -1,
+        "last": 1,
+        "segid": "C03 -888888",
+        "degree": 1,
+        "states": [1, 2, 3, 4, 5, 6, 2, 3, 4, 5, 6, 7],
+        "epoch1": -1,
+        "step": 2
+      },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "creator"
+      },
+      {
+        "op": "file-io.dafopw",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c03-a.bsp"
+        }
+      },
+      {
+        "op": "file-io.dafrfr",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafac",
+        "handleId": "a",
+        "lines": ["  lead", "A  B ", "", "", "   ", "~! 123", "last   "]
+      },
+      {
+        "op": "file-io.dafrfr",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafcls",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafopr",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c03-a.bsp"
+        }
+      },
+      {
+        "op": "file-io.dafec",
+        "handleId": "a",
+        "bufsiz": 20,
+        "buffln": 1400
+      },
+      {
+        "op": "file-io.dafcls",
+        "handleId": "a"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dafac-all-blank",
+    "description": "A nonempty batch of empty and blank lines survives as actual distinct empty comments.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "handleId": "creator",
+        "file": {
+          "kind": "scratch",
+          "rel": "c03-a.bsp"
+        },
+        "ifname": "C03 AUTHOR",
+        "ncomch": 0
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "creator",
+        "body": -777777,
+        "center": -99,
+        "frame": "J2000",
+        "first": -1,
+        "last": 1,
+        "segid": "C03 -777777",
+        "degree": 1,
+        "states": [1, 2, 3, 4, 5, 6, 2, 3, 4, 5, 6, 7],
+        "epoch1": -1,
+        "step": 2
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "creator",
+        "body": -888888,
+        "center": -99,
+        "frame": "J2000",
+        "first": -1,
+        "last": 1,
+        "segid": "C03 -888888",
+        "degree": 1,
+        "states": [1, 2, 3, 4, 5, 6, 2, 3, 4, 5, 6, 7],
+        "epoch1": -1,
+        "step": 2
+      },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "creator"
+      },
+      {
+        "op": "file-io.dafopw",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c03-a.bsp"
+        }
+      },
+      {
+        "op": "file-io.dafrfr",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafac",
+        "handleId": "a",
+        "lines": ["", "  ", ""]
+      },
+      {
+        "op": "file-io.dafrfr",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafcls",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafopr",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c03-a.bsp"
+        }
+      },
+      {
+        "op": "file-io.dafec",
+        "handleId": "a",
+        "bufsiz": 20,
+        "buffln": 1400
+      },
+      {
+        "op": "file-io.dafcls",
+        "handleId": "a"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dafac-single",
+    "description": "Read back one line from a file whose comment area was initially absent.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "handleId": "creator",
+        "file": {
+          "kind": "scratch",
+          "rel": "c03-a.bsp"
+        },
+        "ifname": "C03 AUTHOR",
+        "ncomch": 0
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "creator",
+        "body": -777777,
+        "center": -99,
+        "frame": "J2000",
+        "first": -1,
+        "last": 1,
+        "segid": "C03 -777777",
+        "degree": 1,
+        "states": [1, 2, 3, 4, 5, 6, 2, 3, 4, 5, 6, 7],
+        "epoch1": -1,
+        "step": 2
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "creator",
+        "body": -888888,
+        "center": -99,
+        "frame": "J2000",
+        "first": -1,
+        "last": 1,
+        "segid": "C03 -888888",
+        "degree": 1,
+        "states": [1, 2, 3, 4, 5, 6, 2, 3, 4, 5, 6, 7],
+        "epoch1": -1,
+        "step": 2
+      },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "creator"
+      },
+      {
+        "op": "file-io.dafopw",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c03-a.bsp"
+        }
+      },
+      {
+        "op": "file-io.dafrfr",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafac",
+        "handleId": "a",
+        "lines": ["x"]
+      },
+      {
+        "op": "file-io.dafrfr",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafcls",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafopr",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c03-a.bsp"
+        }
+      },
+      {
+        "op": "file-io.dafec",
+        "handleId": "a",
+        "bufsiz": 20,
+        "buffln": 1400
+      },
+      {
+        "op": "file-io.dafcls",
+        "handleId": "a"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dafac-pre-reserved",
+    "description": "Append using already reserved comment records and compare the before/after file header.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "handleId": "creator",
+        "file": {
+          "kind": "scratch",
+          "rel": "c03-a.bsp"
+        },
+        "ifname": "C03 AUTHOR",
+        "ncomch": 2500
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "creator",
+        "body": -777777,
+        "center": -99,
+        "frame": "J2000",
+        "first": -1,
+        "last": 1,
+        "segid": "C03 -777777",
+        "degree": 1,
+        "states": [1, 2, 3, 4, 5, 6, 2, 3, 4, 5, 6, 7],
+        "epoch1": -1,
+        "step": 2
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "creator",
+        "body": -888888,
+        "center": -99,
+        "frame": "J2000",
+        "first": -1,
+        "last": 1,
+        "segid": "C03 -888888",
+        "degree": 1,
+        "states": [1, 2, 3, 4, 5, 6, 2, 3, 4, 5, 6, 7],
+        "epoch1": -1,
+        "step": 2
+      },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "creator"
+      },
+      {
+        "op": "file-io.dafopw",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c03-a.bsp"
+        }
+      },
+      {
+        "op": "file-io.dafrfr",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafac",
+        "handleId": "a",
+        "lines": ["hello", " two"]
+      },
+      {
+        "op": "file-io.dafrfr",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafcls",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafopr",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c03-a.bsp"
+        }
+      },
+      {
+        "op": "file-io.dafec",
+        "handleId": "a",
+        "bufsiz": 20,
+        "buffln": 1400
+      },
+      {
+        "op": "file-io.dafcls",
+        "handleId": "a"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dafac-multi-record",
+    "description": "Observe a long line and its neighbors across two physical comment records.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "handleId": "creator",
+        "file": {
+          "kind": "scratch",
+          "rel": "c03-a.bsp"
+        },
+        "ifname": "C03 AUTHOR",
+        "ncomch": 0
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "creator",
+        "body": -777777,
+        "center": -99,
+        "frame": "J2000",
+        "first": -1,
+        "last": 1,
+        "segid": "C03 -777777",
+        "degree": 1,
+        "states": [1, 2, 3, 4, 5, 6, 2, 3, 4, 5, 6, 7],
+        "epoch1": -1,
+        "step": 2
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "creator",
+        "body": -888888,
+        "center": -99,
+        "frame": "J2000",
+        "first": -1,
+        "last": 1,
+        "segid": "C03 -888888",
+        "degree": 1,
+        "states": [1, 2, 3, 4, 5, 6, 2, 3, 4, 5, 6, 7],
+        "epoch1": -1,
+        "step": 2
+      },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "creator"
+      },
+      {
+        "op": "file-io.dafopw",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c03-a.bsp"
+        }
+      },
+      {
+        "op": "file-io.dafrfr",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafac",
+        "handleId": "a",
+        "lines": [
+          "head",
+          "XYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXYXY",
+          "end"
+        ]
+      },
+      {
+        "op": "file-io.dafrfr",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafcls",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafopr",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c03-a.bsp"
+        }
+      },
+      {
+        "op": "file-io.dafec",
+        "handleId": "a",
+        "bufsiz": 20,
+        "buffln": 1400
+      },
+      {
+        "op": "file-io.dafcls",
+        "handleId": "a"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dafac-record-ends",
+    "description": "An end-of-line or an end-of-comments marker at a physical record boundary preserves every byte.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "handleId": "creator",
+        "file": {
+          "kind": "scratch",
+          "rel": "c03-a.bsp"
+        },
+        "ifname": "C03 AUTHOR",
+        "ncomch": 0
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "creator",
+        "body": -777777,
+        "center": -99,
+        "frame": "J2000",
+        "first": -1,
+        "last": 1,
+        "segid": "C03 -777777",
+        "degree": 1,
+        "states": [1, 2, 3, 4, 5, 6, 2, 3, 4, 5, 6, 7],
+        "epoch1": -1,
+        "step": 2
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "creator",
+        "body": -888888,
+        "center": -99,
+        "frame": "J2000",
+        "first": -1,
+        "last": 1,
+        "segid": "C03 -888888",
+        "degree": 1,
+        "states": [1, 2, 3, 4, 5, 6, 2, 3, 4, 5, 6, 7],
+        "epoch1": -1,
+        "step": 2
+      },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "creator"
+      },
+      {
+        "op": "file-io.dafopw",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c03-a.bsp"
+        }
+      },
+      {
+        "op": "file-io.dafrfr",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafac",
+        "handleId": "a",
+        "lines": [
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "xy",
+          "z"
+        ]
+      },
+      {
+        "op": "file-io.dafrfr",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafcls",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafopr",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c03-a.bsp"
+        }
+      },
+      {
+        "op": "file-io.dafec",
+        "handleId": "a",
+        "bufsiz": 20,
+        "buffln": 1400
+      },
+      {
+        "op": "file-io.dafcls",
+        "handleId": "a"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dafac-append-twice",
+    "description": "Append across batches while preserving previous contents and repeated identical rows.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "handleId": "creator",
+        "file": {
+          "kind": "scratch",
+          "rel": "c03-a.bsp"
+        },
+        "ifname": "C03 AUTHOR",
+        "ncomch": 0
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "creator",
+        "body": -777777,
+        "center": -99,
+        "frame": "J2000",
+        "first": -1,
+        "last": 1,
+        "segid": "C03 -777777",
+        "degree": 1,
+        "states": [1, 2, 3, 4, 5, 6, 2, 3, 4, 5, 6, 7],
+        "epoch1": -1,
+        "step": 2
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "creator",
+        "body": -888888,
+        "center": -99,
+        "frame": "J2000",
+        "first": -1,
+        "last": 1,
+        "segid": "C03 -888888",
+        "degree": 1,
+        "states": [1, 2, 3, 4, 5, 6, 2, 3, 4, 5, 6, 7],
+        "epoch1": -1,
+        "step": 2
+      },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "creator"
+      },
+      {
+        "op": "file-io.dafopw",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c03-a.bsp"
+        }
+      },
+      {
+        "op": "file-io.dafac",
+        "handleId": "a",
+        "lines": ["one", "two"]
+      },
+      {
+        "op": "file-io.dafac",
+        "handleId": "a",
+        "lines": ["one", "three"]
+      },
+      {
+        "op": "file-io.dafcls",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafopr",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c03-a.bsp"
+        }
+      },
+      {
+        "op": "file-io.dafec",
+        "handleId": "a",
+        "bufsiz": 8,
+        "buffln": 72
+      },
+      {
+        "op": "file-io.dafcls",
+        "handleId": "a"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dafac-relocated-summaries",
+    "description": "Compare the two summaries and array names before and after adding comment records to an unreserved file.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "handleId": "creator",
+        "file": {
+          "kind": "scratch",
+          "rel": "c03-a.bsp"
+        },
+        "ifname": "C03 AUTHOR",
+        "ncomch": 0
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "creator",
+        "body": -777777,
+        "center": -99,
+        "frame": "J2000",
+        "first": -1,
+        "last": 1,
+        "segid": "C03 -777777",
+        "degree": 1,
+        "states": [1, 2, 3, 4, 5, 6, 2, 3, 4, 5, 6, 7],
+        "epoch1": -1,
+        "step": 2
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "creator",
+        "body": -888888,
+        "center": -99,
+        "frame": "J2000",
+        "first": -1,
+        "last": 1,
+        "segid": "C03 -888888",
+        "degree": 1,
+        "states": [1, 2, 3, 4, 5, 6, 2, 3, 4, 5, 6, 7],
+        "epoch1": -1,
+        "step": 2
+      },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "creator"
+      },
+      {
+        "op": "file-io.dafopw",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c03-a.bsp"
+        }
+      },
+      {
+        "op": "file-io.dafbfs",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.daffna",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafgn",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafgs",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafac",
+        "handleId": "a",
+        "lines": [
+          "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        ]
+      },
+      {
+        "op": "file-io.dafrfr",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafbfs",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.daffna",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafgn",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafgs",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafbbs",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.daffpa",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafgn",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafgs",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafcls",
+        "handleId": "a"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dafac-no-rows",
+    "description": "Observe the original toolkit error for this comment input on a writable scratch DAF.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "handleId": "creator",
+        "file": {
+          "kind": "scratch",
+          "rel": "c03-a.bsp"
+        },
+        "ifname": "C03 AUTHOR",
+        "ncomch": 0
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "creator",
+        "body": -777777,
+        "center": -99,
+        "frame": "J2000",
+        "first": -1,
+        "last": 1,
+        "segid": "C03 -777777",
+        "degree": 1,
+        "states": [1, 2, 3, 4, 5, 6, 2, 3, 4, 5, 6, 7],
+        "epoch1": -1,
+        "step": 2
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "creator",
+        "body": -888888,
+        "center": -99,
+        "frame": "J2000",
+        "first": -1,
+        "last": 1,
+        "segid": "C03 -888888",
+        "degree": 1,
+        "states": [1, 2, 3, 4, 5, 6, 2, 3, 4, 5, 6, 7],
+        "epoch1": -1,
+        "step": 2
+      },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "creator"
+      },
+      {
+        "op": "file-io.dafopw",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c03-a.bsp"
+        }
+      },
+      {
+        "op": "file-io.dafac",
+        "handleId": "a",
+        "lines": []
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDARGUMENT"]
+    }
+  },
+  {
+    "caseId": "file-io-dafac-tab",
+    "description": "Observe the original toolkit error for this comment input on a writable scratch DAF.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "handleId": "creator",
+        "file": {
+          "kind": "scratch",
+          "rel": "c03-a.bsp"
+        },
+        "ifname": "C03 AUTHOR",
+        "ncomch": 0
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "creator",
+        "body": -777777,
+        "center": -99,
+        "frame": "J2000",
+        "first": -1,
+        "last": 1,
+        "segid": "C03 -777777",
+        "degree": 1,
+        "states": [1, 2, 3, 4, 5, 6, 2, 3, 4, 5, 6, 7],
+        "epoch1": -1,
+        "step": 2
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "creator",
+        "body": -888888,
+        "center": -99,
+        "frame": "J2000",
+        "first": -1,
+        "last": 1,
+        "segid": "C03 -888888",
+        "degree": 1,
+        "states": [1, 2, 3, 4, 5, 6, 2, 3, 4, 5, 6, 7],
+        "epoch1": -1,
+        "step": 2
+      },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "creator"
+      },
+      {
+        "op": "file-io.dafopw",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c03-a.bsp"
+        }
+      },
+      {
+        "op": "file-io.dafac",
+        "handleId": "a",
+        "lines": ["ok", "bad\t"]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["ILLEGALCHARACTER"]
+    }
+  },
+  {
+    "caseId": "file-io-dafac-unicode",
+    "description": "Observe the original toolkit error for this comment input on a writable scratch DAF.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "handleId": "creator",
+        "file": {
+          "kind": "scratch",
+          "rel": "c03-a.bsp"
+        },
+        "ifname": "C03 AUTHOR",
+        "ncomch": 0
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "creator",
+        "body": -777777,
+        "center": -99,
+        "frame": "J2000",
+        "first": -1,
+        "last": 1,
+        "segid": "C03 -777777",
+        "degree": 1,
+        "states": [1, 2, 3, 4, 5, 6, 2, 3, 4, 5, 6, 7],
+        "epoch1": -1,
+        "step": 2
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "creator",
+        "body": -888888,
+        "center": -99,
+        "frame": "J2000",
+        "first": -1,
+        "last": 1,
+        "segid": "C03 -888888",
+        "degree": 1,
+        "states": [1, 2, 3, 4, 5, 6, 2, 3, 4, 5, 6, 7],
+        "epoch1": -1,
+        "step": 2
+      },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "creator"
+      },
+      {
+        "op": "file-io.dafopw",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c03-a.bsp"
+        }
+      },
+      {
+        "op": "file-io.dafac",
+        "handleId": "a",
+        "lines": ["café"]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["ILLEGALCHARACTER"]
+    }
+  },
+  {
+    "caseId": "file-io-dafac-del",
+    "description": "Observe the original toolkit error for this comment input on a writable scratch DAF.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "handleId": "creator",
+        "file": {
+          "kind": "scratch",
+          "rel": "c03-a.bsp"
+        },
+        "ifname": "C03 AUTHOR",
+        "ncomch": 0
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "creator",
+        "body": -777777,
+        "center": -99,
+        "frame": "J2000",
+        "first": -1,
+        "last": 1,
+        "segid": "C03 -777777",
+        "degree": 1,
+        "states": [1, 2, 3, 4, 5, 6, 2, 3, 4, 5, 6, 7],
+        "epoch1": -1,
+        "step": 2
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "creator",
+        "body": -888888,
+        "center": -99,
+        "frame": "J2000",
+        "first": -1,
+        "last": 1,
+        "segid": "C03 -888888",
+        "degree": 1,
+        "states": [1, 2, 3, 4, 5, 6, 2, 3, 4, 5, 6, 7],
+        "epoch1": -1,
+        "step": 2
+      },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "creator"
+      },
+      {
+        "op": "file-io.dafopw",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c03-a.bsp"
+        }
+      },
+      {
+        "op": "file-io.dafac",
+        "handleId": "a",
+        "lines": ["x"]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["ILLEGALCHARACTER"]
+    }
+  },
+  {
+    "caseId": "file-io-dafac-read-only",
+    "description": "A file opened for read cannot accept new comments.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "handleId": "creator",
+        "file": {
+          "kind": "scratch",
+          "rel": "c03-a.bsp"
+        },
+        "ifname": "C03 AUTHOR",
+        "ncomch": 0
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "creator",
+        "body": -777777,
+        "center": -99,
+        "frame": "J2000",
+        "first": -1,
+        "last": 1,
+        "segid": "C03 -777777",
+        "degree": 1,
+        "states": [1, 2, 3, 4, 5, 6, 2, 3, 4, 5, 6, 7],
+        "epoch1": -1,
+        "step": 2
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "creator",
+        "body": -888888,
+        "center": -99,
+        "frame": "J2000",
+        "first": -1,
+        "last": 1,
+        "segid": "C03 -888888",
+        "degree": 1,
+        "states": [1, 2, 3, 4, 5, 6, 2, 3, 4, 5, 6, 7],
+        "epoch1": -1,
+        "step": 2
+      },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "creator"
+      },
+      {
+        "op": "file-io.dafopw",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c03-a.bsp"
+        }
+      },
+      {
+        "op": "file-io.dafcls",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafopr",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c03-a.bsp"
+        }
+      },
+      {
+        "op": "file-io.dafac",
+        "handleId": "a",
+        "lines": ["ok"]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["DAFINVALIDACCESS"]
+    }
+  }
+]

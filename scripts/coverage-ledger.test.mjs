@@ -94,13 +94,81 @@ test("baseline derives breadth and preserves direct/non-direct evidence", (t) =>
   assert.deepEqual(ledger.summary, {
     total: 652,
     eligible: 649,
-    implemented: 408,
-    planned: 241,
+    implemented: 523,
+    planned: 126,
     excluded: 3,
-    caseFiles: 408,
-    scenarios: 2632,
+    caseFiles: 523,
+    scenarios: 3527,
     wasmRawUnsupported: 0,
   });
+  const functions = cFunctions(
+    cTokens(
+      fs.readFileSync(
+        path.join(f.root, "packages/backend-shim-c/src/domains/time.c"),
+        "utf8",
+      ),
+    ),
+  );
+  for (const name of ["etcal", "utc2et", "tparch", "tsetyr", "et2lst"]) {
+    const row = ledger.routines.find((r) => r.routine === name + "_c");
+    for (const backend of ["node", "wasm"])
+      assert.ok(row.mapping[backend].cspiceEntrypoints.includes(name + "_c"));
+    assert.ok(
+      cCalls(functions.get("tspice_" + name).body).includes(name + "_c"),
+    );
+  }
+  assert.ok(
+    cCalls(functions.get("tspice_utc2et").body).includes("utc_numbers_defined"),
+  );
+  assert.ok(
+    cCalls(functions.get("utc_numbers_defined").body).includes("tpartv_"),
+  );
+  assert.ok(
+    cCalls(functions.get("tspice_et2lst").body).includes("local_time_defined"),
+  );
+  const localCalls = cCalls(functions.get("local_time_defined").body);
+  for (const required of [
+    "body_mapping_defined",
+    "pgrrec_",
+    "cidfrm_",
+    "spkez_",
+    "rmaind_",
+  ])
+    assert.ok(localCalls.includes(required));
+  {
+    for (const name of [
+      "dafps",
+      "dafus",
+      "dafgsr",
+      "dafrfr",
+      "dafrda",
+      "dafgda",
+    ]) {
+      const routine = ledger.routines.find(
+        (entry) => entry.routine === name + "_c",
+      );
+      for (const backend of ["node", "wasm"])
+        assert.ok(
+          routine.mapping[backend].cspiceEntrypoints.includes(name + "_c"),
+        );
+    }
+    const functions = cFunctions(
+      cTokens(
+        fs.readFileSync(
+          path.join(f.root, "packages/backend-shim-c/src/domains/file_io.c"),
+          "utf8",
+        ),
+      ),
+    );
+    assert.ok(
+      cCalls(functions.get("tspice_dafgsr").body).includes(
+        "check_summary_record",
+      ),
+    );
+    const foreignChecks = cCalls(functions.get("check_summary_record").body);
+    for (const fn of ["zzddhisn_", "zzdafgdr_", "dafhsf_c"])
+      assert.ok(foreignChecks.includes(fn));
+  }
   const kplfrm = ledger.routines.find((r) => r.routine === "kplfrm_c");
   assert.equal(kplfrm.inventoryDecision, "planned");
   assert.equal(kplfrm.implementation, "contract-present");
@@ -388,6 +456,39 @@ test("the EUL2M route retains its linked SPICELIB call and outer trace", (t) => 
   }
 });
 
+test("the SCE2T alias requires its linked SPICELIB call and outer trace", (t) => {
+  const f = fixture(t);
+  const routine = f
+    .build()
+    .routines.find((entry) => entry.routine === "sce2t_c");
+  for (const backend of ["node", "wasm"]) {
+    const mapping = routine.mapping[backend];
+    assert.equal(mapping.classification, "alias-or-composed");
+    assert.ok(mapping.cspiceEntrypoints.includes("sce2t_"));
+    assert.ok(mapping.cspiceEntrypoints.includes("chkin_c"));
+    assert.ok(mapping.cspiceEntrypoints.includes("chkout_c"));
+    assert.ok(!mapping.cspiceEntrypoints.includes("sce2t_c"));
+  }
+
+  const source = "packages/backend-shim-c/src/domains/time.c";
+  const call = "sce2t_(&spacecraft, &epoch, &encoded)";
+  for (const replacement of [
+    "0 /* sce2t_(&spacecraft, &epoch, &encoded) */",
+    "sce2c_(&spacecraft, &epoch, &encoded)",
+    "sce2t_c(spacecraft, epoch, &encoded)",
+  ]) {
+    f.edit(source, call + ";", replacement + ";");
+    assert.throws(f.build, /Stale non-direct mapping policy for node.sce2t/);
+    f.edit(source, replacement + ";", call + ";");
+  }
+  for (const traceCall of ['chkin_c("sce2t_c");', 'chkout_c("sce2t_c");']) {
+    const comment = "/* " + traceCall + " */";
+    f.edit(source, traceCall, comment);
+    assert.throws(f.build, /Stale non-direct mapping policy for node.sce2t/);
+    f.edit(source, comment, traceCall);
+  }
+});
+
 test("CI native expectation forwarding is distinct from exporting it in the shell", (t) => {
   const f = fixture(t);
   const file = path.join(f.root, "turbo.json");
@@ -521,7 +622,7 @@ test("maintained audit separates reviewed findings from verified backend executi
   const f = fixture(t);
   const ledger = f.build();
   assert.equal(ledger.audit.baselineRoutines, 162);
-  assert.equal(ledger.audit.expansionRoutines, 246);
+  assert.equal(ledger.audit.expansionRoutines, 361);
   // Each success route reaches its public C entrypoint. The three guarded paths
   // must also retain the linked numerical routine used to reject invalid input.
   for (const name of [
@@ -851,4 +952,177 @@ test("historical executions remain visible but cannot establish current verifica
     r.routines[0].backends.wasm.history.push("verified");
   });
   assert.throws(f.build, /missing local live verification/);
+});
+
+test("DAFEC requires the linked extractor and its original defined-row converter", (t) => {
+  const f = fixture(t);
+  const routine = f.build().routines.find((r) => r.routine === "dafec_c");
+  for (const backend of ["node", "wasm"]) {
+    assert.equal(routine.mapping[backend].classification, "alias-or-composed");
+    assert.ok(routine.mapping[backend].cspiceEntrypoints.includes("dafec_"));
+    assert.ok(
+      routine.mapping[backend].cspiceEntrypoints.includes(
+        "F2C_ConvertTrStrArr",
+      ),
+    );
+    assert.ok(!routine.mapping[backend].cspiceEntrypoints.includes("dafec_c"));
+  }
+  const source = "packages/backend-shim-c/src/domains/file_io.c";
+  for (const call of [
+    "dafec_(&handle, &rows, n, out, &finished, width - 1)",
+    "F2C_ConvertTrStrArr(*n, width, out)",
+  ]) {
+    const replacement = "0 /* " + call + " */";
+    f.edit(source, call, replacement);
+    assert.throws(f.build, /Stale non-direct mapping policy for node.dafec/);
+    f.edit(source, replacement, call);
+  }
+});
+
+test("the DAFFPA alias requires its linked SPICELIB call and outer trace", (t) => {
+  const f = fixture(t);
+  const routine = f
+    .build()
+    .routines.find((entry) => entry.routine === "daffpa_c");
+  for (const backend of ["node", "wasm"]) {
+    const mapping = routine.mapping[backend];
+    assert.equal(mapping.classification, "alias-or-composed");
+    assert.ok(mapping.cspiceEntrypoints.includes("daffpa_"));
+    assert.ok(mapping.cspiceEntrypoints.includes("dafcs_c"));
+    assert.ok(mapping.cspiceEntrypoints.includes("chkin_c"));
+    assert.ok(mapping.cspiceEntrypoints.includes("chkout_c"));
+    assert.ok(!mapping.cspiceEntrypoints.includes("daffpa_c"));
+  }
+
+  const source = "packages/backend-shim-c/src/domains/file_io.c";
+  const call = "daffpa_(&found)";
+  for (const replacement of [
+    "0 /* daffpa_(&found) */",
+    "daffna_(&found)",
+    "daffpa_c(&found)",
+  ]) {
+    f.edit(source, call + ";", replacement + ";");
+    assert.throws(f.build, /Stale non-direct mapping policy for node.daffpa/);
+    f.edit(source, replacement + ";", call + ";");
+  }
+  const selection =
+    "dafcs_c(handle);\n  if (DafStatus(err, errMaxBytes)) return 1;\n  // daffpa_c";
+  const withoutSelection = selection.replace(
+    "dafcs_c(handle);",
+    "/* no DAF selection */",
+  );
+  f.edit(source, selection, withoutSelection);
+  assert.throws(f.build, /Stale non-direct mapping policy for node.daffpa/);
+  f.edit(source, withoutSelection, selection);
+  for (const traceCall of ['chkin_c("daffpa_c");', 'chkout_c("daffpa_c");']) {
+    const comment = "/* " + traceCall + " */";
+    f.edit(source, traceCall, comment);
+    assert.throws(f.build, /Stale non-direct mapping policy for node.daffpa/);
+    f.edit(source, comment, traceCall);
+  }
+});
+
+test("the file I/O shim must be compiled by the production build", (t) => {
+  const f = fixture(t);
+  f.edit(
+    "packages/backend-node/native/binding.gyp",
+    '        "../../backend-shim-c/src/domains/file_io.c",',
+    "",
+  );
+  assert.throws(f.build, /Node shared shim source not compiled/);
+});
+
+test("DASEC extraction needs reachable linked scientific and original conversion calls", (t) => {
+  const f = fixture(t);
+  const row = f.build().routines.find((r) => r.routine === "dasec_c");
+  for (const backend of ["node", "wasm"]) {
+    assert.equal(row.mapping[backend].classification, "alias-or-composed");
+    assert.ok(!row.mapping[backend].cspiceEntrypoints.includes("dasec_c"));
+  }
+  const source = "packages/backend-shim-c/src/domains/file_io.c";
+  for (const calls of [
+    ["dasec_(&h, &rows, count, out, &completed, width - 1)"],
+    ['dasioc_("READ", &unit, &rec, record, 4, 1024)'],
+    ['zzddhhlu_(&h, "DAS", &lock, &unit, 3)'],
+    [
+      "F2C_ConvertTrStrArr(*count, width, out)",
+      "F2C_ConvertTrStrArr(count, width, (char *)out)",
+    ],
+  ]) {
+    for (const call of calls) f.edit(source, call, "0 /* " + call + " */");
+    assert.throws(f.build, /Stale non-direct mapping policy for node.dasec/);
+    for (const call of calls) f.edit(source, "0 /* " + call + " */", call);
+  }
+});
+
+test("DLA segment routes require their actual canonical operations beyond DAS address checks", (t) => {
+  const f = fixture(t);
+  const source = "packages/backend-shim-c/src/domains/file_io.c";
+  for (const [name, args] of [
+    ["dlabbs", "handle, &descriptor, &present"],
+    ["dlabns", "handle"],
+    ["dlaens", "handle"],
+    ["dlafps", "handle, &current, &previous, &present"],
+  ]) {
+    const call = name + "_c(" + args + ")";
+    f.edit(source, call, "0 /* " + call + " */");
+    assert.throws(
+      f.build,
+      new RegExp("Unexplained non-direct node mapping for " + name),
+    );
+    f.edit(source, "0 /* " + call + " */", call);
+  }
+});
+
+test("an early C string check cannot stand in for the actual EK entry reader", (t) => {
+  const f = fixture(t);
+  f.edit(
+    "packages/backend-shim-c/src/domains/ek.c",
+    "ekrced_(&handle",
+    "unrelated_reader_(&handle",
+  );
+  assert.throws(
+    f.build,
+    /Missing scientific SPICELIB reader for (node|wasm).ekrced/,
+  );
+});
+
+test("EK metadata requires its initialized scientific entry in addition to C width checks", (t) => {
+  for (const [name, call] of [
+    ["ekcii", "ekcii_((char*)table"],
+    ["eknelt", "eknelt_(&index"],
+  ]) {
+    const f = fixture(t);
+    f.edit(
+      "packages/backend-shim-c/src/domains/ek.c",
+      call,
+      call.replace(name + "_", "unrelated_"),
+    );
+    assert.throws(
+      f.build,
+      new RegExp(
+        "Missing scientific EK metadata entry for (node|wasm)\\." + name,
+      ),
+    );
+  }
+});
+
+test("the excluded command getter cannot establish the public setter route", (t) => {
+  const f = fixture(t);
+  f.edit(
+    "packages/backend-shim-c/src/domains/file_io.c",
+    "putcml_c(argc,args);",
+    "unrelated(argc,args);",
+  );
+  assert.throws(f.build, /putcml/);
+});
+
+test("the corrected reader still reaches the canonical record reader", (t) => {
+  const f = fixture(t);
+  f.edit(
+    "packages/backend-shim-c/src/domains/file_io.c",
+    "rdtext_c(path,width,line,eof);",
+    "unrelated(path,width,line,eof);",
+  );
+  assert.throws(f.build, /rdtext/);
 });

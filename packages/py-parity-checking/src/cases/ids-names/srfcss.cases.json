@@ -1,0 +1,417 @@
+[
+  {
+    "caseId": "ids-names-srfcss-body-scoped-aliases",
+    "description": "Observe both body-scoped duplicates, preferred spelling and old aliases.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/surface-translation.tpc"
+      },
+      {
+        "op": "ids-names.srfcss",
+        "code": 91,
+        "body": "EARTH"
+      },
+      {
+        "op": "ids-names.srfcss",
+        "code": 91,
+        "body": "EARTH"
+      },
+      {
+        "op": "ids-names.srfcss",
+        "code": 91,
+        "body": "MaRs"
+      },
+      {
+        "op": "ids-names.srfcss",
+        "code": 92,
+        "body": "EARTH"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ids-names-srfcss-pool-clear-reload",
+    "description": "Compare before load, after replacement, after clear and after reloading the original.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/surface-translation.tpc"
+      },
+      {
+        "op": "ids-names.srfcss",
+        "code": 91,
+        "body": "EARTH"
+      },
+      {
+        "op": "kernel-pool.pcpool",
+        "name": "NAIF_SURFACE_NAME",
+        "values": ["Replacement"]
+      },
+      {
+        "op": "kernel-pool.pipool",
+        "name": "NAIF_SURFACE_CODE",
+        "values": [91]
+      },
+      {
+        "op": "kernel-pool.pipool",
+        "name": "NAIF_SURFACE_BODY",
+        "values": [399]
+      },
+      {
+        "op": "ids-names.srfcss",
+        "code": 91,
+        "body": "EARTH"
+      },
+      {
+        "op": "kernels.kclear"
+      },
+      {
+        "op": "ids-names.srfcss",
+        "code": 91,
+        "body": "EARTH"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/surface-translation.tpc"
+      },
+      {
+        "op": "ids-names.srfcss",
+        "code": 91,
+        "body": "EARTH"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ids-names-srfcss-decimal-fallback",
+    "description": "Observe decimal text and false isName, independently from a pool name with numeric spelling.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/surface-translation.tpc"
+      },
+      {
+        "op": "ids-names.srfcss",
+        "code": -2147483647,
+        "body": "EARTH"
+      },
+      {
+        "op": "ids-names.srfcss",
+        "code": 0,
+        "body": "MaRs"
+      },
+      {
+        "op": "ids-names.srfcss",
+        "code": 765,
+        "body": "EARTH"
+      },
+      {
+        "op": "ids-names.srfcss",
+        "code": 2147483647,
+        "body": "EARTH"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ids-names-srfcss-capacity-prefix",
+    "description": "Check fixed-byte prefixes of mixed case, decimal fallback and edge capacities.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/surface-translation.tpc"
+      },
+      {
+        "op": "ids-names.srfcss",
+        "code": 91,
+        "body": "EARTH",
+        "srflen": 2
+      },
+      {
+        "op": "ids-names.srfcss",
+        "code": 91,
+        "body": "EARTH",
+        "srflen": 5
+      },
+      {
+        "op": "ids-names.srfcss",
+        "code": 91,
+        "body": "EARTH",
+        "srflen": 7
+      },
+      {
+        "op": "ids-names.srfcss",
+        "code": 91,
+        "body": "EARTH",
+        "srflen": 37
+      },
+      {
+        "op": "ids-names.srfcss",
+        "code": 91,
+        "body": "EARTH",
+        "srflen": 2147483647
+      },
+      {
+        "op": "ids-names.srfcss",
+        "code": -2147483647,
+        "body": "EARTH",
+        "srflen": 4
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ids-names-srfcss-maximum-name",
+    "description": "Pool name wider than 36 bytes and a name ending in a tab compare through the exact-output oracle.",
+    "workflow": [
+      {
+        "op": "kernel-pool.pcpool",
+        "name": "NAIF_SURFACE_NAME",
+        "values": ["AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", "Tab\t"]
+      },
+      {
+        "op": "kernel-pool.pipool",
+        "name": "NAIF_SURFACE_CODE",
+        "values": [777, 888]
+      },
+      {
+        "op": "kernel-pool.pipool",
+        "name": "NAIF_SURFACE_BODY",
+        "values": [399, 399]
+      },
+      {
+        "op": "ids-names.srfcss",
+        "code": 777,
+        "body": "EARTH"
+      },
+      {
+        "op": "ids-names.srfcss",
+        "code": 888,
+        "body": "EARTH"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ids-names-srfcss-short-capacity-1",
+    "description": "Real toolkit size error with physical storage even for nonpositive requested length.",
+    "workflow": [
+      {
+        "op": "ids-names.srfcss",
+        "code": 91,
+        "body": "EARTH",
+        "srflen": 1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["STRINGTOOSHORT"]
+    }
+  },
+  {
+    "caseId": "ids-names-srfcss-short-capacity-0",
+    "description": "Real toolkit size error with physical storage even for nonpositive requested length.",
+    "workflow": [
+      {
+        "op": "ids-names.srfcss",
+        "code": 91,
+        "body": "EARTH",
+        "srflen": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["STRINGTOOSHORT"]
+    }
+  },
+  {
+    "caseId": "ids-names-srfcss-short-capacity-neg3",
+    "description": "Real toolkit size error with physical storage even for nonpositive requested length.",
+    "workflow": [
+      {
+        "op": "ids-names.srfcss",
+        "code": 91,
+        "body": "EARTH",
+        "srflen": -3
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["STRINGTOOSHORT"]
+    }
+  },
+  {
+    "caseId": "ids-names-srfcss-body-lookup",
+    "description": "Compare recognized names, numeric strings and unknown bodies without collapsing decimal fallbacks.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/surface-translation.tpc"
+      },
+      {
+        "op": "ids-names.srfcss",
+        "code": 91,
+        "body": " Earth "
+      },
+      {
+        "op": "ids-names.srfcss",
+        "code": 91,
+        "body": "399"
+      },
+      {
+        "op": "ids-names.srfcss",
+        "code": 91,
+        "body": "3.99e2"
+      },
+      {
+        "op": "ids-names.srfcss",
+        "code": 91,
+        "body": "499"
+      },
+      {
+        "op": "ids-names.srfcss",
+        "code": 91,
+        "body": "MISSING"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ids-names-srfcss-empty-body",
+    "description": "Check the genuine empty body string error.",
+    "workflow": [
+      {
+        "op": "ids-names.srfcss",
+        "code": 91,
+        "body": ""
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["EMPTYSTRING"]
+    }
+  },
+  {
+    "caseId": "ids-names-srfcss-missing-variables",
+    "description": "Observe actual malformed surface mapping diagnosis on a recognized body.",
+    "workflow": [
+      {
+        "op": "kernel-pool.pcpool",
+        "name": "NAIF_SURFACE_NAME",
+        "values": ["name"]
+      },
+      {
+        "op": "ids-names.srfcss",
+        "code": 91,
+        "body": "EARTH"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["BADSURFACEMAP"]
+    }
+  },
+  {
+    "caseId": "ids-names-srfcss-wrong-type",
+    "description": "Observe actual malformed surface mapping diagnosis on a recognized body.",
+    "workflow": [
+      {
+        "op": "kernel-pool.pcpool",
+        "name": "NAIF_SURFACE_NAME",
+        "values": ["name"]
+      },
+      {
+        "op": "kernel-pool.pipool",
+        "name": "NAIF_SURFACE_CODE",
+        "values": [9]
+      },
+      {
+        "op": "kernel-pool.pcpool",
+        "name": "NAIF_SURFACE_BODY",
+        "values": ["399"]
+      },
+      {
+        "op": "ids-names.srfcss",
+        "code": 91,
+        "body": "EARTH"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["BADVARIABLETYPE"]
+    }
+  },
+  {
+    "caseId": "ids-names-srfcss-unequal-lengths",
+    "description": "Observe actual malformed surface mapping diagnosis on a recognized body.",
+    "workflow": [
+      {
+        "op": "kernel-pool.pcpool",
+        "name": "NAIF_SURFACE_NAME",
+        "values": ["one", "two"]
+      },
+      {
+        "op": "kernel-pool.pipool",
+        "name": "NAIF_SURFACE_CODE",
+        "values": [9]
+      },
+      {
+        "op": "kernel-pool.pipool",
+        "name": "NAIF_SURFACE_BODY",
+        "values": [399, 399]
+      },
+      {
+        "op": "ids-names.srfcss",
+        "code": 91,
+        "body": "EARTH"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["ARRAYSIZEMISMATCH"]
+    }
+  },
+  {
+    "caseId": "ids-names-srfcss-blank-name",
+    "description": "Observe actual malformed surface mapping diagnosis on a recognized body.",
+    "workflow": [
+      {
+        "op": "kernel-pool.pcpool",
+        "name": "NAIF_SURFACE_NAME",
+        "values": ["   "]
+      },
+      {
+        "op": "kernel-pool.pipool",
+        "name": "NAIF_SURFACE_CODE",
+        "values": [8]
+      },
+      {
+        "op": "kernel-pool.pipool",
+        "name": "NAIF_SURFACE_BODY",
+        "values": [399]
+      },
+      {
+        "op": "ids-names.srfcss",
+        "code": 91,
+        "body": "EARTH"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["BLANKNAMEASSIGNED"]
+    }
+  }
+]

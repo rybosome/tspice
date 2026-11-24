@@ -1,0 +1,499 @@
+[
+  {
+    "caseId": "ek-ekucei-persisted-resize",
+    "description": "Replace a variable entry, toggle its null flag, restore a different size and compare both rows after physical reopen.",
+    "workflow": [
+      {
+        "op": "ek.ekopn",
+        "handleId": "h",
+        "path": {
+          "kind": "scratch",
+          "rel": "c09.ek"
+        },
+        "ifname": "ENTRY_TEST",
+        "ncomch": 0
+      },
+      {
+        "op": "ek.ekbseg",
+        "handleId": "h",
+        "tabnam": "SAMPLES",
+        "cnames": ["V"],
+        "decls": ["DATATYPE=INTEGER, SIZE=VARIABLE, NULLS_OK=TRUE"]
+      },
+      {
+        "op": "ek.ekappr",
+        "handleId": "h",
+        "segno": 0
+      },
+      {
+        "op": "ek.ekappr",
+        "handleId": "h",
+        "segno": 0
+      },
+      {
+        "op": "ek.ekacei",
+        "handleId": "h",
+        "segno": 0,
+        "recno": 0,
+        "column": "V",
+        "values": [177, -205],
+        "isNull": false
+      },
+      {
+        "op": "ek.ekacei",
+        "handleId": "h",
+        "segno": 0,
+        "recno": 1,
+        "column": "V",
+        "values": [-2147483648, 19, 2147483647],
+        "isNull": false
+      },
+      {
+        "op": "ek.ekucei",
+        "handleId": "h",
+        "segno": 0,
+        "recno": 0,
+        "column": "V",
+        "values": [-2147483648, 19, 2147483647],
+        "isNull": false
+      },
+      {
+        "op": "ek.ekrcei",
+        "handleId": "h",
+        "segno": 0,
+        "recno": 0,
+        "column": "V"
+      },
+      {
+        "op": "ek.ekucei",
+        "handleId": "h",
+        "segno": 0,
+        "recno": 0,
+        "column": "V",
+        "values": [177],
+        "isNull": true
+      },
+      {
+        "op": "ek.ekrcei",
+        "handleId": "h",
+        "segno": 0,
+        "recno": 0,
+        "column": "V"
+      },
+      {
+        "op": "ek.ekucei",
+        "handleId": "h",
+        "segno": 0,
+        "recno": 0,
+        "column": "V",
+        "values": [177, -205],
+        "isNull": false
+      },
+      {
+        "op": "ek.ekcls",
+        "handleId": "h"
+      },
+      {
+        "op": "ek.ekopr",
+        "handleId": "h",
+        "path": {
+          "kind": "scratch",
+          "rel": "c09.ek"
+        }
+      },
+      {
+        "op": "ek.ekrcei",
+        "handleId": "h",
+        "segno": 0,
+        "recno": 0,
+        "column": "V"
+      },
+      {
+        "op": "ek.ekrcei",
+        "handleId": "h",
+        "segno": 0,
+        "recno": 1,
+        "column": "V"
+      },
+      {
+        "op": "ek.ekcls",
+        "handleId": "h"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ek-ekucei-scalar-update",
+    "description": "Replace a populated scalar in the second of two independently addressed segments, retaining the first segment.",
+    "workflow": [
+      {
+        "op": "ek.ekops",
+        "handleId": "h"
+      },
+      {
+        "op": "ek.ekbseg",
+        "handleId": "h",
+        "tabnam": "SAMPLES",
+        "cnames": ["V"],
+        "decls": ["DATATYPE=INTEGER, NULLS_OK=TRUE"]
+      },
+      {
+        "op": "ek.ekappr",
+        "handleId": "h",
+        "segno": 0
+      },
+      {
+        "op": "ek.ekacei",
+        "handleId": "h",
+        "segno": 0,
+        "recno": 0,
+        "column": "V",
+        "values": [177],
+        "isNull": false
+      },
+      {
+        "op": "ek.ekbseg",
+        "handleId": "h",
+        "tabnam": "OTHER",
+        "cnames": ["V"],
+        "decls": ["DATATYPE=INTEGER, NULLS_OK=TRUE"]
+      },
+      {
+        "op": "ek.ekappr",
+        "handleId": "h",
+        "segno": 1
+      },
+      {
+        "op": "ek.ekacei",
+        "handleId": "h",
+        "segno": 1,
+        "recno": 0,
+        "column": "V",
+        "values": [-2147483648],
+        "isNull": false
+      },
+      {
+        "op": "ek.ekucei",
+        "handleId": "h",
+        "segno": 1,
+        "recno": 0,
+        "column": "V",
+        "values": [-205],
+        "isNull": false
+      },
+      {
+        "op": "ek.ekrcei",
+        "handleId": "h",
+        "segno": 1,
+        "recno": 0,
+        "column": "V"
+      },
+      {
+        "op": "ek.ekrcei",
+        "handleId": "h",
+        "segno": 0,
+        "recno": 0,
+        "column": "V"
+      },
+      {
+        "op": "ek.ekcls",
+        "handleId": "h"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ek-ekucei-fixed-size",
+    "description": "Update all three ordered components of a fixed-size vector, and compare its reopened null transition.",
+    "workflow": [
+      {
+        "op": "ek.ekopn",
+        "handleId": "h",
+        "path": {
+          "kind": "scratch",
+          "rel": "c09.ek"
+        },
+        "ifname": "ENTRY_TEST",
+        "ncomch": 0
+      },
+      {
+        "op": "ek.ekbseg",
+        "handleId": "h",
+        "tabnam": "SAMPLES",
+        "cnames": ["V"],
+        "decls": ["DATATYPE=INTEGER, SIZE=3, NULLS_OK=TRUE"]
+      },
+      {
+        "op": "ek.ekappr",
+        "handleId": "h",
+        "segno": 0
+      },
+      {
+        "op": "ek.ekacei",
+        "handleId": "h",
+        "segno": 0,
+        "recno": 0,
+        "column": "V",
+        "values": [-2147483648, 19, 2147483647],
+        "isNull": false
+      },
+      {
+        "op": "ek.ekucei",
+        "handleId": "h",
+        "segno": 0,
+        "recno": 0,
+        "column": "V",
+        "values": [2147483647, 19, -2147483648],
+        "isNull": false
+      },
+      {
+        "op": "ek.ekrcei",
+        "handleId": "h",
+        "segno": 0,
+        "recno": 0,
+        "column": "V"
+      },
+      {
+        "op": "ek.ekucei",
+        "handleId": "h",
+        "segno": 0,
+        "recno": 0,
+        "column": "V",
+        "values": [-2147483648, 19, 2147483647],
+        "isNull": true
+      },
+      {
+        "op": "ek.ekcls",
+        "handleId": "h"
+      },
+      {
+        "op": "ek.ekopr",
+        "handleId": "h",
+        "path": {
+          "kind": "scratch",
+          "rel": "c09.ek"
+        }
+      },
+      {
+        "op": "ek.ekrcei",
+        "handleId": "h",
+        "segno": 0,
+        "recno": 0,
+        "column": "V"
+      },
+      {
+        "op": "ek.ekcls",
+        "handleId": "h"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ek-ekucei-read-only",
+    "description": "Attempt an update on an initialized entry reopened for reading.",
+    "workflow": [
+      {
+        "op": "ek.ekopn",
+        "handleId": "h",
+        "path": {
+          "kind": "scratch",
+          "rel": "c09.ek"
+        },
+        "ifname": "ENTRY_TEST",
+        "ncomch": 0
+      },
+      {
+        "op": "ek.ekbseg",
+        "handleId": "h",
+        "tabnam": "SAMPLES",
+        "cnames": ["V"],
+        "decls": ["DATATYPE=INTEGER, NULLS_OK=TRUE"]
+      },
+      {
+        "op": "ek.ekappr",
+        "handleId": "h",
+        "segno": 0
+      },
+      {
+        "op": "ek.ekacei",
+        "handleId": "h",
+        "segno": 0,
+        "recno": 0,
+        "column": "V",
+        "values": [-2147483648],
+        "isNull": false
+      },
+      {
+        "op": "ek.ekcls",
+        "handleId": "h"
+      },
+      {
+        "op": "ek.ekopr",
+        "handleId": "h",
+        "path": {
+          "kind": "scratch",
+          "rel": "c09.ek"
+        }
+      },
+      {
+        "op": "ek.ekucei",
+        "handleId": "h",
+        "segno": 0,
+        "recno": 0,
+        "column": "V",
+        "values": [177],
+        "isNull": false
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(DASINVALIDACCESS)"]
+    }
+  },
+  {
+    "caseId": "ek-ekucei-wrong-type",
+    "description": "Request a different storage type in an existing segment and row.",
+    "workflow": [
+      {
+        "op": "ek.ekops",
+        "handleId": "h"
+      },
+      {
+        "op": "ek.ekbseg",
+        "handleId": "h",
+        "tabnam": "SAMPLES",
+        "cnames": ["V"],
+        "decls": ["DATATYPE=DOUBLE PRECISION, NULLS_OK=TRUE"]
+      },
+      {
+        "op": "ek.ekappr",
+        "handleId": "h",
+        "segno": 0
+      },
+      {
+        "op": "ek.ekucei",
+        "handleId": "h",
+        "segno": 0,
+        "recno": 0,
+        "column": "V",
+        "values": [177, -205],
+        "isNull": false
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(WRONGDATATYPE)"]
+    }
+  },
+  {
+    "caseId": "ek-ekucei-unknown-column",
+    "description": "Try a nonempty undeclared column and observe the pinned descriptor lookup error.",
+    "workflow": [
+      {
+        "op": "ek.ekops",
+        "handleId": "h"
+      },
+      {
+        "op": "ek.ekbseg",
+        "handleId": "h",
+        "tabnam": "SAMPLES",
+        "cnames": ["V"],
+        "decls": ["DATATYPE=INTEGER, NULLS_OK=TRUE"]
+      },
+      {
+        "op": "ek.ekappr",
+        "handleId": "h",
+        "segno": 0
+      },
+      {
+        "op": "ek.ekucei",
+        "handleId": "h",
+        "segno": 0,
+        "recno": 0,
+        "column": "MISSING",
+        "values": [177, -205],
+        "isNull": false
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(BUG)"]
+    }
+  },
+  {
+    "caseId": "ek-ekucei-invalid-segment",
+    "description": "An out-of-range segment is diagnosed before any descriptor or entry access.",
+    "workflow": [
+      {
+        "op": "ek.ekops",
+        "handleId": "h"
+      },
+      {
+        "op": "ek.ekbseg",
+        "handleId": "h",
+        "tabnam": "SAMPLES",
+        "cnames": ["V"],
+        "decls": ["DATATYPE=INTEGER, NULLS_OK=TRUE"]
+      },
+      {
+        "op": "ek.ekappr",
+        "handleId": "h",
+        "segno": 0
+      },
+      {
+        "op": "ek.ekucei",
+        "handleId": "h",
+        "segno": 1,
+        "recno": 0,
+        "column": "V",
+        "values": [177, -205],
+        "isNull": false
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(INVALIDINDEX)"]
+    }
+  },
+  {
+    "caseId": "ek-ekucei-invalid-row",
+    "description": "A negative row is outside the segment record tree.",
+    "workflow": [
+      {
+        "op": "ek.ekops",
+        "handleId": "h"
+      },
+      {
+        "op": "ek.ekbseg",
+        "handleId": "h",
+        "tabnam": "SAMPLES",
+        "cnames": ["V"],
+        "decls": ["DATATYPE=INTEGER, NULLS_OK=TRUE"]
+      },
+      {
+        "op": "ek.ekappr",
+        "handleId": "h",
+        "segno": 0
+      },
+      {
+        "op": "ek.ekucei",
+        "handleId": "h",
+        "segno": 0,
+        "recno": -1,
+        "column": "V",
+        "values": [177, -205],
+        "isNull": false
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(INDEXOUTOFRANGE)"]
+    }
+  }
+]

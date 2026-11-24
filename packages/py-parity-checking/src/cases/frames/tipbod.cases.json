@@ -1,0 +1,169 @@
+[
+  {
+    "caseId": "frames-tipbod-earth-epochs",
+    "description": "Compare every row-major component for a rotating Earth at negative, zero and positive ET.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/pck00010.tpc"
+      },
+      {
+        "op": "frames.tipbod",
+        "ref": "J2000",
+        "body": 399,
+        "et": -86401.5
+      },
+      {
+        "op": "frames.tipbod",
+        "ref": "J2000",
+        "body": 399,
+        "et": 0
+      },
+      {
+        "op": "frames.tipbod",
+        "ref": "J2000",
+        "body": 399,
+        "et": 123456.25
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-tipbod-reference-bodies",
+    "description": "Change the inertial reference and PCK body class ID independently.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/pck00010.tpc"
+      },
+      {
+        "op": "frames.tipbod",
+        "ref": "B1950",
+        "body": 301,
+        "et": 12.5
+      },
+      {
+        "op": "frames.tipbod",
+        "ref": "ECLIPJ2000",
+        "body": 499,
+        "et": -123.25
+      },
+      {
+        "op": "frames.tipbod",
+        "ref": "J2000",
+        "body": 301,
+        "et": 12.5
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-tipbod-missing",
+    "description": "A missing orientation kernel produces the real toolkit message.",
+    "workflow": [
+      {
+        "op": "frames.tipbod",
+        "ref": "J2000",
+        "body": 399,
+        "et": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["FRAMEDATANOTFOUND"]
+    }
+  },
+  {
+    "caseId": "frames-tipbod-ref-error",
+    "description": "A loaded body orientation does not make a body-fixed reference inertial.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/pck00010.tpc"
+      },
+      {
+        "op": "frames.tipbod",
+        "ref": "IAU_EARTH",
+        "body": 399,
+        "et": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["IRFNOTREC"]
+    }
+  },
+  {
+    "caseId": "frames-tipbod-frame-not-body",
+    "description": "An IAU frame ID is distinct from its PCK body class ID.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/pck00010.tpc"
+      },
+      {
+        "op": "frames.tipbod",
+        "ref": "J2000",
+        "body": 10013,
+        "et": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["FRAMEDATANOTFOUND"]
+    }
+  },
+  {
+    "caseId": "frames-tipbod-reloaded",
+    "description": "PCK unload and reload invalidate and rebuild orientation caches.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/pck00010.tpc"
+      },
+      {
+        "op": "frames.tipbod",
+        "ref": "J2000",
+        "body": 499,
+        "et": 15
+      },
+      {
+        "op": "kernels.unload",
+        "path": "kernels/pck00010.tpc"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/pck00010.tpc"
+      },
+      {
+        "op": "frames.tipbod",
+        "ref": "J2000",
+        "body": 499,
+        "et": 15
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-tipbod-empty",
+    "description": "An empty inertial reference signals EMPTYSTRING.",
+    "workflow": [
+      {
+        "op": "frames.tipbod",
+        "ref": "",
+        "body": 399,
+        "et": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["EMPTYSTRING"]
+    }
+  }
+]

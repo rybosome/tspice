@@ -1,0 +1,311 @@
+[
+  {
+    "caseId": "ids-names-srfscc-body-scoped-aliases",
+    "description": "Observe both body-scoped duplicates, preferred spelling and old aliases.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/surface-translation.tpc"
+      },
+      {
+        "op": "ids-names.srfscc",
+        "surface": " different  Name",
+        "bodyId": 399
+      },
+      {
+        "op": "ids-names.srfscc",
+        "surface": "alias",
+        "bodyId": 399
+      },
+      {
+        "op": "ids-names.srfscc",
+        "surface": "Shared",
+        "bodyId": 499
+      },
+      {
+        "op": "ids-names.srfscc",
+        "surface": "shared",
+        "bodyId": 399
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ids-names-srfscc-pool-clear-reload",
+    "description": "Compare before load, after replacement, after clear and after reloading the original.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/surface-translation.tpc"
+      },
+      {
+        "op": "ids-names.srfscc",
+        "surface": "alias",
+        "bodyId": 399
+      },
+      {
+        "op": "kernel-pool.pcpool",
+        "name": "NAIF_SURFACE_NAME",
+        "values": ["Replacement"]
+      },
+      {
+        "op": "kernel-pool.pipool",
+        "name": "NAIF_SURFACE_CODE",
+        "values": [91]
+      },
+      {
+        "op": "kernel-pool.pipool",
+        "name": "NAIF_SURFACE_BODY",
+        "values": [399]
+      },
+      {
+        "op": "ids-names.srfscc",
+        "surface": "replacement",
+        "bodyId": 399
+      },
+      {
+        "op": "kernels.kclear"
+      },
+      {
+        "op": "ids-names.srfscc",
+        "surface": "alias",
+        "bodyId": 399
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/surface-translation.tpc"
+      },
+      {
+        "op": "ids-names.srfscc",
+        "surface": "alias",
+        "bodyId": 399
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ids-names-srfscc-numeric-parser",
+    "description": "CSPICE parses numeric spellings after name lookup; compare overflow, decimal, exponent, signs, and missing name.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/surface-translation.tpc"
+      },
+      {
+        "op": "ids-names.srfscc",
+        "surface": "00091",
+        "bodyId": 399
+      },
+      {
+        "op": "ids-names.srfscc",
+        "surface": "9.1E1",
+        "bodyId": 399
+      },
+      {
+        "op": "ids-names.srfscc",
+        "surface": "10.0",
+        "bodyId": 399
+      },
+      {
+        "op": "ids-names.srfscc",
+        "surface": "-99",
+        "bodyId": 399
+      },
+      {
+        "op": "ids-names.srfscc",
+        "surface": "2147483648",
+        "bodyId": 399
+      },
+      {
+        "op": "ids-names.srfscc",
+        "surface": "UNKNOWN",
+        "bodyId": 399
+      },
+      {
+        "op": "ids-names.srfscc",
+        "surface": "   ",
+        "bodyId": 399
+      },
+      {
+        "op": "ids-names.srfscc",
+        "surface": "2.9",
+        "bodyId": 399
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ids-names-srfscc-precedence-remap",
+    "description": "Distinguish normalized duplicate names, assigned numeric spellings, case, repeats, integer endpoints and trailing blanks.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/surface-translation.tpc"
+      },
+      {
+        "op": "ids-names.srfscc",
+        "surface": "shared",
+        "bodyId": 399
+      },
+      {
+        "op": "ids-names.srfscc",
+        "surface": "  DIFFERENT    name  ",
+        "bodyId": 399
+      },
+      {
+        "op": "ids-names.srfscc",
+        "surface": "00091",
+        "bodyId": 399
+      },
+      {
+        "op": "ids-names.srfscc",
+        "surface": "ALIAS",
+        "bodyId": 399
+      },
+      {
+        "op": "ids-names.srfscc",
+        "surface": "+2147483647",
+        "bodyId": 399
+      },
+      {
+        "op": "ids-names.srfscc",
+        "surface": "-2147483648",
+        "bodyId": 399
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ids-names-srfscc-empty-surface",
+    "description": "A zero-length input must remain a toolkit error.",
+    "workflow": [
+      {
+        "op": "ids-names.srfscc",
+        "surface": "",
+        "bodyId": 399
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["EMPTYSTRING"]
+    }
+  },
+  {
+    "caseId": "ids-names-srfscc-missing-variables",
+    "description": "Observe actual malformed surface mapping diagnosis on a recognized body.",
+    "workflow": [
+      {
+        "op": "kernel-pool.pcpool",
+        "name": "NAIF_SURFACE_NAME",
+        "values": ["name"]
+      },
+      {
+        "op": "ids-names.srfscc",
+        "surface": " different  Name",
+        "bodyId": 399
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["BADSURFACEMAP"]
+    }
+  },
+  {
+    "caseId": "ids-names-srfscc-wrong-type",
+    "description": "Observe actual malformed surface mapping diagnosis on a recognized body.",
+    "workflow": [
+      {
+        "op": "kernel-pool.pcpool",
+        "name": "NAIF_SURFACE_NAME",
+        "values": ["name"]
+      },
+      {
+        "op": "kernel-pool.pipool",
+        "name": "NAIF_SURFACE_CODE",
+        "values": [9]
+      },
+      {
+        "op": "kernel-pool.pcpool",
+        "name": "NAIF_SURFACE_BODY",
+        "values": ["399"]
+      },
+      {
+        "op": "ids-names.srfscc",
+        "surface": " different  Name",
+        "bodyId": 399
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["BADVARIABLETYPE"]
+    }
+  },
+  {
+    "caseId": "ids-names-srfscc-unequal-lengths",
+    "description": "Observe actual malformed surface mapping diagnosis on a recognized body.",
+    "workflow": [
+      {
+        "op": "kernel-pool.pcpool",
+        "name": "NAIF_SURFACE_NAME",
+        "values": ["one", "two"]
+      },
+      {
+        "op": "kernel-pool.pipool",
+        "name": "NAIF_SURFACE_CODE",
+        "values": [9]
+      },
+      {
+        "op": "kernel-pool.pipool",
+        "name": "NAIF_SURFACE_BODY",
+        "values": [399, 399]
+      },
+      {
+        "op": "ids-names.srfscc",
+        "surface": " different  Name",
+        "bodyId": 399
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["ARRAYSIZEMISMATCH"]
+    }
+  },
+  {
+    "caseId": "ids-names-srfscc-blank-name",
+    "description": "Observe actual malformed surface mapping diagnosis on a recognized body.",
+    "workflow": [
+      {
+        "op": "kernel-pool.pcpool",
+        "name": "NAIF_SURFACE_NAME",
+        "values": ["   "]
+      },
+      {
+        "op": "kernel-pool.pipool",
+        "name": "NAIF_SURFACE_CODE",
+        "values": [8]
+      },
+      {
+        "op": "kernel-pool.pipool",
+        "name": "NAIF_SURFACE_BODY",
+        "values": [399]
+      },
+      {
+        "op": "ids-names.srfscc",
+        "surface": " different  Name",
+        "bodyId": 399
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["BLANKNAMEASSIGNED"]
+    }
+  }
+]

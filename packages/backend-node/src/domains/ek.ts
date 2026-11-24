@@ -3,6 +3,16 @@ import {
   type SpiceHandle,
 } from "@rybosome/tspice-backend-contract";
 import {
+  ekEntryColumn,
+  packEkEntry,
+  unpackEkEntry,
+  checkEkRecordIndex,
+  packEkRecordSchema,
+  decodeEkColumn,
+  decodeEkSummary,
+  decodeEkSelect,
+  ekMetadataText,
+  ekMetadataOrdinal,
   assertSpiceInt32,
   assertSpiceInt32NonNegative,
   invariant,
@@ -21,6 +31,14 @@ const EK_ONLY = ["EK"] as const satisfies readonly SpiceHandleKind[];
 
 type NativeEkDeps = Pick<
   NativeAddon,
+  | "ekccnt"
+  | "ekcii"
+  | "eklef"
+  | "eknelt"
+  | "ekpsel"
+  | "ekssum"
+  | "ekuef"
+  | "ekload_nseg"
   | "ekopr"
   | "ekopw"
   | "ekopn"
@@ -32,6 +50,20 @@ type NativeEkDeps = Pick<
   | "ekgc"
   | "ekgd"
   | "ekgi"
+  | "ekacec"
+  | "ekaced"
+  | "ekacei"
+  | "ekrcec"
+  | "ekrced"
+  | "ekrcei"
+  | "ekucec"
+  | "ekuced"
+  | "ekucei"
+  | "ekops"
+  | "ekbseg"
+  | "ekappr"
+  | "ekinsr"
+  | "ekdelr"
   | "ekifld"
   | "ekacli"
   | "ekacld"
@@ -75,7 +107,287 @@ export function createEkApi<
     }
   };
 
+  const loads = new Map<number, SpiceHandle>();
+  function loadToken(generation: number) {
+    const existing = loads.get(generation);
+    if (existing !== undefined) return existing;
+    const token = handles.register("EK-LOAD", generation);
+    loads.set(generation, token);
+    return token;
+  }
   const api = {
+    ekacec: (
+      handle: SpiceHandle,
+      segno: number,
+      recno: number,
+      column: string,
+      values: readonly string[],
+      isNull: boolean,
+    ) => {
+      const id = handles.lookup(handle, EK_ONLY, "ekacec").nativeHandle;
+      ekEntryColumn(segno, recno, column);
+      const data = packEkEntry("character", values, isNull);
+      native.ekacec(
+        id,
+        segno,
+        recno,
+        column,
+        data.count,
+        data.width,
+        data.bytes,
+        isNull,
+      );
+    },
+    ekaced: (
+      handle: SpiceHandle,
+      segno: number,
+      recno: number,
+      column: string,
+      values: readonly number[],
+      isNull: boolean,
+    ) => {
+      const id = handles.lookup(handle, EK_ONLY, "ekaced").nativeHandle;
+      ekEntryColumn(segno, recno, column);
+      const data = packEkEntry("double", values, isNull);
+      native.ekaced(
+        id,
+        segno,
+        recno,
+        column,
+        data.count,
+        data.width,
+        data.bytes,
+        isNull,
+      );
+    },
+    ekacei: (
+      handle: SpiceHandle,
+      segno: number,
+      recno: number,
+      column: string,
+      values: readonly number[],
+      isNull: boolean,
+    ) => {
+      const id = handles.lookup(handle, EK_ONLY, "ekacei").nativeHandle;
+      ekEntryColumn(segno, recno, column);
+      const data = packEkEntry("integer", values, isNull);
+      native.ekacei(
+        id,
+        segno,
+        recno,
+        column,
+        data.count,
+        data.width,
+        data.bytes,
+        isNull,
+      );
+    },
+    ekrcec: (
+      handle: SpiceHandle,
+      segno: number,
+      recno: number,
+      column: string,
+      lenout = 1024,
+    ) => {
+      const id = handles.lookup(handle, EK_ONLY, "ekrcec").nativeHandle;
+      ekEntryColumn(segno, recno, column);
+      assertSpiceInt32(lenout, "EK output width");
+      return unpackEkEntry(
+        "character",
+        lenout,
+        native.ekrcec(id, segno, recno, column, lenout),
+      );
+    },
+    ekrced: (
+      handle: SpiceHandle,
+      segno: number,
+      recno: number,
+      column: string,
+    ) => {
+      const id = handles.lookup(handle, EK_ONLY, "ekrced").nativeHandle;
+      ekEntryColumn(segno, recno, column);
+      return unpackEkEntry(
+        "double",
+        8,
+        native.ekrced(id, segno, recno, column, 8),
+      );
+    },
+    ekrcei: (
+      handle: SpiceHandle,
+      segno: number,
+      recno: number,
+      column: string,
+    ) => {
+      const id = handles.lookup(handle, EK_ONLY, "ekrcei").nativeHandle;
+      ekEntryColumn(segno, recno, column);
+      return unpackEkEntry(
+        "integer",
+        4,
+        native.ekrcei(id, segno, recno, column, 4),
+      );
+    },
+    ekucec: (
+      handle: SpiceHandle,
+      segno: number,
+      recno: number,
+      column: string,
+      values: readonly string[],
+      isNull: boolean,
+    ) => {
+      const id = handles.lookup(handle, EK_ONLY, "ekucec").nativeHandle;
+      ekEntryColumn(segno, recno, column);
+      const data = packEkEntry("character", values, isNull);
+      native.ekucec(
+        id,
+        segno,
+        recno,
+        column,
+        data.count,
+        data.width,
+        data.bytes,
+        isNull,
+      );
+    },
+    ekuced: (
+      handle: SpiceHandle,
+      segno: number,
+      recno: number,
+      column: string,
+      values: readonly number[],
+      isNull: boolean,
+    ) => {
+      const id = handles.lookup(handle, EK_ONLY, "ekuced").nativeHandle;
+      ekEntryColumn(segno, recno, column);
+      const data = packEkEntry("double", values, isNull);
+      native.ekuced(
+        id,
+        segno,
+        recno,
+        column,
+        data.count,
+        data.width,
+        data.bytes,
+        isNull,
+      );
+    },
+    ekucei: (
+      handle: SpiceHandle,
+      segno: number,
+      recno: number,
+      column: string,
+      values: readonly number[],
+      isNull: boolean,
+    ) => {
+      const id = handles.lookup(handle, EK_ONLY, "ekucei").nativeHandle;
+      ekEntryColumn(segno, recno, column);
+      const data = packEkEntry("integer", values, isNull);
+      native.ekucei(
+        id,
+        segno,
+        recno,
+        column,
+        data.count,
+        data.width,
+        data.bytes,
+        isNull,
+      );
+    },
+    ekops: () => {
+      const h = native.ekops();
+      try {
+        return registerEkHandle(h, "ekops()");
+      } catch (error) {
+        native.ekcls(h);
+        throw error;
+      }
+    },
+    ekbseg: (
+      handle: SpiceHandle,
+      tabnam: string,
+      cnames: readonly string[],
+      decls: readonly string[],
+    ) => {
+      const id = handles.lookup(handle, EK_ONLY, "ekbseg").nativeHandle;
+      const schema = packEkRecordSchema(tabnam, cnames, decls);
+      const output = native.ekbseg(
+        id,
+        schema.table,
+        schema.count,
+        schema.names.width,
+        schema.names.bytes,
+        schema.decls.width,
+        schema.decls.bytes,
+      );
+      assertSpiceInt32NonNegative(output, "ekbseg returned ordinal");
+      return output;
+    },
+    ekappr: (handle: SpiceHandle, segno: number) => {
+      const id = handles.lookup(handle, EK_ONLY, "ekappr").nativeHandle;
+      checkEkRecordIndex(segno, "ekappr(segno)");
+      const output = native.ekappr(id, segno);
+      assertSpiceInt32NonNegative(output, "ekappr returned ordinal");
+      return output;
+    },
+    ekinsr: (handle: SpiceHandle, segno: number, recno: number) => {
+      const id = handles.lookup(handle, EK_ONLY, "ekinsr").nativeHandle;
+      checkEkRecordIndex(segno, "ekinsr(segno)");
+      checkEkRecordIndex(recno, "ekinsr(recno)");
+      native.ekinsr(id, segno, recno);
+    },
+    ekdelr: (handle: SpiceHandle, segno: number, recno: number) => {
+      const id = handles.lookup(handle, EK_ONLY, "ekdelr").nativeHandle;
+      checkEkRecordIndex(segno, "ekdelr(segno)");
+      checkEkRecordIndex(recno, "ekdelr(recno)");
+      native.ekdelr(id, segno, recno);
+    },
+    ekccnt: (table: string) => {
+      ekMetadataText(table);
+      const n = native.ekccnt(table);
+      assertSpiceInt32NonNegative(n, "EK column count");
+      return n;
+    },
+    ekcii: (table: string, cindex: number, collen = 33) => {
+      ekMetadataOrdinal(cindex);
+      assertSpiceInt32(collen, "EK column width");
+      ekMetadataText(table);
+      return decodeEkColumn(native.ekcii(table, cindex, collen));
+    },
+    eklef: (path: string) => {
+      ekMetadataText(path);
+      return loadToken(native.eklef(path ? resolvePath(path) : path));
+    },
+    eknelt: (selidx: number, row: number) => {
+      ekMetadataOrdinal(selidx);
+      ekMetadataOrdinal(row);
+      const n = native.eknelt(selidx, row);
+      assertSpiceInt32NonNegative(n, "EK element count");
+      return n;
+    },
+    ekpsel: (query: string) => {
+      ekMetadataText(query);
+      return decodeEkSelect(native.ekpsel(query));
+    },
+    ekssum: (handle: SpiceHandle, segno: number) => {
+      ekMetadataOrdinal(segno);
+      const { nativeHandle, kind } = handles.lookup(
+        handle,
+        ["EK", "EK-LOAD"],
+        "ekssum",
+      );
+      const loaded = Number(kind === "EK-LOAD");
+      return decodeEkSummary(native.ekssum(nativeHandle, loaded, segno));
+    },
+    ekuef: (handle: SpiceHandle) => {
+      handles.close(
+        handle,
+        ["EK-LOAD"],
+        ({ nativeHandle }) => {
+          native.ekuef(nativeHandle);
+          loads.delete(nativeHandle);
+        },
+        "ekuef",
+      );
+    },
     ekopr: (path: string) =>
       registerEkHandle(native.ekopr(resolvePath(path)), "ekopr(path)"),
     ekopw: (path: string) =>
@@ -116,9 +428,11 @@ export function createEkApi<
     },
 
     eknseg: (handle: SpiceHandle) => {
-      const nseg = native.eknseg(
-        handles.lookup(handle, EK_ONLY, "eknseg").nativeHandle,
-      );
+      const entry = handles.lookup(handle, ["EK", "EK-LOAD"], "eknseg");
+      const nseg =
+        entry.kind === "EK-LOAD"
+          ? native.ekload_nseg(entry.nativeHandle)
+          : native.eknseg(entry.nativeHandle);
       invariant(
         typeof nseg === "number" &&
           Number.isInteger(nseg) &&

@@ -182,3 +182,32 @@ arrays, continued string components, append assignment and invented negative
 body/name pair distinguish pool updates and lookup conventions. The locked
 sidecar reads this file directly. Node and WASM receive the same bytes through
 the public loader; KEEPER registration is queried independently.
+
+`kernels/surface-translation.tpc` is an authored test fixture under the
+repository license. Its surface IDs and names are artificial. Two body IDs
+exercise independent namespaces, alternate spellings and numeric-name precedence;
+it contains no shape or observational data.
+
+### Packed DAF navigation fixture
+
+The public navigation test runs `generate-navigation-daf.py` in a temporary
+directory using the locked SpiceyPy toolkit. It creates an original synthetic
+SPK with a negative center ID so that one packed pair of integer components
+has a noncanonical IEEE NaN bit pattern on little-endian hosts. The generator
+unpacks the summary again with CSPICE and checks the integer values. It also
+uses the pinned SPICELIB DAFRN routine to give a DAF array name a terminal tab,
+which the high-level Python string converter removes but the C function returns.
+Each backend receives its own copy; the scratch writer and reader close before
+cleanup. Only the MIT-licensed generator is checked in.
+
+## Binary orientation fixture
+
+`kernels/audit-orientation.bpc` contains project-authored synthetic type 2 orientation segments. The locked SpiceyPy generator writes two class 3000 segments in J2000 with different angular rates and an intervening gap, and one constant class 301 segment relative to B1950. Epochs are TDB seconds past J2000. These values exercise data layout and frame selection. They have no observational interpretation. The distributed 4096-byte fixture has SHA-256 `63afada27964265890dfd4c9846ba1dbd781edac6fd2d5aac319727333659dba`. [Generator](generate-audit-pck.py)
+
+## CK writer records
+
+`kernels/audit-ck-writers.bc` contains seven project-authored synthetic segments in J2000. The type 1, 2 and 3 segments and four type 5 subtypes each use a distinct negative instrument ID. Locked SpiceyPy 6.0.3 writes the fixture independently of tspice. Physical readback compares descriptors, names, every segment word, complete pointing matrices, angular velocities and selected encoded times. The distributed file has SHA-256 `c768e9191a0dc05c3b6ba5b1f4ab9a30904f6ee6f2bee38c4bea45f5a33ab8f6`. [Fixture generator](generate-audit-ck-writers.py)
+
+### CK record access
+
+`generate-ck-records.py` uses the locked SpiceyPy N0067 writers to create three MIT-authored fixtures. The three B1950 type 2 intervals in `audit-ck-records.bc` have distinct endpoints, seconds-per-tick rates, scalar-first quaternions and angular velocities. The generator reads back all ten words of every packet. `audit-ck-record-directory.bc` contains 27 segments, including 102 type 2 intervals and 103 type 3 records in 103 interpolation intervals on its second physical summary record. The type 3 segment in `audit-ck-record-limit.bc` contains finite angular velocities of 1.65e308 rad/s to exercise the IEEE derivative output at an actual stored endpoint. The ordinary type 3, interpolation gap, no-AV and priority workflows reuse `audit-pointing.bc`, `audit-pointing-priority.bc` and `audit-ck-clock.tsc`. [Scientific checks and binary hashes](../../../docs/step8-ck-records.md)

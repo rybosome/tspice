@@ -13,8 +13,8 @@ SpiceRawBackend is composed from: `TimeApi`, `StringsApi`, `KernelsApi`, `Kernel
 ## Summary
 
 - Total routines (NAIF index): 652
-- Implemented now (SpiceRawBackend): 408
-- Planned (not yet implemented): 241
+- Implemented now (SpiceRawBackend): 523
+- Planned (not yet implemented): 126
 - Excluded: 3
 
 ## Implemented now
@@ -29,6 +29,7 @@ SpiceRawBackend is composed from: `TimeApi`, `StringsApi`, `KernelsApi`, `Kernel
 | `b1900_c` | Besselian Date 1900.0 |
 | `b1950_c` | Besselian Date 1950.0 |
 | `badkpv_c` | Bad Kernel Pool Variable |
+| `bltfrm_c` | Built-in frame IDs |
 | `bodc2n_c` | Body ID code to name translation |
 | `bodc2s_c` | Body ID code to string translation |
 | `boddef_c` | Body name/ID code definition |
@@ -54,12 +55,25 @@ SpiceRawBackend is composed from: `TimeApi`, `StringsApi`, `KernelsApi`, `Kernel
 | `chkin_c` | module Check In |
 | `chkout_c` | Module Check Out |
 | `cidfrm_c` | center SPK ID frame |
+| `ckcls_c` | CK, Close file |
 | `ckcov_c` | CK coverage |
+| `ckfrot_c` | CK frame, find position rotation |
+| `ckfxfm_c` | CK frame, find state transformation |
 | `ckgp_c` | C-kernel, get pointing |
 | `ckgpav_c` | C-kernel, get pointing and angular velocity |
+| `ckgr02_c` | C-kernel, get record, type 02 |
+| `ckgr03_c` | C-kernel, get record, type 03 |
 | `cklpf_c` | CK, load pointing file |
+| `ckmeta_c` | CK ID to associated SCLK |
+| `cknr02_c` | C-kernel, number of records, type 02 |
+| `cknr03_c` | C-kernel, number of records, type 03 |
 | `ckobj_c` | CK objects |
+| `ckopn_c` | CK, open new file. |
 | `ckupf_c` | CK, Unload pointing file |
+| `ckw01_c` | C-Kernel, write segment to C-kernel, data type 1 |
+| `ckw02_c` | C-Kernel, write segment to C-kernel, data type 2 |
+| `ckw03_c` | C-Kernel, write segment to C-kernel, data type 3 |
+| `ckw05_c` | Write CK segment, type 5 |
 | `clearc_c` | Clear a two-dimensional character array |
 | `cleard_c` | Clear a double precision array |
 | `cleari_c` | Clear an integer array |
@@ -75,12 +89,51 @@ SpiceRawBackend is composed from: `TimeApi`, `StringsApi`, `KernelsApi`, `Kernel
 | `cyllat_c` | Cylindrical to latitudinal |
 | `cylrec_c` | Cylindrical to rectangular |
 | `cylsph_c` | Cylindrical to spherical |
+| `dafac_c` | DAF add comments |
+| `dafbbs_c` | DAF, begin backward search |
 | `dafbfs_c` | DAF, begin forward search |
 | `dafcls_c` | DAF, close |
+| `dafcs_c` | DAF, continue search |
+| `dafdc_c` | DAF delete comments |
+| `dafec_c` | DAF extract comments |
 | `daffna_c` | DAF, find next array |
+| `daffpa_c` | DAF, find previous array |
+| `dafgda_c` | DAF, read data from address |
+| `dafgh_c` | DAF, get handle |
+| `dafgn_c` | DAF, get array name |
+| `dafgs_c` | DAF, get summary |
+| `dafgsr_c` | DAF, get summary/descriptor record |
+| `dafhsf_c` | DAF, handle to summary format |
 | `dafopr_c` | DAF, open for read |
+| `dafopw_c` | DAF, open for write |
+| `dafps_c` | DAF, pack summary |
+| `dafrda_c` | DAF, read data from address |
+| `dafrfr_c` | DAF, read file record |
+| `dafrs_c` | DAF, replace summary |
+| `dafus_c` | DAF, unpack summary |
+| `dasac_c` | DAS add comments |
+| `dasadc_c` | DAS, add data, character |
+| `dasadd_c` | DAS, add data, double precision |
+| `dasadi_c` | DAS, add data, integer |
 | `dascls_c` | DAS, close file |
+| `dasdc_c` | DAS, delete comments |
+| `dasec_c` | DAS extract comments |
+| `dashfn_c` | DAS, handle to file name |
+| `dashfs_c` | DAS, handle to file summary |
+| `daslla_c` | DAS, last logical addresses |
+| `dasllc_c` | DAS, low-level close |
+| `dasonw_c` | DAS, open new file |
 | `dasopr_c` | DAS, open for read |
+| `dasops_c` | DAS, open scratch |
+| `dasopw_c` | DAS, open for write |
+| `dasrdc_c` | DAS, read data, character |
+| `dasrdd_c` | DAS, read data, double precision |
+| `dasrdi_c` | DAS, read data, integer |
+| `dasrfr_c` | DAS, read file record |
+| `dasudc_c` | DAS, update data, character |
+| `dasudd_c` | DAS, update data, double precision |
+| `dasudi_c` | DAS, update data, integer |
+| `daswbr_c` | DAS, write buffered records |
 | `dazldr_c` | Derivative of AZ/EL w.r.t. rectangular |
 | `dcyldr_c` | Derivative of cylindrical w.r.t. rectangular |
 | `deltet_c` | Delta ET, ET - UTC |
@@ -88,9 +141,13 @@ SpiceRawBackend is composed from: `TimeApi`, `StringsApi`, `KernelsApi`, `Kernel
 | `dgeodr_c` | Derivative of geodetic w.r.t. rectangular |
 | `diags2_c` | Diagonalize symmetric 2x2 matrix |
 | `diff_c` | Difference of two sets |
+| `dlabbs_c` | DLA, begin backward search |
 | `dlabfs_c` | DLA, begin forward search |
+| `dlabns_c` | DLA, begin new segment |
 | `dlacls` | Close a DAS-backed DLA handle |
+| `dlaens_c` | DLA, end new segment |
 | `dlafns_c` | DLA, find next segment |
+| `dlafps_c` | DLA, find previous segment |
 | `dlaopn_c` | DLA, open new file |
 | `dlatdr_c` | Derivative of latitudinal w.r.t. rectangular |
 | `dp2hx_c` | D.p. number to hexadecimal string |
@@ -120,28 +177,56 @@ SpiceRawBackend is composed from: `TimeApi`, `StringsApi`, `KernelsApi`, `Kernel
 | `dvnorm_c` | Derivative of vector norm |
 | `dvpool_c` | Delete a variable from the kernel pool |
 | `dvsep_c` | Time derivative of separation angle |
+| `ekacec_c` | EK, add character data to column |
+| `ekaced_c` | EK, add d.p. data to column |
+| `ekacei_c` | EK, add integer data to column |
 | `ekaclc_c` | EK, add character column to segment |
 | `ekacld_c` | EK, add double precision column to segment |
 | `ekacli_c` | EK, add integer column to segment |
+| `ekappr_c` | EK, append record onto segment |
+| `ekbseg_c` | EK, start new segment |
+| `ekccnt_c` | EK, column count |
+| `ekcii_c` | EK, column info by index |
 | `ekcls_c` | EK, close file |
+| `ekdelr_c` | EK, delete record from segment |
 | `ekffld_c` | EK, finish fast write |
 | `ekfind_c` | EK, find data |
 | `ekgc_c` | EK, get event data, character |
 | `ekgd_c` | EK, get event data, double precision |
 | `ekgi_c` | EK, get event data, integer |
 | `ekifld_c` | EK, initialize segment for fast write |
+| `ekinsr_c` | EK, insert record into segment |
+| `eklef_c` | EK, load event file |
+| `eknelt_c` | EK, get number of elements in column entry |
 | `eknseg_c` | EK, number of segments in file |
 | `ekntab_c` | EK, return number of loaded tables |
 | `ekopn_c` | EK, open new file |
 | `ekopr_c` | EK, open file for reading |
+| `ekops_c` | EK, open scratch file |
 | `ekopw_c` | EK, open file for writing |
+| `ekpsel_c` | EK, parse SELECT clause |
+| `ekrcec_c` | EK, read column entry element, character |
+| `ekrced_c` | EK, read column entry element, d.p. |
+| `ekrcei_c` | EK, read column entry element, integer |
+| `ekssum_c` | EK, return segment summary |
 | `ektnam_c` | EK, return name of loaded table |
+| `ekucec_c` | EK, update character column entry |
+| `ekuced_c` | EK, update d.p. column entry |
+| `ekucei_c` | EK, update integer column entry |
+| `ekuef_c` | EK, unload event file |
 | `elemc_c` | Element of a character set |
 | `elemd_c` | Element of a double precision set |
 | `elemi_c` | Element of an integer set |
 | `eqstr_c` | Equivalent strings |
+| `errch_c` | Insert String into Error Message Text |
+| `errdev_c` | Get/Set Error Output Device Name |
+| `errdp_c` | Insert D.P. Number into Error Message Text |
+| `errint_c` | Insert Integer into Error Message Text |
+| `errprt_c` | Get/Set Error Output Items |
 | `esrchc_c` | Equivalence search, character |
+| `et2lst_c` | ET to Local Solar Time |
 | `et2utc_c` | Ephemeris Time to UTC |
+| `etcal_c` | Convert ET to Calendar format |
 | `eul2m_c` | Euler angles to matrix |
 | `eul2xf_c` | Euler angles and derivative to transformation |
 | `exists_c` | Does the file exist? |
@@ -260,6 +345,13 @@ SpiceRawBackend is composed from: `TimeApi`, `StringsApi`, `KernelsApi`, `Kernel
 | `orderd_c` | Order of a double precision array |
 | `orderi_c` | Order of an integer array |
 | `ordi_c` | The ordinal position of an element in a set |
+| `pckcls_c` | PCK, close file |
+| `pckcov_c` | PCK coverage |
+| `pckfrm_c` | PCK, get reference frame class ID set |
+| `pcklof_c` | PCK, load binary file |
+| `pckopn_c` | PCK, open new file |
+| `pckuof_c` | PCK, unload binary file |
+| `pckw02_c` | PCK, write type 2 segment |
 | `pcpool_c` | Put character strings into the kernel pool |
 | `pdpool_c` | Put d.p.'s into the kernel pool |
 | `pgrrec_c` | Planetographic to rectangular |
@@ -271,14 +363,18 @@ SpiceRawBackend is composed from: `TimeApi`, `StringsApi`, `KernelsApi`, `Kernel
 | `posr_c` | Position of substring, reverse search |
 | `prsdp_c` | Parse d.p. number with error checking |
 | `prsint_c` | Parse integer with error checking |
+| `putcml_c` | Get the command line |
 | `pxform_c` | Position Transformation Matrix |
+| `pxfrm2_c` | Position Transform Matrix, Different Epochs |
 | `q2m_c` | Quaternion to matrix |
+| `qcktrc_c` | Get Quick Traceback |
 | `qderiv_c` | Quadratic derivative |
 | `qdq2av_c` | Quaternion and quaternion derivative to a.v. |
 | `qxq_c` | Quaternion times quaternion |
 | `radrec_c` | Range, RA and DEC to rectangular coordinates |
 | `rav2xf_c` | Rotation and angular velocity to transform |
 | `raxisa_c` | Rotation axis of a matrix |
+| `rdtext_c` | Read a line from a text file |
 | `recazl_c` | Rectangular coordinates to AZ/EL |
 | `reccyl_c` | Rectangular to cylindrical coordinates |
 | `recgeo_c` | Rectangular to geodetic |
@@ -301,6 +397,7 @@ SpiceRawBackend is composed from: `TimeApi`, `StringsApi`, `KernelsApi`, `Kernel
 | `repml_c` | Replace marker with logical value text |
 | `repmot_c` | Replace marker with ordinal text |
 | `reset_c` | Reset Error Status |
+| `return_c` | Immediate Return Indicator |
 | `rotate_c` | Generate a rotation matrix |
 | `rotmat_c` | Rotate a matrix |
 | `rotvec_c` | Transform a vector via a rotation |
@@ -310,9 +407,13 @@ SpiceRawBackend is composed from: `TimeApi`, `StringsApi`, `KernelsApi`, `Kernel
 | `scdecd_c` | Decode spacecraft clock |
 | `sce2c_c` | ET to continuous SCLK ticks |
 | `sce2s_c` | ET to SCLK string |
+| `sce2t_c` | ET to SCLK ticks |
 | `scencd_c` | Encode spacecraft clock |
+| `scfmt_c` | Convert SCLK "ticks" to character clock format |
+| `scpart_c` | Spacecraft Clock Partition Information |
 | `scs2e_c` | SCLK string to ET |
 | `sct2e_c` | SCLK ticks to ET |
+| `sctiks_c` | Convert spacecraft clock string to ticks. |
 | `sdiff_c` | Symmetric difference of two sets |
 | `set_c` | Compare sets |
 | `setmsg_c` | Set Long Error Message |
@@ -342,7 +443,11 @@ SpiceRawBackend is composed from: `TimeApi`, `StringsApi`, `KernelsApi`, `Kernel
 | `spkssb_c` | S/P Kernel, solar system barycenter |
 | `spkuds_c` | SPK - unpack segment descriptor |
 | `spkw08_c` | Write SPK segment, type 8 |
+| `srfc2s_c` | Surface and body ID codes to surface string |
+| `srfcss_c` | Surface ID and body string to surface string |
 | `srfrec_c` | Surface to rectangular coordinates |
+| `srfs2c_c` | Surface and body strings to surface ID code |
+| `srfscc_c` | Surface string and body ID code to surface ID code |
 | `ssize_c` | Set the size of a cell |
 | `stpool_c` | String from pool |
 | `str2et_c` | String to ET |
@@ -355,10 +460,18 @@ SpiceRawBackend is composed from: `TimeApi`, `StringsApi`, `KernelsApi`, `Kernel
 | `szpool_c` | Get size limitations of the kernel pool |
 | `timdef_c` | Time Software Defaults |
 | `timout_c` | Time Output |
+| `tipbod_c` | Transformation, inertial position to bodyfixed |
+| `tisbod_c` | Transformation, inertial state to bodyfixed |
+| `tkfram_c` | TK frame, find position rotation |
 | `tkvrsn_c` | Toolkit version strings |
+| `tparch_c` | Parse check---check format of strings |
 | `tparse_c` | Parse a UTC time string |
 | `tpictr_c` | Create a Time Format Picture |
 | `trace_c` | Trace of a 3x3 matrix |
+| `trcdep_c` | Traceback depth |
+| `trcnam_c` | Get module name from traceback |
+| `trcoff_c` | Turn tracing off |
+| `tsetyr_c` | Time --- set year expansion boundaries |
 | `twopi_c` | Twice the value of pi |
 | `twovec_c` | Two vectors defining an orthonormal frame |
 | `twovxf_c` | Two states defining a frame transformation |
@@ -370,6 +483,7 @@ SpiceRawBackend is composed from: `TimeApi`, `StringsApi`, `KernelsApi`, `Kernel
 | `unload_c` | Unload a kernel |
 | `unorm_c` | Unit vector and norm, 3 dimensional |
 | `unormg_c` | Unit vector and norm, general dimension |
+| `utc2et_c` | UTC to Ephemeris Time |
 | `vadd_c` | Vector addition, 3 dimensional |
 | `vaddg_c` | Vector addition, general dimension |
 | `valid_c` | Validate a set |
@@ -426,6 +540,7 @@ SpiceRawBackend is composed from: `TimeApi`, `StringsApi`, `KernelsApi`, `Kernel
 | `wnvald_c` | Validate a DP window |
 | `xf2eul_c` | State transformation to Euler angles |
 | `xf2rav_c` | Transform to rotation and angular velocity |
+| `xfmsta_c` | Transform state between coordinate systems |
 | `xpose_c` | Transpose a matrix, 3x3 |
 | `xpose6_c` | Transpose a matrix, 6x6 |
 | `xposeg_c` | Transpose a matrix, general |
@@ -435,65 +550,8 @@ SpiceRawBackend is composed from: `TimeApi`, `StringsApi`, `KernelsApi`, `Kernel
 | Routine | Purpose (1 line) |
 | --- | --- |
 | `azlcpo_c` | AZ/EL, constant position observer state |
-| `bltfrm_c` | Built-in frame IDs |
 | `cgv2el_c` | Center and generating vectors to ellipse |
-| `ckcls_c` | CK, Close file |
-| `ckfrot_c` | CK frame, find position rotation |
-| `ckfxfm_c` | CK frame, find state transformation |
-| `ckgr02_c` | C-kernel, get record, type 02 |
-| `ckgr03_c` | C-kernel, get record, type 03 |
-| `ckmeta_c` | CK ID to associated SCLK |
-| `cknr02_c` | C-kernel, number of records, type 02 |
-| `cknr03_c` | C-kernel, number of records, type 03 |
-| `ckopn_c` | CK, open new file. |
-| `ckw01_c` | C-Kernel, write segment to C-kernel, data type 1 |
-| `ckw02_c` | C-Kernel, write segment to C-kernel, data type 2 |
-| `ckw03_c` | C-Kernel, write segment to C-kernel, data type 3 |
-| `ckw05_c` | Write CK segment, type 5 |
 | `conics_c` | Determine state from conic elements |
-| `dafac_c` | DAF add comments |
-| `dafbbs_c` | DAF, begin backward search |
-| `dafcs_c` | DAF, continue search |
-| `dafdc_c` | DAF delete comments |
-| `dafec_c` | DAF extract comments |
-| `daffpa_c` | DAF, find previous array |
-| `dafgda_c` | DAF, read data from address |
-| `dafgh_c` | DAF, get handle |
-| `dafgn_c` | DAF, get array name |
-| `dafgs_c` | DAF, get summary |
-| `dafgsr_c` | DAF, get summary/descriptor record |
-| `dafhsf_c` | DAF, handle to summary format |
-| `dafopw_c` | DAF, open for write |
-| `dafps_c` | DAF, pack summary |
-| `dafrda_c` | DAF, read data from address |
-| `dafrfr_c` | DAF, read file record |
-| `dafrs_c` | DAF, replace summary |
-| `dafus_c` | DAF, unpack summary |
-| `dasac_c` | DAS add comments |
-| `dasadc_c` | DAS, add data, character |
-| `dasadd_c` | DAS, add data, double precision |
-| `dasadi_c` | DAS, add data, integer |
-| `dasdc_c` | DAS, delete comments |
-| `dasec_c` | DAS extract comments |
-| `dashfn_c` | DAS, handle to file name |
-| `dashfs_c` | DAS, handle to file summary |
-| `daslla_c` | DAS, last logical addresses |
-| `dasllc_c` | DAS, low-level close |
-| `dasonw_c` | DAS, open new file |
-| `dasops_c` | DAS, open scratch |
-| `dasopw_c` | DAS, open for write |
-| `dasrdc_c` | DAS, read data, character |
-| `dasrdd_c` | DAS, read data, double precision |
-| `dasrdi_c` | DAS, read data, integer |
-| `dasrfr_c` | DAS, read file record |
-| `dasudc_c` | DAS, update data, character |
-| `dasudd_c` | DAS, update data, double precision |
-| `dasudi_c` | DAS, update data, integer |
-| `daswbr_c` | DAS, write buffered records |
-| `dlabbs_c` | DLA, begin backward search |
-| `dlabns_c` | DLA, begin new segment |
-| `dlaens_c` | DLA, end new segment |
-| `dlafps_c` | DLA, find previous segment |
 | `dnearp_c` | Derivative of near point |
 | `dskcls_c` | DSK, close file |
 | `dskd02_c` | DSK, fetch d.p. type 2 data |
@@ -512,37 +570,9 @@ SpiceRawBackend is composed from: `TimeApi`, `StringsApi`, `KernelsApi`, `Kernel
 | `ednmpt_c` | Ellipsoid normal vector to surface point |
 | `edpnt_c` | Ellipsoid point |
 | `edterm_c` | Ellipsoid terminator |
-| `ekacec_c` | EK, add character data to column |
-| `ekaced_c` | EK, add d.p. data to column |
-| `ekacei_c` | EK, add integer data to column |
-| `ekappr_c` | EK, append record onto segment |
-| `ekbseg_c` | EK, start new segment |
-| `ekccnt_c` | EK, column count |
-| `ekcii_c` | EK, column info by index |
-| `ekdelr_c` | EK, delete record from segment |
-| `ekinsr_c` | EK, insert record into segment |
-| `eklef_c` | EK, load event file |
-| `eknelt_c` | EK, get number of elements in column entry |
-| `ekops_c` | EK, open scratch file |
-| `ekpsel_c` | EK, parse SELECT clause |
-| `ekrcec_c` | EK, read column entry element, character |
-| `ekrced_c` | EK, read column entry element, d.p. |
-| `ekrcei_c` | EK, read column entry element, integer |
-| `ekssum_c` | EK, return segment summary |
-| `ekucec_c` | EK, update character column entry |
-| `ekuced_c` | EK, update d.p. column entry |
-| `ekucei_c` | EK, update integer column entry |
-| `ekuef_c` | EK, unload event file |
 | `el2cgv_c` | Ellipse to center and generating vectors |
 | `eqncpv_c` | Equinoctial Elements to position and velocity |
 | `erract_c` | Get/Set Default Error Action |
-| `errch_c` | Insert String into Error Message Text |
-| `errdev_c` | Get/Set Error Output Device Name |
-| `errdp_c` | Insert D.P. Number into Error Message Text |
-| `errint_c` | Insert Integer into Error Message Text |
-| `errprt_c` | Get/Set Error Output Items |
-| `et2lst_c` | ET to Local Solar Time |
-| `etcal_c` | Convert ET to Calendar format |
 | `evsgp4_c` | Evaluate "two-line" element data |
 | `fovray_c` | Is ray in FOV at time? |
 | `fovtrg_c` | Is target in FOV at time? |
@@ -586,13 +616,6 @@ SpiceRawBackend is composed from: `TimeApi`, `StringsApi`, `KernelsApi`, `Kernel
 | `nvp2pl_c` | Normal vector and point to plane |
 | `oscelt_c` | Determine conic elements from state |
 | `oscltx_c` | Extended osculating elements from state |
-| `pckcls_c` | PCK, close file |
-| `pckcov_c` | PCK coverage |
-| `pckfrm_c` | PCK, get reference frame class ID set |
-| `pcklof_c` | PCK, load binary file |
-| `pckopn_c` | PCK, open new file |
-| `pckuof_c` | PCK, unload binary file |
-| `pckw02_c` | PCK, write type 2 segment |
 | `phaseq_c` | Phase angle quantity between bodies centers |
 | `pjelpl_c` | Project ellipse onto plane |
 | `pl2nvp_c` | Plane to normal vector and point |
@@ -604,16 +627,7 @@ SpiceRawBackend is composed from: `TimeApi`, `StringsApi`, `KernelsApi`, `Kernel
 | `pltvol_c` | Compute volume of plate model |
 | `prop2b_c` | Propagate a two-body solution |
 | `psv2pl_c` | Point and spanning vectors to plane |
-| `putcml_c` | Get the command line |
-| `pxfrm2_c` | Position Transform Matrix, Different Epochs |
-| `qcktrc_c` | Get Quick Traceback |
-| `rdtext_c` | Read a line from a text file |
-| `return_c` | Immediate Return Indicator |
 | `saelgv_c` | Semi-axes of ellipse from generating vectors |
-| `sce2t_c` | ET to SCLK ticks |
-| `scfmt_c` | Convert SCLK "ticks" to character clock format |
-| `scpart_c` | Spacecraft Clock Partition Information |
-| `sctiks_c` | Convert spacecraft clock string to ticks. |
 | `spk14a_c` | SPK, add data to a type 14 segment |
 | `spk14b_c` | SPK, begin a type 14 segment |
 | `spk14e_c` | SPK, end a type 14 segment |
@@ -641,11 +655,7 @@ SpiceRawBackend is composed from: `TimeApi`, `StringsApi`, `KernelsApi`, `Kernel
 | `spkw17_c` | SPK, write a type 17 segment |
 | `spkw18_c` | Write SPK segment, type 18 |
 | `spkw20_c` | Write SPK segment, type 20 |
-| `srfc2s_c` | Surface and body ID codes to surface string |
-| `srfcss_c` | Surface ID and body string to surface string |
 | `srfnrm_c` | Map surface points to outward normal vectors |
-| `srfs2c_c` | Surface and body strings to surface ID code |
-| `srfscc_c` | Surface string and body ID code to surface ID code |
 | `srfxpt_c` | Surface intercept point |
 | `stelab_c` | Stellar Aberration |
 | `stlabx_c` | Stellar aberration, transmission case |
@@ -659,22 +669,12 @@ SpiceRawBackend is composed from: `TimeApi`, `StringsApi`, `KernelsApi`, `Kernel
 | `tangpt_c` | Ray-ellipsoid tangent point |
 | `term_pl02` | Terminator using DSK type 2 plate model |
 | `termpt_c` | Terminator points on an extended object |
-| `tipbod_c` | Transformation, inertial position to bodyfixed |
-| `tisbod_c` | Transformation, inertial state to bodyfixed |
-| `tkfram_c` | TK frame, find position rotation |
-| `tparch_c` | Parse check---check format of strings |
-| `trcdep_c` | Traceback depth |
-| `trcnam_c` | Get module name from traceback |
-| `trcoff_c` | Turn tracing off |
 | `trgsep_c` | Separation quantity from observer |
-| `tsetyr_c` | Time --- set year expansion boundaries |
 | `uddc_c` | Derivative of function less than zero, df(x)/dx < 0 |
 | `uddf_c` | First derivative of a function, df(x)/dx |
 | `udf_c` | GF, dummy function |
-| `utc2et_c` | UTC to Ephemeris Time |
 | `vprjp_c` | Vector projection onto plane |
 | `vprjpi_c` | Vector projection onto plane, inverted |
-| `xfmsta_c` | Transform state between coordinate systems |
 
 ## Excluded
 

@@ -1,0 +1,156 @@
+[
+  {
+    "caseId": "error-errint-repeat",
+    "description": "Replace just the first occurrence, observing the prepared message after each call and the final structured diagnostic.",
+    "workflow": [
+      {
+        "op": "error.setmsg",
+        "message": "  @ body @ end @"
+      },
+      {
+        "op": "error.errint",
+        "marker": " @ ",
+        "value": -2147483648
+      },
+      {
+        "op": "error.errint",
+        "marker": "@",
+        "value": -2147483648
+      },
+      {
+        "op": "error.errint",
+        "marker": "@",
+        "value": -2147483648
+      },
+      {
+        "op": "error.sigerr",
+        "short": "SPICE(OBSERVED)",
+        "capture": true
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "error-errint-positions",
+    "description": "Replace markers at the beginning, end and whole message. Keep unmatched markers and whitespace-only markers unchanged.",
+    "workflow": [
+      {
+        "op": "error.setmsg",
+        "message": "@suffix"
+      },
+      {
+        "op": "error.errint",
+        "marker": "@",
+        "value": -2147483648
+      },
+      {
+        "op": "error.setmsg",
+        "message": "prefix@"
+      },
+      {
+        "op": "error.errint",
+        "marker": "@",
+        "value": -2147483648
+      },
+      {
+        "op": "error.setmsg",
+        "message": "@"
+      },
+      {
+        "op": "error.errint",
+        "marker": "@",
+        "value": -2147483648
+      },
+      {
+        "op": "error.errint",
+        "marker": "unmatched",
+        "value": -2147483648
+      },
+      {
+        "op": "error.errint",
+        "marker": "  ",
+        "value": -2147483648
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "error-errint-capacity",
+    "description": "Preserve the pinned 1840-byte message limit and observe the portion of the replacement that fits.",
+    "workflow": [
+      {
+        "op": "error.setmsg",
+        "message": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx@"
+      },
+      {
+        "op": "error.errint",
+        "marker": "@",
+        "value": 12345678
+      },
+      {
+        "op": "error.sigerr",
+        "short": "SPICE(OBSERVED)",
+        "capture": true
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "error-errint-empty-marker",
+    "description": "An empty marker is a genuine C-string error even when the message is prepared.",
+    "workflow": [
+      {
+        "op": "error.setmsg",
+        "message": "saved"
+      },
+      {
+        "op": "error.errint",
+        "marker": "",
+        "value": -2147483648
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(EMPTYSTRING)"]
+    }
+  },
+  {
+    "caseId": "error-errint-limits",
+    "description": "Compare long-message decimals at both signed endpoints, zero and a positive interior integer.",
+    "workflow": [
+      {
+        "op": "error.setmsg",
+        "message": "@:@:@:@"
+      },
+      {
+        "op": "error.errint",
+        "marker": "@",
+        "value": 2147483647
+      },
+      {
+        "op": "error.errint",
+        "marker": "@",
+        "value": 0
+      },
+      {
+        "op": "error.errint",
+        "marker": "@",
+        "value": -2147483648
+      },
+      {
+        "op": "error.errint",
+        "marker": "@",
+        "value": 239
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

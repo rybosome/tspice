@@ -5,6 +5,8 @@
  * - Lookups that may legitimately miss return `Found<T>` (`{ found: false }`) instead of throwing.
  */
 import type {
+  SpiceHandle,
+  VirtualOutput,
   Found,
   Mat3RowMajor,
   SpiceMatrix6x6,
@@ -22,6 +24,131 @@ export type CkCoverageTimeSystem = "SCLK" | "TDB";
 
 /** Backend contract for frame/name lookups, CK access, and frame transformations. */
 export interface FramesApi {
+  /**
+   * Replace the contents of a live caller-owned integer cell with sorted built-in frame IDs.
+   * Classes 1 through 6 select a class and −1 selects all. N0067 requires capacity
+   * 145 for any class, including a class with no built-in frames. Loaded FK definitions
+   * are excluded. After an error reset cardinality before reusing the cell.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/bltfrm_c.html
+   */
+  bltfrm(frameClass: number, ids: SpiceIntCell): void;
+
+  /**
+   * Map positions from the source frame at etfrom to the destination frame at etto
+   * in TDB seconds past J2000. Even one rotating frame can yield a nonidentity
+   * transform between epochs. Both legs need orientation coverage at their own epoch.
+   * Returns all nine row-major elements. Missing orientation or unknown names throw.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/pxfrm2_c.html
+   */
+  pxfrm2(from: string, to: string, etfrom: number, etto: number): Mat3RowMajor;
+
+  /**
+   * Transform an inertial position to the equator and prime meridian of a PCK body
+   * at ET (TDB seconds past J2000). The reference must be a supported inertial frame.
+   * The signed body argument identifies the PCK class ID; the signed minimum is outside
+   * the toolkit hash range. The caller supplies valid PCK data for this epoch.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/tipbod_c.html
+   */
+  tipbod(ref: string, body: number, et: number): Mat3RowMajor;
+
+  /**
+   * Transform inertial position and velocity into PCK body-fixed coordinates at ET.
+   * Return all 36 row-major elements of [R,0;dR/dt,R] with derivative per second.
+   * The body is a PCK class ID. The reference, orientation coverage and minimum-ID
+   * restriction follow tipbod. PCK coefficients must be valid for the requested epoch.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/tisbod_c.html
+   */
+  tisbod(ref: string, body: number, et: number): SpiceMatrix6x6;
+
+  /**
+   * Look up a fixed TK rotation by its signed class ID, which can differ from its
+   * frame ID. The rotation maps TK coordinates to the returned base frame ID.
+   * N0067 signals errors for incomplete, unknown or zero IDs. A successful found
+   * flag controls payload availability. The signed minimum exceeds the hash range.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/tkfram_c.html
+   */
+  tkfram(typeId: number): Found<{ rot: Mat3RowMajor; frame: number }>;
+
+  /**
+   * Convert a six-component coordinate state, including its three rates. The
+   * systems are RECTANGULAR (x,y,z), CYLINDRICAL (r,lon,z), LATITUDINAL
+   * (r,lon,lat), SPHERICAL (r,colat,lon), GEODETIC and PLANETOGRAPHIC (lon,lat,alt).
+   * Units are km, radians and rates per second. Unequal systems involving a spheroid
+   * require body radii with equal equatorial axes; planetographic longitude also
+   * depends on the body rotation convention. Equal systems copy the input. For
+   * other systems use a blank body string. An empty string signals EMPTYSTRING.
+   * Transverse velocity on the polar axis can signal INVALIDSTATE.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/xfmsta_c.html
+   */
+  xfmsta(
+    state: Readonly<SpiceStateVector>,
+    from: string,
+    to: string,
+    body: string,
+  ): SpiceStateVector;
+
+  /**
+   * Close an owned PCK writer and release its virtual output for readback. An empty writer signals NOSEGMENTSFOUND and remains open for a corrected write.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/pckcls_c.html
+   */
+  pckcls(handle: SpiceHandle): void;
+
+  /**
+   * Union the coverage of a binary PCK frame class ID into a caller-owned, normalized window. Endpoints are TDB seconds past J2000. An absent ID adds nothing. On WINDOWEXCESS the toolkit can leave partial intervals accessible through the window routines. Reset or free the window before reusing it.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/pckcov_c.html
+   */
+  pckcov(
+    file: string | VirtualOutput,
+    classId: number,
+    cover: SpiceWindow,
+  ): void;
+
+  /**
+   * Insert all frame class IDs from a binary PCK into the supplied integer set, retaining existing members. These are class IDs (e.g. 3000 for ITRF93). Capacity errors may leave partial storage. Reset the cardinality or free the set before reuse.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/pckfrm_c.html
+   */
+  pckfrm(file: string | VirtualOutput, ids: SpiceIntCell): void;
+
+  /**
+   * Load a binary PCK into the low-level orientation search and return an owner-local handle. Loading a file again promotes its priority. One unload removes the file regardless of repeated loads. Direct PCK loads share toolkit state with KEEPER. Coordinate their lifetimes when using both interfaces.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/pcklof_c.html
+   */
+  pcklof(file: string | VirtualOutput): SpiceHandle;
+
+  /**
+   * Create a binary PCK writer with an internal file name and reserved comment characters. Nonpositive reservations allocate no comments. Use a VirtualOutput for portable readback after successful close. A string addresses the native file system on Node or the virtual kernel namespace on WASM.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/pckopn_c.html
+   */
+  pckopn(
+    file: string | VirtualOutput,
+    ifname: string,
+    ncomch: number,
+  ): SpiceHandle;
+
+  /**
+   * Unload a binary PCK registered through pcklof. Lower-priority frame data becomes eligible again. The supplied handle belongs to this backend.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/pckuof_c.html
+   */
+  pckuof(handle: SpiceHandle): void;
+
+  /**
+   * Write one type 2 orientation segment for a frame class ID relative to a named inertial frame. first, last and btime are TDB seconds past J2000. Each of n equal records spans intlen seconds, starting at btime. Supply exactly 3 × (degree + 1) finite Chebyshev coefficients per record in Euler angle order (phi, delta, W), in radians. The rotation is [W]3 [delta]1 [phi]3. Degrees 0–41 fit the N0067 orientation reader. Coefficient buffers are limited to 256 MiB. Nonpositive n uses an empty coefficient array to expose the toolkit diagnostic. Roundoff in extreme time ranges must leave representable radii, epochs and record indices.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/pckw02_c.html
+   */
+  pckw02(
+    handle: SpiceHandle,
+    classId: number,
+    frame: string,
+    first: number,
+    last: number,
+    segid: string,
+    intlen: number,
+    n: number,
+    degree: number,
+    coefficients: readonly number[],
+    btime: number,
+  ): void;
+
   /**
    * Resolve a frame name; case and outer blanks are insignificant.
    * @param name Frame name; empty strings signal EMPTYSTRING.
@@ -107,6 +234,141 @@ export interface FramesApi {
     tol: number,
     ref: string,
   ): Found<{ cmat: Mat3RowMajor; av: SpiceVector3; clkout: number }>;
+
+  /**
+   * Open a new physical CK for writing using a path or VirtualOutput. The internal name and reserved comment characters follow CSPICE. Read an owned virtual output after successful ckcls.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ckopn_c.html
+   */
+  ckopn(
+    file: string | VirtualOutput,
+    ifname: string,
+    ncomch: number,
+  ): SpiceHandle;
+
+  /**
+   * Close an owned CK writer. An empty writer signals NOSEGMENTSFOUND and remains usable for adding a segment and retrying.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ckcls_c.html
+   */
+  ckcls(handle: SpiceHandle): void;
+
+  /**
+   * Write discrete pointing samples at encoded SCLK ticks. Supply four contiguous scalar-first SPICE quaternion components per tick, giving reference-to-instrument rotations. With av=true supply three reference-frame radians/second values per sample. With av=false the AV array may be empty or contain the ignored triples.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ckw01_c.html
+   */
+  ckw01(
+    handle: SpiceHandle,
+    beg: number,
+    end: number,
+    inst: number,
+    ref: string,
+    av: boolean,
+    segid: string,
+    ticks: readonly number[],
+    quats: readonly number[],
+    avvs: readonly number[],
+  ): void;
+
+  /**
+   * Write intervals of constant angular velocity with inclusive starts/stops in encoded ticks. Supply four contiguous SPICE quaternion components, three angular velocity components in the reference frame (radians/second), and one seconds-per-tick rate per interval. Each quaternion gives reference-to-instrument pointing at its start.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ckw02_c.html
+   */
+  ckw02(
+    handle: SpiceHandle,
+    beg: number,
+    end: number,
+    inst: number,
+    ref: string,
+    segid: string,
+    starts: readonly number[],
+    stops: readonly number[],
+    quats: readonly number[],
+    avvs: readonly number[],
+    rates: readonly number[],
+  ): void;
+
+  /**
+   * Write interpolated pointing with strictly ordered encoded sample ticks and separate interpolation interval starts. Supply flat scalar-first quaternion rows of four components and, with av=true, reference-frame angular velocity triples in radians/second. No interpolation spans a gap.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ckw03_c.html
+   */
+  ckw03(
+    handle: SpiceHandle,
+    beg: number,
+    end: number,
+    inst: number,
+    ref: string,
+    av: boolean,
+    segid: string,
+    ticks: readonly number[],
+    quats: readonly number[],
+    avvs: readonly number[],
+    intervalStarts: readonly number[],
+  ): void;
+
+  /**
+   * Write a type 5 segment with flat subtype-specific packets. Widths for subtypes 0, 1, 2, 3 are 8, 4, 14, 7. Packets contain q/dq, q, q/dq/AV/dAV, or q/AV respectively. Time derivatives are per second. The encoded tick rate is seconds per tick. Each interpolation interval starts at a sample tick, including the first packet. Degrees 1–23 are checked by CSPICE; use 3 modulo 4 for Hermite or odd degrees for Lagrange. The av flag controls eligibility for AV queries.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ckw05_c.html
+   */
+  ckw05(
+    handle: SpiceHandle,
+    subtype: number,
+    degree: number,
+    beg: number,
+    end: number,
+    inst: number,
+    ref: string,
+    av: boolean,
+    segid: string,
+    ticks: readonly number[],
+    packets: readonly number[],
+    rate: number,
+    intervalStarts: readonly number[],
+  ): void;
+
+  /** Rotation from CK frame class ID inst to the selected segment base frame at ET seconds past J2000. Returns its row-major matrix and reference frame ID, or found:false when pointing or clock data are unavailable. Segment priority and exact-time search follow CSPICE. A loaded CK cannot use a clock ID of −2147483648 because N0067 negates it.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ckfrot_c.html */
+  ckfrot(
+    inst: number,
+    et: number,
+  ): Found<{ rotate: Mat3RowMajor; ref: number }>;
+  /** State transformation from CK frame class ID inst to the returned segment base frame at ET seconds past J2000. The 36 row-major entries include a lower-left derivative block in inverse seconds; arithmetic at extreme angular velocities may yield IEEE nonfinite values. Only segments containing angular velocity are eligible. Clock, priority and genuine absence follow ckfrot.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ckfxfm_c.html */
+  ckfxfm(
+    inst: number,
+    et: number,
+  ): Found<{ xform: SpiceMatrix6x6; ref: number }>;
+  /** Read a one-based record of an authenticated type 2 segment on a live owned DAF handle. start/stop are encoded SCLK ticks; rate is seconds per tick. The scalar-first SPICE quaternion rotates reference to instrument; angular velocity is in reference-frame radians/second. All returned fields are copies.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ckgr02_c.html */
+  ckgr02(
+    handle: SpiceHandle,
+    descr: Uint8Array,
+    recno: number,
+  ): {
+    start: number;
+    stop: number;
+    rate: number;
+    quaternion: [number, number, number, number];
+    av: SpiceVector3;
+  };
+  /** Read a one-based type 3 record from an authenticated segment on a live owned DAF handle. sclkdp is encoded ticks. The scalar-first reference-to-instrument quaternion is followed by reference-frame angular velocity (radians/second) when stored; av is null for a segment without angular velocity.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ckgr03_c.html */
+  ckgr03(
+    handle: SpiceHandle,
+    descr: Uint8Array,
+    recno: number,
+  ): {
+    sclkdp: number;
+    quaternion: [number, number, number, number];
+    av: SpiceVector3 | null;
+  };
+  /** Resolve a CK frame class ID’s SCLK or SPK ID from kernel-pool overrides or the conventional spacecraft code. The zero default for IDs above −1000 is an actual result. The selector is NUL-free text; unrecognized selectors raise toolkit errors.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ckmeta_c.html */
+  ckmeta(ckid: number, meta: string): number;
+  /** Count type 2 pointing intervals. Supply exactly 40 native-order packed descriptor bytes matching an actual segment in this owned CK DAF. A retained copy remains usable as the search moves. Wrong segment type raises CKWRONGDATATYPE.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/cknr02_c.html */
+  cknr02(handle: SpiceHandle, descr: Uint8Array): number;
+  /** Count type 3 discrete pointing records across all interpolation intervals. Supply the same owned CK DAF handle and exact packed segment descriptor as cknr02. Reads preserve the current DAF search cursor.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/cknr03_c.html */
+  cknr03(handle: SpiceHandle, descr: Uint8Array): number;
 
   // --- CK file query / management (read-only) ------------------------------
 

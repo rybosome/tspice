@@ -1,0 +1,198 @@
+[
+  {
+    "caseId": "frames-pckcov-gapped",
+    "description": "Compare all closed coverage intervals using the selected class ID.",
+    "workflow": [
+      {
+        "op": "frames.pckcov",
+        "path": "kernels/audit-orientation.bpc",
+        "classId": 3000,
+        "coverId": "cov",
+        "maxIntervals": 6,
+        "reset": true
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-pckcov-lunar",
+    "description": "Compare all closed coverage intervals using the selected class ID.",
+    "workflow": [
+      {
+        "op": "frames.pckcov",
+        "path": "kernels/audit-orientation.bpc",
+        "classId": 301,
+        "coverId": "cov",
+        "maxIntervals": 6,
+        "reset": true
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-pckcov-body-not-class",
+    "description": "Compare all closed coverage intervals using the selected class ID.",
+    "workflow": [
+      {
+        "op": "frames.pckcov",
+        "path": "kernels/audit-orientation.bpc",
+        "classId": 399,
+        "coverId": "cov",
+        "maxIntervals": 6,
+        "reset": true
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-pckcov-frame-not-class",
+    "description": "Compare all closed coverage intervals using the selected class ID.",
+    "workflow": [
+      {
+        "op": "frames.pckcov",
+        "path": "kernels/audit-orientation.bpc",
+        "classId": 13000,
+        "coverId": "cov",
+        "maxIntervals": 6,
+        "reset": true
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-pckcov-accumulate",
+    "description": "Append coverage to a nonempty window, including bridges, overlap and deduplication.",
+    "workflow": [
+      {
+        "op": "frames.pckopn",
+        "handleId": "w",
+        "path": {
+          "kind": "scratch",
+          "rel": "output.bpc"
+        },
+        "ifname": "TSPICE TEST",
+        "ncomch": 0
+      },
+      {
+        "op": "frames.pckw02",
+        "handleId": "w",
+        "classId": 3000,
+        "frame": "J2000",
+        "first": 0,
+        "last": 20,
+        "segid": "TWO RECORDS",
+        "intlen": 10,
+        "n": 2,
+        "degree": 1,
+        "coefficients": [
+          0.2, 0.03, 0.5, -0.02, 0.7, 0.04, 0.4, -0.01, 0.8, 0.01, 1.1, -0.06
+        ],
+        "btime": 0
+      },
+      {
+        "op": "frames.pckcls",
+        "handleId": "w"
+      },
+      {
+        "op": "frames.pckcov",
+        "path": "kernels/audit-orientation.bpc",
+        "classId": 3000,
+        "coverId": "cov",
+        "maxIntervals": 6,
+        "reset": true
+      },
+      {
+        "op": "frames.pckcov",
+        "path": {
+          "kind": "scratch",
+          "rel": "output.bpc"
+        },
+        "classId": 3000,
+        "coverId": "cov",
+        "maxIntervals": 6,
+        "reset": false
+      },
+      {
+        "op": "frames.pckcov",
+        "path": "kernels/audit-orientation.bpc",
+        "classId": 301,
+        "coverId": "cov",
+        "maxIntervals": 6,
+        "reset": false
+      },
+      {
+        "op": "frames.pckcov",
+        "path": "kernels/audit-orientation.bpc",
+        "classId": 3000,
+        "coverId": "cov",
+        "maxIntervals": 6,
+        "reset": false
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-pckcov-capacity",
+    "description": "The second disjoint interval exceeds a one-interval window.",
+    "workflow": [
+      {
+        "op": "frames.pckcov",
+        "path": "kernels/audit-orientation.bpc",
+        "classId": 3000,
+        "coverId": "cov",
+        "maxIntervals": 1,
+        "reset": true
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["WINDOWEXCESS"]
+    }
+  },
+  {
+    "caseId": "frames-pckcov-missing",
+    "description": "A missing PCK path reports actual toolkit error.",
+    "workflow": [
+      {
+        "op": "frames.pckcov",
+        "path": "kernels/missing-c11.bpc",
+        "classId": 3000,
+        "coverId": "cov",
+        "maxIntervals": 6,
+        "reset": true
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["FILENOTFOUND"]
+    }
+  },
+  {
+    "caseId": "frames-pckcov-text",
+    "description": "A text kernel has no DAF binary coverage.",
+    "workflow": [
+      {
+        "op": "frames.pckcov",
+        "path": "kernels/pck00010.tpc",
+        "classId": 3000,
+        "coverId": "cov",
+        "maxIntervals": 6,
+        "reset": true
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDARCHTYPE"]
+    }
+  }
+]

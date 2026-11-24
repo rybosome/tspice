@@ -627,7 +627,8 @@
       ],
       "id": "local-cp02-44c6136d16c7-node",
       "kind": "local",
-      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 44c6136d16c7325e07e5e233988ffb02dab543ee. The native-required lane completed 5264 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45043538272/job/137273010344"
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 44c6136d16c7325e07e5e233988ffb02dab543ee. The native-required lane completed 5264 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45043538272/job/137273010344",
+      "historical": true
     },
     {
       "backend": "node",
@@ -694,7 +695,8 @@
       "kind": "ci",
       "commit": "b826f8e1b3d9afff24f291c885b6380ff82a8689",
       "url": "https://github.com/rybosome/tspice/actions/runs/45048703356/job/137288855808",
-      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 5264 live comparisons without unexpected skips."
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 5264 live comparisons without unexpected skips.",
+      "historical": true
     },
     {
       "backend": "wasm",
@@ -759,7 +761,8 @@
       ],
       "id": "local-cp02-44c6136d16c7-wasm",
       "kind": "local",
-      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 44c6136d16c7325e07e5e233988ffb02dab543ee. The native-required lane completed 5264 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45043538272/job/137273010344"
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 44c6136d16c7325e07e5e233988ffb02dab543ee. The native-required lane completed 5264 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45043538272/job/137273010344",
+      "historical": true
     },
     {
       "backend": "wasm",
@@ -826,7 +829,272 @@
       "kind": "ci",
       "commit": "b826f8e1b3d9afff24f291c885b6380ff82a8689",
       "url": "https://github.com/rybosome/tspice/actions/runs/45048703356/job/137288855808",
-      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 5264 live comparisons without unexpected skips."
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 5264 live comparisons without unexpected skips.",
+      "historical": true
+    },
+    {
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "c40a74909e5c90acba6f858643acc9a3bee2e3c8ff102c8f2fca48b5c1d6dfb8",
+      "caseIds": [
+        "coords-vectors-hrmesp-cubic-at-nodes",
+        "coords-vectors-hrmesp-cubic-interior-and-extrapolation",
+        "coords-vectors-hrmesp-empty-table-error",
+        "coords-vectors-hrmesp-scaled-abscissas",
+        "coords-vectors-hrmesp-scaled-ordinates",
+        "coords-vectors-hrmesp-shifted-forward-and-reversed-grid",
+        "coords-vectors-hrmesp-single-point",
+        "coords-vectors-hrmesp-zero-and-constant",
+        "coords-vectors-hrmesp-zero-step-error",
+        "coords-vectors-hrmint-cubic-at-nodes",
+        "coords-vectors-hrmint-cubic-interior-and-extrapolation",
+        "coords-vectors-hrmint-duplicate-node-error",
+        "coords-vectors-hrmint-empty-table-error",
+        "coords-vectors-hrmint-irregular-distinct-grid",
+        "coords-vectors-hrmint-permuted-distinct-nodes",
+        "coords-vectors-hrmint-scaled-abscissas",
+        "coords-vectors-hrmint-scaled-ordinates",
+        "coords-vectors-hrmint-single-point",
+        "coords-vectors-hrmint-zero-and-constant",
+        "coords-vectors-lgresp-cubic-at-nodes",
+        "coords-vectors-lgresp-cubic-interior-and-extrapolation",
+        "coords-vectors-lgresp-empty-table-error",
+        "coords-vectors-lgresp-scaled-abscissas",
+        "coords-vectors-lgresp-scaled-ordinates",
+        "coords-vectors-lgresp-shifted-forward-and-reversed-grid",
+        "coords-vectors-lgresp-single-point",
+        "coords-vectors-lgresp-zero-and-constant",
+        "coords-vectors-lgresp-zero-step-error",
+        "coords-vectors-lgrind-cubic-at-nodes",
+        "coords-vectors-lgrind-cubic-interior-and-extrapolation",
+        "coords-vectors-lgrind-duplicate-node-error",
+        "coords-vectors-lgrind-empty-table-error",
+        "coords-vectors-lgrind-irregular-distinct-grid",
+        "coords-vectors-lgrind-scaled-abscissas",
+        "coords-vectors-lgrind-scaled-ordinates",
+        "coords-vectors-lgrind-single-point",
+        "coords-vectors-lgrind-zero-and-constant",
+        "coords-vectors-lgrint-cubic-at-nodes",
+        "coords-vectors-lgrint-cubic-interior-and-extrapolation",
+        "coords-vectors-lgrint-duplicate-node-error",
+        "coords-vectors-lgrint-empty-table-error",
+        "coords-vectors-lgrint-irregular-distinct-grid",
+        "coords-vectors-lgrint-scaled-abscissas",
+        "coords-vectors-lgrint-scaled-ordinates",
+        "coords-vectors-lgrint-single-point",
+        "coords-vectors-lgrint-zero-and-constant",
+        "coords-vectors-qderiv-balanced-extreme-endpoints",
+        "coords-vectors-qderiv-constant-endpoints",
+        "coords-vectors-qderiv-half-interval-and-orientation",
+        "coords-vectors-qderiv-scaled-abscissas",
+        "coords-vectors-qderiv-scaled-ordinates",
+        "coords-vectors-qderiv-variable-dimensions",
+        "coords-vectors-qderiv-zero-delta-error"
+      ],
+      "id": "local-cp03-779d6fd6ae41-node",
+      "kind": "local",
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 779d6fd6ae41c78017a8cf7ccaec5fef3100112c. The native-required lane completed 7054 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45097193130/job/137439518970"
+    },
+    {
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "c40a74909e5c90acba6f858643acc9a3bee2e3c8ff102c8f2fca48b5c1d6dfb8",
+      "caseIds": [
+        "coords-vectors-hrmesp-cubic-at-nodes",
+        "coords-vectors-hrmesp-cubic-interior-and-extrapolation",
+        "coords-vectors-hrmesp-empty-table-error",
+        "coords-vectors-hrmesp-scaled-abscissas",
+        "coords-vectors-hrmesp-scaled-ordinates",
+        "coords-vectors-hrmesp-shifted-forward-and-reversed-grid",
+        "coords-vectors-hrmesp-single-point",
+        "coords-vectors-hrmesp-zero-and-constant",
+        "coords-vectors-hrmesp-zero-step-error",
+        "coords-vectors-hrmint-cubic-at-nodes",
+        "coords-vectors-hrmint-cubic-interior-and-extrapolation",
+        "coords-vectors-hrmint-duplicate-node-error",
+        "coords-vectors-hrmint-empty-table-error",
+        "coords-vectors-hrmint-irregular-distinct-grid",
+        "coords-vectors-hrmint-permuted-distinct-nodes",
+        "coords-vectors-hrmint-scaled-abscissas",
+        "coords-vectors-hrmint-scaled-ordinates",
+        "coords-vectors-hrmint-single-point",
+        "coords-vectors-hrmint-zero-and-constant",
+        "coords-vectors-lgresp-cubic-at-nodes",
+        "coords-vectors-lgresp-cubic-interior-and-extrapolation",
+        "coords-vectors-lgresp-empty-table-error",
+        "coords-vectors-lgresp-scaled-abscissas",
+        "coords-vectors-lgresp-scaled-ordinates",
+        "coords-vectors-lgresp-shifted-forward-and-reversed-grid",
+        "coords-vectors-lgresp-single-point",
+        "coords-vectors-lgresp-zero-and-constant",
+        "coords-vectors-lgresp-zero-step-error",
+        "coords-vectors-lgrind-cubic-at-nodes",
+        "coords-vectors-lgrind-cubic-interior-and-extrapolation",
+        "coords-vectors-lgrind-duplicate-node-error",
+        "coords-vectors-lgrind-empty-table-error",
+        "coords-vectors-lgrind-irregular-distinct-grid",
+        "coords-vectors-lgrind-scaled-abscissas",
+        "coords-vectors-lgrind-scaled-ordinates",
+        "coords-vectors-lgrind-single-point",
+        "coords-vectors-lgrind-zero-and-constant",
+        "coords-vectors-lgrint-cubic-at-nodes",
+        "coords-vectors-lgrint-cubic-interior-and-extrapolation",
+        "coords-vectors-lgrint-duplicate-node-error",
+        "coords-vectors-lgrint-empty-table-error",
+        "coords-vectors-lgrint-irregular-distinct-grid",
+        "coords-vectors-lgrint-scaled-abscissas",
+        "coords-vectors-lgrint-scaled-ordinates",
+        "coords-vectors-lgrint-single-point",
+        "coords-vectors-lgrint-zero-and-constant",
+        "coords-vectors-qderiv-balanced-extreme-endpoints",
+        "coords-vectors-qderiv-constant-endpoints",
+        "coords-vectors-qderiv-half-interval-and-orientation",
+        "coords-vectors-qderiv-scaled-abscissas",
+        "coords-vectors-qderiv-scaled-ordinates",
+        "coords-vectors-qderiv-variable-dimensions",
+        "coords-vectors-qderiv-zero-delta-error"
+      ],
+      "id": "ci-cp03-779d6fd6ae41-node",
+      "kind": "ci",
+      "commit": "c4bd798cc20d13e8dfd51e7e83ba740ffe4418ff",
+      "url": "https://github.com/rybosome/tspice/actions/runs/45127597533/job/137535439275",
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 7054 live comparisons without unexpected skips."
+    },
+    {
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "c40a74909e5c90acba6f858643acc9a3bee2e3c8ff102c8f2fca48b5c1d6dfb8",
+      "caseIds": [
+        "coords-vectors-hrmesp-cubic-at-nodes",
+        "coords-vectors-hrmesp-cubic-interior-and-extrapolation",
+        "coords-vectors-hrmesp-empty-table-error",
+        "coords-vectors-hrmesp-scaled-abscissas",
+        "coords-vectors-hrmesp-scaled-ordinates",
+        "coords-vectors-hrmesp-shifted-forward-and-reversed-grid",
+        "coords-vectors-hrmesp-single-point",
+        "coords-vectors-hrmesp-zero-and-constant",
+        "coords-vectors-hrmesp-zero-step-error",
+        "coords-vectors-hrmint-cubic-at-nodes",
+        "coords-vectors-hrmint-cubic-interior-and-extrapolation",
+        "coords-vectors-hrmint-duplicate-node-error",
+        "coords-vectors-hrmint-empty-table-error",
+        "coords-vectors-hrmint-irregular-distinct-grid",
+        "coords-vectors-hrmint-permuted-distinct-nodes",
+        "coords-vectors-hrmint-scaled-abscissas",
+        "coords-vectors-hrmint-scaled-ordinates",
+        "coords-vectors-hrmint-single-point",
+        "coords-vectors-hrmint-zero-and-constant",
+        "coords-vectors-lgresp-cubic-at-nodes",
+        "coords-vectors-lgresp-cubic-interior-and-extrapolation",
+        "coords-vectors-lgresp-empty-table-error",
+        "coords-vectors-lgresp-scaled-abscissas",
+        "coords-vectors-lgresp-scaled-ordinates",
+        "coords-vectors-lgresp-shifted-forward-and-reversed-grid",
+        "coords-vectors-lgresp-single-point",
+        "coords-vectors-lgresp-zero-and-constant",
+        "coords-vectors-lgresp-zero-step-error",
+        "coords-vectors-lgrind-cubic-at-nodes",
+        "coords-vectors-lgrind-cubic-interior-and-extrapolation",
+        "coords-vectors-lgrind-duplicate-node-error",
+        "coords-vectors-lgrind-empty-table-error",
+        "coords-vectors-lgrind-irregular-distinct-grid",
+        "coords-vectors-lgrind-scaled-abscissas",
+        "coords-vectors-lgrind-scaled-ordinates",
+        "coords-vectors-lgrind-single-point",
+        "coords-vectors-lgrind-zero-and-constant",
+        "coords-vectors-lgrint-cubic-at-nodes",
+        "coords-vectors-lgrint-cubic-interior-and-extrapolation",
+        "coords-vectors-lgrint-duplicate-node-error",
+        "coords-vectors-lgrint-empty-table-error",
+        "coords-vectors-lgrint-irregular-distinct-grid",
+        "coords-vectors-lgrint-scaled-abscissas",
+        "coords-vectors-lgrint-scaled-ordinates",
+        "coords-vectors-lgrint-single-point",
+        "coords-vectors-lgrint-zero-and-constant",
+        "coords-vectors-qderiv-balanced-extreme-endpoints",
+        "coords-vectors-qderiv-constant-endpoints",
+        "coords-vectors-qderiv-half-interval-and-orientation",
+        "coords-vectors-qderiv-scaled-abscissas",
+        "coords-vectors-qderiv-scaled-ordinates",
+        "coords-vectors-qderiv-variable-dimensions",
+        "coords-vectors-qderiv-zero-delta-error"
+      ],
+      "id": "local-cp03-779d6fd6ae41-wasm",
+      "kind": "local",
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 779d6fd6ae41c78017a8cf7ccaec5fef3100112c. The native-required lane completed 7054 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45097193130/job/137439518970"
+    },
+    {
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "c40a74909e5c90acba6f858643acc9a3bee2e3c8ff102c8f2fca48b5c1d6dfb8",
+      "caseIds": [
+        "coords-vectors-hrmesp-cubic-at-nodes",
+        "coords-vectors-hrmesp-cubic-interior-and-extrapolation",
+        "coords-vectors-hrmesp-empty-table-error",
+        "coords-vectors-hrmesp-scaled-abscissas",
+        "coords-vectors-hrmesp-scaled-ordinates",
+        "coords-vectors-hrmesp-shifted-forward-and-reversed-grid",
+        "coords-vectors-hrmesp-single-point",
+        "coords-vectors-hrmesp-zero-and-constant",
+        "coords-vectors-hrmesp-zero-step-error",
+        "coords-vectors-hrmint-cubic-at-nodes",
+        "coords-vectors-hrmint-cubic-interior-and-extrapolation",
+        "coords-vectors-hrmint-duplicate-node-error",
+        "coords-vectors-hrmint-empty-table-error",
+        "coords-vectors-hrmint-irregular-distinct-grid",
+        "coords-vectors-hrmint-permuted-distinct-nodes",
+        "coords-vectors-hrmint-scaled-abscissas",
+        "coords-vectors-hrmint-scaled-ordinates",
+        "coords-vectors-hrmint-single-point",
+        "coords-vectors-hrmint-zero-and-constant",
+        "coords-vectors-lgresp-cubic-at-nodes",
+        "coords-vectors-lgresp-cubic-interior-and-extrapolation",
+        "coords-vectors-lgresp-empty-table-error",
+        "coords-vectors-lgresp-scaled-abscissas",
+        "coords-vectors-lgresp-scaled-ordinates",
+        "coords-vectors-lgresp-shifted-forward-and-reversed-grid",
+        "coords-vectors-lgresp-single-point",
+        "coords-vectors-lgresp-zero-and-constant",
+        "coords-vectors-lgresp-zero-step-error",
+        "coords-vectors-lgrind-cubic-at-nodes",
+        "coords-vectors-lgrind-cubic-interior-and-extrapolation",
+        "coords-vectors-lgrind-duplicate-node-error",
+        "coords-vectors-lgrind-empty-table-error",
+        "coords-vectors-lgrind-irregular-distinct-grid",
+        "coords-vectors-lgrind-scaled-abscissas",
+        "coords-vectors-lgrind-scaled-ordinates",
+        "coords-vectors-lgrind-single-point",
+        "coords-vectors-lgrind-zero-and-constant",
+        "coords-vectors-lgrint-cubic-at-nodes",
+        "coords-vectors-lgrint-cubic-interior-and-extrapolation",
+        "coords-vectors-lgrint-duplicate-node-error",
+        "coords-vectors-lgrint-empty-table-error",
+        "coords-vectors-lgrint-irregular-distinct-grid",
+        "coords-vectors-lgrint-scaled-abscissas",
+        "coords-vectors-lgrint-scaled-ordinates",
+        "coords-vectors-lgrint-single-point",
+        "coords-vectors-lgrint-zero-and-constant",
+        "coords-vectors-qderiv-balanced-extreme-endpoints",
+        "coords-vectors-qderiv-constant-endpoints",
+        "coords-vectors-qderiv-half-interval-and-orientation",
+        "coords-vectors-qderiv-scaled-abscissas",
+        "coords-vectors-qderiv-scaled-ordinates",
+        "coords-vectors-qderiv-variable-dimensions",
+        "coords-vectors-qderiv-zero-delta-error"
+      ],
+      "id": "ci-cp03-779d6fd6ae41-wasm",
+      "kind": "ci",
+      "commit": "c4bd798cc20d13e8dfd51e7e83ba740ffe4418ff",
+      "url": "https://github.com/rybosome/tspice/actions/runs/45127597533/job/137535439275",
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 7054 live comparisons without unexpected skips."
     }
   ],
   "routines": [
@@ -898,13 +1166,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.hrmesp -> typed Node adapter -> registered native binding with validated counts and owned buffers -> shared tspice_hrmesp -> actual hrmesp_c. Independent sidecar validates dimensions/finite inputs then calls locked SpiceyPy hrmesp, whose wrapper calls the corresponding canonical symbol; all returned fields reach comparison.",
           "executions": [
-            "local-cp02-44c6136d16c7-node",
-            "ci-cp02-44c6136d16c7-node"
+            "local-cp03-779d6fd6ae41-node",
+            "ci-cp03-779d6fd6ae41-node"
           ]
         },
         "wasm": {
@@ -915,13 +1185,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.hrmesp -> typed WASM adapter -> checked buffers -> exported _tspice_hrmesp -> shared tspice_hrmesp -> actual hrmesp_c. Independent sidecar validates dimensions/finite inputs then calls locked SpiceyPy hrmesp, whose wrapper calls the corresponding canonical symbol; all returned fields reach comparison.",
           "executions": [
-            "local-cp02-44c6136d16c7-wasm",
-            "ci-cp02-44c6136d16c7-wasm"
+            "local-cp03-779d6fd6ae41-wasm",
+            "ci-cp03-779d6fd6ae41-wasm"
           ]
         }
       }
@@ -1013,13 +1285,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.hrmint -> typed Node adapter -> registered native binding with validated counts and owned buffers -> shared tspice_hrmint -> actual hrmint_c. Independent sidecar validates dimensions/finite inputs then calls locked SpiceyPy hrmint, whose wrapper calls the corresponding canonical symbol; all returned fields reach comparison.",
           "executions": [
-            "local-cp02-44c6136d16c7-node",
-            "ci-cp02-44c6136d16c7-node"
+            "local-cp03-779d6fd6ae41-node",
+            "ci-cp03-779d6fd6ae41-node"
           ]
         },
         "wasm": {
@@ -1030,13 +1304,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.hrmint -> typed WASM adapter -> checked buffers -> exported _tspice_hrmint -> shared tspice_hrmint -> actual hrmint_c. Independent sidecar validates dimensions/finite inputs then calls locked SpiceyPy hrmint, whose wrapper calls the corresponding canonical symbol; all returned fields reach comparison.",
           "executions": [
-            "local-cp02-44c6136d16c7-wasm",
-            "ci-cp02-44c6136d16c7-wasm"
+            "local-cp03-779d6fd6ae41-wasm",
+            "ci-cp03-779d6fd6ae41-wasm"
           ]
         }
       }
@@ -1109,13 +1385,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.lgresp -> typed Node adapter -> registered native binding with validated counts and owned buffers -> shared tspice_lgresp -> actual lgresp_c. Independent sidecar validates dimensions/finite inputs then calls locked SpiceyPy lgresp, whose wrapper calls the corresponding canonical symbol; all returned fields reach comparison.",
           "executions": [
-            "local-cp02-44c6136d16c7-node",
-            "ci-cp02-44c6136d16c7-node"
+            "local-cp03-779d6fd6ae41-node",
+            "ci-cp03-779d6fd6ae41-node"
           ]
         },
         "wasm": {
@@ -1126,13 +1404,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.lgresp -> typed WASM adapter -> checked buffers -> exported _tspice_lgresp -> shared tspice_lgresp -> actual lgresp_c. Independent sidecar validates dimensions/finite inputs then calls locked SpiceyPy lgresp, whose wrapper calls the corresponding canonical symbol; all returned fields reach comparison.",
           "executions": [
-            "local-cp02-44c6136d16c7-wasm",
-            "ci-cp02-44c6136d16c7-wasm"
+            "local-cp03-779d6fd6ae41-wasm",
+            "ci-cp03-779d6fd6ae41-wasm"
           ]
         }
       }
@@ -1219,13 +1499,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.lgrind -> typed Node adapter -> registered native binding with validated counts and owned buffers -> shared tspice_lgrind -> actual lgrind_c. Independent sidecar validates dimensions/finite inputs then calls locked SpiceyPy lgrind, whose wrapper calls the corresponding canonical symbol; all returned fields reach comparison.",
           "executions": [
-            "local-cp02-44c6136d16c7-node",
-            "ci-cp02-44c6136d16c7-node"
+            "local-cp03-779d6fd6ae41-node",
+            "ci-cp03-779d6fd6ae41-node"
           ]
         },
         "wasm": {
@@ -1236,13 +1518,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.lgrind -> typed WASM adapter -> checked buffers -> exported _tspice_lgrind -> shared tspice_lgrind -> actual lgrind_c. Independent sidecar validates dimensions/finite inputs then calls locked SpiceyPy lgrind, whose wrapper calls the corresponding canonical symbol; all returned fields reach comparison.",
           "executions": [
-            "local-cp02-44c6136d16c7-wasm",
-            "ci-cp02-44c6136d16c7-wasm"
+            "local-cp03-779d6fd6ae41-wasm",
+            "ci-cp03-779d6fd6ae41-wasm"
           ]
         }
       }
@@ -1329,13 +1613,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.lgrint -> typed Node adapter -> registered native binding with validated counts and owned buffers -> shared tspice_lgrint -> actual lgrint_c. Independent sidecar validates dimensions/finite inputs then calls locked SpiceyPy lgrint, whose wrapper calls the corresponding canonical symbol; all returned fields reach comparison.",
           "executions": [
-            "local-cp02-44c6136d16c7-node",
-            "ci-cp02-44c6136d16c7-node"
+            "local-cp03-779d6fd6ae41-node",
+            "ci-cp03-779d6fd6ae41-node"
           ]
         },
         "wasm": {
@@ -1346,13 +1632,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.lgrint -> typed WASM adapter -> checked buffers -> exported _tspice_lgrint -> shared tspice_lgrint -> actual lgrint_c. Independent sidecar validates dimensions/finite inputs then calls locked SpiceyPy lgrint, whose wrapper calls the corresponding canonical symbol; all returned fields reach comparison.",
           "executions": [
-            "local-cp02-44c6136d16c7-wasm",
-            "ci-cp02-44c6136d16c7-wasm"
+            "local-cp03-779d6fd6ae41-wasm",
+            "ci-cp03-779d6fd6ae41-wasm"
           ]
         }
       }
@@ -1429,13 +1717,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.qderiv -> typed Node adapter -> registered native binding with validated counts and owned buffers -> shared tspice_qderiv -> actual qderiv_c. Independent sidecar validates dimensions/finite inputs then calls locked SpiceyPy qderiv, whose wrapper calls the corresponding canonical symbol; all returned fields reach comparison.",
           "executions": [
-            "local-cp02-44c6136d16c7-node",
-            "ci-cp02-44c6136d16c7-node"
+            "local-cp03-779d6fd6ae41-node",
+            "ci-cp03-779d6fd6ae41-node"
           ]
         },
         "wasm": {
@@ -1446,13 +1736,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.qderiv -> typed WASM adapter -> checked buffers -> exported _tspice_qderiv -> shared tspice_qderiv -> actual qderiv_c. Independent sidecar validates dimensions/finite inputs then calls locked SpiceyPy qderiv, whose wrapper calls the corresponding canonical symbol; all returned fields reach comparison.",
           "executions": [
-            "local-cp02-44c6136d16c7-wasm",
-            "ci-cp02-44c6136d16c7-wasm"
+            "local-cp03-779d6fd6ae41-wasm",
+            "ci-cp03-779d6fd6ae41-wasm"
           ]
         }
       }

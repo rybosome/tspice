@@ -1,0 +1,156 @@
+[
+  {
+    "caseId": "error-errdp-repeat",
+    "description": "Replace just the first occurrence, observing the prepared message after each call and the final structured diagnostic.",
+    "workflow": [
+      {
+        "op": "error.setmsg",
+        "message": "  @ body @ end @"
+      },
+      {
+        "op": "error.errdp",
+        "marker": " @ ",
+        "value": -1.2345678901234567e-129
+      },
+      {
+        "op": "error.errdp",
+        "marker": "@",
+        "value": -1.2345678901234567e-129
+      },
+      {
+        "op": "error.errdp",
+        "marker": "@",
+        "value": -1.2345678901234567e-129
+      },
+      {
+        "op": "error.sigerr",
+        "short": "SPICE(OBSERVED)",
+        "capture": true
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "error-errdp-positions",
+    "description": "Replace markers at the beginning, end and whole message. Keep unmatched markers and whitespace-only markers unchanged.",
+    "workflow": [
+      {
+        "op": "error.setmsg",
+        "message": "@suffix"
+      },
+      {
+        "op": "error.errdp",
+        "marker": "@",
+        "value": -1.2345678901234567e-129
+      },
+      {
+        "op": "error.setmsg",
+        "message": "prefix@"
+      },
+      {
+        "op": "error.errdp",
+        "marker": "@",
+        "value": -1.2345678901234567e-129
+      },
+      {
+        "op": "error.setmsg",
+        "message": "@"
+      },
+      {
+        "op": "error.errdp",
+        "marker": "@",
+        "value": -1.2345678901234567e-129
+      },
+      {
+        "op": "error.errdp",
+        "marker": "unmatched",
+        "value": -1.2345678901234567e-129
+      },
+      {
+        "op": "error.errdp",
+        "marker": "  ",
+        "value": -1.2345678901234567e-129
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "error-errdp-capacity",
+    "description": "Preserve the pinned 1840-byte message limit and observe the portion of the replacement that fits.",
+    "workflow": [
+      {
+        "op": "error.setmsg",
+        "message": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx@"
+      },
+      {
+        "op": "error.errdp",
+        "marker": "@",
+        "value": 12345678
+      },
+      {
+        "op": "error.sigerr",
+        "short": "SPICE(OBSERVED)",
+        "capture": true
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "error-errdp-empty-marker",
+    "description": "An empty marker is a genuine C-string error even when the message is prepared.",
+    "workflow": [
+      {
+        "op": "error.setmsg",
+        "message": "saved"
+      },
+      {
+        "op": "error.errdp",
+        "marker": "",
+        "value": -1.2345678901234567e-129
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(EMPTYSTRING)"]
+    }
+  },
+  {
+    "caseId": "error-errdp-format",
+    "description": "Compare exact CSPICE decimal rendering for zero, a large positive exponent, a small negative exponent, and an adjacent rounding boundary.",
+    "workflow": [
+      {
+        "op": "error.setmsg",
+        "message": "@:@:@:@"
+      },
+      {
+        "op": "error.errdp",
+        "marker": "@",
+        "value": 0
+      },
+      {
+        "op": "error.errdp",
+        "marker": "@",
+        "value": 1.9e300
+      },
+      {
+        "op": "error.errdp",
+        "marker": "@",
+        "value": -4.5e-300
+      },
+      {
+        "op": "error.errdp",
+        "marker": "@",
+        "value": 9.99999999999994
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

@@ -1,10 +1,23 @@
 import type {
+  SpiceHandle,
+  VirtualOutput,
+  SpiceHandleRegistry,
   FramesApi,
+  SpiceStateVector,
   SpiceMatrix6x6,
 } from "@rybosome/tspice-backend-contract";
 import {
-  assertSpiceInt32,
+  copyPckCoefficients,
+  requirePckString,
+  packCkWriterData,
+  checkCkWriter,
   brandMat3RowMajorResult,
+  ckStateResult,
+  ckType2Record,
+  ckType3Record,
+  dafBytes,
+  dafPathByteLength,
+  assertSpiceInt32,
   frameOperand,
   frameVectorResult,
   frameStateResult,
@@ -15,8 +28,94 @@ import {
   invariant,
 } from "@rybosome/tspice-core";
 
+import {
+  createVirtualOutputStager,
+  type VirtualOutputStager,
+} from "../runtime/virtual-output-staging.js";
 import type { NativeAddon } from "../runtime/addon.js";
 import type { KernelStager } from "../runtime/kernel-staging.js";
+import { createSpiceHandleRegistry } from "../runtime/spice-handles.js";
+
+function frameText(value: unknown): string {
+  if (typeof value !== "string" || value.includes("\0"))
+    throw new TypeError(
+      "Expected a NUL-free frame or coordinate-system string",
+    );
+  return value;
+}
+
+function frameEpoch(value: number): number {
+  if (!Number.isFinite(value)) throw new TypeError("Expected a finite epoch");
+  return value;
+}
+
+function frameState(value: unknown, input: boolean): SpiceStateVector {
+  if (!Array.isArray(value) || value.length !== 6)
+    throw new TypeError("Expected a six-component state");
+  const component = (i: number): number => {
+    const v: unknown = value[i];
+    if (typeof v !== "number" || (input && !Number.isFinite(v)))
+      throw new TypeError("Invalid state component");
+    return v;
+  };
+  return [
+    component(0),
+    component(1),
+    component(2),
+    component(3),
+    component(4),
+    component(5),
+  ];
+}
+
+function bodyStateMatrix(value: unknown): SpiceMatrix6x6 {
+  if (!Array.isArray(value) || value.length !== 36)
+    throw new TypeError("Expected a 36-component TISBOD result");
+  const component = (index: number): number => {
+    const v: unknown = value[index];
+    if (typeof v !== "number")
+      throw new TypeError("Invalid TISBOD matrix component");
+    return v;
+  };
+  return [
+    component(0),
+    component(1),
+    component(2),
+    component(3),
+    component(4),
+    component(5),
+    component(6),
+    component(7),
+    component(8),
+    component(9),
+    component(10),
+    component(11),
+    component(12),
+    component(13),
+    component(14),
+    component(15),
+    component(16),
+    component(17),
+    component(18),
+    component(19),
+    component(20),
+    component(21),
+    component(22),
+    component(23),
+    component(24),
+    component(25),
+    component(26),
+    component(27),
+    component(28),
+    component(29),
+    component(30),
+    component(31),
+    component(32),
+    component(33),
+    component(34),
+    component(35),
+  ];
+}
 
 function copyStateMatrix(value: unknown): SpiceMatrix6x6 {
   const matrix = brandMat6RowMajor(value, { label: "sxform()" });
@@ -103,14 +202,402 @@ function validateCkPointing(
     throw new TypeError("CK reference must be a string");
 }
 
+function pckOutput(file: VirtualOutput): VirtualOutput {
+  if (!file || file.kind !== "virtual-output")
+    throw new TypeError("Expected a PCK path or VirtualOutput");
+  return { kind: "virtual-output", path: requirePckString(file.path) };
+}
+
+function ckText(text: string) {
+  if (typeof text !== "string" || text.includes("\0"))
+    throw new TypeError("Expected a NUL-free CK string");
+  return text;
+}
+function ckOutput(file: VirtualOutput): VirtualOutput {
+  if (!file || file.kind !== "virtual-output")
+    throw new TypeError("Expected CK path or VirtualOutput");
+  return { kind: "virtual-output", path: ckText(file.path) };
+}
+
 /** Create a {@link FramesApi} implementation backed by the native Node addon. */
 export function createFramesApi(
   native: NativeAddon,
   stager: Pick<KernelStager, "resolvePathForSpice">,
+  ownedIntCells: ReadonlySet<number> = new Set(),
+  handles: SpiceHandleRegistry = createSpiceHandleRegistry(),
+  outputs: VirtualOutputStager = createVirtualOutputStager(),
+  destinations: { ids: ReadonlySet<number>; windows: ReadonlySet<number> } = {
+    ids: ownedIntCells,
+    windows: new Set(),
+  },
 ): FramesApi {
   const resolvePath = (path: string) => stager.resolvePathForSpice(path);
+  const resolveRead = (file: string | VirtualOutput) =>
+    typeof file === "string"
+      ? resolvePath(requirePckString(file))
+      : outputs.resolvePathForSpice(pckOutput(file));
+  const writerOutputs = new Map<SpiceHandle, VirtualOutput>();
 
+  const loaded = new Map<number, SpiceHandle>();
   return {
+    bltfrm: (frameClass, ids) => {
+      assertSpiceInt32(frameClass, "bltfrm(frameClass)");
+      assertOpaqueHandle(ids, "bltfrm(ids)");
+      if (!ownedIntCells.has(ids))
+        throw new RangeError(
+          "bltfrm requires a live integer cell owned by this backend",
+        );
+      native.bltfrm(frameClass, ids);
+    },
+    pxfrm2: (from, to, etfrom, etto) =>
+      brandMat3RowMajorResult(
+        native.pxfrm2(
+          frameText(from),
+          frameText(to),
+          frameEpoch(etfrom),
+          frameEpoch(etto),
+        ),
+        { label: "pxfrm2()" },
+      ),
+    tipbod: (ref, body, et) => {
+      assertSpiceInt32(body, "tipbod(body)");
+      return brandMat3RowMajorResult(
+        native.tipbod(frameText(ref), body, frameEpoch(et)),
+        { label: "tipbod()" },
+      );
+    },
+    tisbod: (ref, body, et) => {
+      assertSpiceInt32(body, "tisbod(body)");
+      return bodyStateMatrix(
+        native.tisbod(frameText(ref), body, frameEpoch(et)),
+      );
+    },
+    tkfram: (typeId) => {
+      assertSpiceInt32(typeId, "tkfram(typeId)");
+      const result = native.tkfram(typeId);
+      if (typeof result.found !== "boolean")
+        throw new TypeError("Invalid tkfram found flag");
+      if (!result.found) return { found: false };
+      const frame = result.frame;
+      if (typeof frame !== "number")
+        throw new TypeError("Invalid tkfram base frame");
+      assertSpiceInt32(frame, "tkfram base frame");
+      return {
+        found: true,
+        frame,
+        rot: brandMat3RowMajorResult(result.rot, { label: "tkfram().rot" }),
+      };
+    },
+    xfmsta: (state, from, to, body) =>
+      frameState(
+        native.xfmsta(
+          frameState(state, true),
+          frameText(from),
+          frameText(to),
+          frameText(body),
+        ),
+        false,
+      ),
+    pckopn: (file, ifname, ncomch) => {
+      assertSpiceInt32(ncomch, "pckopn ncomch");
+      requirePckString(ifname);
+      const target =
+        typeof file === "string" ? requirePckString(file) : pckOutput(file);
+      const path = outputs.resolvePathForSpice(target);
+      const value = native.pckopn(path, ifname, ncomch);
+      try {
+        const handle = handles.register("PCK-WRITER", value);
+        if (typeof target !== "string") {
+          outputs.markOpen(target);
+          writerOutputs.set(handle, target);
+        }
+        return handle;
+      } catch (error) {
+        native.dafcls(value);
+        throw error;
+      }
+    },
+    pckcls: (handle) => {
+      handles.close(
+        handle,
+        ["PCK-WRITER"],
+        (entry) => native.pckcls(entry.nativeHandle),
+        "pckcls",
+      );
+      const target = writerOutputs.get(handle);
+      if (target) {
+        outputs.markClosed(target);
+        writerOutputs.delete(handle);
+      }
+    },
+    pcklof: (file) => {
+      const path = resolveRead(file);
+      const value = native.pcklof(path);
+      const existing = loaded.get(value);
+      if (existing !== undefined) return existing;
+      try {
+        const handle = handles.register("PCK-LOADED", value);
+        loaded.set(value, handle);
+        return handle;
+      } catch (error) {
+        native.pckuof(value);
+        throw error;
+      }
+    },
+    pckuof: (handle) => {
+      handles.close(
+        handle,
+        ["PCK-LOADED"],
+        (entry) => {
+          native.pckuof(entry.nativeHandle);
+          loaded.delete(entry.nativeHandle);
+        },
+        "pckuof",
+      );
+    },
+    pckcov: (file, classId, cover) => {
+      const path = resolveRead(file);
+      assertSpiceInt32(classId, "pckcov classId");
+      if (!destinations.windows.has(cover))
+        throw new RangeError("Expected an owned live PCK query destination");
+      assertOpaqueHandle(cover, "pckcov");
+      native.pckcov(path, classId, cover);
+    },
+    pckfrm: (file, ids) => {
+      const path = resolveRead(file);
+      if (!destinations.ids.has(ids))
+        throw new RangeError("Expected an owned live PCK query destination");
+      assertOpaqueHandle(ids, "pckfrm");
+      native.pckfrm(path, ids);
+    },
+    pckw02: (
+      handle,
+      classId,
+      frame,
+      first,
+      last,
+      segid,
+      intlen,
+      n,
+      degree,
+      coefficients,
+      btime,
+    ) => {
+      const values = copyPckCoefficients(n, degree, coefficients);
+      assertSpiceInt32(classId, "pckw02 classId");
+      requirePckString(frame);
+      requirePckString(segid);
+      if (![first, last, intlen, btime].every(Number.isFinite))
+        throw new RangeError("PCK epochs and interval must be finite");
+      const writer = handles.lookup(
+        handle,
+        ["PCK-WRITER"],
+        "pckw02",
+      ).nativeHandle;
+      native.pckw02(
+        writer,
+        classId,
+        frame,
+        first,
+        last,
+        segid,
+        intlen,
+        n,
+        degree,
+        values,
+        btime,
+      );
+    },
+    ckopn: (file, ifname, ncomch) => {
+      assertSpiceInt32(ncomch, "ckopn ncomch");
+      ckText(ifname);
+      const target = typeof file === "string" ? ckText(file) : ckOutput(file);
+      const path = outputs.resolvePathForSpice(target);
+      const value = native.ckopn(path, ifname, ncomch);
+      try {
+        const handle = handles.register("CK-WRITER", value);
+        if (typeof target !== "string") {
+          outputs.markOpen(target);
+          writerOutputs.set(handle, target);
+        }
+        return handle;
+      } catch (error) {
+        native.dafcls(value);
+        throw error;
+      }
+    },
+    ckcls: (handle) => {
+      handles.close(
+        handle,
+        ["CK-WRITER"],
+        (entry) => native.ckcls(entry.nativeHandle),
+        "ckcls",
+      );
+      const target = writerOutputs.get(handle);
+      if (target) {
+        outputs.markClosed(target);
+        writerOutputs.delete(handle);
+      }
+    },
+    ckw01: (handle, beg, end, inst, ref, av, segid, ticks, quats, avvs) => {
+      checkCkWriter(beg, end, inst, ref, segid, av);
+      const { n, data } = packCkWriterData(
+        ticks,
+        av
+          ? [
+              [quats, 4],
+              [avvs, 3],
+            ]
+          : [[quats, 4]],
+        undefined,
+        av ? undefined : avvs,
+      );
+      const h = handles.lookup(handle, ["CK-WRITER"], "ckw01").nativeHandle;
+      native.ckw01(h, beg, end, inst, ref, av, segid, n, data);
+    },
+    ckw02: (
+      handle,
+      beg,
+      end,
+      inst,
+      ref,
+      segid,
+      starts,
+      stops,
+      quats,
+      avvs,
+      rates,
+    ) => {
+      checkCkWriter(beg, end, inst, ref, segid, true);
+      const { n, data } = packCkWriterData(starts, [
+        [stops, 1],
+        [quats, 4],
+        [avvs, 3],
+        [rates, 1],
+      ]);
+      const h = handles.lookup(handle, ["CK-WRITER"], "ckw02").nativeHandle;
+      native.ckw02(h, beg, end, inst, ref, segid, n, data);
+    },
+    ckw03: (
+      handle,
+      beg,
+      end,
+      inst,
+      ref,
+      av,
+      segid,
+      ticks,
+      quats,
+      avvs,
+      intervalStarts,
+    ) => {
+      checkCkWriter(beg, end, inst, ref, segid, av);
+      const { n, nints, data } = packCkWriterData(
+        ticks,
+        av
+          ? [
+              [quats, 4],
+              [avvs, 3],
+            ]
+          : [[quats, 4]],
+        intervalStarts,
+        av ? undefined : avvs,
+      );
+      const h = handles.lookup(handle, ["CK-WRITER"], "ckw03").nativeHandle;
+      native.ckw03(h, beg, end, inst, ref, av, segid, n, nints, data);
+    },
+    ckw05: (
+      handle,
+      subtype,
+      degree,
+      beg,
+      end,
+      inst,
+      ref,
+      av,
+      segid,
+      ticks,
+      packets,
+      rate,
+      intervalStarts,
+    ) => {
+      checkCkWriter(beg, end, inst, ref, segid, av);
+      assertSpiceInt32(subtype, "CK subtype");
+      assertSpiceInt32(degree, "CK degree");
+      if (!Number.isFinite(rate))
+        throw new RangeError("CK rate must be finite");
+      const width = [8, 4, 14, 7][subtype] ?? 0;
+      const { n, nints, data } = packCkWriterData(
+        ticks,
+        [[packets, width]],
+        intervalStarts,
+      );
+      const h = handles.lookup(handle, ["CK-WRITER"], "ckw05").nativeHandle;
+      native.ckw05(
+        h,
+        subtype,
+        degree,
+        beg,
+        end,
+        inst,
+        ref,
+        av,
+        segid,
+        n,
+        nints,
+        rate,
+        data,
+      );
+    },
+    ckfrot: (inst, et) => {
+      assertSpiceInt32(inst, "CK instrument");
+      if (!Number.isFinite(et))
+        throw new RangeError("Expected finite CK epoch");
+      const out = native.ckfrot(inst, et);
+      if (!out.found) return { found: false };
+      assertSpiceInt32(out.ref, "CK reference");
+      return {
+        found: true,
+        ref: out.ref,
+        rotate: brandMat3RowMajorResult(out.rotate),
+      };
+    },
+    ckfxfm: (inst, et) => {
+      assertSpiceInt32(inst, "CK instrument");
+      if (!Number.isFinite(et))
+        throw new RangeError("Expected finite CK epoch");
+      const out = native.ckfxfm(inst, et);
+      if (!out.found) return { found: false };
+      assertSpiceInt32(out.ref, "CK reference");
+      return { found: true, ref: out.ref, xform: ckStateResult(out.xform) };
+    },
+    ckgr02: (handle, descr, recno) => {
+      const h = handles.lookup(handle, ["DAF"], "ckgr02").nativeHandle;
+      const bytes = dafBytes(descr, 40, true);
+      assertSpiceInt32(recno, "CK record number");
+      return ckType2Record(native.ckgr02(h, bytes, recno));
+    },
+    ckgr03: (handle, descr, recno) => {
+      const h = handles.lookup(handle, ["DAF"], "ckgr03").nativeHandle;
+      const bytes = dafBytes(descr, 40, true);
+      assertSpiceInt32(recno, "CK record number");
+      return ckType3Record(native.ckgr03(h, bytes, recno));
+    },
+    ckmeta: (ckid, meta) => {
+      assertSpiceInt32(ckid, "CK ID");
+      dafPathByteLength(meta);
+      return native.ckmeta(ckid, meta);
+    },
+    cknr02: (handle, descr) => {
+      const h = handles.lookup(handle, ["DAF"], "cknr02").nativeHandle;
+      const bytes = dafBytes(descr, 40, true);
+      return native.cknr02(h, bytes);
+    },
+    cknr03: (handle, descr) => {
+      const h = handles.lookup(handle, ["DAF"], "cknr03").nativeHandle;
+      const bytes = dafBytes(descr, 40, true);
+      return native.cknr03(h, bytes);
+    },
     namfrm: (name) => {
       const out = native.namfrm(name);
       if (!out.found) {

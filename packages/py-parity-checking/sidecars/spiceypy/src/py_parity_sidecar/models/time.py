@@ -96,6 +96,42 @@ class StepTimeUnitim:
 
 
 @dataclass(frozen=True)
+class StepTimeEtcal:
+    op:Literal["time.etcal"]
+    et: float
+    callen: int = 256
+
+
+@dataclass(frozen=True)
+class StepTimeUtc2et:
+    op:Literal["time.utc2et"]
+    utcstr: str
+
+
+@dataclass(frozen=True)
+class StepTimeTparch:
+    op:Literal["time.tparch"]
+    type: str
+
+
+@dataclass(frozen=True)
+class StepTimeTsetyr:
+    op:Literal["time.tsetyr"]
+    year: int
+
+
+@dataclass(frozen=True)
+class StepTimeEt2lst:
+    op:Literal["time.et2lst"]
+    et: float
+    body: int
+    lon: float
+    type: str
+    timlen: int = 256
+    ampmlen: int = 256
+
+
+@dataclass(frozen=True)
 class StepTimeTparse:
     op: Literal["time.tparse"]
     timstr: str
@@ -156,6 +192,34 @@ class StepTimeSct2e:
     op: Literal["time.sct2e"]
     sc: int
     sclkdp: float
+
+
+@dataclass(frozen=True)
+class StepTimeSce2t:
+    op: Literal["time.sce2t"]
+    sc: int
+    et: float
+
+
+@dataclass(frozen=True)
+class StepTimeScfmt:
+    op: Literal["time.scfmt"]
+    sc: int
+    ticks: float
+    clklen: int = 2048
+
+
+@dataclass(frozen=True)
+class StepTimeScpart:
+    op: Literal["time.scpart"]
+    sc: int
+
+
+@dataclass(frozen=True)
+class StepTimeSctiks:
+    op: Literal["time.sctiks"]
+    sc: int
+    clkstr: str
 
 
 @dataclass(frozen=True)
