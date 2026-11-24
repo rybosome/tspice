@@ -103,7 +103,15 @@ jobs:
       - name: Execute the required JavaScript lane
         run: |
           set -euo pipefail
-          pnpm fetch:cspice
+          fetched=false
+          for delay in 0 5 20 45; do
+            sleep "$delay"
+            if pnpm fetch:cspice; then
+              fetched=true
+              break
+            fi
+          done
+          test "$fetched" = true
           pnpm run check:js:required
       - name: Execute the required native lane
         env:
