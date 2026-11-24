@@ -1,0 +1,206 @@
+[
+  {
+    "caseId": "ephemeris-conics-circular-equatorial",
+    "description": "Compare all three inertial positions and velocities at the element epoch and on either side.",
+    "workflow": [
+      {
+        "op": "ephemeris.conics",
+        "elts": [2, 0, 0, 0.42, -0.32, -0.31, 11.5, 2.25],
+        "et": 11.5
+      },
+      {
+        "op": "ephemeris.conics",
+        "elts": [2, 0, 0, 0.42, -0.32, -0.31, 11.5, 2.25],
+        "et": 12.125
+      },
+      {
+        "op": "ephemeris.conics",
+        "elts": [2, 0, 0, 0.42, -0.32, -0.31, 11.5, 2.25],
+        "et": 10.375
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-conics-inclined-ellipse",
+    "description": "Compare all three inertial positions and velocities at the element epoch and on either side.",
+    "workflow": [
+      {
+        "op": "ephemeris.conics",
+        "elts": [2, 0.42, 0.63, 0.42, -0.32, -0.31, 11.5, 2.25],
+        "et": 11.5
+      },
+      {
+        "op": "ephemeris.conics",
+        "elts": [2, 0.42, 0.63, 0.42, -0.32, -0.31, 11.5, 2.25],
+        "et": 12.125
+      },
+      {
+        "op": "ephemeris.conics",
+        "elts": [2, 0.42, 0.63, 0.42, -0.32, -0.31, 11.5, 2.25],
+        "et": 10.375
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-conics-parabola",
+    "description": "Compare all three inertial positions and velocities at the element epoch and on either side.",
+    "workflow": [
+      {
+        "op": "ephemeris.conics",
+        "elts": [2, 1, 0.8, 0.42, -0.32, -0.31, 11.5, 2.25],
+        "et": 11.5
+      },
+      {
+        "op": "ephemeris.conics",
+        "elts": [2, 1, 0.8, 0.42, -0.32, -0.31, 11.5, 2.25],
+        "et": 12.125
+      },
+      {
+        "op": "ephemeris.conics",
+        "elts": [2, 1, 0.8, 0.42, -0.32, -0.31, 11.5, 2.25],
+        "et": 10.375
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-conics-hyperbola",
+    "description": "Compare all three inertial positions and velocities at the element epoch and on either side.",
+    "workflow": [
+      {
+        "op": "ephemeris.conics",
+        "elts": [2, 1.42, 0.8, 0.42, -0.32, -0.31, 11.5, 2.25],
+        "et": 11.5
+      },
+      {
+        "op": "ephemeris.conics",
+        "elts": [2, 1.42, 0.8, 0.42, -0.32, -0.31, 11.5, 2.25],
+        "et": 12.125
+      },
+      {
+        "op": "ephemeris.conics",
+        "elts": [2, 1.42, 0.8, 0.42, -0.32, -0.31, 11.5, 2.25],
+        "et": 10.375
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-conics-retrograde",
+    "description": "Compare all three inertial positions and velocities at the element epoch and on either side.",
+    "workflow": [
+      {
+        "op": "ephemeris.conics",
+        "elts": [2, 0.72, 2.7, 0.42, -0.32, -0.31, 11.5, 2.25],
+        "et": 11.5
+      },
+      {
+        "op": "ephemeris.conics",
+        "elts": [2, 0.72, 2.7, 0.42, -0.32, -0.31, 11.5, 2.25],
+        "et": 12.125
+      },
+      {
+        "op": "ephemeris.conics",
+        "elts": [2, 0.72, 2.7, 0.42, -0.32, -0.31, 11.5, 2.25],
+        "et": 10.375
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-conics-unit-scale",
+    "description": "Use dimensional km, seconds and km\u00b3/s\u00b2 with a nonzero orientation and fractional epoch.",
+    "workflow": [
+      {
+        "op": "ephemeris.conics",
+        "elts": [7000, 0.22, 0.47, 1.2, -0.48, 0.3, 1210.5, 398600.435],
+        "et": -1800
+      },
+      {
+        "op": "ephemeris.conics",
+        "elts": [7000, 0.22, 0.47, 1.2, -0.48, 0.3, 1210.5, 398600.435],
+        "et": 1210.5
+      },
+      {
+        "op": "ephemeris.conics",
+        "elts": [7000, 0.22, 0.47, 1.2, -0.48, 0.3, 1210.5, 398600.435],
+        "et": 3900
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-conics-negative-eccentricity",
+    "description": "Compare the canonical condition for an invalid conic element.",
+    "workflow": [
+      {
+        "op": "ephemeris.conics",
+        "elts": [2, -0.1, 0.6, 0.4, -0.3, -0.1, 11, 2],
+        "et": 11
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["BADECCENTRICITY"]
+    }
+  },
+  {
+    "caseId": "ephemeris-conics-zero-periapse",
+    "description": "Compare the canonical condition for an invalid conic element.",
+    "workflow": [
+      {
+        "op": "ephemeris.conics",
+        "elts": [0, 0.3, 0.6, 0.4, -0.3, -0.1, 11, 2],
+        "et": 11
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["BADPERIAPSEVALUE"]
+    }
+  },
+  {
+    "caseId": "ephemeris-conics-negative-periapse",
+    "description": "Compare the canonical condition for an invalid conic element.",
+    "workflow": [
+      {
+        "op": "ephemeris.conics",
+        "elts": [-2, 0.3, 0.6, 0.4, -0.3, -0.1, 11, 2],
+        "et": 11
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["BADPERIAPSEVALUE"]
+    }
+  },
+  {
+    "caseId": "ephemeris-conics-zero-gm",
+    "description": "Compare the canonical condition for an invalid conic element.",
+    "workflow": [
+      {
+        "op": "ephemeris.conics",
+        "elts": [2, 0.3, 0.6, 0.4, -0.3, -0.1, 11, 0],
+        "et": 11
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["BADGM"]
+    }
+  }
+]

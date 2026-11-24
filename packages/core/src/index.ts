@@ -295,3 +295,5 @@ export {
   ckType3Record,
   ckStateResult,
 } from "./spice-runtime/shared/ck-records.js";
+
+export { copyOrbitalTuple } from "./spice-runtime/domains/orbital-elements.js";

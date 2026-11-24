@@ -9982,7 +9982,8 @@
       ],
       "id": "local-cp03-779d6fd6ae41-node",
       "kind": "local",
-      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 779d6fd6ae41c78017a8cf7ccaec5fef3100112c. The native-required lane completed 7054 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45097193130/job/137439518970"
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 779d6fd6ae41c78017a8cf7ccaec5fef3100112c. The native-required lane completed 7054 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45097193130/job/137439518970",
+      "historical": true
     },
     {
       "backend": "node",
@@ -10023,7 +10024,8 @@
       "kind": "ci",
       "commit": "c4bd798cc20d13e8dfd51e7e83ba740ffe4418ff",
       "url": "https://github.com/rybosome/tspice/actions/runs/45127597533/job/137535439275",
-      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 7054 live comparisons without unexpected skips."
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 7054 live comparisons without unexpected skips.",
+      "historical": true
     },
     {
       "backend": "wasm",
@@ -10062,7 +10064,8 @@
       ],
       "id": "local-cp03-779d6fd6ae41-wasm",
       "kind": "local",
-      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 779d6fd6ae41c78017a8cf7ccaec5fef3100112c. The native-required lane completed 7054 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45097193130/job/137439518970"
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 779d6fd6ae41c78017a8cf7ccaec5fef3100112c. The native-required lane completed 7054 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45097193130/job/137439518970",
+      "historical": true
     },
     {
       "backend": "wasm",
@@ -10103,7 +10106,172 @@
       "kind": "ci",
       "commit": "c4bd798cc20d13e8dfd51e7e83ba740ffe4418ff",
       "url": "https://github.com/rybosome/tspice/actions/runs/45127597533/job/137535439275",
-      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 7054 live comparisons without unexpected skips."
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 7054 live comparisons without unexpected skips.",
+      "historical": true
+    },
+    {
+      "id": "local-e01-b72ef2e9-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "9e1100f2aa5554f44f820ba32f7d1513af70b26f4afecd06d219967188d85d1a",
+      "caseIds": [
+        "file-io-dafbfs-audit-restart-and-end",
+        "file-io-dafbfs-kind-mismatch-error",
+        "file-io-dafbfs-search-sequence-success",
+        "file-io-dafcls-audit-last-close-and-reopen",
+        "file-io-dafcls-close-and-reopen-success",
+        "file-io-dafcls-double-close-error",
+        "file-io-daffna-audit-interleaved-distinct-files",
+        "file-io-daffna-found-after-bfs-success",
+        "file-io-daffna-without-bfs-error",
+        "file-io-dafopr-audit-duplicate-read-claims",
+        "file-io-dafopr-audit-empty-file",
+        "file-io-dafopr-audit-wrong-file-format",
+        "file-io-dafopr-lifecycle-success",
+        "file-io-dafopr-missing-file-error",
+        "file-io-dascls-closes-dla-handle-success",
+        "file-io-dascls-double-close-error",
+        "file-io-dasopr-audit-duplicate-read-claims",
+        "file-io-dasopr-audit-wrong-file-format",
+        "file-io-dasopr-missing-file-error",
+        "file-io-dasopr-open-empty-dla-success",
+        "file-io-dlabfs-audit-empty-closed-writer",
+        "file-io-dlabfs-audit-repeat-descriptor",
+        "file-io-dlabfs-first-segment-found-success",
+        "file-io-dlabfs-kind-mismatch-error",
+        "file-io-dlacls-alias-for-das-handle-success",
+        "file-io-dlacls-audit-empty-closed-writer",
+        "file-io-dlacls-double-close-error"
+      ],
+      "observation": "Both complete required lanes passed locally on b72ef2e9b9015fb011159ceb1dcf2ef695a09981. JavaScript: 2,536 parity tests and one expected guard skip. Native-required: 2,320 registered Node/WASM live comparisons; 2,537 parity-package tests with no skips, including the native-required guard; 83 native wrapper, 622 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "local-e01-b72ef2e9-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "9e1100f2aa5554f44f820ba32f7d1513af70b26f4afecd06d219967188d85d1a",
+      "caseIds": [
+        "file-io-dafbfs-audit-restart-and-end",
+        "file-io-dafbfs-kind-mismatch-error",
+        "file-io-dafbfs-search-sequence-success",
+        "file-io-dafcls-audit-last-close-and-reopen",
+        "file-io-dafcls-close-and-reopen-success",
+        "file-io-dafcls-double-close-error",
+        "file-io-daffna-audit-interleaved-distinct-files",
+        "file-io-daffna-found-after-bfs-success",
+        "file-io-daffna-without-bfs-error",
+        "file-io-dafopr-audit-duplicate-read-claims",
+        "file-io-dafopr-audit-empty-file",
+        "file-io-dafopr-audit-wrong-file-format",
+        "file-io-dafopr-lifecycle-success",
+        "file-io-dafopr-missing-file-error",
+        "file-io-dascls-closes-dla-handle-success",
+        "file-io-dascls-double-close-error",
+        "file-io-dasopr-audit-duplicate-read-claims",
+        "file-io-dasopr-audit-wrong-file-format",
+        "file-io-dasopr-missing-file-error",
+        "file-io-dasopr-open-empty-dla-success",
+        "file-io-dlabfs-audit-empty-closed-writer",
+        "file-io-dlabfs-audit-repeat-descriptor",
+        "file-io-dlabfs-first-segment-found-success",
+        "file-io-dlabfs-kind-mismatch-error",
+        "file-io-dlacls-alias-for-das-handle-success",
+        "file-io-dlacls-audit-empty-closed-writer",
+        "file-io-dlacls-double-close-error"
+      ],
+      "observation": "Both complete required lanes passed locally on b72ef2e9b9015fb011159ceb1dcf2ef695a09981. JavaScript: 2,536 parity tests and one expected guard skip. Native-required: 2,320 registered Node/WASM live comparisons; 2,537 parity-package tests with no skips, including the native-required guard; 83 native wrapper, 622 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "ci-e01-b72ef2e9-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "9e1100f2aa5554f44f820ba32f7d1513af70b26f4afecd06d219967188d85d1a",
+      "caseIds": [
+        "file-io-dafbfs-audit-restart-and-end",
+        "file-io-dafbfs-kind-mismatch-error",
+        "file-io-dafbfs-search-sequence-success",
+        "file-io-dafcls-audit-last-close-and-reopen",
+        "file-io-dafcls-close-and-reopen-success",
+        "file-io-dafcls-double-close-error",
+        "file-io-daffna-audit-interleaved-distinct-files",
+        "file-io-daffna-found-after-bfs-success",
+        "file-io-daffna-without-bfs-error",
+        "file-io-dafopr-audit-duplicate-read-claims",
+        "file-io-dafopr-audit-empty-file",
+        "file-io-dafopr-audit-wrong-file-format",
+        "file-io-dafopr-lifecycle-success",
+        "file-io-dafopr-missing-file-error",
+        "file-io-dascls-closes-dla-handle-success",
+        "file-io-dascls-double-close-error",
+        "file-io-dasopr-audit-duplicate-read-claims",
+        "file-io-dasopr-audit-wrong-file-format",
+        "file-io-dasopr-missing-file-error",
+        "file-io-dasopr-open-empty-dla-success",
+        "file-io-dlabfs-audit-empty-closed-writer",
+        "file-io-dlabfs-audit-repeat-descriptor",
+        "file-io-dlabfs-first-segment-found-success",
+        "file-io-dlabfs-kind-mismatch-error",
+        "file-io-dlacls-alias-for-das-handle-success",
+        "file-io-dlacls-audit-empty-closed-writer",
+        "file-io-dlacls-double-close-error"
+      ],
+      "commit": "b72ef2e9b9015fb011159ceb1dcf2ef695a09981",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43562566636/job/132349271728",
+      "observation": "Inspected successful Linux Node 22 native-required job 132349271728 on b72ef2e9b9015fb011159ceb1dcf2ef695a09981: 2,320 registered Node/WASM live comparisons; 2,537 parity-package tests with no skips, including the native-required guard; 83 native wrapper, 622 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "ci-e01-b72ef2e9-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "9e1100f2aa5554f44f820ba32f7d1513af70b26f4afecd06d219967188d85d1a",
+      "caseIds": [
+        "file-io-dafbfs-audit-restart-and-end",
+        "file-io-dafbfs-kind-mismatch-error",
+        "file-io-dafbfs-search-sequence-success",
+        "file-io-dafcls-audit-last-close-and-reopen",
+        "file-io-dafcls-close-and-reopen-success",
+        "file-io-dafcls-double-close-error",
+        "file-io-daffna-audit-interleaved-distinct-files",
+        "file-io-daffna-found-after-bfs-success",
+        "file-io-daffna-without-bfs-error",
+        "file-io-dafopr-audit-duplicate-read-claims",
+        "file-io-dafopr-audit-empty-file",
+        "file-io-dafopr-audit-wrong-file-format",
+        "file-io-dafopr-lifecycle-success",
+        "file-io-dafopr-missing-file-error",
+        "file-io-dascls-closes-dla-handle-success",
+        "file-io-dascls-double-close-error",
+        "file-io-dasopr-audit-duplicate-read-claims",
+        "file-io-dasopr-audit-wrong-file-format",
+        "file-io-dasopr-missing-file-error",
+        "file-io-dasopr-open-empty-dla-success",
+        "file-io-dlabfs-audit-empty-closed-writer",
+        "file-io-dlabfs-audit-repeat-descriptor",
+        "file-io-dlabfs-first-segment-found-success",
+        "file-io-dlabfs-kind-mismatch-error",
+        "file-io-dlacls-alias-for-das-handle-success",
+        "file-io-dlacls-audit-empty-closed-writer",
+        "file-io-dlacls-double-close-error"
+      ],
+      "commit": "b72ef2e9b9015fb011159ceb1dcf2ef695a09981",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43562566636/job/132349271728",
+      "observation": "Inspected successful Linux Node 22 native-required job 132349271728 on b72ef2e9b9015fb011159ceb1dcf2ef695a09981: 2,320 registered Node/WASM live comparisons; 2,537 parity-package tests with no skips, including the native-required guard; 83 native wrapper, 622 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     }
   ],
   "routines": [
@@ -10115,27 +10283,43 @@
       "scenarios": [
         {
           "caseId": "file-io-dafopr-lifecycle-success",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "dafopr handle lifecycle validated via dafbfs/daffna/dafcls Actual raw opens/start/next/close feed the observed true/false traversal sequence; authored segment counts, interleaving, exhaustion or restart distinguish state effects. Handles are consumed, not compared as opaque absolute IDs."
         },
         {
           "caseId": "file-io-dafopr-missing-file-error",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Representative dafopr missing-file error Requires the actual named CSPICE error FILENOTFOUND."
         },
         {
           "caseId": "file-io-dafopr-audit-duplicate-read-claims",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Two opens of one file have separate public ownership tokens but share the actual CSPICE cursor/refcount; one close leaves the other usable. Actual raw opens/start/next/close feed the observed true/false traversal sequence; authored segment counts, interleaving, exhaustion or restart distinguish state effects. Handles are consumed, not compared as opaque absolute IDs."
         },
         {
           "caseId": "file-io-dafopr-audit-empty-file",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "A valid authored empty DAF returns false at start/end rather than conflating file-open success with nonempty search. Actual raw opens/start/next/close feed the observed true/false traversal sequence; authored segment counts, interleaving, exhaustion or restart distinguish state effects. Handles are consumed, not compared as opaque absolute IDs."
         },
         {
           "caseId": "file-io-dafopr-audit-wrong-file-format",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Stage then unload the existing kernel before the actual raw reader rejects its wrong on-disk architecture; avoid an already-open-file conflict. Requires the actual named CSPICE error UNKNOWNFILARC."
         }
       ],
@@ -10217,14 +10401,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.dafopr -> Node typed file adapter -> owner-local SpiceHandleRegistry register after actual open; virtual path resolver before open -> native dafopr -> tspice_dafopr -> dafopr_c.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -10247,14 +10429,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.dafopr -> WASM file adapter -> owner-local SpiceHandleRegistry register after actual open; virtual path resolver before open -> actual _tspice_dafopr -> shared C shim -> dafopr_c; withAllocs/withMalloc releases buffers.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -10266,17 +10446,27 @@
       "scenarios": [
         {
           "caseId": "file-io-dafcls-close-and-reopen-success",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "dafcls closes a DAF handle and allows reopen traversal Actual raw opens/start/next/close feed the observed true/false traversal sequence; authored segment counts, interleaving, exhaustion or restart distinguish state effects. Handles are consumed, not compared as opaque absolute IDs."
         },
         {
           "caseId": "file-io-dafcls-double-close-error",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Representative dafcls double-close error Public opaque handle kind/close-once precondition: TS invokes the actual raw method, while Python guards its workflow handle state. This is not a claim that CSPICE rejects unknown numeric close handles."
         },
         {
           "caseId": "file-io-dafcls-audit-last-close-and-reopen",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Close and reopen a real DAF; a new search observes every segment and the end, independent of the prior cursor. Actual raw opens/start/next/close feed the observed true/false traversal sequence; authored segment counts, interleaving, exhaustion or restart distinguish state effects. Handles are consumed, not compared as opaque absolute IDs."
         }
       ],
@@ -10332,7 +10522,9 @@
             "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/runtime/lifecycle.py",
             "packages/py-parity-checking/test/file-reader-oracle-errors.test.ts"
           ],
-          "caseIds": ["file-io-dafcls-close-and-reopen-success"]
+          "caseIds": [
+            "file-io-dafcls-close-and-reopen-success"
+          ]
         }
       ],
       "backends": {
@@ -10357,14 +10549,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.dafcls -> Node typed file adapter -> owner-local SpiceHandleRegistry kind/live lookup -> native dafcls -> tspice_dafcls -> dafcls_c.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -10387,14 +10577,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.dafcls -> WASM file adapter -> owner-local SpiceHandleRegistry kind/live lookup -> actual _tspice_dafcls -> shared C shim -> dafcls_c; withAllocs/withMalloc releases buffers.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -10406,17 +10594,27 @@
       "scenarios": [
         {
           "caseId": "file-io-dafbfs-search-sequence-success",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "dafbfs initializes DAF search state used by daffna Actual raw opens/start/next/close feed the observed true/false traversal sequence; authored segment counts, interleaving, exhaustion or restart distinguish state effects. Handles are consumed, not compared as opaque absolute IDs."
         },
         {
           "caseId": "file-io-dafbfs-kind-mismatch-error",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Representative dafbfs error when called with DAS handle Public opaque handle kind/close-once precondition: TS invokes the actual raw method, while Python guards its workflow handle state. This is not a claim that CSPICE rejects unknown numeric close handles."
         },
         {
           "caseId": "file-io-dafbfs-audit-restart-and-end",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Two authored segments distinguish true/true/false/false, followed by a real restart to true. Actual raw opens/start/next/close feed the observed true/false traversal sequence; authored segment counts, interleaving, exhaustion or restart distinguish state effects. Handles are consumed, not compared as opaque absolute IDs."
         }
       ],
@@ -10486,14 +10684,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.dafbfs -> Node typed file adapter -> owner-local SpiceHandleRegistry kind/live lookup -> native dafbfs -> tspice_dafbfs -> dafbfs_c.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -10516,14 +10712,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.dafbfs -> WASM file adapter -> owner-local SpiceHandleRegistry kind/live lookup -> actual _tspice_dafbfs -> shared C shim -> dafbfs_c; withAllocs/withMalloc releases buffers.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -10535,17 +10729,27 @@
       "scenarios": [
         {
           "caseId": "file-io-daffna-found-after-bfs-success",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "daffna returns true after dafbfs on deterministic DAF Actual raw opens/start/next/close feed the observed true/false traversal sequence; authored segment counts, interleaving, exhaustion or restart distinguish state effects. Handles are consumed, not compared as opaque absolute IDs."
         },
         {
           "caseId": "file-io-daffna-without-bfs-error",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Representative daffna error when search is not initialized Requires the actual named CSPICE error DAFNOSEARCH."
         },
         {
           "caseId": "file-io-daffna-audit-interleaved-distinct-files",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Interleave two-segment and empty files so an omitted handle selection produces the wrong boolean sequence. Actual raw opens/start/next/close feed the observed true/false traversal sequence; authored segment counts, interleaving, exhaustion or restart distinguish state effects. Handles are consumed, not compared as opaque absolute IDs."
         }
       ],
@@ -10620,14 +10824,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.daffna -> Node typed file adapter -> owner-local SpiceHandleRegistry kind/live lookup -> native daffna -> tspice_daffna -> daffna_c. Shared C shim selects dafcs_c(handle) before daffna_c; oracle independently does sp.dafcs then sp.daffna.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -10650,14 +10852,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.daffna -> WASM file adapter -> owner-local SpiceHandleRegistry kind/live lookup -> actual _tspice_daffna -> shared C shim -> daffna_c; withAllocs/withMalloc releases buffers. Shared C shim selects dafcs_c(handle) before daffna_c; oracle independently does sp.dafcs then sp.daffna.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -10669,22 +10869,34 @@
       "scenarios": [
         {
           "caseId": "file-io-dasopr-open-empty-dla-success",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "dasopr opens a DLA-backed DAS file and dlabfs reports no segments Actual raw close/open/search operations observe flushed/reopened DLA output or a surviving DAS read claim; full descriptor fields or a genuine empty miss reach comparison. Mere file existence is not the only close assertion."
         },
         {
           "caseId": "file-io-dasopr-missing-file-error",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Representative dasopr missing-file error Requires the actual named CSPICE error FILENOTFOUND."
         },
         {
           "caseId": "file-io-dasopr-audit-duplicate-read-claims",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Duplicate DAS read claims retain a usable remaining handle after one close; compare the complete descriptor each time. Actual raw close/open/search operations observe flushed/reopened DLA output or a surviving DAS read claim; full descriptor fields or a genuine empty miss reach comparison. Mere file existence is not the only close assertion."
         },
         {
           "caseId": "file-io-dasopr-audit-wrong-file-format",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Stage then unload the existing kernel before the actual raw reader rejects its wrong on-disk architecture; avoid an already-open-file conflict. Requires the actual named CSPICE error FILARCHMISMATCH."
         }
       ],
@@ -10755,14 +10967,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.dasopr -> Node typed file adapter -> owner-local SpiceHandleRegistry register after actual open; virtual path resolver before open -> native dasopr -> tspice_dasopr -> dasopr_c.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -10785,14 +10995,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.dasopr -> WASM file adapter -> owner-local SpiceHandleRegistry register after actual open; virtual path resolver before open -> actual _tspice_dasopr -> shared C shim -> dasopr_c; withAllocs/withMalloc releases buffers.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -10804,12 +11012,18 @@
       "scenarios": [
         {
           "caseId": "file-io-dascls-closes-dla-handle-success",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "dascls closes a handle returned by dlaopn Actual raw close/open/search operations observe flushed/reopened DLA output or a surviving DAS read claim; full descriptor fields or a genuine empty miss reach comparison. Mere file existence is not the only close assertion."
         },
         {
           "caseId": "file-io-dascls-double-close-error",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Representative dascls double-close error Public opaque handle kind/close-once precondition: TS invokes the actual raw method, while Python guards its workflow handle state. This is not a claim that CSPICE rejects unknown numeric close handles."
         }
       ],
@@ -10859,7 +11073,9 @@
             "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/runtime/lifecycle.py",
             "packages/py-parity-checking/test/file-reader-oracle-errors.test.ts"
           ],
-          "caseIds": ["file-io-dascls-closes-dla-handle-success"]
+          "caseIds": [
+            "file-io-dascls-closes-dla-handle-success"
+          ]
         }
       ],
       "backends": {
@@ -10884,14 +11100,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.dascls -> Node typed file adapter -> owner-local SpiceHandleRegistry kind/live lookup -> native dascls -> tspice_dascls -> dascls_c.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -10914,14 +11128,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.dascls -> WASM file adapter -> owner-local SpiceHandleRegistry kind/live lookup -> actual _tspice_dascls -> shared C shim -> dascls_c; withAllocs/withMalloc releases buffers.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -10933,22 +11145,36 @@
       "scenarios": [
         {
           "caseId": "file-io-dlabfs-first-segment-found-success",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "dlabfs finds the first segment in a deterministic DSK fixture Every field of the actual returned DLA descriptor is compared exactly; a miss has no descriptor. The raw value is not reduced to found=true."
         },
         {
           "caseId": "file-io-dlabfs-kind-mismatch-error",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Representative dlabfs error when called with a DAF handle Public opaque handle kind/close-once precondition: TS invokes the actual raw method, while Python guards its workflow handle state. This is not a claim that CSPICE rejects unknown numeric close handles."
         },
         {
           "caseId": "file-io-dlabfs-audit-repeat-descriptor",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Beginning DLA search repeatedly returns all eight fields of the same first descriptor, not only found=true. Every field of the actual returned DLA descriptor is compared exactly; a miss has no descriptor. The raw value is not reduced to found=true."
         },
         {
           "caseId": "file-io-dlabfs-audit-empty-closed-writer",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "An empty authored DLA is valid after actual writer close, and its search returns a genuine miss; close aliases interoperate. Every field of the actual returned DLA descriptor is compared exactly; a miss has no descriptor. The raw value is not reduced to found=true."
         }
       ],
@@ -11000,7 +11226,9 @@
             "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/file_io.py",
             "packages/py-parity-checking/test/file-reader-oracle-errors.test.ts"
           ],
-          "caseIds": ["file-io-dlabfs-first-segment-found-success"]
+          "caseIds": [
+            "file-io-dlabfs-first-segment-found-success"
+          ]
         }
       ],
       "backends": {
@@ -11025,14 +11253,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.dlabfs -> Node typed file adapter -> owner-local SpiceHandleRegistry kind/live lookup -> native dlabfs -> tspice_dlabfs -> dlabfs_c. Native/heap eight-int result copied into DlaDescriptor, then all eight fields reach live assertion; oracle reads actual SpiceDLADescr.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -11055,14 +11281,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.dlabfs -> WASM file adapter -> owner-local SpiceHandleRegistry kind/live lookup -> actual _tspice_dlabfs -> shared C shim -> dlabfs_c; withAllocs/withMalloc releases buffers. Native/heap eight-int result copied into DlaDescriptor, then all eight fields reach live assertion; oracle reads actual SpiceDLADescr.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -11077,17 +11301,27 @@
       "scenarios": [
         {
           "caseId": "file-io-dlacls-alias-for-das-handle-success",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "dlacls closes a handle opened by dasopr on a DLA file Actual raw close/open/search operations observe flushed/reopened DLA output or a surviving DAS read claim; full descriptor fields or a genuine empty miss reach comparison. Mere file existence is not the only close assertion."
         },
         {
           "caseId": "file-io-dlacls-double-close-error",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Representative dlacls double-close error Public opaque handle kind/close-once precondition: TS invokes the actual raw method, while Python guards its workflow handle state. This is not a claim that CSPICE rejects unknown numeric close handles."
         },
         {
           "caseId": "file-io-dlacls-audit-empty-closed-writer",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "An empty authored DLA is valid after actual writer close, and its search returns a genuine miss; close aliases interoperate. Actual raw close/open/search operations observe flushed/reopened DLA output or a surviving DAS read claim; full descriptor fields or a genuine empty miss reach comparison. Mere file existence is not the only close assertion."
         }
       ],
@@ -11138,7 +11372,9 @@
             "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/runtime/lifecycle.py",
             "packages/py-parity-checking/test/file-reader-oracle-errors.test.ts"
           ],
-          "caseIds": ["file-io-dlacls-alias-for-das-handle-success"]
+          "caseIds": [
+            "file-io-dlacls-alias-for-das-handle-success"
+          ]
         }
       ],
       "backends": {
@@ -11163,14 +11399,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "alias",
           "trace": "raw.dlacls -> Node typed file adapter -> owner-local SpiceHandleRegistry kind/live lookup -> native dascls -> tspice_dascls -> dascls_c. Legitimate tspice DAS-close alias; actual raw implementation is invoked, Python calls actual SpiceyPy dascls.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -11193,17 +11427,15 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "alias",
           "trace": "raw.dlacls -> WASM file adapter -> owner-local SpiceHandleRegistry kind/live lookup -> actual _tspice_dascls -> shared C shim -> dascls_c; withAllocs/withMalloc releases buffers. Legitimate tspice DAS-close alias; actual raw implementation is invoked, Python calls actual SpiceyPy dascls.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
-          ]
+          "executions": []
         }
       }
     }
   ],
-  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical.\n\nPrior executions are historical. Rebind both required lanes and canonical CI to the revised source.\n\nEarlier source-bound executions remain historical on this branch. Fresh local and canonical validation is required."
+  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical.\n\nPrior executions are historical. Rebind both required lanes and canonical CI to the revised source.\n\nEarlier source-bound executions remain historical on this branch. Fresh local and canonical validation is required.\n\nCurrent source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
 }

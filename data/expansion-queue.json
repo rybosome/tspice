@@ -12,7 +12,11 @@
     "remainingAtBase": 487,
     "registeredCaseFiles": 162,
     "registeredScenarios": 1109,
-    "excluded": ["ftncls_c", "getcml_c", "prompt_c"]
+    "excluded": [
+      "ftncls_c",
+      "getcml_c",
+      "prompt_c"
+    ]
   },
   "statusDefinitions": {
     "planned": "Reserved scheduling proposal; no claim that prerequisite or API/oracle design is settled.",
@@ -93,7 +97,9 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": ["https://github.com/rybosome/tspice/pull/707"],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/707"
+      ],
       "validationEvidence": [
         {
           "sourceCommit": "bfedb1098e738e821b831ba9d1f9d6f7bc24c637",
@@ -154,7 +160,9 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": ["https://github.com/rybosome/tspice/pull/708"],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/708"
+      ],
       "validationEvidence": [
         {
           "kind": "local",
@@ -220,11 +228,18 @@
       },
       "oracle": {
         "status": "independent-route-source-investigated",
-        "missingTopLevelWrappers": ["maxd_c", "maxi_c", "mind_c", "mini_c"],
+        "missingTopLevelWrappers": [
+          "maxd_c",
+          "maxi_c",
+          "mind_c",
+          "mini_c"
+        ],
         "evidence": "https://github.com/rybosome/tspice/pull/707",
         "note": "Top-level wrappers remain absent for max/min; pinned symbols and ctypes varargs were investigated independently. A03 must wire and validate that route without substituting tspice output."
       },
-      "prs": ["https://github.com/rybosome/tspice/pull/714"],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/714"
+      ],
       "validationEvidence": [
         {
           "kind": "source-bound-required-lanes",
@@ -291,7 +306,9 @@
           "moved_c"
         ]
       },
-      "prs": ["https://github.com/rybosome/tspice/pull/720"],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/720"
+      ],
       "validationEvidence": [
         {
           "kind": "source-bound-required-lanes",
@@ -353,7 +370,9 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": ["https://github.com/rybosome/tspice/pull/709"],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/709"
+      ],
       "validationEvidence": [
         {
           "kind": "final-head-readiness",
@@ -429,7 +448,9 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": ["https://github.com/rybosome/tspice/pull/713"],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/713"
+      ],
       "validationEvidence": [
         {
           "kind": "source-bound-required-lanes",
@@ -484,7 +505,9 @@
       "apiPlacement": "packages/backend-contract/src/domains/coords-vectors.ts; raw methods retain canonical names without _c.",
       "owner": "Codex Step 8 (/root)",
       "status": "landed",
-      "dependsOn": ["A12-fixed-matrices"],
+      "dependsOn": [
+        "A12-fixed-matrices"
+      ],
       "prerequisiteReview": "Use existing row-major Mat3 output. Distinguish derivative direction, singular axes, flattening and azimuth conventions; internal CSPICE callees do not require public wrapper prerequisites.",
       "fixtures": "Authored scalar inputs; synthetic pool body conventions only where required.",
       "expectedChanges": {
@@ -495,7 +518,9 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": ["https://github.com/rybosome/tspice/pull/747"],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/747"
+      ],
       "validationEvidence": [
         {
           "kind": "local-focused",
@@ -561,7 +586,9 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": ["https://github.com/rybosome/tspice/pull/710"],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/710"
+      ],
       "validationEvidence": [
         {
           "kind": "final-head-readiness",
@@ -638,7 +665,9 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": ["https://github.com/rybosome/tspice/pull/711"],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/711"
+      ],
       "validationEvidence": [
         {
           "kind": "corrected-source-verification",
@@ -713,7 +742,9 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": ["https://github.com/rybosome/tspice/pull/715"],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/715"
+      ],
       "validationEvidence": [
         {
           "kind": "ci-run-reference",
@@ -783,7 +814,9 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": ["https://github.com/rybosome/tspice/pull/716"],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/716"
+      ],
       "validationEvidence": [
         {
           "kind": "source-bound-required-lanes",
@@ -848,7 +881,9 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": ["https://github.com/rybosome/tspice/pull/712"],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/712"
+      ],
       "validationEvidence": [
         {
           "kind": "corrected-source-verification",
@@ -911,7 +946,9 @@
       "apiPlacement": "Existing CoordsVectorsApi and A10 owned general-vector snapshots. Each raw method accepts flat row-major storage and explicit CSPICE dimensions.",
       "owner": "Codex Step 8 (/root)",
       "status": "landed",
-      "dependsOn": ["A10-general-vectors"],
+      "dependsOn": [
+        "A10-general-vectors"
+      ],
       "prerequisiteReview": "Reuse bounded dynamic-array policy from A10; establish explicit rows/columns and row-major layout with nonsquare distinguishing inputs and checked dimension products.",
       "fixtures": "None anticipated; authored scalar/array inputs.",
       "expectedChanges": {
@@ -922,7 +959,9 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": ["https://github.com/rybosome/tspice/pull/731"],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/731"
+      ],
       "validationEvidence": [
         {
           "kind": "local-focused",
@@ -976,7 +1015,9 @@
       "apiPlacement": "packages/backend-contract/src/domains/coords-vectors.ts; raw methods retain canonical names without _c.",
       "owner": "Codex Step 8 (/root)",
       "status": "landed",
-      "dependsOn": ["A12-fixed-matrices"],
+      "dependsOn": [
+        "A12-fixed-matrices"
+      ],
       "prerequisiteReview": "Immediate quaternion four-number representation; verify scalar-first ordering, axes, angle ranges and nonrotation/degenerate cases. The locked q2m route on finite 1e200 quaternion components can produce NaN matrix entries. Reuse the owned, nonfinite-preserving Mat3 result helper introduced in A12 PR #712.",
       "fixtures": "None anticipated; authored scalar/array inputs.",
       "expectedChanges": {
@@ -988,7 +1029,9 @@
         "missingTopLevelWrappers": [],
         "assessment": "All seven locked high-level wrappers are installed. EUL2M uses the independently typed linked routine for defined diagnostics and a paired valid-success comparison with its public wrapper. The remaining six use the locked high-level wrapper. Tagged tests retain exceptional matrix/vector output components."
       },
-      "prs": ["https://github.com/rybosome/tspice/pull/725"],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/725"
+      ],
       "validationEvidence": [
         {
           "kind": "focused-runtime",
@@ -1044,7 +1087,9 @@
       "apiPlacement": "Existing FramesApi alongside pxform and sxform, with their source-to-destination and flat row-major state transform conventions. All nine use flat canonical raw names.",
       "owner": "Codex Step 8 (/root)",
       "status": "landed",
-      "dependsOn": ["A12-fixed-matrices"],
+      "dependsOn": [
+        "A12-fixed-matrices"
+      ],
       "prerequisiteReview": "Reuses the existing 36-entry state transform and A12 matrix result branding. N0067 has three checked error routes using the same linked numerical routines.",
       "fixtures": "None anticipated; authored scalar/array inputs.",
       "expectedChanges": {
@@ -1055,7 +1100,9 @@
         "status": "independent-locked-library-route-established",
         "missingTopLevelWrappers": []
       },
-      "prs": ["https://github.com/rybosome/tspice/pull/736"],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/736"
+      ],
       "validationEvidence": [
         {
           "kind": "local-focused",
@@ -1119,7 +1166,9 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": ["https://github.com/rybosome/tspice/pull/717"],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/717"
+      ],
       "validationEvidence": [
         {
           "kind": "source-bound-required-lanes",
@@ -1179,7 +1228,9 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": ["https://github.com/rybosome/tspice/pull/718"],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/718"
+      ],
       "validationEvidence": [
         {
           "kind": "source-bound-required-lanes",
@@ -1241,7 +1292,9 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": ["https://github.com/rybosome/tspice/pull/719"],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/719"
+      ],
       "validationEvidence": [
         {
           "kind": "evidence-head-checkpoint",
@@ -1295,7 +1348,9 @@
       "apiPlacement": "Existing A18 StringsApi, exposing seven flat raw operations on sync and async clients.",
       "owner": "Codex Step 8 (/root)",
       "status": "landed",
-      "dependsOn": ["A18-string-transform"],
+      "dependsOn": [
+        "A18-string-transform"
+      ],
       "prerequisiteReview": "Stack on the reviewed A18 typed string domain and its NUL-free UTF-8 byte validation. All seven routes invoke the corresponding N0067 C routine. The six search-start carriers preserve the documented direction at signed32 maximum.",
       "fixtures": "Authored text, byte-index, and row literals. No kernels or external data.",
       "expectedChanges": {
@@ -1306,7 +1361,9 @@
         "status": "locked-public-and-typed-row-table-reviewed",
         "missingTopLevelWrappers": []
       },
-      "prs": ["https://github.com/rybosome/tspice/pull/726"],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/726"
+      ],
       "validationEvidence": [
         {
           "kind": "source-and-focused-runtime",
@@ -1366,7 +1423,9 @@
       "apiPlacement": "Existing StringsApi on the A18 prerequisite. Flat raw calls retain exact strings, list rows, byte offsets, inclusive indexes and separate consumed counts.",
       "owner": "Codex Step 8 (/root)",
       "status": "landed",
-      "dependsOn": ["A18-string-transform"],
+      "dependsOn": [
+        "A18-string-transform"
+      ],
       "prerequisiteReview": "Typed independent NEXTWD and NTHWD bindings use the locked library. LPARSE/LPARSM use exact C-buffer decoding and explicit widths. Empty LX4UNS supplies initialized outputs. Signed-leading-dot lexer counts are preserved.",
       "fixtures": "None anticipated; authored scalar/array inputs.",
       "expectedChanges": {
@@ -1375,9 +1434,14 @@
       },
       "oracle": {
         "status": "independent-locked-library-route-established",
-        "missingTopLevelWrappers": ["nextwd_c", "nthwd_c"]
+        "missingTopLevelWrappers": [
+          "nextwd_c",
+          "nthwd_c"
+        ]
       },
-      "prs": ["https://github.com/rybosome/tspice/pull/735"],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/735"
+      ],
       "validationEvidence": [
         {
           "kind": "local-focused",
@@ -1441,7 +1505,9 @@
       "apiPlacement": "A18 StringsApi, with a tagged HX2DP conversion result, full hexadecimal encoding length and optional caller output capacities.",
       "owner": "Codex Step 8 (/root)",
       "status": "landed",
-      "dependsOn": ["A18-string-transform"],
+      "dependsOn": [
+        "A18-string-transform"
+      ],
       "prerequisiteReview": "Resolve repml oracle gap. Verify numeric errors, width/precision, ordinal/cardinal English text and replacement count without trimming significant output.",
       "fixtures": "None anticipated; authored scalar/array inputs.",
       "expectedChanges": {
@@ -1450,9 +1516,13 @@
       },
       "oracle": {
         "status": "independent-route-investigation-required",
-        "missingTopLevelWrappers": ["repml_c"]
+        "missingTopLevelWrappers": [
+          "repml_c"
+        ]
       },
-      "prs": ["https://github.com/rybosome/tspice/pull/737"],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/737"
+      ],
       "validationEvidence": [
         {
           "kind": "local-focused",
@@ -1511,7 +1581,9 @@
       "apiPlacement": "packages/backend-contract/src/domains/coords-vectors.ts; raw methods retain canonical names without _c.",
       "owner": "Codex Step 8 (/root)",
       "status": "landed",
-      "dependsOn": ["A24-sorted-bounds"],
+      "dependsOn": [
+        "A24-sorted-bounds"
+      ],
       "prerequisiteReview": "Immediate shared numeric/character array encoding. Verify sorted-order preconditions, zero-based indices, order-vector mapping and legitimate -1 result.",
       "fixtures": "None anticipated; authored scalar/array inputs.",
       "expectedChanges": {
@@ -1522,7 +1594,9 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": ["https://github.com/rybosome/tspice/pull/732"],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/732"
+      ],
       "validationEvidence": [
         {
           "kind": "local-focused",
@@ -1580,7 +1654,9 @@
       "apiPlacement": "packages/backend-contract/src/domains/coords-vectors.ts; raw methods retain canonical names without _c.",
       "owner": "Codex Step 8 (/root)",
       "status": "landed",
-      "dependsOn": ["A24-sorted-bounds"],
+      "dependsOn": [
+        "A24-sorted-bounds"
+      ],
       "prerequisiteReview": "Reuse A24 checked integer/character snapshots and UTF-8 rectangle bounds. Direct canonical order, reorder and shell operations use independent byte-preserving ctypes bindings.",
       "fixtures": "None anticipated; authored scalar/array inputs.",
       "expectedChanges": {
@@ -1591,7 +1667,9 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": ["https://github.com/rybosome/tspice/pull/744"],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/744"
+      ],
       "validationEvidence": [
         {
           "kind": "local-focused",
@@ -1655,7 +1733,9 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": ["https://github.com/rybosome/tspice/pull/721"],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/721"
+      ],
       "validationEvidence": [
         {
           "kind": "ci-run-reference",
@@ -1715,7 +1795,9 @@
       "apiPlacement": "Existing CellsWindowsApi on the B03 owner registry, exposed on raw. Existing kit allocators own ordinary char, double and integer cells.",
       "owner": "Codex Step 8 (/root)",
       "status": "landed",
-      "dependsOn": ["B03-window-algebra"],
+      "dependsOn": [
+        "B03-window-algebra"
+      ],
       "prerequisiteReview": "Reuse B03 ordinary-cell vs window identity and lifetime. Bind the pinned copy_c on existing caller-owned oracle cells to observe failure state, set flags and character widths.",
       "fixtures": "None anticipated; authored scalar/array inputs.",
       "expectedChanges": {
@@ -1726,7 +1808,9 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": ["https://github.com/rybosome/tspice/pull/728"],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/728"
+      ],
       "validationEvidence": [
         {
           "kind": "local-focused",
@@ -1789,7 +1873,9 @@
       "apiPlacement": "Existing ordinary opaque char, int and double cell brands and CellsWindowsApi; B01 #728 (itself stacked on B03) supplies append, copy, membership and ownership support.",
       "owner": "Codex Step 8 (/root)",
       "status": "landed",
-      "dependsOn": ["B01-cell-arrays"],
+      "dependsOn": [
+        "B01-cell-arrays"
+      ],
       "prerequisiteReview": "Build on PR #728 to reuse the typed cell registry and real handle boundaries.",
       "fixtures": "Kernel-free authored cells, capacity, widths, typed items and expected toolkit status names. All inputs and named results are owned by the workflow or public test.",
       "expectedChanges": {
@@ -1800,7 +1886,9 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": ["https://github.com/rybosome/tspice/pull/742"],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/742"
+      ],
       "validationEvidence": [
         {
           "kind": "focused-compiled-runtime",
@@ -1872,7 +1960,9 @@
         "missingTopLevelWrappers": [],
         "assessment": "SpiceyPy 6.0.3 provides all thirteen wrappers. The independent sidecar uses typed calls to the locked library for four explicit result-cell capacities and a single-byte selector when the high-level wnextd wrapper preempts canonical behavior. Ordinary remaining calls use the locked wrappers."
       },
-      "prs": ["https://github.com/rybosome/tspice/pull/722"],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/722"
+      ],
       "validationEvidence": [
         {
           "kind": "focused-runtime",
@@ -1919,12 +2009,16 @@
       "id": "B04-string-set",
       "title": "List parsing into a character set",
       "wave": "B",
-      "routines": ["lparss_c"],
+      "routines": [
+        "lparss_c"
+      ],
       "domain": "cells-windows",
       "apiPlacement": "packages/backend-contract/src/domains/cells-windows.ts; raw methods retain canonical names without _c.",
       "owner": "Codex Step 8 (/root)",
       "status": "landed",
-      "dependsOn": ["A20-string-tokenize"],
+      "dependsOn": [
+        "A20-string-tokenize"
+      ],
       "prerequisiteReview": "Uses A20 native text validation and adds scoped parser-to-cell ownership. A18 precedes A20.",
       "fixtures": "None anticipated; authored scalar/array inputs.",
       "expectedChanges": {
@@ -1936,7 +2030,9 @@
         "missingTopLevelWrappers": [],
         "limitation": "High-level helper allocates a new cell. The typed reference calls LPARSS on the existing SpiceCell."
       },
-      "prs": ["https://github.com/rybosome/tspice/pull/746"],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/746"
+      ],
       "validationEvidence": [
         {
           "kind": "local-focused",
@@ -2003,7 +2099,9 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": ["https://github.com/rybosome/tspice/pull/734"],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/734"
+      ],
       "validationEvidence": [
         {
           "kind": "local-focused",
@@ -2072,7 +2170,9 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": ["https://github.com/rybosome/tspice/pull/749"],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/749"
+      ],
       "validationEvidence": [
         {
           "kind": "local-focused",
@@ -2115,12 +2215,18 @@
       "id": "B07-error-devices",
       "title": "Diagnostic devices, report selection and traceback",
       "wave": "B",
-      "routines": ["errdev_c", "errprt_c", "trcoff_c"],
+      "routines": [
+        "errdev_c",
+        "errprt_c",
+        "trcoff_c"
+      ],
       "domain": "error",
       "apiPlacement": "packages/backend-contract/src/domains/error.ts; raw methods retain canonical names without _c.",
       "owner": "Codex Step 8 (/root)",
       "status": "in-progress",
-      "dependsOn": ["B06-error-observation"],
+      "dependsOn": [
+        "B06-error-observation"
+      ],
       "prerequisiteReview": "Depends on B06 for traceback observations and the existing native and WASM capture/reset policy. Diagnostic device paths belong to the host or module filesystem and the toolkit retains written device units.",
       "fixtures": "Isolated subprocesses and owned scratch output only; no external scientific fixtures.",
       "expectedChanges": {
@@ -2131,7 +2237,9 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": ["https://github.com/rybosome/tspice/pull/779"],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/779"
+      ],
       "validationEvidence": [
         {
           "kind": "local-focused",
@@ -2161,12 +2269,16 @@
       "id": "B08-error-action",
       "title": "Process-global error action",
       "wave": "B",
-      "routines": ["erract_c"],
+      "routines": [
+        "erract_c"
+      ],
       "domain": "error",
       "apiPlacement": "packages/backend-contract/src/domains/error.ts; raw methods retain canonical names without _c.",
       "owner": "Codex Step 8 (/root)",
       "status": "in-progress",
-      "dependsOn": ["B06-error-observation"],
+      "dependsOn": [
+        "B06-error-observation"
+      ],
       "prerequisiteReview": "A maintainer decision on IGNORE/REPORT is required before exposing these modes alongside ordinary scientific calls.",
       "fixtures": "Isolated subprocesses and owned scratch output only; no external scientific fixtures.",
       "expectedChanges": {
@@ -2177,7 +2289,9 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": ["https://github.com/rybosome/tspice/pull/781"],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/781"
+      ],
       "validationEvidence": [],
       "nextAction": "Intake the pinned source after checkpoint 05 lands and passes main CI.",
       "worktree": "/private/tmp/tspice-step8-error-policy",
@@ -2228,7 +2342,9 @@
         "missingTopLevelWrappers": [],
         "assessment": "Owner-local labels derive from actual returned handles. The locked N0067 library supplies exact initialized DAFFPA via a separate binding, DAFGN via an initialized C string buffer and DAFGS as complete native-order bytes from its ordinary wrapper. Other five operations use their directly inspected public wrappers."
       },
-      "prs": ["https://github.com/rybosome/tspice/pull/727"],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/727"
+      ],
       "validationEvidence": [
         {
           "kind": "focused-runtime",
@@ -2287,7 +2403,9 @@
       "apiPlacement": "Six methods in the existing FileIoApi on C01 #727. DAF file reads use client-owned handles; packed summaries and native physical words use Uint8Array.",
       "owner": "Codex Step 8 (/root)",
       "status": "in-progress",
-      "dependsOn": ["C01-daf-navigation"],
+      "dependsOn": [
+        "C01-daf-navigation"
+      ],
       "prerequisiteReview": "Verified N0067 packed word clipping, foreign-format summary capacity, native-only physical reads, platform-specific f2c seek limits and file handle ownership.",
       "fixtures": "Project-authored read-only SPK and CK fixtures; existing PDS MGS CK for foreign-endian results and temporary defensive-test copies.",
       "expectedChanges": {
@@ -2298,7 +2416,9 @@
         "status": "independent-locked-library-route-established",
         "missingTopLevelWrappers": []
       },
-      "prs": ["https://github.com/rybosome/tspice/pull/738"],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/738"
+      ],
       "validationEvidence": [
         {
           "kind": "local-focused",
@@ -2341,12 +2461,20 @@
       "id": "C03-daf-mutation",
       "title": "DAF comments and summary replacement",
       "wave": "C",
-      "routines": ["dafac_c", "dafdc_c", "dafec_c", "dafrs_c"],
+      "routines": [
+        "dafac_c",
+        "dafdc_c",
+        "dafec_c",
+        "dafrs_c"
+      ],
       "domain": "file-io",
       "apiPlacement": "FileIoApi owner-bound DAF comment appending, deletion, paging and packed summary replacement.",
       "owner": "Codex Step 8 (/root)",
       "status": "in-progress",
-      "dependsOn": ["C01-daf-navigation", "C02-daf-records"],
+      "dependsOn": [
+        "C01-daf-navigation",
+        "C02-daf-records"
+      ],
       "prerequisiteReview": "Require writable DAF lifecycle and complete summary observation. Test comment paging, significant blanks, EOF and independent-reader validation after mutation.",
       "fixtures": "Independently generated writable type-8 SPK scratch files and private copies of the project-authored Step 7 two-segment SPK.",
       "expectedChanges": {
@@ -2357,7 +2485,9 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": ["https://github.com/rybosome/tspice/pull/751"],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/751"
+      ],
       "validationEvidence": [
         {
           "kind": "local-focused",
@@ -2420,7 +2550,9 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": ["https://github.com/rybosome/tspice/pull/743"],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/743"
+      ],
       "validationEvidence": [
         {
           "kind": "local-focused",
@@ -2478,7 +2610,9 @@
       "apiPlacement": "packages/backend-contract/src/domains/file-io.ts; raw methods retain canonical names without _c.",
       "owner": "Codex Step 8 (/root)",
       "status": "in-progress",
-      "dependsOn": ["C04-das-lifecycle"],
+      "dependsOn": [
+        "C04-das-lifecycle"
+      ],
       "prerequisiteReview": "Resolve missing character read/update oracle wrappers. Verify 1-based logical addresses, character substring bounds, array capacities and independent readback; split supported numeric subset if useful.",
       "fixtures": "Independent live SpiceyPy DAS writer/reader where available; live library ABI route investigation for character records.",
       "expectedChanges": {
@@ -2487,9 +2621,14 @@
       },
       "oracle": {
         "status": "verified-locked-library-abi",
-        "missingTopLevelWrappers": ["dasrdc_c", "dasudc_c"]
+        "missingTopLevelWrappers": [
+          "dasrdc_c",
+          "dasudc_c"
+        ]
       },
-      "prs": ["https://github.com/rybosome/tspice/pull/750"],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/750"
+      ],
       "validationEvidence": [
         {
           "kind": "local-focused",
@@ -2532,12 +2671,18 @@
       "id": "C06-das-comments",
       "title": "DAS comment storage",
       "wave": "C",
-      "routines": ["dasac_c", "dasdc_c", "dasec_c"],
+      "routines": [
+        "dasac_c",
+        "dasdc_c",
+        "dasec_c"
+      ],
       "domain": "file-io",
       "apiPlacement": "FileIoApi on owned DAS/DLA claims.",
       "owner": "Codex Step 8 (/root)",
       "status": "in-progress",
-      "dependsOn": ["C04-das-lifecycle"],
+      "dependsOn": [
+        "C04-das-lifecycle"
+      ],
       "prerequisiteReview": "Verify fixed-width text, paged reads, end-of-comments and mutation persistence while preserving file claims.",
       "fixtures": "Separate named DAS/DLA files and private copies of the repository-authored audit-multi-dsk.bds.",
       "expectedChanges": {
@@ -2548,7 +2693,9 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": ["https://github.com/rybosome/tspice/pull/755"],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/755"
+      ],
       "validationEvidence": [
         {
           "kind": "local-focused",
@@ -2585,12 +2732,20 @@
       "id": "C07-dla-segments",
       "title": "DLA backward traversal and segment construction",
       "wave": "C",
-      "routines": ["dlabbs_c", "dlabns_c", "dlaens_c", "dlafps_c"],
+      "routines": [
+        "dlabbs_c",
+        "dlabns_c",
+        "dlaens_c",
+        "dlafps_c"
+      ],
       "domain": "file-io",
       "apiPlacement": "FileIoApi with existing DAS/DLA claim, plain eight-word descriptor and found union.",
       "owner": "Codex Step 8 (/root)",
       "status": "in-progress",
-      "dependsOn": ["C04-das-lifecycle", "C05-das-data"],
+      "dependsOn": [
+        "C04-das-lifecycle",
+        "C05-das-data"
+      ],
       "prerequisiteReview": "Reuse all eight DLA descriptor fields and found/error treatment. Test multiple empty/nonempty segments, current segment state and interrupted-write cleanup.",
       "fixtures": "Private independently authored generic three-component DLAs and project synthetic four-segment DSK.",
       "expectedChanges": {
@@ -2601,7 +2756,9 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": ["https://github.com/rybosome/tspice/pull/758"],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/758"
+      ],
       "validationEvidence": [
         {
           "kind": "local-focused",
@@ -2638,7 +2795,13 @@
       "id": "C08-ek-records",
       "title": "EK record lifecycle",
       "wave": "C",
-      "routines": ["ekappr_c", "ekbseg_c", "ekdelr_c", "ekinsr_c", "ekops_c"],
+      "routines": [
+        "ekappr_c",
+        "ekbseg_c",
+        "ekdelr_c",
+        "ekinsr_c",
+        "ekops_c"
+      ],
       "domain": "ek",
       "apiPlacement": "packages/backend-contract/src/domains/ek.ts; raw methods retain canonical names without _c.",
       "owner": "Codex Step 8 (/root)",
@@ -2654,7 +2817,9 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": ["https://github.com/rybosome/tspice/pull/753"],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/753"
+      ],
       "validationEvidence": [
         {
           "kind": "local-focused",
@@ -2712,7 +2877,9 @@
       "apiPlacement": "packages/backend-contract/src/domains/ek.ts; raw methods retain canonical names without _c.",
       "owner": "Codex Step 8 (/root)",
       "status": "in-progress",
-      "dependsOn": ["C08-ek-records"],
+      "dependsOn": [
+        "C08-ek-records"
+      ],
       "prerequisiteReview": "Verify null flags, vector entry lengths, row indexing, character truncation and schema enforcement; independently query persisted values.",
       "fixtures": "Synthetic mixed-null/multi-value EK records; all scratch output reclaimed.",
       "expectedChanges": {
@@ -2723,7 +2890,9 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": ["https://github.com/rybosome/tspice/pull/762"],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/762"
+      ],
       "validationEvidence": [
         {
           "kind": "local-focused",
@@ -2784,7 +2953,9 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": ["https://github.com/rybosome/tspice/pull/767"],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/767"
+      ],
       "validationEvidence": [
         {
           "kind": "local-focused",
@@ -2834,7 +3005,9 @@
       "apiPlacement": "packages/backend-contract/src/domains/frames.ts; raw methods retain canonical names without _c.",
       "owner": "Codex Step 8 (/root)",
       "status": "in-progress",
-      "dependsOn": ["B03-window-algebra"],
+      "dependsOn": [
+        "B03-window-algebra"
+      ],
       "prerequisiteReview": "Requires B03 live window-kind and bounded partially written Fortran control validation.",
       "fixtures": "Tiny synthetic binary PCK generated by locked oracle; existing PCK used only as independent reference where suitable.",
       "expectedChanges": {
@@ -2845,7 +3018,9 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": ["https://github.com/rybosome/tspice/pull/759"],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/759"
+      ],
       "validationEvidence": [
         {
           "kind": "local-focused",
@@ -2905,7 +3080,9 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": ["https://github.com/rybosome/tspice/pull/760"],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/760"
+      ],
       "validationEvidence": [
         {
           "kind": "local-focused",
@@ -2955,7 +3132,10 @@
       "apiPlacement": "packages/backend-contract/src/domains/frames.ts; raw methods retain canonical names without _c.",
       "owner": "Codex Step 8 (/root)",
       "status": "in-progress",
-      "dependsOn": ["C01-daf-navigation", "C02-daf-records"],
+      "dependsOn": [
+        "C01-daf-navigation",
+        "C02-daf-records"
+      ],
       "prerequisiteReview": "Reuse existing loaded CK and Step 7 pointing/coverage fixtures. Add opaque packed CK descriptor representation only for immediate consumers; validate frame derivatives and record indices.",
       "fixtures": "Existing synthetic type-2/type-3 CKs; add independently generated subtype fixtures only if necessary.",
       "expectedChanges": {
@@ -2966,7 +3146,9 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": ["https://github.com/rybosome/tspice/pull/765"],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/765"
+      ],
       "validationEvidence": [
         {
           "kind": "local-focused",
@@ -3003,7 +3185,10 @@
       "id": "C14-text-command-state",
       "title": "Text line reading and command-line state",
       "wave": "C",
-      "routines": ["rdtext_c", "putcml_c"],
+      "routines": [
+        "rdtext_c",
+        "putcml_c"
+      ],
       "domain": "file-io",
       "apiPlacement": "packages/backend-contract/src/domains/file-io.ts; raw methods retain canonical names without _c.",
       "owner": "Codex Step 8 (/root)",
@@ -3017,9 +3202,13 @@
       },
       "oracle": {
         "status": "independent-route-investigation-required",
-        "missingTopLevelWrappers": ["putcml_c"]
+        "missingTopLevelWrappers": [
+          "putcml_c"
+        ]
       },
-      "prs": ["https://github.com/rybosome/tspice/pull/772"],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/772"
+      ],
       "validationEvidence": [
         {
           "kind": "local-focused",
@@ -3056,7 +3245,13 @@
       "id": "D01-time-additions",
       "title": "Calendar parsing controls and local solar time",
       "wave": "D",
-      "routines": ["etcal_c", "utc2et_c", "tparch_c", "tsetyr_c", "et2lst_c"],
+      "routines": [
+        "etcal_c",
+        "utc2et_c",
+        "tparch_c",
+        "tsetyr_c",
+        "et2lst_c"
+      ],
       "domain": "time",
       "apiPlacement": "packages/backend-contract/src/domains/time.ts; raw methods retain canonical names without _c.",
       "owner": "Codex Step 8 (/root)",
@@ -3072,7 +3267,9 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": ["https://github.com/rybosome/tspice/pull/741"],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/741"
+      ],
       "validationEvidence": [
         {
           "kind": "focused-compiled-runtime",
@@ -3109,7 +3306,12 @@
       "id": "D02-sclk-additions",
       "title": "Remaining spacecraft-clock primitives",
       "wave": "D",
-      "routines": ["sce2t_c", "scfmt_c", "scpart_c", "sctiks_c"],
+      "routines": [
+        "sce2t_c",
+        "scfmt_c",
+        "scpart_c",
+        "sctiks_c"
+      ],
       "domain": "time",
       "apiPlacement": "packages/backend-contract/src/domains/time.ts; raw methods retain canonical names without _c.",
       "owner": "Codex Step 8 (/root)",
@@ -3126,7 +3328,9 @@
         "missingTopLevelWrappers": [],
         "assessment": "All four installed wrappers were inspected. SCE2T successful public values are compared to initialized linked SPICELIB output; early failures use the independently loaded ABI with matching trace. SCFMT uses a guarded canonical buffer call for nonpositive lengths and otherwise the locked wrapper. SCPART and SCTIKS use the locked wrappers."
       },
-      "prs": ["https://github.com/rybosome/tspice/pull/724"],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/724"
+      ],
       "validationEvidence": [
         {
           "kind": "focused-runtime",
@@ -3186,7 +3390,9 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": ["https://github.com/rybosome/tspice/pull/740"],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/740"
+      ],
       "validationEvidence": [
         {
           "kind": "local-focused",
@@ -3223,7 +3429,12 @@
       "id": "D04-surface-names",
       "title": "Surface-name translations",
       "wave": "D",
-      "routines": ["srfc2s_c", "srfcss_c", "srfs2c_c", "srfscc_c"],
+      "routines": [
+        "srfc2s_c",
+        "srfcss_c",
+        "srfs2c_c",
+        "srfscc_c"
+      ],
       "domain": "ids-names",
       "apiPlacement": "packages/backend-contract/src/domains/ids-names.ts; raw methods retain canonical names without _c.",
       "owner": "Codex Step 8 (/root)",
@@ -3240,7 +3451,9 @@
         "missingTopLevelWrappers": [],
         "assessment": "Four locked bindings inspected. Code-to-name byte output and isName are read through a typed caller-owned C buffer. Name-to-code uses locked SpiceyPy wrappers with scoped found handling. The undefined signed surface hash is rejected before translation in both independent routes."
       },
-      "prs": ["https://github.com/rybosome/tspice/pull/723"],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/723"
+      ],
       "validationEvidence": [
         {
           "kind": "focused-runtime",
@@ -3277,14 +3490,20 @@
       "id": "E01-orbital-elements",
       "title": "Conic and equinoctial elements",
       "wave": "E",
-      "routines": ["conics_c", "eqncpv_c", "oscelt_c", "oscltx_c", "prop2b_c"],
+      "routines": [
+        "conics_c",
+        "eqncpv_c",
+        "oscelt_c",
+        "oscltx_c",
+        "prop2b_c"
+      ],
       "domain": "ephemeris",
       "apiPlacement": "packages/backend-contract/src/domains/ephemeris.ts; raw methods retain canonical names without _c.",
-      "owner": null,
+      "owner": "Codex Step 8 (/root)",
       "status": "in-progress",
       "dependsOn": [],
       "prerequisiteReview": "Define directly consumed element tuples with explicit units/epochs; test circular/equatorial/elliptic/hyperbolic limits and invalid gravitational parameters.",
-      "fixtures": "Authored analytic two-body states and elements; no mission observations.",
+      "fixtures": "Project-authored numeric states, element tuples, epochs, pole angles, elapsed times and central GM. No external files or kernels.",
       "expectedChanges": {
         "domain": "ephemeris",
         "scope": "Add raw contract/JSDoc, shared C calls, Node adapter/native registration and WASM adapter/exports; regenerate compiled artifacts; update fake/facade/schema consumers and live parity dispatch/cases. See common acceptance requirements."
@@ -3293,28 +3512,40 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": ["https://github.com/rybosome/tspice/pull/730"],
-      "validationEvidence": [],
-      "nextAction": "Intake the pinned source after checkpoint 03 lands and passes main CI.",
-      "sourceSnapshot": {
-        "number": 730,
-        "url": "https://github.com/rybosome/tspice/pull/730",
-        "head": "a0f8b154f3cbca72700e5deddf965c6b7ec6a76f",
-        "base": "73f3fec8788ed926351f891b459ac75d434f6446",
-        "ci": "https://github.com/rybosome/tspice/actions/runs/43563465883",
-        "ciConclusion": "success"
-      },
-      "checkpoint": {
-        "number": 4,
-        "status": "pending intake"
-      },
-      "deliveryNote": "The pinned source head passed its configured CI matrix."
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/730"
+      ],
+      "validationEvidence": [
+        {
+          "kind": "local-focused",
+          "result": "51 registered workflows with 105 calls and 22 expected scientific errors passed on the independent locked oracle. Both compiled backends passed 102 live comparisons plus four public tests. All 17 Node and 22 WASM domain tests and the no-DOM fixture passed. Real Chrome exercised all five methods."
+        },
+        {
+          "kind": "source-and-abi",
+          "result": "Actual N0067 OSCLTX receives all 20 allocated doubles and publishes the eleven defined fields. The independent pinned wrapper requires an explicit CSPICE failure check. EQNCPV zero mean-longitude rate compares NaN/finite classifications across all six coordinates. Generated WASM SHA-256 ef97340873af4818c45ae04ed4a515d561fcc57c0561e7ea38d9334429944744."
+        },
+        {
+          "kind": "source-bound-required-lanes",
+          "testedCommit": "b72ef2e9b9015fb011159ceb1dcf2ef695a09981",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43562566636/job/132349271728",
+          "result": "Both complete required lanes passed locally on b72ef2e9b9015fb011159ceb1dcf2ef695a09981. JavaScript: 2,536 parity tests and one expected guard skip. Native-required: 2,320 registered Node/WASM live comparisons; 2,537 parity-package tests with no skips, including the native-required guard; 83 native wrapper, 622 WASM, 28 core and 150 facade tests passed. Inspected successful Linux Node 22 native-required job 132349271728 on b72ef2e9b9015fb011159ceb1dcf2ef695a09981: 2,320 registered Node/WASM live comparisons; 2,537 parity-package tests with no skips, including the native-required guard; 83 native wrapper, 622 WASM, 28 core and 150 facade tests passed."
+        }
+      ],
+      "nextAction": "Wait for the full metadata-head CI matrix and verify explicit rebaseability before marking the PR ready; do not merge.",
+      "worktree": "/private/tmp/tspice-step8-orbital-elements",
+      "branch": "codex/expand-orbital-elements",
+      "baseCommit": "73f3fec8788ed926351f891b459ac75d434f6446",
+      "progressNote": "Both required local lanes and observed canonical native-required CI passed on the implementation source b72ef2e9. 2,320 registered Node/WASM live comparisons; 2,537 parity-package tests with no skips, including the native-required guard; 83 native wrapper, 622 WASM, 28 core and 150 facade tests passed.",
+      "priorCheckpoint": "Five direct canonical routes and the locked-oracle OSCLTX status repair are reviewed. Full local and CI verification remains independent of the focused results."
     },
     {
       "id": "E02-tle-propagation",
       "title": "Two-line element parsing and SGP4",
       "wave": "E",
-      "routines": ["evsgp4_c", "getelm_c"],
+      "routines": [
+        "evsgp4_c",
+        "getelm_c"
+      ],
       "domain": "ephemeris",
       "apiPlacement": "packages/backend-contract/src/domains/ephemeris.ts; raw methods retain canonical names without _c.",
       "owner": null,
@@ -3330,7 +3561,9 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": ["https://github.com/rybosome/tspice/pull/739"],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/739"
+      ],
       "validationEvidence": [],
       "nextAction": "Intake the pinned source after checkpoint 03 lands and passes main CI.",
       "sourceSnapshot": {
@@ -3351,7 +3584,12 @@
       "id": "E03-spk-lowlevel",
       "title": "SPK load, native evaluation and subset",
       "wave": "E",
-      "routines": ["spklef_c", "spkuef_c", "spkpvn_c", "spksub_c"],
+      "routines": [
+        "spklef_c",
+        "spkuef_c",
+        "spkpvn_c",
+        "spksub_c"
+      ],
       "domain": "ephemeris",
       "apiPlacement": "packages/backend-contract/src/domains/ephemeris.ts; raw methods retain canonical names without _c.",
       "owner": null,
@@ -3367,7 +3605,9 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": ["https://github.com/rybosome/tspice/pull/777"],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/777"
+      ],
       "validationEvidence": [],
       "nextAction": "Intake the pinned source after checkpoint 03 lands and passes main CI.",
       "sourceSnapshot": {
@@ -3388,7 +3628,11 @@
       "id": "E04-spk-chebyshev",
       "title": "SPK Chebyshev segment writers",
       "wave": "E",
-      "routines": ["spkw02_c", "spkw03_c", "spkw20_c"],
+      "routines": [
+        "spkw02_c",
+        "spkw03_c",
+        "spkw20_c"
+      ],
       "domain": "ephemeris",
       "apiPlacement": "packages/backend-contract/src/domains/ephemeris.ts; raw methods retain canonical names without _c.",
       "owner": null,
@@ -3404,7 +3648,9 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": ["https://github.com/rybosome/tspice/pull/757"],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/757"
+      ],
       "validationEvidence": [],
       "nextAction": "Intake the pinned source after checkpoint 03 lands and passes main CI.",
       "sourceSnapshot": {
@@ -3425,7 +3671,12 @@
       "id": "E05-spk-interpolation",
       "title": "SPK interpolated state writers",
       "wave": "E",
-      "routines": ["spkw09_c", "spkw12_c", "spkw13_c", "spkw18_c"],
+      "routines": [
+        "spkw09_c",
+        "spkw12_c",
+        "spkw13_c",
+        "spkw18_c"
+      ],
       "domain": "ephemeris",
       "apiPlacement": "packages/backend-contract/src/domains/ephemeris.ts; raw methods retain canonical names without _c.",
       "owner": null,
@@ -3441,7 +3692,9 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": ["https://github.com/rybosome/tspice/pull/761"],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/761"
+      ],
       "validationEvidence": [],
       "nextAction": "Intake the pinned source after checkpoint 03 lands and passes main CI.",
       "sourceSnapshot": {
@@ -3462,7 +3715,12 @@
       "id": "E06-spk-analytic",
       "title": "SPK analytic/orbital segment writers",
       "wave": "E",
-      "routines": ["spkw05_c", "spkw10_c", "spkw15_c", "spkw17_c"],
+      "routines": [
+        "spkw05_c",
+        "spkw10_c",
+        "spkw15_c",
+        "spkw17_c"
+      ],
       "domain": "ephemeris",
       "apiPlacement": "packages/backend-contract/src/domains/ephemeris.ts; raw methods retain canonical names without _c.",
       "owner": null,
@@ -3478,7 +3736,9 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": ["https://github.com/rybosome/tspice/pull/763"],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/763"
+      ],
       "validationEvidence": [],
       "nextAction": "Intake the pinned source after checkpoint 03 lands and passes main CI.",
       "sourceSnapshot": {
@@ -3499,7 +3759,11 @@
       "id": "E07-spk-streaming",
       "title": "SPK type-14 streaming workflow",
       "wave": "E",
-      "routines": ["spk14a_c", "spk14b_c", "spk14e_c"],
+      "routines": [
+        "spk14a_c",
+        "spk14b_c",
+        "spk14e_c"
+      ],
       "domain": "ephemeris",
       "apiPlacement": "packages/backend-contract/src/domains/ephemeris.ts; raw methods retain canonical names without _c.",
       "owner": null,
@@ -3515,7 +3779,9 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": ["https://github.com/rybosome/tspice/pull/766"],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/766"
+      ],
       "validationEvidence": [],
       "nextAction": "Intake the pinned source after checkpoint 03 lands and passes main CI.",
       "sourceSnapshot": {
@@ -3561,7 +3827,9 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": ["https://github.com/rybosome/tspice/pull/770"],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/770"
+      ],
       "validationEvidence": [],
       "nextAction": "Intake the pinned source after checkpoint 03 lands and passes main CI.",
       "sourceSnapshot": {
@@ -3582,7 +3850,13 @@
       "id": "E09-spk-relative-observers",
       "title": "Constant position/velocity target and observer states",
       "wave": "E",
-      "routines": ["azlcpo_c", "spkcpo_c", "spkcpt_c", "spkcvo_c", "spkcvt_c"],
+      "routines": [
+        "azlcpo_c",
+        "spkcpo_c",
+        "spkcpt_c",
+        "spkcvo_c",
+        "spkcvt_c"
+      ],
       "domain": "ephemeris",
       "apiPlacement": "packages/backend-contract/src/domains/ephemeris.ts; raw methods retain canonical names without _c.",
       "owner": null,
@@ -3598,7 +3872,9 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": ["https://github.com/rybosome/tspice/pull/774"],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/774"
+      ],
       "validationEvidence": [],
       "nextAction": "Intake the pinned source after checkpoint 03 lands and passes main CI.",
       "sourceSnapshot": {
@@ -3644,7 +3920,9 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": ["https://github.com/rybosome/tspice/pull/729"],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/729"
+      ],
       "validationEvidence": [],
       "nextAction": "Intake the pinned source after checkpoint 04 lands and passes main CI.",
       "sourceSnapshot": {
@@ -3689,7 +3967,9 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": ["https://github.com/rybosome/tspice/pull/733"],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/733"
+      ],
       "validationEvidence": [],
       "nextAction": "Intake the pinned source after checkpoint 04 lands and passes main CI.",
       "sourceSnapshot": {
@@ -3723,7 +4003,9 @@
       "apiPlacement": "packages/backend-contract/src/domains/geometry.ts; raw methods retain canonical names without _c.",
       "owner": null,
       "status": "in-progress",
-      "dependsOn": ["E11-ellipse-geometry"],
+      "dependsOn": [
+        "E11-ellipse-geometry"
+      ],
       "prerequisiteReview": "Reuse ellipse result from E11 for edlimb; remaining point/normal operations can split independently. Verify axes/inside/outside/tangent and zero-radius errors.",
       "fixtures": "None anticipated; authored scalar/array inputs.",
       "expectedChanges": {
@@ -3734,7 +4016,9 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": ["https://github.com/rybosome/tspice/pull/748"],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/748"
+      ],
       "validationEvidence": [],
       "nextAction": "Intake the pinned source after checkpoint 04 lands and passes main CI.",
       "sourceSnapshot": {
@@ -3755,7 +4039,11 @@
       "id": "E13-surface-derivatives",
       "title": "Surface tangencies and derivatives",
       "wave": "E",
-      "routines": ["dnearp_c", "surfpv_c", "tangpt_c"],
+      "routines": [
+        "dnearp_c",
+        "surfpv_c",
+        "tangpt_c"
+      ],
       "domain": "geometry",
       "apiPlacement": "packages/backend-contract/src/domains/geometry.ts; raw methods retain canonical names without _c.",
       "owner": null,
@@ -3771,7 +4059,9 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": ["https://github.com/rybosome/tspice/pull/764"],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/764"
+      ],
       "validationEvidence": [],
       "nextAction": "Intake the pinned source after checkpoint 04 lands and passes main CI.",
       "sourceSnapshot": {
@@ -3792,7 +4082,13 @@
       "id": "E14-legacy-surface-geometry",
       "title": "Legacy surface points and illumination",
       "wave": "E",
-      "routines": ["illum_c", "srfxpt_c", "subpt_c", "subsol_c", "edterm_c"],
+      "routines": [
+        "illum_c",
+        "srfxpt_c",
+        "subpt_c",
+        "subsol_c",
+        "edterm_c"
+      ],
       "domain": "geometry",
       "apiPlacement": "packages/backend-contract/src/domains/geometry.ts; raw methods retain canonical names without _c.",
       "owner": null,
@@ -3808,7 +4104,9 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": ["https://github.com/rybosome/tspice/pull/776"],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/776"
+      ],
       "validationEvidence": [],
       "nextAction": "Intake the pinned source after checkpoint 04 lands and passes main CI.",
       "sourceSnapshot": {
@@ -3829,7 +4127,12 @@
       "id": "E15-field-of-view",
       "title": "Instrument FOV definitions and visibility",
       "wave": "E",
-      "routines": ["getfov_c", "getfvn_c", "fovray_c", "fovtrg_c"],
+      "routines": [
+        "getfov_c",
+        "getfvn_c",
+        "fovray_c",
+        "fovtrg_c"
+      ],
       "domain": "geometry",
       "apiPlacement": "packages/backend-contract/src/domains/geometry.ts; raw methods retain canonical names without _c.",
       "owner": null,
@@ -3845,7 +4148,9 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": ["https://github.com/rybosome/tspice/pull/756"],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/756"
+      ],
       "validationEvidence": [],
       "nextAction": "Intake the pinned source after checkpoint 04 lands and passes main CI.",
       "sourceSnapshot": {
@@ -3866,7 +4171,11 @@
       "id": "E16-geometry-quantities",
       "title": "Solar longitude, phase and target separation",
       "wave": "E",
-      "routines": ["phaseq_c", "lspcn_c", "trgsep_c"],
+      "routines": [
+        "phaseq_c",
+        "lspcn_c",
+        "trgsep_c"
+      ],
       "domain": "geometry",
       "apiPlacement": "packages/backend-contract/src/domains/geometry.ts; raw methods retain canonical names without _c.",
       "owner": null,
@@ -3882,7 +4191,9 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": ["https://github.com/rybosome/tspice/pull/745"],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/745"
+      ],
       "validationEvidence": [],
       "nextAction": "Intake the pinned source after checkpoint 04 lands and passes main CI.",
       "sourceSnapshot": {
@@ -3926,7 +4237,9 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": ["https://github.com/rybosome/tspice/pull/752"],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/752"
+      ],
       "validationEvidence": [],
       "nextAction": "Intake the pinned source after checkpoint 04 lands and passes main CI.",
       "sourceSnapshot": {
@@ -3971,7 +4284,9 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": ["https://github.com/rybosome/tspice/pull/754"],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/754"
+      ],
       "validationEvidence": [],
       "nextAction": "Intake the pinned source after checkpoint 04 lands and passes main CI.",
       "sourceSnapshot": {
@@ -3992,7 +4307,13 @@
       "id": "E19-dsk-intersections",
       "title": "DSK ray queries and tolerance state",
       "wave": "E",
-      "routines": ["dskx02_c", "dskxsi_c", "dskxv_c", "dskgtl_c", "dskstl_c"],
+      "routines": [
+        "dskx02_c",
+        "dskxsi_c",
+        "dskxv_c",
+        "dskgtl_c",
+        "dskstl_c"
+      ],
       "domain": "dsk",
       "apiPlacement": "packages/backend-contract/src/domains/dsk.ts; raw methods retain canonical names without _c.",
       "owner": null,
@@ -4008,7 +4329,9 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": ["https://github.com/rybosome/tspice/pull/769"],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/769"
+      ],
       "validationEvidence": [],
       "nextAction": "Intake the pinned source after checkpoint 04 lands and passes main CI.",
       "sourceSnapshot": {
@@ -4029,7 +4352,12 @@
       "id": "E20-extended-surfaces",
       "title": "Surface grids, normals, limbs and terminators",
       "wave": "E",
-      "routines": ["latsrf_c", "srfnrm_c", "limbpt_c", "termpt_c"],
+      "routines": [
+        "latsrf_c",
+        "srfnrm_c",
+        "limbpt_c",
+        "termpt_c"
+      ],
       "domain": "geometry",
       "apiPlacement": "packages/backend-contract/src/domains/geometry.ts; raw methods retain canonical names without _c.",
       "owner": null,
@@ -4045,7 +4373,9 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": ["https://github.com/rybosome/tspice/pull/773"],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/773"
+      ],
       "validationEvidence": [],
       "nextAction": "Intake the pinned source after checkpoint 04 lands and passes main CI.",
       "sourceSnapshot": {
@@ -4098,7 +4428,9 @@
           "term_pl02"
         ]
       },
-      "prs": ["https://github.com/rybosome/tspice/pull/778"],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/778"
+      ],
       "validationEvidence": [],
       "nextAction": "Intake the pinned source after checkpoint 04 lands and passes main CI.",
       "sourceSnapshot": {
@@ -4142,7 +4474,9 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": ["https://github.com/rybosome/tspice/pull/775"],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/775"
+      ],
       "validationEvidence": [],
       "nextAction": "Intake the pinned source after checkpoint 05 lands and passes main CI.",
       "sourceSnapshot": {
@@ -4163,12 +4497,18 @@
       "id": "E23-gf-visibility",
       "title": "Geometry Finder occultation and FOV searches",
       "wave": "E",
-      "routines": ["gfoclt_c", "gfrfov_c", "gftfov_c"],
+      "routines": [
+        "gfoclt_c",
+        "gfrfov_c",
+        "gftfov_c"
+      ],
       "domain": "geometry-gf",
       "apiPlacement": "packages/backend-contract/src/domains/geometry-gf.ts; raw methods retain canonical names without _c.",
       "owner": null,
       "status": "in-progress",
-      "dependsOn": ["E15-field-of-view"],
+      "dependsOn": [
+        "E15-field-of-view"
+      ],
       "prerequisiteReview": "Reuse reviewed FOV definitions and GF windows; test complete boundary intervals, correction modes, misses and workspace capacity.",
       "fixtures": "Authored FOV/geometry kernels; independent oracle plus analytic event checks.",
       "expectedChanges": {
@@ -4179,7 +4519,9 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": ["https://github.com/rybosome/tspice/pull/768"],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/768"
+      ],
       "validationEvidence": [],
       "nextAction": "Intake the pinned source after checkpoint 05 lands and passes main CI.",
       "sourceSnapshot": {
@@ -4200,7 +4542,11 @@
       "id": "E24-gf-configurable",
       "title": "Configurable Geometry Finder callbacks",
       "wave": "E",
-      "routines": ["gfevnt_c", "gffove_c", "gfocce_c"],
+      "routines": [
+        "gfevnt_c",
+        "gffove_c",
+        "gfocce_c"
+      ],
       "domain": "geometry-gf",
       "apiPlacement": "packages/backend-contract/src/domains/geometry-gf.ts; raw methods retain canonical names without _c.",
       "owner": null,
@@ -4216,7 +4562,9 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": ["https://github.com/rybosome/tspice/pull/782"],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/782"
+      ],
       "validationEvidence": [],
       "nextAction": "Intake the pinned source after checkpoint 05 lands and passes main CI.",
       "sourceSnapshot": {
@@ -4237,7 +4585,13 @@
       "id": "E25-gf-user-functions",
       "title": "User-function search and differentiation",
       "wave": "E",
-      "routines": ["gfudb_c", "gfuds_c", "uddc_c", "uddf_c", "udf_c"],
+      "routines": [
+        "gfudb_c",
+        "gfuds_c",
+        "uddc_c",
+        "uddf_c",
+        "udf_c"
+      ],
       "domain": "geometry-gf",
       "apiPlacement": "packages/backend-contract/src/domains/geometry-gf.ts; raw methods retain canonical names without _c.",
       "owner": null,
@@ -4253,7 +4607,9 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": ["https://github.com/rybosome/tspice/pull/780"],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/780"
+      ],
       "validationEvidence": [],
       "nextAction": "Intake the pinned source after checkpoint 05 lands and passes main CI.",
       "sourceSnapshot": {
@@ -4274,7 +4630,12 @@
       "id": "E26-gf-signals-progress",
       "title": "Geometry Finder interrupts and progress updates",
       "wave": "E",
-      "routines": ["gfbail_c", "gfclrh_c", "gfinth_c", "gfrepu_c"],
+      "routines": [
+        "gfbail_c",
+        "gfclrh_c",
+        "gfinth_c",
+        "gfrepu_c"
+      ],
       "domain": "geometry-gf",
       "apiPlacement": "packages/backend-contract/src/domains/geometry-gf.ts; raw methods retain canonical names without _c.",
       "owner": null,
@@ -4290,7 +4651,9 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": ["https://github.com/rybosome/tspice/pull/771"],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/771"
+      ],
       "validationEvidence": [],
       "nextAction": "Intake the pinned source after checkpoint 05 lands and passes main CI.",
       "sourceSnapshot": {

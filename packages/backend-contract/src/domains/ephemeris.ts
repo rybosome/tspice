@@ -8,6 +8,9 @@ import type {
   AbCorr,
   Found,
   SpiceHandle,
+  SpiceConicElements,
+  SpiceEquinoctialElements,
+  SpiceExtendedConicElements,
   SpiceStateVector,
   SpkezrResult,
   SpkposResult,
@@ -49,6 +52,72 @@ export type SpkUnpackedDescriptor = {
 
 /** Backend contract for SPK/ephemeris computations (positions, states, segment inspection). */
 export interface EphemerisApi {
+  /**
+   * Propagate the eight conic elements to ET (seconds past J2000 TDB).
+   * Return an inertial position and velocity in km and km/s. Elliptic, parabolic
+   * and hyperbolic orbits use the same element order. Negative eccentricity,
+   * nonpositive periapse or nonpositive GM signal toolkit errors.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/conics_c.html
+   */
+  conics(elts: Readonly<SpiceConicElements>, et: number): SpiceStateVector;
+
+  /**
+   * Evaluate nine equinoctial elements specified at epoch at a requested ET.
+   * Both times are seconds past J2000 TDB. The reference equator is specified
+   * by its pole right ascension and declination in radians in the output inertial
+   * frame. Return position (km) and velocity (km/s). The semimajor axis must
+   * be positive and H²+K² must correspond to eccentricity at most 0.9. A zero
+   * mean-longitude rate can produce nonfinite velocity components.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/eqncpv_c.html
+   */
+  eqncpv(
+    et: number,
+    epoch: number,
+    eqel: Readonly<SpiceEquinoctialElements>,
+    rapol: number,
+    decpol: number,
+  ): SpiceStateVector;
+
+  /**
+   * Convert an inertial state (km, km/s) to eight classical osculating elements
+   * at ET (seconds past J2000 TDB) for central GM mu (km³/s²). Nonpositive mu
+   * and zero angular momentum signal toolkit errors. Circular and equatorial
+   * orbits use CSPICE's angular conventions; nearby elements can be ill-conditioned.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/oscelt_c.html
+   */
+  oscelt(
+    state: Readonly<SpiceStateVector>,
+    et: number,
+    mu: number,
+  ): SpiceConicElements;
+
+  /**
+   * Return the eight classical elements followed by true anomaly (rad),
+   * semimajor axis (km) and period (s) for this inertial state (km, km/s),
+   * ET (seconds past J2000 TDB) and central GM mu (km³/s²). CSPICE can set
+   * uncomputable semimajor axes or periods to zero; nonelliptic periods are zero.
+   * The returned tuple contains the eleven defined N0067 quantities.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/oscltx_c.html
+   */
+  oscltx(
+    state: Readonly<SpiceStateVector>,
+    et: number,
+    mu: number,
+  ): SpiceExtendedConicElements;
+
+  /**
+   * Propagate an inertial state (km, km/s) under a two-body central force
+   * with positive GM (km³/s²) for signed elapsed time dt (seconds). Return
+   * all six state coordinates in the same frame. A zero position, zero velocity,
+   * or rectilinear motion signals a toolkit error.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/prop2b_c.html
+   */
+  prop2b(
+    gm: number,
+    pvinit: Readonly<SpiceStateVector>,
+    dt: number,
+  ): SpiceStateVector;
+
   /**
    * Compute state relative to observer using loaded kernels (see `spkezr_c`).
    *

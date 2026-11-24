@@ -9,6 +9,11 @@ import type {
   StepEphemerisSpkez,
   StepEphemerisSpkezp,
   StepEphemerisSpkezr,
+  StepEphemerisConics,
+  StepEphemerisEqncpv,
+  StepEphemerisOscelt,
+  StepEphemerisOscltx,
+  StepEphemerisProp2b,
   StepEphemerisSpkgeo,
   StepEphemerisSpkgps,
   StepEphemerisSpkobj,
@@ -42,6 +47,11 @@ type EphemerisStep =
   | StepEphemerisSpkez
   | StepEphemerisSpkezp
   | StepEphemerisSpkezr
+  | StepEphemerisConics
+  | StepEphemerisEqncpv
+  | StepEphemerisOscelt
+  | StepEphemerisOscltx
+  | StepEphemerisProp2b
   | StepEphemerisSpkgeo
   | StepEphemerisSpkgps
   | StepEphemerisSpkobj
@@ -206,6 +216,37 @@ export function runEphemerisStep(
       };
     }
 
+    case "ephemeris.conics":
+      return {
+        op: step.op,
+        value: context.spice.raw.conics(step.elts, step.et),
+      };
+    case "ephemeris.eqncpv":
+      return {
+        op: step.op,
+        value: context.spice.raw.eqncpv(
+          step.et,
+          step.epoch,
+          step.eqel,
+          step.rapol,
+          step.decpol,
+        ),
+      };
+    case "ephemeris.oscelt":
+      return {
+        op: step.op,
+        value: context.spice.raw.oscelt(step.state, step.et, step.mu),
+      };
+    case "ephemeris.oscltx":
+      return {
+        op: step.op,
+        value: context.spice.raw.oscltx(step.state, step.et, step.mu),
+      };
+    case "ephemeris.prop2b":
+      return {
+        op: step.op,
+        value: context.spice.raw.prop2b(step.gm, step.pvinit, step.dt),
+      };
     case "ephemeris.spkgeo": {
       const out = context.spice.raw.spkgeo(
         step.target,

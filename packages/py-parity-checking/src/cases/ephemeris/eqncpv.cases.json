@@ -1,0 +1,235 @@
+[
+  {
+    "caseId": "ephemeris-eqncpv-simple-circular",
+    "description": "Vary propagation time relative to element epoch and observe position plus velocity in the pole-defined inertial frame.",
+    "workflow": [
+      {
+        "op": "ephemeris.eqncpv",
+        "et": 5.25,
+        "epoch": 5.25,
+        "eqel": [4, 0, 0, 0, 0, 0, 0, 0.25, 0],
+        "rapol": -1.5707963267948966,
+        "decpol": 1.5707963267948966
+      },
+      {
+        "op": "ephemeris.eqncpv",
+        "et": 5.625,
+        "epoch": 5.25,
+        "eqel": [4, 0, 0, 0, 0, 0, 0, 0.25, 0],
+        "rapol": -1.5707963267948966,
+        "decpol": 1.5707963267948966
+      },
+      {
+        "op": "ephemeris.eqncpv",
+        "et": 3.125,
+        "epoch": 5.25,
+        "eqel": [4, 0, 0, 0, 0, 0, 0, 0.25, 0],
+        "rapol": -1.5707963267948966,
+        "decpol": 1.5707963267948966
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-eqncpv-eccentric-inclined",
+    "description": "Vary propagation time relative to element epoch and observe position plus velocity in the pole-defined inertial frame.",
+    "workflow": [
+      {
+        "op": "ephemeris.eqncpv",
+        "et": 5.25,
+        "epoch": 5.25,
+        "eqel": [8, 0.2, -0.35, 0.28, -0.18, 0.14, 0.012, 0.15, -0.023],
+        "rapol": 0.37,
+        "decpol": -0.42
+      },
+      {
+        "op": "ephemeris.eqncpv",
+        "et": 5.625,
+        "epoch": 5.25,
+        "eqel": [8, 0.2, -0.35, 0.28, -0.18, 0.14, 0.012, 0.15, -0.023],
+        "rapol": 0.37,
+        "decpol": -0.42
+      },
+      {
+        "op": "ephemeris.eqncpv",
+        "et": 3.125,
+        "epoch": 5.25,
+        "eqel": [8, 0.2, -0.35, 0.28, -0.18, 0.14, 0.012, 0.15, -0.023],
+        "rapol": 0.37,
+        "decpol": -0.42
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-eqncpv-distinct-pole",
+    "description": "Vary propagation time relative to element epoch and observe position plus velocity in the pole-defined inertial frame.",
+    "workflow": [
+      {
+        "op": "ephemeris.eqncpv",
+        "et": 5.25,
+        "epoch": 5.25,
+        "eqel": [8, 0.2, -0.35, 0.28, -0.18, 0.14, 0.012, 0.15, -0.023],
+        "rapol": -1.26,
+        "decpol": 0.75
+      },
+      {
+        "op": "ephemeris.eqncpv",
+        "et": 5.625,
+        "epoch": 5.25,
+        "eqel": [8, 0.2, -0.35, 0.28, -0.18, 0.14, 0.012, 0.15, -0.023],
+        "rapol": -1.26,
+        "decpol": 0.75
+      },
+      {
+        "op": "ephemeris.eqncpv",
+        "et": 3.125,
+        "epoch": 5.25,
+        "eqel": [8, 0.2, -0.35, 0.28, -0.18, 0.14, 0.012, 0.15, -0.023],
+        "rapol": -1.26,
+        "decpol": 0.75
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-eqncpv-retrograde-rates",
+    "description": "Vary propagation time relative to element epoch and observe position plus velocity in the pole-defined inertial frame.",
+    "workflow": [
+      {
+        "op": "ephemeris.eqncpv",
+        "et": 5.25,
+        "epoch": 5.25,
+        "eqel": [8, -0.28, 0.45, -0.4, 1.3, -0.7, -0.02, -0.21, 0.034],
+        "rapol": 1.4,
+        "decpol": 0.3
+      },
+      {
+        "op": "ephemeris.eqncpv",
+        "et": 5.625,
+        "epoch": 5.25,
+        "eqel": [8, -0.28, 0.45, -0.4, 1.3, -0.7, -0.02, -0.21, 0.034],
+        "rapol": 1.4,
+        "decpol": 0.3
+      },
+      {
+        "op": "ephemeris.eqncpv",
+        "et": 3.125,
+        "epoch": 5.25,
+        "eqel": [8, -0.28, 0.45, -0.4, 1.3, -0.7, -0.02, -0.21, 0.034],
+        "rapol": 1.4,
+        "decpol": 0.3
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-eqncpv-eccentricity-limit",
+    "description": "Use eccentricity immediately below and exactly at 0.9 on the major equinoctial axis.",
+    "workflow": [
+      {
+        "op": "ephemeris.eqncpv",
+        "et": 5.375,
+        "epoch": 5.25,
+        "eqel": [
+          8, 0.8999999999999999, 0, 0.28, -0.18, 0.14, 0.012, 0.15, -0.023
+        ],
+        "rapol": 0.37,
+        "decpol": -0.42
+      },
+      {
+        "op": "ephemeris.eqncpv",
+        "et": 5.375,
+        "epoch": 5.25,
+        "eqel": [8, 0.9, 0, 0.28, -0.18, 0.14, 0.012, 0.15, -0.023],
+        "rapol": 0.37,
+        "decpol": -0.42
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-eqncpv-above-limit",
+    "description": "Preserve the toolkit diagnostic for unsupported equinoctial elements.",
+    "workflow": [
+      {
+        "op": "ephemeris.eqncpv",
+        "et": 5.375,
+        "epoch": 5.25,
+        "eqel": [
+          8, 0.9000000000000001, 0, 0.28, -0.18, 0.14, 0.012, 0.15, -0.023
+        ],
+        "rapol": 0.37,
+        "decpol": -0.42
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["ECCOUTOFRANGE"]
+    }
+  },
+  {
+    "caseId": "ephemeris-eqncpv-combined-eccentricity",
+    "description": "Preserve the toolkit diagnostic for unsupported equinoctial elements.",
+    "workflow": [
+      {
+        "op": "ephemeris.eqncpv",
+        "et": 5.375,
+        "epoch": 5.25,
+        "eqel": [8, 0.8, 0.6, 0.28, -0.18, 0.14, 0.012, 0.15, -0.023],
+        "rapol": 0.37,
+        "decpol": -0.42
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["ECCOUTOFRANGE"]
+    }
+  },
+  {
+    "caseId": "ephemeris-eqncpv-zero-semiaxis",
+    "description": "Preserve the toolkit diagnostic for unsupported equinoctial elements.",
+    "workflow": [
+      {
+        "op": "ephemeris.eqncpv",
+        "et": 5.375,
+        "epoch": 5.25,
+        "eqel": [0, 0.2, 0.3, 0.28, -0.18, 0.14, 0.012, 0.15, -0.023],
+        "rapol": 0.37,
+        "decpol": -0.42
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["BADSEMIAXIS"]
+    }
+  },
+  {
+    "caseId": "ephemeris-eqncpv-negative-semiaxis",
+    "description": "Preserve the toolkit diagnostic for unsupported equinoctial elements.",
+    "workflow": [
+      {
+        "op": "ephemeris.eqncpv",
+        "et": 5.375,
+        "epoch": 5.25,
+        "eqel": [-8, 0.2, 0.3, 0.28, -0.18, 0.14, 0.012, 0.15, -0.023],
+        "rapol": 0.37,
+        "decpol": -0.42
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["BADSEMIAXIS"]
+    }
+  }
+]

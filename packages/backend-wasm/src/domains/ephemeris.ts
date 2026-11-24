@@ -16,6 +16,7 @@ import type {
 } from "@rybosome/tspice-backend-contract";
 import {
   assertSpiceInt32,
+  copyOrbitalTuple,
   copySpkPackedDescriptor,
   copySpkPackedDescriptorWords,
 } from "@rybosome/tspice-core";
@@ -854,6 +855,153 @@ export function createEphemerisApi(
   const virtualOutputPathByHandle = new Map<SpiceHandle, string>();
 
   return {
+    conics: (elts, et) => {
+      const eltsCopy = copyOrbitalTuple(elts, 8, "conics(elts)", true);
+      requireSpkNumber(et, "conics(et)");
+      return withAllocs(
+        module,
+        [64, 48, WASM_ERR_MAX_BYTES],
+        (inputPtr, outPtr, errPtr) => {
+          module.HEAPF64.set(eltsCopy, inputPtr >>> 3);
+          const status = module._tspice_conics(
+            inputPtr,
+            et,
+            outPtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+          const start = outPtr >>> 3;
+          return copyOrbitalTuple(
+            module.HEAPF64.subarray(start, start + 6),
+            6,
+            "conics(result)",
+            false,
+          );
+        },
+      );
+    },
+    eqncpv: (et, epoch, eqel, rapol, decpol) => {
+      requireSpkNumber(et, "eqncpv(et)");
+      requireSpkNumber(epoch, "eqncpv(epoch)");
+      const eqelCopy = copyOrbitalTuple(eqel, 9, "eqncpv(eqel)", true);
+      requireSpkNumber(rapol, "eqncpv(rapol)");
+      requireSpkNumber(decpol, "eqncpv(decpol)");
+      return withAllocs(
+        module,
+        [72, 48, WASM_ERR_MAX_BYTES],
+        (inputPtr, outPtr, errPtr) => {
+          module.HEAPF64.set(eqelCopy, inputPtr >>> 3);
+          const status = module._tspice_eqncpv(
+            et,
+            epoch,
+            inputPtr,
+            rapol,
+            decpol,
+            outPtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+          const start = outPtr >>> 3;
+          return copyOrbitalTuple(
+            module.HEAPF64.subarray(start, start + 6),
+            6,
+            "eqncpv(result)",
+            false,
+          );
+        },
+      );
+    },
+    oscelt: (state, et, mu) => {
+      const stateCopy = copyOrbitalTuple(state, 6, "oscelt(state)", true);
+      requireSpkNumber(et, "oscelt(et)");
+      requireSpkNumber(mu, "oscelt(mu)");
+      return withAllocs(
+        module,
+        [48, 64, WASM_ERR_MAX_BYTES],
+        (inputPtr, outPtr, errPtr) => {
+          module.HEAPF64.set(stateCopy, inputPtr >>> 3);
+          const status = module._tspice_oscelt(
+            inputPtr,
+            et,
+            mu,
+            outPtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+          const start = outPtr >>> 3;
+          return copyOrbitalTuple(
+            module.HEAPF64.subarray(start, start + 8),
+            8,
+            "oscelt(result)",
+            false,
+          );
+        },
+      );
+    },
+    oscltx: (state, et, mu) => {
+      const stateCopy = copyOrbitalTuple(state, 6, "oscltx(state)", true);
+      requireSpkNumber(et, "oscltx(et)");
+      requireSpkNumber(mu, "oscltx(mu)");
+      return withAllocs(
+        module,
+        [48, 88, WASM_ERR_MAX_BYTES],
+        (inputPtr, outPtr, errPtr) => {
+          module.HEAPF64.set(stateCopy, inputPtr >>> 3);
+          const status = module._tspice_oscltx(
+            inputPtr,
+            et,
+            mu,
+            outPtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+          const start = outPtr >>> 3;
+          return copyOrbitalTuple(
+            module.HEAPF64.subarray(start, start + 11),
+            11,
+            "oscltx(result)",
+            false,
+          );
+        },
+      );
+    },
+    prop2b: (gm, pvinit, dt) => {
+      requireSpkNumber(gm, "prop2b(gm)");
+      const pvinitCopy = copyOrbitalTuple(pvinit, 6, "prop2b(pvinit)", true);
+      requireSpkNumber(dt, "prop2b(dt)");
+      return withAllocs(
+        module,
+        [48, 48, WASM_ERR_MAX_BYTES],
+        (inputPtr, outPtr, errPtr) => {
+          module.HEAPF64.set(pvinitCopy, inputPtr >>> 3);
+          const status = module._tspice_prop2b(
+            gm,
+            inputPtr,
+            dt,
+            outPtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+          const start = outPtr >>> 3;
+          return copyOrbitalTuple(
+            module.HEAPF64.subarray(start, start + 6),
+            6,
+            "prop2b(result)",
+            false,
+          );
+        },
+      );
+    },
     spkezr: (
       target: string,
       et: number,

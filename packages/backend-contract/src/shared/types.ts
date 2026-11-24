@@ -181,6 +181,39 @@ export type Mat6RowMajor = CoreMat6RowMajor;
 
 export type SpiceStateVector = [number, number, number, number, number, number];
 
+/** Classical osculating elements, in CSPICE order. Distances are km, angles radians, ET seconds past J2000 TDB and GM km³/s². */
+export type SpiceConicElements = [
+  periapseDistance: number,
+  eccentricity: number,
+  inclination: number,
+  ascendingNodeLongitude: number,
+  periapseArgument: number,
+  meanAnomalyAtEpoch: number,
+  epoch: number,
+  gravitationalParameter: number,
+];
+
+/** Equinoctial elements: semimajor axis (km), H/K, mean longitude (rad), P/Q and the three secular angular rates (rad/s). */
+export type SpiceEquinoctialElements = [
+  semimajorAxis: number,
+  h: number,
+  k: number,
+  meanLongitude: number,
+  p: number,
+  q: number,
+  periapseLongitudeRate: number,
+  meanLongitudeRate: number,
+  ascendingNodeLongitudeRate: number,
+];
+
+/** Eleven defined N0067 OSCLTX quantities, with true anomaly (rad), semimajor axis (km) and period (s) appended to the classical elements. */
+export type SpiceExtendedConicElements = [
+  ...SpiceConicElements,
+  trueAnomaly: number,
+  semimajorAxis: number,
+  period: number,
+];
+
 export type SpkezrResult = {
   state: SpiceStateVector;
   lt: number;

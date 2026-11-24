@@ -1,0 +1,258 @@
+[
+  {
+    "caseId": "ephemeris-prop2b-circular",
+    "description": "Observe all six propagated components at zero time, forward and backward.",
+    "workflow": [
+      {
+        "op": "ephemeris.prop2b",
+        "gm": 1,
+        "pvinit": [1, 0, 0, 0, 1, 0],
+        "dt": 0
+      },
+      {
+        "op": "ephemeris.prop2b",
+        "gm": 1,
+        "pvinit": [1, 0, 0, 0, 1, 0],
+        "dt": 0.3125
+      },
+      {
+        "op": "ephemeris.prop2b",
+        "gm": 1,
+        "pvinit": [1, 0, 0, 0, 1, 0],
+        "dt": -0.75
+      },
+      {
+        "op": "ephemeris.prop2b",
+        "gm": 1,
+        "pvinit": [1, 0, 0, 0, 1, 0],
+        "dt": 1.875
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-prop2b-inclined-ellipse",
+    "description": "Observe all six propagated components at zero time, forward and backward.",
+    "workflow": [
+      {
+        "op": "ephemeris.prop2b",
+        "gm": 1,
+        "pvinit": [1.5, -0.25, 0.375, 0.125, 0.625, 0.25],
+        "dt": 0
+      },
+      {
+        "op": "ephemeris.prop2b",
+        "gm": 1,
+        "pvinit": [1.5, -0.25, 0.375, 0.125, 0.625, 0.25],
+        "dt": 0.3125
+      },
+      {
+        "op": "ephemeris.prop2b",
+        "gm": 1,
+        "pvinit": [1.5, -0.25, 0.375, 0.125, 0.625, 0.25],
+        "dt": -0.75
+      },
+      {
+        "op": "ephemeris.prop2b",
+        "gm": 1,
+        "pvinit": [1.5, -0.25, 0.375, 0.125, 0.625, 0.25],
+        "dt": 1.875
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-prop2b-parabola",
+    "description": "Observe all six propagated components at zero time, forward and backward.",
+    "workflow": [
+      {
+        "op": "ephemeris.prop2b",
+        "gm": 1,
+        "pvinit": [2, 0, 0, 0, 1, 0],
+        "dt": 0
+      },
+      {
+        "op": "ephemeris.prop2b",
+        "gm": 1,
+        "pvinit": [2, 0, 0, 0, 1, 0],
+        "dt": 0.3125
+      },
+      {
+        "op": "ephemeris.prop2b",
+        "gm": 1,
+        "pvinit": [2, 0, 0, 0, 1, 0],
+        "dt": -0.75
+      },
+      {
+        "op": "ephemeris.prop2b",
+        "gm": 1,
+        "pvinit": [2, 0, 0, 0, 1, 0],
+        "dt": 1.875
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-prop2b-hyperbola",
+    "description": "Observe all six propagated components at zero time, forward and backward.",
+    "workflow": [
+      {
+        "op": "ephemeris.prop2b",
+        "gm": 1,
+        "pvinit": [1.5, -0.25, 0.375, 0.125, 1.625, 0.25],
+        "dt": 0
+      },
+      {
+        "op": "ephemeris.prop2b",
+        "gm": 1,
+        "pvinit": [1.5, -0.25, 0.375, 0.125, 1.625, 0.25],
+        "dt": 0.3125
+      },
+      {
+        "op": "ephemeris.prop2b",
+        "gm": 1,
+        "pvinit": [1.5, -0.25, 0.375, 0.125, 1.625, 0.25],
+        "dt": -0.75
+      },
+      {
+        "op": "ephemeris.prop2b",
+        "gm": 1,
+        "pvinit": [1.5, -0.25, 0.375, 0.125, 1.625, 0.25],
+        "dt": 1.875
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-prop2b-retrograde",
+    "description": "Observe all six propagated components at zero time, forward and backward.",
+    "workflow": [
+      {
+        "op": "ephemeris.prop2b",
+        "gm": 1,
+        "pvinit": [1, 0, 0, 0, -1, 0],
+        "dt": 0
+      },
+      {
+        "op": "ephemeris.prop2b",
+        "gm": 1,
+        "pvinit": [1, 0, 0, 0, -1, 0],
+        "dt": 0.3125
+      },
+      {
+        "op": "ephemeris.prop2b",
+        "gm": 1,
+        "pvinit": [1, 0, 0, 0, -1, 0],
+        "dt": -0.75
+      },
+      {
+        "op": "ephemeris.prop2b",
+        "gm": 1,
+        "pvinit": [1, 0, 0, 0, -1, 0],
+        "dt": 1.875
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-prop2b-physical-units",
+    "description": "Propagate a three-dimensional geocentric state over seconds, preserving km and km/s.",
+    "workflow": [
+      {
+        "op": "ephemeris.prop2b",
+        "gm": 398600.435,
+        "pvinit": [7000, -420, 800, 0.3, 7.2, -1.1],
+        "dt": 10
+      },
+      {
+        "op": "ephemeris.prop2b",
+        "gm": 398600.435,
+        "pvinit": [7000, -420, 800, 0.3, 7.2, -1.1],
+        "dt": 1250
+      },
+      {
+        "op": "ephemeris.prop2b",
+        "gm": 398600.435,
+        "pvinit": [7000, -420, 800, 0.3, 7.2, -1.1],
+        "dt": -2100
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-prop2b-zero-gm",
+    "description": "Check the exact toolkit diagnostic for an invalid two-body initial condition.",
+    "workflow": [
+      {
+        "op": "ephemeris.prop2b",
+        "gm": 0,
+        "pvinit": [1, 0, 0, 0, 1, 0],
+        "dt": 0.375
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["NONPOSITIVEMASS"]
+    }
+  },
+  {
+    "caseId": "ephemeris-prop2b-zero-position",
+    "description": "Check the exact toolkit diagnostic for an invalid two-body initial condition.",
+    "workflow": [
+      {
+        "op": "ephemeris.prop2b",
+        "gm": 1,
+        "pvinit": [0, 0, 0, 1, 0, 0],
+        "dt": 0.375
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["ZEROPOSITION"]
+    }
+  },
+  {
+    "caseId": "ephemeris-prop2b-zero-velocity",
+    "description": "Check the exact toolkit diagnostic for an invalid two-body initial condition.",
+    "workflow": [
+      {
+        "op": "ephemeris.prop2b",
+        "gm": 1,
+        "pvinit": [1, 0, 0, 0, 0, 0],
+        "dt": 0.375
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["ZEROVELOCITY"]
+    }
+  },
+  {
+    "caseId": "ephemeris-prop2b-radial-motion",
+    "description": "Check the exact toolkit diagnostic for an invalid two-body initial condition.",
+    "workflow": [
+      {
+        "op": "ephemeris.prop2b",
+        "gm": 1,
+        "pvinit": [1, 2, 3, 2, 4, 6],
+        "dt": 0.375
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["NONCONICMOTION"]
+    }
+  }
+]

@@ -68,6 +68,77 @@ static int tspice_spice_int_to_int_checked(
   return 0;
 }
 
+int tspice_conics(const double *elts, double et, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!elts || !out) return tspice_ephemeris_invalid_arg(err, errMaxBytes, "Missing conics storage");
+  SpiceDouble result[6] = {0};
+  conics_c(elts, et, result);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  memcpy(out, result, 6 * sizeof(SpiceDouble));
+  return 0;
+}
+
+int tspice_eqncpv(double et, double epoch, const double *eqel, double rapol, double decpol, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!eqel || !out) return tspice_ephemeris_invalid_arg(err, errMaxBytes, "Missing eqncpv storage");
+  SpiceDouble result[6] = {0};
+  eqncpv_c(et, epoch, eqel, rapol, decpol, result);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  memcpy(out, result, 6 * sizeof(SpiceDouble));
+  return 0;
+}
+
+int tspice_oscelt(const double *state, double et, double mu, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!state || !out) return tspice_ephemeris_invalid_arg(err, errMaxBytes, "Missing oscelt storage");
+  SpiceDouble result[8] = {0};
+  oscelt_c(state, et, mu, result);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  memcpy(out, result, 8 * sizeof(SpiceDouble));
+  return 0;
+}
+
+int tspice_oscltx(const double *state, double et, double mu, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!state || !out) return tspice_ephemeris_invalid_arg(err, errMaxBytes, "Missing oscltx storage");
+  // N0067 clears all reserved words, although only the first eleven have defined meanings.
+  SpiceDouble result[SPICE_OSCLTX_NELTS] = {0};
+  oscltx_c(state, et, mu, result);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  memcpy(out, result, 11 * sizeof(SpiceDouble));
+  return 0;
+}
+
+int tspice_prop2b(double gm, const double *pvinit, double dt, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!pvinit || !out) return tspice_ephemeris_invalid_arg(err, errMaxBytes, "Missing prop2b storage");
+  SpiceDouble result[6] = {0};
+  prop2b_c(gm, pvinit, dt, result);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  memcpy(out, result, 6 * sizeof(SpiceDouble));
+  return 0;
+}
+
 int tspice_spkezr(
     const char *target,
     double et,

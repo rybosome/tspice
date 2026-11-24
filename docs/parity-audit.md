@@ -520,3 +520,7 @@ B06 adds seven routines with 33 workflows, 767 steps, 92 target calls and 10 exp
 ## Error devices, print masks and traceback lifetime
 
 Three canonical controls add 29 isolated workflows, 161 steps and 114 targeted calls, including 10 terminal diagnostics. Dedicated children compare byte-exact reports and irreversible trace behavior against the independent N0067 toolkit. [Policy evidence](step8-error-devices.md)
+
+## Orbital element expansion
+
+E01 adds five direct raw routines to the 162-routine Step 7 baseline. The source review covers 51 workflows, 105 calls and 22 registered scientific-error cases. Extended-element output capacity and the pinned independent wrapper's missing error check are recorded with their exact evidence. [Orbital elements and propagation](step8-orbital-elements.md) [Per-routine audit](../data/parity-audits/e01-orbital-elements.json)

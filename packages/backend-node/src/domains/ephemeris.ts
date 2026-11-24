@@ -10,6 +10,7 @@ import type {
 } from "@rybosome/tspice-backend-contract";
 import {
   assertSpiceInt32,
+  copyOrbitalTuple,
   copySpkPackedDescriptor,
   copySpkPackedDescriptorWords,
   invariant,
@@ -113,6 +114,62 @@ export function createEphemerisApi(
   const virtualOutputByHandle = new Map<SpiceHandle, VirtualOutput>();
 
   return {
+    conics: (elts, et) => {
+      const eltsCopy = copyOrbitalTuple(elts, 8, "conics(elts)", true);
+      requireSpkNumber(et, "conics(et)");
+      return copyOrbitalTuple(
+        native.conics(eltsCopy, et),
+        6,
+        "conics(result)",
+        false,
+      );
+    },
+    eqncpv: (et, epoch, eqel, rapol, decpol) => {
+      requireSpkNumber(et, "eqncpv(et)");
+      requireSpkNumber(epoch, "eqncpv(epoch)");
+      const eqelCopy = copyOrbitalTuple(eqel, 9, "eqncpv(eqel)", true);
+      requireSpkNumber(rapol, "eqncpv(rapol)");
+      requireSpkNumber(decpol, "eqncpv(decpol)");
+      return copyOrbitalTuple(
+        native.eqncpv(et, epoch, eqelCopy, rapol, decpol),
+        6,
+        "eqncpv(result)",
+        false,
+      );
+    },
+    oscelt: (state, et, mu) => {
+      const stateCopy = copyOrbitalTuple(state, 6, "oscelt(state)", true);
+      requireSpkNumber(et, "oscelt(et)");
+      requireSpkNumber(mu, "oscelt(mu)");
+      return copyOrbitalTuple(
+        native.oscelt(stateCopy, et, mu),
+        8,
+        "oscelt(result)",
+        false,
+      );
+    },
+    oscltx: (state, et, mu) => {
+      const stateCopy = copyOrbitalTuple(state, 6, "oscltx(state)", true);
+      requireSpkNumber(et, "oscltx(et)");
+      requireSpkNumber(mu, "oscltx(mu)");
+      return copyOrbitalTuple(
+        native.oscltx(stateCopy, et, mu),
+        11,
+        "oscltx(result)",
+        false,
+      );
+    },
+    prop2b: (gm, pvinit, dt) => {
+      requireSpkNumber(gm, "prop2b(gm)");
+      const pvinitCopy = copyOrbitalTuple(pvinit, 6, "prop2b(pvinit)", true);
+      requireSpkNumber(dt, "prop2b(dt)");
+      return copyOrbitalTuple(
+        native.prop2b(gm, pvinitCopy, dt),
+        6,
+        "prop2b(result)",
+        false,
+      );
+    },
     spkezr: (target, et, ref, abcorr, observer) => {
       requireSpkNumber(et, "spkezr(et)");
       requireSpkString(ref, "spkezr(ref)");
