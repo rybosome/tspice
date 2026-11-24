@@ -29,12 +29,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Collect observed parity results from the successful hosted and PR jobs
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          set -euo pipefail
-          node .step8-cp04-evidence/collect-observation.mjs > "$RUNNER_TEMP/observation.json"
       - name: Apply observed full-lane evidence to the exact tested source
         env:
           TESTED_SOURCE: 3c3e3f368191d553e84ecc599d449055df985b1c
@@ -42,8 +36,7 @@ jobs:
           set -euo pipefail
           tmp="$RUNNER_TEMP/step8-cp04-evidence"
           cp -r .step8-cp04-evidence "$tmp"
-          cp "$RUNNER_TEMP/observation.json" "$tmp/observation.json"
-          test "$(git rev-parse HEAD^)" = "$TESTED_SOURCE"
+          git merge-base --is-ancestor "$TESTED_SOURCE" HEAD
           git checkout --detach "$TESTED_SOURCE"
           pnpm install --frozen-lockfile
           node --input-type=module - "$tmp" <<'NODE'

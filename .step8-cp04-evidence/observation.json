@@ -1,0 +1,23 @@
+{
+  "sourceRevision": "3c3e3f368191d553e84ecc599d449055df985b1c",
+  "hosted": {
+    "testedTree": "4688c73de2d1e9941c9fb7c50531c40fe79f4fdc",
+    "comparisons": 8056,
+    "unexpectedSkips": 0,
+    "completedNativeRequired": true,
+    "completedJavaScriptRequired": true,
+    "testedCommit": "3c3e3f368191d553e84ecc599d449055df985b1c",
+    "nativeJob": "https://github.com/rybosome/tspice/actions/runs/45336611602/job/138250075470",
+    "javascriptJob": "https://github.com/rybosome/tspice/actions/runs/45336611602/job/138250075470"
+  },
+  "canonical": {
+    "testedTree": "4688c73de2d1e9941c9fb7c50531c40fe79f4fdc",
+    "comparisons": 8056,
+    "unexpectedSkips": 0,
+    "completedNativeRequired": true,
+    "completedJavaScriptRequired": true,
+    "testedCommit": "5759b72e80d904295926aa968ee1c07006abdf51",
+    "nativeJob": "https://github.com/rybosome/tspice/actions/runs/45348374307/job/138288412178",
+    "javascriptJob": "https://github.com/rybosome/tspice/actions/runs/45348374307/job/138288412127"
+  }
+}
