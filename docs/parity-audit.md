@@ -520,3 +520,39 @@ B06 adds seven routines with 33 workflows, 767 steps, 92 target calls and 10 exp
 ## Error devices, print masks and traceback lifetime
 
 Three canonical controls add 29 isolated workflows, 161 steps and 114 targeted calls, including 10 terminal diagnostics. Dedicated children compare byte-exact reports and irreversible trace behavior against the independent N0067 toolkit. [Policy evidence](step8-error-devices.md)
+
+## Orbital element expansion
+
+E01 adds five direct raw routines to the 162-routine Step 7 baseline. The source review covers 51 workflows, 105 calls and 22 registered scientific-error cases. Extended-element output capacity and the pinned independent wrapper's missing error check are recorded with their exact evidence. [Orbital elements and propagation](step8-orbital-elements.md) [Per-routine audit](../data/parity-audits/e01-orbital-elements.json)
+
+## Two-line parsing and SGP4
+
+E02 adds two reviewed ephemeris routines on the Step 7 main baseline. Each registered operation compares all scientific outputs through the canonical function in locked SpiceyPy against the compiled raw Node or WASM facade. Previous executions remain attached to their original source. The new review distinguishes ordinary scientific errors, including missing time kernels, from wrapper-level calendar and computational bounds. [Per-routine audit](../data/parity-audits/e02-tle-propagation.json) [Scientific observations](step8-tle-propagation.md)
+
+## Chebyshev SPK writers
+
+The three new writers use independent cross-file verification of full segment metadata, floating state components and every physical record word. [Scientific evidence](step8-spk-chebyshev.md) [Routine audits](../data/parity-audits/e04-spk-chebyshev.json)
+
+## Interpolated SPK writers
+
+Both backends exchange five independently authored segments with the locked library. See the [physical file and state evidence](step8-spk-interpolation.md) and [routine audits](../data/parity-audits/e05-spk-interpolation.json).
+
+## Analytic SPK writers
+
+The locked library and both real backends exchange four orbital models, inspect full DAF records and evaluate the resulting states. [Physical evidence](step8-spk-analytic.md) [Routine audits](../data/parity-audits/e06-spk-analytic.json)
+
+## Streaming type 14 SPKs
+
+Both backends and an independent writer exchange complete type 14 files, with explicit physical checks of multi-batch records, generic metadata and active writer state. [Scientific evidence](step8-spk-streaming.md) [Routine audits](../data/parity-audits/e07-spk-streaming.json)
+
+## SPK corrections
+
+The 162-routine historical Step 7 baseline is followed by eight reviewed ephemeris routines. [Scientific and boundary evidence](step8-spk-corrections.md) [Per-routine audits](../data/parity-audits/e08-spk-corrections.json)
+
+## Observer-relative SPK geometry
+
+The fixed and moving point workflows distinguish rotating-frame epochs, point motion and local topocentric derivatives. The batch also checks cache behavior across SPK and body-radius replacement. [Scientific review](step8-spk-relative.md) [Routine records](../data/parity-audits/e09-spk-relative-observers.json)
+
+## SPK segment evaluation and physical subset files
+
+E03 checks SPK registration priority, file identity, complete native states, type-specific boundaries and independent persisted subsets in both producer/reader directions. [Scientific review](step8-spk-lowlevel.md) · [Per-routine evidence](../data/parity-audits/e03-spk-lowlevel.json)

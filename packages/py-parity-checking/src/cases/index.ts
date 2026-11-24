@@ -297,16 +297,54 @@ import ephemerisSpkcovCasesRaw from "./ephemeris/spkcov.cases.json" with { type:
 import ephemerisSpkezCasesRaw from "./ephemeris/spkez.cases.json" with { type: "json" };
 import ephemerisSpkezpCasesRaw from "./ephemeris/spkezp.cases.json" with { type: "json" };
 import ephemerisSpkezrCasesRaw from "./ephemeris/spkezr.cases.json" with { type: "json" };
+import ephemerisConicsCasesRaw from "./ephemeris/conics.cases.json" with { type: "json" };
+import ephemerisEqncpvCasesRaw from "./ephemeris/eqncpv.cases.json" with { type: "json" };
+import ephemerisOsceltCasesRaw from "./ephemeris/oscelt.cases.json" with { type: "json" };
+import ephemerisOscltxCasesRaw from "./ephemeris/oscltx.cases.json" with { type: "json" };
+import ephemerisProp2bCasesRaw from "./ephemeris/prop2b.cases.json" with { type: "json" };
+import ephemerisGetelmCasesRaw from "./ephemeris/getelm.cases.json" with { type: "json" };
+import ephemerisEvsgp4CasesRaw from "./ephemeris/evsgp4.cases.json" with { type: "json" };
+import ephemerisSpkcpoCasesRaw from "./ephemeris/spkcpo.cases.json" with { type: "json" };
+import ephemerisSpkcptCasesRaw from "./ephemeris/spkcpt.cases.json" with { type: "json" };
+import ephemerisSpkcvoCasesRaw from "./ephemeris/spkcvo.cases.json" with { type: "json" };
+import ephemerisSpkcvtCasesRaw from "./ephemeris/spkcvt.cases.json" with { type: "json" };
+import ephemerisAzlcpoCasesRaw from "./ephemeris/azlcpo.cases.json" with { type: "json" };
+import ephemerisSpkacsCasesRaw from "./ephemeris/spkacs.cases.json" with { type: "json" };
+import ephemerisSpkapoCasesRaw from "./ephemeris/spkapo.cases.json" with { type: "json" };
+import ephemerisSpkappCasesRaw from "./ephemeris/spkapp.cases.json" with { type: "json" };
+import ephemerisSpkapsCasesRaw from "./ephemeris/spkaps.cases.json" with { type: "json" };
+import ephemerisSpkltcCasesRaw from "./ephemeris/spkltc.cases.json" with { type: "json" };
+import ephemerisStelabCasesRaw from "./ephemeris/stelab.cases.json" with { type: "json" };
+import ephemerisStlabxCasesRaw from "./ephemeris/stlabx.cases.json" with { type: "json" };
+import ephemerisLtimeCasesRaw from "./ephemeris/ltime.cases.json" with { type: "json" };
 import ephemerisSpkgeoCasesRaw from "./ephemeris/spkgeo.cases.json" with { type: "json" };
 import ephemerisSpkgpsCasesRaw from "./ephemeris/spkgps.cases.json" with { type: "json" };
 import ephemerisSpkobjCasesRaw from "./ephemeris/spkobj.cases.json" with { type: "json" };
 import ephemerisSpkopaCasesRaw from "./ephemeris/spkopa.cases.json" with { type: "json" };
+import ephemerisSpklefCasesRaw from "./ephemeris/spklef.cases.json" with { type: "json" };
+import ephemerisSpkuefCasesRaw from "./ephemeris/spkuef.cases.json" with { type: "json" };
+import ephemerisSpkpvnCasesRaw from "./ephemeris/spkpvn.cases.json" with { type: "json" };
+import ephemerisSpksubCasesRaw from "./ephemeris/spksub.cases.json" with { type: "json" };
 import ephemerisSpkopnCasesRaw from "./ephemeris/spkopn.cases.json" with { type: "json" };
 import ephemerisSpkpdsCasesRaw from "./ephemeris/spkpds.cases.json" with { type: "json" };
 import ephemerisSpkposCasesRaw from "./ephemeris/spkpos.cases.json" with { type: "json" };
 import ephemerisSpksfsCasesRaw from "./ephemeris/spksfs.cases.json" with { type: "json" };
 import ephemerisSpkssbCasesRaw from "./ephemeris/spkssb.cases.json" with { type: "json" };
 import ephemerisSpkudsCasesRaw from "./ephemeris/spkuds.cases.json" with { type: "json" };
+import ephemerisSpkw02CasesRaw from "./ephemeris/spkw02.cases.json" with { type: "json" };
+import ephemerisSpkw03CasesRaw from "./ephemeris/spkw03.cases.json" with { type: "json" };
+import ephemerisSpkw20CasesRaw from "./ephemeris/spkw20.cases.json" with { type: "json" };
+import ephemerisSpkw09CasesRaw from "./ephemeris/spkw09.cases.json" with { type: "json" };
+import ephemerisSpkw12CasesRaw from "./ephemeris/spkw12.cases.json" with { type: "json" };
+import ephemerisSpkw13CasesRaw from "./ephemeris/spkw13.cases.json" with { type: "json" };
+import ephemerisSpkw18CasesRaw from "./ephemeris/spkw18.cases.json" with { type: "json" };
+import ephemerisSpkw05CasesRaw from "./ephemeris/spkw05.cases.json" with { type: "json" };
+import ephemerisSpkw10CasesRaw from "./ephemeris/spkw10.cases.json" with { type: "json" };
+import ephemerisSpkw15CasesRaw from "./ephemeris/spkw15.cases.json" with { type: "json" };
+import ephemerisSpkw17CasesRaw from "./ephemeris/spkw17.cases.json" with { type: "json" };
+import ephemerisSpk14bCasesRaw from "./ephemeris/spk14b.cases.json" with { type: "json" };
+import ephemerisSpk14aCasesRaw from "./ephemeris/spk14a.cases.json" with { type: "json" };
+import ephemerisSpk14eCasesRaw from "./ephemeris/spk14e.cases.json" with { type: "json" };
 import ephemerisSpkw08CasesRaw from "./ephemeris/spkw08.cases.json" with { type: "json" };
 import { errorCases } from "./error/index.js";
 import { framesCases } from "./frames/index.js";
@@ -791,16 +829,54 @@ export const ephemerisCases: ParityCase[] = [
   ...(ephemerisSpkezCasesRaw as ParityCase[]),
   ...(ephemerisSpkezpCasesRaw as ParityCase[]),
   ...(ephemerisSpkezrCasesRaw as ParityCase[]),
+  ...(ephemerisConicsCasesRaw as ParityCase[]),
+  ...(ephemerisEqncpvCasesRaw as ParityCase[]),
+  ...(ephemerisOsceltCasesRaw as ParityCase[]),
+  ...(ephemerisOscltxCasesRaw as ParityCase[]),
+  ...(ephemerisProp2bCasesRaw as ParityCase[]),
+  ...(ephemerisGetelmCasesRaw as ParityCase[]),
+  ...(ephemerisEvsgp4CasesRaw as ParityCase[]),
+  ...(ephemerisSpkcpoCasesRaw as ParityCase[]),
+  ...(ephemerisSpkcptCasesRaw as ParityCase[]),
+  ...(ephemerisSpkcvoCasesRaw as ParityCase[]),
+  ...(ephemerisSpkcvtCasesRaw as ParityCase[]),
+  ...(ephemerisAzlcpoCasesRaw as ParityCase[]),
+  ...(ephemerisSpkacsCasesRaw as ParityCase[]),
+  ...(ephemerisSpkapoCasesRaw as ParityCase[]),
+  ...(ephemerisSpkappCasesRaw as ParityCase[]),
+  ...(ephemerisSpkapsCasesRaw as ParityCase[]),
+  ...(ephemerisSpkltcCasesRaw as ParityCase[]),
+  ...(ephemerisStelabCasesRaw as ParityCase[]),
+  ...(ephemerisStlabxCasesRaw as ParityCase[]),
+  ...(ephemerisLtimeCasesRaw as ParityCase[]),
   ...(ephemerisSpkgeoCasesRaw as ParityCase[]),
   ...(ephemerisSpkgpsCasesRaw as ParityCase[]),
   ...(ephemerisSpkobjCasesRaw as ParityCase[]),
   ...(ephemerisSpkopaCasesRaw as ParityCase[]),
+  ...(ephemerisSpklefCasesRaw as ParityCase[]),
+  ...(ephemerisSpkuefCasesRaw as ParityCase[]),
+  ...(ephemerisSpkpvnCasesRaw as ParityCase[]),
+  ...(ephemerisSpksubCasesRaw as ParityCase[]),
   ...(ephemerisSpkopnCasesRaw as ParityCase[]),
   ...(ephemerisSpkpdsCasesRaw as ParityCase[]),
   ...(ephemerisSpkposCasesRaw as ParityCase[]),
   ...(ephemerisSpksfsCasesRaw as ParityCase[]),
   ...(ephemerisSpkssbCasesRaw as ParityCase[]),
   ...(ephemerisSpkudsCasesRaw as ParityCase[]),
+  ...(ephemerisSpkw02CasesRaw as ParityCase[]),
+  ...(ephemerisSpkw03CasesRaw as ParityCase[]),
+  ...(ephemerisSpkw20CasesRaw as ParityCase[]),
+  ...(ephemerisSpkw09CasesRaw as ParityCase[]),
+  ...(ephemerisSpkw12CasesRaw as ParityCase[]),
+  ...(ephemerisSpkw13CasesRaw as ParityCase[]),
+  ...(ephemerisSpkw18CasesRaw as ParityCase[]),
+  ...(ephemerisSpkw05CasesRaw as ParityCase[]),
+  ...(ephemerisSpkw10CasesRaw as ParityCase[]),
+  ...(ephemerisSpkw15CasesRaw as ParityCase[]),
+  ...(ephemerisSpkw17CasesRaw as ParityCase[]),
+  ...(ephemerisSpk14bCasesRaw as ParityCase[]),
+  ...(ephemerisSpk14aCasesRaw as ParityCase[]),
+  ...(ephemerisSpk14eCasesRaw as ParityCase[]),
   ...(ephemerisSpkw08CasesRaw as ParityCase[]),
 ];
 export const ekCases: ParityCase[] = [

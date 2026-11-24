@@ -62,6 +62,7 @@ export type SpiceHandleKind =
   | "DAS"
   | "DLA"
   | "SPK"
+  | "SPK-LOAD"
   | "EK"
   | "PCK-WRITER"
   | "PCK-LOADED"
@@ -76,7 +77,7 @@ export type SpiceHandleEntry = {
 export type SpiceHandleRegistry = {
   register: (kind: SpiceHandleKind, nativeHandle: number) => SpiceHandle;
   lookup: (
-    handle: SpiceHandle,
+    handle: number,
     expected: readonly SpiceHandleKind[],
     context: string,
   ) => SpiceHandleEntry;

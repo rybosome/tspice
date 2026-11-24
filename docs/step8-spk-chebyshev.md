@@ -1,0 +1,25 @@
+# Chebyshev SPK writers
+
+All three operations append a segment to a client-owned SPK opened with `spkopn` or `spkopa`. Close it with `spkcls` before reading its virtual output. Descriptor bounds `first` and `last` use TDB seconds past J2000. A descriptor may cover one instant or a subset of the coefficient intervals. For each record, coefficients run from the constant term to the highest degree.
+
+| Writer   | Words per record   | Interpretation                                                                                                                                                                                                                  |
+| -------- | ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `spkw02` | `3 * (degree + 1)` | Three position expansions in km. The evaluator differentiates them using the record radius in seconds to obtain velocity.                                                                                                       |
+| `spkw03` | `6 * (degree + 1)` | Independent expansions for X, Y, Z in km, then VX, VY, VZ in km/s.                                                                                                                                                              |
+| `spkw20` | `3 * (degree + 2)` | For each axis, velocity coefficients followed by the position at the record midpoint. Position scales by `dscale` and velocity by `dscale / tscale`. The evaluator integrates velocity from the midpoint and adds the position. |
+
+Types 2 and 3 take `intlen` in seconds and `btime` in TDB seconds past J2000. Both support degrees 0 through 27. Type 20 takes `intlen` in Julian days, `dscale` in km per supplied distance unit, `tscale` in seconds per supplied time unit, and a two-part initial Julian ephemeris date `initjd + initfr`. It supports degrees 0 through 50. All three take the explicit record count `n` and return void.
+
+Supply a flat array or Float64Array view. The adapters snapshot its finite words once. A valid count and degree require exactly the complete physical records. The 256 MiB portable coefficient limit is checked before copying entries. Nonpositive counts and out-of-range degrees reach the original routine with initialized sentinel storage. The wrapper separately rejects incompatible handles, malformed buffers, embedded NULs and nonfinite inputs. N0067 checks descriptor coverage before writing and can signal a genuine frame, interval, scale or identifier error. The writer remains available after these pre-write diagnostics. A caller selecting extreme time or coefficient values must ensure its ephemeris can be evaluated over the requested coverage.
+
+## Independent checks
+
+The 53 registered workflows exercise 91 target invocations. There are 35 terminal toolkit errors. Successful workflows verify full coverage, object ID, all six state components, light time, segment ID and its unpacked metadata. They include off-midpoint states, both outer epochs, a shared record boundary, maximum degree, degree zero, trimmed coverage, an overlapping segment appended after reopening, and a single-instant descriptor. Subsecond type 2/3 records exercise derivative scaling. Type 20 cases use a split Julian date and distinct distance and time scales.
+
+A separate process using locked SpiceyPy 6.0.3 reads the physical words written by each production backend. The same process independently writes a three-segment SPK which the public clients load and evaluate. The tests compare every stored word, complete unpacked descriptor, record and segment trailers, and six state components at seven times. Analytic degree-one/two calculations separately check the derivative, the independent velocity components and the midpoint integral. All binaries are generated in per-run scratch space from project-authored numbers.
+
+Native tests exercise checked length arithmetic and nonfinite physical buffer rejection at the direct addon boundary. WASM tests inject failure at each of four allocations, replay the successful operation, and check complete cleanup. Public tests exercise sliced input views with nonfinite guard words outside the view, one-read proxy inputs, recovery and closed-token rejection. On a reusable WASM client each generated Chebyshev SPK workflow has a fresh physical path, including its subsequent furnish operation.
+
+The actual Chrome worker was rerun with the shared finite-word guard and regenerated WASM. It wrote and reopened all three segment types. It distinguished type 2 derivatives from type 3 velocity coefficients, evaluated type 20 at the midpoint and two seconds later, and recovered from a genuine NONPOSITIVESCALE error on the same writer.
+
+[Type 2 writer](https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkw02_c.html) · [Type 3 writer](https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkw03_c.html) · [Type 20 writer](https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkw20_c.html)

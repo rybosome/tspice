@@ -817,7 +817,8 @@
       ],
       "id": "local-cp03-779d6fd6ae41-node",
       "kind": "local",
-      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 779d6fd6ae41c78017a8cf7ccaec5fef3100112c. The native-required lane completed 7054 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45097193130/job/137439518970"
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 779d6fd6ae41c78017a8cf7ccaec5fef3100112c. The native-required lane completed 7054 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45097193130/job/137439518970",
+      "historical": true
     },
     {
       "backend": "node",
@@ -870,7 +871,8 @@
       "kind": "ci",
       "commit": "c4bd798cc20d13e8dfd51e7e83ba740ffe4418ff",
       "url": "https://github.com/rybosome/tspice/actions/runs/45127597533/job/137535439275",
-      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 7054 live comparisons without unexpected skips."
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 7054 live comparisons without unexpected skips.",
+      "historical": true
     },
     {
       "backend": "wasm",
@@ -921,7 +923,8 @@
       ],
       "id": "local-cp03-779d6fd6ae41-wasm",
       "kind": "local",
-      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 779d6fd6ae41c78017a8cf7ccaec5fef3100112c. The native-required lane completed 7054 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45097193130/job/137439518970"
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 779d6fd6ae41c78017a8cf7ccaec5fef3100112c. The native-required lane completed 7054 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45097193130/job/137439518970",
+      "historical": true
     },
     {
       "backend": "wasm",
@@ -974,7 +977,216 @@
       "kind": "ci",
       "commit": "c4bd798cc20d13e8dfd51e7e83ba740ffe4418ff",
       "url": "https://github.com/rybosome/tspice/actions/runs/45127597533/job/137535439275",
-      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 7054 live comparisons without unexpected skips."
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 7054 live comparisons without unexpected skips.",
+      "historical": true
+    },
+    {
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "1c76f9fe9c55107dda9c2afeaae3470d1eb0324beef58f8f3d3cc55dc0c0e0c2",
+      "caseIds": [
+        "coords-vectors-ducrss-dyadic-collinear-states",
+        "coords-vectors-ducrss-mixed-components-and-order",
+        "coords-vectors-ducrss-orthogonal-basis-rates",
+        "coords-vectors-ducrss-scaled-derivatives",
+        "coords-vectors-ducrss-scaled-states",
+        "coords-vectors-ducrss-zero-position-and-velocity",
+        "coords-vectors-dvcrss-dyadic-collinear-states",
+        "coords-vectors-dvcrss-mixed-components-and-order",
+        "coords-vectors-dvcrss-orthogonal-basis-rates",
+        "coords-vectors-dvcrss-scaled-derivatives",
+        "coords-vectors-dvcrss-scaled-states",
+        "coords-vectors-dvcrss-zero-position-and-velocity",
+        "coords-vectors-dvdot-dyadic-collinear-states",
+        "coords-vectors-dvdot-mixed-components-and-order",
+        "coords-vectors-dvdot-orthogonal-basis-rates",
+        "coords-vectors-dvdot-scaled-derivatives",
+        "coords-vectors-dvdot-scaled-states",
+        "coords-vectors-dvdot-zero-position-and-velocity",
+        "coords-vectors-dvhat-mixed-components",
+        "coords-vectors-dvhat-radial-and-transverse-motion",
+        "coords-vectors-dvhat-scaled-derivatives",
+        "coords-vectors-dvhat-scaled-states",
+        "coords-vectors-dvhat-zero-position-and-velocity",
+        "coords-vectors-dvhat-zero-position-exact-extrema",
+        "coords-vectors-dvnorm-mixed-components",
+        "coords-vectors-dvnorm-radial-and-transverse-motion",
+        "coords-vectors-dvnorm-scaled-derivatives",
+        "coords-vectors-dvnorm-scaled-states",
+        "coords-vectors-dvnorm-zero-position-and-velocity",
+        "coords-vectors-dvsep-axis-collinear-states",
+        "coords-vectors-dvsep-decimal-overflow-negative",
+        "coords-vectors-dvsep-decimal-overflow-positive",
+        "coords-vectors-dvsep-division-underflow-and-finite-boundary",
+        "coords-vectors-dvsep-mixed-components-and-order",
+        "coords-vectors-dvsep-near-parallel-axis",
+        "coords-vectors-dvsep-orthogonal-basis-rates",
+        "coords-vectors-dvsep-scaled-derivatives",
+        "coords-vectors-dvsep-scaled-states",
+        "coords-vectors-dvsep-zero-position-and-velocity"
+      ],
+      "id": "local-cp04-3c3e3f368191-node",
+      "kind": "local",
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 3c3e3f368191d553e84ecc599d449055df985b1c. The native-required lane completed 8056 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45336611602/job/138250075470"
+    },
+    {
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "1c76f9fe9c55107dda9c2afeaae3470d1eb0324beef58f8f3d3cc55dc0c0e0c2",
+      "caseIds": [
+        "coords-vectors-ducrss-dyadic-collinear-states",
+        "coords-vectors-ducrss-mixed-components-and-order",
+        "coords-vectors-ducrss-orthogonal-basis-rates",
+        "coords-vectors-ducrss-scaled-derivatives",
+        "coords-vectors-ducrss-scaled-states",
+        "coords-vectors-ducrss-zero-position-and-velocity",
+        "coords-vectors-dvcrss-dyadic-collinear-states",
+        "coords-vectors-dvcrss-mixed-components-and-order",
+        "coords-vectors-dvcrss-orthogonal-basis-rates",
+        "coords-vectors-dvcrss-scaled-derivatives",
+        "coords-vectors-dvcrss-scaled-states",
+        "coords-vectors-dvcrss-zero-position-and-velocity",
+        "coords-vectors-dvdot-dyadic-collinear-states",
+        "coords-vectors-dvdot-mixed-components-and-order",
+        "coords-vectors-dvdot-orthogonal-basis-rates",
+        "coords-vectors-dvdot-scaled-derivatives",
+        "coords-vectors-dvdot-scaled-states",
+        "coords-vectors-dvdot-zero-position-and-velocity",
+        "coords-vectors-dvhat-mixed-components",
+        "coords-vectors-dvhat-radial-and-transverse-motion",
+        "coords-vectors-dvhat-scaled-derivatives",
+        "coords-vectors-dvhat-scaled-states",
+        "coords-vectors-dvhat-zero-position-and-velocity",
+        "coords-vectors-dvhat-zero-position-exact-extrema",
+        "coords-vectors-dvnorm-mixed-components",
+        "coords-vectors-dvnorm-radial-and-transverse-motion",
+        "coords-vectors-dvnorm-scaled-derivatives",
+        "coords-vectors-dvnorm-scaled-states",
+        "coords-vectors-dvnorm-zero-position-and-velocity",
+        "coords-vectors-dvsep-axis-collinear-states",
+        "coords-vectors-dvsep-decimal-overflow-negative",
+        "coords-vectors-dvsep-decimal-overflow-positive",
+        "coords-vectors-dvsep-division-underflow-and-finite-boundary",
+        "coords-vectors-dvsep-mixed-components-and-order",
+        "coords-vectors-dvsep-near-parallel-axis",
+        "coords-vectors-dvsep-orthogonal-basis-rates",
+        "coords-vectors-dvsep-scaled-derivatives",
+        "coords-vectors-dvsep-scaled-states",
+        "coords-vectors-dvsep-zero-position-and-velocity"
+      ],
+      "id": "ci-cp04-3c3e3f368191-node",
+      "kind": "ci",
+      "commit": "5759b72e80d904295926aa968ee1c07006abdf51",
+      "url": "https://github.com/rybosome/tspice/actions/runs/45348374307/job/138288412178",
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 8056 live comparisons without unexpected skips."
+    },
+    {
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "1c76f9fe9c55107dda9c2afeaae3470d1eb0324beef58f8f3d3cc55dc0c0e0c2",
+      "caseIds": [
+        "coords-vectors-ducrss-dyadic-collinear-states",
+        "coords-vectors-ducrss-mixed-components-and-order",
+        "coords-vectors-ducrss-orthogonal-basis-rates",
+        "coords-vectors-ducrss-scaled-derivatives",
+        "coords-vectors-ducrss-scaled-states",
+        "coords-vectors-ducrss-zero-position-and-velocity",
+        "coords-vectors-dvcrss-dyadic-collinear-states",
+        "coords-vectors-dvcrss-mixed-components-and-order",
+        "coords-vectors-dvcrss-orthogonal-basis-rates",
+        "coords-vectors-dvcrss-scaled-derivatives",
+        "coords-vectors-dvcrss-scaled-states",
+        "coords-vectors-dvcrss-zero-position-and-velocity",
+        "coords-vectors-dvdot-dyadic-collinear-states",
+        "coords-vectors-dvdot-mixed-components-and-order",
+        "coords-vectors-dvdot-orthogonal-basis-rates",
+        "coords-vectors-dvdot-scaled-derivatives",
+        "coords-vectors-dvdot-scaled-states",
+        "coords-vectors-dvdot-zero-position-and-velocity",
+        "coords-vectors-dvhat-mixed-components",
+        "coords-vectors-dvhat-radial-and-transverse-motion",
+        "coords-vectors-dvhat-scaled-derivatives",
+        "coords-vectors-dvhat-scaled-states",
+        "coords-vectors-dvhat-zero-position-and-velocity",
+        "coords-vectors-dvhat-zero-position-exact-extrema",
+        "coords-vectors-dvnorm-mixed-components",
+        "coords-vectors-dvnorm-radial-and-transverse-motion",
+        "coords-vectors-dvnorm-scaled-derivatives",
+        "coords-vectors-dvnorm-scaled-states",
+        "coords-vectors-dvnorm-zero-position-and-velocity",
+        "coords-vectors-dvsep-axis-collinear-states",
+        "coords-vectors-dvsep-decimal-overflow-negative",
+        "coords-vectors-dvsep-decimal-overflow-positive",
+        "coords-vectors-dvsep-division-underflow-and-finite-boundary",
+        "coords-vectors-dvsep-mixed-components-and-order",
+        "coords-vectors-dvsep-near-parallel-axis",
+        "coords-vectors-dvsep-orthogonal-basis-rates",
+        "coords-vectors-dvsep-scaled-derivatives",
+        "coords-vectors-dvsep-scaled-states",
+        "coords-vectors-dvsep-zero-position-and-velocity"
+      ],
+      "id": "local-cp04-3c3e3f368191-wasm",
+      "kind": "local",
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 3c3e3f368191d553e84ecc599d449055df985b1c. The native-required lane completed 8056 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45336611602/job/138250075470"
+    },
+    {
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "1c76f9fe9c55107dda9c2afeaae3470d1eb0324beef58f8f3d3cc55dc0c0e0c2",
+      "caseIds": [
+        "coords-vectors-ducrss-dyadic-collinear-states",
+        "coords-vectors-ducrss-mixed-components-and-order",
+        "coords-vectors-ducrss-orthogonal-basis-rates",
+        "coords-vectors-ducrss-scaled-derivatives",
+        "coords-vectors-ducrss-scaled-states",
+        "coords-vectors-ducrss-zero-position-and-velocity",
+        "coords-vectors-dvcrss-dyadic-collinear-states",
+        "coords-vectors-dvcrss-mixed-components-and-order",
+        "coords-vectors-dvcrss-orthogonal-basis-rates",
+        "coords-vectors-dvcrss-scaled-derivatives",
+        "coords-vectors-dvcrss-scaled-states",
+        "coords-vectors-dvcrss-zero-position-and-velocity",
+        "coords-vectors-dvdot-dyadic-collinear-states",
+        "coords-vectors-dvdot-mixed-components-and-order",
+        "coords-vectors-dvdot-orthogonal-basis-rates",
+        "coords-vectors-dvdot-scaled-derivatives",
+        "coords-vectors-dvdot-scaled-states",
+        "coords-vectors-dvdot-zero-position-and-velocity",
+        "coords-vectors-dvhat-mixed-components",
+        "coords-vectors-dvhat-radial-and-transverse-motion",
+        "coords-vectors-dvhat-scaled-derivatives",
+        "coords-vectors-dvhat-scaled-states",
+        "coords-vectors-dvhat-zero-position-and-velocity",
+        "coords-vectors-dvhat-zero-position-exact-extrema",
+        "coords-vectors-dvnorm-mixed-components",
+        "coords-vectors-dvnorm-radial-and-transverse-motion",
+        "coords-vectors-dvnorm-scaled-derivatives",
+        "coords-vectors-dvnorm-scaled-states",
+        "coords-vectors-dvnorm-zero-position-and-velocity",
+        "coords-vectors-dvsep-axis-collinear-states",
+        "coords-vectors-dvsep-decimal-overflow-negative",
+        "coords-vectors-dvsep-decimal-overflow-positive",
+        "coords-vectors-dvsep-division-underflow-and-finite-boundary",
+        "coords-vectors-dvsep-mixed-components-and-order",
+        "coords-vectors-dvsep-near-parallel-axis",
+        "coords-vectors-dvsep-orthogonal-basis-rates",
+        "coords-vectors-dvsep-scaled-derivatives",
+        "coords-vectors-dvsep-scaled-states",
+        "coords-vectors-dvsep-zero-position-and-velocity"
+      ],
+      "id": "ci-cp04-3c3e3f368191-wasm",
+      "kind": "ci",
+      "commit": "5759b72e80d904295926aa968ee1c07006abdf51",
+      "url": "https://github.com/rybosome/tspice/actions/runs/45348374307/job/138288412178",
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 8056 live comparisons without unexpected skips."
     }
   ],
   "routines": [
@@ -1064,13 +1276,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.ducrss -> typed Node adapter with exact six-number validation -> actual native ducrss binding with fixed local buffers/global SPICE mutex -> shared tspice_ducrss -> canonical ducrss_c. Independent Python calls the actual locked SpiceyPy ducrss wrapper and forwards every output entry/scalar.",
           "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
           ]
         },
         "wasm": {
@@ -1086,13 +1300,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.ducrss -> typed WASM adapter with exact six-number validation -> exported _tspice_ducrss with transactional buffers and copied output -> shared tspice_ducrss -> canonical ducrss_c. Independent Python calls the actual locked SpiceyPy ducrss wrapper and forwards every output entry/scalar.",
           "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
           ]
         }
       }
@@ -1167,13 +1383,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.dvcrss -> typed Node adapter with exact six-number validation -> actual native dvcrss binding with fixed local buffers/global SPICE mutex -> shared tspice_dvcrss -> canonical dvcrss_c. Independent Python calls the actual locked SpiceyPy dvcrss wrapper and forwards every output entry/scalar.",
           "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
           ]
         },
         "wasm": {
@@ -1188,13 +1406,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.dvcrss -> typed WASM adapter with exact six-number validation -> exported _tspice_dvcrss with transactional buffers and copied output -> shared tspice_dvcrss -> canonical dvcrss_c. Independent Python calls the actual locked SpiceyPy dvcrss wrapper and forwards every output entry/scalar.",
           "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
           ]
         }
       }
@@ -1269,13 +1489,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.dvdot -> typed Node adapter with exact six-number validation -> actual native dvdot binding with fixed local buffers/global SPICE mutex -> shared tspice_dvdot -> canonical dvdot_c. Independent Python calls the actual locked SpiceyPy dvdot wrapper and forwards every output entry/scalar.",
           "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
           ]
         },
         "wasm": {
@@ -1290,13 +1512,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.dvdot -> typed WASM adapter with exact six-number validation -> exported _tspice_dvdot with transactional buffers and copied output -> shared tspice_dvdot -> canonical dvdot_c. Independent Python calls the actual locked SpiceyPy dvdot wrapper and forwards every output entry/scalar.",
           "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
           ]
         }
       }
@@ -1371,13 +1595,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.dvhat -> typed Node adapter with exact six-number validation -> actual native dvhat binding with fixed local buffers/global SPICE mutex -> shared tspice_dvhat -> canonical dvhat_c. Independent Python calls the actual locked SpiceyPy dvhat wrapper and forwards every output entry/scalar.",
           "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
           ]
         },
         "wasm": {
@@ -1392,13 +1618,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.dvhat -> typed WASM adapter with exact six-number validation -> exported _tspice_dvhat with transactional buffers and copied output -> shared tspice_dvhat -> canonical dvhat_c. Independent Python calls the actual locked SpiceyPy dvhat wrapper and forwards every output entry/scalar.",
           "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
           ]
         }
       }
@@ -1468,13 +1696,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.dvnorm -> typed Node adapter with exact six-number validation -> actual native dvnorm binding with fixed local buffers/global SPICE mutex -> shared tspice_dvnorm -> canonical dvnorm_c. Independent Python calls the actual locked SpiceyPy dvnorm wrapper and forwards every output entry/scalar.",
           "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
           ]
         },
         "wasm": {
@@ -1489,13 +1719,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.dvnorm -> typed WASM adapter with exact six-number validation -> exported _tspice_dvnorm with transactional buffers and copied output -> shared tspice_dvnorm -> canonical dvnorm_c. Independent Python calls the actual locked SpiceyPy dvnorm wrapper and forwards every output entry/scalar.",
           "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
           ]
         }
       }
@@ -1639,13 +1871,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.dvsep -> typed Node adapter with exact six-number validation -> actual native dvsep binding with fixed local buffers/global SPICE mutex -> shared tspice_dvsep -> canonical dvsep_c. Independent Python calls the actual locked SpiceyPy dvsep wrapper and forwards every output entry/scalar.",
           "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
           ]
         },
         "wasm": {
@@ -1661,13 +1895,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.dvsep -> typed WASM adapter with exact six-number validation -> exported _tspice_dvsep with transactional buffers and copied output -> shared tspice_dvsep -> canonical dvsep_c. Independent Python calls the actual locked SpiceyPy dvsep wrapper and forwards every output entry/scalar.",
           "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
           ]
         }
       }

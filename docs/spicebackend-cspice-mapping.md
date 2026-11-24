@@ -356,6 +356,32 @@ Notes:
 
 ## Domain: `ephemeris` (`EphemerisApi`)
 
+E01 uses five direct orbit calculations on both backends. All are kernel-independent. [Detailed shapes, units and source-backed numerical conventions](step8-orbital-elements.md)
+
+| Raw method | CSPICE     | Return                                                                       |
+| ---------- | ---------- | ---------------------------------------------------------------------------- |
+| `conics`   | `conics_c` | Six-component inertial state from conic elements and ET                      |
+| `eqncpv`   | `eqncpv_c` | Six-component inertial state for equinoctial elements and the specified pole |
+| `oscelt`   | `oscelt_c` | Eight classical osculating elements at the supplied epoch                    |
+| `oscltx`   | `oscltx_c` | Eleven defined N0067 fields from a 20-word ABI buffer                        |
+| `prop2b`   | `prop2b_c` | Six-component inertial state propagated over signed elapsed seconds          |
+
+| Raw method                  | Canonical scientific call | Result and state                                                                                 |
+| --------------------------- | ------------------------- | ------------------------------------------------------------------------------------------------ |
+| `getelm(firstYear, lines)`  | `getelm_c`                | TDB epoch and ten canonical elements from two owned ASCII rows; UTC conversion requires an LSK.  |
+| `evsgp4(et, geophs, elems)` | `evsgp4_c`                | Six TEME components (km and km/s); the initializer converts the element epoch with a loaded LSK. |
+
+The raw adapters retain complete numeric outputs and toolkit errors. The shared shim bounds signed calendar-day arithmetic and checks the pinned resonance classification only for exceptionally long evaluation intervals. [Two-line element contracts and evidence](step8-tle-propagation.md)
+
+| Raw operation | N0067 entry | Result or effect                                                                                                                                                                               |
+| ------------- | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `spklef`      | `spklef_c`  | Register a physical SPK without a KEEPER entry and promote it to highest SPKBSR priority. Repeated direct loads share a per-client token until unload.                                         |
+| `spkuef`      | `spkuef_c`  | Remove an owned direct SPK registration, invalidating prior direct and borrowed observations across the shared toolkit, while preserving other files and any later registration.               |
+| `spkpvn`      | `spkpvn_c`  | Authenticate the exact packed descriptor against its readable source, evaluate the requested finite TDB epoch and return the complete native frame, position (km), velocity (km/s) and center. |
+| `spksub`      | `spksub_c`  | Append a real physical subset to a separate open SPK writer using the original file, actual packed descriptor, segment ID and inclusive TDB epochs.                                            |
+
+[SPK file registration, descriptor and physical subset evidence](step8-spk-lowlevel.md)
+
 | domain.method                                         | CSPICE entrypoint(s) | Args (TS shape)                                                                                       | Returns (TS shape)                        | Comparison notes (tolerance/normalization) | Statefulness / required kernels                                                                                                               |
 | ----------------------------------------------------- | -------------------- | ----------------------------------------------------------------------------------------------------- | ----------------------------------------- | ------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------- |
 | `ephemeris.spkezr(target, et, ref, abcorr, observer)` | `spkezr_c`           | `(target: string, et: number, ref: string, abcorr: AbCorr \| string, observer: string): SpkezrResult` | `{ state: [x,y,z,vx,vy,vz], lt: number }` | float tolerance on each component + `lt`   | **stateful**: requires SPK (`*.bsp`); may also require FK/PCK/CK depending on `ref`; aberration correction must match CSPICE `abcorr` parsing |
@@ -713,6 +739,27 @@ documented in the parity fixture README. The unchanged numeric comparator uses
 1e-12 absolute-or-relative tolerance; independent polynomial interpolation checks
 use 1e-9 km position and 1e-12 km/s velocity bounds.
 
+### Chebyshev SPK segment writers
+
+| Raw method                                                                                                          | N0067 route | Record semantics                                                                                                                                                                                                                                        |
+| ------------------------------------------------------------------------------------------------------------------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `spkw02(handle, body, center, frame, first, last, segid, intlen, n, degree, cdata, btime)`                          | `spkw02_c`  | Type 2 writes three position polynomials per fixed-duration record in seconds. SPKE02 differentiates each with respect to physical TDB seconds; each record contributes a stored midpoint, radius and coefficients. Degree 0..27.                       |
+| `spkw03(handle, body, center, frame, first, last, segid, intlen, n, degree, cdata, btime)`                          | `spkw03_c`  | Type 3 writes independently supplied position and velocity polynomials (km and km/s). Each of the six components contributes degree+1 ascending terms; midpoint/radius and a four-word directory are stored. Degree 0..27.                              |
+| `spkw20(handle, body, center, frame, first, last, segid, intlen, n, degree, cdata, dscale, tscale, initjd, initfr)` | `spkw20_c`  | Type 20 writes velocity coefficients and midpoint position per axis, successive records in Julian days and a seven-word directory. Distance and time scales convert physical units, and integration from each midpoint recovers position. Degree 0..50. |
+
+Each method returns void and uses an owned open SPK token. [Units, full record layouts and two-way independent file checks](step8-spk-chebyshev.md)
+
+### Interpolated SPK segment writers
+
+| Public raw signature                                                                        | Canonical writer | Scientific record                                                                                                                                                                                                                                            |
+| ------------------------------------------------------------------------------------------- | ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `spkw09(handle, body, center, frame, first, last, segid, degree, states, epochs)`           | `spkw09_c`       | Type 9 appends six separate Lagrange state components at irregular epochs with degree 1..27 and at least degree+1 rows.                                                                                                                                      |
+| `spkw12(handle, body, center, frame, first, last, segid, degree, states, epoch0, step)`     | `spkw12_c`       | Type 12 writes fixed-grid Hermite position/time-derivative states using epoch0 and positive step in TDB seconds with odd degree 1..27.                                                                                                                       |
+| `spkw13(handle, body, center, frame, first, last, segid, degree, states, epochs)`           | `spkw13_c`       | Type 13 writes position plus its derivative in km and km/s on increasing irregular epochs with odd Hermite degree 1..27.                                                                                                                                     |
+| `spkw18(handle, subtype, body, center, frame, first, last, segid, degree, packets, epochs)` | `spkw18_c`       | Type 18 supports subtype-0 independent position/derivative and velocity/acceleration Hermite interpolation and subtype-1 independent six-component Lagrange interpolation. The per-axis position derivative and separately interpolated velocity may differ. |
+
+All four return void and require a live writer owned by the client. [Layouts, epoch storage and independent reciprocal readback](step8-spk-interpolation.md)
+
 ### SPK state, position and segment-search audit
 
 `ephemeris-2` reviews `spkez`, `spkezp`, `spkezr`, `spkpos`, `spkgeo`, `spkgps`,
@@ -826,6 +873,54 @@ The audit retains the real cookbook fixture and adds a repository-authored two-p
 
 The input arrays retain row-major order. Output extent and the expected input
 lengths depend on each routine's dimension order. [Shapes, signed dimensions and independent observations](step8-general-matrices.md)
+
+### Analytic SPK writers
+
+| Raw method                                                                                                  | CSPICE route | Record                                                                                                                                                                                                                                                  |
+| ----------------------------------------------------------------------------------------------------------- | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `spkw05(handle, body, center, frame, first, last, segid, gm, states, epochs)`                               | `spkw05_c`   | Type 5 stores Cartesian states, increasing TDB sample epochs and central GM. Evaluation propagates neighbouring Keplerian states, blends with a derivative contribution to velocity, and extrapolates from the terminal state.                          |
+| `spkw10(handle, body, center, frame, first, last, segid, consts, elems, epochs)`                            | `spkw10_c`   | Type 10 stores eight geophysical constants and generic fourteen-word packets containing ten TLE values and four generated nutation quantities, indexed by increasing reference epoch. Near-Earth and deep-space samples evaluate in J2000 with the LSK. |
+| `spkw15(handle, body, center, frame, first, last, segid, epoch, tp, pa, p, ecc, j2flg, pv, gm, j2, radius)` | `spkw15_c`   | Type 15 normalizes three directions and writes a 16-word precessing-conic record using semilatus rectum, eccentricity, J2 flag and physical constants. Its evaluator applies distinct modes for secular node regression and apsidal precession.         |
+| `spkw17(handle, body, center, frame, first, last, segid, epoch, eqel, rapol, decpol)`                       | `spkw17_c`   | Type 17 writes the epoch, nine equinoctial elements and two pole angles. Its Cartesian evaluator applies all terms in the tilted reference plane and includes angular rates in the returned velocity.                                                   |
+
+All take a live owned SPK writer and return void. [File layouts, runtime boundaries and numerical comparisons](step8-spk-analytic.md)
+
+### Streaming SPK writers
+
+| Public operation                                                  | Linked N0067 entry | Segment action                                                                                                                                                                                                                                |
+| ----------------------------------------------------------------- | ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `spk14b(handle, segid, body, center, frame, first, last, degree)` | `spk14b_c`         | Begin a streamed type 14 generic DAF segment on an owned open SPK writer. Its descriptor and single logical constant define coverage, reference frame and fixed packet width 2+6*(degree+1).                                                  |
+| `spk14a(handle, count, records, epochs)`                          | `spk14a_c`         | Append complete time-tagged Chebyshev records to the actual open stream. References have variable spacings and must be strictly increasing within and across calls; the six polynomials independently encode Cartesian position and velocity. |
+| `spk14e(handle)`                                                  | `spk14e_c`         | Finish a type 14 generic segment. The metadata and reference directory become readable after file close. The same file handle can immediately start another segment; ending an empty stream yields legitimate metadata-only coverage.         |
+
+All operations return void. [Packet shape, degree and lifecycle bounds, independent file reads](step8-spk-streaming.md)
+
+### Observer-relative SPK geometry
+
+| Public operation                                                             | Linked N0067 entry | Observation                                                                                                                                                                                                             |
+| ---------------------------------------------------------------------------- | ------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `spkcpo(target, et, outref, refloc, abcorr, obspos, obsctr, obsref)`         | `spkcpo_c`         | Return the six-component target state as observed from the supplied position fixed in the observer frame. Correct the target event and evaluate the output frame at the requested locus.                                |
+| `spkcpt(trgpos, trgctr, trgref, et, outref, refloc, abcorr, obsrvr)`         | `spkcpt_c`         | Return the apparent state of the supplied target point fixed in its local frame relative to an ephemeris observer. Evaluate the point at the corrected target epoch.                                                    |
+| `spkcvo(target, et, outref, refloc, abcorr, obssta, obsepc, obsctr, obsref)` | `spkcvo_c`         | Propagate the observer state from its own supplied epoch with constant velocity in the observer frame. Apply its six-dimensional frame transform, observer-center motion, aberration correction and output frame locus. |
+| `spkcvt(trgsta, trgepc, trgctr, trgref, et, outref, refloc, abcorr, obsrvr)` | `spkcvt_c`         | Propagate the local target state at its own epoch to the apparent target event. Transform both position and velocity, accounting for the source and output frames and target center.                                    |
+| `azlcpo(method, target, et, abcorr, azccw, elplsz, obspos, obsctr, obsref)`  | `azlcpo_c`         | Return topocentric range, azimuth, elevation and their three time derivatives relative to the ellipsoid-based local frame, plus one-way light time. azccw sets the azimuth direction and elplsz the elevation sign.     |
+
+The five methods each return an owned six-component `state` and scalar one-way `lt` in seconds. [Epochs, axes, units, error behavior and validation](step8-spk-relative.md)
+
+### SPK corrections and signal time
+
+| Method                                                                 | Direct canonical call | Output                                      |
+| ---------------------------------------------------------------------- | --------------------- | ------------------------------------------- |
+| `spkacs(target, et, ref, abcorr, observer)`                            | `spkacs_c`            | State, light time and light-time derivative |
+| `spkapo(target, et, ref, observerState, abcorr)`                       | `spkapo_c`            | Position and light time                     |
+| `spkapp(target, et, ref, observerState, abcorr)`                       | `spkapp_c`            | Legacy state and light time                 |
+| `spkaps(target, et, ref, abcorr, observerState, observerAcceleration)` | `spkaps_c`            | State, light time and light-time derivative |
+| `spkltc(target, et, ref, abcorr, observerState)`                       | `spkltc_c`            | State, light time and light-time derivative |
+| `stelab(position, observerVelocity)`                                   | `stelab_c`            | Corrected position                          |
+| `stlabx(position, observerVelocity)`                                   | `stlabx_c`            | Corrected position                          |
+| `ltime(etobs, observer, dir, target)`                                  | `ltime_c`             | Target epoch and elapsed signal time        |
+
+[Units, source guards, independent ABI and observed scientific behavior](step8-spk-corrections.md)
 
 ## Domain: `file-io` readers (`FileIoApi`)
 

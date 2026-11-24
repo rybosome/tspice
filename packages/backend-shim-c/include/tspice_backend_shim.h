@@ -887,6 +887,27 @@ int tspice_sxform(
     int errMaxBytes);
 
 // spkezr_c: compute state (6 doubles) and light time.
+int tspice_conics(const double *elts, double et, double *out, char *err, int errMaxBytes);
+int tspice_eqncpv(double et, double epoch, const double *eqel, double rapol, double decpol, double *out, char *err, int errMaxBytes);
+int tspice_oscelt(const double *state, double et, double mu, double *out, char *err, int errMaxBytes);
+int tspice_oscltx(const double *state, double et, double mu, double *out, char *err, int errMaxBytes);
+int tspice_prop2b(double gm, const double *pvinit, double dt, double *out, char *err, int errMaxBytes);
+
+int tspice_spkcpo(const char *target, double et, const char *outref, const char *refloc, const char *abcorr, const double *obspos, const char *obsctr, const char *obsref, double *out, char *err, int errMaxBytes);
+int tspice_spkcpt(const double *trgpos, const char *trgctr, const char *trgref, double et, const char *outref, const char *refloc, const char *abcorr, const char *obsrvr, double *out, char *err, int errMaxBytes);
+int tspice_spkcvo(const char *target, double et, const char *outref, const char *refloc, const char *abcorr, const double *obssta, double obsepc, const char *obsctr, const char *obsref, double *out, char *err, int errMaxBytes);
+int tspice_spkcvt(const double *trgsta, double trgepc, const char *trgctr, const char *trgref, double et, const char *outref, const char *refloc, const char *abcorr, const char *obsrvr, double *out, char *err, int errMaxBytes);
+int tspice_azlcpo(const char *method, const char *target, double et, const char *abcorr, int azccw, int elplsz, const double *obspos, const char *obsctr, const char *obsref, double *out, char *err, int errMaxBytes);
+
+int tspice_spkacs(int target, double et, const char *ref, const char *abcorr, int observer, double *out, char *err, int errMaxBytes);
+int tspice_spkapo(int target, double et, const char *ref, const double *observerState, const char *abcorr, double *out, char *err, int errMaxBytes);
+int tspice_spkapp(int target, double et, const char *ref, const double *observerState, const char *abcorr, double *out, char *err, int errMaxBytes);
+int tspice_spkaps(int target, double et, const char *ref, const char *abcorr, const double *observerState, const double *observerAcceleration, double *out, char *err, int errMaxBytes);
+int tspice_spkltc(int target, double et, const char *ref, const char *abcorr, const double *observerState, double *out, char *err, int errMaxBytes);
+int tspice_stelab(const double *position, const double *observerVelocity, double *out, char *err, int errMaxBytes);
+int tspice_stlabx(const double *position, const double *observerVelocity, double *out, char *err, int errMaxBytes);
+int tspice_ltime(double etobs, int observer, const char *dir, int target, double *out, char *err, int errMaxBytes);
+
 int tspice_spkezr(
     const char *target,
     double et,
@@ -997,6 +1018,10 @@ int tspice_illumf(
     char *err,
     int errMaxBytes);
 
+// Public fixed-size two-line element parser and TEME propagator.
+int tspice_getelm(int firstYear, int stride, const char *lines, double *epoch, double *elems, char *err, int errMaxBytes);
+int tspice_evsgp4(double et, const double *geophs, const double *elems, double *state, char *err, int errMaxBytes);
+
 // spkssb_c: compute state (6 doubles) of target body relative to SSB.
 int tspice_spkssb(
     int target,
@@ -1047,10 +1072,16 @@ int tspice_spkobj(
 //
 // Segment identifiers may be up to 40 characters; `outIdentMaxBytes` must be
 // at least 41 (including trailing NUL).
+void tspice_spk_keeper_snapshot(int after);
+int tspice_spklef(const char *path,int *generation,char *err,int cap);
+int tspice_spkuef(int generation,char *err,int cap);
+int tspice_spkpvn(int source,int isRegistration,const void *descr,int size,double et,int *ref,double *state6,int *center,char *err,int cap);
+int tspice_spksub(int source,int isRegistration,const void *descr,int size,const char *ident,double begin,double end,int writer,char *err,int cap);
 int tspice_spksfs(
     int body,
     double et,
     int *outHandle,
+    int *outGeneration,
     double *outDescr5,
     char *outIdent,
     int outIdentMaxBytes,
@@ -1101,6 +1132,45 @@ int tspice_spkopa(const char *path, int *outHandle, char *err, int errMaxBytes);
 // spkcls_c: close an SPK file handle.
 int tspice_spkcls(int handle, char *err, int errMaxBytes);
 
+int tspice_spkw02(int handle, int body, int center, const char* frame, double first, double last,
+                  const char* segid, double intlen, int n, int degree, const double* cdata,
+                  int words, double btime, char* err, int cap);
+int tspice_spkw03(int handle, int body, int center, const char* frame, double first, double last,
+                  const char* segid, double intlen, int n, int degree, const double* cdata,
+                  int words, double btime, char* err, int cap);
+int tspice_spkw20(int handle, int body, int center, const char* frame, double first, double last,
+                  const char* segid, double intlen, int n, int degree, const double* cdata,
+                  int words, double dscale, double tscale, double initjd, double initfr, char* err,
+                  int cap);
+
+int tspice_spkw09(int handle, int body, int center, const char* frame, double first, double last,
+                  const char* segid, int degree, int n, const double* samples, int sampleWords,
+                  const double* epochs, int epochCount, char* err, int cap);
+int tspice_spkw12(int handle, int body, int center, const char* frame, double first, double last,
+                  const char* segid, int degree, int n, const double* samples, int sampleWords,
+                  double epoch0, double step, char* err, int cap);
+int tspice_spkw13(int handle, int body, int center, const char* frame, double first, double last,
+                  const char* segid, int degree, int n, const double* samples, int sampleWords,
+                  const double* epochs, int epochCount, char* err, int cap);
+int tspice_spkw18(int handle, int subtype, int body, int center, const char* frame, double first,
+                  double last, const char* segid, int degree, int n, const double* samples,
+                  int sampleWords, const double* epochs, int epochCount, char* err, int cap);
+
+int tspice_spkw05(int handle, int body, int center, const char* frame, double first, double last,
+                  const char* segid, int n, const double* data, int words, char* err, int cap);
+int tspice_spkw10(int handle, int body, int center, const char* frame, double first, double last,
+                  const char* segid, int n, const double* data, int words, char* err, int cap);
+int tspice_spkw15(int handle, int body, int center, const char* frame, double first, double last,
+                  const char* segid, int n, const double* data, int words, char* err, int cap);
+int tspice_spkw17(int handle, int body, int center, const char* frame, double first, double last,
+                  const char* segid, int n, const double* data, int words, char* err, int cap);
+
+int tspice_spk14b(int handle, const char* segid, int body, int center, const char* frame,
+                  double first, double last, int degree, char* err, int cap);
+int tspice_spk14a(int handle, int count, const double* records, int words, const double* epochs,
+                  int nEpochs, char* err, int cap);
+int tspice_spk14e(int handle, char* err, int cap);
+int tspice_spk14_finish_if_active(int handle, char* err, int cap);
 // spkw08_c: write a type 8 segment (equal time steps, Lagrange interpolation).
 //
 // `states6n` is a flat array of length `n*6` doubles.

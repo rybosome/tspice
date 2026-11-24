@@ -1,6 +1,7 @@
 import { execFileSync } from "node:child_process";
 import { stageCheckedTextSources } from "./checked-text-sources.mjs";
 import fs from "node:fs";
+import { stageAberrationCache } from "./stage-aberration-cache.mjs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -241,6 +242,10 @@ const cspiceCspiceDir = path.join(cspiceSrcDir, "cspice");
 const cspiceCsupportDir = path.join(cspiceSrcDir, "csupport");
 
 stageCheckedTextSources(
+  path.join(cspiceSourceRoot, "src", "cspice"),
+  cspiceCspiceDir,
+);
+stageAberrationCache(
   path.join(cspiceSourceRoot, "src", "cspice"),
   cspiceCspiceDir,
 );
@@ -647,20 +652,58 @@ const exportedFunctions = [
   "_tspice_nvc2pl",
   "_tspice_pl2nvc",
   // --- ephemeris ---
+  "_tspice_conics",
+  "_tspice_eqncpv",
+  "_tspice_oscelt",
+  "_tspice_oscltx",
+  "_tspice_prop2b",
+  "_tspice_spkcpo",
+  "_tspice_spkcpt",
+  "_tspice_spkcvo",
+  "_tspice_spkcvt",
+  "_tspice_azlcpo",
+  "_tspice_spkacs",
+  "_tspice_spkapo",
+  "_tspice_spkapp",
+  "_tspice_spkaps",
+  "_tspice_spkltc",
+  "_tspice_stelab",
+  "_tspice_stlabx",
+  "_tspice_ltime",
   "_tspice_spkezr",
   "_tspice_spkpos",
   "_tspice_spkez",
   "_tspice_spkezp",
   "_tspice_spkgeo",
   "_tspice_spkgps",
+  "_tspice_getelm",
+  "_tspice_evsgp4",
   "_tspice_spkssb",
   "_tspice_spkcov",
   "_tspice_spkobj",
+  "_tspice_spklef",
+  "_tspice_spkuef",
+  "_tspice_spkpvn",
+  "_tspice_spksub",
   "_tspice_spksfs",
   "_tspice_spkpds",
   "_tspice_spkuds",
   "_tspice_spkopn",
   "_tspice_spkopa",
+  "_tspice_spkw02",
+  "_tspice_spkw03",
+  "_tspice_spkw20",
+  "_tspice_spkw09",
+  "_tspice_spkw12",
+  "_tspice_spkw13",
+  "_tspice_spkw18",
+  "_tspice_spkw05",
+  "_tspice_spkw10",
+  "_tspice_spkw15",
+  "_tspice_spkw17",
+  "_tspice_spk14b",
+  "_tspice_spk14a",
+  "_tspice_spk14e",
   "_tspice_spkw08",
   "_tspice_spkw08_v2",
   "_tspice_spkcls",

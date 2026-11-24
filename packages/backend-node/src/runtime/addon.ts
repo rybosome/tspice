@@ -696,6 +696,115 @@ export type NativeAddon = {
     coverWindowHandle: number,
   ): void;
 
+  conics(elts: readonly number[], et: number): number[];
+  eqncpv(
+    et: number,
+    epoch: number,
+    eqel: readonly number[],
+    rapol: number,
+    decpol: number,
+  ): number[];
+  oscelt(state: readonly number[], et: number, mu: number): number[];
+  oscltx(state: readonly number[], et: number, mu: number): number[];
+  prop2b(gm: number, pvinit: readonly number[], dt: number): number[];
+  spkcpo(
+    target: string,
+    et: number,
+    outref: string,
+    refloc: string,
+    abcorr: string,
+    obspos: readonly number[],
+    obsctr: string,
+    obsref: string,
+  ): number[];
+  spkcpt(
+    trgpos: readonly number[],
+    trgctr: string,
+    trgref: string,
+    et: number,
+    outref: string,
+    refloc: string,
+    abcorr: string,
+    obsrvr: string,
+  ): number[];
+  spkcvo(
+    target: string,
+    et: number,
+    outref: string,
+    refloc: string,
+    abcorr: string,
+    obssta: readonly number[],
+    obsepc: number,
+    obsctr: string,
+    obsref: string,
+  ): number[];
+  spkcvt(
+    trgsta: readonly number[],
+    trgepc: number,
+    trgctr: string,
+    trgref: string,
+    et: number,
+    outref: string,
+    refloc: string,
+    abcorr: string,
+    obsrvr: string,
+  ): number[];
+  azlcpo(
+    method: string,
+    target: string,
+    et: number,
+    abcorr: string,
+    azccw: boolean,
+    elplsz: boolean,
+    obspos: readonly number[],
+    obsctr: string,
+    obsref: string,
+  ): number[];
+  spkacs(
+    target: number,
+    et: number,
+    ref: string,
+    abcorr: string,
+    observer: number,
+  ): number[];
+  spkapo(
+    target: number,
+    et: number,
+    ref: string,
+    observerState: readonly number[],
+    abcorr: string,
+  ): number[];
+  spkapp(
+    target: number,
+    et: number,
+    ref: string,
+    observerState: readonly number[],
+    abcorr: string,
+  ): number[];
+  spkaps(
+    target: number,
+    et: number,
+    ref: string,
+    abcorr: string,
+    observerState: readonly number[],
+    observerAcceleration: readonly number[],
+  ): number[];
+  spkltc(
+    target: number,
+    et: number,
+    ref: string,
+    abcorr: string,
+    observerState: readonly number[],
+  ): number[];
+  stelab(
+    position: readonly number[],
+    observerVelocity: readonly number[],
+  ): number[];
+  stlabx(
+    position: readonly number[],
+    observerVelocity: readonly number[],
+  ): number[];
+  ltime(etobs: number, observer: number, dir: string, target: number): number[];
   spkezr(
     target: string,
     et: number,
@@ -779,6 +888,15 @@ export type NativeAddon = {
     lit: boolean;
   };
 
+  getelm(
+    firstYear: number,
+    lines: readonly [string, string],
+  ): { epoch: number; elems: number[] };
+  evsgp4(
+    et: number,
+    geophs: readonly number[],
+    elems: readonly number[],
+  ): number[];
   spkssb(target: number, et: number, ref: string): number[];
 
   spkcov(spk: string, idcode: number, cover: SpiceWindow): void;
@@ -787,10 +905,33 @@ export type NativeAddon = {
   pl2nvc(plane: number[]): { normal: number[]; konst: number };
   spkobj(spk: string, ids: SpiceIntCell): void;
 
+  spklef(path: string): number;
+  spkuef(generation: number): void;
+  spkpvn(
+    source: number,
+    registered: boolean,
+    descr: Uint8Array,
+    et: number,
+  ): { ref: number; state: number[]; center: number };
+  spksub(
+    source: number,
+    registered: boolean,
+    descr: Uint8Array,
+    ident: string,
+    begin: number,
+    end: number,
+    writer: number,
+  ): void;
   spksfs(
     body: number,
     et: number,
-  ): { found: boolean; handle?: number; descr?: Float64Array; ident?: string };
+  ): {
+    found: boolean;
+    handle?: number;
+    generation?: number;
+    descr?: Float64Array;
+    ident?: string;
+  };
 
   spkpds(
     body: number,
@@ -816,6 +957,167 @@ export type NativeAddon = {
   spkopn(path: string, ifname: string, ncomch: number): number;
   spkopa(path: string): number;
   spkcls(handle: number): void;
+  spkw02(
+    handle: number,
+    body: number,
+    center: number,
+    frame: string,
+    first: number,
+    last: number,
+    segid: string,
+    intlen: number,
+    n: number,
+    degree: number,
+    cdata: Float64Array,
+    btime: number,
+  ): void;
+  spkw03(
+    handle: number,
+    body: number,
+    center: number,
+    frame: string,
+    first: number,
+    last: number,
+    segid: string,
+    intlen: number,
+    n: number,
+    degree: number,
+    cdata: Float64Array,
+    btime: number,
+  ): void;
+  spkw20(
+    handle: number,
+    body: number,
+    center: number,
+    frame: string,
+    first: number,
+    last: number,
+    segid: string,
+    intlen: number,
+    n: number,
+    degree: number,
+    cdata: Float64Array,
+    dscale: number,
+    tscale: number,
+    initjd: number,
+    initfr: number,
+  ): void;
+  spkw09(
+    handle: number,
+    body: number,
+    center: number,
+    frame: string,
+    first: number,
+    last: number,
+    segid: string,
+    degree: number,
+    n: number,
+    states: Float64Array,
+    epochs: Float64Array,
+  ): void;
+  spkw12(
+    handle: number,
+    body: number,
+    center: number,
+    frame: string,
+    first: number,
+    last: number,
+    segid: string,
+    degree: number,
+    n: number,
+    states: Float64Array,
+    epoch0: number,
+    step: number,
+  ): void;
+  spkw13(
+    handle: number,
+    body: number,
+    center: number,
+    frame: string,
+    first: number,
+    last: number,
+    segid: string,
+    degree: number,
+    n: number,
+    states: Float64Array,
+    epochs: Float64Array,
+  ): void;
+  spkw18(
+    handle: number,
+    subtype: number,
+    body: number,
+    center: number,
+    frame: string,
+    first: number,
+    last: number,
+    segid: string,
+    degree: number,
+    n: number,
+    packets: Float64Array,
+    epochs: Float64Array,
+  ): void;
+  spkw05(
+    handle: number,
+    body: number,
+    center: number,
+    frame: string,
+    first: number,
+    last: number,
+    segid: string,
+    n: number,
+    data: Float64Array,
+  ): void;
+  spkw10(
+    handle: number,
+    body: number,
+    center: number,
+    frame: string,
+    first: number,
+    last: number,
+    segid: string,
+    n: number,
+    data: Float64Array,
+  ): void;
+  spkw15(
+    handle: number,
+    body: number,
+    center: number,
+    frame: string,
+    first: number,
+    last: number,
+    segid: string,
+    n: number,
+    data: Float64Array,
+  ): void;
+  spkw17(
+    handle: number,
+    body: number,
+    center: number,
+    frame: string,
+    first: number,
+    last: number,
+    segid: string,
+    n: number,
+    data: Float64Array,
+  ): void;
+  spk14b(
+    handle: number,
+    segid: string,
+    body: number,
+    center: number,
+    frame: string,
+    first: number,
+    last: number,
+    degree: number,
+  ): void;
+  spk14a(
+    handle: number,
+    count: number,
+    records: Float64Array,
+    epochs: Float64Array,
+  ): void;
+  spk14e(handle: number): void;
+  spk14FinishIfActive(handle: number): void;
   spkw08(
     handle: number,
     body: number,

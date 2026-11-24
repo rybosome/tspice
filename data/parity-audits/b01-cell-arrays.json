@@ -1111,7 +1111,8 @@
       ],
       "id": "local-cp03-779d6fd6ae41-node",
       "kind": "local",
-      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 779d6fd6ae41c78017a8cf7ccaec5fef3100112c. The native-required lane completed 7054 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45097193130/job/137439518970"
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 779d6fd6ae41c78017a8cf7ccaec5fef3100112c. The native-required lane completed 7054 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45097193130/job/137439518970",
+      "historical": true
     },
     {
       "backend": "node",
@@ -1193,7 +1194,8 @@
       "kind": "ci",
       "commit": "c4bd798cc20d13e8dfd51e7e83ba740ffe4418ff",
       "url": "https://github.com/rybosome/tspice/actions/runs/45127597533/job/137535439275",
-      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 7054 live comparisons without unexpected skips."
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 7054 live comparisons without unexpected skips.",
+      "historical": true
     },
     {
       "backend": "wasm",
@@ -1273,7 +1275,8 @@
       ],
       "id": "local-cp03-779d6fd6ae41-wasm",
       "kind": "local",
-      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 779d6fd6ae41c78017a8cf7ccaec5fef3100112c. The native-required lane completed 7054 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45097193130/job/137439518970"
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 779d6fd6ae41c78017a8cf7ccaec5fef3100112c. The native-required lane completed 7054 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45097193130/job/137439518970",
+      "historical": true
     },
     {
       "backend": "wasm",
@@ -1355,7 +1358,332 @@
       "kind": "ci",
       "commit": "c4bd798cc20d13e8dfd51e7e83ba740ffe4418ff",
       "url": "https://github.com/rybosome/tspice/actions/runs/45127597533/job/137535439275",
-      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 7054 live comparisons without unexpected skips."
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 7054 live comparisons without unexpected skips.",
+      "historical": true
+    },
+    {
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "da6c113a9cf2617025da36d3183c51db5e1d96083b02900327eb6ca7b556a45b",
+      "caseIds": [
+        "cells-windows-appndc-complete-bytes",
+        "cells-windows-appndc-descending-then-valid",
+        "cells-windows-appndc-equal-repeat",
+        "cells-windows-appndc-exact-capacity",
+        "cells-windows-appndc-fortran-blanks",
+        "cells-windows-appndc-full",
+        "cells-windows-appndc-independent-handles",
+        "cells-windows-appndc-ordered-and-missing",
+        "cells-windows-appndc-terminal-tab",
+        "cells-windows-appndc-zero-capacity",
+        "cells-windows-appndd-descending-then-valid",
+        "cells-windows-appndd-equal-repeat",
+        "cells-windows-appndd-exact-capacity",
+        "cells-windows-appndd-full",
+        "cells-windows-appndd-independent-handles",
+        "cells-windows-appndd-ordered-and-missing",
+        "cells-windows-appndd-signed-zero",
+        "cells-windows-appndd-zero-capacity",
+        "cells-windows-appndi-descending-then-valid",
+        "cells-windows-appndi-equal-repeat",
+        "cells-windows-appndi-exact-capacity",
+        "cells-windows-appndi-full",
+        "cells-windows-appndi-independent-handles",
+        "cells-windows-appndi-ordered-and-missing",
+        "cells-windows-appndi-zero-capacity",
+        "cells-windows-copy-char-blank-tail",
+        "cells-windows-copy-char-empty",
+        "cells-windows-copy-char-overwrite",
+        "cells-windows-copy-char-self",
+        "cells-windows-copy-char-short-row",
+        "cells-windows-copy-char-small",
+        "cells-windows-copy-char-small-control-width",
+        "cells-windows-copy-char-target-not-a-set",
+        "cells-windows-copy-double-empty",
+        "cells-windows-copy-double-overwrite",
+        "cells-windows-copy-double-self",
+        "cells-windows-copy-double-small",
+        "cells-windows-copy-double-target-not-a-set",
+        "cells-windows-copy-int-empty",
+        "cells-windows-copy-int-overwrite",
+        "cells-windows-copy-int-self",
+        "cells-windows-copy-int-small",
+        "cells-windows-copy-int-target-not-a-set",
+        "cells-windows-elemc-complete-bytes",
+        "cells-windows-elemc-descending-reject",
+        "cells-windows-elemc-descending-then-valid",
+        "cells-windows-elemc-empty",
+        "cells-windows-elemc-equal-repeat",
+        "cells-windows-elemc-fortran-blanks",
+        "cells-windows-elemc-independent-handles",
+        "cells-windows-elemc-ordered-and-missing",
+        "cells-windows-elemc-singleton",
+        "cells-windows-elemc-terminal-tab",
+        "cells-windows-elemd-descending-reject",
+        "cells-windows-elemd-descending-then-valid",
+        "cells-windows-elemd-empty",
+        "cells-windows-elemd-equal-repeat",
+        "cells-windows-elemd-independent-handles",
+        "cells-windows-elemd-ordered-and-missing",
+        "cells-windows-elemd-signed-zero",
+        "cells-windows-elemd-singleton",
+        "cells-windows-elemi-descending-reject",
+        "cells-windows-elemi-descending-then-valid",
+        "cells-windows-elemi-empty",
+        "cells-windows-elemi-equal-repeat",
+        "cells-windows-elemi-independent-handles",
+        "cells-windows-elemi-ordered-and-missing",
+        "cells-windows-elemi-singleton"
+      ],
+      "id": "local-cp04-3c3e3f368191-node",
+      "kind": "local",
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 3c3e3f368191d553e84ecc599d449055df985b1c. The native-required lane completed 8056 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45336611602/job/138250075470"
+    },
+    {
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "da6c113a9cf2617025da36d3183c51db5e1d96083b02900327eb6ca7b556a45b",
+      "caseIds": [
+        "cells-windows-appndc-complete-bytes",
+        "cells-windows-appndc-descending-then-valid",
+        "cells-windows-appndc-equal-repeat",
+        "cells-windows-appndc-exact-capacity",
+        "cells-windows-appndc-fortran-blanks",
+        "cells-windows-appndc-full",
+        "cells-windows-appndc-independent-handles",
+        "cells-windows-appndc-ordered-and-missing",
+        "cells-windows-appndc-terminal-tab",
+        "cells-windows-appndc-zero-capacity",
+        "cells-windows-appndd-descending-then-valid",
+        "cells-windows-appndd-equal-repeat",
+        "cells-windows-appndd-exact-capacity",
+        "cells-windows-appndd-full",
+        "cells-windows-appndd-independent-handles",
+        "cells-windows-appndd-ordered-and-missing",
+        "cells-windows-appndd-signed-zero",
+        "cells-windows-appndd-zero-capacity",
+        "cells-windows-appndi-descending-then-valid",
+        "cells-windows-appndi-equal-repeat",
+        "cells-windows-appndi-exact-capacity",
+        "cells-windows-appndi-full",
+        "cells-windows-appndi-independent-handles",
+        "cells-windows-appndi-ordered-and-missing",
+        "cells-windows-appndi-zero-capacity",
+        "cells-windows-copy-char-blank-tail",
+        "cells-windows-copy-char-empty",
+        "cells-windows-copy-char-overwrite",
+        "cells-windows-copy-char-self",
+        "cells-windows-copy-char-short-row",
+        "cells-windows-copy-char-small",
+        "cells-windows-copy-char-small-control-width",
+        "cells-windows-copy-char-target-not-a-set",
+        "cells-windows-copy-double-empty",
+        "cells-windows-copy-double-overwrite",
+        "cells-windows-copy-double-self",
+        "cells-windows-copy-double-small",
+        "cells-windows-copy-double-target-not-a-set",
+        "cells-windows-copy-int-empty",
+        "cells-windows-copy-int-overwrite",
+        "cells-windows-copy-int-self",
+        "cells-windows-copy-int-small",
+        "cells-windows-copy-int-target-not-a-set",
+        "cells-windows-elemc-complete-bytes",
+        "cells-windows-elemc-descending-reject",
+        "cells-windows-elemc-descending-then-valid",
+        "cells-windows-elemc-empty",
+        "cells-windows-elemc-equal-repeat",
+        "cells-windows-elemc-fortran-blanks",
+        "cells-windows-elemc-independent-handles",
+        "cells-windows-elemc-ordered-and-missing",
+        "cells-windows-elemc-singleton",
+        "cells-windows-elemc-terminal-tab",
+        "cells-windows-elemd-descending-reject",
+        "cells-windows-elemd-descending-then-valid",
+        "cells-windows-elemd-empty",
+        "cells-windows-elemd-equal-repeat",
+        "cells-windows-elemd-independent-handles",
+        "cells-windows-elemd-ordered-and-missing",
+        "cells-windows-elemd-signed-zero",
+        "cells-windows-elemd-singleton",
+        "cells-windows-elemi-descending-reject",
+        "cells-windows-elemi-descending-then-valid",
+        "cells-windows-elemi-empty",
+        "cells-windows-elemi-equal-repeat",
+        "cells-windows-elemi-independent-handles",
+        "cells-windows-elemi-ordered-and-missing",
+        "cells-windows-elemi-singleton"
+      ],
+      "id": "ci-cp04-3c3e3f368191-node",
+      "kind": "ci",
+      "commit": "5759b72e80d904295926aa968ee1c07006abdf51",
+      "url": "https://github.com/rybosome/tspice/actions/runs/45348374307/job/138288412178",
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 8056 live comparisons without unexpected skips."
+    },
+    {
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "da6c113a9cf2617025da36d3183c51db5e1d96083b02900327eb6ca7b556a45b",
+      "caseIds": [
+        "cells-windows-appndc-complete-bytes",
+        "cells-windows-appndc-descending-then-valid",
+        "cells-windows-appndc-equal-repeat",
+        "cells-windows-appndc-exact-capacity",
+        "cells-windows-appndc-fortran-blanks",
+        "cells-windows-appndc-full",
+        "cells-windows-appndc-independent-handles",
+        "cells-windows-appndc-ordered-and-missing",
+        "cells-windows-appndc-terminal-tab",
+        "cells-windows-appndc-zero-capacity",
+        "cells-windows-appndd-descending-then-valid",
+        "cells-windows-appndd-equal-repeat",
+        "cells-windows-appndd-exact-capacity",
+        "cells-windows-appndd-full",
+        "cells-windows-appndd-independent-handles",
+        "cells-windows-appndd-ordered-and-missing",
+        "cells-windows-appndd-signed-zero",
+        "cells-windows-appndd-zero-capacity",
+        "cells-windows-appndi-descending-then-valid",
+        "cells-windows-appndi-equal-repeat",
+        "cells-windows-appndi-exact-capacity",
+        "cells-windows-appndi-full",
+        "cells-windows-appndi-independent-handles",
+        "cells-windows-appndi-ordered-and-missing",
+        "cells-windows-appndi-zero-capacity",
+        "cells-windows-copy-char-blank-tail",
+        "cells-windows-copy-char-empty",
+        "cells-windows-copy-char-overwrite",
+        "cells-windows-copy-char-self",
+        "cells-windows-copy-char-short-row",
+        "cells-windows-copy-char-small",
+        "cells-windows-copy-char-small-control-width",
+        "cells-windows-copy-char-target-not-a-set",
+        "cells-windows-copy-double-empty",
+        "cells-windows-copy-double-overwrite",
+        "cells-windows-copy-double-self",
+        "cells-windows-copy-double-small",
+        "cells-windows-copy-double-target-not-a-set",
+        "cells-windows-copy-int-empty",
+        "cells-windows-copy-int-overwrite",
+        "cells-windows-copy-int-self",
+        "cells-windows-copy-int-small",
+        "cells-windows-copy-int-target-not-a-set",
+        "cells-windows-elemc-complete-bytes",
+        "cells-windows-elemc-descending-reject",
+        "cells-windows-elemc-descending-then-valid",
+        "cells-windows-elemc-empty",
+        "cells-windows-elemc-equal-repeat",
+        "cells-windows-elemc-fortran-blanks",
+        "cells-windows-elemc-independent-handles",
+        "cells-windows-elemc-ordered-and-missing",
+        "cells-windows-elemc-singleton",
+        "cells-windows-elemc-terminal-tab",
+        "cells-windows-elemd-descending-reject",
+        "cells-windows-elemd-descending-then-valid",
+        "cells-windows-elemd-empty",
+        "cells-windows-elemd-equal-repeat",
+        "cells-windows-elemd-independent-handles",
+        "cells-windows-elemd-ordered-and-missing",
+        "cells-windows-elemd-signed-zero",
+        "cells-windows-elemd-singleton",
+        "cells-windows-elemi-descending-reject",
+        "cells-windows-elemi-descending-then-valid",
+        "cells-windows-elemi-empty",
+        "cells-windows-elemi-equal-repeat",
+        "cells-windows-elemi-independent-handles",
+        "cells-windows-elemi-ordered-and-missing",
+        "cells-windows-elemi-singleton"
+      ],
+      "id": "local-cp04-3c3e3f368191-wasm",
+      "kind": "local",
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 3c3e3f368191d553e84ecc599d449055df985b1c. The native-required lane completed 8056 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45336611602/job/138250075470"
+    },
+    {
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "da6c113a9cf2617025da36d3183c51db5e1d96083b02900327eb6ca7b556a45b",
+      "caseIds": [
+        "cells-windows-appndc-complete-bytes",
+        "cells-windows-appndc-descending-then-valid",
+        "cells-windows-appndc-equal-repeat",
+        "cells-windows-appndc-exact-capacity",
+        "cells-windows-appndc-fortran-blanks",
+        "cells-windows-appndc-full",
+        "cells-windows-appndc-independent-handles",
+        "cells-windows-appndc-ordered-and-missing",
+        "cells-windows-appndc-terminal-tab",
+        "cells-windows-appndc-zero-capacity",
+        "cells-windows-appndd-descending-then-valid",
+        "cells-windows-appndd-equal-repeat",
+        "cells-windows-appndd-exact-capacity",
+        "cells-windows-appndd-full",
+        "cells-windows-appndd-independent-handles",
+        "cells-windows-appndd-ordered-and-missing",
+        "cells-windows-appndd-signed-zero",
+        "cells-windows-appndd-zero-capacity",
+        "cells-windows-appndi-descending-then-valid",
+        "cells-windows-appndi-equal-repeat",
+        "cells-windows-appndi-exact-capacity",
+        "cells-windows-appndi-full",
+        "cells-windows-appndi-independent-handles",
+        "cells-windows-appndi-ordered-and-missing",
+        "cells-windows-appndi-zero-capacity",
+        "cells-windows-copy-char-blank-tail",
+        "cells-windows-copy-char-empty",
+        "cells-windows-copy-char-overwrite",
+        "cells-windows-copy-char-self",
+        "cells-windows-copy-char-short-row",
+        "cells-windows-copy-char-small",
+        "cells-windows-copy-char-small-control-width",
+        "cells-windows-copy-char-target-not-a-set",
+        "cells-windows-copy-double-empty",
+        "cells-windows-copy-double-overwrite",
+        "cells-windows-copy-double-self",
+        "cells-windows-copy-double-small",
+        "cells-windows-copy-double-target-not-a-set",
+        "cells-windows-copy-int-empty",
+        "cells-windows-copy-int-overwrite",
+        "cells-windows-copy-int-self",
+        "cells-windows-copy-int-small",
+        "cells-windows-copy-int-target-not-a-set",
+        "cells-windows-elemc-complete-bytes",
+        "cells-windows-elemc-descending-reject",
+        "cells-windows-elemc-descending-then-valid",
+        "cells-windows-elemc-empty",
+        "cells-windows-elemc-equal-repeat",
+        "cells-windows-elemc-fortran-blanks",
+        "cells-windows-elemc-independent-handles",
+        "cells-windows-elemc-ordered-and-missing",
+        "cells-windows-elemc-singleton",
+        "cells-windows-elemc-terminal-tab",
+        "cells-windows-elemd-descending-reject",
+        "cells-windows-elemd-descending-then-valid",
+        "cells-windows-elemd-empty",
+        "cells-windows-elemd-equal-repeat",
+        "cells-windows-elemd-independent-handles",
+        "cells-windows-elemd-ordered-and-missing",
+        "cells-windows-elemd-signed-zero",
+        "cells-windows-elemd-singleton",
+        "cells-windows-elemi-descending-reject",
+        "cells-windows-elemi-descending-then-valid",
+        "cells-windows-elemi-empty",
+        "cells-windows-elemi-equal-repeat",
+        "cells-windows-elemi-independent-handles",
+        "cells-windows-elemi-ordered-and-missing",
+        "cells-windows-elemi-singleton"
+      ],
+      "id": "ci-cp04-3c3e3f368191-wasm",
+      "kind": "ci",
+      "commit": "5759b72e80d904295926aa968ee1c07006abdf51",
+      "url": "https://github.com/rybosome/tspice/actions/runs/45348374307/job/138288412178",
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 8056 live comparisons without unexpected skips."
     }
   ],
   "routines": [
@@ -1452,13 +1780,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.appndc -> Node local handle lookup and mutex-serialized native addon -> shared tspice_appndc -> appndc_c. Independent oracle: locked sp.appndc invoking its matching public CSPICE routine.",
           "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
           ]
         },
         "wasm": {
@@ -1472,13 +1802,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.appndc -> WASM module-owned pointer lookup, scoped buffers and compiled export -> shared tspice_appndc -> appndc_c. Independent oracle: locked sp.appndc invoking its matching public CSPICE routine.",
           "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
           ]
         }
       }
@@ -1548,13 +1880,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.appndd -> Node local handle lookup and mutex-serialized native addon -> shared tspice_appndd -> appndd_c. Independent oracle: locked sp.appndd invoking its matching public CSPICE routine.",
           "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
           ]
         },
         "wasm": {
@@ -1567,13 +1901,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.appndd -> WASM module-owned pointer lookup, scoped buffers and compiled export -> shared tspice_appndd -> appndd_c. Independent oracle: locked sp.appndd invoking its matching public CSPICE routine.",
           "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
           ]
         }
       }
@@ -1638,13 +1974,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.appndi -> Node local handle lookup and mutex-serialized native addon -> shared tspice_appndi -> appndi_c. Independent oracle: locked sp.appndi invoking its matching public CSPICE routine.",
           "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
           ]
         },
         "wasm": {
@@ -1657,13 +1995,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.appndi -> WASM module-owned pointer lookup, scoped buffers and compiled export -> shared tspice_appndi -> appndi_c. Independent oracle: locked sp.appndi invoking its matching public CSPICE routine.",
           "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
           ]
         }
       }
@@ -1806,13 +2146,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.copy -> Node local handle lookup and mutex-serialized native addon -> shared tspice_copy -> copy_c. Independent oracle: typed copy_c from the locked SpiceyPy library on the caller’s existing source and destination.",
           "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
           ]
         },
         "wasm": {
@@ -1826,13 +2168,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.copy -> WASM module-owned pointer lookup, scoped buffers and compiled export -> shared tspice_copy -> copy_c. Independent oracle: typed copy_c from the locked SpiceyPy library on the caller’s existing source and destination.",
           "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
           ]
         }
       }
@@ -1930,13 +2274,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.elemc -> Node local handle lookup and mutex-serialized native addon -> shared tspice_elemc -> elemc_c. Independent oracle: locked sp.elemc invoking its matching public CSPICE routine.",
           "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
           ]
         },
         "wasm": {
@@ -1950,13 +2296,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.elemc -> WASM module-owned pointer lookup, scoped buffers and compiled export -> shared tspice_elemc -> elemc_c. Independent oracle: locked sp.elemc invoking its matching public CSPICE routine.",
           "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
           ]
         }
       }
@@ -2026,13 +2374,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.elemd -> Node local handle lookup and mutex-serialized native addon -> shared tspice_elemd -> elemd_c. Independent oracle: locked sp.elemd invoking its matching public CSPICE routine.",
           "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
           ]
         },
         "wasm": {
@@ -2045,13 +2395,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.elemd -> WASM module-owned pointer lookup, scoped buffers and compiled export -> shared tspice_elemd -> elemd_c. Independent oracle: locked sp.elemd invoking its matching public CSPICE routine.",
           "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
           ]
         }
       }
@@ -2116,13 +2468,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.elemi -> Node local handle lookup and mutex-serialized native addon -> shared tspice_elemi -> elemi_c. Independent oracle: locked sp.elemi invoking its matching public CSPICE routine.",
           "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
           ]
         },
         "wasm": {
@@ -2135,13 +2489,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.elemi -> WASM module-owned pointer lookup, scoped buffers and compiled export -> shared tspice_elemi -> elemi_c. Independent oracle: locked sp.elemi invoking its matching public CSPICE routine.",
           "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
           ]
         }
       }

@@ -8,6 +8,10 @@ import type {
   AbCorr,
   Found,
   SpiceHandle,
+  SpiceConicElements,
+  SpiceEquinoctialElements,
+  SpiceExtendedConicElements,
+  SpiceVector3,
   SpiceStateVector,
   SpkezrResult,
   SpkposResult,
@@ -33,6 +37,8 @@ export type SpkPackedDescriptor = readonly [
   number,
 ];
 
+/** Five packed native words from SPKSFS or the 40 DAFGS bytes from a real SPK file. */
+export type SpkSegmentDescriptor = SpkPackedDescriptor | Uint8Array;
 /** Unpacked SPK segment descriptor (see `spkuds_c`). */
 export type SpkUnpackedDescriptor = {
   body: number;
@@ -47,8 +53,283 @@ export type SpkUnpackedDescriptor = {
   eaddr: number;
 };
 
-/** Backend contract for SPK/ephemeris computations (positions, states, segment inspection). */
+/** Ten canonical elements returned by GETELM and consumed by EVSGP4. */
+export type TleElements = readonly [
+  ndt20: number,
+  ndd60: number,
+  bstar: number,
+  inclination: number,
+  node: number,
+  eccentricity: number,
+  argument: number,
+  anomaly: number,
+  motion: number,
+  epoch: number,
+];
+/** Earth geophysical constants in the order expected by EVSGP4. */
+export type Sgp4Geophysics = readonly [
+  j2: number,
+  j3: number,
+  j4: number,
+  ke: number,
+  qo: number,
+  so: number,
+  er: number,
+  ae: number,
+];
+
+/** Backend contract for SPK/ephemeris computations. */
 export interface EphemerisApi {
+  /** State in km and km/s of a target relative to a point fixed in obsref about obsctr. The selected output frame orientation uses OBSERVER, TARGET or CENTER evaluation locus under light-time correction; NONE evaluates at ET. Return one-way light time in seconds.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkcpo_c.html
+   */
+  spkcpo(
+    target: string,
+    et: number,
+    outref: string,
+    refloc: string,
+    abcorr: string,
+    obspos: Readonly<SpiceVector3>,
+    obsctr: string,
+    obsref: string,
+  ): SpkezrResult;
+
+  /** State in km and km/s of a point fixed in trgref about trgctr relative to an ephemeris observer at ET. Corrected reception and transmission select different target epochs. Refloc selects when the output frame is evaluated.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkcpt_c.html
+   */
+  spkcpt(
+    trgpos: Readonly<SpiceVector3>,
+    trgctr: string,
+    trgref: string,
+    et: number,
+    outref: string,
+    refloc: string,
+    abcorr: string,
+    obsrvr: string,
+  ): SpkezrResult;
+
+  /** State of a target relative to a point with constant supplied velocity in obsref about obsctr. Propagate obssta (km, km/s) from its epoch obsepc, then apply the frame state transform including rotational velocity. Return the apparent six-component state and light time in seconds.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkcvo_c.html
+   */
+  spkcvo(
+    target: string,
+    et: number,
+    outref: string,
+    refloc: string,
+    abcorr: string,
+    obssta: Readonly<SpiceStateVector>,
+    obsepc: number,
+    obsctr: string,
+    obsref: string,
+  ): SpkezrResult;
+
+  /** State of a target point extrapolated at constant velocity in trgref about trgctr from trgsta at trgepc. Reception/transmission solve for the target event; the selected output frame evaluation locus contributes to the velocity. State uses km and km/s; lt is seconds.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkcvt_c.html
+   */
+  spkcvt(
+    trgsta: Readonly<SpiceStateVector>,
+    trgepc: number,
+    trgctr: string,
+    trgref: string,
+    et: number,
+    outref: string,
+    refloc: string,
+    abcorr: string,
+    obsrvr: string,
+  ): SpkezrResult;
+
+  /** Return topocentric range (km), azimuth and elevation (rad), followed by their rates (km/s and rad/s), and one-way lt (s). ELLIPSOID uses the local outward normal in the body-centered obsref. azccw chooses counterclockwise azimuth, elplsz chooses increasing elevation toward +Z. A vertical sight line has undefined angular rates and can signal POINTONZAXIS.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/azlcpo_c.html
+   */
+  azlcpo(
+    method: string,
+    target: string,
+    et: number,
+    abcorr: string,
+    azccw: boolean,
+    elplsz: boolean,
+    obspos: Readonly<SpiceVector3>,
+    obsctr: string,
+    obsref: string,
+  ): SpkezrResult;
+
+  /** Return the inertial target state (km and km/s), one-way light time lt (s), and its derivative dlt (s/s) at observer ET. Target and observer are integer IDs. Stellar correction needs observer ephemeris coverage one second before and after ET.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkacs_c.html
+   */
+  spkacs(
+    target: number,
+    et: number,
+    ref: string,
+    abcorr: string,
+    observer: number,
+  ): SpkezrResult & { dlt: number };
+
+  /** Return the apparent position (km) and light time (s) of a target at observer ET for a supplied barycentric observer state (km and km/s). Both input and output use the specified inertial frame. Reception and transmission evaluate the target at different epochs.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkapo_c.html
+   */
+  spkapo(
+    target: number,
+    et: number,
+    ref: string,
+    observerState: Readonly<SpiceStateVector>,
+    abcorr: string,
+  ): SpkposResult;
+
+  /** Return the legacy apparent state (km and km/s) and light time (s) for the supplied barycentric observer state at ET. The reported legacy velocity is target velocity at its evaluation epoch minus observer velocity. Stellar aberration changes position only.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkapp_c.html
+   */
+  spkapp(
+    target: number,
+    et: number,
+    ref: string,
+    observerState: Readonly<SpiceStateVector>,
+    abcorr: string,
+  ): SpkezrResult;
+
+  /** Compute a corrected inertial state, lt (s) and dlt (s/s) at observer ET from the supplied barycentric observer state (km, km/s) and acceleration (km/s²) in ref. Acceleration contributes to the stellar velocity correction.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkaps_c.html
+   */
+  spkaps(
+    target: number,
+    et: number,
+    ref: string,
+    abcorr: string,
+    observerState: Readonly<SpiceStateVector>,
+    observerAcceleration: Readonly<SpiceVector3>,
+  ): SpkezrResult & { dlt: number };
+
+  /** Compute the Newtonian light-time-corrected state, lt (s) and dlt (s/s) for a barycentric observer state at ET. The stellar attribute of accepted correction flags is ignored. NONE still returns geometric range divided by light speed and its derivative.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkltc_c.html
+   */
+  spkltc(
+    target: number,
+    et: number,
+    ref: string,
+    abcorr: string,
+    observerState: Readonly<SpiceStateVector>,
+  ): SpkezrResult & { dlt: number };
+
+  /** Apply stellar aberration for received radiation to a geometric position (km) using the observer barycentric velocity (km/s). The physical observer speed must be below light speed. N0067 tests the squared velocity after multiplication by the rounded reciprocal of light speed. Return an owned corrected position in the input frame.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/stelab_c.html
+   */
+  stelab(
+    position: Readonly<SpiceVector3>,
+    observerVelocity: Readonly<SpiceVector3>,
+  ): SpiceVector3;
+
+  /** Apply stellar aberration for transmitted radiation to a position (km) using the observer barycentric velocity (km/s). The toolkit applies its stellar rotation with the negated velocity. Return an owned position in the input frame.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/stlabx_c.html
+   */
+  stlabx(
+    position: Readonly<SpiceVector3>,
+    observerVelocity: Readonly<SpiceVector3>,
+  ): SpiceVector3;
+
+  /** Return the target event epoch ettarg (TDB seconds past J2000) and nonnegative elapsed light time elapsd (s) from observer event etobs. Direction -> transmits at the observer, while <- receives there. Requires barycentric SPK coverage at the needed epochs.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ltime_c.html
+   */
+  ltime(
+    etobs: number,
+    observer: number,
+    dir: string,
+    target: number,
+  ): { ettarg: number; elapsd: number };
+
+  /**
+   * Propagate the eight conic elements to ET (seconds past J2000 TDB).
+   * Return an inertial position and velocity in km and km/s. Elliptic, parabolic
+   * and hyperbolic orbits use the same element order. Negative eccentricity,
+   * nonpositive periapse or nonpositive GM signal toolkit errors.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/conics_c.html
+   */
+  conics(elts: Readonly<SpiceConicElements>, et: number): SpiceStateVector;
+
+  /**
+   * Evaluate nine equinoctial elements specified at epoch at a requested ET.
+   * Both times are seconds past J2000 TDB. The reference equator is specified
+   * by its pole right ascension and declination in radians in the output inertial
+   * frame. Return position (km) and velocity (km/s). The semimajor axis must
+   * be positive and H²+K² must correspond to eccentricity at most 0.9. A zero
+   * mean-longitude rate can produce nonfinite velocity components.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/eqncpv_c.html
+   */
+  eqncpv(
+    et: number,
+    epoch: number,
+    eqel: Readonly<SpiceEquinoctialElements>,
+    rapol: number,
+    decpol: number,
+  ): SpiceStateVector;
+
+  /**
+   * Convert an inertial state (km, km/s) to eight classical osculating elements
+   * at ET (seconds past J2000 TDB) for central GM mu (km³/s²). Nonpositive mu
+   * and zero angular momentum signal toolkit errors. Circular and equatorial
+   * orbits use CSPICE's angular conventions; nearby elements can be ill-conditioned.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/oscelt_c.html
+   */
+  oscelt(
+    state: Readonly<SpiceStateVector>,
+    et: number,
+    mu: number,
+  ): SpiceConicElements;
+
+  /**
+   * Return the eight classical elements followed by true anomaly (rad),
+   * semimajor axis (km) and period (s) for this inertial state (km, km/s),
+   * ET (seconds past J2000 TDB) and central GM mu (km³/s²). CSPICE can set
+   * uncomputable semimajor axes or periods to zero; nonelliptic periods are zero.
+   * The returned tuple contains the eleven defined N0067 quantities.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/oscltx_c.html
+   */
+  oscltx(
+    state: Readonly<SpiceStateVector>,
+    et: number,
+    mu: number,
+  ): SpiceExtendedConicElements;
+
+  /**
+   * Propagate an inertial state (km, km/s) under a two-body central force
+   * with positive GM (km³/s²) for signed elapsed time dt (seconds). Return
+   * all six state coordinates in the same frame. A zero position, zero velocity,
+   * or rectilinear motion signals a toolkit error.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/prop2b_c.html
+   */
+  prop2b(
+    gm: number,
+    pvinit: Readonly<SpiceStateVector>,
+    dt: number,
+  ): SpiceStateVector;
+
+  /**
+   * Parse two fixed-column ASCII element lines using the loaded leap-seconds kernel.
+   * The two-digit year is expanded relative to firstYear. Return TDB seconds past
+   * J2000 and ten elements in SPICE order (rates in rad/min², rad/min³ and
+   * rad/min, angles in radians). The last element repeats the epoch. CSPICE
+   * accepts 68 or 69 nonblank columns and does not verify the checksum.
+   * Supported calendar inputs keep signed day-number arithmetic representable.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/getelm_c.html
+   */
+  getelm(
+    firstYear: number,
+    lines: readonly [string, string],
+  ): { epoch: number; elems: TleElements };
+  /**
+   * Evaluate a parsed element set at TDB seconds past J2000. Return TEME
+   * position in km and velocity in km/s. Requires a loaded leap-seconds kernel
+   * to convert the elements epoch to UTC during each initialization. Supply
+   * the eight Earth constants in J2, J3, J4, KE, QO, SO, ER, AE order.
+   * The absolute elements epoch is bounded at 1.6e14 TDB seconds for signed
+   * day conversion. Deep-space resonances are limited to fewer than one million
+   * 720-minute integration steps; nonresonant calls avoid that integration.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/evsgp4_c.html
+   */
+  evsgp4(
+    et: number,
+    geophs: Sgp4Geophysics,
+    elems: TleElements,
+  ): SpiceStateVector;
+
   /**
    * Compute state relative to observer using loaded kernels (see `spkezr_c`).
    *
@@ -195,6 +476,38 @@ export interface EphemerisApi {
    */
   spkobj(spk: string, ids: SpiceIntCell): void;
 
+  /** Load a readable SPK directly into the SPK search table. Each load makes this file highest priority.
+   * Repeated direct loads of the same live file return the same client-owned token. A single unload removes its physical registration.
+   * Use a filesystem/virtual kernel path or a closed virtual SPK output. Direct loading does not register a KEEPER kernel.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spklef_c.html
+   */
+  spklef(file: string | VirtualOutput): SpiceHandle;
+  /** Remove an explicit SPKLEF registration and release this client's ownership token. A prior toolkit unload is a canonical no-op.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkuef_c.html
+   */
+  spkuef(handle: SpiceHandle): void;
+  /** Evaluate a real segment at finite TDB seconds past J2000. Type-specific readers control coverage and extrapolation. Supply a live local DAF or SPKLEF token,
+   * or the borrowed physical handle previously returned by this client's SPKSFS. The descriptor must match this SPK's actual summary.
+   * Returns frame code, owned Cartesian position (km) and velocity (km/s), and center body code.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkpvn_c.html
+   */
+  spkpvn(
+    handle: number,
+    descr: SpkSegmentDescriptor,
+    et: number,
+  ): { ref: number; state: SpiceStateVector; center: number };
+  /** Append a type-specific physical subset of an authentic source segment to a separate SPK writer. Both endpoints are inclusive TDB seconds.
+   * The source and descriptor follow SPKPVN conventions. Close the destination with SPKCLS before reopening it or reading its bytes.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spksub_c.html
+   */
+  spksub(
+    handle: number,
+    descr: SpkSegmentDescriptor,
+    ident: string,
+    begin: number,
+    end: number,
+    newh: SpiceHandle,
+  ): void;
   /**
    * Search loaded SPK files for the highest-priority segment applicable to `body` and `et`.
    *
@@ -324,4 +637,293 @@ export interface EphemerisApi {
     epoch1: number,
     step: number,
   ): void;
+  /**
+   * Write type 2 position Chebyshev records; CSPICE derives velocity in km/s from the position
+   * polynomial. Each of n records contains degree+1 coefficients in ascending order for X, then
+   * Y, then Z in km. intlen is in seconds and btime is the start of the first record in seconds
+   * past J2000 TDB. Degree 0..27. The writer handle belongs to this client. Descriptor bounds
+   * first/last are seconds past J2000 TDB. Supply finite flat input words for exactly n
+   * chronological records (256 MiB maximum).
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkw02_c.html
+   */
+  spkw02(
+    handle: SpiceHandle,
+    body: number,
+    center: number,
+    frame: string,
+    first: number,
+    last: number,
+    segid: string,
+    intlen: number,
+    n: number,
+    degree: number,
+    cdata: readonly number[] | Float64Array,
+    btime: number,
+  ): void;
+  /**
+   * Write type 3 independent position (km) and velocity (km/s) Chebyshev expansions. Each record
+   * contains degree+1 ascending coefficients for X, Y, Z, VX, VY, VZ. intlen is in seconds and
+   * btime is the start of the first record in seconds past J2000 TDB. Degree 0..27. The writer
+   * handle belongs to this client. Descriptor bounds first/last are seconds past J2000 TDB.
+   * Supply finite flat input words for exactly n chronological records (256 MiB maximum).
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkw03_c.html
+   */
+  spkw03(
+    handle: SpiceHandle,
+    body: number,
+    center: number,
+    frame: string,
+    first: number,
+    last: number,
+    segid: string,
+    intlen: number,
+    n: number,
+    degree: number,
+    cdata: readonly number[] | Float64Array,
+    btime: number,
+  ): void;
+  /**
+   * Write type 20 velocity Chebyshev records. Each axis stores degree+1 ascending velocity
+   * coefficients followed by its position at the record midpoint. Positions are in units of
+   * dscale km and velocities in dscale/tscale km/s. intlen is in Julian days and initjd + initfr
+   * is the starting TDB Julian date. Degree 0..50. The writer handle belongs to this client.
+   * Descriptor bounds first/last are seconds past J2000 TDB. Supply finite flat input words for
+   * exactly n chronological records (256 MiB maximum).
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkw20_c.html
+   */
+  spkw20(
+    handle: SpiceHandle,
+    body: number,
+    center: number,
+    frame: string,
+    first: number,
+    last: number,
+    segid: string,
+    intlen: number,
+    n: number,
+    degree: number,
+    cdata: readonly number[] | Float64Array,
+    dscale: number,
+    tscale: number,
+    initjd: number,
+    initfr: number,
+  ): void;
+  /**
+   * Write a type 9 segment by Lagrange interpolation of all six supplied state components at
+   * increasing, irregular TDB epochs. Degree 1..27 requires at least degree+1 states. Supply
+   * complete flat records in time order. Record count is inferred from their length. The
+   * wrapper snapshots finite values once and limits each input buffer to 256 MiB.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkw09_c.html
+   */
+  spkw09(
+    handle: SpiceHandle,
+    body: number,
+    center: number,
+    frame: string,
+    first: number,
+    last: number,
+    segid: string,
+    degree: number,
+    states: readonly number[] | Float64Array,
+    epochs: readonly number[] | Float64Array,
+  ): void;
+  /**
+   * Write a type 12 Hermite segment. Each state provides position in km and its first
+   * derivative in km/s; the first epoch is epoch0 and positive step is in TDB seconds. Odd
+   * degrees 1..27 require at least (degree+1)/2 states. Supply complete flat records in time
+   * order. Record count is inferred from their length. The wrapper snapshots finite values
+   * once and limits each input buffer to 256 MiB.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkw12_c.html
+   */
+  spkw12(
+    handle: SpiceHandle,
+    body: number,
+    center: number,
+    frame: string,
+    first: number,
+    last: number,
+    segid: string,
+    degree: number,
+    states: readonly number[] | Float64Array,
+    epoch0: number,
+    step: number,
+  ): void;
+  /**
+   * Write a type 13 Hermite segment. Each state supplies position in km and its first
+   * derivative in km/s at the corresponding irregular, increasing TDB epoch. Odd degrees
+   * 1..27 require at least (degree+1)/2 states. Supply complete flat records in time order.
+   * Record count is inferred from their length. The wrapper snapshots finite values once and
+   * limits each input buffer to 256 MiB.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkw13_c.html
+   */
+  spkw13(
+    handle: SpiceHandle,
+    body: number,
+    center: number,
+    frame: string,
+    first: number,
+    last: number,
+    segid: string,
+    degree: number,
+    states: readonly number[] | Float64Array,
+    epochs: readonly number[] | Float64Array,
+  ): void;
+  /**
+   * Write a type 18 segment at increasing TDB epochs. Subtype 0 uses 12 words per packet:
+   * position, position derivative, independently supplied velocity, and velocity derivative,
+   * each XYZ. Subtype 1 uses six words for independently interpolated position and velocity.
+   * At least two packets are required; edge windows may be reduced. Subtype 0 documented
+   * degrees are 3,7,11,15. Pinned N0067 also accepts 4,8,12 with the preceding odd degree’s
+   * window size. Subtype 1 uses odd degrees 1..15. Supply complete flat records in time
+   * order. Record count is inferred from their length. The wrapper snapshots finite values
+   * once and limits each input buffer to 256 MiB.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkw18_c.html
+   */
+  spkw18(
+    handle: SpiceHandle,
+    subtype: number,
+    body: number,
+    center: number,
+    frame: string,
+    first: number,
+    last: number,
+    segid: string,
+    degree: number,
+    packets: readonly number[] | Float64Array,
+    epochs: readonly number[] | Float64Array,
+  ): void;
+  /**
+   * Append a type 5 conic segment from successive Cartesian states (XYZ km and XYZ km/s) and
+   * increasing sample epochs in TDB seconds. GM is in km³/s². CSPICE propagates neighboring
+   * states with two-body dynamics and blends them within the sampled interval; end states
+   * can propagate outside it. Six state words are required per epoch. All numeric fields
+   * must be finite; packed input is limited to 256 MiB.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkw05_c.html
+   */
+  spkw05(
+    handle: SpiceHandle,
+    body: number,
+    center: number,
+    frame: string,
+    first: number,
+    last: number,
+    segid: string,
+    gm: number,
+    states: readonly number[] | Float64Array,
+    epochs: readonly number[] | Float64Array,
+  ): void;
+  /**
+   * Append a type 10 space-command two-line element segment. Supply eight geophysical
+   * constants J2, J3, J4, KE, QO, SO, ER, AE, and ten words per set in GETELM order, ending
+   * in mean motion (rad/min) and element epoch (TDB seconds). Supply the corresponding
+   * increasing reference epochs; tspice checks ordering before opening the generic segment.
+   * An empty set has descriptor and coverage only. Evaluation of populated sets requires the
+   * time conversion kernel data used by SGP4. All numeric fields must be finite; packed
+   * input is limited to 256 MiB.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkw10_c.html
+   */
+  spkw10(
+    handle: SpiceHandle,
+    body: number,
+    center: number,
+    frame: string,
+    first: number,
+    last: number,
+    segid: string,
+    consts: readonly number[] | Float64Array,
+    elems: readonly number[] | Float64Array,
+    epochs: readonly number[] | Float64Array,
+  ): void;
+  /**
+   * Append a type 15 precessing conic. Supply an epoch (TDB seconds), orbit pole, periapsis
+   * direction, positive semilatus rectum (km), eccentricity, J2 flag, body pole, positive GM
+   * (km³/s²), J2 and equatorial radius (km). The writer normalizes the three directions.
+   * Flags 0, 1, 2 and 3 request both secular effects, node only, apsides only and neither.
+   * The stored flag is a double; its truncated value must fit a signed 32-bit integer for
+   * evaluation. All numeric fields must be finite; packed input is limited to 256 MiB.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkw15_c.html
+   */
+  spkw15(
+    handle: SpiceHandle,
+    body: number,
+    center: number,
+    frame: string,
+    first: number,
+    last: number,
+    segid: string,
+    epoch: number,
+    tp: Readonly<SpiceVector3>,
+    pa: Readonly<SpiceVector3>,
+    p: number,
+    ecc: number,
+    j2flg: number,
+    pv: Readonly<SpiceVector3>,
+    gm: number,
+    j2: number,
+    radius: number,
+  ): void;
+  /**
+   * Append a type 17 equinoctial segment. Supply epoch in TDB seconds, nine elements in
+   * order: semimajor axis (km), h, k, mean longitude, p, q, periapsis longitude rate, mean
+   * longitude rate, ascending node rate. Angles and rates are radians and radians/s. The
+   * final pole right ascension and declination specify the reference plane. The writer allows
+   * eccentricities through 0.9. State evaluation requires eccentricity below 0.9. All numeric fields must be finite; packed input is limited
+   * to 256 MiB.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkw17_c.html
+   */
+  spkw17(
+    handle: SpiceHandle,
+    body: number,
+    center: number,
+    frame: string,
+    first: number,
+    last: number,
+    segid: string,
+    epoch: number,
+    eqel: readonly number[] | Float64Array,
+    rapol: number,
+    decpol: number,
+  ): void;
+  /**
+   * Begin a type 14 SPK segment on an owned open writer. The time bounds are TDB seconds
+   * past J2000. Each record contains independent Chebyshev polynomials of the same degree
+   * for XYZ position (km) and velocity (km/s). Add batches with spk14a and finish with
+   * spk14e before closing or writing another segment on that handle. N0067 can evaluate
+   * degrees 0 through 31. Larger writable records produce SPKRECTOOLARGE on state
+   * evaluation.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spk14b_c.html
+   */
+  spk14b(
+    handle: SpiceHandle,
+    segid: string,
+    body: number,
+    center: number,
+    frame: string,
+    first: number,
+    last: number,
+    degree: number,
+  ): void;
+  /**
+   * Append count complete type 14 records and count starting epochs to the active segment.
+   * Each flat record contains midpoint TDB seconds, time radius in seconds, then six groups
+   * of degree+1 coefficients in ascending polynomial order. Reference epochs must increase
+   * within and across additions. An ordering error leaves previously accepted records
+   * available for a corrected addition. The adapter snapshots the two finite numeric
+   * buffers, limited to 256 MiB combined.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spk14a_c.html
+   */
+  spk14a(
+    handle: SpiceHandle,
+    count: number,
+    records: readonly number[] | Float64Array,
+    epochs: readonly number[] | Float64Array,
+  ): void;
+  /**
+   * Finish the active type 14 segment. A subsequent begin can use the same file handle.
+   * Ending before adding any packets creates a metadata-only segment. Close the SPK writer
+   * before reading a virtual output. Normal disposal finishes any outstanding stream on a
+   * native writer; explicit end and close provide deterministic output publication.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spk14e_c.html
+   */
+  spk14e(handle: SpiceHandle): void;
 }

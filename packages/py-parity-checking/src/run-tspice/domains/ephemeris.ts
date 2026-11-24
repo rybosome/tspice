@@ -9,16 +9,54 @@ import type {
   StepEphemerisSpkez,
   StepEphemerisSpkezp,
   StepEphemerisSpkezr,
+  StepEphemerisConics,
+  StepEphemerisEqncpv,
+  StepEphemerisOscelt,
+  StepEphemerisOscltx,
+  StepEphemerisProp2b,
+  StepEphemerisGetelm,
+  StepEphemerisEvsgp4,
+  StepEphemerisSpkcpo,
+  StepEphemerisSpkcpt,
+  StepEphemerisSpkcvo,
+  StepEphemerisSpkcvt,
+  StepEphemerisAzlcpo,
+  StepEphemerisSpkacs,
+  StepEphemerisSpkapo,
+  StepEphemerisSpkapp,
+  StepEphemerisSpkaps,
+  StepEphemerisSpkltc,
+  StepEphemerisStelab,
+  StepEphemerisStlabx,
+  StepEphemerisLtime,
   StepEphemerisSpkgeo,
   StepEphemerisSpkgps,
   StepEphemerisSpkobj,
   StepEphemerisSpkopa,
+  StepEphemerisSpklef,
+  StepEphemerisSpkuef,
+  StepEphemerisSpkpvn,
+  StepEphemerisSpksub,
   StepEphemerisSpkopn,
   StepEphemerisSpkpds,
   StepEphemerisSpkpos,
   StepEphemerisSpksfs,
   StepEphemerisSpkssb,
   StepEphemerisSpkuds,
+  StepEphemerisSpkw02,
+  StepEphemerisSpkw03,
+  StepEphemerisSpkw20,
+  StepEphemerisSpkw09,
+  StepEphemerisSpkw12,
+  StepEphemerisSpkw13,
+  StepEphemerisSpkw18,
+  StepEphemerisSpkw05,
+  StepEphemerisSpkw10,
+  StepEphemerisSpkw15,
+  StepEphemerisSpkw17,
+  StepEphemerisSpk14b,
+  StepEphemerisSpk14a,
+  StepEphemerisSpk14e,
   StepEphemerisSpkw08,
   StepOutput,
 } from "../../case-types.js";
@@ -28,6 +66,7 @@ import {
   toVirtualKernelPath,
 } from "../../fixtures.js";
 import {
+  registerFinalizer,
   deleteSpkHandle,
   getOrCreateEphemerisIntCell,
   getOrCreateWindow,
@@ -42,16 +81,54 @@ type EphemerisStep =
   | StepEphemerisSpkez
   | StepEphemerisSpkezp
   | StepEphemerisSpkezr
+  | StepEphemerisConics
+  | StepEphemerisEqncpv
+  | StepEphemerisOscelt
+  | StepEphemerisOscltx
+  | StepEphemerisProp2b
+  | StepEphemerisGetelm
+  | StepEphemerisEvsgp4
+  | StepEphemerisSpkcpo
+  | StepEphemerisSpkcpt
+  | StepEphemerisSpkcvo
+  | StepEphemerisSpkcvt
+  | StepEphemerisAzlcpo
+  | StepEphemerisSpkacs
+  | StepEphemerisSpkapo
+  | StepEphemerisSpkapp
+  | StepEphemerisSpkaps
+  | StepEphemerisSpkltc
+  | StepEphemerisStelab
+  | StepEphemerisStlabx
+  | StepEphemerisLtime
   | StepEphemerisSpkgeo
   | StepEphemerisSpkgps
   | StepEphemerisSpkobj
   | StepEphemerisSpkopa
+  | StepEphemerisSpklef
+  | StepEphemerisSpkuef
+  | StepEphemerisSpkpvn
+  | StepEphemerisSpksub
   | StepEphemerisSpkopn
   | StepEphemerisSpkpds
   | StepEphemerisSpkpos
   | StepEphemerisSpksfs
   | StepEphemerisSpkssb
   | StepEphemerisSpkuds
+  | StepEphemerisSpkw02
+  | StepEphemerisSpkw03
+  | StepEphemerisSpkw20
+  | StepEphemerisSpkw09
+  | StepEphemerisSpkw12
+  | StepEphemerisSpkw13
+  | StepEphemerisSpkw18
+  | StepEphemerisSpkw05
+  | StepEphemerisSpkw10
+  | StepEphemerisSpkw15
+  | StepEphemerisSpkw17
+  | StepEphemerisSpk14b
+  | StepEphemerisSpk14a
+  | StepEphemerisSpk14e
   | StepEphemerisSpkw08;
 
 function toVec3(vec: readonly number[]): [number, number, number] {
@@ -95,6 +172,28 @@ function resolveEphemerisPath(
   return resolved;
 }
 
+function lowLevelInput(
+  context: RunTspiceContext,
+  step: StepEphemerisSpkpvn | StepEphemerisSpksub,
+) {
+  const state = context.state.ephemeris;
+  if (step.mode === "daf") {
+    const entry = context.state.fileIo.handles.get(step.source);
+    if (!entry?.isOpen) throw new Error("Missing owned DAF source");
+    return {
+      handle: entry.handle,
+      descr: context.spice.raw.dafgs(entry.handle),
+    };
+  }
+  const handle =
+    step.mode === "borrowed"
+      ? state.borrowedSpks.get(step.source)
+      : state.directSpks.get(step.source);
+  const descr = state.descriptors.get(step.descriptor);
+  if (handle === undefined || !descr)
+    throw new Error("Missing selected SPK source or descriptor");
+  return { handle, descr };
+}
 function descriptorOutput(descr: Readonly<SpkPackedDescriptor>) {
   // Last three doubles hold six signed integer fields in native memory order.
   // Compare those fields as integers: floating tolerance hides subnormal changes.
@@ -206,6 +305,210 @@ export function runEphemerisStep(
       };
     }
 
+    case "ephemeris.conics":
+      return {
+        op: step.op,
+        value: context.spice.raw.conics(step.elts, step.et),
+      };
+    case "ephemeris.eqncpv":
+      return {
+        op: step.op,
+        value: context.spice.raw.eqncpv(
+          step.et,
+          step.epoch,
+          step.eqel,
+          step.rapol,
+          step.decpol,
+        ),
+      };
+    case "ephemeris.oscelt":
+      return {
+        op: step.op,
+        value: context.spice.raw.oscelt(step.state, step.et, step.mu),
+      };
+    case "ephemeris.oscltx":
+      return {
+        op: step.op,
+        value: context.spice.raw.oscltx(step.state, step.et, step.mu),
+      };
+    case "ephemeris.prop2b":
+      return {
+        op: step.op,
+        value: context.spice.raw.prop2b(step.gm, step.pvinit, step.dt),
+      };
+    case "ephemeris.getelm":
+    case "ephemeris.evsgp4": {
+      try {
+        if (step.op === "ephemeris.getelm")
+          return {
+            op: step.op,
+            value: context.spice.raw.getelm(step.firstYear, step.lines),
+          };
+        return {
+          op: step.op,
+          value: context.spice.raw.evsgp4(step.et, step.geophs, step.elems),
+        };
+      } catch (error) {
+        if (
+          !step.captureError ||
+          typeof error !== "object" ||
+          error === null ||
+          !("spiceShort" in error) ||
+          typeof error.spiceShort !== "string"
+        )
+          throw error;
+        return { op: step.op, value: { short: error.spiceShort } };
+      }
+    }
+    case "ephemeris.spkcpo":
+      return {
+        op: step.op,
+        value: context.spice.raw.spkcpo(
+          step.target,
+          step.et,
+          step.outref,
+          step.refloc,
+          step.abcorr,
+          step.obspos,
+          step.obsctr,
+          step.obsref,
+        ),
+      };
+    case "ephemeris.spkcpt":
+      return {
+        op: step.op,
+        value: context.spice.raw.spkcpt(
+          step.trgpos,
+          step.trgctr,
+          step.trgref,
+          step.et,
+          step.outref,
+          step.refloc,
+          step.abcorr,
+          step.obsrvr,
+        ),
+      };
+    case "ephemeris.spkcvo":
+      return {
+        op: step.op,
+        value: context.spice.raw.spkcvo(
+          step.target,
+          step.et,
+          step.outref,
+          step.refloc,
+          step.abcorr,
+          step.obssta,
+          step.obsepc,
+          step.obsctr,
+          step.obsref,
+        ),
+      };
+    case "ephemeris.spkcvt":
+      return {
+        op: step.op,
+        value: context.spice.raw.spkcvt(
+          step.trgsta,
+          step.trgepc,
+          step.trgctr,
+          step.trgref,
+          step.et,
+          step.outref,
+          step.refloc,
+          step.abcorr,
+          step.obsrvr,
+        ),
+      };
+    case "ephemeris.azlcpo":
+      return {
+        op: step.op,
+        value: context.spice.raw.azlcpo(
+          step.method,
+          step.target,
+          step.et,
+          step.abcorr,
+          step.azccw,
+          step.elplsz,
+          step.obspos,
+          step.obsctr,
+          step.obsref,
+        ),
+      };
+    case "ephemeris.spkacs":
+      return {
+        op: step.op,
+        value: context.spice.raw.spkacs(
+          step.target,
+          step.et,
+          step.ref,
+          step.abcorr,
+          step.observer,
+        ),
+      };
+    case "ephemeris.spkapo":
+      return {
+        op: step.op,
+        value: context.spice.raw.spkapo(
+          step.target,
+          step.et,
+          step.ref,
+          step.observerState,
+          step.abcorr,
+        ),
+      };
+    case "ephemeris.spkapp":
+      return {
+        op: step.op,
+        value: context.spice.raw.spkapp(
+          step.target,
+          step.et,
+          step.ref,
+          step.observerState,
+          step.abcorr,
+        ),
+      };
+    case "ephemeris.spkaps":
+      return {
+        op: step.op,
+        value: context.spice.raw.spkaps(
+          step.target,
+          step.et,
+          step.ref,
+          step.abcorr,
+          step.observerState,
+          step.observerAcceleration,
+        ),
+      };
+    case "ephemeris.spkltc":
+      return {
+        op: step.op,
+        value: context.spice.raw.spkltc(
+          step.target,
+          step.et,
+          step.ref,
+          step.abcorr,
+          step.observerState,
+        ),
+      };
+    case "ephemeris.stelab":
+      return {
+        op: step.op,
+        value: context.spice.raw.stelab(step.position, step.observerVelocity),
+      };
+    case "ephemeris.stlabx":
+      return {
+        op: step.op,
+        value: context.spice.raw.stlabx(step.position, step.observerVelocity),
+      };
+    case "ephemeris.ltime":
+      return {
+        op: step.op,
+        value: context.spice.raw.ltime(
+          step.etobs,
+          step.observer,
+          step.dir,
+          step.target,
+        ),
+      };
     case "ephemeris.spkgeo": {
       const out = context.spice.raw.spkgeo(
         step.target,
@@ -275,6 +578,59 @@ export function runEphemerisStep(
       };
     }
 
+    case "ephemeris.spklef": {
+      const state = context.state.ephemeris;
+      // FURNSH stages fixture bytes privately, including in the Node backend.
+      // Resolve that same actual file for KEEPER/direct duplicate-load semantics.
+      const ref = toPathRef(step.file),
+        virtualPath = toVirtualKernelPath(ref);
+      const sameStaged =
+        ref.kind === "fixture" &&
+        context.state.kernels.loadedVirtualKernelPaths.includes(virtualPath);
+      const token = context.spice.raw.spklef(
+        sameStaged ? virtualPath : resolveEphemerisPath(context, ref),
+      );
+      state.directSpks.set(step.id, token);
+      registerFinalizer(context, "ephemeris.spkuef:" + step.id, () => {
+        if (state.directSpks.get(step.id) === token) {
+          context.spice.raw.spkuef(token);
+          for (const [key, value] of state.directSpks)
+            if (value === token) state.directSpks.delete(key);
+        }
+      });
+      return { op: step.op, value: { id: step.id } };
+    }
+    case "ephemeris.spkuef": {
+      const state = context.state.ephemeris,
+        token = state.directSpks.get(step.id);
+      if (token === undefined)
+        throw new Error("Unknown direct SPK registration");
+      context.spice.raw.spkuef(token);
+      for (const [key, value] of state.directSpks)
+        if (value === token) state.directSpks.delete(key);
+      return { op: step.op, value: null };
+    }
+    case "ephemeris.spkpvn": {
+      const { handle, descr } = lowLevelInput(context, step);
+      const { ref, state, center } = context.spice.raw.spkpvn(
+        handle,
+        descr,
+        step.et,
+      );
+      return { op: step.op, value: { ref, state: toVec6(state), center } };
+    }
+    case "ephemeris.spksub": {
+      const { handle, descr } = lowLevelInput(context, step);
+      context.spice.raw.spksub(
+        handle,
+        descr,
+        step.ident,
+        step.begin,
+        step.end,
+        requireSpkHandle(context, step.writer),
+      );
+      return { op: step.op, value: null };
+    }
     case "ephemeris.spkopn": {
       if (context.state.ephemeris.spkHandles.has(step.handleId))
         throw new Error(`SPK handle already exists: ${step.handleId}`);
@@ -339,8 +695,10 @@ export function runEphemerisStep(
         };
       }
 
-      if (step.descrId !== undefined)
+      if (step.descrId !== undefined) {
         context.state.ephemeris.descriptors.set(step.descrId, out.descr);
+        context.state.ephemeris.borrowedSpks.set(step.descrId, out.handle);
+      }
       return {
         op: step.op,
         value: {
@@ -380,6 +738,227 @@ export function runEphemerisStep(
       };
     }
 
+    case "ephemeris.spkw02": {
+      const handle = requireSpkHandle(context, step.handleId);
+      context.spice.raw.spkw02(
+        handle,
+        step.body,
+        step.center,
+        step.frame,
+        step.first,
+        step.last,
+        step.segid,
+        step.intlen,
+        step.n,
+        step.degree,
+        step.cdata,
+        step.btime,
+      );
+      return { op: step.op, value: null };
+    }
+    case "ephemeris.spkw03": {
+      const handle = requireSpkHandle(context, step.handleId);
+      context.spice.raw.spkw03(
+        handle,
+        step.body,
+        step.center,
+        step.frame,
+        step.first,
+        step.last,
+        step.segid,
+        step.intlen,
+        step.n,
+        step.degree,
+        step.cdata,
+        step.btime,
+      );
+      return { op: step.op, value: null };
+    }
+    case "ephemeris.spkw20": {
+      const handle = requireSpkHandle(context, step.handleId);
+      context.spice.raw.spkw20(
+        handle,
+        step.body,
+        step.center,
+        step.frame,
+        step.first,
+        step.last,
+        step.segid,
+        step.intlen,
+        step.n,
+        step.degree,
+        step.cdata,
+        step.dscale,
+        step.tscale,
+        step.initjd,
+        step.initfr,
+      );
+      return { op: step.op, value: null };
+    }
+    case "ephemeris.spkw09": {
+      const handle = requireSpkHandle(context, step.handleId);
+      context.spice.raw.spkw09(
+        handle,
+        step.body,
+        step.center,
+        step.frame,
+        step.first,
+        step.last,
+        step.segid,
+        step.degree,
+        step.states,
+        step.epochs,
+      );
+      return { op: step.op, value: null };
+    }
+    case "ephemeris.spkw12": {
+      const handle = requireSpkHandle(context, step.handleId);
+      context.spice.raw.spkw12(
+        handle,
+        step.body,
+        step.center,
+        step.frame,
+        step.first,
+        step.last,
+        step.segid,
+        step.degree,
+        step.states,
+        step.epoch0,
+        step.step,
+      );
+      return { op: step.op, value: null };
+    }
+    case "ephemeris.spkw13": {
+      const handle = requireSpkHandle(context, step.handleId);
+      context.spice.raw.spkw13(
+        handle,
+        step.body,
+        step.center,
+        step.frame,
+        step.first,
+        step.last,
+        step.segid,
+        step.degree,
+        step.states,
+        step.epochs,
+      );
+      return { op: step.op, value: null };
+    }
+    case "ephemeris.spkw18": {
+      const handle = requireSpkHandle(context, step.handleId);
+      context.spice.raw.spkw18(
+        handle,
+        step.subtype,
+        step.body,
+        step.center,
+        step.frame,
+        step.first,
+        step.last,
+        step.segid,
+        step.degree,
+        step.packets,
+        step.epochs,
+      );
+      return { op: step.op, value: null };
+    }
+    case "ephemeris.spkw05": {
+      const handle = requireSpkHandle(context, step.handleId);
+      context.spice.raw.spkw05(
+        handle,
+        step.body,
+        step.center,
+        step.frame,
+        step.first,
+        step.last,
+        step.segid,
+        step.gm,
+        step.states,
+        step.epochs,
+      );
+      return { op: step.op, value: null };
+    }
+    case "ephemeris.spkw10": {
+      const handle = requireSpkHandle(context, step.handleId);
+      context.spice.raw.spkw10(
+        handle,
+        step.body,
+        step.center,
+        step.frame,
+        step.first,
+        step.last,
+        step.segid,
+        step.consts,
+        step.elems,
+        step.epochs,
+      );
+      return { op: step.op, value: null };
+    }
+    case "ephemeris.spkw15": {
+      const handle = requireSpkHandle(context, step.handleId);
+      context.spice.raw.spkw15(
+        handle,
+        step.body,
+        step.center,
+        step.frame,
+        step.first,
+        step.last,
+        step.segid,
+        step.epoch,
+        step.tp,
+        step.pa,
+        step.p,
+        step.ecc,
+        step.j2flg,
+        step.pv,
+        step.gm,
+        step.j2,
+        step.radius,
+      );
+      return { op: step.op, value: null };
+    }
+    case "ephemeris.spkw17": {
+      const handle = requireSpkHandle(context, step.handleId);
+      context.spice.raw.spkw17(
+        handle,
+        step.body,
+        step.center,
+        step.frame,
+        step.first,
+        step.last,
+        step.segid,
+        step.epoch,
+        step.eqel,
+        step.rapol,
+        step.decpol,
+      );
+      return { op: step.op, value: null };
+    }
+    case "ephemeris.spk14b": {
+      const handle = requireSpkHandle(context, step.handleId);
+      context.spice.raw.spk14b(
+        handle,
+        step.segid,
+        step.body,
+        step.center,
+        step.frame,
+        step.first,
+        step.last,
+        step.degree,
+      );
+      context.state.ephemeris.openSpk14.add(handle);
+      return { op: step.op, value: null };
+    }
+    case "ephemeris.spk14a": {
+      const handle = requireSpkHandle(context, step.handleId);
+      context.spice.raw.spk14a(handle, step.count, step.records, step.epochs);
+      return { op: step.op, value: null };
+    }
+    case "ephemeris.spk14e": {
+      const handle = requireSpkHandle(context, step.handleId);
+      context.spice.raw.spk14e(handle);
+      context.state.ephemeris.openSpk14.delete(handle);
+      return { op: step.op, value: null };
+    }
     case "ephemeris.spkw08": {
       const handle = requireSpkHandle(context, step.handleId);
       context.spice.raw.spkw08(

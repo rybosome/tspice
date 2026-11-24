@@ -1,4 +1,12 @@
-import { spiceClients, type Spice, type SpiceAsync } from "@rybosome/tspice";
+import {
+  spiceClients,
+  type Spice,
+  type SpiceAsync,
+  type SpiceSync,
+  type SpiceConicElements,
+  type SpiceEquinoctialElements,
+  type SpiceExtendedConicElements,
+} from "@rybosome/tspice";
 
 // This fixture exists to ensure @rybosome/tspice's emitted .d.ts doesn't
 // accidentally pull in DOM types. This should typecheck with `lib: ["ES2022"]`.
@@ -955,8 +963,6 @@ export async function typecheckFrameMetadata() {
   }
 }
 
-import type { SpiceSync } from "@rybosome/tspice";
-
 function localClock(spice: SpiceSync, utc: string): string {
   spice.raw.tparch("YES");
   spice.raw.tsetyr(1969);
@@ -1384,3 +1390,220 @@ async function observeErrorPolicy() {
   }
 }
 void observeErrorPolicy;
+
+/** Exercise the public, named element tuples and propagated states on both facades. */
+export async function orbitalElementsConsumer(
+  spice: Spice,
+  asyncSpice: SpiceAsync,
+): Promise<void> {
+  const conic: Readonly<SpiceConicElements> = [1, 0, 0, 0, 0, 0, 0, 1];
+  const eq: Readonly<SpiceEquinoctialElements> = [1, 0, 0, 0, 0, 0, 0, 1, 0];
+  const state = spice.raw.conics(conic, 0);
+  const eqState = spice.raw.eqncpv(0, 0, eq, 0, 0);
+  const elements: SpiceConicElements = spice.raw.oscelt(state, 0, 1);
+  const extended: SpiceExtendedConicElements = spice.raw.oscltx(eqState, 0, 1);
+  const propagated = spice.raw.prop2b(1, state, 0.1);
+  const asyncState = await asyncSpice.raw.conics(elements, 0);
+  const asyncEq = await asyncSpice.raw.eqncpv(0, 0, eq, 0, 0);
+  const asyncConic: SpiceConicElements = await asyncSpice.raw.oscelt(
+    asyncEq,
+    0,
+    1,
+  );
+  const asyncExtended: SpiceExtendedConicElements = await asyncSpice.raw.oscltx(
+    asyncState,
+    0,
+    1,
+  );
+  const asyncPropagated = await asyncSpice.raw.prop2b(1, asyncState, 0.1);
+  void [extended, propagated, asyncConic, asyncExtended, asyncPropagated];
+}
+
+async function tleTypes() {
+  const client = await spiceClients.toSync({ backend: "wasm" });
+  try {
+    const { epoch, elems } = client.spice.raw.getelm(1957, ["", ""]);
+    const state = client.spice.raw.evsgp4(
+      epoch,
+      [1, 2, 3, 4, 5, 6, 7, 8],
+      elems,
+    );
+    const vz: number = state[5];
+    void vz;
+  } finally {
+    await client.dispose();
+  }
+}
+void tleTypes;
+
+async function writeChebyshevSpk(): Promise<void> {
+  const c = await spiceClients.toSync({ backend: "wasm" });
+  try {
+    const h = c.spice.raw.spkopn(
+      { kind: "virtual-output", path: "nodom-e04.bsp" },
+      "NODOM",
+      0,
+    );
+    const meta = [h, 195002, 0, "J2000", 0, 1, "NODOM"] as const;
+    c.spice.raw.spkw05(...meta, 1, [1, 0, 0, 0, 1, 0], [0]);
+    c.spice.raw.spkw10(...meta, new Float64Array(8), new Float64Array(10), [0]);
+    c.spice.raw.spkw15(
+      ...meta,
+      0,
+      [0, 0, 1],
+      [1, 0, 0],
+      1,
+      0,
+      3,
+      [0, 0, 1],
+      1,
+      0,
+      0,
+    );
+    c.spice.raw.spkw17(...meta, 0, new Float64Array(9), 0, 1);
+    c.spice.raw.spk14b(meta[0], "STREAM", 101, 0, "J2000", 0, 1, 0);
+    c.spice.raw.spk14a(
+      meta[0],
+      1,
+      [0.5, 0.5, 1, 2, 3, 4, 5, 6] as const,
+      new Float64Array([0]),
+    );
+    c.spice.raw.spk14e(meta[0]);
+    c.spice.raw.spkw02(...meta, 1, 1, 0, [1, 2, 3] as const, 0);
+    c.spice.raw.spkw03(...meta, 1, 1, 0, new Float64Array(6), 0);
+    c.spice.raw.spkw20(...meta, 1, 1, 0, [1, 2, 3, 4, 5, 6], 2, 3, 2451545, 0);
+    c.spice.raw.spkcls(h);
+  } finally {
+    await c.dispose();
+  }
+}
+void writeChebyshevSpk;
+
+async function writeInterpolatedStates(): Promise<void> {
+  const c = await spiceClients.toSync({ backend: "wasm" });
+  try {
+    const r = c.spice.raw,
+      h = r.spkopn({ kind: "virtual-output", path: "nodom-e05.bsp" }, "T", 0);
+    const fields = [198001, 0, "J2000", 0, 1, "T", 1] as const,
+      states = new Float64Array(12),
+      epochs = [0, 1] as const;
+    r.spkw09(h, ...fields, states, epochs);
+    r.spkw12(h, ...fields, states, 0, 1);
+    r.spkw13(h, ...fields, states, epochs);
+    r.spkw18(h, 1, ...fields, states, epochs);
+    r.spkcls(h);
+  } finally {
+    await c.dispose();
+  }
+}
+void writeInterpolatedStates;
+
+type SpiceVector3 = [number, number, number];
+type SpiceStateVector = [...SpiceVector3, ...SpiceVector3];
+
+/** Check typed correction inputs and complete results on both facades. */
+export async function correctionsConsumer(
+  spice: Spice,
+  worker: SpiceAsync,
+  state: Readonly<SpiceStateVector>,
+  v: Readonly<SpiceVector3>,
+) {
+  const a = spice.raw.spkacs(1, 0, "J2000", "CN+S", 2);
+  const b = spice.raw.spkapo(1, 0, "J2000", state, "XLT+S");
+  const c = spice.raw.spkapp(1, 0, "J2000", state, "LT+S");
+  const d = await worker.raw.spkaps(1, 0, "J2000", "XCN+S", state, v);
+  const e = await worker.raw.spkltc(1, 0, "J2000", "LT", state);
+  const f = spice.raw.stelab(b.pos, v);
+  const g = await worker.raw.stlabx(f, v);
+  const h = await worker.raw.ltime(0, 2, "->", 1);
+  return [a.dlt, b.lt, c.state, d.state, e.dlt, f, g, h.ettarg, h.elapsd];
+}
+
+/** Exercise five fixed-position and constant-velocity state APIs on typed sync and async clients. */
+export async function relativeSpkConsumer(
+  spice: Spice,
+  worker: SpiceAsync,
+  position: Readonly<SpiceVector3>,
+  state: Readonly<SpiceStateVector>,
+) {
+  const a = spice.raw.spkcpo(
+    "10",
+    0,
+    "J2000",
+    "OBSERVER",
+    "LT",
+    position,
+    "399",
+    "IAU_EARTH",
+  );
+  const b = spice.raw.spkcpt(
+    position,
+    "399",
+    "IAU_EARTH",
+    0,
+    "J2000",
+    "TARGET",
+    "XLT",
+    "10",
+  );
+  const c = await worker.raw.spkcvo(
+    "10",
+    0,
+    "J2000",
+    "CENTER",
+    "CN+S",
+    state,
+    -5,
+    "399",
+    "IAU_EARTH",
+  );
+  const d = await worker.raw.spkcvt(
+    state,
+    -5,
+    "399",
+    "IAU_EARTH",
+    0,
+    "J2000",
+    "CENTER",
+    "XCN+S",
+    "10",
+  );
+  const e = await worker.raw.azlcpo(
+    "ELLIPSOID",
+    "10",
+    0,
+    "LT+S",
+    true,
+    false,
+    position,
+    "399",
+    "IAU_EARTH",
+  );
+  return [a.state, b.lt, c.state, d.lt, e.state[5]];
+}
+
+function copySegment(
+  spice: SpiceSync,
+  path: string,
+  target: number,
+  et: number,
+  output: string,
+) {
+  const r = spice.raw,
+    source = r.spklef(path);
+  try {
+    const segment = r.spksfs(target, et);
+    if (!segment.found) return;
+    const observation = r.spkpvn(source, segment.descr, et);
+    const writer = r.spkopn(output, "SUBSET", 0);
+    try {
+      r.spksub(source, segment.descr, "SAMPLE", et, et, writer);
+    } finally {
+      r.spkcls(writer);
+    }
+    return observation;
+  } finally {
+    r.spkuef(source);
+  }
+}
+void copySegment;

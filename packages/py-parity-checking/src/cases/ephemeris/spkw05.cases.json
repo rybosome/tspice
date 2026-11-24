@@ -1,0 +1,1110 @@
+[
+  {
+    "caseId": "ephemeris-spkw05-orbit",
+    "description": "Compare all six physical state components at the segment endpoints, epoch and positive/negative offsets, object set, coverage, identifier and unpacked descriptor.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw05-orbit.bsp"
+        },
+        "ifname": "AUTHORED ANALYTIC",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw05",
+        "handleId": "H",
+        "body": 196005,
+        "center": 0,
+        "frame": "J2000",
+        "first": -300,
+        "last": 300,
+        "segid": "ANALYTIC 5",
+        "gm": 398600.4418,
+        "states": [7000.0, 0.0, 0, -0.0, 7.546053290107541, 0],
+        "epochs": [0]
+      },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkobj",
+        "spk": {
+          "kind": "scratch",
+          "rel": "spkw05-orbit.bsp"
+        },
+        "idsCellId": "I",
+        "maxCardinality": 8
+      },
+      {
+        "op": "ephemeris.spkcov",
+        "spk": {
+          "kind": "scratch",
+          "rel": "spkw05-orbit.bsp"
+        },
+        "idcode": 196005,
+        "coverWindowId": "W",
+        "maxIntervals": 8
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw05-orbit.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.spksfs",
+        "body": 196005,
+        "et": -300,
+        "descrId": "D"
+      },
+      {
+        "op": "ephemeris.spkuds",
+        "descrId": "D"
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196005,
+        "et": -300,
+        "ref": "J2000",
+        "observer": 0
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196005,
+        "et": -11,
+        "ref": "J2000",
+        "observer": 0
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196005,
+        "et": 0,
+        "ref": "J2000",
+        "observer": 0
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196005,
+        "et": 1,
+        "ref": "J2000",
+        "observer": 0
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196005,
+        "et": 300,
+        "ref": "J2000",
+        "observer": 0
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkw05-appended-coverage",
+    "description": "Append a shorter segment. Its descriptor and states take precedence at covered times; the original segment supplies outer epochs.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw05-appended-coverage.bsp"
+        },
+        "ifname": "AUTHORED ANALYTIC",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw05",
+        "handleId": "H",
+        "body": 196005,
+        "center": 0,
+        "frame": "J2000",
+        "first": -300,
+        "last": 300,
+        "segid": "ANALYTIC 5",
+        "gm": 398600.4418,
+        "states": [7000.0, 0.0, 0, -0.0, 7.546053290107541, 0],
+        "epochs": [0]
+      },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkopa",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw05-appended-coverage.bsp"
+        },
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw05",
+        "handleId": "H",
+        "body": 196005,
+        "center": 0,
+        "frame": "J2000",
+        "first": -2,
+        "last": 2,
+        "segid": "APPENDED MODEL",
+        "gm": 398600.4418,
+        "states": [7100, 0, 0, 0, 7.5, 0],
+        "epochs": [0]
+      },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkobj",
+        "spk": {
+          "kind": "scratch",
+          "rel": "spkw05-appended-coverage.bsp"
+        },
+        "idsCellId": "I",
+        "maxCardinality": 8
+      },
+      {
+        "op": "ephemeris.spkcov",
+        "spk": {
+          "kind": "scratch",
+          "rel": "spkw05-appended-coverage.bsp"
+        },
+        "idcode": 196005,
+        "coverWindowId": "W",
+        "maxIntervals": 8
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw05-appended-coverage.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.spksfs",
+        "body": 196005,
+        "et": 0,
+        "descrId": "D"
+      },
+      {
+        "op": "ephemeris.spkuds",
+        "descrId": "D"
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196005,
+        "et": 0,
+        "ref": "J2000",
+        "observer": 0
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196005,
+        "et": -20,
+        "ref": "J2000",
+        "observer": 0
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196005,
+        "et": 1,
+        "ref": "J2000",
+        "observer": 0
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196005,
+        "et": 25,
+        "ref": "J2000",
+        "observer": 0
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkw05-multiple-osculating-states",
+    "description": "Unevenly spaced nonidentical conics blend and extrapolate over the descriptor, with the derivative of the weighting visible in velocity.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw05-multiple-osculating-states.bsp"
+        },
+        "ifname": "AUTHORED ANALYTIC",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw05",
+        "handleId": "H",
+        "body": 196005,
+        "center": 0,
+        "frame": "J2000",
+        "first": -300,
+        "last": 300,
+        "segid": "ANALYTIC 5",
+        "gm": 398600.4418,
+        "states": [
+          6995.018085529483, -264.0492058602825, 0, 0.284647054090324,
+          7.540682748381644, 0, 7050, 5, 8, -0.2, 7.4, 0.1, 6989.8340829519675,
+          377.1199978826814, 0, -0.40653822868399386, 7.535094354137931, 0
+        ],
+        "epochs": [-35, 0, 50]
+      },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkobj",
+        "spk": {
+          "kind": "scratch",
+          "rel": "spkw05-multiple-osculating-states.bsp"
+        },
+        "idsCellId": "I",
+        "maxCardinality": 8
+      },
+      {
+        "op": "ephemeris.spkcov",
+        "spk": {
+          "kind": "scratch",
+          "rel": "spkw05-multiple-osculating-states.bsp"
+        },
+        "idcode": 196005,
+        "coverWindowId": "W",
+        "maxIntervals": 8
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw05-multiple-osculating-states.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.spksfs",
+        "body": 196005,
+        "et": -90,
+        "descrId": "D"
+      },
+      {
+        "op": "ephemeris.spkuds",
+        "descrId": "D"
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196005,
+        "et": -90,
+        "ref": "J2000",
+        "observer": 0
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196005,
+        "et": -35,
+        "ref": "J2000",
+        "observer": 0
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196005,
+        "et": -17,
+        "ref": "J2000",
+        "observer": 0
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196005,
+        "et": 0,
+        "ref": "J2000",
+        "observer": 0
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196005,
+        "et": 21,
+        "ref": "J2000",
+        "observer": 0
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196005,
+        "et": 50,
+        "ref": "J2000",
+        "observer": 0
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196005,
+        "et": 90,
+        "ref": "J2000",
+        "observer": 0
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkw05-sample-directory",
+    "description": "Cross the exact 100th-epoch directory with 101 complete state rows.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw05-sample-directory.bsp"
+        },
+        "ifname": "AUTHORED ANALYTIC",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw05",
+        "handleId": "H",
+        "body": 196005,
+        "center": 0,
+        "frame": "J2000",
+        "first": -3000,
+        "last": 3000,
+        "segid": "ANALYTIC 5",
+        "gm": 398600.4418,
+        "states": [
+          -6970.1195954277855, 646.0904158348151, 0, -0.6964903868738936,
+          -7.5138419865029835, 0, -6997.305006982162, 194.2231687064335, 0,
+          -0.2093740544617564, -7.543148067117674, 0, -6995.226967042718,
+          -258.4563397526638, 0, 0.2786179018485344, -7.5409079242431, 0,
+          -6963.894166186883, -710.054957132399, 0, 0.7654446493465868,
+          -7.507130926387892, 0, -6903.4376414206345, -1158.6840514207072, 0,
+          1.2490702283454804, -7.44195833244206, 0, -6814.1102281682115,
+          -1602.467409457479, 0, 1.7274720667752455, -7.345662700917741, 0,
+          -6696.2855028882905, -2039.549083451563, 0, 2.198649438787927,
+          -7.218646750081374, 0, -6550.456220738688, -2468.1011527459386, 0,
+          2.6606318319995292, -7.061441673744369, 0, -6377.232254823446,
+          -2886.331368370489, 0, 3.1114871883761044, -6.8747049197557715, 0,
+          -6177.3380456406, -3292.490648412106, 0, 3.5493299842997836,
+          -6.659217440487534, 0, -5951.6095713972545, -3684.8803928557286, 0,
+          3.9723291160231056, -6.415880426811112, 0, -5700.990851862479,
+          -4061.8595873048503, 0, 4.378715557533804, -6.145711539224265, 0,
+          -5426.530000379225, -4421.851665873047, 0, 4.766789758804117,
+          -5.849840651889847, 0, -5129.374840546202, -4763.351104545162, 0,
+          5.134928753484345, -5.529505127385502, 0, -4810.768105901138,
+          -5084.9297174340945, 0, 5.481592946315594, -5.1860446419256725, 0,
+          -4472.042242680918, -5385.242629601514, 0, 5.805332551875984,
+          -4.820895582697464, 0, -4114.613837393938, -5663.033901463626, 0,
+          6.104793657732877, -4.435585040741221, 0, -3739.9776925091833,
+          -5917.141781260078, 0, 6.378723886644344, -4.031724424498248, 0,
+          -3349.7005750380526, -6146.503563619705, 0, 6.625977634130029,
+          -3.6110027207344313, 0, -2945.414664153078, -6350.160033904028, 0,
+          6.845520859507273, -3.1751794310233334, 0, -2528.8107252462287,
+          -6527.259479741834, 0, 7.03643541035593, -2.726077213329077, 0,
+          -2101.6310389735786, -6677.061252978202, 0, 7.197922862326535,
+          -2.2655742594626718, 0, -1665.662114857851, -6798.9388671414945, 0,
+          7.329307858233302, -1.795596440290082, 0, -1222.7272199212737,
+          -6892.3826174744245, 0, 7.430040932467558, -1.3181092515415678, 0,
+          -774.6787535947614, -6957.001712571937, 0, 7.499700808919609,
+          -0.8351095939057369, 0, -323.390500792387, -6992.52590871119, 0,
+          7.537996162798899, -0.34861742178484534, 0, 129.25020445047238,
+          -6998.80664003868, 0, 7.54476683898434, 0.13933270436293707, 0,
+          581.3503720027868, -6975.817639887974, 0, 7.519984521809553,
+          0.6267001267652674, 0, 1031.0192723179246, -6923.655050629618, 0,
+          7.463752853481903, 1.1114466245769938, 0, 1476.376343659684,
+          -6842.537021593823, 0, 7.376307000640104, 1.5915449379300144, 0,
+          1915.5590568055084, -6732.802796747458, 0, 7.258012670863059,
+          2.064987246143215, 0, 2346.730704335866, -6594.911295940779, 0,
+          7.109364583243043, 2.529793564635721, 0, 2768.0880819341746,
+          -6429.439195657269, 0, 6.930984399419416, 2.984020025426693, 0,
+          3177.869029573311, -6237.0785172930755, 0, 6.723618123725497,
+          3.4257670065917916, 0, 3574.359801050646, -6018.633733052144, 0,
+          6.4881329833214805, 3.853187076678052, 0, 3955.902231051495,
+          -5775.018401560449, 0, 6.225513801360974, 4.264492720852843, 0,
+          4320.900669767533, -5507.251347269568, 0, 5.93685887835896,
+          4.65796381647531, 0, 4667.828656068937, -5216.452399627708, 0,
+          5.62337539898572, 5.031954826826752, 0, 4995.235301322316,
+          -4903.837709837403, 0, 5.286374383495995, 5.384901682914943, 0,
+          5301.751357156684, -4570.7146647857235, 0, 4.927265204907013,
+          5.715328324572045, 0, 5586.094941801408, -4218.476419417409, 0,
+          4.547549694855117, 6.0218528734905155, 0, 5847.076901048044,
+          -3848.596070417158, 0, 4.148815862780907, 6.3031934123807725, 0,
+          6083.605781415925, -3462.6204955673006, 0, 3.732731254709919,
+          6.558173346081556, 0, 6294.692394723222, -3062.1638845453117, 0,
+          3.301035979403091, 6.785726322202298, 0, 6479.453954973992,
+          -2648.900988216036, 0, 2.855535431042391, 6.98490069071883, 0,
+          6637.117770260291, -2224.5601146507756, 0, 2.3980927388860707,
+          7.154863483871985, 0, 6767.0244742394525, -1790.9159011646145, 0,
+          1.9306209754698789, 7.294903899724696, 0, 6868.63078367217,
+          -1349.7818926000703, 0, 1.4550751559403348, 7.404436274809045, 0,
+          6941.511770489054, -903.002956895445, 0, 0.9734440619796729,
+          7.483002533431307, 0, 6985.36263888366, -452.447569656762, 0,
+          0.48774192451565285, 7.530274103391763, 0, 7000.0, 0.0, 0, -0.0,
+          7.546053290107541, 0, 6985.36263888366, 452.447569656762, 0,
+          -0.48774192451565285, 7.530274103391763, 0, 6941.511770489054,
+          903.002956895445, 0, -0.9734440619796729, 7.483002533431307, 0,
+          6868.63078367217, 1349.7818926000703, 0, -1.4550751559403348,
+          7.404436274809045, 0, 6767.0244742394525, 1790.9159011646145, 0,
+          -1.9306209754698789, 7.294903899724696, 0, 6637.117770260291,
+          2224.5601146507756, 0, -2.3980927388860707, 7.154863483871985, 0,
+          6479.453954973992, 2648.900988216036, 0, -2.855535431042391,
+          6.98490069071883, 0, 6294.692394723222, 3062.1638845453117, 0,
+          -3.301035979403091, 6.785726322202298, 0, 6083.605781415925,
+          3462.6204955673006, 0, -3.732731254709919, 6.558173346081556, 0,
+          5847.076901048044, 3848.596070417158, 0, -4.148815862780907,
+          6.3031934123807725, 0, 5586.094941801408, 4218.476419417409, 0,
+          -4.547549694855117, 6.0218528734905155, 0, 5301.751357156684,
+          4570.7146647857235, 0, -4.927265204907013, 5.715328324572045, 0,
+          4995.235301322316, 4903.837709837403, 0, -5.286374383495995,
+          5.384901682914943, 0, 4667.828656068937, 5216.452399627708, 0,
+          -5.62337539898572, 5.031954826826752, 0, 4320.900669767533,
+          5507.251347269568, 0, -5.93685887835896, 4.65796381647531, 0,
+          3955.902231051495, 5775.018401560449, 0, -6.225513801360974,
+          4.264492720852843, 0, 3574.359801050646, 6018.633733052144, 0,
+          -6.4881329833214805, 3.853187076678052, 0, 3177.869029573311,
+          6237.0785172930755, 0, -6.723618123725497, 3.4257670065917916, 0,
+          2768.0880819341746, 6429.439195657269, 0, -6.930984399419416,
+          2.984020025426693, 0, 2346.730704335866, 6594.911295940779, 0,
+          -7.109364583243043, 2.529793564635721, 0, 1915.5590568055084,
+          6732.802796747458, 0, -7.258012670863059, 2.064987246143215, 0,
+          1476.376343659684, 6842.537021593823, 0, -7.376307000640104,
+          1.5915449379300144, 0, 1031.0192723179246, 6923.655050629618, 0,
+          -7.463752853481903, 1.1114466245769938, 0, 581.3503720027868,
+          6975.817639887974, 0, -7.519984521809553, 0.6267001267652674, 0,
+          129.25020445047238, 6998.80664003868, 0, -7.54476683898434,
+          0.13933270436293707, 0, -323.390500792387, 6992.52590871119, 0,
+          -7.537996162798899, -0.34861742178484534, 0, -774.6787535947614,
+          6957.001712571937, 0, -7.499700808919609, -0.8351095939057369, 0,
+          -1222.7272199212737, 6892.3826174744245, 0, -7.430040932467558,
+          -1.3181092515415678, 0, -1665.662114857851, 6798.9388671414945, 0,
+          -7.329307858233302, -1.795596440290082, 0, -2101.6310389735786,
+          6677.061252978202, 0, -7.197922862326535, -2.2655742594626718, 0,
+          -2528.8107252462287, 6527.259479741834, 0, -7.03643541035593,
+          -2.726077213329077, 0, -2945.414664153078, 6350.160033904028, 0,
+          -6.845520859507273, -3.1751794310233334, 0, -3349.7005750380526,
+          6146.503563619705, 0, -6.625977634130029, -3.6110027207344313, 0,
+          -3739.9776925091833, 5917.141781260078, 0, -6.378723886644344,
+          -4.031724424498248, 0, -4114.613837393938, 5663.033901463626, 0,
+          -6.104793657732877, -4.435585040741221, 0, -4472.042242680918,
+          5385.242629601514, 0, -5.805332551875984, -4.820895582697464, 0,
+          -4810.768105901138, 5084.9297174340945, 0, -5.481592946315594,
+          -5.1860446419256725, 0, -5129.374840546202, 4763.351104545162, 0,
+          -5.134928753484345, -5.529505127385502, 0, -5426.530000379225,
+          4421.851665873047, 0, -4.766789758804117, -5.849840651889847, 0,
+          -5700.990851862479, 4061.8595873048503, 0, -4.378715557533804,
+          -6.145711539224265, 0, -5951.6095713972545, 3684.8803928557286, 0,
+          -3.9723291160231056, -6.415880426811112, 0, -6177.3380456406,
+          3292.490648412106, 0, -3.5493299842997836, -6.659217440487534, 0,
+          -6377.232254823446, 2886.331368370489, 0, -3.1114871883761044,
+          -6.8747049197557715, 0, -6550.456220738688, 2468.1011527459386, 0,
+          -2.6606318319995292, -7.061441673744369, 0, -6696.2855028882905,
+          2039.549083451563, 0, -2.198649438787927, -7.218646750081374, 0,
+          -6814.1102281682115, 1602.467409457479, 0, -1.7274720667752455,
+          -7.345662700917741, 0, -6903.4376414206345, 1158.6840514207072, 0,
+          -1.2490702283454804, -7.44195833244206, 0, -6963.894166186883,
+          710.054957132399, 0, -0.7654446493465868, -7.507130926387892, 0,
+          -6995.226967042718, 258.4563397526638, 0, -0.2786179018485344,
+          -7.5409079242431, 0, -6997.305006982162, -194.2231687064335, 0,
+          0.2093740544617564, -7.543148067117674, 0, -6970.1195954277855,
+          -646.0904158348151, 0, 0.6964903868738936, -7.5138419865029835, 0
+        ],
+        "epochs": [
+          -3000, -2940, -2880, -2820, -2760, -2700, -2640, -2580, -2520, -2460,
+          -2400, -2340, -2280, -2220, -2160, -2100, -2040, -1980, -1920, -1860,
+          -1800, -1740, -1680, -1620, -1560, -1500, -1440, -1380, -1320, -1260,
+          -1200, -1140, -1080, -1020, -960, -900, -840, -780, -720, -660, -600,
+          -540, -480, -420, -360, -300, -240, -180, -120, -60, 0, 60, 120, 180,
+          240, 300, 360, 420, 480, 540, 600, 660, 720, 780, 840, 900, 960, 1020,
+          1080, 1140, 1200, 1260, 1320, 1380, 1440, 1500, 1560, 1620, 1680,
+          1740, 1800, 1860, 1920, 1980, 2040, 2100, 2160, 2220, 2280, 2340,
+          2400, 2460, 2520, 2580, 2640, 2700, 2760, 2820, 2880, 2940, 3000
+        ]
+      },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkobj",
+        "spk": {
+          "kind": "scratch",
+          "rel": "spkw05-sample-directory.bsp"
+        },
+        "idsCellId": "I",
+        "maxCardinality": 8
+      },
+      {
+        "op": "ephemeris.spkcov",
+        "spk": {
+          "kind": "scratch",
+          "rel": "spkw05-sample-directory.bsp"
+        },
+        "idcode": 196005,
+        "coverWindowId": "W",
+        "maxIntervals": 8
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw05-sample-directory.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.spksfs",
+        "body": 196005,
+        "et": -3000,
+        "descrId": "D"
+      },
+      {
+        "op": "ephemeris.spkuds",
+        "descrId": "D"
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196005,
+        "et": -3000,
+        "ref": "J2000",
+        "observer": 0
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196005,
+        "et": 2850,
+        "ref": "J2000",
+        "observer": 0
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196005,
+        "et": 2940,
+        "ref": "J2000",
+        "observer": 0
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196005,
+        "et": 2985,
+        "ref": "J2000",
+        "observer": 0
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196005,
+        "et": 3000,
+        "ref": "J2000",
+        "observer": 0
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkw05-one-instant",
+    "description": "The type 5 writer accepts equal descriptor times; evaluate only that instant.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw05-one-instant.bsp"
+        },
+        "ifname": "AUTHORED ANALYTIC",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw05",
+        "handleId": "H",
+        "body": 196005,
+        "center": 0,
+        "frame": "J2000",
+        "first": 0,
+        "last": 0,
+        "segid": "ANALYTIC 5",
+        "gm": 398600.4418,
+        "states": [7000.0, 0.0, 0, -0.0, 7.546053290107541, 0],
+        "epochs": [0]
+      },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkobj",
+        "spk": {
+          "kind": "scratch",
+          "rel": "spkw05-one-instant.bsp"
+        },
+        "idsCellId": "I",
+        "maxCardinality": 8
+      },
+      {
+        "op": "ephemeris.spkcov",
+        "spk": {
+          "kind": "scratch",
+          "rel": "spkw05-one-instant.bsp"
+        },
+        "idcode": 196005,
+        "coverWindowId": "W",
+        "maxIntervals": 8
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw05-one-instant.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.spksfs",
+        "body": 196005,
+        "et": 0,
+        "descrId": "D"
+      },
+      {
+        "op": "ephemeris.spkuds",
+        "descrId": "D"
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196005,
+        "et": 0,
+        "ref": "J2000",
+        "observer": 0
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkw05-unknown-frame",
+    "description": "Seed a valid segment and compare the actual INVALIDREFFRAME diagnostic for unknown frame.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw05-unknown-frame.bsp"
+        },
+        "ifname": "AUTHORED ANALYTIC",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw05",
+        "handleId": "H",
+        "body": 196005,
+        "center": 0,
+        "frame": "J2000",
+        "first": -300,
+        "last": 300,
+        "segid": "ANALYTIC 5",
+        "gm": 398600.4418,
+        "states": [7000.0, 0.0, 0, -0.0, 7.546053290107541, 0],
+        "epochs": [0]
+      },
+      {
+        "op": "ephemeris.spkw05",
+        "handleId": "H",
+        "body": 196005,
+        "center": 0,
+        "frame": "UNKNOWN FRAME",
+        "first": -300,
+        "last": 300,
+        "segid": "ANALYTIC 5",
+        "gm": 398600.4418,
+        "states": [7000.0, 0.0, 0, -0.0, 7.546053290107541, 0],
+        "epochs": [0]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(INVALIDREFFRAME)"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spkw05-empty-frame",
+    "description": "Seed a valid segment and compare the actual EMPTYSTRING diagnostic for empty frame.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw05-empty-frame.bsp"
+        },
+        "ifname": "AUTHORED ANALYTIC",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw05",
+        "handleId": "H",
+        "body": 196005,
+        "center": 0,
+        "frame": "J2000",
+        "first": -300,
+        "last": 300,
+        "segid": "ANALYTIC 5",
+        "gm": 398600.4418,
+        "states": [7000.0, 0.0, 0, -0.0, 7.546053290107541, 0],
+        "epochs": [0]
+      },
+      {
+        "op": "ephemeris.spkw05",
+        "handleId": "H",
+        "body": 196005,
+        "center": 0,
+        "frame": "",
+        "first": -300,
+        "last": 300,
+        "segid": "ANALYTIC 5",
+        "gm": 398600.4418,
+        "states": [7000.0, 0.0, 0, -0.0, 7.546053290107541, 0],
+        "epochs": [0]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(EMPTYSTRING)"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spkw05-long-identifier",
+    "description": "Seed a valid segment and compare the actual SEGIDTOOLONG diagnostic for long identifier.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw05-long-identifier.bsp"
+        },
+        "ifname": "AUTHORED ANALYTIC",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw05",
+        "handleId": "H",
+        "body": 196005,
+        "center": 0,
+        "frame": "J2000",
+        "first": -300,
+        "last": 300,
+        "segid": "ANALYTIC 5",
+        "gm": 398600.4418,
+        "states": [7000.0, 0.0, 0, -0.0, 7.546053290107541, 0],
+        "epochs": [0]
+      },
+      {
+        "op": "ephemeris.spkw05",
+        "handleId": "H",
+        "body": 196005,
+        "center": 0,
+        "frame": "J2000",
+        "first": -300,
+        "last": 300,
+        "segid": "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS",
+        "gm": 398600.4418,
+        "states": [7000.0, 0.0, 0, -0.0, 7.546053290107541, 0],
+        "epochs": [0]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(SEGIDTOOLONG)"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spkw05-nonprinting-identifier",
+    "description": "Seed a valid segment and compare the actual NONPRINTABLECHARS diagnostic for nonprinting identifier.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw05-nonprinting-identifier.bsp"
+        },
+        "ifname": "AUTHORED ANALYTIC",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw05",
+        "handleId": "H",
+        "body": 196005,
+        "center": 0,
+        "frame": "J2000",
+        "first": -300,
+        "last": 300,
+        "segid": "ANALYTIC 5",
+        "gm": 398600.4418,
+        "states": [7000.0, 0.0, 0, -0.0, 7.546053290107541, 0],
+        "epochs": [0]
+      },
+      {
+        "op": "ephemeris.spkw05",
+        "handleId": "H",
+        "body": 196005,
+        "center": 0,
+        "frame": "J2000",
+        "first": -300,
+        "last": 300,
+        "segid": "A\tB",
+        "gm": 398600.4418,
+        "states": [7000.0, 0.0, 0, -0.0, 7.546053290107541, 0],
+        "epochs": [0]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(NONPRINTABLECHARS)"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spkw05-reversed-coverage",
+    "description": "Seed a valid segment and compare the actual BADDESCRTIMES diagnostic for reversed coverage.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw05-reversed-coverage.bsp"
+        },
+        "ifname": "AUTHORED ANALYTIC",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw05",
+        "handleId": "H",
+        "body": 196005,
+        "center": 0,
+        "frame": "J2000",
+        "first": -300,
+        "last": 300,
+        "segid": "ANALYTIC 5",
+        "gm": 398600.4418,
+        "states": [7000.0, 0.0, 0, -0.0, 7.546053290107541, 0],
+        "epochs": [0]
+      },
+      {
+        "op": "ephemeris.spkw05",
+        "handleId": "H",
+        "body": 196005,
+        "center": 0,
+        "frame": "J2000",
+        "first": 10,
+        "last": -10,
+        "segid": "ANALYTIC 5",
+        "gm": 398600.4418,
+        "states": [7000.0, 0.0, 0, -0.0, 7.546053290107541, 0],
+        "epochs": [0]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(BADDESCRTIMES)"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spkw05-empty",
+    "description": "Seed a valid segment and compare the actual NUMSTATESNOTPOS diagnostic for empty.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw05-empty.bsp"
+        },
+        "ifname": "AUTHORED ANALYTIC",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw05",
+        "handleId": "H",
+        "body": 196005,
+        "center": 0,
+        "frame": "J2000",
+        "first": -300,
+        "last": 300,
+        "segid": "ANALYTIC 5",
+        "gm": 398600.4418,
+        "states": [7000.0, 0.0, 0, -0.0, 7.546053290107541, 0],
+        "epochs": [0]
+      },
+      {
+        "op": "ephemeris.spkw05",
+        "handleId": "H",
+        "body": 196005,
+        "center": 0,
+        "frame": "J2000",
+        "first": -300,
+        "last": 300,
+        "segid": "ANALYTIC 5",
+        "gm": 398600.4418,
+        "states": [],
+        "epochs": []
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(NUMSTATESNOTPOS)"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spkw05-nonpositive-gm",
+    "description": "Seed a valid segment and compare the actual NONPOSITIVEMASS diagnostic for nonpositive gm.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw05-nonpositive-gm.bsp"
+        },
+        "ifname": "AUTHORED ANALYTIC",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw05",
+        "handleId": "H",
+        "body": 196005,
+        "center": 0,
+        "frame": "J2000",
+        "first": -300,
+        "last": 300,
+        "segid": "ANALYTIC 5",
+        "gm": 398600.4418,
+        "states": [7000.0, 0.0, 0, -0.0, 7.546053290107541, 0],
+        "epochs": [0]
+      },
+      {
+        "op": "ephemeris.spkw05",
+        "handleId": "H",
+        "body": 196005,
+        "center": 0,
+        "frame": "J2000",
+        "first": -300,
+        "last": 300,
+        "segid": "ANALYTIC 5",
+        "gm": 0,
+        "states": [7000.0, 0.0, 0, -0.0, 7.546053290107541, 0],
+        "epochs": [0]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(NONPOSITIVEMASS)"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spkw05-reversed-epochs",
+    "description": "Seed a valid segment and compare the actual UNORDEREDTIMES diagnostic for reversed epochs.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw05-reversed-epochs.bsp"
+        },
+        "ifname": "AUTHORED ANALYTIC",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw05",
+        "handleId": "H",
+        "body": 196005,
+        "center": 0,
+        "frame": "J2000",
+        "first": -300,
+        "last": 300,
+        "segid": "ANALYTIC 5",
+        "gm": 398600.4418,
+        "states": [7000.0, 0.0, 0, -0.0, 7.546053290107541, 0],
+        "epochs": [0]
+      },
+      {
+        "op": "ephemeris.spkw05",
+        "handleId": "H",
+        "body": 196005,
+        "center": 0,
+        "frame": "J2000",
+        "first": -300,
+        "last": 300,
+        "segid": "ANALYTIC 5",
+        "gm": 398600.4418,
+        "states": [
+          7000.0, 0.0, 0, -0.0, 7.546053290107541, 0, 6999.983730600515,
+          15.092094887855602, 0, -0.016269393183302568, 7.546035751571039, 0
+        ],
+        "epochs": [2, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(UNORDEREDTIMES)"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spkw05-duplicate-epochs",
+    "description": "Seed a valid segment and compare the actual UNORDEREDTIMES diagnostic for duplicate epochs.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw05-duplicate-epochs.bsp"
+        },
+        "ifname": "AUTHORED ANALYTIC",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw05",
+        "handleId": "H",
+        "body": 196005,
+        "center": 0,
+        "frame": "J2000",
+        "first": -300,
+        "last": 300,
+        "segid": "ANALYTIC 5",
+        "gm": 398600.4418,
+        "states": [7000.0, 0.0, 0, -0.0, 7.546053290107541, 0],
+        "epochs": [0]
+      },
+      {
+        "op": "ephemeris.spkw05",
+        "handleId": "H",
+        "body": 196005,
+        "center": 0,
+        "frame": "J2000",
+        "first": -300,
+        "last": 300,
+        "segid": "ANALYTIC 5",
+        "gm": 398600.4418,
+        "states": [
+          7000.0, 0.0, 0, -0.0, 7.546053290107541, 0, 7000.0, 0.0, 0, -0.0,
+          7.546053290107541, 0
+        ],
+        "epochs": [0, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(UNORDEREDTIMES)"]
+    }
+  }
+]

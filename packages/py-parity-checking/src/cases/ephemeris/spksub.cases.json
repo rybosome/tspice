@@ -1,0 +1,668 @@
+[
+  {
+    "caseId": "ephemeris-spksub-narrow-interval",
+    "description": "Close/reopen a real reduced interval, unpack every output descriptor field and evaluate both endpoints.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-ephemeris.bsp"
+      },
+      {
+        "op": "ephemeris.spklef",
+        "file": "kernels/audit-ephemeris.bsp",
+        "id": "load"
+      },
+      {
+        "op": "ephemeris.spksfs",
+        "body": -100011,
+        "et": 0,
+        "descrId": "sel"
+      },
+      {
+        "op": "ephemeris.spkopn",
+        "file": "kernels/e03-subset.bsp",
+        "ifname": "TSPICE SUBSET",
+        "ncomch": 0,
+        "handleId": "out"
+      },
+      {
+        "op": "ephemeris.spksub",
+        "source": "load",
+        "descriptor": "sel",
+        "ident": "AUTHORED SUBSET",
+        "begin": -5,
+        "end": 10,
+        "writer": "out",
+        "mode": "direct"
+      },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "out"
+      },
+      {
+        "op": "ephemeris.spklef",
+        "file": "kernels/e03-subset.bsp",
+        "id": "out-read"
+      },
+      {
+        "op": "ephemeris.spksfs",
+        "body": -100011,
+        "et": 10,
+        "descrId": "copied"
+      },
+      {
+        "op": "ephemeris.spkuds",
+        "descrId": "copied"
+      },
+      {
+        "op": "ephemeris.spkpvn",
+        "source": "out-read",
+        "descriptor": "copied",
+        "et": 10,
+        "mode": "direct"
+      },
+      {
+        "op": "ephemeris.spkuef",
+        "id": "out-read"
+      },
+      {
+        "op": "ephemeris.spkuef",
+        "id": "load"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spksub-instant",
+    "description": "A zero-duration subset preserves its single epoch and full interpolated state.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-ephemeris.bsp"
+      },
+      {
+        "op": "ephemeris.spklef",
+        "file": "kernels/audit-ephemeris.bsp",
+        "id": "load"
+      },
+      {
+        "op": "ephemeris.spksfs",
+        "body": -100011,
+        "et": 0,
+        "descrId": "sel"
+      },
+      {
+        "op": "ephemeris.spkopn",
+        "file": "kernels/e03-subset.bsp",
+        "ifname": "TSPICE SUBSET",
+        "ncomch": 0,
+        "handleId": "out"
+      },
+      {
+        "op": "ephemeris.spksub",
+        "source": "load",
+        "descriptor": "sel",
+        "ident": "INSTANT",
+        "begin": 3,
+        "end": 3,
+        "writer": "out",
+        "mode": "direct"
+      },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "out"
+      },
+      {
+        "op": "ephemeris.spklef",
+        "file": "kernels/e03-subset.bsp",
+        "id": "out-read"
+      },
+      {
+        "op": "ephemeris.spksfs",
+        "body": -100011,
+        "et": 3,
+        "descrId": "copied"
+      },
+      {
+        "op": "ephemeris.spkuds",
+        "descrId": "copied"
+      },
+      {
+        "op": "ephemeris.spkpvn",
+        "source": "out-read",
+        "descriptor": "copied",
+        "et": 3,
+        "mode": "direct"
+      },
+      {
+        "op": "ephemeris.spkuef",
+        "id": "out-read"
+      },
+      {
+        "op": "ephemeris.spkuef",
+        "id": "load"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spksub-whole",
+    "description": "Copy full coverage and evaluate the output file through a distinct load.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-ephemeris.bsp"
+      },
+      {
+        "op": "ephemeris.spklef",
+        "file": "kernels/audit-ephemeris.bsp",
+        "id": "load"
+      },
+      {
+        "op": "ephemeris.spksfs",
+        "body": -100011,
+        "et": 0,
+        "descrId": "sel"
+      },
+      {
+        "op": "ephemeris.spkopn",
+        "file": "kernels/e03-subset.bsp",
+        "ifname": "TSPICE SUBSET",
+        "ncomch": 0,
+        "handleId": "out"
+      },
+      {
+        "op": "ephemeris.spksub",
+        "source": "load",
+        "descriptor": "sel",
+        "ident": "WHOLE",
+        "begin": -1000,
+        "end": 1000,
+        "writer": "out",
+        "mode": "direct"
+      },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "out"
+      },
+      {
+        "op": "ephemeris.spklef",
+        "file": "kernels/e03-subset.bsp",
+        "id": "out-read"
+      },
+      {
+        "op": "ephemeris.spksfs",
+        "body": -100011,
+        "et": -1000,
+        "descrId": "copied"
+      },
+      {
+        "op": "ephemeris.spkuds",
+        "descrId": "copied"
+      },
+      {
+        "op": "ephemeris.spkpvn",
+        "source": "out-read",
+        "descriptor": "copied",
+        "et": -1000,
+        "mode": "direct"
+      },
+      {
+        "op": "ephemeris.spkuef",
+        "id": "out-read"
+      },
+      {
+        "op": "ephemeris.spkuef",
+        "id": "load"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spksub-borrowed",
+    "description": "Copy a real SPKSFS match using only its borrowed reader handle.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-ephemeris.bsp"
+      },
+      {
+        "op": "ephemeris.spksfs",
+        "body": -100011,
+        "et": 0,
+        "descrId": "sel"
+      },
+      {
+        "op": "ephemeris.spkopn",
+        "file": "kernels/e03-subset.bsp",
+        "ifname": "TSPICE SUBSET",
+        "ncomch": 0,
+        "handleId": "out"
+      },
+      {
+        "op": "ephemeris.spksub",
+        "source": "sel",
+        "descriptor": "sel",
+        "ident": "AUTHORED SUBSET",
+        "begin": -5,
+        "end": 10,
+        "writer": "out",
+        "mode": "borrowed"
+      },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "out"
+      },
+      {
+        "op": "ephemeris.spklef",
+        "file": "kernels/e03-subset.bsp",
+        "id": "out-read"
+      },
+      {
+        "op": "ephemeris.spksfs",
+        "body": -100011,
+        "et": -5,
+        "descrId": "copied"
+      },
+      {
+        "op": "ephemeris.spkuds",
+        "descrId": "copied"
+      },
+      {
+        "op": "ephemeris.spkpvn",
+        "source": "out-read",
+        "descriptor": "copied",
+        "et": -5,
+        "mode": "direct"
+      },
+      {
+        "op": "ephemeris.spkuef",
+        "id": "out-read"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spksub-daf-selected",
+    "description": "Use a DAF reader plus exact DAFGS bytes as the physical subset source.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-ephemeris.bsp"
+      },
+      {
+        "op": "file-io.dafopr",
+        "path": "kernels/audit-ephemeris.bsp",
+        "handleId": "daf"
+      },
+      {
+        "op": "file-io.dafbfs",
+        "handleId": "daf"
+      },
+      {
+        "op": "file-io.daffna",
+        "handleId": "daf"
+      },
+      {
+        "op": "ephemeris.spkopn",
+        "file": "kernels/e03-subset.bsp",
+        "ifname": "TSPICE SUBSET",
+        "ncomch": 0,
+        "handleId": "out"
+      },
+      {
+        "op": "ephemeris.spksub",
+        "source": "daf",
+        "descriptor": "sel",
+        "ident": "DAF selected",
+        "begin": -750,
+        "end": -250,
+        "writer": "out",
+        "mode": "daf"
+      },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "out"
+      },
+      {
+        "op": "ephemeris.spklef",
+        "file": "kernels/e03-subset.bsp",
+        "id": "out-read"
+      },
+      {
+        "op": "ephemeris.spksfs",
+        "body": 100001,
+        "et": -500,
+        "descrId": "copied"
+      },
+      {
+        "op": "ephemeris.spkpvn",
+        "source": "out-read",
+        "descriptor": "copied",
+        "et": -500,
+        "mode": "direct"
+      },
+      {
+        "op": "ephemeris.spkuef",
+        "id": "out-read"
+      },
+      {
+        "op": "file-io.dafcls",
+        "handleId": "daf"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spksub-two-ordered",
+    "description": "Two appended subsets of one source have distinct names, coverages and later-segment priority at the shared endpoint.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-ephemeris.bsp"
+      },
+      {
+        "op": "ephemeris.spklef",
+        "file": "kernels/audit-ephemeris.bsp",
+        "id": "load"
+      },
+      {
+        "op": "ephemeris.spksfs",
+        "body": -100011,
+        "et": 0,
+        "descrId": "sel"
+      },
+      {
+        "op": "ephemeris.spkopn",
+        "file": "kernels/e03-subset.bsp",
+        "ifname": "TSPICE SUBSET",
+        "ncomch": 0,
+        "handleId": "out"
+      },
+      {
+        "op": "ephemeris.spksub",
+        "source": "load",
+        "descriptor": "sel",
+        "ident": "LEFT",
+        "begin": -20,
+        "end": 0,
+        "writer": "out",
+        "mode": "direct"
+      },
+      {
+        "op": "ephemeris.spksub",
+        "source": "load",
+        "descriptor": "sel",
+        "ident": "RIGHT",
+        "begin": 0,
+        "end": 20,
+        "writer": "out",
+        "mode": "direct"
+      },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "out"
+      },
+      {
+        "op": "ephemeris.spklef",
+        "file": "kernels/e03-subset.bsp",
+        "id": "output"
+      },
+      {
+        "op": "ephemeris.spksfs",
+        "body": -100011,
+        "et": -5,
+        "descrId": "left"
+      },
+      {
+        "op": "ephemeris.spkpvn",
+        "source": "output",
+        "descriptor": "left",
+        "et": -5,
+        "mode": "direct"
+      },
+      {
+        "op": "ephemeris.spksfs",
+        "body": -100011,
+        "et": 0,
+        "descrId": "right"
+      },
+      {
+        "op": "ephemeris.spkpvn",
+        "source": "output",
+        "descriptor": "right",
+        "et": 0,
+        "mode": "direct"
+      },
+      {
+        "op": "ephemeris.spkuef",
+        "id": "output"
+      },
+      {
+        "op": "ephemeris.spkuef",
+        "id": "load"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spksub-outside-start",
+    "description": "A first epoch before the source coverage raises the true subset error.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-ephemeris.bsp"
+      },
+      {
+        "op": "ephemeris.spklef",
+        "file": "kernels/audit-ephemeris.bsp",
+        "id": "load"
+      },
+      {
+        "op": "ephemeris.spksfs",
+        "body": -100011,
+        "et": 0,
+        "descrId": "sel"
+      },
+      {
+        "op": "ephemeris.spkopn",
+        "file": "kernels/e03-subset.bsp",
+        "ifname": "TSPICE SUBSET",
+        "ncomch": 0,
+        "handleId": "out"
+      },
+      {
+        "op": "ephemeris.spksub",
+        "source": "load",
+        "descriptor": "sel",
+        "ident": "CLOSABLE CONTROL",
+        "begin": 0,
+        "end": 1,
+        "writer": "out",
+        "mode": "direct"
+      },
+      {
+        "op": "ephemeris.spksub",
+        "source": "load",
+        "descriptor": "sel",
+        "ident": "AUTHORED SUBSET",
+        "begin": -1001,
+        "end": 0,
+        "writer": "out",
+        "mode": "direct"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPKNOTASUBSET"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spksub-outside-end",
+    "description": "A last epoch past the source coverage raises the true subset error.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-ephemeris.bsp"
+      },
+      {
+        "op": "ephemeris.spklef",
+        "file": "kernels/audit-ephemeris.bsp",
+        "id": "load"
+      },
+      {
+        "op": "ephemeris.spksfs",
+        "body": -100011,
+        "et": 0,
+        "descrId": "sel"
+      },
+      {
+        "op": "ephemeris.spkopn",
+        "file": "kernels/e03-subset.bsp",
+        "ifname": "TSPICE SUBSET",
+        "ncomch": 0,
+        "handleId": "out"
+      },
+      {
+        "op": "ephemeris.spksub",
+        "source": "load",
+        "descriptor": "sel",
+        "ident": "CLOSABLE CONTROL",
+        "begin": 0,
+        "end": 1,
+        "writer": "out",
+        "mode": "direct"
+      },
+      {
+        "op": "ephemeris.spksub",
+        "source": "load",
+        "descriptor": "sel",
+        "ident": "AUTHORED SUBSET",
+        "begin": 0,
+        "end": 1001,
+        "writer": "out",
+        "mode": "direct"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPKNOTASUBSET"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spksub-reversed",
+    "description": "Forward an inverted interval to the canonical SPKSUB check.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-ephemeris.bsp"
+      },
+      {
+        "op": "ephemeris.spklef",
+        "file": "kernels/audit-ephemeris.bsp",
+        "id": "load"
+      },
+      {
+        "op": "ephemeris.spksfs",
+        "body": -100011,
+        "et": 0,
+        "descrId": "sel"
+      },
+      {
+        "op": "ephemeris.spkopn",
+        "file": "kernels/e03-subset.bsp",
+        "ifname": "TSPICE SUBSET",
+        "ncomch": 0,
+        "handleId": "out"
+      },
+      {
+        "op": "ephemeris.spksub",
+        "source": "load",
+        "descriptor": "sel",
+        "ident": "CLOSABLE CONTROL",
+        "begin": 0,
+        "end": 1,
+        "writer": "out",
+        "mode": "direct"
+      },
+      {
+        "op": "ephemeris.spksub",
+        "source": "load",
+        "descriptor": "sel",
+        "ident": "AUTHORED SUBSET",
+        "begin": 3,
+        "end": -3,
+        "writer": "out",
+        "mode": "direct"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPKNOTASUBSET"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spksub-empty-name",
+    "description": "The actual C wrapper rejects an empty segment identifier.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-ephemeris.bsp"
+      },
+      {
+        "op": "ephemeris.spklef",
+        "file": "kernels/audit-ephemeris.bsp",
+        "id": "load"
+      },
+      {
+        "op": "ephemeris.spksfs",
+        "body": -100011,
+        "et": 0,
+        "descrId": "sel"
+      },
+      {
+        "op": "ephemeris.spkopn",
+        "file": "kernels/e03-subset.bsp",
+        "ifname": "TSPICE SUBSET",
+        "ncomch": 0,
+        "handleId": "out"
+      },
+      {
+        "op": "ephemeris.spksub",
+        "source": "load",
+        "descriptor": "sel",
+        "ident": "CLOSABLE CONTROL",
+        "begin": 0,
+        "end": 1,
+        "writer": "out",
+        "mode": "direct"
+      },
+      {
+        "op": "ephemeris.spksub",
+        "source": "load",
+        "descriptor": "sel",
+        "ident": "",
+        "begin": 0,
+        "end": 1,
+        "writer": "out",
+        "mode": "direct"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["EMPTYSTRING"]
+    }
+  }
+]

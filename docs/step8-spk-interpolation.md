@@ -1,0 +1,25 @@
+# Interpolated SPK writers
+
+All four methods append to an owned open SPK. Positions are in km and velocities in km/s. Times and step sizes are TDB seconds past J2000 and seconds, respectively. Supply flat chronological records as a readonly numeric array or Float64Array view. The record count follows from the packet width. Variable-grid methods require one epoch per record. Fixed-grid type 12 takes the first epoch and a positive spacing. Call `spkcls` before reading a virtual output.
+
+| Routine            | Method                                                                                                                                                  | Degree and samples                                       |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------- |
+| `spkw09`           | Lagrange interpolation of the six independent state components on an irregular grid                                                                     | Degree 1–27, at least degree + 1 states                  |
+| `spkw12`           | Hermite interpolation of position and its supplied time derivative on a regular grid                                                                    | Odd degree 1–27, at least (degree + 1) / 2 states        |
+| `spkw13`           | Hermite interpolation of position and its supplied time derivative on an irregular grid                                                                 | Odd degree 1–27, at least (degree + 1) / 2 states        |
+| `spkw18` subtype 0 | Hermite interpolation of 12-word packets. Each packet holds XYZ position, its XYZ derivative, independent XYZ velocity and its XYZ derivative in km/s². | Documented degrees 3, 7, 11 and 15, minimum two packets. |
+| `spkw18` subtype 1 | Lagrange interpolation of six-word independent position and velocity packets                                                                            | Odd degree 1–15, minimum two packets.                    |
+
+N0067 computes the subtype-0 window as integer `(degree + 1) / 2` and accepts an even resulting window. Consequently, degrees 4, 8 and 12 produce stored windows of 2, 4 and 6 samples respectively. Dedicated locked-library and compiled tests verify these inputs. Type 18 can reduce the requested window when fewer packets exist on either side of the epoch. A four-packet Lagrange window near the start can use one packet to the left and two to the right, giving a quadratic fit. Type 18 permits equal descriptor endpoints. Types 9, 12 and 13 require increasing endpoints.
+
+Each input buffer is limited to 256 MiB and both lengths are captured before individual samples are read. The platforms independently check complete finite buffers before the canonical call. The signed-32 maximum degree is rejected before the N0067 additions in types 12, 13 and supported type 18 subtypes. Type 9 issues its own INVALIDDEGREE error there. Scientific errors involving sample counts, ordering, interval coverage, degree, frame or segment ID retain their toolkit diagnoses.
+
+## Verification
+
+The 82 registered workflows include 142 target invocations and 56 terminal toolkit errors. They cover knots, both outer epochs, off-grid states and light time, irregular epoch sequences, subsecond fixed steps, maximum degree, both type 18 subtypes, reduced windows, overlapping appended segments and full descriptor metadata. Types 9, 13 and 18 exercise 102 records to cross the actual 100-epoch directory boundary.
+
+Each backend writes five segments to a scratch SPK. A separate locked SpiceyPy 6.0.3 process opens the result and reads the complete descriptor, all physical packet words, epoch arrays, directory entries and trailers, and evaluated states at eight epochs. It independently writes the five segments for the same backend to load and evaluate. Analytic quadratic position, independent velocity, derivative and acceleration functions check all six state components. A subtype-1 near-edge test initially assumed two remaining packets. Inspection of SPKR18 established three packets at that epoch; the final analytic comparison retained its original numerical tolerance. The independent state comparisons had already matched.
+
+A real Chrome worker exercised the four writer methods, both type 18 layouts, invalid degree recovery on the same writer, physical closure and reload, and all analytic state components at ET = 1. Direct native tests guard physical array bounds; WASM tests cover failure at every allocation, successful recovery and ownership. Repeating the same authored workflow on a persistent WASM client consumes the run-specific scratch path introduced with E04.
+
+[Type 9](https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkw09_c.html) · [Type 12](https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkw12_c.html) · [Type 13](https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkw13_c.html) · [Type 18](https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkw18_c.html)

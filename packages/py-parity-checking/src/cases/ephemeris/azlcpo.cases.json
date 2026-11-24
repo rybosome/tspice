@@ -1,0 +1,661 @@
+[
+  {
+    "caseId": "ephemeris-azlcpo-direction-and-rates",
+    "description": "All four azimuth/elevation sign conventions change coordinates and signed derivatives in the actual local ellipsoid frame.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-geometry.bsp"
+        }
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-geometry.tf"
+        }
+      },
+      {
+        "op": "ephemeris.azlcpo",
+        "method": "ELLIPSOID",
+        "target": "100102",
+        "et": 21.5,
+        "abcorr": "CN+S",
+        "azccw": true,
+        "elplsz": true,
+        "obspos": [3.2, 1.7, -0.75],
+        "obsctr": "100101",
+        "obsref": "AUDIT_GEOMETRY_FIXED"
+      },
+      {
+        "op": "ephemeris.azlcpo",
+        "method": "ELLIPSOID",
+        "target": "100102",
+        "et": 21.5,
+        "abcorr": "CN+S",
+        "azccw": true,
+        "elplsz": false,
+        "obspos": [3.2, 1.7, -0.75],
+        "obsctr": "100101",
+        "obsref": "AUDIT_GEOMETRY_FIXED"
+      },
+      {
+        "op": "ephemeris.azlcpo",
+        "method": "ELLIPSOID",
+        "target": "100102",
+        "et": 21.5,
+        "abcorr": "CN+S",
+        "azccw": false,
+        "elplsz": true,
+        "obspos": [3.2, 1.7, -0.75],
+        "obsctr": "100101",
+        "obsref": "AUDIT_GEOMETRY_FIXED"
+      },
+      {
+        "op": "ephemeris.azlcpo",
+        "method": "ELLIPSOID",
+        "target": "100102",
+        "et": 21.5,
+        "abcorr": "CN+S",
+        "azccw": false,
+        "elplsz": false,
+        "obspos": [3.2, 1.7, -0.75],
+        "obsctr": "100101",
+        "obsref": "AUDIT_GEOMETRY_FIXED"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-azlcpo-north-and-south-poles",
+    "description": "Use the toolkit polar topocentric branch at surface and off-surface sites at both poles.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-geometry.bsp"
+        }
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-geometry.tf"
+        }
+      },
+      {
+        "op": "ephemeris.azlcpo",
+        "method": "ELLIPSOID",
+        "target": "100102",
+        "et": 21.5,
+        "abcorr": "NONE",
+        "azccw": true,
+        "elplsz": true,
+        "obspos": [0, 0, 1.0],
+        "obsctr": "100101",
+        "obsref": "AUDIT_GEOMETRY_FIXED"
+      },
+      {
+        "op": "ephemeris.azlcpo",
+        "method": "ELLIPSOID",
+        "target": "100102",
+        "et": 21.5,
+        "abcorr": "NONE",
+        "azccw": true,
+        "elplsz": true,
+        "obspos": [0, 0, 2.0],
+        "obsctr": "100101",
+        "obsref": "AUDIT_GEOMETRY_FIXED"
+      },
+      {
+        "op": "ephemeris.azlcpo",
+        "method": "ELLIPSOID",
+        "target": "100102",
+        "et": 21.5,
+        "abcorr": "NONE",
+        "azccw": true,
+        "elplsz": true,
+        "obspos": [0, 0, -1.0],
+        "obsctr": "100101",
+        "obsref": "AUDIT_GEOMETRY_FIXED"
+      },
+      {
+        "op": "ephemeris.azlcpo",
+        "method": "ELLIPSOID",
+        "target": "100102",
+        "et": 21.5,
+        "abcorr": "NONE",
+        "azccw": true,
+        "elplsz": true,
+        "obspos": [0, 0, -2.0],
+        "obsctr": "100101",
+        "obsref": "AUDIT_GEOMETRY_FIXED"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-azlcpo-ellipsoid-sites",
+    "description": "Use distinct off-axis surface and interior/exterior sites of the triaxial ellipsoid.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-geometry.bsp"
+        }
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-geometry.tf"
+        }
+      },
+      {
+        "op": "ephemeris.azlcpo",
+        "method": "ELLIPSOID",
+        "target": "100102",
+        "et": 21.5,
+        "abcorr": "NONE",
+        "azccw": true,
+        "elplsz": true,
+        "obspos": [3, 0, 0],
+        "obsctr": "100101",
+        "obsref": "AUDIT_GEOMETRY_FIXED"
+      },
+      {
+        "op": "ephemeris.azlcpo",
+        "method": "ELLIPSOID",
+        "target": "100102",
+        "et": 21.5,
+        "abcorr": "NONE",
+        "azccw": true,
+        "elplsz": true,
+        "obspos": [0.8, 0.3, 0.25],
+        "obsctr": "100101",
+        "obsref": "AUDIT_GEOMETRY_FIXED"
+      },
+      {
+        "op": "ephemeris.azlcpo",
+        "method": "ELLIPSOID",
+        "target": "100102",
+        "et": 21.5,
+        "abcorr": "NONE",
+        "azccw": true,
+        "elplsz": true,
+        "obspos": [-4.25, 1.5, -0.75],
+        "obsctr": "100101",
+        "obsref": "AUDIT_GEOMETRY_FIXED"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-azlcpo-reception-transmission",
+    "description": "Compare seven observables under geometric, reception and transmission corrections for a moving off-axis target.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-geometry.bsp"
+        }
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-geometry.tf"
+        }
+      },
+      {
+        "op": "ephemeris.azlcpo",
+        "method": "ELLIPSOID",
+        "target": "100102",
+        "et": 21.5,
+        "abcorr": "NONE",
+        "azccw": true,
+        "elplsz": true,
+        "obspos": [3.2, 1.7, -0.75],
+        "obsctr": "100101",
+        "obsref": "AUDIT_GEOMETRY_FIXED"
+      },
+      {
+        "op": "ephemeris.azlcpo",
+        "method": "ELLIPSOID",
+        "target": "100102",
+        "et": 21.5,
+        "abcorr": "LT+S",
+        "azccw": true,
+        "elplsz": true,
+        "obspos": [3.2, 1.7, -0.75],
+        "obsctr": "100101",
+        "obsref": "AUDIT_GEOMETRY_FIXED"
+      },
+      {
+        "op": "ephemeris.azlcpo",
+        "method": "ELLIPSOID",
+        "target": "100102",
+        "et": 21.5,
+        "abcorr": "CN+S",
+        "azccw": true,
+        "elplsz": true,
+        "obspos": [3.2, 1.7, -0.75],
+        "obsctr": "100101",
+        "obsref": "AUDIT_GEOMETRY_FIXED"
+      },
+      {
+        "op": "ephemeris.azlcpo",
+        "method": "ELLIPSOID",
+        "target": "100102",
+        "et": 21.5,
+        "abcorr": "XCN+S",
+        "azccw": true,
+        "elplsz": true,
+        "obspos": [3.2, 1.7, -0.75],
+        "obsctr": "100101",
+        "obsref": "AUDIT_GEOMETRY_FIXED"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-azlcpo-frame-rotation",
+    "description": "Rotated observer-centered axes and observer ET change the local north, azimuth/elevation and all three rates.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-geometry.bsp"
+        }
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-geometry.tf"
+        }
+      },
+      {
+        "op": "ephemeris.azlcpo",
+        "method": "ELLIPSOID",
+        "target": "100102",
+        "et": -75.5,
+        "abcorr": "CN+S",
+        "azccw": true,
+        "elplsz": true,
+        "obspos": [3.2, 1.7, -0.75],
+        "obsctr": "100101",
+        "obsref": "AUDIT_GEOMETRY_ROT"
+      },
+      {
+        "op": "ephemeris.azlcpo",
+        "method": "ELLIPSOID",
+        "target": "100102",
+        "et": 175.5,
+        "abcorr": "CN+S",
+        "azccw": true,
+        "elplsz": true,
+        "obspos": [3.2, 1.7, -0.75],
+        "obsctr": "100101",
+        "obsref": "AUDIT_GEOMETRY_ROT"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-azlcpo-method-spelling",
+    "description": "Use mixed case and padding accepted by the canonical method matcher.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-geometry.bsp"
+        }
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-geometry.tf"
+        }
+      },
+      {
+        "op": "ephemeris.azlcpo",
+        "method": "  ellipsoid ",
+        "target": "100102",
+        "et": 21.5,
+        "abcorr": "CN+S",
+        "azccw": true,
+        "elplsz": true,
+        "obspos": [3.2, 1.7, -0.75],
+        "obsctr": "100101",
+        "obsref": "AUDIT_GEOMETRY_FIXED"
+      },
+      {
+        "op": "ephemeris.azlcpo",
+        "method": "Ellipsoid",
+        "target": "100102",
+        "et": 21.5,
+        "abcorr": "CN+S",
+        "azccw": true,
+        "elplsz": true,
+        "obspos": [3.2, 1.7, -0.75],
+        "obsctr": "100101",
+        "obsref": "AUDIT_GEOMETRY_FIXED"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-azlcpo-unknown-center",
+    "description": "Require the canonical diagnostic before using any undefined angular-rate or geometry output.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-geometry.bsp"
+        }
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-geometry.tf"
+        }
+      },
+      {
+        "op": "ephemeris.azlcpo",
+        "method": "ELLIPSOID",
+        "target": "100102",
+        "et": 21.5,
+        "abcorr": "CN+S",
+        "azccw": true,
+        "elplsz": true,
+        "obspos": [3.2, 1.7, -0.75],
+        "obsctr": "MISSING_BODY",
+        "obsref": "AUDIT_GEOMETRY_FIXED"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["IDCODENOTFOUND"]
+    }
+  },
+  {
+    "caseId": "ephemeris-azlcpo-unknown-frame",
+    "description": "Require the canonical diagnostic before using any undefined angular-rate or geometry output.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-geometry.bsp"
+        }
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-geometry.tf"
+        }
+      },
+      {
+        "op": "ephemeris.azlcpo",
+        "method": "ELLIPSOID",
+        "target": "100102",
+        "et": 21.5,
+        "abcorr": "CN+S",
+        "azccw": true,
+        "elplsz": true,
+        "obspos": [3.2, 1.7, -0.75],
+        "obsctr": "100101",
+        "obsref": "UNLISTED"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["UNKNOWNFRAME"]
+    }
+  },
+  {
+    "caseId": "ephemeris-azlcpo-frame-center",
+    "description": "Require the canonical diagnostic before using any undefined angular-rate or geometry output.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-geometry.bsp"
+        }
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-geometry.tf"
+        }
+      },
+      {
+        "op": "ephemeris.azlcpo",
+        "method": "ELLIPSOID",
+        "target": "100102",
+        "et": 21.5,
+        "abcorr": "CN+S",
+        "azccw": true,
+        "elplsz": true,
+        "obspos": [3.2, 1.7, -0.75],
+        "obsctr": "100101",
+        "obsref": "J2000"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDFRAME"]
+    }
+  },
+  {
+    "caseId": "ephemeris-azlcpo-bad-method",
+    "description": "Require the canonical diagnostic before using any undefined angular-rate or geometry output.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-geometry.bsp"
+        }
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-geometry.tf"
+        }
+      },
+      {
+        "op": "ephemeris.azlcpo",
+        "method": "PLANE",
+        "target": "100102",
+        "et": 21.5,
+        "abcorr": "CN+S",
+        "azccw": true,
+        "elplsz": true,
+        "obspos": [3.2, 1.7, -0.75],
+        "obsctr": "100101",
+        "obsref": "AUDIT_GEOMETRY_FIXED"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDMETHOD"]
+    }
+  },
+  {
+    "caseId": "ephemeris-azlcpo-undefined-rates",
+    "description": "Require the canonical diagnostic before using any undefined angular-rate or geometry output.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-geometry.bsp"
+        }
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-geometry.tf"
+        }
+      },
+      {
+        "op": "ephemeris.azlcpo",
+        "method": "ELLIPSOID",
+        "target": "100104",
+        "et": 0,
+        "abcorr": "NONE",
+        "azccw": true,
+        "elplsz": true,
+        "obspos": [3, 0, 0],
+        "obsctr": "100101",
+        "obsref": "AUDIT_GEOMETRY_FIXED"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["POINTONZAXIS"]
+    }
+  },
+  {
+    "caseId": "ephemeris-azlcpo-bad-correction",
+    "description": "Require the canonical diagnostic before using any undefined angular-rate or geometry output.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-geometry.bsp"
+        }
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-geometry.tf"
+        }
+      },
+      {
+        "op": "ephemeris.azlcpo",
+        "method": "ELLIPSOID",
+        "target": "100102",
+        "et": 21.5,
+        "abcorr": "BAD",
+        "azccw": true,
+        "elplsz": true,
+        "obspos": [3.2, 1.7, -0.75],
+        "obsctr": "100101",
+        "obsref": "AUDIT_GEOMETRY_FIXED"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDOPTION"]
+    }
+  },
+  {
+    "caseId": "ephemeris-azlcpo-missing-target",
+    "description": "Require the canonical diagnostic before using any undefined angular-rate or geometry output.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-geometry.bsp"
+        }
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-geometry.tf"
+        }
+      },
+      {
+        "op": "ephemeris.azlcpo",
+        "method": "ELLIPSOID",
+        "target": "98765432",
+        "et": 21.5,
+        "abcorr": "CN+S",
+        "azccw": true,
+        "elplsz": true,
+        "obspos": [3.2, 1.7, -0.75],
+        "obsctr": "100101",
+        "obsref": "AUDIT_GEOMETRY_FIXED"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPKINSUFFDATA"]
+    }
+  },
+  {
+    "caseId": "ephemeris-azlcpo-invalid-radii",
+    "description": "A negative ellipsoid radius fails while fetching body radii before any local topocentric transformation.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-geometry.bsp"
+        }
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-geometry.tf"
+        }
+      },
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "BODY100101_RADII",
+        "values": [3, -2, 1]
+      },
+      {
+        "op": "ephemeris.azlcpo",
+        "method": "ELLIPSOID",
+        "target": "100102",
+        "et": 21.5,
+        "abcorr": "CN+S",
+        "azccw": true,
+        "elplsz": true,
+        "obspos": [3.2, 1.7, -0.75],
+        "obsctr": "100101",
+        "obsref": "AUDIT_GEOMETRY_FIXED"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["BADAXISLENGTH"]
+    }
+  }
+]

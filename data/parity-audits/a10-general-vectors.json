@@ -2048,7 +2048,8 @@
       ],
       "id": "local-cp03-779d6fd6ae41-node",
       "kind": "local",
-      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 779d6fd6ae41c78017a8cf7ccaec5fef3100112c. The native-required lane completed 7054 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45097193130/job/137439518970"
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 779d6fd6ae41c78017a8cf7ccaec5fef3100112c. The native-required lane completed 7054 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45097193130/job/137439518970",
+      "historical": true
     },
     {
       "backend": "node",
@@ -2144,7 +2145,8 @@
       "kind": "ci",
       "commit": "c4bd798cc20d13e8dfd51e7e83ba740ffe4418ff",
       "url": "https://github.com/rybosome/tspice/actions/runs/45127597533/job/137535439275",
-      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 7054 live comparisons without unexpected skips."
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 7054 live comparisons without unexpected skips.",
+      "historical": true
     },
     {
       "backend": "wasm",
@@ -2238,7 +2240,8 @@
       ],
       "id": "local-cp03-779d6fd6ae41-wasm",
       "kind": "local",
-      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 779d6fd6ae41c78017a8cf7ccaec5fef3100112c. The native-required lane completed 7054 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45097193130/job/137439518970"
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 779d6fd6ae41c78017a8cf7ccaec5fef3100112c. The native-required lane completed 7054 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45097193130/job/137439518970",
+      "historical": true
     },
     {
       "backend": "wasm",
@@ -2334,7 +2337,388 @@
       "kind": "ci",
       "commit": "c4bd798cc20d13e8dfd51e7e83ba740ffe4418ff",
       "url": "https://github.com/rybosome/tspice/actions/runs/45127597533/job/137535439275",
-      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 7054 live comparisons without unexpected skips."
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 7054 live comparisons without unexpected skips.",
+      "historical": true
+    },
+    {
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "0139da101c195bb9e8578c60c320796178f97567dce3f952e037f923f82fa4a8",
+      "caseIds": [
+        "coords-vectors-unormg-dimension-one",
+        "coords-vectors-unormg-dimension-zero",
+        "coords-vectors-unormg-mixed-dimensions",
+        "coords-vectors-unormg-scaled-magnitudes",
+        "coords-vectors-unormg-zero-and-last-component",
+        "coords-vectors-vaddg-dimension-one",
+        "coords-vectors-vaddg-dimension-zero",
+        "coords-vectors-vaddg-mixed-dimensions-and-order",
+        "coords-vectors-vaddg-scaled-magnitudes",
+        "coords-vectors-vaddg-zero-and-axis-boundaries",
+        "coords-vectors-vdistg-dimension-one",
+        "coords-vectors-vdistg-dimension-zero",
+        "coords-vectors-vdistg-mixed-dimensions-and-order",
+        "coords-vectors-vdistg-scaled-magnitudes",
+        "coords-vectors-vdistg-zero-and-axis-boundaries",
+        "coords-vectors-vdotg-dimension-one",
+        "coords-vectors-vdotg-dimension-zero",
+        "coords-vectors-vdotg-mixed-dimensions-and-order",
+        "coords-vectors-vdotg-ordered-cancellation",
+        "coords-vectors-vdotg-scaled-magnitudes",
+        "coords-vectors-vdotg-zero-and-axis-boundaries",
+        "coords-vectors-vequg-dimension-one",
+        "coords-vectors-vequg-dimension-zero",
+        "coords-vectors-vequg-finite-extrema",
+        "coords-vectors-vequg-mixed-dimensions",
+        "coords-vectors-vequg-scaled-magnitudes",
+        "coords-vectors-vequg-zero-and-last-component",
+        "coords-vectors-vhatg-dimension-one",
+        "coords-vectors-vhatg-dimension-zero",
+        "coords-vectors-vhatg-mixed-dimensions",
+        "coords-vectors-vhatg-scaled-magnitudes",
+        "coords-vectors-vhatg-zero-and-last-component",
+        "coords-vectors-vlcomg-dimension-one",
+        "coords-vectors-vlcomg-dimension-zero",
+        "coords-vectors-vlcomg-distinct-coefficients-and-dimensions",
+        "coords-vectors-vlcomg-scaled-magnitudes",
+        "coords-vectors-vlcomg-zero-identity-and-cancellation",
+        "coords-vectors-vminug-dimension-one",
+        "coords-vectors-vminug-dimension-zero",
+        "coords-vectors-vminug-finite-extrema",
+        "coords-vectors-vminug-mixed-dimensions",
+        "coords-vectors-vminug-scaled-magnitudes",
+        "coords-vectors-vminug-zero-and-last-component",
+        "coords-vectors-vnormg-dimension-one",
+        "coords-vectors-vnormg-dimension-zero",
+        "coords-vectors-vnormg-mixed-dimensions",
+        "coords-vectors-vnormg-scaled-magnitudes",
+        "coords-vectors-vnormg-zero-and-last-component",
+        "coords-vectors-vprojg-dimension-one",
+        "coords-vectors-vprojg-dimension-zero",
+        "coords-vectors-vprojg-mixed-dimensions-and-order",
+        "coords-vectors-vprojg-scaled-magnitudes",
+        "coords-vectors-vprojg-subnormal-source-and-reference",
+        "coords-vectors-vprojg-zero-and-axis-boundaries",
+        "coords-vectors-vrelg-dimension-one",
+        "coords-vectors-vrelg-dimension-zero",
+        "coords-vectors-vrelg-mixed-dimensions-and-order",
+        "coords-vectors-vrelg-nearby-large-components",
+        "coords-vectors-vrelg-scaled-magnitudes",
+        "coords-vectors-vrelg-zero-and-axis-boundaries",
+        "coords-vectors-vsclg-dimension-one",
+        "coords-vectors-vsclg-dimension-zero",
+        "coords-vectors-vsclg-distinct-coefficient-and-dimensions",
+        "coords-vectors-vsclg-scaled-magnitudes",
+        "coords-vectors-vsclg-zero-and-identity-coefficients",
+        "coords-vectors-vsepg-dimension-one",
+        "coords-vectors-vsepg-dimension-zero",
+        "coords-vectors-vsepg-mixed-dimensions-and-order",
+        "coords-vectors-vsepg-near-parallel-axis",
+        "coords-vectors-vsepg-raw-dot-underflow",
+        "coords-vectors-vsepg-scaled-magnitudes",
+        "coords-vectors-vsepg-zero-and-axis-boundaries",
+        "coords-vectors-vsubg-dimension-one",
+        "coords-vectors-vsubg-dimension-zero",
+        "coords-vectors-vsubg-mixed-dimensions-and-order",
+        "coords-vectors-vsubg-scaled-magnitudes",
+        "coords-vectors-vsubg-zero-and-axis-boundaries",
+        "coords-vectors-vzerog-dimension-one",
+        "coords-vectors-vzerog-dimension-zero",
+        "coords-vectors-vzerog-last-component-subnormal",
+        "coords-vectors-vzerog-mixed-dimensions",
+        "coords-vectors-vzerog-zero-and-last-component"
+      ],
+      "id": "local-cp04-3c3e3f368191-node",
+      "kind": "local",
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 3c3e3f368191d553e84ecc599d449055df985b1c. The native-required lane completed 8056 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45336611602/job/138250075470"
+    },
+    {
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "0139da101c195bb9e8578c60c320796178f97567dce3f952e037f923f82fa4a8",
+      "caseIds": [
+        "coords-vectors-unormg-dimension-one",
+        "coords-vectors-unormg-dimension-zero",
+        "coords-vectors-unormg-mixed-dimensions",
+        "coords-vectors-unormg-scaled-magnitudes",
+        "coords-vectors-unormg-zero-and-last-component",
+        "coords-vectors-vaddg-dimension-one",
+        "coords-vectors-vaddg-dimension-zero",
+        "coords-vectors-vaddg-mixed-dimensions-and-order",
+        "coords-vectors-vaddg-scaled-magnitudes",
+        "coords-vectors-vaddg-zero-and-axis-boundaries",
+        "coords-vectors-vdistg-dimension-one",
+        "coords-vectors-vdistg-dimension-zero",
+        "coords-vectors-vdistg-mixed-dimensions-and-order",
+        "coords-vectors-vdistg-scaled-magnitudes",
+        "coords-vectors-vdistg-zero-and-axis-boundaries",
+        "coords-vectors-vdotg-dimension-one",
+        "coords-vectors-vdotg-dimension-zero",
+        "coords-vectors-vdotg-mixed-dimensions-and-order",
+        "coords-vectors-vdotg-ordered-cancellation",
+        "coords-vectors-vdotg-scaled-magnitudes",
+        "coords-vectors-vdotg-zero-and-axis-boundaries",
+        "coords-vectors-vequg-dimension-one",
+        "coords-vectors-vequg-dimension-zero",
+        "coords-vectors-vequg-finite-extrema",
+        "coords-vectors-vequg-mixed-dimensions",
+        "coords-vectors-vequg-scaled-magnitudes",
+        "coords-vectors-vequg-zero-and-last-component",
+        "coords-vectors-vhatg-dimension-one",
+        "coords-vectors-vhatg-dimension-zero",
+        "coords-vectors-vhatg-mixed-dimensions",
+        "coords-vectors-vhatg-scaled-magnitudes",
+        "coords-vectors-vhatg-zero-and-last-component",
+        "coords-vectors-vlcomg-dimension-one",
+        "coords-vectors-vlcomg-dimension-zero",
+        "coords-vectors-vlcomg-distinct-coefficients-and-dimensions",
+        "coords-vectors-vlcomg-scaled-magnitudes",
+        "coords-vectors-vlcomg-zero-identity-and-cancellation",
+        "coords-vectors-vminug-dimension-one",
+        "coords-vectors-vminug-dimension-zero",
+        "coords-vectors-vminug-finite-extrema",
+        "coords-vectors-vminug-mixed-dimensions",
+        "coords-vectors-vminug-scaled-magnitudes",
+        "coords-vectors-vminug-zero-and-last-component",
+        "coords-vectors-vnormg-dimension-one",
+        "coords-vectors-vnormg-dimension-zero",
+        "coords-vectors-vnormg-mixed-dimensions",
+        "coords-vectors-vnormg-scaled-magnitudes",
+        "coords-vectors-vnormg-zero-and-last-component",
+        "coords-vectors-vprojg-dimension-one",
+        "coords-vectors-vprojg-dimension-zero",
+        "coords-vectors-vprojg-mixed-dimensions-and-order",
+        "coords-vectors-vprojg-scaled-magnitudes",
+        "coords-vectors-vprojg-subnormal-source-and-reference",
+        "coords-vectors-vprojg-zero-and-axis-boundaries",
+        "coords-vectors-vrelg-dimension-one",
+        "coords-vectors-vrelg-dimension-zero",
+        "coords-vectors-vrelg-mixed-dimensions-and-order",
+        "coords-vectors-vrelg-nearby-large-components",
+        "coords-vectors-vrelg-scaled-magnitudes",
+        "coords-vectors-vrelg-zero-and-axis-boundaries",
+        "coords-vectors-vsclg-dimension-one",
+        "coords-vectors-vsclg-dimension-zero",
+        "coords-vectors-vsclg-distinct-coefficient-and-dimensions",
+        "coords-vectors-vsclg-scaled-magnitudes",
+        "coords-vectors-vsclg-zero-and-identity-coefficients",
+        "coords-vectors-vsepg-dimension-one",
+        "coords-vectors-vsepg-dimension-zero",
+        "coords-vectors-vsepg-mixed-dimensions-and-order",
+        "coords-vectors-vsepg-near-parallel-axis",
+        "coords-vectors-vsepg-raw-dot-underflow",
+        "coords-vectors-vsepg-scaled-magnitudes",
+        "coords-vectors-vsepg-zero-and-axis-boundaries",
+        "coords-vectors-vsubg-dimension-one",
+        "coords-vectors-vsubg-dimension-zero",
+        "coords-vectors-vsubg-mixed-dimensions-and-order",
+        "coords-vectors-vsubg-scaled-magnitudes",
+        "coords-vectors-vsubg-zero-and-axis-boundaries",
+        "coords-vectors-vzerog-dimension-one",
+        "coords-vectors-vzerog-dimension-zero",
+        "coords-vectors-vzerog-last-component-subnormal",
+        "coords-vectors-vzerog-mixed-dimensions",
+        "coords-vectors-vzerog-zero-and-last-component"
+      ],
+      "id": "ci-cp04-3c3e3f368191-node",
+      "kind": "ci",
+      "commit": "5759b72e80d904295926aa968ee1c07006abdf51",
+      "url": "https://github.com/rybosome/tspice/actions/runs/45348374307/job/138288412178",
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 8056 live comparisons without unexpected skips."
+    },
+    {
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "0139da101c195bb9e8578c60c320796178f97567dce3f952e037f923f82fa4a8",
+      "caseIds": [
+        "coords-vectors-unormg-dimension-one",
+        "coords-vectors-unormg-dimension-zero",
+        "coords-vectors-unormg-mixed-dimensions",
+        "coords-vectors-unormg-scaled-magnitudes",
+        "coords-vectors-unormg-zero-and-last-component",
+        "coords-vectors-vaddg-dimension-one",
+        "coords-vectors-vaddg-dimension-zero",
+        "coords-vectors-vaddg-mixed-dimensions-and-order",
+        "coords-vectors-vaddg-scaled-magnitudes",
+        "coords-vectors-vaddg-zero-and-axis-boundaries",
+        "coords-vectors-vdistg-dimension-one",
+        "coords-vectors-vdistg-dimension-zero",
+        "coords-vectors-vdistg-mixed-dimensions-and-order",
+        "coords-vectors-vdistg-scaled-magnitudes",
+        "coords-vectors-vdistg-zero-and-axis-boundaries",
+        "coords-vectors-vdotg-dimension-one",
+        "coords-vectors-vdotg-dimension-zero",
+        "coords-vectors-vdotg-mixed-dimensions-and-order",
+        "coords-vectors-vdotg-ordered-cancellation",
+        "coords-vectors-vdotg-scaled-magnitudes",
+        "coords-vectors-vdotg-zero-and-axis-boundaries",
+        "coords-vectors-vequg-dimension-one",
+        "coords-vectors-vequg-dimension-zero",
+        "coords-vectors-vequg-finite-extrema",
+        "coords-vectors-vequg-mixed-dimensions",
+        "coords-vectors-vequg-scaled-magnitudes",
+        "coords-vectors-vequg-zero-and-last-component",
+        "coords-vectors-vhatg-dimension-one",
+        "coords-vectors-vhatg-dimension-zero",
+        "coords-vectors-vhatg-mixed-dimensions",
+        "coords-vectors-vhatg-scaled-magnitudes",
+        "coords-vectors-vhatg-zero-and-last-component",
+        "coords-vectors-vlcomg-dimension-one",
+        "coords-vectors-vlcomg-dimension-zero",
+        "coords-vectors-vlcomg-distinct-coefficients-and-dimensions",
+        "coords-vectors-vlcomg-scaled-magnitudes",
+        "coords-vectors-vlcomg-zero-identity-and-cancellation",
+        "coords-vectors-vminug-dimension-one",
+        "coords-vectors-vminug-dimension-zero",
+        "coords-vectors-vminug-finite-extrema",
+        "coords-vectors-vminug-mixed-dimensions",
+        "coords-vectors-vminug-scaled-magnitudes",
+        "coords-vectors-vminug-zero-and-last-component",
+        "coords-vectors-vnormg-dimension-one",
+        "coords-vectors-vnormg-dimension-zero",
+        "coords-vectors-vnormg-mixed-dimensions",
+        "coords-vectors-vnormg-scaled-magnitudes",
+        "coords-vectors-vnormg-zero-and-last-component",
+        "coords-vectors-vprojg-dimension-one",
+        "coords-vectors-vprojg-dimension-zero",
+        "coords-vectors-vprojg-mixed-dimensions-and-order",
+        "coords-vectors-vprojg-scaled-magnitudes",
+        "coords-vectors-vprojg-subnormal-source-and-reference",
+        "coords-vectors-vprojg-zero-and-axis-boundaries",
+        "coords-vectors-vrelg-dimension-one",
+        "coords-vectors-vrelg-dimension-zero",
+        "coords-vectors-vrelg-mixed-dimensions-and-order",
+        "coords-vectors-vrelg-nearby-large-components",
+        "coords-vectors-vrelg-scaled-magnitudes",
+        "coords-vectors-vrelg-zero-and-axis-boundaries",
+        "coords-vectors-vsclg-dimension-one",
+        "coords-vectors-vsclg-dimension-zero",
+        "coords-vectors-vsclg-distinct-coefficient-and-dimensions",
+        "coords-vectors-vsclg-scaled-magnitudes",
+        "coords-vectors-vsclg-zero-and-identity-coefficients",
+        "coords-vectors-vsepg-dimension-one",
+        "coords-vectors-vsepg-dimension-zero",
+        "coords-vectors-vsepg-mixed-dimensions-and-order",
+        "coords-vectors-vsepg-near-parallel-axis",
+        "coords-vectors-vsepg-raw-dot-underflow",
+        "coords-vectors-vsepg-scaled-magnitudes",
+        "coords-vectors-vsepg-zero-and-axis-boundaries",
+        "coords-vectors-vsubg-dimension-one",
+        "coords-vectors-vsubg-dimension-zero",
+        "coords-vectors-vsubg-mixed-dimensions-and-order",
+        "coords-vectors-vsubg-scaled-magnitudes",
+        "coords-vectors-vsubg-zero-and-axis-boundaries",
+        "coords-vectors-vzerog-dimension-one",
+        "coords-vectors-vzerog-dimension-zero",
+        "coords-vectors-vzerog-last-component-subnormal",
+        "coords-vectors-vzerog-mixed-dimensions",
+        "coords-vectors-vzerog-zero-and-last-component"
+      ],
+      "id": "local-cp04-3c3e3f368191-wasm",
+      "kind": "local",
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 3c3e3f368191d553e84ecc599d449055df985b1c. The native-required lane completed 8056 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45336611602/job/138250075470"
+    },
+    {
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "0139da101c195bb9e8578c60c320796178f97567dce3f952e037f923f82fa4a8",
+      "caseIds": [
+        "coords-vectors-unormg-dimension-one",
+        "coords-vectors-unormg-dimension-zero",
+        "coords-vectors-unormg-mixed-dimensions",
+        "coords-vectors-unormg-scaled-magnitudes",
+        "coords-vectors-unormg-zero-and-last-component",
+        "coords-vectors-vaddg-dimension-one",
+        "coords-vectors-vaddg-dimension-zero",
+        "coords-vectors-vaddg-mixed-dimensions-and-order",
+        "coords-vectors-vaddg-scaled-magnitudes",
+        "coords-vectors-vaddg-zero-and-axis-boundaries",
+        "coords-vectors-vdistg-dimension-one",
+        "coords-vectors-vdistg-dimension-zero",
+        "coords-vectors-vdistg-mixed-dimensions-and-order",
+        "coords-vectors-vdistg-scaled-magnitudes",
+        "coords-vectors-vdistg-zero-and-axis-boundaries",
+        "coords-vectors-vdotg-dimension-one",
+        "coords-vectors-vdotg-dimension-zero",
+        "coords-vectors-vdotg-mixed-dimensions-and-order",
+        "coords-vectors-vdotg-ordered-cancellation",
+        "coords-vectors-vdotg-scaled-magnitudes",
+        "coords-vectors-vdotg-zero-and-axis-boundaries",
+        "coords-vectors-vequg-dimension-one",
+        "coords-vectors-vequg-dimension-zero",
+        "coords-vectors-vequg-finite-extrema",
+        "coords-vectors-vequg-mixed-dimensions",
+        "coords-vectors-vequg-scaled-magnitudes",
+        "coords-vectors-vequg-zero-and-last-component",
+        "coords-vectors-vhatg-dimension-one",
+        "coords-vectors-vhatg-dimension-zero",
+        "coords-vectors-vhatg-mixed-dimensions",
+        "coords-vectors-vhatg-scaled-magnitudes",
+        "coords-vectors-vhatg-zero-and-last-component",
+        "coords-vectors-vlcomg-dimension-one",
+        "coords-vectors-vlcomg-dimension-zero",
+        "coords-vectors-vlcomg-distinct-coefficients-and-dimensions",
+        "coords-vectors-vlcomg-scaled-magnitudes",
+        "coords-vectors-vlcomg-zero-identity-and-cancellation",
+        "coords-vectors-vminug-dimension-one",
+        "coords-vectors-vminug-dimension-zero",
+        "coords-vectors-vminug-finite-extrema",
+        "coords-vectors-vminug-mixed-dimensions",
+        "coords-vectors-vminug-scaled-magnitudes",
+        "coords-vectors-vminug-zero-and-last-component",
+        "coords-vectors-vnormg-dimension-one",
+        "coords-vectors-vnormg-dimension-zero",
+        "coords-vectors-vnormg-mixed-dimensions",
+        "coords-vectors-vnormg-scaled-magnitudes",
+        "coords-vectors-vnormg-zero-and-last-component",
+        "coords-vectors-vprojg-dimension-one",
+        "coords-vectors-vprojg-dimension-zero",
+        "coords-vectors-vprojg-mixed-dimensions-and-order",
+        "coords-vectors-vprojg-scaled-magnitudes",
+        "coords-vectors-vprojg-subnormal-source-and-reference",
+        "coords-vectors-vprojg-zero-and-axis-boundaries",
+        "coords-vectors-vrelg-dimension-one",
+        "coords-vectors-vrelg-dimension-zero",
+        "coords-vectors-vrelg-mixed-dimensions-and-order",
+        "coords-vectors-vrelg-nearby-large-components",
+        "coords-vectors-vrelg-scaled-magnitudes",
+        "coords-vectors-vrelg-zero-and-axis-boundaries",
+        "coords-vectors-vsclg-dimension-one",
+        "coords-vectors-vsclg-dimension-zero",
+        "coords-vectors-vsclg-distinct-coefficient-and-dimensions",
+        "coords-vectors-vsclg-scaled-magnitudes",
+        "coords-vectors-vsclg-zero-and-identity-coefficients",
+        "coords-vectors-vsepg-dimension-one",
+        "coords-vectors-vsepg-dimension-zero",
+        "coords-vectors-vsepg-mixed-dimensions-and-order",
+        "coords-vectors-vsepg-near-parallel-axis",
+        "coords-vectors-vsepg-raw-dot-underflow",
+        "coords-vectors-vsepg-scaled-magnitudes",
+        "coords-vectors-vsepg-zero-and-axis-boundaries",
+        "coords-vectors-vsubg-dimension-one",
+        "coords-vectors-vsubg-dimension-zero",
+        "coords-vectors-vsubg-mixed-dimensions-and-order",
+        "coords-vectors-vsubg-scaled-magnitudes",
+        "coords-vectors-vsubg-zero-and-axis-boundaries",
+        "coords-vectors-vzerog-dimension-one",
+        "coords-vectors-vzerog-dimension-zero",
+        "coords-vectors-vzerog-last-component-subnormal",
+        "coords-vectors-vzerog-mixed-dimensions",
+        "coords-vectors-vzerog-zero-and-last-component"
+      ],
+      "id": "ci-cp04-3c3e3f368191-wasm",
+      "kind": "ci",
+      "commit": "5759b72e80d904295926aa968ee1c07006abdf51",
+      "url": "https://github.com/rybosome/tspice/actions/runs/45348374307/job/138288412178",
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 8056 live comparisons without unexpected skips."
     }
   ],
   "routines": [
@@ -2423,13 +2807,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.vaddg -> typed Node adapter -> actual native binding with owned input/output buffers and global SPICE mutex -> shared tspice_vaddg -> actual vaddg_c. Independent Python validates dimensions and invokes the exact typed canonical symbol from CDLL(libspice._name) only for empty vector results, otherwise the actual locked SpiceyPy wrapper.",
           "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
           ]
         },
         "wasm": {
@@ -2448,13 +2834,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.vaddg -> typed WASM adapter -> exported _tspice_vaddg with checked buffers/dimension and copied output -> shared tspice_vaddg -> actual vaddg_c. Independent Python validates dimensions and invokes the exact typed canonical symbol from CDLL(libspice._name) only for empty vector results, otherwise the actual locked SpiceyPy wrapper.",
           "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
           ]
         }
       }
@@ -2529,13 +2917,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.vdistg -> typed Node adapter -> actual native binding with owned input/output buffers and global SPICE mutex -> shared tspice_vdistg -> actual vdistg_c. Independent Python validates dimensions and invokes the actual locked SpiceyPy wrapper including empty scalar input.",
           "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
           ]
         },
         "wasm": {
@@ -2553,13 +2943,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.vdistg -> typed WASM adapter -> exported _tspice_vdistg with checked buffers/dimension and copied output -> shared tspice_vdistg -> actual vdistg_c. Independent Python validates dimensions and invokes the actual locked SpiceyPy wrapper including empty scalar input.",
           "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
           ]
         }
       }
@@ -2639,13 +3031,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.vdotg -> typed Node adapter -> actual native binding with owned input/output buffers and global SPICE mutex -> shared tspice_vdotg -> actual vdotg_c. Independent Python validates dimensions and invokes the actual locked SpiceyPy wrapper including empty scalar input.",
           "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
           ]
         },
         "wasm": {
@@ -2663,13 +3057,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.vdotg -> typed WASM adapter -> exported _tspice_vdotg with checked buffers/dimension and copied output -> shared tspice_vdotg -> actual vdotg_c. Independent Python validates dimensions and invokes the actual locked SpiceyPy wrapper including empty scalar input.",
           "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
           ]
         }
       }
@@ -2764,13 +3160,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.vequg -> typed Node adapter -> actual native binding with owned input/output buffers and global SPICE mutex -> shared tspice_vequg -> actual vequg_c. Independent Python validates dimensions and invokes the exact typed canonical symbol from CDLL(libspice._name) only for empty vector results, otherwise the actual locked SpiceyPy wrapper.",
           "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
           ]
         },
         "wasm": {
@@ -2789,13 +3187,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.vequg -> typed WASM adapter -> exported _tspice_vequg with checked buffers/dimension and copied output -> shared tspice_vequg -> actual vequg_c. Independent Python validates dimensions and invokes the exact typed canonical symbol from CDLL(libspice._name) only for empty vector results, otherwise the actual locked SpiceyPy wrapper.",
           "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
           ]
         }
       }
@@ -2885,13 +3285,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.vhatg -> typed Node adapter -> actual native binding with owned input/output buffers and global SPICE mutex -> shared tspice_vhatg -> actual vhatg_c. Independent Python validates dimensions and invokes the exact typed canonical symbol from CDLL(libspice._name) only for empty vector results, otherwise the actual locked SpiceyPy wrapper.",
           "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
           ]
         },
         "wasm": {
@@ -2910,13 +3312,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.vhatg -> typed WASM adapter -> exported _tspice_vhatg with checked buffers/dimension and copied output -> shared tspice_vhatg -> actual vhatg_c. Independent Python validates dimensions and invokes the exact typed canonical symbol from CDLL(libspice._name) only for empty vector results, otherwise the actual locked SpiceyPy wrapper.",
           "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
           ]
         }
       }
@@ -3008,13 +3412,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.vlcomg -> typed Node adapter -> actual native binding with owned input/output buffers and global SPICE mutex -> shared tspice_vlcomg -> actual vlcomg_c. Independent Python validates dimensions and invokes the exact typed canonical symbol from CDLL(libspice._name) only for empty vector results, otherwise the actual locked SpiceyPy wrapper. The inferred dimension is passed first at both C/oracle boundaries, with coefficients and vectors in their defined order.",
           "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
           ]
         },
         "wasm": {
@@ -3033,13 +3439,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.vlcomg -> typed WASM adapter -> exported _tspice_vlcomg with checked buffers/dimension and copied output -> shared tspice_vlcomg -> actual vlcomg_c. Independent Python validates dimensions and invokes the exact typed canonical symbol from CDLL(libspice._name) only for empty vector results, otherwise the actual locked SpiceyPy wrapper. The inferred dimension is passed first at both C/oracle boundaries, with coefficients and vectors in their defined order.",
           "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
           ]
         }
       }
@@ -3134,13 +3542,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.vminug -> typed Node adapter -> actual native binding with owned input/output buffers and global SPICE mutex -> shared tspice_vminug -> actual vminug_c. Independent Python validates dimensions and invokes the exact typed canonical symbol from CDLL(libspice._name) only for empty vector results, otherwise the actual locked SpiceyPy wrapper.",
           "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
           ]
         },
         "wasm": {
@@ -3159,13 +3569,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.vminug -> typed WASM adapter -> exported _tspice_vminug with checked buffers/dimension and copied output -> shared tspice_vminug -> actual vminug_c. Independent Python validates dimensions and invokes the exact typed canonical symbol from CDLL(libspice._name) only for empty vector results, otherwise the actual locked SpiceyPy wrapper.",
           "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
           ]
         }
       }
@@ -3240,13 +3652,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.vnormg -> typed Node adapter -> actual native binding with owned input/output buffers and global SPICE mutex -> shared tspice_vnormg -> actual vnormg_c. Independent Python validates dimensions and invokes the actual locked SpiceyPy wrapper including empty scalar input.",
           "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
           ]
         },
         "wasm": {
@@ -3264,13 +3678,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.vnormg -> typed WASM adapter -> exported _tspice_vnormg with checked buffers/dimension and copied output -> shared tspice_vnormg -> actual vnormg_c. Independent Python validates dimensions and invokes the actual locked SpiceyPy wrapper including empty scalar input.",
           "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
           ]
         }
       }
@@ -3365,13 +3781,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.vprojg -> typed Node adapter -> actual native binding with owned input/output buffers and global SPICE mutex -> shared tspice_vprojg -> actual vprojg_c. Independent Python validates dimensions and invokes the exact typed canonical symbol from CDLL(libspice._name) only for empty vector results, otherwise the actual locked SpiceyPy wrapper.",
           "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
           ]
         },
         "wasm": {
@@ -3390,13 +3808,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.vprojg -> typed WASM adapter -> exported _tspice_vprojg with checked buffers/dimension and copied output -> shared tspice_vprojg -> actual vprojg_c. Independent Python validates dimensions and invokes the exact typed canonical symbol from CDLL(libspice._name) only for empty vector results, otherwise the actual locked SpiceyPy wrapper.",
           "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
           ]
         }
       }
@@ -3476,13 +3896,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.vrelg -> typed Node adapter -> actual native binding with owned input/output buffers and global SPICE mutex -> shared tspice_vrelg -> actual vrelg_c. Independent Python validates dimensions and invokes the actual locked SpiceyPy wrapper including empty scalar input.",
           "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
           ]
         },
         "wasm": {
@@ -3500,13 +3922,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.vrelg -> typed WASM adapter -> exported _tspice_vrelg with checked buffers/dimension and copied output -> shared tspice_vrelg -> actual vrelg_c. Independent Python validates dimensions and invokes the actual locked SpiceyPy wrapper including empty scalar input.",
           "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
           ]
         }
       }
@@ -3598,13 +4022,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.vsclg -> typed Node adapter -> actual native binding with owned input/output buffers and global SPICE mutex -> shared tspice_vsclg -> actual vsclg_c. Independent Python validates dimensions and invokes the exact typed canonical symbol from CDLL(libspice._name) only for empty vector results, otherwise the actual locked SpiceyPy wrapper.",
           "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
           ]
         },
         "wasm": {
@@ -3623,13 +4049,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.vsclg -> typed WASM adapter -> exported _tspice_vsclg with checked buffers/dimension and copied output -> shared tspice_vsclg -> actual vsclg_c. Independent Python validates dimensions and invokes the exact typed canonical symbol from CDLL(libspice._name) only for empty vector results, otherwise the actual locked SpiceyPy wrapper.",
           "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
           ]
         }
       }
@@ -3714,13 +4142,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.vsepg -> typed Node adapter -> actual native binding with owned input/output buffers and global SPICE mutex -> shared tspice_vsepg -> actual vsepg_c. Independent Python validates dimensions and invokes the actual locked SpiceyPy wrapper including empty scalar input.",
           "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
           ]
         },
         "wasm": {
@@ -3738,13 +4168,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.vsepg -> typed WASM adapter -> exported _tspice_vsepg with checked buffers/dimension and copied output -> shared tspice_vsepg -> actual vsepg_c. Independent Python validates dimensions and invokes the actual locked SpiceyPy wrapper including empty scalar input.",
           "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
           ]
         }
       }
@@ -3834,13 +4266,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.vsubg -> typed Node adapter -> actual native binding with owned input/output buffers and global SPICE mutex -> shared tspice_vsubg -> actual vsubg_c. Independent Python validates dimensions and invokes the exact typed canonical symbol from CDLL(libspice._name) only for empty vector results, otherwise the actual locked SpiceyPy wrapper.",
           "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
           ]
         },
         "wasm": {
@@ -3859,13 +4293,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.vsubg -> typed WASM adapter -> exported _tspice_vsubg with checked buffers/dimension and copied output -> shared tspice_vsubg -> actual vsubg_c. Independent Python validates dimensions and invokes the exact typed canonical symbol from CDLL(libspice._name) only for empty vector results, otherwise the actual locked SpiceyPy wrapper.",
           "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
           ]
         }
       }
@@ -3940,13 +4376,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.vzerog -> typed Node adapter -> actual native binding with owned input/output buffers and global SPICE mutex -> shared tspice_vzerog -> actual vzerog_c. Independent Python validates dimensions and invokes the actual locked SpiceyPy wrapper including empty scalar input.",
           "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
           ]
         },
         "wasm": {
@@ -3964,13 +4402,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.vzerog -> typed WASM adapter -> exported _tspice_vzerog with checked buffers/dimension and copied output -> shared tspice_vzerog -> actual vzerog_c. Independent Python validates dimensions and invokes the actual locked SpiceyPy wrapper including empty scalar input.",
           "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
           ]
         }
       }
@@ -4060,13 +4500,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.unormg -> typed Node adapter -> actual native binding with owned input/output buffers and global SPICE mutex -> shared tspice_unormg -> actual unormg_c. Independent Python validates dimensions and invokes the exact typed canonical symbol from CDLL(libspice._name) only for empty vector results, otherwise the actual locked SpiceyPy wrapper. Both canonical unit output and norm output are returned without recomputation.",
           "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
           ]
         },
         "wasm": {
@@ -4085,13 +4527,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.unormg -> typed WASM adapter -> exported _tspice_unormg with checked buffers/dimension and copied output -> shared tspice_unormg -> actual unormg_c. Independent Python validates dimensions and invokes the exact typed canonical symbol from CDLL(libspice._name) only for empty vector results, otherwise the actual locked SpiceyPy wrapper. Both canonical unit output and norm output are returned without recomputation.",
           "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
           ]
         }
       }

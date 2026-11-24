@@ -1915,6 +1915,60 @@ export function createFakeBackend(
       return sxformRowMajor(f, t, et);
     },
 
+    conics: () => {
+      throw new Error("Fake backend does not model conics()");
+    },
+    eqncpv: () => {
+      throw new Error("Fake backend does not model eqncpv()");
+    },
+    oscelt: () => {
+      throw new Error("Fake backend does not model oscelt()");
+    },
+    oscltx: () => {
+      throw new Error("Fake backend does not model oscltx()");
+    },
+    prop2b: () => {
+      throw new Error("Fake backend does not model prop2b()");
+    },
+    spkcpo: () => {
+      throw new Error("Fake backend does not model spkcpo()");
+    },
+    spkcpt: () => {
+      throw new Error("Fake backend does not model spkcpt()");
+    },
+    spkcvo: () => {
+      throw new Error("Fake backend does not model spkcvo()");
+    },
+    spkcvt: () => {
+      throw new Error("Fake backend does not model spkcvt()");
+    },
+    azlcpo: () => {
+      throw new Error("Fake backend does not model azlcpo()");
+    },
+    spkacs: () => {
+      throw new Error("Fake backend does not model spkacs()");
+    },
+    spkapo: () => {
+      throw new Error("Fake backend does not model spkapo()");
+    },
+    spkapp: () => {
+      throw new Error("Fake backend does not model spkapp()");
+    },
+    spkaps: () => {
+      throw new Error("Fake backend does not model spkaps()");
+    },
+    spkltc: () => {
+      throw new Error("Fake backend does not model spkltc()");
+    },
+    stelab: () => {
+      throw new Error("Fake backend does not model stelab()");
+    },
+    stlabx: () => {
+      throw new Error("Fake backend does not model stlabx()");
+    },
+    ltime: () => {
+      throw new Error("Fake backend does not model ltime()");
+    },
     spkezr: (
       target: string,
       et: number,
@@ -2042,6 +2096,12 @@ export function createFakeBackend(
       } satisfies SpkposResult;
     },
 
+    getelm: () => {
+      throw new Error("Fake backend does not parse TLE records");
+    },
+    evsgp4: () => {
+      throw new Error("Fake backend does not propagate TLE orbits");
+    },
     spkssb: (target, et, ref) => {
       assertSpiceInt32(target, "spkssb(target)");
 
@@ -2166,6 +2226,18 @@ export function createFakeBackend(
       return { ...out, visibl, lit } satisfies IllumfResult;
     },
 
+    spklef: () => {
+      throw new Error("Fake backend does not model SPK segment files");
+    },
+    spkuef: () => {
+      throw new Error("Fake backend does not model SPK segment files");
+    },
+    spkpvn: () => {
+      throw new Error("Fake backend does not model SPK segment files");
+    },
+    spksub: () => {
+      throw new Error("Fake backend does not model SPK segment files");
+    },
     spksfs: (body, et) => {
       assertSpiceInt32(body, "spksfs(body)");
       void et;
@@ -2253,6 +2325,48 @@ export function createFakeBackend(
     },
     spkcls: (_handle: SpiceHandle) => {
       throw new Error("Fake backend: spkcls() is not implemented");
+    },
+    spkw02: () => {
+      throw new Error("Fake backend: spkw02() is not implemented");
+    },
+    spkw03: () => {
+      throw new Error("Fake backend: spkw03() is not implemented");
+    },
+    spkw20: () => {
+      throw new Error("Fake backend: spkw20() is not implemented");
+    },
+    spkw09: () => {
+      throw new Error("Fake backend: spkw09() is not implemented");
+    },
+    spkw12: () => {
+      throw new Error("Fake backend: spkw12() is not implemented");
+    },
+    spkw13: () => {
+      throw new Error("Fake backend: spkw13() is not implemented");
+    },
+    spkw18: () => {
+      throw new Error("Fake backend: spkw18() is not implemented");
+    },
+    spkw05: () => {
+      throw new Error("Fake backend: spkw05() is not implemented");
+    },
+    spkw10: () => {
+      throw new Error("Fake backend: spkw10() is not implemented");
+    },
+    spkw15: () => {
+      throw new Error("Fake backend: spkw15() is not implemented");
+    },
+    spkw17: () => {
+      throw new Error("Fake backend: spkw17() is not implemented");
+    },
+    spk14b: () => {
+      throw new Error("Fake backend: spk14b() is not implemented");
+    },
+    spk14a: () => {
+      throw new Error("Fake backend: spk14a() is not implemented");
+    },
+    spk14e: () => {
+      throw new Error("Fake backend: spk14e() is not implemented");
     },
     spkw08: (
       _handle: SpiceHandle,

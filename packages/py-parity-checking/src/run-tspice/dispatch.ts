@@ -445,16 +445,54 @@ export function dispatchStep(
     case "ephemeris.spkez":
     case "ephemeris.spkezp":
     case "ephemeris.spkezr":
+    case "ephemeris.conics":
+    case "ephemeris.eqncpv":
+    case "ephemeris.oscelt":
+    case "ephemeris.oscltx":
+    case "ephemeris.prop2b":
+    case "ephemeris.getelm":
+    case "ephemeris.evsgp4":
+    case "ephemeris.spkcpo":
+    case "ephemeris.spkcpt":
+    case "ephemeris.spkcvo":
+    case "ephemeris.spkcvt":
+    case "ephemeris.azlcpo":
+    case "ephemeris.spkacs":
+    case "ephemeris.spkapo":
+    case "ephemeris.spkapp":
+    case "ephemeris.spkaps":
+    case "ephemeris.spkltc":
+    case "ephemeris.stelab":
+    case "ephemeris.stlabx":
+    case "ephemeris.ltime":
     case "ephemeris.spkgeo":
     case "ephemeris.spkgps":
     case "ephemeris.spkobj":
     case "ephemeris.spkopa":
+    case "ephemeris.spklef":
+    case "ephemeris.spkuef":
+    case "ephemeris.spkpvn":
+    case "ephemeris.spksub":
     case "ephemeris.spkopn":
     case "ephemeris.spkpds":
     case "ephemeris.spkpos":
     case "ephemeris.spksfs":
     case "ephemeris.spkssb":
     case "ephemeris.spkuds":
+    case "ephemeris.spkw02":
+    case "ephemeris.spkw03":
+    case "ephemeris.spkw20":
+    case "ephemeris.spkw09":
+    case "ephemeris.spkw12":
+    case "ephemeris.spkw13":
+    case "ephemeris.spkw18":
+    case "ephemeris.spkw05":
+    case "ephemeris.spkw10":
+    case "ephemeris.spkw15":
+    case "ephemeris.spkw17":
+    case "ephemeris.spk14b":
+    case "ephemeris.spk14a":
+    case "ephemeris.spk14e":
     case "ephemeris.spkw08":
       return runEphemerisStep(context, step);
 

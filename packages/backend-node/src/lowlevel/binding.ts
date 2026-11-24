@@ -1640,6 +1640,87 @@ export function getNodeBinding(): NativeAddon {
     typeof native.wnvald === "function",
     "Expected native addon to export wnvald(size, n, window)",
   );
+  invariant(typeof native.spklef === "function", "Missing native spklef");
+  invariant(typeof native.spkuef === "function", "Missing native spkuef");
+  invariant(typeof native.spkpvn === "function", "Missing native spkpvn");
+  invariant(typeof native.spksub === "function", "Missing native spksub");
+  invariant(
+    typeof native.conics === "function",
+    "Native addon missing conics()",
+  );
+  invariant(
+    typeof native.eqncpv === "function",
+    "Native addon missing eqncpv()",
+  );
+  invariant(
+    typeof native.oscelt === "function",
+    "Native addon missing oscelt()",
+  );
+  invariant(
+    typeof native.oscltx === "function",
+    "Native addon missing oscltx()",
+  );
+  invariant(
+    typeof native.prop2b === "function",
+    "Native addon missing prop2b()",
+  );
+  invariant(
+    typeof native.getelm === "function",
+    "Expected native addon to export getelm",
+  );
+  invariant(
+    typeof native.evsgp4 === "function",
+    "Expected native addon to export evsgp4",
+  );
+  invariant(
+    typeof native.spkcpo === "function",
+    "Native addon missing spkcpo()",
+  );
+  invariant(
+    typeof native.spkcpt === "function",
+    "Native addon missing spkcpt()",
+  );
+  invariant(
+    typeof native.spkcvo === "function",
+    "Native addon missing spkcvo()",
+  );
+  invariant(
+    typeof native.spkcvt === "function",
+    "Native addon missing spkcvt()",
+  );
+  invariant(
+    typeof native.azlcpo === "function",
+    "Native addon missing azlcpo()",
+  );
+  invariant(
+    typeof native.spkacs === "function",
+    "Native addon missing spkacs()",
+  );
+  invariant(
+    typeof native.spkapo === "function",
+    "Native addon missing spkapo()",
+  );
+  invariant(
+    typeof native.spkapp === "function",
+    "Native addon missing spkapp()",
+  );
+  invariant(
+    typeof native.spkaps === "function",
+    "Native addon missing spkaps()",
+  );
+  invariant(
+    typeof native.spkltc === "function",
+    "Native addon missing spkltc()",
+  );
+  invariant(
+    typeof native.stelab === "function",
+    "Native addon missing stelab()",
+  );
+  invariant(
+    typeof native.stlabx === "function",
+    "Native addon missing stlabx()",
+  );
+  invariant(typeof native.ltime === "function", "Native addon missing ltime()");
   invariant(
     typeof native.spkezr === "function",
     "Expected native addon to export spkezr(target, et, ref, abcorr, observer)",
@@ -1679,6 +1760,66 @@ export function getNodeBinding(): NativeAddon {
   invariant(
     typeof native.spkopa === "function",
     "Expected native addon to export spkopa(path)",
+  );
+  invariant(
+    typeof native.spkw02 === "function",
+    "Expected native addon to export spkw02",
+  );
+  invariant(
+    typeof native.spkw03 === "function",
+    "Expected native addon to export spkw03",
+  );
+  invariant(
+    typeof native.spkw20 === "function",
+    "Expected native addon to export spkw20",
+  );
+  invariant(
+    typeof native.spkw09 === "function",
+    "Expected native addon to export spkw09",
+  );
+  invariant(
+    typeof native.spkw12 === "function",
+    "Expected native addon to export spkw12",
+  );
+  invariant(
+    typeof native.spkw13 === "function",
+    "Expected native addon to export spkw13",
+  );
+  invariant(
+    typeof native.spkw18 === "function",
+    "Expected native addon to export spkw18",
+  );
+  invariant(
+    typeof native.spkw05 === "function",
+    "Expected native addon to export spkw05",
+  );
+  invariant(
+    typeof native.spkw10 === "function",
+    "Expected native addon to export spkw10",
+  );
+  invariant(
+    typeof native.spkw15 === "function",
+    "Expected native addon to export spkw15",
+  );
+  invariant(
+    typeof native.spkw17 === "function",
+    "Expected native addon to export spkw17",
+  );
+  invariant(
+    typeof native.spk14b === "function",
+    "Expected native addon to export spk14b",
+  );
+  invariant(
+    typeof native.spk14a === "function",
+    "Expected native addon to export spk14a",
+  );
+  invariant(
+    typeof native.spk14e === "function",
+    "Expected native addon to export spk14e",
+  );
+  invariant(
+    typeof native.spk14FinishIfActive === "function",
+    "Expected native addon to export spk14FinishIfActive",
   );
   invariant(
     typeof native.spkw08 === "function",

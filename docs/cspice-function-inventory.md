@@ -13,8 +13,8 @@ SpiceRawBackend is composed from: `TimeApi`, `StringsApi`, `KernelsApi`, `Kernel
 ## Summary
 
 - Total routines (NAIF index): 652
-- Implemented now (SpiceRawBackend): 523
-- Planned (not yet implemented): 126
+- Implemented now (SpiceRawBackend): 561
+- Planned (not yet implemented): 88
 - Excluded: 3
 
 ## Implemented now
@@ -25,6 +25,7 @@ SpiceRawBackend is composed from: `TimeApi`, `StringsApi`, `KernelsApi`, `Kernel
 | `appndd_c` | Append an item to a double precision cell |
 | `appndi_c` | Append an item to an integer cell |
 | `axisar_c` | Axis and angle to rotation |
+| `azlcpo_c` | AZ/EL, constant position observer state |
 | `azlrec_c` | AZ/EL to rectangular coordinates |
 | `b1900_c` | Besselian Date 1900.0 |
 | `b1950_c` | Besselian Date 1950.0 |
@@ -81,6 +82,7 @@ SpiceRawBackend is composed from: `TimeApi`, `StringsApi`, `KernelsApi`, `Kernel
 | `clpool_c` | Clear the pool of kernel variables |
 | `cmprss_c` | Compress a character string |
 | `cnmfrm_c` | Center name to associated frame |
+| `conics_c` | Determine state from conic elements |
 | `convrt_c` | Convert Units |
 | `copy_c` | Copy a SPICE cell |
 | `cpos_c` | Character position |
@@ -217,6 +219,7 @@ SpiceRawBackend is composed from: `TimeApi`, `StringsApi`, `KernelsApi`, `Kernel
 | `elemc_c` | Element of a character set |
 | `elemd_c` | Element of a double precision set |
 | `elemi_c` | Element of an integer set |
+| `eqncpv_c` | Equinoctial Elements to position and velocity |
 | `eqstr_c` | Equivalent strings |
 | `errch_c` | Insert String into Error Message Text |
 | `errdev_c` | Get/Set Error Output Device Name |
@@ -229,6 +232,7 @@ SpiceRawBackend is composed from: `TimeApi`, `StringsApi`, `KernelsApi`, `Kernel
 | `etcal_c` | Convert ET to Calendar format |
 | `eul2m_c` | Euler angles to matrix |
 | `eul2xf_c` | Euler angles and derivative to transformation |
+| `evsgp4_c` | Evaluate "two-line" element data |
 | `exists_c` | Does the file exist? |
 | `expool_c` | Confirm the existence of a pooled kernel variable |
 | `failed_c` | Error Status Indicator |
@@ -241,6 +245,7 @@ SpiceRawBackend is composed from: `TimeApi`, `StringsApi`, `KernelsApi`, `Kernel
 | `gcpool_c` | Get character data from the kernel pool |
 | `gdpool_c` | Get d.p. values from the kernel pool |
 | `georec_c` | Geodetic to rectangular coordinates |
+| `getelm_c` | Get the components from two-line elements |
 | `getfat_c` | Get file architecture and type |
 | `getmsg_c` | Get Error Message |
 | `gfdist_c` | GF, distance search |
@@ -306,6 +311,7 @@ SpiceRawBackend is composed from: `TimeApi`, `StringsApi`, `KernelsApi`, `Kernel
 | `lstltc_c` | Last character element less than |
 | `lstltd_c` | Last double precision element less than |
 | `lstlti_c` | Last integer element less than |
+| `ltime_c` | Light Time |
 | `lx4dec_c` | Scan for decimal number |
 | `lx4num_c` | Scan for number |
 | `lx4sgn_c` | Scan for signed integer |
@@ -345,6 +351,8 @@ SpiceRawBackend is composed from: `TimeApi`, `StringsApi`, `KernelsApi`, `Kernel
 | `orderd_c` | Order of a double precision array |
 | `orderi_c` | Order of an integer array |
 | `ordi_c` | The ordinal position of an element in a set |
+| `oscelt_c` | Determine conic elements from state |
+| `oscltx_c` | Extended osculating elements from state |
 | `pckcls_c` | PCK, close file |
 | `pckcov_c` | PCK coverage |
 | `pckfrm_c` | PCK, get reference frame class ID set |
@@ -361,6 +369,7 @@ SpiceRawBackend is composed from: `TimeApi`, `StringsApi`, `KernelsApi`, `Kernel
 | `polyds_c` | Compute a Polynomial and its Derivatives |
 | `pos_c` | Position of substring |
 | `posr_c` | Position of substring, reverse search |
+| `prop2b_c` | Propagate a two-body solution |
 | `prsdp_c` | Parse d.p. number with error checking |
 | `prsint_c` | Parse integer with error checking |
 | `putcml_c` | Get the command line |
@@ -427,28 +436,57 @@ SpiceRawBackend is composed from: `TimeApi`, `StringsApi`, `KernelsApi`, `Kernel
 | `sphcyl_c` | Spherical to cylindrical coordinates |
 | `sphlat_c` | Spherical to latitudinal coordinates |
 | `sphrec_c` | Spherical to rectangular coordinates |
+| `spk14a_c` | SPK, add data to a type 14 segment |
+| `spk14b_c` | SPK, begin a type 14 segment |
+| `spk14e_c` | SPK, end a type 14 segment |
+| `spkacs_c` | SPK, aberration corrected state |
+| `spkapo_c` | S/P Kernel, apparent position only |
+| `spkapp_c` | S/P Kernel, apparent state |
+| `spkaps_c` | SPK, apparent state |
 | `spkcls_c` | SPK, Close file |
 | `spkcov_c` | SPK coverage |
+| `spkcpo_c` | SPK, constant position observer state |
+| `spkcpt_c` | SPK, constant position target state |
+| `spkcvo_c` | SPK, constant velocity observer state |
+| `spkcvt_c` | SPK, constant velocity target state |
 | `spkez_c` | S/P Kernel, easy reader |
 | `spkezp_c` | S/P Kernel, easy position |
 | `spkezr_c` | S/P Kernel, easier reader |
 | `spkgeo_c` | S/P Kernel, geometric state |
 | `spkgps_c` | S/P Kernel, geometric position |
+| `spklef_c` | S/P Kernel, Load ephemeris file |
+| `spkltc_c` | S/P Kernel, light time corrected state |
 | `spkobj_c` | SPK objects |
 | `spkopa_c` | SPK open for addition |
 | `spkopn_c` | SPK, open new file. |
 | `spkpds_c` | SPK pack descriptor |
 | `spkpos_c` | S/P Kernel, position |
+| `spkpvn_c` | S/P Kernel, position and velocity in native frame |
 | `spksfs_c` | S/P Kernel, Select file and segment |
 | `spkssb_c` | S/P Kernel, solar system barycenter |
+| `spksub_c` | S/P Kernel, subset |
 | `spkuds_c` | SPK - unpack segment descriptor |
+| `spkuef_c` | SPK Kernel, Unload ephemeris file |
+| `spkw02_c` | Write SPK segment, type 2 |
+| `spkw03_c` | Write SPK segment, type 3 |
+| `spkw05_c` | Write SPK segment, type 5 |
 | `spkw08_c` | Write SPK segment, type 8 |
+| `spkw09_c` | Write SPK segment, type 9 |
+| `spkw10_c` | SPK - write a type 10 segment |
+| `spkw12_c` | Write SPK segment, type 12 |
+| `spkw13_c` | Write SPK segment, type 13 |
+| `spkw15_c` | SPK, write a type 15 segment |
+| `spkw17_c` | SPK, write a type 17 segment |
+| `spkw18_c` | Write SPK segment, type 18 |
+| `spkw20_c` | Write SPK segment, type 20 |
 | `srfc2s_c` | Surface and body ID codes to surface string |
 | `srfcss_c` | Surface ID and body string to surface string |
 | `srfrec_c` | Surface to rectangular coordinates |
 | `srfs2c_c` | Surface and body strings to surface ID code |
 | `srfscc_c` | Surface string and body ID code to surface ID code |
 | `ssize_c` | Set the size of a cell |
+| `stelab_c` | Stellar Aberration |
+| `stlabx_c` | Stellar aberration, transmission case |
 | `stpool_c` | String from pool |
 | `str2et_c` | String to ET |
 | `subpnt_c` | Sub-observer point |
@@ -549,9 +587,7 @@ SpiceRawBackend is composed from: `TimeApi`, `StringsApi`, `KernelsApi`, `Kernel
 
 | Routine | Purpose (1 line) |
 | --- | --- |
-| `azlcpo_c` | AZ/EL, constant position observer state |
 | `cgv2el_c` | Center and generating vectors to ellipse |
-| `conics_c` | Determine state from conic elements |
 | `dnearp_c` | Derivative of near point |
 | `dskcls_c` | DSK, close file |
 | `dskd02_c` | DSK, fetch d.p. type 2 data |
@@ -571,12 +607,9 @@ SpiceRawBackend is composed from: `TimeApi`, `StringsApi`, `KernelsApi`, `Kernel
 | `edpnt_c` | Ellipsoid point |
 | `edterm_c` | Ellipsoid terminator |
 | `el2cgv_c` | Ellipse to center and generating vectors |
-| `eqncpv_c` | Equinoctial Elements to position and velocity |
 | `erract_c` | Get/Set Default Error Action |
-| `evsgp4_c` | Evaluate "two-line" element data |
 | `fovray_c` | Is ray in FOV at time? |
 | `fovtrg_c` | Is target in FOV at time? |
-| `getelm_c` | Get the components from two-line elements |
 | `getfov_c` | Get instrument FOV parameters |
 | `getfvn_c` | Get instrument FOV parameters, by instrument name |
 | `gfbail_c` | GF, interrupt signal indicator |
@@ -608,14 +641,11 @@ SpiceRawBackend is composed from: `TimeApi`, `StringsApi`, `KernelsApi`, `Kernel
 | `limbpt_c` | Limb points on an extended object |
 | `llgrid_pl02` | Lon/lat grid using DSK type 2 plate model |
 | `lspcn_c` | Longitude of the sun, planetocentric |
-| `ltime_c` | Light Time |
 | `nearpt_c` | Nearest point on an ellipsoid |
 | `npedln_c` | Nearest point on ellipsoid to line |
 | `npelpt_c` | Nearest point on ellipse to point |
 | `nplnpt_c` | Nearest point on line to point |
 | `nvp2pl_c` | Normal vector and point to plane |
-| `oscelt_c` | Determine conic elements from state |
-| `oscltx_c` | Extended osculating elements from state |
 | `phaseq_c` | Phase angle quantity between bodies centers |
 | `pjelpl_c` | Project ellipse onto plane |
 | `pl2nvp_c` | Plane to normal vector and point |
@@ -625,40 +655,10 @@ SpiceRawBackend is composed from: `TimeApi`, `StringsApi`, `KernelsApi`, `Kernel
 | `pltnp_c` | Nearest point on triangular plate |
 | `pltnrm_c` | DSK, compute outward normal of plate |
 | `pltvol_c` | Compute volume of plate model |
-| `prop2b_c` | Propagate a two-body solution |
 | `psv2pl_c` | Point and spanning vectors to plane |
 | `saelgv_c` | Semi-axes of ellipse from generating vectors |
-| `spk14a_c` | SPK, add data to a type 14 segment |
-| `spk14b_c` | SPK, begin a type 14 segment |
-| `spk14e_c` | SPK, end a type 14 segment |
-| `spkacs_c` | SPK, aberration corrected state |
-| `spkapo_c` | S/P Kernel, apparent position only |
-| `spkapp_c` | S/P Kernel, apparent state |
-| `spkaps_c` | SPK, apparent state |
-| `spkcpo_c` | SPK, constant position observer state |
-| `spkcpt_c` | SPK, constant position target state |
-| `spkcvo_c` | SPK, constant velocity observer state |
-| `spkcvt_c` | SPK, constant velocity target state |
-| `spklef_c` | S/P Kernel, Load ephemeris file |
-| `spkltc_c` | S/P Kernel, light time corrected state |
-| `spkpvn_c` | S/P Kernel, position and velocity in native frame |
-| `spksub_c` | S/P Kernel, subset |
-| `spkuef_c` | SPK Kernel, Unload ephemeris file |
-| `spkw02_c` | Write SPK segment, type 2 |
-| `spkw03_c` | Write SPK segment, type 3 |
-| `spkw05_c` | Write SPK segment, type 5 |
-| `spkw09_c` | Write SPK segment, type 9 |
-| `spkw10_c` | SPK - write a type 10 segment |
-| `spkw12_c` | Write SPK segment, type 12 |
-| `spkw13_c` | Write SPK segment, type 13 |
-| `spkw15_c` | SPK, write a type 15 segment |
-| `spkw17_c` | SPK, write a type 17 segment |
-| `spkw18_c` | Write SPK segment, type 18 |
-| `spkw20_c` | Write SPK segment, type 20 |
 | `srfnrm_c` | Map surface points to outward normal vectors |
 | `srfxpt_c` | Surface intercept point |
-| `stelab_c` | Stellar Aberration |
-| `stlabx_c` | Stellar aberration, transmission case |
 | `subpt_c` | Sub-observer point |
 | `subpt_pl02` | Sub-observer point using DSK type 2 plate model |
 | `subsol_c` | Sub-solar point |

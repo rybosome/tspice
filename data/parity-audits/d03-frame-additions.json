@@ -385,7 +385,8 @@
       ],
       "id": "local-cp03-779d6fd6ae41-node",
       "kind": "local",
-      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 779d6fd6ae41c78017a8cf7ccaec5fef3100112c. The native-required lane completed 7054 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45097193130/job/137439518970"
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 779d6fd6ae41c78017a8cf7ccaec5fef3100112c. The native-required lane completed 7054 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45097193130/job/137439518970",
+      "historical": true
     },
     {
       "backend": "node",
@@ -453,7 +454,8 @@
       "kind": "ci",
       "commit": "c4bd798cc20d13e8dfd51e7e83ba740ffe4418ff",
       "url": "https://github.com/rybosome/tspice/actions/runs/45127597533/job/137535439275",
-      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 7054 live comparisons without unexpected skips."
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 7054 live comparisons without unexpected skips.",
+      "historical": true
     },
     {
       "backend": "wasm",
@@ -519,7 +521,8 @@
       ],
       "id": "local-cp03-779d6fd6ae41-wasm",
       "kind": "local",
-      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 779d6fd6ae41c78017a8cf7ccaec5fef3100112c. The native-required lane completed 7054 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45097193130/job/137439518970"
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 779d6fd6ae41c78017a8cf7ccaec5fef3100112c. The native-required lane completed 7054 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45097193130/job/137439518970",
+      "historical": true
     },
     {
       "backend": "wasm",
@@ -587,7 +590,276 @@
       "kind": "ci",
       "commit": "c4bd798cc20d13e8dfd51e7e83ba740ffe4418ff",
       "url": "https://github.com/rybosome/tspice/actions/runs/45127597533/job/137535439275",
-      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 7054 live comparisons without unexpected skips."
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 7054 live comparisons without unexpected skips.",
+      "historical": true
+    },
+    {
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "2e4798cd962fef81b79d6d2a9f1359940fb3ff691edfffea284f432e2a87b53d",
+      "caseIds": [
+        "frames-bltfrm-all",
+        "frames-bltfrm-classes",
+        "frames-bltfrm-invalid-0",
+        "frames-bltfrm-invalid-7",
+        "frames-bltfrm-invalid-minus2",
+        "frames-bltfrm-loaded-fk",
+        "frames-bltfrm-replace",
+        "frames-bltfrm-undersized",
+        "frames-bltfrm-zero-room",
+        "frames-pxfrm2-dynamic",
+        "frames-pxfrm2-empty",
+        "frames-pxfrm2-inertial",
+        "frames-pxfrm2-missing-from",
+        "frames-pxfrm2-missing-to",
+        "frames-pxfrm2-mixed-epochs",
+        "frames-pxfrm2-unknown-before-coverage",
+        "frames-pxfrm2-unloaded",
+        "frames-tipbod-earth-epochs",
+        "frames-tipbod-empty",
+        "frames-tipbod-frame-not-body",
+        "frames-tipbod-missing",
+        "frames-tipbod-ref-error",
+        "frames-tipbod-reference-bodies",
+        "frames-tipbod-reloaded",
+        "frames-tisbod-earth-epochs",
+        "frames-tisbod-empty",
+        "frames-tisbod-frame-not-body",
+        "frames-tisbod-missing",
+        "frames-tisbod-ref-error",
+        "frames-tisbod-reference-bodies",
+        "frames-tisbod-reloaded",
+        "frames-tkfram-angles-and-matrix",
+        "frames-tkfram-class-not-frame",
+        "frames-tkfram-invalid-relative",
+        "frames-tkfram-mismatched-id",
+        "frames-tkfram-reload",
+        "frames-tkfram-unknown",
+        "frames-tkfram-unloaded",
+        "frames-tkfram-zero",
+        "frames-xfmsta-axis",
+        "frames-xfmsta-bad-system",
+        "frames-xfmsta-cylindrical-to-rect",
+        "frames-xfmsta-empty-body",
+        "frames-xfmsta-geodetic-to-rect",
+        "frames-xfmsta-latitudinal-to-rect",
+        "frames-xfmsta-longitude-override",
+        "frames-xfmsta-missing-radii",
+        "frames-xfmsta-planetographic-to-rect",
+        "frames-xfmsta-rectangular-to-all",
+        "frames-xfmsta-same-system",
+        "frames-xfmsta-spherical-to-rect",
+        "frames-xfmsta-transverse",
+        "frames-xfmsta-triaxial",
+        "frames-xfmsta-unknown-body"
+      ],
+      "id": "local-cp04-3c3e3f368191-node",
+      "kind": "local",
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 3c3e3f368191d553e84ecc599d449055df985b1c. The native-required lane completed 8056 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45336611602/job/138250075470"
+    },
+    {
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "2e4798cd962fef81b79d6d2a9f1359940fb3ff691edfffea284f432e2a87b53d",
+      "caseIds": [
+        "frames-bltfrm-all",
+        "frames-bltfrm-classes",
+        "frames-bltfrm-invalid-0",
+        "frames-bltfrm-invalid-7",
+        "frames-bltfrm-invalid-minus2",
+        "frames-bltfrm-loaded-fk",
+        "frames-bltfrm-replace",
+        "frames-bltfrm-undersized",
+        "frames-bltfrm-zero-room",
+        "frames-pxfrm2-dynamic",
+        "frames-pxfrm2-empty",
+        "frames-pxfrm2-inertial",
+        "frames-pxfrm2-missing-from",
+        "frames-pxfrm2-missing-to",
+        "frames-pxfrm2-mixed-epochs",
+        "frames-pxfrm2-unknown-before-coverage",
+        "frames-pxfrm2-unloaded",
+        "frames-tipbod-earth-epochs",
+        "frames-tipbod-empty",
+        "frames-tipbod-frame-not-body",
+        "frames-tipbod-missing",
+        "frames-tipbod-ref-error",
+        "frames-tipbod-reference-bodies",
+        "frames-tipbod-reloaded",
+        "frames-tisbod-earth-epochs",
+        "frames-tisbod-empty",
+        "frames-tisbod-frame-not-body",
+        "frames-tisbod-missing",
+        "frames-tisbod-ref-error",
+        "frames-tisbod-reference-bodies",
+        "frames-tisbod-reloaded",
+        "frames-tkfram-angles-and-matrix",
+        "frames-tkfram-class-not-frame",
+        "frames-tkfram-invalid-relative",
+        "frames-tkfram-mismatched-id",
+        "frames-tkfram-reload",
+        "frames-tkfram-unknown",
+        "frames-tkfram-unloaded",
+        "frames-tkfram-zero",
+        "frames-xfmsta-axis",
+        "frames-xfmsta-bad-system",
+        "frames-xfmsta-cylindrical-to-rect",
+        "frames-xfmsta-empty-body",
+        "frames-xfmsta-geodetic-to-rect",
+        "frames-xfmsta-latitudinal-to-rect",
+        "frames-xfmsta-longitude-override",
+        "frames-xfmsta-missing-radii",
+        "frames-xfmsta-planetographic-to-rect",
+        "frames-xfmsta-rectangular-to-all",
+        "frames-xfmsta-same-system",
+        "frames-xfmsta-spherical-to-rect",
+        "frames-xfmsta-transverse",
+        "frames-xfmsta-triaxial",
+        "frames-xfmsta-unknown-body"
+      ],
+      "id": "ci-cp04-3c3e3f368191-node",
+      "kind": "ci",
+      "commit": "5759b72e80d904295926aa968ee1c07006abdf51",
+      "url": "https://github.com/rybosome/tspice/actions/runs/45348374307/job/138288412178",
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 8056 live comparisons without unexpected skips."
+    },
+    {
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "2e4798cd962fef81b79d6d2a9f1359940fb3ff691edfffea284f432e2a87b53d",
+      "caseIds": [
+        "frames-bltfrm-all",
+        "frames-bltfrm-classes",
+        "frames-bltfrm-invalid-0",
+        "frames-bltfrm-invalid-7",
+        "frames-bltfrm-invalid-minus2",
+        "frames-bltfrm-loaded-fk",
+        "frames-bltfrm-replace",
+        "frames-bltfrm-undersized",
+        "frames-bltfrm-zero-room",
+        "frames-pxfrm2-dynamic",
+        "frames-pxfrm2-empty",
+        "frames-pxfrm2-inertial",
+        "frames-pxfrm2-missing-from",
+        "frames-pxfrm2-missing-to",
+        "frames-pxfrm2-mixed-epochs",
+        "frames-pxfrm2-unknown-before-coverage",
+        "frames-pxfrm2-unloaded",
+        "frames-tipbod-earth-epochs",
+        "frames-tipbod-empty",
+        "frames-tipbod-frame-not-body",
+        "frames-tipbod-missing",
+        "frames-tipbod-ref-error",
+        "frames-tipbod-reference-bodies",
+        "frames-tipbod-reloaded",
+        "frames-tisbod-earth-epochs",
+        "frames-tisbod-empty",
+        "frames-tisbod-frame-not-body",
+        "frames-tisbod-missing",
+        "frames-tisbod-ref-error",
+        "frames-tisbod-reference-bodies",
+        "frames-tisbod-reloaded",
+        "frames-tkfram-angles-and-matrix",
+        "frames-tkfram-class-not-frame",
+        "frames-tkfram-invalid-relative",
+        "frames-tkfram-mismatched-id",
+        "frames-tkfram-reload",
+        "frames-tkfram-unknown",
+        "frames-tkfram-unloaded",
+        "frames-tkfram-zero",
+        "frames-xfmsta-axis",
+        "frames-xfmsta-bad-system",
+        "frames-xfmsta-cylindrical-to-rect",
+        "frames-xfmsta-empty-body",
+        "frames-xfmsta-geodetic-to-rect",
+        "frames-xfmsta-latitudinal-to-rect",
+        "frames-xfmsta-longitude-override",
+        "frames-xfmsta-missing-radii",
+        "frames-xfmsta-planetographic-to-rect",
+        "frames-xfmsta-rectangular-to-all",
+        "frames-xfmsta-same-system",
+        "frames-xfmsta-spherical-to-rect",
+        "frames-xfmsta-transverse",
+        "frames-xfmsta-triaxial",
+        "frames-xfmsta-unknown-body"
+      ],
+      "id": "local-cp04-3c3e3f368191-wasm",
+      "kind": "local",
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 3c3e3f368191d553e84ecc599d449055df985b1c. The native-required lane completed 8056 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45336611602/job/138250075470"
+    },
+    {
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "2e4798cd962fef81b79d6d2a9f1359940fb3ff691edfffea284f432e2a87b53d",
+      "caseIds": [
+        "frames-bltfrm-all",
+        "frames-bltfrm-classes",
+        "frames-bltfrm-invalid-0",
+        "frames-bltfrm-invalid-7",
+        "frames-bltfrm-invalid-minus2",
+        "frames-bltfrm-loaded-fk",
+        "frames-bltfrm-replace",
+        "frames-bltfrm-undersized",
+        "frames-bltfrm-zero-room",
+        "frames-pxfrm2-dynamic",
+        "frames-pxfrm2-empty",
+        "frames-pxfrm2-inertial",
+        "frames-pxfrm2-missing-from",
+        "frames-pxfrm2-missing-to",
+        "frames-pxfrm2-mixed-epochs",
+        "frames-pxfrm2-unknown-before-coverage",
+        "frames-pxfrm2-unloaded",
+        "frames-tipbod-earth-epochs",
+        "frames-tipbod-empty",
+        "frames-tipbod-frame-not-body",
+        "frames-tipbod-missing",
+        "frames-tipbod-ref-error",
+        "frames-tipbod-reference-bodies",
+        "frames-tipbod-reloaded",
+        "frames-tisbod-earth-epochs",
+        "frames-tisbod-empty",
+        "frames-tisbod-frame-not-body",
+        "frames-tisbod-missing",
+        "frames-tisbod-ref-error",
+        "frames-tisbod-reference-bodies",
+        "frames-tisbod-reloaded",
+        "frames-tkfram-angles-and-matrix",
+        "frames-tkfram-class-not-frame",
+        "frames-tkfram-invalid-relative",
+        "frames-tkfram-mismatched-id",
+        "frames-tkfram-reload",
+        "frames-tkfram-unknown",
+        "frames-tkfram-unloaded",
+        "frames-tkfram-zero",
+        "frames-xfmsta-axis",
+        "frames-xfmsta-bad-system",
+        "frames-xfmsta-cylindrical-to-rect",
+        "frames-xfmsta-empty-body",
+        "frames-xfmsta-geodetic-to-rect",
+        "frames-xfmsta-latitudinal-to-rect",
+        "frames-xfmsta-longitude-override",
+        "frames-xfmsta-missing-radii",
+        "frames-xfmsta-planetographic-to-rect",
+        "frames-xfmsta-rectangular-to-all",
+        "frames-xfmsta-same-system",
+        "frames-xfmsta-spherical-to-rect",
+        "frames-xfmsta-transverse",
+        "frames-xfmsta-triaxial",
+        "frames-xfmsta-unknown-body"
+      ],
+      "id": "ci-cp04-3c3e3f368191-wasm",
+      "kind": "ci",
+      "commit": "5759b72e80d904295926aa968ee1c07006abdf51",
+      "url": "https://github.com/rybosome/tspice/actions/runs/45348374307/job/138288412178",
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 8056 live comparisons without unexpected skips."
     }
   ],
   "routines": [
@@ -663,13 +935,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.bltfrm -> FramesApi serialized Node native registration -> tspice_bltfrm -> bltfrm_c. Independent oracle calls locked SpiceyPy.",
           "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
           ]
         },
         "wasm": {
@@ -678,13 +952,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.bltfrm -> FramesApi WASM export with scoped buffers -> tspice_bltfrm -> bltfrm_c. Independent oracle calls locked SpiceyPy.",
           "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
           ]
         }
       }
@@ -775,13 +1051,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.pxfrm2 -> FramesApi serialized Node native registration -> tspice_pxfrm2 -> pxfrm2_c. Known-frame orientation error uses checked REFCHG before matrix multiplication.",
           "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
           ]
         },
         "wasm": {
@@ -791,13 +1069,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.pxfrm2 -> FramesApi WASM export with scoped buffers -> tspice_pxfrm2 -> pxfrm2_c. Known-frame orientation error uses checked REFCHG before matrix multiplication.",
           "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
           ]
         }
       }
@@ -864,13 +1144,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.tipbod -> FramesApi serialized Node native registration -> tspice_tipbod -> tipbod_c. Independent oracle calls locked SpiceyPy.",
           "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
           ]
         },
         "wasm": {
@@ -879,13 +1161,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.tipbod -> FramesApi WASM export with scoped buffers -> tspice_tipbod -> tipbod_c. Independent oracle calls locked SpiceyPy.",
           "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
           ]
         }
       }
@@ -952,13 +1236,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.tisbod -> FramesApi serialized Node native registration -> tspice_tisbod -> tisbod_c. Independent oracle calls locked SpiceyPy.",
           "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
           ]
         },
         "wasm": {
@@ -967,13 +1253,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.tisbod -> FramesApi WASM export with scoped buffers -> tspice_tisbod -> tisbod_c. Independent oracle calls locked SpiceyPy.",
           "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
           ]
         }
       }
@@ -1050,13 +1338,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.tkfram -> FramesApi serialized Node native registration -> tspice_tkfram -> tkfram_c. Independent oracle calls locked SpiceyPy.",
           "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
           ]
         },
         "wasm": {
@@ -1065,13 +1355,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.tkfram -> FramesApi WASM export with scoped buffers -> tspice_tkfram -> tkfram_c. Independent oracle calls locked SpiceyPy.",
           "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
           ]
         }
       }
@@ -1183,13 +1475,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.xfmsta -> FramesApi serialized Node native registration -> tspice_xfmsta -> xfmsta_c. Independent oracle calls locked SpiceyPy.",
           "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
           ]
         },
         "wasm": {
@@ -1198,13 +1492,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.xfmsta -> FramesApi WASM export with scoped buffers -> tspice_xfmsta -> xfmsta_c. Independent oracle calls locked SpiceyPy.",
           "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
           ]
         }
       }

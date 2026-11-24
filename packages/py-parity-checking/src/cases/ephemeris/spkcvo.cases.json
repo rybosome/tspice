@@ -1,0 +1,941 @@
+[
+  {
+    "caseId": "ephemeris-spkcvo-rotating-output-observer",
+    "description": "Resolve the rotating output frame at the OBSERVER epoch; compare three positions, their three rates and one-way light time.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris.bsp"
+        }
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris-observer.bsp"
+        }
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/relative-observers.tf"
+        }
+      },
+      {
+        "op": "ephemeris.spkcvo",
+        "target": "100001",
+        "et": 125.25,
+        "outref": "RELATIVE_SPIN",
+        "refloc": "OBSERVER",
+        "abcorr": "NONE",
+        "obssta": [321.5, -224.25, 111.375, 0.375, -0.25, 0.1875],
+        "obsepc": -211.5,
+        "obsctr": "0",
+        "obsref": "J2000"
+      },
+      {
+        "op": "ephemeris.spkcvo",
+        "target": "100001",
+        "et": 125.25,
+        "outref": "RELATIVE_SPIN",
+        "refloc": "OBSERVER",
+        "abcorr": "LT+S",
+        "obssta": [321.5, -224.25, 111.375, 0.375, -0.25, 0.1875],
+        "obsepc": -211.5,
+        "obsctr": "0",
+        "obsref": "J2000"
+      },
+      {
+        "op": "ephemeris.spkcvo",
+        "target": "100001",
+        "et": 125.25,
+        "outref": "RELATIVE_SPIN",
+        "refloc": "OBSERVER",
+        "abcorr": "CN+S",
+        "obssta": [321.5, -224.25, 111.375, 0.375, -0.25, 0.1875],
+        "obsepc": -211.5,
+        "obsctr": "0",
+        "obsref": "J2000"
+      },
+      {
+        "op": "ephemeris.spkcvo",
+        "target": "100001",
+        "et": 125.25,
+        "outref": "RELATIVE_SPIN",
+        "refloc": "OBSERVER",
+        "abcorr": "XCN+S",
+        "obssta": [321.5, -224.25, 111.375, 0.375, -0.25, 0.1875],
+        "obsepc": -211.5,
+        "obsctr": "0",
+        "obsref": "J2000"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkcvo-rotating-output-target",
+    "description": "Resolve the rotating output frame at the TARGET epoch; compare three positions, their three rates and one-way light time.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris.bsp"
+        }
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris-observer.bsp"
+        }
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/relative-observers.tf"
+        }
+      },
+      {
+        "op": "ephemeris.spkcvo",
+        "target": "100001",
+        "et": 125.25,
+        "outref": "RELATIVE_SPIN",
+        "refloc": "TARGET",
+        "abcorr": "NONE",
+        "obssta": [321.5, -224.25, 111.375, 0.375, -0.25, 0.1875],
+        "obsepc": -211.5,
+        "obsctr": "0",
+        "obsref": "J2000"
+      },
+      {
+        "op": "ephemeris.spkcvo",
+        "target": "100001",
+        "et": 125.25,
+        "outref": "RELATIVE_SPIN",
+        "refloc": "TARGET",
+        "abcorr": "LT+S",
+        "obssta": [321.5, -224.25, 111.375, 0.375, -0.25, 0.1875],
+        "obsepc": -211.5,
+        "obsctr": "0",
+        "obsref": "J2000"
+      },
+      {
+        "op": "ephemeris.spkcvo",
+        "target": "100001",
+        "et": 125.25,
+        "outref": "RELATIVE_SPIN",
+        "refloc": "TARGET",
+        "abcorr": "CN+S",
+        "obssta": [321.5, -224.25, 111.375, 0.375, -0.25, 0.1875],
+        "obsepc": -211.5,
+        "obsctr": "0",
+        "obsref": "J2000"
+      },
+      {
+        "op": "ephemeris.spkcvo",
+        "target": "100001",
+        "et": 125.25,
+        "outref": "RELATIVE_SPIN",
+        "refloc": "TARGET",
+        "abcorr": "XCN+S",
+        "obssta": [321.5, -224.25, 111.375, 0.375, -0.25, 0.1875],
+        "obsepc": -211.5,
+        "obsctr": "0",
+        "obsref": "J2000"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkcvo-rotating-output-center",
+    "description": "Resolve the rotating output frame at the CENTER epoch; compare three positions, their three rates and one-way light time.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris.bsp"
+        }
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris-observer.bsp"
+        }
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/relative-observers.tf"
+        }
+      },
+      {
+        "op": "ephemeris.spkcvo",
+        "target": "100001",
+        "et": 125.25,
+        "outref": "RELATIVE_SPIN",
+        "refloc": "CENTER",
+        "abcorr": "NONE",
+        "obssta": [321.5, -224.25, 111.375, 0.375, -0.25, 0.1875],
+        "obsepc": -211.5,
+        "obsctr": "0",
+        "obsref": "J2000"
+      },
+      {
+        "op": "ephemeris.spkcvo",
+        "target": "100001",
+        "et": 125.25,
+        "outref": "RELATIVE_SPIN",
+        "refloc": "CENTER",
+        "abcorr": "LT+S",
+        "obssta": [321.5, -224.25, 111.375, 0.375, -0.25, 0.1875],
+        "obsepc": -211.5,
+        "obsctr": "0",
+        "obsref": "J2000"
+      },
+      {
+        "op": "ephemeris.spkcvo",
+        "target": "100001",
+        "et": 125.25,
+        "outref": "RELATIVE_SPIN",
+        "refloc": "CENTER",
+        "abcorr": "CN+S",
+        "obssta": [321.5, -224.25, 111.375, 0.375, -0.25, 0.1875],
+        "obsepc": -211.5,
+        "obsctr": "0",
+        "obsref": "J2000"
+      },
+      {
+        "op": "ephemeris.spkcvo",
+        "target": "100001",
+        "et": 125.25,
+        "outref": "RELATIVE_SPIN",
+        "refloc": "CENTER",
+        "abcorr": "XCN+S",
+        "obssta": [321.5, -224.25, 111.375, 0.375, -0.25, 0.1875],
+        "obsepc": -211.5,
+        "obsctr": "0",
+        "obsref": "J2000"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkcvo-rotating-input",
+    "description": "Point is fixed or advances with constant velocity in a time-varying source frame, whose rate contributes to the output velocity.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris.bsp"
+        }
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris-observer.bsp"
+        }
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/relative-observers.tf"
+        }
+      },
+      {
+        "op": "ephemeris.spkcvo",
+        "target": "100001",
+        "et": -230.5,
+        "outref": "J2000",
+        "refloc": "OBSERVER",
+        "abcorr": "NONE",
+        "obssta": [321.5, -224.25, 111.375, 0.375, -0.25, 0.1875],
+        "obsepc": -211.5,
+        "obsctr": "100002",
+        "obsref": "RELATIVE_SPIN"
+      },
+      {
+        "op": "ephemeris.spkcvo",
+        "target": "100001",
+        "et": 125.25,
+        "outref": "J2000",
+        "refloc": "OBSERVER",
+        "abcorr": "NONE",
+        "obssta": [321.5, -224.25, 111.375, 0.375, -0.25, 0.1875],
+        "obsepc": -211.5,
+        "obsctr": "100002",
+        "obsref": "RELATIVE_SPIN"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkcvo-inertial-directions",
+    "description": "Both signal directions evaluate the moving target at distinct epochs with the full apparent velocity.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris.bsp"
+        }
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris-observer.bsp"
+        }
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/relative-observers.tf"
+        }
+      },
+      {
+        "op": "ephemeris.spkcvo",
+        "target": "100001",
+        "et": 125.25,
+        "outref": "ECLIPJ2000",
+        "refloc": " observer ",
+        "abcorr": "LT",
+        "obssta": [321.5, -224.25, 111.375, 0.375, -0.25, 0.1875],
+        "obsepc": -211.5,
+        "obsctr": "0",
+        "obsref": "J2000"
+      },
+      {
+        "op": "ephemeris.spkcvo",
+        "target": "100001",
+        "et": 125.25,
+        "outref": "ECLIPJ2000",
+        "refloc": " observer ",
+        "abcorr": "CN",
+        "obssta": [321.5, -224.25, 111.375, 0.375, -0.25, 0.1875],
+        "obsepc": -211.5,
+        "obsctr": "0",
+        "obsref": "J2000"
+      },
+      {
+        "op": "ephemeris.spkcvo",
+        "target": "100001",
+        "et": 125.25,
+        "outref": "ECLIPJ2000",
+        "refloc": " observer ",
+        "abcorr": "LT+S",
+        "obssta": [321.5, -224.25, 111.375, 0.375, -0.25, 0.1875],
+        "obsepc": -211.5,
+        "obsctr": "0",
+        "obsref": "J2000"
+      },
+      {
+        "op": "ephemeris.spkcvo",
+        "target": "100001",
+        "et": 125.25,
+        "outref": "ECLIPJ2000",
+        "refloc": " observer ",
+        "abcorr": "XLT",
+        "obssta": [321.5, -224.25, 111.375, 0.375, -0.25, 0.1875],
+        "obsepc": -211.5,
+        "obsctr": "0",
+        "obsref": "J2000"
+      },
+      {
+        "op": "ephemeris.spkcvo",
+        "target": "100001",
+        "et": 125.25,
+        "outref": "ECLIPJ2000",
+        "refloc": " observer ",
+        "abcorr": "XLT+S",
+        "obssta": [321.5, -224.25, 111.375, 0.375, -0.25, 0.1875],
+        "obsepc": -211.5,
+        "obsctr": "0",
+        "obsref": "J2000"
+      },
+      {
+        "op": "ephemeris.spkcvo",
+        "target": "100001",
+        "et": 125.25,
+        "outref": "ECLIPJ2000",
+        "refloc": " observer ",
+        "abcorr": "XCN",
+        "obssta": [321.5, -224.25, 111.375, 0.375, -0.25, 0.1875],
+        "obsepc": -211.5,
+        "obsctr": "0",
+        "obsref": "J2000"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkcvo-spelling-transition",
+    "description": "Alternating spaced and unspaced correction spellings preserves the requested direction and stellar flag.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris.bsp"
+        }
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris-observer.bsp"
+        }
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/relative-observers.tf"
+        }
+      },
+      {
+        "op": "ephemeris.spkcvo",
+        "target": "100001",
+        "et": 125.25,
+        "outref": "RELATIVE_SPIN",
+        "refloc": "OBSERVER",
+        "abcorr": "LT   +S",
+        "obssta": [321.5, -224.25, 111.375, 0.375, -0.25, 0.1875],
+        "obsepc": -211.5,
+        "obsctr": "0",
+        "obsref": "J2000"
+      },
+      {
+        "op": "ephemeris.spkcvo",
+        "target": "100001",
+        "et": 125.25,
+        "outref": "RELATIVE_SPIN",
+        "refloc": "OBSERVER",
+        "abcorr": "LT",
+        "obssta": [321.5, -224.25, 111.375, 0.375, -0.25, 0.1875],
+        "obsepc": -211.5,
+        "obsctr": "0",
+        "obsref": "J2000"
+      },
+      {
+        "op": "ephemeris.spkcvo",
+        "target": "100001",
+        "et": 125.25,
+        "outref": "RELATIVE_SPIN",
+        "refloc": "OBSERVER",
+        "abcorr": "XCN+S",
+        "obssta": [321.5, -224.25, 111.375, 0.375, -0.25, 0.1875],
+        "obsepc": -211.5,
+        "obsctr": "0",
+        "obsref": "J2000"
+      },
+      {
+        "op": "ephemeris.spkcvo",
+        "target": "100001",
+        "et": 125.25,
+        "outref": "RELATIVE_SPIN",
+        "refloc": "OBSERVER",
+        "abcorr": "NONE",
+        "obssta": [321.5, -224.25, 111.375, 0.375, -0.25, 0.1875],
+        "obsepc": -211.5,
+        "obsctr": "0",
+        "obsref": "J2000"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkcvo-priority",
+    "description": "A higher-priority overlapping SPK changes each returned state and event range.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris.bsp"
+        }
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris-observer.bsp"
+        }
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/relative-observers.tf"
+        }
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris-priority.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.spkcvo",
+        "target": "100001",
+        "et": 125.25,
+        "outref": "RELATIVE_SPIN",
+        "refloc": "OBSERVER",
+        "abcorr": "LT+S",
+        "obssta": [321.5, -224.25, 111.375, 0.375, -0.25, 0.1875],
+        "obsepc": -211.5,
+        "obsctr": "0",
+        "obsref": "J2000"
+      },
+      {
+        "op": "ephemeris.spkcvo",
+        "target": "100001",
+        "et": 125.25,
+        "outref": "RELATIVE_SPIN",
+        "refloc": "OBSERVER",
+        "abcorr": "XCN",
+        "obssta": [321.5, -224.25, 111.375, 0.375, -0.25, 0.1875],
+        "obsepc": -211.5,
+        "obsctr": "0",
+        "obsref": "J2000"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkcvo-state-epoch",
+    "description": "At fixed epoch, change only the reference epoch of the supplied three-axis velocity state.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris.bsp"
+        }
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris-observer.bsp"
+        }
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/relative-observers.tf"
+        }
+      },
+      {
+        "op": "ephemeris.spkcvo",
+        "target": "100001",
+        "et": 125.25,
+        "outref": "J2000",
+        "refloc": "OBSERVER",
+        "abcorr": "NONE",
+        "obssta": [321.5, -224.25, 111.375, 0.375, -0.25, 0.1875],
+        "obsepc": -211.5,
+        "obsctr": "0",
+        "obsref": "J2000"
+      },
+      {
+        "op": "ephemeris.spkcvo",
+        "target": "100001",
+        "et": 125.25,
+        "outref": "J2000",
+        "refloc": "OBSERVER",
+        "abcorr": "NONE",
+        "obssta": [321.5, -224.25, 111.375, 0.375, -0.25, 0.1875],
+        "obsepc": 125.25,
+        "obsctr": "0",
+        "obsref": "J2000"
+      },
+      {
+        "op": "ephemeris.spkcvo",
+        "target": "100001",
+        "et": 125.25,
+        "outref": "J2000",
+        "refloc": "OBSERVER",
+        "abcorr": "NONE",
+        "obssta": [321.5, -224.25, 111.375, 0.375, -0.25, 0.1875],
+        "obsepc": 582.5,
+        "obsctr": "0",
+        "obsref": "J2000"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkcvo-coincidence",
+    "description": "A zero offset at the barycenter observed from the same body produces a zero state and light time.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkcvo",
+        "target": "0",
+        "et": 125.25,
+        "outref": "J2000",
+        "refloc": "OBSERVER",
+        "abcorr": "NONE",
+        "obssta": [0, 0, 0, 0, 0, 0],
+        "obsepc": -211.5,
+        "obsctr": "0",
+        "obsref": "J2000"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkcvo-unknown-center",
+    "description": "Compare the actual SPICE diagnostic for unknown supplied center name.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris.bsp"
+        }
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris-observer.bsp"
+        }
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/relative-observers.tf"
+        }
+      },
+      {
+        "op": "ephemeris.spkcvo",
+        "target": "100001",
+        "et": 125.25,
+        "outref": "RELATIVE_SPIN",
+        "refloc": "OBSERVER",
+        "abcorr": "CN+S",
+        "obssta": [321.5, -224.25, 111.375, 0.375, -0.25, 0.1875],
+        "obsepc": -211.5,
+        "obsctr": "NO_SUCH_CENTER",
+        "obsref": "J2000"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["IDCODENOTFOUND"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spkcvo-unknown-ephemeris-body",
+    "description": "Compare the actual SPICE diagnostic for unknown ephemeris participant.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris.bsp"
+        }
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris-observer.bsp"
+        }
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/relative-observers.tf"
+        }
+      },
+      {
+        "op": "ephemeris.spkcvo",
+        "target": "NO_SUCH_BODY",
+        "et": 125.25,
+        "outref": "RELATIVE_SPIN",
+        "refloc": "OBSERVER",
+        "abcorr": "CN+S",
+        "obssta": [321.5, -224.25, 111.375, 0.375, -0.25, 0.1875],
+        "obsepc": -211.5,
+        "obsctr": "0",
+        "obsref": "J2000"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["IDCODENOTFOUND"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spkcvo-unknown-output",
+    "description": "Compare the actual SPICE diagnostic for unmapped output frame.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris.bsp"
+        }
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris-observer.bsp"
+        }
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/relative-observers.tf"
+        }
+      },
+      {
+        "op": "ephemeris.spkcvo",
+        "target": "100001",
+        "et": 125.25,
+        "outref": "NO_SUCH_FRAME",
+        "refloc": "OBSERVER",
+        "abcorr": "CN+S",
+        "obssta": [321.5, -224.25, 111.375, 0.375, -0.25, 0.1875],
+        "obsepc": -211.5,
+        "obsctr": "0",
+        "obsref": "J2000"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["UNKNOWNFRAME"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spkcvo-bad-locus",
+    "description": "Compare the actual SPICE diagnostic for unrecognized evaluation locus.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris.bsp"
+        }
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris-observer.bsp"
+        }
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/relative-observers.tf"
+        }
+      },
+      {
+        "op": "ephemeris.spkcvo",
+        "target": "100001",
+        "et": 125.25,
+        "outref": "RELATIVE_SPIN",
+        "refloc": "OTHER",
+        "abcorr": "CN+S",
+        "obssta": [321.5, -224.25, 111.375, 0.375, -0.25, 0.1875],
+        "obsepc": -211.5,
+        "obsctr": "0",
+        "obsref": "J2000"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["NOTSUPPORTED"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spkcvo-missing-input-frame",
+    "description": "Compare the actual SPICE diagnostic for unmapped point frame.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris.bsp"
+        }
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris-observer.bsp"
+        }
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/relative-observers.tf"
+        }
+      },
+      {
+        "op": "ephemeris.spkcvo",
+        "target": "100001",
+        "et": 125.25,
+        "outref": "J2000",
+        "refloc": "OBSERVER",
+        "abcorr": "CN+S",
+        "obssta": [321.5, -224.25, 111.375, 0.375, -0.25, 0.1875],
+        "obsepc": -211.5,
+        "obsctr": "0",
+        "obsref": "NO_SUCH_FRAME"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["UNKNOWNFRAME"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spkcvo-gap",
+    "description": "Compare the actual SPICE diagnostic for target SPK has an authored gap.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris.bsp"
+        }
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris-observer.bsp"
+        }
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/relative-observers.tf"
+        }
+      },
+      {
+        "op": "ephemeris.spkcvo",
+        "target": "100001",
+        "et": 50,
+        "outref": "J2000",
+        "refloc": "OBSERVER",
+        "abcorr": "CN+S",
+        "obssta": [321.5, -224.25, 111.375, 0.375, -0.25, 0.1875],
+        "obsepc": -211.5,
+        "obsctr": "0",
+        "obsref": "J2000"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPKINSUFFDATA"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spkcvo-bad-option",
+    "description": "Compare the actual SPICE diagnostic for invalid aberration flag precedes body and frame resolution.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris.bsp"
+        }
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris-observer.bsp"
+        }
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/relative-observers.tf"
+        }
+      },
+      {
+        "op": "ephemeris.spkcvo",
+        "target": "100001",
+        "et": 125.25,
+        "outref": "RELATIVE_SPIN",
+        "refloc": "OBSERVER",
+        "abcorr": "BOGUS",
+        "obssta": [321.5, -224.25, 111.375, 0.375, -0.25, 0.1875],
+        "obsepc": -211.5,
+        "obsctr": "ABSENT",
+        "obsref": "J2000"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDOPTION"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spkcvo-singular-stellar",
+    "description": "A spaced, mixed-case stellar selection reaches the same checked singular-divisor diagnostic for the exactly transverse observer velocity.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkcvo",
+        "target": "0",
+        "et": 0,
+        "outref": "J2000",
+        "refloc": "OBSERVER",
+        "abcorr": "l t   + s",
+        "obssta": [-1, 0, 0, 0, 299792.458, 0],
+        "obsepc": 0,
+        "obsctr": "0",
+        "obsref": "J2000"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["DIVIDEBYZERO"]
+    }
+  }
+]

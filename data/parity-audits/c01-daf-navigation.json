@@ -1068,7 +1068,8 @@
       ],
       "id": "local-cp03-779d6fd6ae41-node",
       "kind": "local",
-      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 779d6fd6ae41c78017a8cf7ccaec5fef3100112c. The native-required lane completed 7054 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45097193130/job/137439518970"
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 779d6fd6ae41c78017a8cf7ccaec5fef3100112c. The native-required lane completed 7054 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45097193130/job/137439518970",
+      "historical": true
     },
     {
       "backend": "node",
@@ -1127,7 +1128,8 @@
       "kind": "ci",
       "commit": "c4bd798cc20d13e8dfd51e7e83ba740ffe4418ff",
       "url": "https://github.com/rybosome/tspice/actions/runs/45127597533/job/137535439275",
-      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 7054 live comparisons without unexpected skips."
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 7054 live comparisons without unexpected skips.",
+      "historical": true
     },
     {
       "backend": "wasm",
@@ -1184,7 +1186,8 @@
       ],
       "id": "local-cp03-779d6fd6ae41-wasm",
       "kind": "local",
-      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 779d6fd6ae41c78017a8cf7ccaec5fef3100112c. The native-required lane completed 7054 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45097193130/job/137439518970"
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 779d6fd6ae41c78017a8cf7ccaec5fef3100112c. The native-required lane completed 7054 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45097193130/job/137439518970",
+      "historical": true
     },
     {
       "backend": "wasm",
@@ -1243,7 +1246,476 @@
       "kind": "ci",
       "commit": "c4bd798cc20d13e8dfd51e7e83ba740ffe4418ff",
       "url": "https://github.com/rybosome/tspice/actions/runs/45127597533/job/137535439275",
-      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 7054 live comparisons without unexpected skips."
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 7054 live comparisons without unexpected skips.",
+      "historical": true
+    },
+    {
+      "id": "local-e03-b9cd0f5a-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "c4f6b64d6304733fa671a153fee98a39dde1a6d1ade60ac3ca9fa7de8dd77f49",
+      "caseIds": [
+        "file-io-dafbbs-empty-search",
+        "file-io-dafbbs-interleaved-files",
+        "file-io-dafbbs-restart-after-position",
+        "file-io-dafbbs-reverse-an-active-forward-search",
+        "file-io-dafbbs-two-segment-backward",
+        "file-io-dafcs-empty-current-file",
+        "file-io-dafcs-not-initialized",
+        "file-io-dafcs-other-active",
+        "file-io-dafcs-repeated-selection",
+        "file-io-dafcs-select-between-files",
+        "file-io-daffpa-before-first-forward",
+        "file-io-daffpa-empty-repeated-false",
+        "file-io-daffpa-no-search",
+        "file-io-daffpa-previous-exhaust-and-forward",
+        "file-io-daffpa-select-own-file",
+        "file-io-dafgh-before-an-array",
+        "file-io-dafgh-duplicate-open-ownership",
+        "file-io-dafgh-exhausted-file",
+        "file-io-dafgh-interleaved-selection",
+        "file-io-dafgh-reopen-workflow-label",
+        "file-io-dafgn-after-final-array",
+        "file-io-dafgn-before-any-array",
+        "file-io-dafgn-full-and-prefix",
+        "file-io-dafgn-implicit-selection",
+        "file-io-dafgn-negative-capacity",
+        "file-io-dafgn-recover-same-search",
+        "file-io-dafgn-short-capacity",
+        "file-io-dafgn-unstarted-short-capacity",
+        "file-io-dafgs-after-backward-exhaustion",
+        "file-io-dafgs-before-any-array",
+        "file-io-dafgs-changing-packed-addresses",
+        "file-io-dafgs-packed-nan-payload",
+        "file-io-dafgs-select-across-daf-kinds",
+        "file-io-dafgs-unstarted-file",
+        "file-io-dafhsf-active-then-exhausted",
+        "file-io-dafhsf-new-write-handle",
+        "file-io-dafhsf-no-current-change",
+        "file-io-dafhsf-unpositioned-and-empty",
+        "file-io-dafopw-generated-path-alias",
+        "file-io-dafopw-missing-scratch",
+        "file-io-dafopw-read-during-write",
+        "file-io-dafopw-read-open-conflict",
+        "file-io-dafopw-repeated-writer-conflict",
+        "file-io-dafopw-scratch-reopen-read",
+        "file-io-dafopw-writer-after-close"
+      ],
+      "observation": "Both complete required lanes passed locally on b9cd0f5a96c78e67a8e720f565e6350da2a21db1. JavaScript: 2,678 parity tests and one expected guard skip. Native-required: 2,446 registered Node/WASM live comparisons; 2,679 parity-package tests with no skips, including the native-required guard; 89 native wrapper, 666 WASM, 28 core and 152 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "local-e03-b9cd0f5a-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "c4f6b64d6304733fa671a153fee98a39dde1a6d1ade60ac3ca9fa7de8dd77f49",
+      "caseIds": [
+        "file-io-dafbbs-empty-search",
+        "file-io-dafbbs-interleaved-files",
+        "file-io-dafbbs-restart-after-position",
+        "file-io-dafbbs-reverse-an-active-forward-search",
+        "file-io-dafbbs-two-segment-backward",
+        "file-io-dafcs-empty-current-file",
+        "file-io-dafcs-not-initialized",
+        "file-io-dafcs-other-active",
+        "file-io-dafcs-repeated-selection",
+        "file-io-dafcs-select-between-files",
+        "file-io-daffpa-before-first-forward",
+        "file-io-daffpa-empty-repeated-false",
+        "file-io-daffpa-no-search",
+        "file-io-daffpa-previous-exhaust-and-forward",
+        "file-io-daffpa-select-own-file",
+        "file-io-dafgh-before-an-array",
+        "file-io-dafgh-duplicate-open-ownership",
+        "file-io-dafgh-exhausted-file",
+        "file-io-dafgh-interleaved-selection",
+        "file-io-dafgh-reopen-workflow-label",
+        "file-io-dafgn-after-final-array",
+        "file-io-dafgn-before-any-array",
+        "file-io-dafgn-full-and-prefix",
+        "file-io-dafgn-implicit-selection",
+        "file-io-dafgn-negative-capacity",
+        "file-io-dafgn-recover-same-search",
+        "file-io-dafgn-short-capacity",
+        "file-io-dafgn-unstarted-short-capacity",
+        "file-io-dafgs-after-backward-exhaustion",
+        "file-io-dafgs-before-any-array",
+        "file-io-dafgs-changing-packed-addresses",
+        "file-io-dafgs-packed-nan-payload",
+        "file-io-dafgs-select-across-daf-kinds",
+        "file-io-dafgs-unstarted-file",
+        "file-io-dafhsf-active-then-exhausted",
+        "file-io-dafhsf-new-write-handle",
+        "file-io-dafhsf-no-current-change",
+        "file-io-dafhsf-unpositioned-and-empty",
+        "file-io-dafopw-generated-path-alias",
+        "file-io-dafopw-missing-scratch",
+        "file-io-dafopw-read-during-write",
+        "file-io-dafopw-read-open-conflict",
+        "file-io-dafopw-repeated-writer-conflict",
+        "file-io-dafopw-scratch-reopen-read",
+        "file-io-dafopw-writer-after-close"
+      ],
+      "observation": "Both complete required lanes passed locally on b9cd0f5a96c78e67a8e720f565e6350da2a21db1. JavaScript: 2,678 parity tests and one expected guard skip. Native-required: 2,446 registered Node/WASM live comparisons; 2,679 parity-package tests with no skips, including the native-required guard; 89 native wrapper, 666 WASM, 28 core and 152 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "ci-e03-b9cd0f5a-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "c4f6b64d6304733fa671a153fee98a39dde1a6d1ade60ac3ca9fa7de8dd77f49",
+      "caseIds": [
+        "file-io-dafbbs-empty-search",
+        "file-io-dafbbs-interleaved-files",
+        "file-io-dafbbs-restart-after-position",
+        "file-io-dafbbs-reverse-an-active-forward-search",
+        "file-io-dafbbs-two-segment-backward",
+        "file-io-dafcs-empty-current-file",
+        "file-io-dafcs-not-initialized",
+        "file-io-dafcs-other-active",
+        "file-io-dafcs-repeated-selection",
+        "file-io-dafcs-select-between-files",
+        "file-io-daffpa-before-first-forward",
+        "file-io-daffpa-empty-repeated-false",
+        "file-io-daffpa-no-search",
+        "file-io-daffpa-previous-exhaust-and-forward",
+        "file-io-daffpa-select-own-file",
+        "file-io-dafgh-before-an-array",
+        "file-io-dafgh-duplicate-open-ownership",
+        "file-io-dafgh-exhausted-file",
+        "file-io-dafgh-interleaved-selection",
+        "file-io-dafgh-reopen-workflow-label",
+        "file-io-dafgn-after-final-array",
+        "file-io-dafgn-before-any-array",
+        "file-io-dafgn-full-and-prefix",
+        "file-io-dafgn-implicit-selection",
+        "file-io-dafgn-negative-capacity",
+        "file-io-dafgn-recover-same-search",
+        "file-io-dafgn-short-capacity",
+        "file-io-dafgn-unstarted-short-capacity",
+        "file-io-dafgs-after-backward-exhaustion",
+        "file-io-dafgs-before-any-array",
+        "file-io-dafgs-changing-packed-addresses",
+        "file-io-dafgs-packed-nan-payload",
+        "file-io-dafgs-select-across-daf-kinds",
+        "file-io-dafgs-unstarted-file",
+        "file-io-dafhsf-active-then-exhausted",
+        "file-io-dafhsf-new-write-handle",
+        "file-io-dafhsf-no-current-change",
+        "file-io-dafhsf-unpositioned-and-empty",
+        "file-io-dafopw-generated-path-alias",
+        "file-io-dafopw-missing-scratch",
+        "file-io-dafopw-read-during-write",
+        "file-io-dafopw-read-open-conflict",
+        "file-io-dafopw-repeated-writer-conflict",
+        "file-io-dafopw-scratch-reopen-read",
+        "file-io-dafopw-writer-after-close"
+      ],
+      "commit": "b9cd0f5a96c78e67a8e720f565e6350da2a21db1",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43590225785/job/132433199612",
+      "observation": "Inspected successful Linux Node 22 native-required job 132433199612 on b9cd0f5a96c78e67a8e720f565e6350da2a21db1: 2,446 registered Node/WASM live comparisons; 2,679 parity-package tests with no skips, including the native-required guard; 89 native wrapper, 666 WASM, 28 core and 152 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "ci-e03-b9cd0f5a-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "c4f6b64d6304733fa671a153fee98a39dde1a6d1ade60ac3ca9fa7de8dd77f49",
+      "caseIds": [
+        "file-io-dafbbs-empty-search",
+        "file-io-dafbbs-interleaved-files",
+        "file-io-dafbbs-restart-after-position",
+        "file-io-dafbbs-reverse-an-active-forward-search",
+        "file-io-dafbbs-two-segment-backward",
+        "file-io-dafcs-empty-current-file",
+        "file-io-dafcs-not-initialized",
+        "file-io-dafcs-other-active",
+        "file-io-dafcs-repeated-selection",
+        "file-io-dafcs-select-between-files",
+        "file-io-daffpa-before-first-forward",
+        "file-io-daffpa-empty-repeated-false",
+        "file-io-daffpa-no-search",
+        "file-io-daffpa-previous-exhaust-and-forward",
+        "file-io-daffpa-select-own-file",
+        "file-io-dafgh-before-an-array",
+        "file-io-dafgh-duplicate-open-ownership",
+        "file-io-dafgh-exhausted-file",
+        "file-io-dafgh-interleaved-selection",
+        "file-io-dafgh-reopen-workflow-label",
+        "file-io-dafgn-after-final-array",
+        "file-io-dafgn-before-any-array",
+        "file-io-dafgn-full-and-prefix",
+        "file-io-dafgn-implicit-selection",
+        "file-io-dafgn-negative-capacity",
+        "file-io-dafgn-recover-same-search",
+        "file-io-dafgn-short-capacity",
+        "file-io-dafgn-unstarted-short-capacity",
+        "file-io-dafgs-after-backward-exhaustion",
+        "file-io-dafgs-before-any-array",
+        "file-io-dafgs-changing-packed-addresses",
+        "file-io-dafgs-packed-nan-payload",
+        "file-io-dafgs-select-across-daf-kinds",
+        "file-io-dafgs-unstarted-file",
+        "file-io-dafhsf-active-then-exhausted",
+        "file-io-dafhsf-new-write-handle",
+        "file-io-dafhsf-no-current-change",
+        "file-io-dafhsf-unpositioned-and-empty",
+        "file-io-dafopw-generated-path-alias",
+        "file-io-dafopw-missing-scratch",
+        "file-io-dafopw-read-during-write",
+        "file-io-dafopw-read-open-conflict",
+        "file-io-dafopw-repeated-writer-conflict",
+        "file-io-dafopw-scratch-reopen-read",
+        "file-io-dafopw-writer-after-close"
+      ],
+      "commit": "b9cd0f5a96c78e67a8e720f565e6350da2a21db1",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43590225785/job/132433199612",
+      "observation": "Inspected successful Linux Node 22 native-required job 132433199612 on b9cd0f5a96c78e67a8e720f565e6350da2a21db1: 2,446 registered Node/WASM live comparisons; 2,679 parity-package tests with no skips, including the native-required guard; 89 native wrapper, 666 WASM, 28 core and 152 facade tests passed.",
+      "historical": true
+    },
+    {
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "390a72ad94cf862d67d4ab8d37eecd859fec356b64e3cb29aa3e3ab03401dbfa",
+      "caseIds": [
+        "file-io-dafbbs-empty-search",
+        "file-io-dafbbs-interleaved-files",
+        "file-io-dafbbs-restart-after-position",
+        "file-io-dafbbs-reverse-an-active-forward-search",
+        "file-io-dafbbs-two-segment-backward",
+        "file-io-dafcs-empty-current-file",
+        "file-io-dafcs-not-initialized",
+        "file-io-dafcs-other-active",
+        "file-io-dafcs-repeated-selection",
+        "file-io-dafcs-select-between-files",
+        "file-io-daffpa-before-first-forward",
+        "file-io-daffpa-empty-repeated-false",
+        "file-io-daffpa-no-search",
+        "file-io-daffpa-previous-exhaust-and-forward",
+        "file-io-daffpa-select-own-file",
+        "file-io-dafgh-before-an-array",
+        "file-io-dafgh-duplicate-open-ownership",
+        "file-io-dafgh-exhausted-file",
+        "file-io-dafgh-interleaved-selection",
+        "file-io-dafgh-reopen-workflow-label",
+        "file-io-dafgn-after-final-array",
+        "file-io-dafgn-before-any-array",
+        "file-io-dafgn-full-and-prefix",
+        "file-io-dafgn-implicit-selection",
+        "file-io-dafgn-negative-capacity",
+        "file-io-dafgn-recover-same-search",
+        "file-io-dafgn-short-capacity",
+        "file-io-dafgn-unstarted-short-capacity",
+        "file-io-dafgs-after-backward-exhaustion",
+        "file-io-dafgs-before-any-array",
+        "file-io-dafgs-changing-packed-addresses",
+        "file-io-dafgs-packed-nan-payload",
+        "file-io-dafgs-select-across-daf-kinds",
+        "file-io-dafgs-unstarted-file",
+        "file-io-dafhsf-active-then-exhausted",
+        "file-io-dafhsf-new-write-handle",
+        "file-io-dafhsf-no-current-change",
+        "file-io-dafhsf-unpositioned-and-empty",
+        "file-io-dafopw-generated-path-alias",
+        "file-io-dafopw-missing-scratch",
+        "file-io-dafopw-read-during-write",
+        "file-io-dafopw-read-open-conflict",
+        "file-io-dafopw-repeated-writer-conflict",
+        "file-io-dafopw-scratch-reopen-read",
+        "file-io-dafopw-writer-after-close"
+      ],
+      "id": "local-cp04-3c3e3f368191-node",
+      "kind": "local",
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 3c3e3f368191d553e84ecc599d449055df985b1c. The native-required lane completed 8056 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45336611602/job/138250075470"
+    },
+    {
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "390a72ad94cf862d67d4ab8d37eecd859fec356b64e3cb29aa3e3ab03401dbfa",
+      "caseIds": [
+        "file-io-dafbbs-empty-search",
+        "file-io-dafbbs-interleaved-files",
+        "file-io-dafbbs-restart-after-position",
+        "file-io-dafbbs-reverse-an-active-forward-search",
+        "file-io-dafbbs-two-segment-backward",
+        "file-io-dafcs-empty-current-file",
+        "file-io-dafcs-not-initialized",
+        "file-io-dafcs-other-active",
+        "file-io-dafcs-repeated-selection",
+        "file-io-dafcs-select-between-files",
+        "file-io-daffpa-before-first-forward",
+        "file-io-daffpa-empty-repeated-false",
+        "file-io-daffpa-no-search",
+        "file-io-daffpa-previous-exhaust-and-forward",
+        "file-io-daffpa-select-own-file",
+        "file-io-dafgh-before-an-array",
+        "file-io-dafgh-duplicate-open-ownership",
+        "file-io-dafgh-exhausted-file",
+        "file-io-dafgh-interleaved-selection",
+        "file-io-dafgh-reopen-workflow-label",
+        "file-io-dafgn-after-final-array",
+        "file-io-dafgn-before-any-array",
+        "file-io-dafgn-full-and-prefix",
+        "file-io-dafgn-implicit-selection",
+        "file-io-dafgn-negative-capacity",
+        "file-io-dafgn-recover-same-search",
+        "file-io-dafgn-short-capacity",
+        "file-io-dafgn-unstarted-short-capacity",
+        "file-io-dafgs-after-backward-exhaustion",
+        "file-io-dafgs-before-any-array",
+        "file-io-dafgs-changing-packed-addresses",
+        "file-io-dafgs-packed-nan-payload",
+        "file-io-dafgs-select-across-daf-kinds",
+        "file-io-dafgs-unstarted-file",
+        "file-io-dafhsf-active-then-exhausted",
+        "file-io-dafhsf-new-write-handle",
+        "file-io-dafhsf-no-current-change",
+        "file-io-dafhsf-unpositioned-and-empty",
+        "file-io-dafopw-generated-path-alias",
+        "file-io-dafopw-missing-scratch",
+        "file-io-dafopw-read-during-write",
+        "file-io-dafopw-read-open-conflict",
+        "file-io-dafopw-repeated-writer-conflict",
+        "file-io-dafopw-scratch-reopen-read",
+        "file-io-dafopw-writer-after-close"
+      ],
+      "id": "ci-cp04-3c3e3f368191-node",
+      "kind": "ci",
+      "commit": "5759b72e80d904295926aa968ee1c07006abdf51",
+      "url": "https://github.com/rybosome/tspice/actions/runs/45348374307/job/138288412178",
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 8056 live comparisons without unexpected skips."
+    },
+    {
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "390a72ad94cf862d67d4ab8d37eecd859fec356b64e3cb29aa3e3ab03401dbfa",
+      "caseIds": [
+        "file-io-dafbbs-empty-search",
+        "file-io-dafbbs-interleaved-files",
+        "file-io-dafbbs-restart-after-position",
+        "file-io-dafbbs-reverse-an-active-forward-search",
+        "file-io-dafbbs-two-segment-backward",
+        "file-io-dafcs-empty-current-file",
+        "file-io-dafcs-not-initialized",
+        "file-io-dafcs-other-active",
+        "file-io-dafcs-repeated-selection",
+        "file-io-dafcs-select-between-files",
+        "file-io-daffpa-before-first-forward",
+        "file-io-daffpa-empty-repeated-false",
+        "file-io-daffpa-no-search",
+        "file-io-daffpa-previous-exhaust-and-forward",
+        "file-io-daffpa-select-own-file",
+        "file-io-dafgh-before-an-array",
+        "file-io-dafgh-duplicate-open-ownership",
+        "file-io-dafgh-exhausted-file",
+        "file-io-dafgh-interleaved-selection",
+        "file-io-dafgh-reopen-workflow-label",
+        "file-io-dafgn-after-final-array",
+        "file-io-dafgn-before-any-array",
+        "file-io-dafgn-full-and-prefix",
+        "file-io-dafgn-implicit-selection",
+        "file-io-dafgn-negative-capacity",
+        "file-io-dafgn-recover-same-search",
+        "file-io-dafgn-short-capacity",
+        "file-io-dafgn-unstarted-short-capacity",
+        "file-io-dafgs-after-backward-exhaustion",
+        "file-io-dafgs-before-any-array",
+        "file-io-dafgs-changing-packed-addresses",
+        "file-io-dafgs-packed-nan-payload",
+        "file-io-dafgs-select-across-daf-kinds",
+        "file-io-dafgs-unstarted-file",
+        "file-io-dafhsf-active-then-exhausted",
+        "file-io-dafhsf-new-write-handle",
+        "file-io-dafhsf-no-current-change",
+        "file-io-dafhsf-unpositioned-and-empty",
+        "file-io-dafopw-generated-path-alias",
+        "file-io-dafopw-missing-scratch",
+        "file-io-dafopw-read-during-write",
+        "file-io-dafopw-read-open-conflict",
+        "file-io-dafopw-repeated-writer-conflict",
+        "file-io-dafopw-scratch-reopen-read",
+        "file-io-dafopw-writer-after-close"
+      ],
+      "id": "local-cp04-3c3e3f368191-wasm",
+      "kind": "local",
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 3c3e3f368191d553e84ecc599d449055df985b1c. The native-required lane completed 8056 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45336611602/job/138250075470"
+    },
+    {
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "390a72ad94cf862d67d4ab8d37eecd859fec356b64e3cb29aa3e3ab03401dbfa",
+      "caseIds": [
+        "file-io-dafbbs-empty-search",
+        "file-io-dafbbs-interleaved-files",
+        "file-io-dafbbs-restart-after-position",
+        "file-io-dafbbs-reverse-an-active-forward-search",
+        "file-io-dafbbs-two-segment-backward",
+        "file-io-dafcs-empty-current-file",
+        "file-io-dafcs-not-initialized",
+        "file-io-dafcs-other-active",
+        "file-io-dafcs-repeated-selection",
+        "file-io-dafcs-select-between-files",
+        "file-io-daffpa-before-first-forward",
+        "file-io-daffpa-empty-repeated-false",
+        "file-io-daffpa-no-search",
+        "file-io-daffpa-previous-exhaust-and-forward",
+        "file-io-daffpa-select-own-file",
+        "file-io-dafgh-before-an-array",
+        "file-io-dafgh-duplicate-open-ownership",
+        "file-io-dafgh-exhausted-file",
+        "file-io-dafgh-interleaved-selection",
+        "file-io-dafgh-reopen-workflow-label",
+        "file-io-dafgn-after-final-array",
+        "file-io-dafgn-before-any-array",
+        "file-io-dafgn-full-and-prefix",
+        "file-io-dafgn-implicit-selection",
+        "file-io-dafgn-negative-capacity",
+        "file-io-dafgn-recover-same-search",
+        "file-io-dafgn-short-capacity",
+        "file-io-dafgn-unstarted-short-capacity",
+        "file-io-dafgs-after-backward-exhaustion",
+        "file-io-dafgs-before-any-array",
+        "file-io-dafgs-changing-packed-addresses",
+        "file-io-dafgs-packed-nan-payload",
+        "file-io-dafgs-select-across-daf-kinds",
+        "file-io-dafgs-unstarted-file",
+        "file-io-dafhsf-active-then-exhausted",
+        "file-io-dafhsf-new-write-handle",
+        "file-io-dafhsf-no-current-change",
+        "file-io-dafhsf-unpositioned-and-empty",
+        "file-io-dafopw-generated-path-alias",
+        "file-io-dafopw-missing-scratch",
+        "file-io-dafopw-read-during-write",
+        "file-io-dafopw-read-open-conflict",
+        "file-io-dafopw-repeated-writer-conflict",
+        "file-io-dafopw-scratch-reopen-read",
+        "file-io-dafopw-writer-after-close"
+      ],
+      "id": "ci-cp04-3c3e3f368191-wasm",
+      "kind": "ci",
+      "commit": "5759b72e80d904295926aa968ee1c07006abdf51",
+      "url": "https://github.com/rybosome/tspice/actions/runs/45348374307/job/138288412178",
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 8056 live comparisons without unexpected skips."
     }
   ],
   "routines": [
@@ -1313,13 +1785,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.dafbbs -> Node owner registry and mutex-protected native addon -> shared tspice_dafbbs -> dafbbs_c.",
           "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
           ]
         },
         "wasm": {
@@ -1332,13 +1806,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.dafbbs -> WASM owner registry and scoped linear-memory buffers -> shared tspice_dafbbs -> dafbbs_c.",
           "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
           ]
         }
       }
@@ -1409,13 +1885,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.dafcs -> Node owner registry and mutex-protected native addon -> shared tspice_dafcs -> dafcs_c.",
           "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
           ]
         },
         "wasm": {
@@ -1428,13 +1906,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.dafcs -> WASM owner registry and scoped linear-memory buffers -> shared tspice_dafcs -> dafcs_c.",
           "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
           ]
         }
       }
@@ -1523,13 +2003,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "alias",
           "trace": "raw.daffpa -> Node owner registry and mutex-protected native addon -> shared tspice_daffpa -> dafcs_c -> chkin_c -> linked daffpa_ -> chkout_c.",
           "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
           ]
         },
         "wasm": {
@@ -1543,13 +2025,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "alias",
           "trace": "raw.daffpa -> WASM owner registry and scoped linear-memory buffers -> shared tspice_daffpa -> dafcs_c -> chkin_c -> linked daffpa_ -> chkout_c.",
           "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
           ]
         }
       }
@@ -1637,13 +2121,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.dafgh -> Node owner registry and mutex-protected native addon -> shared tspice_dafgh -> dafgh_c -> existing owner-local reference.",
           "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
           ]
         },
         "wasm": {
@@ -1657,13 +2143,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.dafgh -> WASM owner registry and scoped linear-memory buffers -> shared tspice_dafgh -> dafgh_c -> existing owner-local reference.",
           "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
           ]
         }
       }
@@ -1761,13 +2249,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.dafgn -> Node owner registry and mutex-protected native addon -> shared tspice_dafgn -> dafcs_c -> dafgn_c -> strict UTF-8 decode.",
           "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
           ]
         },
         "wasm": {
@@ -1781,13 +2271,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.dafgn -> WASM owner registry and scoped linear-memory buffers -> shared tspice_dafgn -> dafcs_c -> dafgn_c -> strict UTF-8 decode.",
           "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
           ]
         }
       }
@@ -1881,13 +2373,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.dafgs -> Node owner registry and mutex-protected native addon -> shared tspice_dafgs -> dafcs_c -> dafhsf_c -> dafgs_c -> owned Uint8Array.",
           "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
           ]
         },
         "wasm": {
@@ -1901,13 +2395,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.dafgs -> WASM owner registry and scoped linear-memory buffers -> shared tspice_dafgs -> dafcs_c -> dafhsf_c -> dafgs_c -> owned Uint8Array.",
           "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
           ]
         }
       }
@@ -1973,13 +2469,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.dafhsf -> Node owner registry and mutex-protected native addon -> shared tspice_dafhsf -> dafhsf_c.",
           "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
           ]
         },
         "wasm": {
@@ -1992,13 +2490,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.dafhsf -> WASM owner registry and scoped linear-memory buffers -> shared tspice_dafhsf -> dafhsf_c.",
           "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
           ]
         }
       }
@@ -2095,13 +2595,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.dafopw -> Node owner registry and mutex-protected native addon -> shared tspice_dafopw -> dafopw_c.",
           "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
           ]
         },
         "wasm": {
@@ -2115,13 +2617,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.dafopw -> WASM owner registry and scoped linear-memory buffers -> shared tspice_dafopw -> dafopw_c.",
           "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
           ]
         }
       }

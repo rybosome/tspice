@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+import math
 import struct
 from typing import Any
 
@@ -8,28 +9,99 @@ import spiceypy as sp
 from spiceypy.utils.exceptions import SpiceyError
 from spiceypy.utils.support_types import SPICEINT_CELL
 
+from ..interpolated_spk_oracle import write_interpolated_spk
+from ..tle_oracle import parse_tle, propagate_tle
+
 from ..window_algebra_oracle import allocate_window
+from .. import relative_observer_oracle
+from .. import correction_oracle
 from ..models import (
     StepEphemerisSpkcls,
     StepEphemerisSpkcov,
     StepEphemerisSpkez,
     StepEphemerisSpkezp,
     StepEphemerisSpkezr,
+    StepEphemerisConics,
+    StepEphemerisEqncpv,
+    StepEphemerisOscelt,
+    StepEphemerisOscltx,
+    StepEphemerisProp2b,
+    StepEphemerisGetelm,
+    StepEphemerisEvsgp4,
+    StepEphemerisSpkcpo,
+    StepEphemerisSpkcpt,
+    StepEphemerisSpkcvo,
+    StepEphemerisSpkcvt,
+    StepEphemerisAzlcpo,
+    StepEphemerisSpkacs,
+    StepEphemerisSpkapo,
+    StepEphemerisSpkapp,
+    StepEphemerisSpkaps,
+    StepEphemerisSpkltc,
+    StepEphemerisStelab,
+    StepEphemerisStlabx,
+    StepEphemerisLtime,
     StepEphemerisSpkgeo,
     StepEphemerisSpkgps,
     StepEphemerisSpkobj,
     StepEphemerisSpkopa,
+    StepEphemerisSpklef,
+    StepEphemerisSpkuef,
+    StepEphemerisSpkpvn,
+    StepEphemerisSpksub,
     StepEphemerisSpkopn,
     StepEphemerisSpkpds,
     StepEphemerisSpkpos,
     StepEphemerisSpksfs,
     StepEphemerisSpkssb,
     StepEphemerisSpkuds,
+    StepEphemerisSpkw02,
+    StepEphemerisSpkw03,
+    StepEphemerisSpkw20,
+    StepEphemerisSpkw09,
+    StepEphemerisSpkw12,
+    StepEphemerisSpkw13,
+    StepEphemerisSpkw18,
+    StepEphemerisSpkw05,
+    StepEphemerisSpkw10,
+    StepEphemerisSpkw15,
+    StepEphemerisSpkw17,
+    StepEphemerisSpk14b,
+    StepEphemerisSpk14a,
+    StepEphemerisSpk14e,
     StepEphemerisSpkw08,
     StepOutput,
     WorkflowStep,
 )
 from ..runtime import SidecarRuntimeContext, resolve_path_ref
+
+
+def _chebyshev_writer_data(step: StepEphemerisSpkw02 | StepEphemerisSpkw03 | StepEphemerisSpkw20) -> list[float]:
+    """Check physical storage before calling the independent signed-32-bit CSPICE ABI."""
+    for value in (step.body, step.center, step.n, step.degree):
+        if not -(2**31) <= value < 2**31:
+            raise ValueError("SPK integer exceeds the signed 32-bit ABI")
+    if "\0" in step.frame or "\0" in step.segid:
+        raise ValueError("Embedded NUL in SPK string")
+    scalars = [step.first, step.last, step.intlen]
+    if isinstance(step, StepEphemerisSpkw20):
+        scalars.extend([step.dscale, step.tscale, step.initjd, step.initfr])
+        max_degree, components, extra = 50, 3, 2
+    else:
+        scalars.append(step.btime)
+        max_degree = 27
+        components = 6 if isinstance(step, StepEphemerisSpkw03) else 3
+        extra = 1
+    if not all(math.isfinite(value) for value in scalars) or len(step.cdata) > 33554432:
+        raise ValueError("Invalid SPK numeric field or coefficient buffer size")
+    # CSPICE signals count and degree errors before accessing the first record.
+    if step.n <= 0 or not 0 <= step.degree <= max_degree:
+        return [0.0]
+    if step.n * components * (step.degree + extra) != len(step.cdata):
+        raise ValueError("Invalid physical Chebyshev record length")
+    if not all(math.isfinite(word) for word in step.cdata):
+        raise ValueError("Nonfinite Chebyshev coefficient")
+    return step.cdata
 
 
 def _to_float(value: Any, *, label: str) -> float:
@@ -220,6 +292,144 @@ def run_ephemeris_step(step: WorkflowStep, context: SidecarRuntimeContext) -> St
         )
         return StepOutput(op=step.op, value={"state": state, "lt": lt})
 
+    if isinstance(step, StepEphemerisConics):
+        result = sp.conics(step.elts, step.et)
+        return StepOutput(op=step.op, value=_to_float_list(result, expected_len=6, label="ephemeris.conics"))
+
+    if isinstance(step, StepEphemerisEqncpv):
+        result = sp.eqncpv(step.et, step.epoch, step.eqel, step.rapol, step.decpol)
+        return StepOutput(op=step.op, value=_to_float_list(result, expected_len=6, label="ephemeris.eqncpv"))
+
+    if isinstance(step, StepEphemerisOscelt):
+        result = sp.oscelt(step.state, step.et, step.mu)
+        return StepOutput(op=step.op, value=_to_float_list(result, expected_len=8, label="ephemeris.oscelt"))
+
+    if isinstance(step, StepEphemerisOscltx):
+        result = sp.oscltx(step.state, step.et, step.mu)
+        # SpiceyPy 6.0.3 omits its error-check decorator on oscltx.
+        # Read the actual toolkit condition before consuming the output.
+        sp.check_for_spice_error(sp.oscltx)
+        return StepOutput(op=step.op, value=_to_float_list(result, expected_len=11, label="ephemeris.oscltx"))
+
+    if isinstance(step, StepEphemerisProp2b):
+        result = sp.prop2b(step.gm, step.pvinit, step.dt)
+        return StepOutput(op=step.op, value=_to_float_list(result, expected_len=6, label="ephemeris.prop2b"))
+
+    if isinstance(step, (StepEphemerisGetelm, StepEphemerisEvsgp4)):
+        try:
+            value = (parse_tle(step.firstYear, step.lines) if isinstance(step, StepEphemerisGetelm)
+                     else propagate_tle(step.et, step.geophs, step.elems))
+            return StepOutput(op=step.op, value=value)
+        except SpiceyError as error:
+            if not step.captureError:
+                raise
+            return StepOutput(op=step.op, value={"short": error.short})
+
+    if isinstance(step, StepEphemerisSpkcpo):
+        result = relative_observer_oracle.evaluate("spkcpo", {
+            "target": step.target,
+            "et": step.et,
+            "outref": step.outref,
+            "refloc": step.refloc,
+            "abcorr": step.abcorr,
+            "obspos": step.obspos,
+            "obsctr": step.obsctr,
+            "obsref": step.obsref,
+        })
+        state, lt = _normalize_state_lt(result,label=step.op)
+        return StepOutput(op=step.op,value={"state": state, "lt":lt})
+
+    if isinstance(step, StepEphemerisSpkcpt):
+        result = relative_observer_oracle.evaluate("spkcpt", {
+            "trgpos": step.trgpos,
+            "trgctr": step.trgctr,
+            "trgref": step.trgref,
+            "et": step.et,
+            "outref": step.outref,
+            "refloc": step.refloc,
+            "abcorr": step.abcorr,
+            "obsrvr": step.obsrvr,
+        })
+        state, lt = _normalize_state_lt(result,label=step.op)
+        return StepOutput(op=step.op,value={"state": state, "lt":lt})
+
+    if isinstance(step, StepEphemerisSpkcvo):
+        result = relative_observer_oracle.evaluate("spkcvo", {
+            "target": step.target,
+            "et": step.et,
+            "outref": step.outref,
+            "refloc": step.refloc,
+            "abcorr": step.abcorr,
+            "obssta": step.obssta,
+            "obsepc": step.obsepc,
+            "obsctr": step.obsctr,
+            "obsref": step.obsref,
+        })
+        state, lt = _normalize_state_lt(result,label=step.op)
+        return StepOutput(op=step.op,value={"state": state, "lt":lt})
+
+    if isinstance(step, StepEphemerisSpkcvt):
+        result = relative_observer_oracle.evaluate("spkcvt", {
+            "trgsta": step.trgsta,
+            "trgepc": step.trgepc,
+            "trgctr": step.trgctr,
+            "trgref": step.trgref,
+            "et": step.et,
+            "outref": step.outref,
+            "refloc": step.refloc,
+            "abcorr": step.abcorr,
+            "obsrvr": step.obsrvr,
+        })
+        state, lt = _normalize_state_lt(result,label=step.op)
+        return StepOutput(op=step.op,value={"state": state, "lt":lt})
+
+    if isinstance(step, StepEphemerisAzlcpo):
+        result = relative_observer_oracle.evaluate("azlcpo", {
+            "method": step.method,
+            "target": step.target,
+            "et": step.et,
+            "abcorr": step.abcorr,
+            "azccw": step.azccw,
+            "elplsz": step.elplsz,
+            "obspos": step.obspos,
+            "obsctr": step.obsctr,
+            "obsref": step.obsref,
+        })
+        state, lt = _normalize_state_lt(result,label=step.op)
+        return StepOutput(op=step.op,value={"state": state, "lt":lt})
+
+    if isinstance(step, StepEphemerisSpkacs):
+        result = correction_oracle.spkacs(step.target, step.et, step.ref, step.abcorr, step.observer)
+        return StepOutput(op=step.op, value={'state': _to_float_list(result[0], expected_len=6, label=step.op), 'lt':float(result[1]), 'dlt':float(result[2])})
+
+    if isinstance(step, StepEphemerisSpkapo):
+        result = sp.spkapo(step.target, step.et, step.ref, step.observerState, correction_oracle.option(step.abcorr))
+        return StepOutput(op=step.op, value={'pos':_to_float_list(result[0], expected_len=3, label=step.op), 'lt':float(result[1])})
+
+    if isinstance(step, StepEphemerisSpkapp):
+        result = correction_oracle.spkapp(step.target, step.et, step.ref, step.observerState, step.abcorr)
+        return StepOutput(op=step.op, value={'state':_to_float_list(result[0], expected_len=6, label=step.op), 'lt':float(result[1])})
+
+    if isinstance(step, StepEphemerisSpkaps):
+        result = correction_oracle.spkaps(step.target, step.et, step.ref, step.abcorr, step.observerState, step.observerAcceleration)
+        return StepOutput(op=step.op, value={'state': _to_float_list(result[0], expected_len=6, label=step.op), 'lt':float(result[1]), 'dlt':float(result[2])})
+
+    if isinstance(step, StepEphemerisSpkltc):
+        result = sp.spkltc(step.target, step.et, step.ref, correction_oracle.option(step.abcorr), step.observerState)
+        return StepOutput(op=step.op, value={'state': _to_float_list(result[0], expected_len=6, label=step.op), 'lt':float(result[1]), 'dlt':float(result[2])})
+
+    if isinstance(step, StepEphemerisStelab):
+        result = sp.stelab(step.position, step.observerVelocity)
+        return StepOutput(op=step.op, value=_to_float_list(result, expected_len=3, label=step.op))
+
+    if isinstance(step, StepEphemerisStlabx):
+        result = sp.stlabx(step.position, step.observerVelocity)
+        return StepOutput(op=step.op, value=_to_float_list(result, expected_len=3, label=step.op))
+
+    if isinstance(step, StepEphemerisLtime):
+        result = correction_oracle.ltime(step.etobs, step.observer, step.dir, step.target)
+        return StepOutput(op=step.op, value={'ettarg':float(result[0]), 'elapsd':float(result[1])})
+
     if isinstance(step, StepEphemerisSpkgeo):
         state, lt = _normalize_state_lt(
             sp.spkgeo(step.target, step.et, step.ref, step.observer),
@@ -253,6 +463,41 @@ def run_ephemeris_step(step: WorkflowStep, context: SidecarRuntimeContext) -> St
         _set_spk_handle(context, step.handleId, handle)
         return StepOutput(op=step.op, value={"handleId": step.handleId})
 
+    if isinstance(step, StepEphemerisSpklef):
+        direct = context.state.ephemeris.directSpks
+        handle = int(sp.spklef(_resolve_path(context, step.file)))
+        direct[step.id] = handle
+        def release():
+            if direct.get(step.id) == handle:
+                sp.spkuef(handle)
+                for name in list(direct):
+                    if direct[name] == handle:
+                        del direct[name]
+        context.register_finalizer("ephemeris.spkuef:" + step.id, release)
+        return StepOutput(op=step.op, value={"id": step.id})
+    if isinstance(step, StepEphemerisSpkuef):
+        direct = context.state.ephemeris.directSpks
+        handle = direct[step.id]
+        sp.spkuef(handle)
+        for name in list(direct):
+            if direct[name] == handle:
+                del direct[name]
+        return StepOutput(op=step.op, value=None)
+    if isinstance(step, (StepEphemerisSpkpvn, StepEphemerisSpksub)):
+        if step.mode == "daf":
+            handle = context.state.fileIo.handles[step.source].handle
+            sp.dafcs(handle)
+            descr = sp.dafgs(5)
+        else:
+            ephemeris = context.state.ephemeris
+            handle = (ephemeris.borrowedSpks if step.mode == "borrowed" else ephemeris.directSpks)[step.source]
+            descr = ephemeris.descriptors[step.descriptor]
+        if isinstance(step, StepEphemerisSpkpvn):
+            frame, state, center = sp.spkpvn(handle, descr, step.et)
+            return StepOutput(op=step.op, value={"ref": int(frame), "state": state.tolist(), "center": int(center)})
+        sp.spksub(handle, descr, step.ident, step.begin, step.end, _require_spk_handle(context, step.writer))
+        return StepOutput(op=step.op, value=None)
+
     if isinstance(step, StepEphemerisSpkopn):
         if step.handleId in context.state.ephemeris.spkHandles:
             raise ValueError(f"SPK handle already exists: {step.handleId}")
@@ -283,11 +528,13 @@ def run_ephemeris_step(step: WorkflowStep, context: SidecarRuntimeContext) -> St
         # Preserve the actual toolkit error before interpreting the found flag:
         # the default decorator otherwise masks NOLOADEDFILES as NotFoundError.
         with sp.no_found_check():
-            out = _normalize_spksfs_result(sp.spksfs(step.body, step.et, 41))
+            actual = sp.spksfs(step.body, step.et, 41)
+            out = _normalize_spksfs_result(actual)
             if out["found"]:
                 packed=_to_float_list(out["descr"],expected_len=5,label="spksfs.descr")
                 if step.descrId is not None:
                     context.state.ephemeris.descriptors[step.descrId]=packed
+                    context.state.ephemeris.borrowedSpks[step.descrId]=int(actual[0])
                 out["descr"]={"first":packed[0],"last":packed[1],"packedIntegers":list(struct.unpack("=6i",struct.pack("=3d",*packed[2:])))}
             return StepOutput(op=step.op, value=out)
 
@@ -314,6 +561,41 @@ def run_ephemeris_step(step: WorkflowStep, context: SidecarRuntimeContext) -> St
                 "eaddr": int(eaddr),
             },
         )
+
+    if isinstance(step, (StepEphemerisSpkw02, StepEphemerisSpkw03, StepEphemerisSpkw20)):
+        handle = _require_spk_handle(context, step.handleId)
+        data = _chebyshev_writer_data(step)
+        common = (handle, step.body, step.center, step.frame, step.first, step.last,
+                  step.segid, step.intlen, step.n, step.degree, data)
+        if isinstance(step, StepEphemerisSpkw20):
+            sp.spkw20(*common, step.dscale, step.tscale, step.initjd, step.initfr)
+        elif isinstance(step, StepEphemerisSpkw03):
+            sp.spkw03(*common, step.btime)
+        else:
+            sp.spkw02(*common, step.btime)
+        return StepOutput(op=step.op, value=None)
+
+    if isinstance(step, (StepEphemerisSpkw09, StepEphemerisSpkw12, StepEphemerisSpkw13, StepEphemerisSpkw18)):
+        write_interpolated_spk(_require_spk_handle(context, step.handleId), step)
+        return StepOutput(op=step.op, value=None)
+
+    if isinstance(step,(StepEphemerisSpkw05,StepEphemerisSpkw10,StepEphemerisSpkw15,StepEphemerisSpkw17)):
+        from ..analytic_spk_oracle import write_analytic
+        handle = _require_spk_handle(context, step.handleId)
+        state = context.state.ephemeris
+        if isinstance(step, StepEphemerisSpkw10):
+            from ..streaming_spk_oracle import check_generic_begin
+            check_generic_begin(state, handle, step.segid, streaming=False)
+            state.spk14_last = None
+        elif handle in state.spk14_degrees:
+            raise ValueError("Finish the active type 14 stream first")
+        write_analytic(handle, step)
+        return StepOutput(op=step.op,value=None)
+
+    if isinstance(step, (StepEphemerisSpk14b, StepEphemerisSpk14a, StepEphemerisSpk14e)):
+        from ..streaming_spk_oracle import stream
+        stream(context.state.ephemeris, _require_spk_handle(context, step.handleId), step)
+        return StepOutput(op=step.op, value=None)
 
     if isinstance(step, StepEphemerisSpkw08):
         handle = _require_spk_handle(context, step.handleId)

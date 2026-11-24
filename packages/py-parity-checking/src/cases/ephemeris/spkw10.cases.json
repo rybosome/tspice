@@ -1,0 +1,1007 @@
+[
+  {
+    "caseId": "ephemeris-spkw10-orbit",
+    "description": "Compare all six physical state components at the segment endpoints, epoch and positive/negative offsets, object set, coverage, identifier and unpacked descriptor.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw10-orbit.bsp"
+        },
+        "ifname": "AUTHORED ANALYTIC",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw10",
+        "handleId": "H",
+        "body": 196010,
+        "center": 0,
+        "frame": "J2000",
+        "first": -300,
+        "last": 300,
+        "segid": "ANALYTIC 10",
+        "consts": [
+          0.001082616, -2.53881e-6, -1.65597e-6, 0.0743669161, 120, 78,
+          6378.135, 1
+        ],
+        "elems": [0, 0, 1e-5, 0.5, 0.2, 0.03, 0.4, 0.7, 0.06, 0],
+        "epochs": [0]
+      },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkobj",
+        "spk": {
+          "kind": "scratch",
+          "rel": "spkw10-orbit.bsp"
+        },
+        "idsCellId": "I",
+        "maxCardinality": 8
+      },
+      {
+        "op": "ephemeris.spkcov",
+        "spk": {
+          "kind": "scratch",
+          "rel": "spkw10-orbit.bsp"
+        },
+        "idcode": 196010,
+        "coverWindowId": "W",
+        "maxIntervals": 8
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/naif0012.tls"
+        }
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw10-orbit.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.spksfs",
+        "body": 196010,
+        "et": -300,
+        "descrId": "D"
+      },
+      {
+        "op": "ephemeris.spkuds",
+        "descrId": "D"
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196010,
+        "et": -300,
+        "ref": "J2000",
+        "observer": 0
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196010,
+        "et": -11,
+        "ref": "J2000",
+        "observer": 0
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196010,
+        "et": 0,
+        "ref": "J2000",
+        "observer": 0
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196010,
+        "et": 1,
+        "ref": "J2000",
+        "observer": 0
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196010,
+        "et": 300,
+        "ref": "J2000",
+        "observer": 0
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkw10-appended-coverage",
+    "description": "Append a shorter segment. Its descriptor and states take precedence at covered times; the original segment supplies outer epochs.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw10-appended-coverage.bsp"
+        },
+        "ifname": "AUTHORED ANALYTIC",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw10",
+        "handleId": "H",
+        "body": 196010,
+        "center": 0,
+        "frame": "J2000",
+        "first": -300,
+        "last": 300,
+        "segid": "ANALYTIC 10",
+        "consts": [
+          0.001082616, -2.53881e-6, -1.65597e-6, 0.0743669161, 120, 78,
+          6378.135, 1
+        ],
+        "elems": [0, 0, 1e-5, 0.5, 0.2, 0.03, 0.4, 0.7, 0.06, 0],
+        "epochs": [0]
+      },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkopa",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw10-appended-coverage.bsp"
+        },
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw10",
+        "handleId": "H",
+        "body": 196010,
+        "center": 0,
+        "frame": "J2000",
+        "first": -2,
+        "last": 2,
+        "segid": "APPENDED MODEL",
+        "consts": [
+          0.001082616, -2.53881e-6, -1.65597e-6, 0.0743669161, 120, 78,
+          6378.135, 1
+        ],
+        "elems": [0, 0, 1e-5, 0.5, 0.2, 0.03, 0.4, 0.7, 0.055, 0],
+        "epochs": [0]
+      },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkobj",
+        "spk": {
+          "kind": "scratch",
+          "rel": "spkw10-appended-coverage.bsp"
+        },
+        "idsCellId": "I",
+        "maxCardinality": 8
+      },
+      {
+        "op": "ephemeris.spkcov",
+        "spk": {
+          "kind": "scratch",
+          "rel": "spkw10-appended-coverage.bsp"
+        },
+        "idcode": 196010,
+        "coverWindowId": "W",
+        "maxIntervals": 8
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/naif0012.tls"
+        }
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw10-appended-coverage.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.spksfs",
+        "body": 196010,
+        "et": 0,
+        "descrId": "D"
+      },
+      {
+        "op": "ephemeris.spkuds",
+        "descrId": "D"
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196010,
+        "et": 0,
+        "ref": "J2000",
+        "observer": 0
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196010,
+        "et": -20,
+        "ref": "J2000",
+        "observer": 0
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196010,
+        "et": 1,
+        "ref": "J2000",
+        "observer": 0
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196010,
+        "et": 25,
+        "ref": "J2000",
+        "observer": 0
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkw10-deep-space",
+    "description": "Long period mean motion exercises deep-space SGP4 and the TEME-to-J2000 transform.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw10-deep-space.bsp"
+        },
+        "ifname": "AUTHORED ANALYTIC",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw10",
+        "handleId": "H",
+        "body": 196010,
+        "center": 0,
+        "frame": "J2000",
+        "first": -300,
+        "last": 300,
+        "segid": "ANALYTIC 10",
+        "consts": [
+          0.001082616, -2.53881e-6, -1.65597e-6, 0.0743669161, 120, 78,
+          6378.135, 1
+        ],
+        "elems": [0, 0, 1e-5, 0.5, 0.2, 0.03, 0.4, 0.7, 0.009, 0],
+        "epochs": [0]
+      },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkobj",
+        "spk": {
+          "kind": "scratch",
+          "rel": "spkw10-deep-space.bsp"
+        },
+        "idsCellId": "I",
+        "maxCardinality": 8
+      },
+      {
+        "op": "ephemeris.spkcov",
+        "spk": {
+          "kind": "scratch",
+          "rel": "spkw10-deep-space.bsp"
+        },
+        "idcode": 196010,
+        "coverWindowId": "W",
+        "maxIntervals": 8
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/naif0012.tls"
+        }
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw10-deep-space.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.spksfs",
+        "body": 196010,
+        "et": -300,
+        "descrId": "D"
+      },
+      {
+        "op": "ephemeris.spkuds",
+        "descrId": "D"
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196010,
+        "et": -300,
+        "ref": "J2000",
+        "observer": 0
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196010,
+        "et": -2.5,
+        "ref": "J2000",
+        "observer": 0
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196010,
+        "et": 0,
+        "ref": "J2000",
+        "observer": 0
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196010,
+        "et": 22,
+        "ref": "J2000",
+        "observer": 0
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196010,
+        "et": 300,
+        "ref": "J2000",
+        "observer": 0
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkw10-multiple-packets",
+    "description": "Distinct element sets at irregular TDB epochs supply transitions, endpoint propagation and the generated time-dependent nutation data.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw10-multiple-packets.bsp"
+        },
+        "ifname": "AUTHORED ANALYTIC",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw10",
+        "handleId": "H",
+        "body": 196010,
+        "center": 0,
+        "frame": "J2000",
+        "first": -300,
+        "last": 300,
+        "segid": "ANALYTIC 10",
+        "consts": [
+          0.001082616, -2.53881e-6, -1.65597e-6, 0.0743669161, 120, 78,
+          6378.135, 1
+        ],
+        "elems": [
+          0, 0, 1e-5, 0.5, 0.2, 0.03, 0.4, 0.6, 0.06, -100, 0, 0, 1e-5, 0.5,
+          0.2, 0.03, 0.4, 0.7, 0.058, 0, 0, 0, 1e-5, 0.5, 0.2, 0.03, 0.4, 0.818,
+          0.059, 120
+        ],
+        "epochs": [-100, 0, 120]
+      },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkobj",
+        "spk": {
+          "kind": "scratch",
+          "rel": "spkw10-multiple-packets.bsp"
+        },
+        "idsCellId": "I",
+        "maxCardinality": 8
+      },
+      {
+        "op": "ephemeris.spkcov",
+        "spk": {
+          "kind": "scratch",
+          "rel": "spkw10-multiple-packets.bsp"
+        },
+        "idcode": 196010,
+        "coverWindowId": "W",
+        "maxIntervals": 8
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/naif0012.tls"
+        }
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw10-multiple-packets.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.spksfs",
+        "body": 196010,
+        "et": -300,
+        "descrId": "D"
+      },
+      {
+        "op": "ephemeris.spkuds",
+        "descrId": "D"
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196010,
+        "et": -300,
+        "ref": "J2000",
+        "observer": 0
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196010,
+        "et": -100,
+        "ref": "J2000",
+        "observer": 0
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196010,
+        "et": -50,
+        "ref": "J2000",
+        "observer": 0
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196010,
+        "et": 0,
+        "ref": "J2000",
+        "observer": 0
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196010,
+        "et": 35,
+        "ref": "J2000",
+        "observer": 0
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196010,
+        "et": 120,
+        "ref": "J2000",
+        "observer": 0
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196010,
+        "et": 300,
+        "ref": "J2000",
+        "observer": 0
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkw10-empty-metadata",
+    "description": "A zero-packet generic segment retains its descriptor and object coverage; inspect it without requesting an orbital state.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw10-empty-metadata.bsp"
+        },
+        "ifname": "AUTHORED ANALYTIC",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw10",
+        "handleId": "H",
+        "body": 196010,
+        "center": 0,
+        "frame": "J2000",
+        "first": -300,
+        "last": 300,
+        "segid": "ANALYTIC 10",
+        "consts": [
+          0.001082616, -2.53881e-6, -1.65597e-6, 0.0743669161, 120, 78,
+          6378.135, 1
+        ],
+        "elems": [],
+        "epochs": []
+      },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkobj",
+        "spk": {
+          "kind": "scratch",
+          "rel": "spkw10-empty-metadata.bsp"
+        },
+        "idsCellId": "I",
+        "maxCardinality": 8
+      },
+      {
+        "op": "ephemeris.spkcov",
+        "spk": {
+          "kind": "scratch",
+          "rel": "spkw10-empty-metadata.bsp"
+        },
+        "idcode": 196010,
+        "coverWindowId": "W",
+        "maxIntervals": 8
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/naif0012.tls"
+        }
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw10-empty-metadata.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.spksfs",
+        "body": 196010,
+        "et": 0,
+        "descrId": "D"
+      },
+      {
+        "op": "ephemeris.spkuds",
+        "descrId": "D"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkw10-unknown-frame",
+    "description": "Seed a valid segment and compare the actual INVALIDREFFRAME diagnostic for unknown frame.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw10-unknown-frame.bsp"
+        },
+        "ifname": "AUTHORED ANALYTIC",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw10",
+        "handleId": "H",
+        "body": 196010,
+        "center": 0,
+        "frame": "J2000",
+        "first": -300,
+        "last": 300,
+        "segid": "ANALYTIC 10",
+        "consts": [
+          0.001082616, -2.53881e-6, -1.65597e-6, 0.0743669161, 120, 78,
+          6378.135, 1
+        ],
+        "elems": [0, 0, 1e-5, 0.5, 0.2, 0.03, 0.4, 0.7, 0.06, 0],
+        "epochs": [0]
+      },
+      {
+        "op": "ephemeris.spkw10",
+        "handleId": "H",
+        "body": 196010,
+        "center": 0,
+        "frame": "UNKNOWN FRAME",
+        "first": -300,
+        "last": 300,
+        "segid": "ANALYTIC 10",
+        "consts": [
+          0.001082616, -2.53881e-6, -1.65597e-6, 0.0743669161, 120, 78,
+          6378.135, 1
+        ],
+        "elems": [0, 0, 1e-5, 0.5, 0.2, 0.03, 0.4, 0.7, 0.06, 0],
+        "epochs": [0]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(INVALIDREFFRAME)"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spkw10-empty-frame",
+    "description": "Seed a valid segment and compare the actual EMPTYSTRING diagnostic for empty frame.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw10-empty-frame.bsp"
+        },
+        "ifname": "AUTHORED ANALYTIC",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw10",
+        "handleId": "H",
+        "body": 196010,
+        "center": 0,
+        "frame": "J2000",
+        "first": -300,
+        "last": 300,
+        "segid": "ANALYTIC 10",
+        "consts": [
+          0.001082616, -2.53881e-6, -1.65597e-6, 0.0743669161, 120, 78,
+          6378.135, 1
+        ],
+        "elems": [0, 0, 1e-5, 0.5, 0.2, 0.03, 0.4, 0.7, 0.06, 0],
+        "epochs": [0]
+      },
+      {
+        "op": "ephemeris.spkw10",
+        "handleId": "H",
+        "body": 196010,
+        "center": 0,
+        "frame": "",
+        "first": -300,
+        "last": 300,
+        "segid": "ANALYTIC 10",
+        "consts": [
+          0.001082616, -2.53881e-6, -1.65597e-6, 0.0743669161, 120, 78,
+          6378.135, 1
+        ],
+        "elems": [0, 0, 1e-5, 0.5, 0.2, 0.03, 0.4, 0.7, 0.06, 0],
+        "epochs": [0]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(EMPTYSTRING)"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spkw10-long-identifier",
+    "description": "Seed a valid segment and compare the actual SEGIDTOOLONG diagnostic for long identifier.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw10-long-identifier.bsp"
+        },
+        "ifname": "AUTHORED ANALYTIC",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw10",
+        "handleId": "H",
+        "body": 196010,
+        "center": 0,
+        "frame": "J2000",
+        "first": -300,
+        "last": 300,
+        "segid": "ANALYTIC 10",
+        "consts": [
+          0.001082616, -2.53881e-6, -1.65597e-6, 0.0743669161, 120, 78,
+          6378.135, 1
+        ],
+        "elems": [0, 0, 1e-5, 0.5, 0.2, 0.03, 0.4, 0.7, 0.06, 0],
+        "epochs": [0]
+      },
+      {
+        "op": "ephemeris.spkw10",
+        "handleId": "H",
+        "body": 196010,
+        "center": 0,
+        "frame": "J2000",
+        "first": -300,
+        "last": 300,
+        "segid": "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS",
+        "consts": [
+          0.001082616, -2.53881e-6, -1.65597e-6, 0.0743669161, 120, 78,
+          6378.135, 1
+        ],
+        "elems": [0, 0, 1e-5, 0.5, 0.2, 0.03, 0.4, 0.7, 0.06, 0],
+        "epochs": [0]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(SEGIDTOOLONG)"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spkw10-nonprinting-identifier",
+    "description": "Seed a valid segment and compare the actual NONPRINTINGCHARS diagnostic for nonprinting identifier.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw10-nonprinting-identifier.bsp"
+        },
+        "ifname": "AUTHORED ANALYTIC",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw10",
+        "handleId": "H",
+        "body": 196010,
+        "center": 0,
+        "frame": "J2000",
+        "first": -300,
+        "last": 300,
+        "segid": "ANALYTIC 10",
+        "consts": [
+          0.001082616, -2.53881e-6, -1.65597e-6, 0.0743669161, 120, 78,
+          6378.135, 1
+        ],
+        "elems": [0, 0, 1e-5, 0.5, 0.2, 0.03, 0.4, 0.7, 0.06, 0],
+        "epochs": [0]
+      },
+      {
+        "op": "ephemeris.spkw10",
+        "handleId": "H",
+        "body": 196010,
+        "center": 0,
+        "frame": "J2000",
+        "first": -300,
+        "last": 300,
+        "segid": "A\tB",
+        "consts": [
+          0.001082616, -2.53881e-6, -1.65597e-6, 0.0743669161, 120, 78,
+          6378.135, 1
+        ],
+        "elems": [0, 0, 1e-5, 0.5, 0.2, 0.03, 0.4, 0.7, 0.06, 0],
+        "epochs": [0]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(NONPRINTINGCHARS)"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spkw10-reversed-coverage",
+    "description": "Seed a valid segment and compare the actual BADDESCRTIMES diagnostic for reversed coverage.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw10-reversed-coverage.bsp"
+        },
+        "ifname": "AUTHORED ANALYTIC",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw10",
+        "handleId": "H",
+        "body": 196010,
+        "center": 0,
+        "frame": "J2000",
+        "first": -300,
+        "last": 300,
+        "segid": "ANALYTIC 10",
+        "consts": [
+          0.001082616, -2.53881e-6, -1.65597e-6, 0.0743669161, 120, 78,
+          6378.135, 1
+        ],
+        "elems": [0, 0, 1e-5, 0.5, 0.2, 0.03, 0.4, 0.7, 0.06, 0],
+        "epochs": [0]
+      },
+      {
+        "op": "ephemeris.spkw10",
+        "handleId": "H",
+        "body": 196010,
+        "center": 0,
+        "frame": "J2000",
+        "first": 10,
+        "last": -10,
+        "segid": "ANALYTIC 10",
+        "consts": [
+          0.001082616, -2.53881e-6, -1.65597e-6, 0.0743669161, 120, 78,
+          6378.135, 1
+        ],
+        "elems": [0, 0, 1e-5, 0.5, 0.2, 0.03, 0.4, 0.7, 0.06, 0],
+        "epochs": [0]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(BADDESCRTIMES)"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spkw10-one-instant",
+    "description": "Seed a valid segment and compare the actual BADDESCRTIMES diagnostic for one instant.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw10-one-instant.bsp"
+        },
+        "ifname": "AUTHORED ANALYTIC",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw10",
+        "handleId": "H",
+        "body": 196010,
+        "center": 0,
+        "frame": "J2000",
+        "first": -300,
+        "last": 300,
+        "segid": "ANALYTIC 10",
+        "consts": [
+          0.001082616, -2.53881e-6, -1.65597e-6, 0.0743669161, 120, 78,
+          6378.135, 1
+        ],
+        "elems": [0, 0, 1e-5, 0.5, 0.2, 0.03, 0.4, 0.7, 0.06, 0],
+        "epochs": [0]
+      },
+      {
+        "op": "ephemeris.spkw10",
+        "handleId": "H",
+        "body": 196010,
+        "center": 0,
+        "frame": "J2000",
+        "first": 0,
+        "last": 0,
+        "segid": "ANALYTIC 10",
+        "consts": [
+          0.001082616, -2.53881e-6, -1.65597e-6, 0.0743669161, 120, 78,
+          6378.135, 1
+        ],
+        "elems": [0, 0, 1e-5, 0.5, 0.2, 0.03, 0.4, 0.7, 0.06, 0],
+        "epochs": [0]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(BADDESCRTIMES)"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spkw10-self-center",
+    "description": "Seed a valid segment and compare the actual BODYANDCENTERSAME diagnostic for self center.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw10-self-center.bsp"
+        },
+        "ifname": "AUTHORED ANALYTIC",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw10",
+        "handleId": "H",
+        "body": 196010,
+        "center": 0,
+        "frame": "J2000",
+        "first": -300,
+        "last": 300,
+        "segid": "ANALYTIC 10",
+        "consts": [
+          0.001082616, -2.53881e-6, -1.65597e-6, 0.0743669161, 120, 78,
+          6378.135, 1
+        ],
+        "elems": [0, 0, 1e-5, 0.5, 0.2, 0.03, 0.4, 0.7, 0.06, 0],
+        "epochs": [0]
+      },
+      {
+        "op": "ephemeris.spkw10",
+        "handleId": "H",
+        "body": 196010,
+        "center": 196010,
+        "frame": "J2000",
+        "first": -300,
+        "last": 300,
+        "segid": "ANALYTIC 10",
+        "consts": [
+          0.001082616, -2.53881e-6, -1.65597e-6, 0.0743669161, 120, 78,
+          6378.135, 1
+        ],
+        "elems": [0, 0, 1e-5, 0.5, 0.2, 0.03, 0.4, 0.7, 0.06, 0],
+        "epochs": [0]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(BODYANDCENTERSAME)"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spkw10-barycenter-target",
+    "description": "Seed a valid segment and compare the actual BARYCENTEREPHEM diagnostic for barycenter target.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw10-barycenter-target.bsp"
+        },
+        "ifname": "AUTHORED ANALYTIC",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw10",
+        "handleId": "H",
+        "body": 196010,
+        "center": 0,
+        "frame": "J2000",
+        "first": -300,
+        "last": 300,
+        "segid": "ANALYTIC 10",
+        "consts": [
+          0.001082616, -2.53881e-6, -1.65597e-6, 0.0743669161, 120, 78,
+          6378.135, 1
+        ],
+        "elems": [0, 0, 1e-5, 0.5, 0.2, 0.03, 0.4, 0.7, 0.06, 0],
+        "epochs": [0]
+      },
+      {
+        "op": "ephemeris.spkw10",
+        "handleId": "H",
+        "body": 0,
+        "center": 0,
+        "frame": "J2000",
+        "first": -300,
+        "last": 300,
+        "segid": "ANALYTIC 10",
+        "consts": [
+          0.001082616, -2.53881e-6, -1.65597e-6, 0.0743669161, 120, 78,
+          6378.135, 1
+        ],
+        "elems": [0, 0, 1e-5, 0.5, 0.2, 0.03, 0.4, 0.7, 0.06, 0],
+        "epochs": [0]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(BARYCENTEREPHEM)"]
+    }
+  }
+]

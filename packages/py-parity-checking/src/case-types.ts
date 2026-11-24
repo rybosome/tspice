@@ -2,6 +2,12 @@ import type {
   SpiceStateVector,
   SpiceMatrix6x6,
   SpiceRawBackend,
+  SpiceConicElements,
+  SpiceEquinoctialElements,
+  SpiceExtendedConicElements,
+  SpiceVector3,
+  SpkezrResult,
+  SpkposResult,
   FoundDlaDescriptor,
   KernelKindInput,
 } from "@rybosome/tspice-backend-contract";
@@ -2120,6 +2126,195 @@ export type StepEphemerisSpkezr = {
   observer: string;
 };
 
+export type StepEphemerisSpkcpo = {
+  op: "ephemeris.spkcpo";
+  target: string;
+  et: number;
+  outref: string;
+  refloc: string;
+  abcorr: string;
+  obspos: SpiceVector3;
+  obsctr: string;
+  obsref: string;
+};
+
+export type StepEphemerisSpkcpt = {
+  op: "ephemeris.spkcpt";
+  trgpos: SpiceVector3;
+  trgctr: string;
+  trgref: string;
+  et: number;
+  outref: string;
+  refloc: string;
+  abcorr: string;
+  obsrvr: string;
+};
+
+export type StepEphemerisSpkcvo = {
+  op: "ephemeris.spkcvo";
+  target: string;
+  et: number;
+  outref: string;
+  refloc: string;
+  abcorr: string;
+  obssta: SpiceStateVector;
+  obsepc: number;
+  obsctr: string;
+  obsref: string;
+};
+
+export type StepEphemerisSpkcvt = {
+  op: "ephemeris.spkcvt";
+  trgsta: SpiceStateVector;
+  trgepc: number;
+  trgctr: string;
+  trgref: string;
+  et: number;
+  outref: string;
+  refloc: string;
+  abcorr: string;
+  obsrvr: string;
+};
+
+export type StepEphemerisAzlcpo = {
+  op: "ephemeris.azlcpo";
+  method: string;
+  target: string;
+  et: number;
+  abcorr: string;
+  azccw: boolean;
+  elplsz: boolean;
+  obspos: SpiceVector3;
+  obsctr: string;
+  obsref: string;
+};
+
+export type StepEphemerisSpkacs = {
+  op: "ephemeris.spkacs";
+  target: number;
+  et: number;
+  ref: string;
+  abcorr: string;
+  observer: number;
+};
+
+export type StepEphemerisSpkapo = {
+  op: "ephemeris.spkapo";
+  target: number;
+  et: number;
+  ref: string;
+  observerState: SpiceStateVector;
+  abcorr: string;
+};
+
+export type StepEphemerisSpkapp = {
+  op: "ephemeris.spkapp";
+  target: number;
+  et: number;
+  ref: string;
+  observerState: SpiceStateVector;
+  abcorr: string;
+};
+
+export type StepEphemerisSpkaps = {
+  op: "ephemeris.spkaps";
+  target: number;
+  et: number;
+  ref: string;
+  abcorr: string;
+  observerState: SpiceStateVector;
+  observerAcceleration: SpiceVector3;
+};
+
+export type StepEphemerisSpkltc = {
+  op: "ephemeris.spkltc";
+  target: number;
+  et: number;
+  ref: string;
+  abcorr: string;
+  observerState: SpiceStateVector;
+};
+
+export type StepEphemerisStelab = {
+  op: "ephemeris.stelab";
+  position: SpiceVector3;
+  observerVelocity: SpiceVector3;
+};
+
+export type StepEphemerisStlabx = {
+  op: "ephemeris.stlabx";
+  position: SpiceVector3;
+  observerVelocity: SpiceVector3;
+};
+
+export type StepEphemerisLtime = {
+  op: "ephemeris.ltime";
+  etobs: number;
+  observer: number;
+  dir: string;
+  target: number;
+};
+
+export type StepEphemerisConics = {
+  op: "ephemeris.conics";
+  elts: SpiceConicElements;
+  et: number;
+};
+
+export type StepEphemerisEqncpv = {
+  op: "ephemeris.eqncpv";
+  et: number;
+  epoch: number;
+  eqel: SpiceEquinoctialElements;
+  rapol: number;
+  decpol: number;
+};
+
+export type StepEphemerisOscelt = {
+  op: "ephemeris.oscelt";
+  state: SpiceStateVector;
+  et: number;
+  mu: number;
+};
+
+export type StepEphemerisOscltx = {
+  op: "ephemeris.oscltx";
+  state: SpiceStateVector;
+  et: number;
+  mu: number;
+};
+
+export type StepEphemerisProp2b = {
+  op: "ephemeris.prop2b";
+  gm: number;
+  pvinit: SpiceStateVector;
+  dt: number;
+};
+
+export type StepEphemerisGetelm = {
+  op: "ephemeris.getelm";
+  captureError?: boolean;
+  firstYear: number;
+  lines: [string, string];
+};
+export type StepEphemerisEvsgp4 = {
+  op: "ephemeris.evsgp4";
+  captureError?: boolean;
+  et: number;
+  geophs: [number, number, number, number, number, number, number, number];
+  elems: [
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+  ];
+};
 export type StepEphemerisSpkgeo = {
   op: "ephemeris.spkgeo";
   target: number;
@@ -2149,6 +2344,29 @@ export type StepEphemerisSpkopa = {
   handleId: string;
 };
 
+export type StepEphemerisSpklef = {
+  op: "ephemeris.spklef";
+  file: PathRefLike;
+  id: string;
+};
+export type StepEphemerisSpkuef = { op: "ephemeris.spkuef"; id: string };
+export type StepEphemerisSpkpvn = {
+  op: "ephemeris.spkpvn";
+  source: string;
+  descriptor: string;
+  et: number;
+  mode: string;
+};
+export type StepEphemerisSpksub = {
+  op: "ephemeris.spksub";
+  source: string;
+  descriptor: string;
+  ident: string;
+  begin: number;
+  end: number;
+  writer: string;
+  mode: string;
+};
 export type StepEphemerisSpkopn = {
   op: "ephemeris.spkopn";
   file: PathRefLike;
@@ -2198,6 +2416,201 @@ export type StepEphemerisSpkuds = { op: "ephemeris.spkuds" } & (
   | { descr: SpkPackedDescriptor; descrId?: never }
   | { descr?: never; descrId: string }
 );
+
+export type StepEphemerisSpkw02 = {
+  op: "ephemeris.spkw02";
+  handleId: string;
+  body: number;
+  center: number;
+  frame: string;
+  first: number;
+  last: number;
+  segid: string;
+  intlen: number;
+  n: number;
+  degree: number;
+  cdata: number[];
+  btime: number;
+};
+
+export type StepEphemerisSpkw03 = {
+  op: "ephemeris.spkw03";
+  handleId: string;
+  body: number;
+  center: number;
+  frame: string;
+  first: number;
+  last: number;
+  segid: string;
+  intlen: number;
+  n: number;
+  degree: number;
+  cdata: number[];
+  btime: number;
+};
+
+export type StepEphemerisSpkw20 = {
+  op: "ephemeris.spkw20";
+  handleId: string;
+  body: number;
+  center: number;
+  frame: string;
+  first: number;
+  last: number;
+  segid: string;
+  intlen: number;
+  n: number;
+  degree: number;
+  cdata: number[];
+  dscale: number;
+  tscale: number;
+  initjd: number;
+  initfr: number;
+};
+
+export type StepEphemerisSpkw05 = {
+  op: "ephemeris.spkw05";
+  handleId: string;
+  body: number;
+  center: number;
+  frame: string;
+  first: number;
+  last: number;
+  segid: string;
+  gm: number;
+  states: number[];
+  epochs: number[];
+};
+
+export type StepEphemerisSpkw10 = {
+  op: "ephemeris.spkw10";
+  handleId: string;
+  body: number;
+  center: number;
+  frame: string;
+  first: number;
+  last: number;
+  segid: string;
+  consts: number[];
+  elems: number[];
+  epochs: number[];
+};
+
+export type StepEphemerisSpkw15 = {
+  op: "ephemeris.spkw15";
+  handleId: string;
+  body: number;
+  center: number;
+  frame: string;
+  first: number;
+  last: number;
+  segid: string;
+  epoch: number;
+  tp: [number, number, number];
+  pa: [number, number, number];
+  p: number;
+  ecc: number;
+  j2flg: number;
+  pv: [number, number, number];
+  gm: number;
+  j2: number;
+  radius: number;
+};
+
+export type StepEphemerisSpkw17 = {
+  op: "ephemeris.spkw17";
+  handleId: string;
+  body: number;
+  center: number;
+  frame: string;
+  first: number;
+  last: number;
+  segid: string;
+  epoch: number;
+  eqel: number[];
+  rapol: number;
+  decpol: number;
+};
+
+export type StepEphemerisSpk14b = {
+  op: "ephemeris.spk14b";
+  handleId: string;
+  segid: string;
+  body: number;
+  center: number;
+  frame: string;
+  first: number;
+  last: number;
+  degree: number;
+};
+
+export type StepEphemerisSpk14a = {
+  op: "ephemeris.spk14a";
+  handleId: string;
+  count: number;
+  records: number[];
+  epochs: number[];
+};
+
+export type StepEphemerisSpk14e = { op: "ephemeris.spk14e"; handleId: string };
+
+export type StepEphemerisSpkw09 = {
+  op: "ephemeris.spkw09";
+  handleId: string;
+  body: number;
+  center: number;
+  frame: string;
+  first: number;
+  last: number;
+  segid: string;
+  degree: number;
+  states: number[];
+  epochs: number[];
+};
+
+export type StepEphemerisSpkw12 = {
+  op: "ephemeris.spkw12";
+  handleId: string;
+  body: number;
+  center: number;
+  frame: string;
+  first: number;
+  last: number;
+  segid: string;
+  degree: number;
+  states: number[];
+  epoch0: number;
+  step: number;
+};
+
+export type StepEphemerisSpkw13 = {
+  op: "ephemeris.spkw13";
+  handleId: string;
+  body: number;
+  center: number;
+  frame: string;
+  first: number;
+  last: number;
+  segid: string;
+  degree: number;
+  states: number[];
+  epochs: number[];
+};
+
+export type StepEphemerisSpkw18 = {
+  op: "ephemeris.spkw18";
+  handleId: string;
+  subtype: number;
+  body: number;
+  center: number;
+  frame: string;
+  first: number;
+  last: number;
+  segid: string;
+  degree: number;
+  packets: number[];
+  epochs: number[];
+};
 
 export type StepEphemerisSpkw08 = {
   op: "ephemeris.spkw08";
@@ -3854,16 +4267,54 @@ export type WorkflowStep =
   | StepEphemerisSpkez
   | StepEphemerisSpkezp
   | StepEphemerisSpkezr
+  | StepEphemerisConics
+  | StepEphemerisEqncpv
+  | StepEphemerisOscelt
+  | StepEphemerisOscltx
+  | StepEphemerisProp2b
+  | StepEphemerisGetelm
+  | StepEphemerisEvsgp4
+  | StepEphemerisSpkcpo
+  | StepEphemerisSpkcpt
+  | StepEphemerisSpkcvo
+  | StepEphemerisSpkcvt
+  | StepEphemerisAzlcpo
+  | StepEphemerisSpkacs
+  | StepEphemerisSpkapo
+  | StepEphemerisSpkapp
+  | StepEphemerisSpkaps
+  | StepEphemerisSpkltc
+  | StepEphemerisStelab
+  | StepEphemerisStlabx
+  | StepEphemerisLtime
   | StepEphemerisSpkgeo
   | StepEphemerisSpkgps
   | StepEphemerisSpkobj
   | StepEphemerisSpkopa
+  | StepEphemerisSpklef
+  | StepEphemerisSpkuef
+  | StepEphemerisSpkpvn
+  | StepEphemerisSpksub
   | StepEphemerisSpkopn
   | StepEphemerisSpkpds
   | StepEphemerisSpkpos
   | StepEphemerisSpksfs
   | StepEphemerisSpkssb
   | StepEphemerisSpkuds
+  | StepEphemerisSpkw02
+  | StepEphemerisSpkw03
+  | StepEphemerisSpkw20
+  | StepEphemerisSpkw09
+  | StepEphemerisSpkw12
+  | StepEphemerisSpkw13
+  | StepEphemerisSpkw18
+  | StepEphemerisSpkw05
+  | StepEphemerisSpkw10
+  | StepEphemerisSpkw15
+  | StepEphemerisSpkw17
+  | StepEphemerisSpk14b
+  | StepEphemerisSpk14a
+  | StepEphemerisSpk14e
   | StepEphemerisSpkw08
   | StepFileIoRdtext
   | StepFileIoPutcml
@@ -4537,6 +4988,29 @@ export type StepOutput =
         lt: number;
       };
     }
+  | { op: "ephemeris.conics"; value: SpiceStateVector }
+  | { op: "ephemeris.eqncpv"; value: SpiceStateVector }
+  | { op: "ephemeris.oscelt"; value: SpiceConicElements }
+  | { op: "ephemeris.oscltx"; value: SpiceExtendedConicElements }
+  | { op: "ephemeris.prop2b"; value: SpiceStateVector }
+  | {
+      op: "ephemeris.getelm";
+      value: { epoch: number; elems: readonly number[] } | { short: string };
+    }
+  | { op: "ephemeris.evsgp4"; value: readonly number[] | { short: string } }
+  | { op: "ephemeris.spkcpo"; value: SpkezrResult }
+  | { op: "ephemeris.spkcpt"; value: SpkezrResult }
+  | { op: "ephemeris.spkcvo"; value: SpkezrResult }
+  | { op: "ephemeris.spkcvt"; value: SpkezrResult }
+  | { op: "ephemeris.azlcpo"; value: SpkezrResult }
+  | { op: "ephemeris.spkacs"; value: SpkezrResult & { dlt: number } }
+  | { op: "ephemeris.spkapo"; value: SpkposResult }
+  | { op: "ephemeris.spkapp"; value: SpkezrResult }
+  | { op: "ephemeris.spkaps"; value: SpkezrResult & { dlt: number } }
+  | { op: "ephemeris.spkltc"; value: SpkezrResult & { dlt: number } }
+  | { op: "ephemeris.stelab"; value: SpiceVector3 }
+  | { op: "ephemeris.stlabx"; value: SpiceVector3 }
+  | { op: "ephemeris.ltime"; value: { ettarg: number; elapsd: number } }
   | {
       op: "ephemeris.spkgeo";
       value: {
@@ -4550,6 +5024,13 @@ export type StepOutput =
     }
   | { op: "ephemeris.spkobj"; value: { ids: number[] } }
   | { op: "ephemeris.spkopa"; value: { handleId: string } }
+  | { op: "ephemeris.spklef"; value: { id: string } }
+  | { op: "ephemeris.spkuef"; value: null }
+  | {
+      op: "ephemeris.spkpvn";
+      value: { ref: number; state: number[]; center: number };
+    }
+  | { op: "ephemeris.spksub"; value: null }
   | { op: "ephemeris.spkopn"; value: { handleId: string } }
   | {
       op: "ephemeris.spkpds";
@@ -4586,6 +5067,20 @@ export type StepOutput =
         eaddr: number;
       };
     }
+  | { op: "ephemeris.spkw02"; value: null }
+  | { op: "ephemeris.spkw03"; value: null }
+  | { op: "ephemeris.spkw20"; value: null }
+  | { op: "ephemeris.spkw09"; value: null }
+  | { op: "ephemeris.spkw12"; value: null }
+  | { op: "ephemeris.spkw13"; value: null }
+  | { op: "ephemeris.spkw18"; value: null }
+  | { op: "ephemeris.spkw05"; value: null }
+  | { op: "ephemeris.spkw10"; value: null }
+  | { op: "ephemeris.spkw15"; value: null }
+  | { op: "ephemeris.spkw17"; value: null }
+  | { op: "ephemeris.spk14b"; value: null }
+  | { op: "ephemeris.spk14a"; value: null }
+  | { op: "ephemeris.spk14e"; value: null }
   | { op: "ephemeris.spkw08"; value: null }
   | { op: "file-io.rdtext"; value: { line: string; eof: boolean } }
   | { op: "file-io.putcml"; value: null }

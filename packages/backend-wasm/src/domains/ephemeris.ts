@@ -8,6 +8,7 @@ import type {
   SpiceStateVector,
   SpiceVector3,
   SpiceWindow,
+  SpkSegmentDescriptor,
   SpkPackedDescriptor,
   SpkUnpackedDescriptor,
   SpkezrResult,
@@ -15,7 +16,27 @@ import type {
   VirtualOutput,
 } from "@rybosome/tspice-backend-contract";
 import {
+  copyTleLines,
+  copyTleTuple,
+  copySpkChebyshevData,
+  snapshotSpkInterpolation,
+  validateSpkWriterFields,
+  packSpk05,
+  packSpk10,
+  packSpk15,
+  packSpk17,
+  copySpk14Packets,
+  validateSpkChebyshevFields,
   assertSpiceInt32,
+  copyOrbitalTuple,
+  validateCorrectionString,
+  copyCorrectionInput,
+  decodeCorrectionResult,
+  createSpkReaders,
+  releaseSpkLoads,
+  spkSegmentBytes,
+  spkInputText,
+  spkStateComponents,
   copySpkPackedDescriptor,
   copySpkPackedDescriptorWords,
 } from "@rybosome/tspice-core";
@@ -31,6 +52,8 @@ import type {
   SpiceHandleRegistry,
 } from "../runtime/spice-handles.js";
 import type { VirtualOutputRegistry } from "../runtime/virtual-outputs.js";
+
+const correctionEncoder = new TextEncoder();
 
 function requireSpkNumber(value: unknown, label: string): number {
   if (typeof value !== "number" || !Number.isFinite(value))
@@ -201,6 +224,75 @@ function tspiceCallSpkopa(module: EmscriptenModule, path: string): number {
     );
   } finally {
     module._free(pathPtr);
+  }
+}
+
+function writeInterpolationRecords(
+  module: EmscriptenModule,
+  frame: string,
+  segid: string,
+  samples: Float64Array,
+  epochs: Float64Array | undefined,
+  invoke: (
+    framePtr: number,
+    segidPtr: number,
+    samplesPtr: number,
+    epochsPtr: number,
+    err: number,
+  ) => number,
+): void {
+  const framePtr = writeUtf8CString(module, frame);
+  try {
+    const idPtr = writeUtf8CString(module, segid);
+    try {
+      const sizes = [Math.max(8, samples.byteLength), WASM_ERR_MAX_BYTES];
+      if (epochs !== undefined) sizes.push(Math.max(8, epochs.byteLength));
+      withAllocs(module, sizes, (samplePtr, err, epochPtr = 0) => {
+        module.HEAPF64.set(samples, samplePtr / 8);
+        if (epochs !== undefined) module.HEAPF64.set(epochs, epochPtr / 8);
+        const status = invoke(framePtr, idPtr, samplePtr, epochPtr, err);
+        if (status)
+          throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, status);
+      });
+    } finally {
+      module._free(idPtr);
+    }
+  } finally {
+    module._free(framePtr);
+  }
+}
+
+function writeSpkRecord(
+  module: EmscriptenModule,
+  frame: string,
+  segid: string,
+  data: Float64Array,
+  call: (
+    framePtr: number,
+    idPtr: number,
+    dataPtr: number,
+    err: number,
+  ) => number,
+): void {
+  const framePtr = writeUtf8CString(module, frame);
+  try {
+    const idPtr = writeUtf8CString(module, segid);
+    try {
+      withAllocs(
+        module,
+        [Math.max(8, data.byteLength), WASM_ERR_MAX_BYTES],
+        (ptr, err) => {
+          module.HEAPF64.set(data, ptr / 8);
+          const status = call(framePtr, idPtr, ptr, err);
+          if (status)
+            throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, status);
+        },
+      );
+    } finally {
+      module._free(idPtr);
+    }
+  } finally {
+    module._free(framePtr);
   }
 }
 
@@ -682,6 +774,7 @@ function tspiceCallSpksfs(
   module: EmscriptenModule,
   body: number,
   et: number,
+  observe: (handle: number, generation: number) => void,
 ): Found<{ handle: number; descr: SpkPackedDescriptor; ident: string }> {
   requireSpkNumber(et, "spksfs(et)");
   assertSpiceInt32(body, "spksfs(body)");
@@ -691,7 +784,7 @@ function tspiceCallSpksfs(
 
   return withAllocs(
     module,
-    [WASM_ERR_MAX_BYTES, 4, 5 * 8, identMaxBytes, 4],
+    [WASM_ERR_MAX_BYTES, 8, 5 * 8, identMaxBytes, 4],
     (errPtr, outHandlePtr, outDescrPtr, outIdentPtr, outFoundPtr) => {
       module.HEAP32[outHandlePtr >> 2] = 0;
       module.HEAP32[outFoundPtr >> 2] = 0;
@@ -701,6 +794,7 @@ function tspiceCallSpksfs(
         body,
         et,
         outHandlePtr,
+        outHandlePtr + 4,
         outDescrPtr,
         outIdentPtr,
         identMaxBytes,
@@ -719,6 +813,7 @@ function tspiceCallSpksfs(
       }
 
       const handle = module.HEAP32[outHandlePtr >> 2] ?? 0;
+      observe(handle, module.HEAP32[(outHandlePtr + 4) >>> 2]!);
       const descr = copySpkPackedDescriptor(
         module.HEAPF64.subarray(outDescrPtr >> 3, (outDescrPtr >> 3) + 5),
       );
@@ -851,9 +946,1074 @@ export function createEphemerisApi(
   handles: SpiceHandleRegistry,
   virtualOutputs: VirtualOutputRegistry,
 ): EphemerisApi {
+  const spk14Degrees = new Map<SpiceHandle, number>();
   const virtualOutputPathByHandle = new Map<SpiceHandle, string>();
 
-  return {
+  const readers = createSpkReaders(handles);
+  function checked(status: number, err: number) {
+    if (status) throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, status);
+  }
+  const api = {
+    [releaseSpkLoads]: (): void => readers.release(api.spkuef),
+    spklef: (file: string | VirtualOutput) =>
+      readers.own(
+        withAllocs(module, [WASM_ERR_MAX_BYTES, 4], (err, out) => {
+          const path = spkInputText(
+            typeof file === "string" && file === ""
+              ? ""
+              : resolveSpkPath(file, "spklef"),
+          );
+          const encoded = writeUtf8CString(module, path);
+          try {
+            checked(
+              module._tspice_spklef(encoded, out, err, WASM_ERR_MAX_BYTES),
+              err,
+            );
+            return module.HEAP32[out >>> 2]!;
+          } finally {
+            module._free(encoded);
+          }
+        }),
+      ),
+    spkuef: (handle: SpiceHandle) =>
+      readers.unload(handle, (generation: number) =>
+        withAllocs(module, [WASM_ERR_MAX_BYTES], (err) =>
+          checked(
+            module._tspice_spkuef(generation, err, WASM_ERR_MAX_BYTES),
+            err,
+          ),
+        ),
+      ),
+    spkpvn: (handle: number, descr: SpkSegmentDescriptor, et: number) => {
+      const { source, registered } = readers.source(handle);
+      requireSpkNumber(et, "spkpvn(et)");
+      const bytes = spkSegmentBytes(descr);
+      return withAllocs(
+        module,
+        [WASM_ERR_MAX_BYTES, 40, 4, 48, 4],
+        (err, packed, ref, state, center) => {
+          module.HEAPU8.set(bytes, packed >>> 0);
+          checked(
+            module._tspice_spkpvn(
+              source,
+              Number(registered),
+              packed,
+              40,
+              et,
+              ref,
+              state,
+              center,
+              err,
+              WASM_ERR_MAX_BYTES,
+            ),
+            err,
+          );
+          return {
+            ref: module.HEAP32[ref >>> 2]!,
+            state: spkStateComponents(
+              module.HEAPF64.subarray(state >>> 3, (state >>> 3) + 6),
+            ),
+            center: module.HEAP32[center >>> 2]!,
+          };
+        },
+      );
+    },
+    spksub: (
+      handle: number,
+      descr: SpkSegmentDescriptor,
+      ident: string,
+      begin: number,
+      end: number,
+      newh: SpiceHandle,
+    ) => {
+      const { source, registered } = readers.source(handle);
+      const writer = handles.lookup(newh, ["SPK"], "spksub(newh)").nativeHandle;
+      requireSpkNumber(begin, "spksub(begin)");
+      requireSpkNumber(end, "spksub(end)");
+      const bytes = spkSegmentBytes(descr),
+        name = new TextEncoder().encode(spkInputText(ident));
+      withAllocs(
+        module,
+        [WASM_ERR_MAX_BYTES, 40, name.length + 1],
+        (err, packed, id) => {
+          module.HEAPU8.set(bytes, packed >>> 0);
+          module.HEAPU8.set(name, id >>> 0);
+          module.HEAPU8[(id >>> 0) + name.length] = 0;
+          checked(
+            module._tspice_spksub(
+              source,
+              Number(registered),
+              packed,
+              40,
+              id,
+              begin,
+              end,
+              writer,
+              err,
+              WASM_ERR_MAX_BYTES,
+            ),
+            err,
+          );
+        },
+      );
+    },
+
+    conics: (elts, et) => {
+      const eltsCopy = copyOrbitalTuple(elts, 8, "conics(elts)", true);
+      requireSpkNumber(et, "conics(et)");
+      return withAllocs(
+        module,
+        [64, 48, WASM_ERR_MAX_BYTES],
+        (inputPtr, outPtr, errPtr) => {
+          module.HEAPF64.set(eltsCopy, inputPtr >>> 3);
+          const status = module._tspice_conics(
+            inputPtr,
+            et,
+            outPtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+          const start = outPtr >>> 3;
+          return copyOrbitalTuple(
+            module.HEAPF64.subarray(start, start + 6),
+            6,
+            "conics(result)",
+            false,
+          );
+        },
+      );
+    },
+    eqncpv: (et, epoch, eqel, rapol, decpol) => {
+      requireSpkNumber(et, "eqncpv(et)");
+      requireSpkNumber(epoch, "eqncpv(epoch)");
+      const eqelCopy = copyOrbitalTuple(eqel, 9, "eqncpv(eqel)", true);
+      requireSpkNumber(rapol, "eqncpv(rapol)");
+      requireSpkNumber(decpol, "eqncpv(decpol)");
+      return withAllocs(
+        module,
+        [72, 48, WASM_ERR_MAX_BYTES],
+        (inputPtr, outPtr, errPtr) => {
+          module.HEAPF64.set(eqelCopy, inputPtr >>> 3);
+          const status = module._tspice_eqncpv(
+            et,
+            epoch,
+            inputPtr,
+            rapol,
+            decpol,
+            outPtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+          const start = outPtr >>> 3;
+          return copyOrbitalTuple(
+            module.HEAPF64.subarray(start, start + 6),
+            6,
+            "eqncpv(result)",
+            false,
+          );
+        },
+      );
+    },
+    oscelt: (state, et, mu) => {
+      const stateCopy = copyOrbitalTuple(state, 6, "oscelt(state)", true);
+      requireSpkNumber(et, "oscelt(et)");
+      requireSpkNumber(mu, "oscelt(mu)");
+      return withAllocs(
+        module,
+        [48, 64, WASM_ERR_MAX_BYTES],
+        (inputPtr, outPtr, errPtr) => {
+          module.HEAPF64.set(stateCopy, inputPtr >>> 3);
+          const status = module._tspice_oscelt(
+            inputPtr,
+            et,
+            mu,
+            outPtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+          const start = outPtr >>> 3;
+          return copyOrbitalTuple(
+            module.HEAPF64.subarray(start, start + 8),
+            8,
+            "oscelt(result)",
+            false,
+          );
+        },
+      );
+    },
+    oscltx: (state, et, mu) => {
+      const stateCopy = copyOrbitalTuple(state, 6, "oscltx(state)", true);
+      requireSpkNumber(et, "oscltx(et)");
+      requireSpkNumber(mu, "oscltx(mu)");
+      return withAllocs(
+        module,
+        [48, 88, WASM_ERR_MAX_BYTES],
+        (inputPtr, outPtr, errPtr) => {
+          module.HEAPF64.set(stateCopy, inputPtr >>> 3);
+          const status = module._tspice_oscltx(
+            inputPtr,
+            et,
+            mu,
+            outPtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+          const start = outPtr >>> 3;
+          return copyOrbitalTuple(
+            module.HEAPF64.subarray(start, start + 11),
+            11,
+            "oscltx(result)",
+            false,
+          );
+        },
+      );
+    },
+    prop2b: (gm, pvinit, dt) => {
+      requireSpkNumber(gm, "prop2b(gm)");
+      const pvinitCopy = copyOrbitalTuple(pvinit, 6, "prop2b(pvinit)", true);
+      requireSpkNumber(dt, "prop2b(dt)");
+      return withAllocs(
+        module,
+        [48, 48, WASM_ERR_MAX_BYTES],
+        (inputPtr, outPtr, errPtr) => {
+          module.HEAPF64.set(pvinitCopy, inputPtr >>> 3);
+          const status = module._tspice_prop2b(
+            gm,
+            inputPtr,
+            dt,
+            outPtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+          const start = outPtr >>> 3;
+          return copyOrbitalTuple(
+            module.HEAPF64.subarray(start, start + 6),
+            6,
+            "prop2b(result)",
+            false,
+          );
+        },
+      );
+    },
+    getelm: (firstYear, lines) => {
+      assertSpiceInt32(firstYear, "firstYear");
+      const rows = copyTleLines(lines);
+      const stride = Math.max(8, rows[0].length + 1, rows[1].length + 1);
+      return withAllocs(
+        module,
+        [WASM_ERR_MAX_BYTES, stride * 2, 8, 80],
+        (err, table, epoch, out) => {
+          for (let i = 0; i < 2; i++) {
+            const row = rows[i]!;
+            const ptr = table + i * stride;
+            module.HEAPU8.fill(32, ptr, ptr + 7);
+            for (let j = 0; j < row.length; j++)
+              module.HEAPU8[ptr + j] = row.charCodeAt(j);
+            module.HEAPU8[ptr + Math.max(7, row.length)] = 0;
+          }
+          const status = module._tspice_getelm(
+            firstYear,
+            stride,
+            table,
+            epoch,
+            out,
+            err,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, status);
+          return {
+            epoch: module.HEAPF64[epoch >>> 3]!,
+            elems: copyTleTuple(
+              module.HEAPF64.subarray(out >>> 3, (out >>> 3) + 10),
+              10,
+              "elems",
+              false,
+            ),
+          };
+        },
+      );
+    },
+    evsgp4: (et, geophs, elems) => {
+      requireSpkNumber(et, "et");
+      const constants = copyTleTuple(geophs, 8, "geophs", true),
+        elements = copyTleTuple(elems, 10, "elems", true);
+      return withAllocs(
+        module,
+        [WASM_ERR_MAX_BYTES, 64, 80, 48],
+        (err, g, e, s) => {
+          module.HEAPF64.set(constants, g >>> 3);
+          module.HEAPF64.set(elements, e >>> 3);
+          const status = module._tspice_evsgp4(
+            et,
+            g,
+            e,
+            s,
+            err,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, status);
+          return copyTleTuple(
+            module.HEAPF64.subarray(s >>> 3, (s >>> 3) + 6),
+            6,
+            "TEME state",
+            false,
+          );
+        },
+      );
+    },
+    spkcpo: (target, et, outref, refloc, abcorr, obspos, obsctr, obsref) => {
+      validateCorrectionString(target, "spkcpo(target)");
+      requireSpkNumber(et, "spkcpo(et)");
+      validateCorrectionString(outref, "spkcpo(outref)");
+      validateCorrectionString(refloc, "spkcpo(refloc)");
+      validateCorrectionString(abcorr, "spkcpo(abcorr)");
+      const obsposCopy = copyCorrectionInput(obspos, 3, "spkcpo(obspos)");
+      validateCorrectionString(obsctr, "spkcpo(obsctr)");
+      validateCorrectionString(obsref, "spkcpo(obsref)");
+      const targetBytes = correctionEncoder.encode(target);
+      const outrefBytes = correctionEncoder.encode(outref);
+      const reflocBytes = correctionEncoder.encode(refloc);
+      const abcorrBytes = correctionEncoder.encode(abcorr);
+      const obsctrBytes = correctionEncoder.encode(obsctr);
+      const obsrefBytes = correctionEncoder.encode(obsref);
+      return withAllocs(
+        module,
+        [
+          targetBytes.length + 1,
+          outrefBytes.length + 1,
+          reflocBytes.length + 1,
+          abcorrBytes.length + 1,
+          24,
+          obsctrBytes.length + 1,
+          obsrefBytes.length + 1,
+          56,
+          WASM_ERR_MAX_BYTES,
+        ],
+        (
+          targetPtr,
+          outrefPtr,
+          reflocPtr,
+          abcorrPtr,
+          obsposPtr,
+          obsctrPtr,
+          obsrefPtr,
+          outPtr,
+          errPtr,
+        ) => {
+          module.HEAPU8.set(targetBytes, targetPtr);
+          module.HEAPU8[targetPtr + targetBytes.length] = 0;
+          module.HEAPU8.set(outrefBytes, outrefPtr);
+          module.HEAPU8[outrefPtr + outrefBytes.length] = 0;
+          module.HEAPU8.set(reflocBytes, reflocPtr);
+          module.HEAPU8[reflocPtr + reflocBytes.length] = 0;
+          module.HEAPU8.set(abcorrBytes, abcorrPtr);
+          module.HEAPU8[abcorrPtr + abcorrBytes.length] = 0;
+          module.HEAPF64.set(obsposCopy, obsposPtr >>> 3);
+          module.HEAPU8.set(obsctrBytes, obsctrPtr);
+          module.HEAPU8[obsctrPtr + obsctrBytes.length] = 0;
+          module.HEAPU8.set(obsrefBytes, obsrefPtr);
+          module.HEAPU8[obsrefPtr + obsrefBytes.length] = 0;
+          const status = module._tspice_spkcpo(
+            targetPtr,
+            et,
+            outrefPtr,
+            reflocPtr,
+            abcorrPtr,
+            obsposPtr,
+            obsctrPtr,
+            obsrefPtr,
+            outPtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+          const start = outPtr >>> 3;
+          return decodeCorrectionResult(
+            module.HEAPF64.subarray(start, start + 7),
+            7,
+          );
+        },
+      );
+    },
+    spkcpt: (trgpos, trgctr, trgref, et, outref, refloc, abcorr, obsrvr) => {
+      const trgposCopy = copyCorrectionInput(trgpos, 3, "spkcpt(trgpos)");
+      validateCorrectionString(trgctr, "spkcpt(trgctr)");
+      validateCorrectionString(trgref, "spkcpt(trgref)");
+      requireSpkNumber(et, "spkcpt(et)");
+      validateCorrectionString(outref, "spkcpt(outref)");
+      validateCorrectionString(refloc, "spkcpt(refloc)");
+      validateCorrectionString(abcorr, "spkcpt(abcorr)");
+      validateCorrectionString(obsrvr, "spkcpt(obsrvr)");
+      const trgctrBytes = correctionEncoder.encode(trgctr);
+      const trgrefBytes = correctionEncoder.encode(trgref);
+      const outrefBytes = correctionEncoder.encode(outref);
+      const reflocBytes = correctionEncoder.encode(refloc);
+      const abcorrBytes = correctionEncoder.encode(abcorr);
+      const obsrvrBytes = correctionEncoder.encode(obsrvr);
+      return withAllocs(
+        module,
+        [
+          24,
+          trgctrBytes.length + 1,
+          trgrefBytes.length + 1,
+          outrefBytes.length + 1,
+          reflocBytes.length + 1,
+          abcorrBytes.length + 1,
+          obsrvrBytes.length + 1,
+          56,
+          WASM_ERR_MAX_BYTES,
+        ],
+        (
+          trgposPtr,
+          trgctrPtr,
+          trgrefPtr,
+          outrefPtr,
+          reflocPtr,
+          abcorrPtr,
+          obsrvrPtr,
+          outPtr,
+          errPtr,
+        ) => {
+          module.HEAPF64.set(trgposCopy, trgposPtr >>> 3);
+          module.HEAPU8.set(trgctrBytes, trgctrPtr);
+          module.HEAPU8[trgctrPtr + trgctrBytes.length] = 0;
+          module.HEAPU8.set(trgrefBytes, trgrefPtr);
+          module.HEAPU8[trgrefPtr + trgrefBytes.length] = 0;
+          module.HEAPU8.set(outrefBytes, outrefPtr);
+          module.HEAPU8[outrefPtr + outrefBytes.length] = 0;
+          module.HEAPU8.set(reflocBytes, reflocPtr);
+          module.HEAPU8[reflocPtr + reflocBytes.length] = 0;
+          module.HEAPU8.set(abcorrBytes, abcorrPtr);
+          module.HEAPU8[abcorrPtr + abcorrBytes.length] = 0;
+          module.HEAPU8.set(obsrvrBytes, obsrvrPtr);
+          module.HEAPU8[obsrvrPtr + obsrvrBytes.length] = 0;
+          const status = module._tspice_spkcpt(
+            trgposPtr,
+            trgctrPtr,
+            trgrefPtr,
+            et,
+            outrefPtr,
+            reflocPtr,
+            abcorrPtr,
+            obsrvrPtr,
+            outPtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+          const start = outPtr >>> 3;
+          return decodeCorrectionResult(
+            module.HEAPF64.subarray(start, start + 7),
+            7,
+          );
+        },
+      );
+    },
+    spkcvo: (
+      target,
+      et,
+      outref,
+      refloc,
+      abcorr,
+      obssta,
+      obsepc,
+      obsctr,
+      obsref,
+    ) => {
+      validateCorrectionString(target, "spkcvo(target)");
+      requireSpkNumber(et, "spkcvo(et)");
+      validateCorrectionString(outref, "spkcvo(outref)");
+      validateCorrectionString(refloc, "spkcvo(refloc)");
+      validateCorrectionString(abcorr, "spkcvo(abcorr)");
+      const obsstaCopy = copyCorrectionInput(obssta, 6, "spkcvo(obssta)");
+      requireSpkNumber(obsepc, "spkcvo(obsepc)");
+      validateCorrectionString(obsctr, "spkcvo(obsctr)");
+      validateCorrectionString(obsref, "spkcvo(obsref)");
+      const targetBytes = correctionEncoder.encode(target);
+      const outrefBytes = correctionEncoder.encode(outref);
+      const reflocBytes = correctionEncoder.encode(refloc);
+      const abcorrBytes = correctionEncoder.encode(abcorr);
+      const obsctrBytes = correctionEncoder.encode(obsctr);
+      const obsrefBytes = correctionEncoder.encode(obsref);
+      return withAllocs(
+        module,
+        [
+          targetBytes.length + 1,
+          outrefBytes.length + 1,
+          reflocBytes.length + 1,
+          abcorrBytes.length + 1,
+          48,
+          obsctrBytes.length + 1,
+          obsrefBytes.length + 1,
+          56,
+          WASM_ERR_MAX_BYTES,
+        ],
+        (
+          targetPtr,
+          outrefPtr,
+          reflocPtr,
+          abcorrPtr,
+          obsstaPtr,
+          obsctrPtr,
+          obsrefPtr,
+          outPtr,
+          errPtr,
+        ) => {
+          module.HEAPU8.set(targetBytes, targetPtr);
+          module.HEAPU8[targetPtr + targetBytes.length] = 0;
+          module.HEAPU8.set(outrefBytes, outrefPtr);
+          module.HEAPU8[outrefPtr + outrefBytes.length] = 0;
+          module.HEAPU8.set(reflocBytes, reflocPtr);
+          module.HEAPU8[reflocPtr + reflocBytes.length] = 0;
+          module.HEAPU8.set(abcorrBytes, abcorrPtr);
+          module.HEAPU8[abcorrPtr + abcorrBytes.length] = 0;
+          module.HEAPF64.set(obsstaCopy, obsstaPtr >>> 3);
+          module.HEAPU8.set(obsctrBytes, obsctrPtr);
+          module.HEAPU8[obsctrPtr + obsctrBytes.length] = 0;
+          module.HEAPU8.set(obsrefBytes, obsrefPtr);
+          module.HEAPU8[obsrefPtr + obsrefBytes.length] = 0;
+          const status = module._tspice_spkcvo(
+            targetPtr,
+            et,
+            outrefPtr,
+            reflocPtr,
+            abcorrPtr,
+            obsstaPtr,
+            obsepc,
+            obsctrPtr,
+            obsrefPtr,
+            outPtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+          const start = outPtr >>> 3;
+          return decodeCorrectionResult(
+            module.HEAPF64.subarray(start, start + 7),
+            7,
+          );
+        },
+      );
+    },
+    spkcvt: (
+      trgsta,
+      trgepc,
+      trgctr,
+      trgref,
+      et,
+      outref,
+      refloc,
+      abcorr,
+      obsrvr,
+    ) => {
+      const trgstaCopy = copyCorrectionInput(trgsta, 6, "spkcvt(trgsta)");
+      requireSpkNumber(trgepc, "spkcvt(trgepc)");
+      validateCorrectionString(trgctr, "spkcvt(trgctr)");
+      validateCorrectionString(trgref, "spkcvt(trgref)");
+      requireSpkNumber(et, "spkcvt(et)");
+      validateCorrectionString(outref, "spkcvt(outref)");
+      validateCorrectionString(refloc, "spkcvt(refloc)");
+      validateCorrectionString(abcorr, "spkcvt(abcorr)");
+      validateCorrectionString(obsrvr, "spkcvt(obsrvr)");
+      const trgctrBytes = correctionEncoder.encode(trgctr);
+      const trgrefBytes = correctionEncoder.encode(trgref);
+      const outrefBytes = correctionEncoder.encode(outref);
+      const reflocBytes = correctionEncoder.encode(refloc);
+      const abcorrBytes = correctionEncoder.encode(abcorr);
+      const obsrvrBytes = correctionEncoder.encode(obsrvr);
+      return withAllocs(
+        module,
+        [
+          48,
+          trgctrBytes.length + 1,
+          trgrefBytes.length + 1,
+          outrefBytes.length + 1,
+          reflocBytes.length + 1,
+          abcorrBytes.length + 1,
+          obsrvrBytes.length + 1,
+          56,
+          WASM_ERR_MAX_BYTES,
+        ],
+        (
+          trgstaPtr,
+          trgctrPtr,
+          trgrefPtr,
+          outrefPtr,
+          reflocPtr,
+          abcorrPtr,
+          obsrvrPtr,
+          outPtr,
+          errPtr,
+        ) => {
+          module.HEAPF64.set(trgstaCopy, trgstaPtr >>> 3);
+          module.HEAPU8.set(trgctrBytes, trgctrPtr);
+          module.HEAPU8[trgctrPtr + trgctrBytes.length] = 0;
+          module.HEAPU8.set(trgrefBytes, trgrefPtr);
+          module.HEAPU8[trgrefPtr + trgrefBytes.length] = 0;
+          module.HEAPU8.set(outrefBytes, outrefPtr);
+          module.HEAPU8[outrefPtr + outrefBytes.length] = 0;
+          module.HEAPU8.set(reflocBytes, reflocPtr);
+          module.HEAPU8[reflocPtr + reflocBytes.length] = 0;
+          module.HEAPU8.set(abcorrBytes, abcorrPtr);
+          module.HEAPU8[abcorrPtr + abcorrBytes.length] = 0;
+          module.HEAPU8.set(obsrvrBytes, obsrvrPtr);
+          module.HEAPU8[obsrvrPtr + obsrvrBytes.length] = 0;
+          const status = module._tspice_spkcvt(
+            trgstaPtr,
+            trgepc,
+            trgctrPtr,
+            trgrefPtr,
+            et,
+            outrefPtr,
+            reflocPtr,
+            abcorrPtr,
+            obsrvrPtr,
+            outPtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+          const start = outPtr >>> 3;
+          return decodeCorrectionResult(
+            module.HEAPF64.subarray(start, start + 7),
+            7,
+          );
+        },
+      );
+    },
+    azlcpo: (
+      method,
+      target,
+      et,
+      abcorr,
+      azccw,
+      elplsz,
+      obspos,
+      obsctr,
+      obsref,
+    ) => {
+      validateCorrectionString(method, "azlcpo(method)");
+      validateCorrectionString(target, "azlcpo(target)");
+      requireSpkNumber(et, "azlcpo(et)");
+      validateCorrectionString(abcorr, "azlcpo(abcorr)");
+      if (typeof azccw !== "boolean")
+        throw new TypeError("azlcpo(azccw) must be boolean");
+      if (typeof elplsz !== "boolean")
+        throw new TypeError("azlcpo(elplsz) must be boolean");
+      const obsposCopy = copyCorrectionInput(obspos, 3, "azlcpo(obspos)");
+      validateCorrectionString(obsctr, "azlcpo(obsctr)");
+      validateCorrectionString(obsref, "azlcpo(obsref)");
+      const methodBytes = correctionEncoder.encode(method);
+      const targetBytes = correctionEncoder.encode(target);
+      const abcorrBytes = correctionEncoder.encode(abcorr);
+      const obsctrBytes = correctionEncoder.encode(obsctr);
+      const obsrefBytes = correctionEncoder.encode(obsref);
+      return withAllocs(
+        module,
+        [
+          methodBytes.length + 1,
+          targetBytes.length + 1,
+          abcorrBytes.length + 1,
+          24,
+          obsctrBytes.length + 1,
+          obsrefBytes.length + 1,
+          56,
+          WASM_ERR_MAX_BYTES,
+        ],
+        (
+          methodPtr,
+          targetPtr,
+          abcorrPtr,
+          obsposPtr,
+          obsctrPtr,
+          obsrefPtr,
+          outPtr,
+          errPtr,
+        ) => {
+          module.HEAPU8.set(methodBytes, methodPtr);
+          module.HEAPU8[methodPtr + methodBytes.length] = 0;
+          module.HEAPU8.set(targetBytes, targetPtr);
+          module.HEAPU8[targetPtr + targetBytes.length] = 0;
+          module.HEAPU8.set(abcorrBytes, abcorrPtr);
+          module.HEAPU8[abcorrPtr + abcorrBytes.length] = 0;
+          module.HEAPF64.set(obsposCopy, obsposPtr >>> 3);
+          module.HEAPU8.set(obsctrBytes, obsctrPtr);
+          module.HEAPU8[obsctrPtr + obsctrBytes.length] = 0;
+          module.HEAPU8.set(obsrefBytes, obsrefPtr);
+          module.HEAPU8[obsrefPtr + obsrefBytes.length] = 0;
+          const status = module._tspice_azlcpo(
+            methodPtr,
+            targetPtr,
+            et,
+            abcorrPtr,
+            Number(azccw),
+            Number(elplsz),
+            obsposPtr,
+            obsctrPtr,
+            obsrefPtr,
+            outPtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+          const start = outPtr >>> 3;
+          return decodeCorrectionResult(
+            module.HEAPF64.subarray(start, start + 7),
+            7,
+          );
+        },
+      );
+    },
+    spkacs: (target, et, ref, abcorr, observer) => {
+      assertSpiceInt32(target, "spkacs(target)");
+      requireSpkNumber(et, "spkacs(et)");
+      validateCorrectionString(ref, "spkacs(ref)");
+      validateCorrectionString(abcorr, "spkacs(abcorr)");
+      assertSpiceInt32(observer, "spkacs(observer)");
+      const refBytes = correctionEncoder.encode(ref);
+      const abcorrBytes = correctionEncoder.encode(abcorr);
+      return withAllocs(
+        module,
+        [refBytes.length + 1, abcorrBytes.length + 1, 64, WASM_ERR_MAX_BYTES],
+        (refPtr, abcorrPtr, outPtr, errPtr) => {
+          module.HEAPU8.set(refBytes, refPtr);
+          module.HEAPU8[refPtr + refBytes.length] = 0;
+          module.HEAPU8.set(abcorrBytes, abcorrPtr);
+          module.HEAPU8[abcorrPtr + abcorrBytes.length] = 0;
+          const status = module._tspice_spkacs(
+            target,
+            et,
+            refPtr,
+            abcorrPtr,
+            observer,
+            outPtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+          const start = outPtr >>> 3;
+          return decodeCorrectionResult(
+            module.HEAPF64.subarray(start, start + 8),
+            8,
+          );
+        },
+      );
+    },
+    spkapo: (target, et, ref, observerState, abcorr) => {
+      assertSpiceInt32(target, "spkapo(target)");
+      requireSpkNumber(et, "spkapo(et)");
+      validateCorrectionString(ref, "spkapo(ref)");
+      const observerStateCopy = copyCorrectionInput(
+        observerState,
+        6,
+        "spkapo(observerState)",
+      );
+      validateCorrectionString(abcorr, "spkapo(abcorr)");
+      const refBytes = correctionEncoder.encode(ref);
+      const abcorrBytes = correctionEncoder.encode(abcorr);
+      return withAllocs(
+        module,
+        [
+          refBytes.length + 1,
+          48,
+          abcorrBytes.length + 1,
+          32,
+          WASM_ERR_MAX_BYTES,
+        ],
+        (refPtr, observerStatePtr, abcorrPtr, outPtr, errPtr) => {
+          module.HEAPU8.set(refBytes, refPtr);
+          module.HEAPU8[refPtr + refBytes.length] = 0;
+          module.HEAPF64.set(observerStateCopy, observerStatePtr >>> 3);
+          module.HEAPU8.set(abcorrBytes, abcorrPtr);
+          module.HEAPU8[abcorrPtr + abcorrBytes.length] = 0;
+          const status = module._tspice_spkapo(
+            target,
+            et,
+            refPtr,
+            observerStatePtr,
+            abcorrPtr,
+            outPtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+          const start = outPtr >>> 3;
+          return decodeCorrectionResult(
+            module.HEAPF64.subarray(start, start + 4),
+            4,
+          );
+        },
+      );
+    },
+    spkapp: (target, et, ref, observerState, abcorr) => {
+      assertSpiceInt32(target, "spkapp(target)");
+      requireSpkNumber(et, "spkapp(et)");
+      validateCorrectionString(ref, "spkapp(ref)");
+      const observerStateCopy = copyCorrectionInput(
+        observerState,
+        6,
+        "spkapp(observerState)",
+      );
+      validateCorrectionString(abcorr, "spkapp(abcorr)");
+      const refBytes = correctionEncoder.encode(ref);
+      const abcorrBytes = correctionEncoder.encode(abcorr);
+      return withAllocs(
+        module,
+        [
+          refBytes.length + 1,
+          48,
+          abcorrBytes.length + 1,
+          56,
+          WASM_ERR_MAX_BYTES,
+        ],
+        (refPtr, observerStatePtr, abcorrPtr, outPtr, errPtr) => {
+          module.HEAPU8.set(refBytes, refPtr);
+          module.HEAPU8[refPtr + refBytes.length] = 0;
+          module.HEAPF64.set(observerStateCopy, observerStatePtr >>> 3);
+          module.HEAPU8.set(abcorrBytes, abcorrPtr);
+          module.HEAPU8[abcorrPtr + abcorrBytes.length] = 0;
+          const status = module._tspice_spkapp(
+            target,
+            et,
+            refPtr,
+            observerStatePtr,
+            abcorrPtr,
+            outPtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+          const start = outPtr >>> 3;
+          return decodeCorrectionResult(
+            module.HEAPF64.subarray(start, start + 7),
+            7,
+          );
+        },
+      );
+    },
+    spkaps: (target, et, ref, abcorr, observerState, observerAcceleration) => {
+      assertSpiceInt32(target, "spkaps(target)");
+      requireSpkNumber(et, "spkaps(et)");
+      validateCorrectionString(ref, "spkaps(ref)");
+      validateCorrectionString(abcorr, "spkaps(abcorr)");
+      const observerStateCopy = copyCorrectionInput(
+        observerState,
+        6,
+        "spkaps(observerState)",
+      );
+      const observerAccelerationCopy = copyCorrectionInput(
+        observerAcceleration,
+        3,
+        "spkaps(observerAcceleration)",
+      );
+      const refBytes = correctionEncoder.encode(ref);
+      const abcorrBytes = correctionEncoder.encode(abcorr);
+      return withAllocs(
+        module,
+        [
+          refBytes.length + 1,
+          abcorrBytes.length + 1,
+          48,
+          24,
+          64,
+          WASM_ERR_MAX_BYTES,
+        ],
+        (
+          refPtr,
+          abcorrPtr,
+          observerStatePtr,
+          observerAccelerationPtr,
+          outPtr,
+          errPtr,
+        ) => {
+          module.HEAPU8.set(refBytes, refPtr);
+          module.HEAPU8[refPtr + refBytes.length] = 0;
+          module.HEAPU8.set(abcorrBytes, abcorrPtr);
+          module.HEAPU8[abcorrPtr + abcorrBytes.length] = 0;
+          module.HEAPF64.set(observerStateCopy, observerStatePtr >>> 3);
+          module.HEAPF64.set(
+            observerAccelerationCopy,
+            observerAccelerationPtr >>> 3,
+          );
+          const status = module._tspice_spkaps(
+            target,
+            et,
+            refPtr,
+            abcorrPtr,
+            observerStatePtr,
+            observerAccelerationPtr,
+            outPtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+          const start = outPtr >>> 3;
+          return decodeCorrectionResult(
+            module.HEAPF64.subarray(start, start + 8),
+            8,
+          );
+        },
+      );
+    },
+    spkltc: (target, et, ref, abcorr, observerState) => {
+      assertSpiceInt32(target, "spkltc(target)");
+      requireSpkNumber(et, "spkltc(et)");
+      validateCorrectionString(ref, "spkltc(ref)");
+      validateCorrectionString(abcorr, "spkltc(abcorr)");
+      const observerStateCopy = copyCorrectionInput(
+        observerState,
+        6,
+        "spkltc(observerState)",
+      );
+      const refBytes = correctionEncoder.encode(ref);
+      const abcorrBytes = correctionEncoder.encode(abcorr);
+      return withAllocs(
+        module,
+        [
+          refBytes.length + 1,
+          abcorrBytes.length + 1,
+          48,
+          64,
+          WASM_ERR_MAX_BYTES,
+        ],
+        (refPtr, abcorrPtr, observerStatePtr, outPtr, errPtr) => {
+          module.HEAPU8.set(refBytes, refPtr);
+          module.HEAPU8[refPtr + refBytes.length] = 0;
+          module.HEAPU8.set(abcorrBytes, abcorrPtr);
+          module.HEAPU8[abcorrPtr + abcorrBytes.length] = 0;
+          module.HEAPF64.set(observerStateCopy, observerStatePtr >>> 3);
+          const status = module._tspice_spkltc(
+            target,
+            et,
+            refPtr,
+            abcorrPtr,
+            observerStatePtr,
+            outPtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+          const start = outPtr >>> 3;
+          return decodeCorrectionResult(
+            module.HEAPF64.subarray(start, start + 8),
+            8,
+          );
+        },
+      );
+    },
+    stelab: (position, observerVelocity) => {
+      const positionCopy = copyCorrectionInput(position, 3, "stelab(position)");
+      const observerVelocityCopy = copyCorrectionInput(
+        observerVelocity,
+        3,
+        "stelab(observerVelocity)",
+      );
+      return withAllocs(
+        module,
+        [24, 24, 24, WASM_ERR_MAX_BYTES],
+        (positionPtr, observerVelocityPtr, outPtr, errPtr) => {
+          module.HEAPF64.set(positionCopy, positionPtr >>> 3);
+          module.HEAPF64.set(observerVelocityCopy, observerVelocityPtr >>> 3);
+          const status = module._tspice_stelab(
+            positionPtr,
+            observerVelocityPtr,
+            outPtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+          const start = outPtr >>> 3;
+          return decodeCorrectionResult(
+            module.HEAPF64.subarray(start, start + 3),
+            3,
+          );
+        },
+      );
+    },
+    stlabx: (position, observerVelocity) => {
+      const positionCopy = copyCorrectionInput(position, 3, "stlabx(position)");
+      const observerVelocityCopy = copyCorrectionInput(
+        observerVelocity,
+        3,
+        "stlabx(observerVelocity)",
+      );
+      return withAllocs(
+        module,
+        [24, 24, 24, WASM_ERR_MAX_BYTES],
+        (positionPtr, observerVelocityPtr, outPtr, errPtr) => {
+          module.HEAPF64.set(positionCopy, positionPtr >>> 3);
+          module.HEAPF64.set(observerVelocityCopy, observerVelocityPtr >>> 3);
+          const status = module._tspice_stlabx(
+            positionPtr,
+            observerVelocityPtr,
+            outPtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+          const start = outPtr >>> 3;
+          return decodeCorrectionResult(
+            module.HEAPF64.subarray(start, start + 3),
+            3,
+          );
+        },
+      );
+    },
+    ltime: (etobs, observer, dir, target) => {
+      requireSpkNumber(etobs, "ltime(etobs)");
+      assertSpiceInt32(observer, "ltime(observer)");
+      validateCorrectionString(dir, "ltime(dir)");
+      assertSpiceInt32(target, "ltime(target)");
+      const dirBytes = correctionEncoder.encode(dir);
+      return withAllocs(
+        module,
+        [dirBytes.length + 1, 16, WASM_ERR_MAX_BYTES],
+        (dirPtr, outPtr, errPtr) => {
+          module.HEAPU8.set(dirBytes, dirPtr);
+          module.HEAPU8[dirPtr + dirBytes.length] = 0;
+          const status = module._tspice_ltime(
+            etobs,
+            observer,
+            dirPtr,
+            target,
+            outPtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+          const start = outPtr >>> 3;
+          return decodeCorrectionResult(
+            module.HEAPF64.subarray(start, start + 2),
+            2,
+          );
+        },
+      );
+    },
     spkezr: (
       target: string,
       et: number,
@@ -901,7 +2061,8 @@ export function createEphemerisApi(
     spkobj: (spk: string, ids: SpiceIntCell) =>
       tspiceCallSpkobj(module, spk, ids),
 
-    spksfs: (body: number, et: number) => tspiceCallSpksfs(module, body, et),
+    spksfs: (body: number, et: number) =>
+      tspiceCallSpksfs(module, body, et, readers.observe),
 
     spkpds: (
       body: number,
@@ -978,6 +2139,583 @@ export function createEphemerisApi(
       }
     },
 
+    spkw02: (
+      handle,
+      body,
+      center,
+      frame,
+      first,
+      last,
+      segid,
+      intlen,
+      n,
+      degree,
+      cdata,
+      btime,
+    ) => {
+      const nativeHandle = handles.lookup(
+        handle,
+        ["SPK"],
+        "spkw02",
+      ).nativeHandle;
+      validateSpkWriterFields(
+        body,
+        center,
+        frame,
+        segid,
+        first,
+        last,
+        intlen,
+        btime,
+      );
+      const data = copySpkChebyshevData(2, n, degree, cdata);
+      writeSpkRecord(
+        module,
+        frame,
+        segid,
+        data,
+        (framePtr, idPtr, dataPtr, err) =>
+          module._tspice_spkw02(
+            nativeHandle,
+            body,
+            center,
+            framePtr,
+            first,
+            last,
+            idPtr,
+            intlen,
+            n,
+            degree,
+            dataPtr,
+            data.length,
+            btime,
+            err,
+            WASM_ERR_MAX_BYTES,
+          ),
+      );
+    },
+    spkw03: (
+      handle,
+      body,
+      center,
+      frame,
+      first,
+      last,
+      segid,
+      intlen,
+      n,
+      degree,
+      cdata,
+      btime,
+    ) => {
+      const nativeHandle = handles.lookup(
+        handle,
+        ["SPK"],
+        "spkw03",
+      ).nativeHandle;
+      validateSpkWriterFields(
+        body,
+        center,
+        frame,
+        segid,
+        first,
+        last,
+        intlen,
+        btime,
+      );
+      const data = copySpkChebyshevData(3, n, degree, cdata);
+      writeSpkRecord(
+        module,
+        frame,
+        segid,
+        data,
+        (framePtr, idPtr, dataPtr, err) =>
+          module._tspice_spkw03(
+            nativeHandle,
+            body,
+            center,
+            framePtr,
+            first,
+            last,
+            idPtr,
+            intlen,
+            n,
+            degree,
+            dataPtr,
+            data.length,
+            btime,
+            err,
+            WASM_ERR_MAX_BYTES,
+          ),
+      );
+    },
+    spkw20: (
+      handle,
+      body,
+      center,
+      frame,
+      first,
+      last,
+      segid,
+      intlen,
+      n,
+      degree,
+      cdata,
+      dscale,
+      tscale,
+      initjd,
+      initfr,
+    ) => {
+      const nativeHandle = handles.lookup(
+        handle,
+        ["SPK"],
+        "spkw20",
+      ).nativeHandle;
+      validateSpkWriterFields(
+        body,
+        center,
+        frame,
+        segid,
+        first,
+        last,
+        intlen,
+        dscale,
+        tscale,
+        initjd,
+        initfr,
+      );
+      const data = copySpkChebyshevData(20, n, degree, cdata);
+      writeSpkRecord(
+        module,
+        frame,
+        segid,
+        data,
+        (framePtr, idPtr, dataPtr, err) =>
+          module._tspice_spkw20(
+            nativeHandle,
+            body,
+            center,
+            framePtr,
+            first,
+            last,
+            idPtr,
+            intlen,
+            n,
+            degree,
+            dataPtr,
+            data.length,
+            dscale,
+            tscale,
+            initjd,
+            initfr,
+            err,
+            WASM_ERR_MAX_BYTES,
+          ),
+      );
+    },
+    spkw09: (
+      handle,
+      body,
+      center,
+      frame,
+      first,
+      last,
+      segid,
+      degree,
+      states,
+      epochs,
+    ) => {
+      const actual = handles.lookup(handle, ["SPK"], "spkw09").nativeHandle;
+      validateSpkWriterFields(body, center, frame, segid, first, last);
+      const input = snapshotSpkInterpolation(9, 1, degree, states, epochs);
+      writeInterpolationRecords(
+        module,
+        frame,
+        segid,
+        input.samples,
+        input.epochs,
+        (framePtr, idPtr, samplesPtr, epochsPtr, err) =>
+          module._tspice_spkw09(
+            actual,
+            body,
+            center,
+            framePtr,
+            first,
+            last,
+            idPtr,
+            degree,
+            input.n,
+            samplesPtr,
+            input.samples.length,
+            epochsPtr,
+            input.epochs.length,
+            err,
+            WASM_ERR_MAX_BYTES,
+          ),
+      );
+    },
+    spkw12: (
+      handle,
+      body,
+      center,
+      frame,
+      first,
+      last,
+      segid,
+      degree,
+      states,
+      epoch0,
+      step,
+    ) => {
+      const actual = handles.lookup(handle, ["SPK"], "spkw12").nativeHandle;
+      validateSpkWriterFields(
+        body,
+        center,
+        frame,
+        segid,
+        first,
+        last,
+        epoch0,
+        step,
+      );
+      const input = snapshotSpkInterpolation(12, 1, degree, states);
+      writeInterpolationRecords(
+        module,
+        frame,
+        segid,
+        input.samples,
+        undefined,
+        (framePtr, idPtr, samplesPtr, _epochsPtr, err) =>
+          module._tspice_spkw12(
+            actual,
+            body,
+            center,
+            framePtr,
+            first,
+            last,
+            idPtr,
+            degree,
+            input.n,
+            samplesPtr,
+            input.samples.length,
+            epoch0,
+            step,
+            err,
+            WASM_ERR_MAX_BYTES,
+          ),
+      );
+    },
+    spkw13: (
+      handle,
+      body,
+      center,
+      frame,
+      first,
+      last,
+      segid,
+      degree,
+      states,
+      epochs,
+    ) => {
+      const actual = handles.lookup(handle, ["SPK"], "spkw13").nativeHandle;
+      validateSpkWriterFields(body, center, frame, segid, first, last);
+      const input = snapshotSpkInterpolation(13, 1, degree, states, epochs);
+      writeInterpolationRecords(
+        module,
+        frame,
+        segid,
+        input.samples,
+        input.epochs,
+        (framePtr, idPtr, samplesPtr, epochsPtr, err) =>
+          module._tspice_spkw13(
+            actual,
+            body,
+            center,
+            framePtr,
+            first,
+            last,
+            idPtr,
+            degree,
+            input.n,
+            samplesPtr,
+            input.samples.length,
+            epochsPtr,
+            input.epochs.length,
+            err,
+            WASM_ERR_MAX_BYTES,
+          ),
+      );
+    },
+    spkw18: (
+      handle,
+      subtype,
+      body,
+      center,
+      frame,
+      first,
+      last,
+      segid,
+      degree,
+      packets,
+      epochs,
+    ) => {
+      const actual = handles.lookup(handle, ["SPK"], "spkw18").nativeHandle;
+      validateSpkWriterFields(body, center, frame, segid, first, last);
+      const input = snapshotSpkInterpolation(
+        18,
+        subtype,
+        degree,
+        packets,
+        epochs,
+      );
+      writeInterpolationRecords(
+        module,
+        frame,
+        segid,
+        input.samples,
+        input.epochs,
+        (framePtr, idPtr, samplesPtr, epochsPtr, err) =>
+          module._tspice_spkw18(
+            actual,
+            subtype,
+            body,
+            center,
+            framePtr,
+            first,
+            last,
+            idPtr,
+            degree,
+            input.n,
+            samplesPtr,
+            input.samples.length,
+            epochsPtr,
+            input.epochs.length,
+            err,
+            WASM_ERR_MAX_BYTES,
+          ),
+      );
+    },
+    spkw05: (
+      handle,
+      body,
+      center,
+      frame,
+      first,
+      last,
+      segid,
+      gm,
+      states,
+      epochs,
+    ) => {
+      const actual = handles.lookup(handle, ["SPK"], "spkw05").nativeHandle;
+      validateSpkChebyshevFields(body, center, frame, segid, first, last);
+      const { n, data } = packSpk05(gm, states, epochs);
+      writeSpkRecord(module, frame, segid, data, (f, id, ptr, err) =>
+        module._tspice_spkw05(
+          actual,
+          body,
+          center,
+          f,
+          first,
+          last,
+          id,
+          n,
+          ptr,
+          data.length,
+          err,
+          WASM_ERR_MAX_BYTES,
+        ),
+      );
+    },
+    spkw10: (
+      handle,
+      body,
+      center,
+      frame,
+      first,
+      last,
+      segid,
+      consts,
+      elems,
+      epochs,
+    ) => {
+      const actual = handles.lookup(handle, ["SPK"], "spkw10").nativeHandle;
+      validateSpkChebyshevFields(body, center, frame, segid, first, last);
+      const { n, data } = packSpk10(consts, elems, epochs);
+      writeSpkRecord(module, frame, segid, data, (f, id, ptr, err) =>
+        module._tspice_spkw10(
+          actual,
+          body,
+          center,
+          f,
+          first,
+          last,
+          id,
+          n,
+          ptr,
+          data.length,
+          err,
+          WASM_ERR_MAX_BYTES,
+        ),
+      );
+    },
+    spkw15: (
+      handle,
+      body,
+      center,
+      frame,
+      first,
+      last,
+      segid,
+      epoch,
+      tp,
+      pa,
+      p,
+      ecc,
+      j2flg,
+      pv,
+      gm,
+      j2,
+      radius,
+    ) => {
+      const actual = handles.lookup(handle, ["SPK"], "spkw15").nativeHandle;
+      validateSpkChebyshevFields(body, center, frame, segid, first, last);
+      const { n, data } = packSpk15(
+        epoch,
+        tp,
+        pa,
+        p,
+        ecc,
+        j2flg,
+        pv,
+        gm,
+        j2,
+        radius,
+      );
+      writeSpkRecord(module, frame, segid, data, (f, id, ptr, err) =>
+        module._tspice_spkw15(
+          actual,
+          body,
+          center,
+          f,
+          first,
+          last,
+          id,
+          n,
+          ptr,
+          data.length,
+          err,
+          WASM_ERR_MAX_BYTES,
+        ),
+      );
+    },
+    spkw17: (
+      handle,
+      body,
+      center,
+      frame,
+      first,
+      last,
+      segid,
+      epoch,
+      eqel,
+      rapol,
+      decpol,
+    ) => {
+      const actual = handles.lookup(handle, ["SPK"], "spkw17").nativeHandle;
+      validateSpkChebyshevFields(body, center, frame, segid, first, last);
+      const { n, data } = packSpk17(epoch, eqel, rapol, decpol);
+      writeSpkRecord(module, frame, segid, data, (f, id, ptr, err) =>
+        module._tspice_spkw17(
+          actual,
+          body,
+          center,
+          f,
+          first,
+          last,
+          id,
+          n,
+          ptr,
+          data.length,
+          err,
+          WASM_ERR_MAX_BYTES,
+        ),
+      );
+    },
+    spk14b: (handle, segid, body, center, frame, first, last, degree) => {
+      const h = handles.lookup(handle, ["SPK"], "spk14b").nativeHandle;
+      assertSpiceInt32(degree, "degree");
+      validateSpkChebyshevFields(body, center, frame, segid, first, last);
+      if (degree > 357913939)
+        throw new RangeError(
+          "Type 14 record width exceeds signed CSPICE indexing",
+        );
+      const id = writeUtf8CString(module, segid);
+      try {
+        const ref = writeUtf8CString(module, frame);
+        try {
+          withAllocs(module, [WASM_ERR_MAX_BYTES], (err) => {
+            const status = module._tspice_spk14b(
+              h,
+              id,
+              body,
+              center,
+              ref,
+              first,
+              last,
+              degree,
+              err,
+              WASM_ERR_MAX_BYTES,
+            );
+            if (status)
+              throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, status);
+          });
+        } finally {
+          module._free(ref);
+        }
+      } finally {
+        module._free(id);
+      }
+      spk14Degrees.set(handle, degree);
+    },
+    spk14a: (handle, count, records, epochs) => {
+      const h = handles.lookup(handle, ["SPK"], "spk14a").nativeHandle;
+      const { data, times } = copySpk14Packets(
+        spk14Degrees.get(handle),
+        count,
+        records,
+        epochs,
+      );
+      withAllocs(
+        module,
+        [
+          Math.max(8, data.byteLength),
+          Math.max(8, times.byteLength),
+          WASM_ERR_MAX_BYTES,
+        ],
+        (p, t, err) => {
+          module.HEAPF64.set(data, p / 8);
+          module.HEAPF64.set(times, t / 8);
+          const status = module._tspice_spk14a(
+            h,
+            count,
+            p,
+            data.length,
+            t,
+            times.length,
+            err,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status)
+            throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, status);
+        },
+      );
+    },
+    spk14e: (handle) => {
+      const h = handles.lookup(handle, ["SPK"], "spk14e").nativeHandle;
+      callVoidHandle(module, module._tspice_spk14e, h);
+      spk14Degrees.delete(handle);
+    },
     spkw08: (
       handle: SpiceHandle,
       body: number,
@@ -1044,5 +2782,6 @@ export function createEphemerisApi(
         step,
       );
     },
-  };
+  } satisfies EphemerisApi & { [releaseSpkLoads](): void };
+  return api;
 }

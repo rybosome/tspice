@@ -399,7 +399,8 @@
       ],
       "id": "local-cp03-779d6fd6ae41-node",
       "kind": "local",
-      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 779d6fd6ae41c78017a8cf7ccaec5fef3100112c. The native-required lane completed 7054 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45097193130/job/137439518970"
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 779d6fd6ae41c78017a8cf7ccaec5fef3100112c. The native-required lane completed 7054 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45097193130/job/137439518970",
+      "historical": true
     },
     {
       "backend": "node",
@@ -470,7 +471,8 @@
       "kind": "ci",
       "commit": "c4bd798cc20d13e8dfd51e7e83ba740ffe4418ff",
       "url": "https://github.com/rybosome/tspice/actions/runs/45127597533/job/137535439275",
-      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 7054 live comparisons without unexpected skips."
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 7054 live comparisons without unexpected skips.",
+      "historical": true
     },
     {
       "backend": "wasm",
@@ -539,7 +541,8 @@
       ],
       "id": "local-cp03-779d6fd6ae41-wasm",
       "kind": "local",
-      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 779d6fd6ae41c78017a8cf7ccaec5fef3100112c. The native-required lane completed 7054 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45097193130/job/137439518970"
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 779d6fd6ae41c78017a8cf7ccaec5fef3100112c. The native-required lane completed 7054 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45097193130/job/137439518970",
+      "historical": true
     },
     {
       "backend": "wasm",
@@ -610,7 +613,288 @@
       "kind": "ci",
       "commit": "c4bd798cc20d13e8dfd51e7e83ba740ffe4418ff",
       "url": "https://github.com/rybosome/tspice/actions/runs/45127597533/job/137535439275",
-      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 7054 live comparisons without unexpected skips."
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 7054 live comparisons without unexpected skips.",
+      "historical": true
+    },
+    {
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "06a127696d32494f7ecc098b06960b1e429c9876c72123b9628ffca9d282d401",
+      "caseIds": [
+        "frames-ckcls-empty",
+        "frames-ckcls-priority",
+        "frames-ckcls-readback",
+        "frames-ckopn-empty-name",
+        "frames-ckopn-existing",
+        "frames-ckopn-multi-format",
+        "frames-ckopn-negative-comments",
+        "frames-ckw01-av-disabled",
+        "frames-ckw01-clock-and-pointing",
+        "frames-ckw01-directory",
+        "frames-ckw01-empty",
+        "frames-ckw01-identifier",
+        "frames-ckw01-nearest",
+        "frames-ckw01-order",
+        "frames-ckw01-unknown-frame",
+        "frames-ckw01-zero-quaternion",
+        "frames-ckw02-clock-and-pointing",
+        "frames-ckw02-directory",
+        "frames-ckw02-empty",
+        "frames-ckw02-identifier",
+        "frames-ckw02-intervals",
+        "frames-ckw02-overlap",
+        "frames-ckw02-rate-sign",
+        "frames-ckw02-touch",
+        "frames-ckw02-unknown-frame",
+        "frames-ckw02-zero-quaternion",
+        "frames-ckw02-zero-span",
+        "frames-ckw03-av-disabled",
+        "frames-ckw03-clock-and-pointing",
+        "frames-ckw03-directory",
+        "frames-ckw03-identifier",
+        "frames-ckw03-interval-break",
+        "frames-ckw03-intervals-empty",
+        "frames-ckw03-nonmatching-start",
+        "frames-ckw03-unknown-frame",
+        "frames-ckw03-wrong-first-start",
+        "frames-ckw03-zero-quaternion",
+        "frames-ckw05-av-disabled",
+        "frames-ckw05-bad-degree",
+        "frames-ckw05-clock-and-pointing",
+        "frames-ckw05-directory",
+        "frames-ckw05-empty",
+        "frames-ckw05-hermite-window",
+        "frames-ckw05-identifier",
+        "frames-ckw05-interpolation-break",
+        "frames-ckw05-maximum-degree",
+        "frames-ckw05-no-window",
+        "frames-ckw05-rate",
+        "frames-ckw05-rate-sign",
+        "frames-ckw05-segment-trim",
+        "frames-ckw05-subtype-0",
+        "frames-ckw05-subtype-1",
+        "frames-ckw05-subtype-2",
+        "frames-ckw05-subtype-3",
+        "frames-ckw05-trim-no-sample",
+        "frames-ckw05-unknown-frame",
+        "frames-ckw05-zero-quaternion"
+      ],
+      "id": "local-cp04-3c3e3f368191-node",
+      "kind": "local",
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 3c3e3f368191d553e84ecc599d449055df985b1c. The native-required lane completed 8056 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45336611602/job/138250075470"
+    },
+    {
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "06a127696d32494f7ecc098b06960b1e429c9876c72123b9628ffca9d282d401",
+      "caseIds": [
+        "frames-ckcls-empty",
+        "frames-ckcls-priority",
+        "frames-ckcls-readback",
+        "frames-ckopn-empty-name",
+        "frames-ckopn-existing",
+        "frames-ckopn-multi-format",
+        "frames-ckopn-negative-comments",
+        "frames-ckw01-av-disabled",
+        "frames-ckw01-clock-and-pointing",
+        "frames-ckw01-directory",
+        "frames-ckw01-empty",
+        "frames-ckw01-identifier",
+        "frames-ckw01-nearest",
+        "frames-ckw01-order",
+        "frames-ckw01-unknown-frame",
+        "frames-ckw01-zero-quaternion",
+        "frames-ckw02-clock-and-pointing",
+        "frames-ckw02-directory",
+        "frames-ckw02-empty",
+        "frames-ckw02-identifier",
+        "frames-ckw02-intervals",
+        "frames-ckw02-overlap",
+        "frames-ckw02-rate-sign",
+        "frames-ckw02-touch",
+        "frames-ckw02-unknown-frame",
+        "frames-ckw02-zero-quaternion",
+        "frames-ckw02-zero-span",
+        "frames-ckw03-av-disabled",
+        "frames-ckw03-clock-and-pointing",
+        "frames-ckw03-directory",
+        "frames-ckw03-identifier",
+        "frames-ckw03-interval-break",
+        "frames-ckw03-intervals-empty",
+        "frames-ckw03-nonmatching-start",
+        "frames-ckw03-unknown-frame",
+        "frames-ckw03-wrong-first-start",
+        "frames-ckw03-zero-quaternion",
+        "frames-ckw05-av-disabled",
+        "frames-ckw05-bad-degree",
+        "frames-ckw05-clock-and-pointing",
+        "frames-ckw05-directory",
+        "frames-ckw05-empty",
+        "frames-ckw05-hermite-window",
+        "frames-ckw05-identifier",
+        "frames-ckw05-interpolation-break",
+        "frames-ckw05-maximum-degree",
+        "frames-ckw05-no-window",
+        "frames-ckw05-rate",
+        "frames-ckw05-rate-sign",
+        "frames-ckw05-segment-trim",
+        "frames-ckw05-subtype-0",
+        "frames-ckw05-subtype-1",
+        "frames-ckw05-subtype-2",
+        "frames-ckw05-subtype-3",
+        "frames-ckw05-trim-no-sample",
+        "frames-ckw05-unknown-frame",
+        "frames-ckw05-zero-quaternion"
+      ],
+      "id": "ci-cp04-3c3e3f368191-node",
+      "kind": "ci",
+      "commit": "5759b72e80d904295926aa968ee1c07006abdf51",
+      "url": "https://github.com/rybosome/tspice/actions/runs/45348374307/job/138288412178",
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 8056 live comparisons without unexpected skips."
+    },
+    {
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "06a127696d32494f7ecc098b06960b1e429c9876c72123b9628ffca9d282d401",
+      "caseIds": [
+        "frames-ckcls-empty",
+        "frames-ckcls-priority",
+        "frames-ckcls-readback",
+        "frames-ckopn-empty-name",
+        "frames-ckopn-existing",
+        "frames-ckopn-multi-format",
+        "frames-ckopn-negative-comments",
+        "frames-ckw01-av-disabled",
+        "frames-ckw01-clock-and-pointing",
+        "frames-ckw01-directory",
+        "frames-ckw01-empty",
+        "frames-ckw01-identifier",
+        "frames-ckw01-nearest",
+        "frames-ckw01-order",
+        "frames-ckw01-unknown-frame",
+        "frames-ckw01-zero-quaternion",
+        "frames-ckw02-clock-and-pointing",
+        "frames-ckw02-directory",
+        "frames-ckw02-empty",
+        "frames-ckw02-identifier",
+        "frames-ckw02-intervals",
+        "frames-ckw02-overlap",
+        "frames-ckw02-rate-sign",
+        "frames-ckw02-touch",
+        "frames-ckw02-unknown-frame",
+        "frames-ckw02-zero-quaternion",
+        "frames-ckw02-zero-span",
+        "frames-ckw03-av-disabled",
+        "frames-ckw03-clock-and-pointing",
+        "frames-ckw03-directory",
+        "frames-ckw03-identifier",
+        "frames-ckw03-interval-break",
+        "frames-ckw03-intervals-empty",
+        "frames-ckw03-nonmatching-start",
+        "frames-ckw03-unknown-frame",
+        "frames-ckw03-wrong-first-start",
+        "frames-ckw03-zero-quaternion",
+        "frames-ckw05-av-disabled",
+        "frames-ckw05-bad-degree",
+        "frames-ckw05-clock-and-pointing",
+        "frames-ckw05-directory",
+        "frames-ckw05-empty",
+        "frames-ckw05-hermite-window",
+        "frames-ckw05-identifier",
+        "frames-ckw05-interpolation-break",
+        "frames-ckw05-maximum-degree",
+        "frames-ckw05-no-window",
+        "frames-ckw05-rate",
+        "frames-ckw05-rate-sign",
+        "frames-ckw05-segment-trim",
+        "frames-ckw05-subtype-0",
+        "frames-ckw05-subtype-1",
+        "frames-ckw05-subtype-2",
+        "frames-ckw05-subtype-3",
+        "frames-ckw05-trim-no-sample",
+        "frames-ckw05-unknown-frame",
+        "frames-ckw05-zero-quaternion"
+      ],
+      "id": "local-cp04-3c3e3f368191-wasm",
+      "kind": "local",
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 3c3e3f368191d553e84ecc599d449055df985b1c. The native-required lane completed 8056 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45336611602/job/138250075470"
+    },
+    {
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "06a127696d32494f7ecc098b06960b1e429c9876c72123b9628ffca9d282d401",
+      "caseIds": [
+        "frames-ckcls-empty",
+        "frames-ckcls-priority",
+        "frames-ckcls-readback",
+        "frames-ckopn-empty-name",
+        "frames-ckopn-existing",
+        "frames-ckopn-multi-format",
+        "frames-ckopn-negative-comments",
+        "frames-ckw01-av-disabled",
+        "frames-ckw01-clock-and-pointing",
+        "frames-ckw01-directory",
+        "frames-ckw01-empty",
+        "frames-ckw01-identifier",
+        "frames-ckw01-nearest",
+        "frames-ckw01-order",
+        "frames-ckw01-unknown-frame",
+        "frames-ckw01-zero-quaternion",
+        "frames-ckw02-clock-and-pointing",
+        "frames-ckw02-directory",
+        "frames-ckw02-empty",
+        "frames-ckw02-identifier",
+        "frames-ckw02-intervals",
+        "frames-ckw02-overlap",
+        "frames-ckw02-rate-sign",
+        "frames-ckw02-touch",
+        "frames-ckw02-unknown-frame",
+        "frames-ckw02-zero-quaternion",
+        "frames-ckw02-zero-span",
+        "frames-ckw03-av-disabled",
+        "frames-ckw03-clock-and-pointing",
+        "frames-ckw03-directory",
+        "frames-ckw03-identifier",
+        "frames-ckw03-interval-break",
+        "frames-ckw03-intervals-empty",
+        "frames-ckw03-nonmatching-start",
+        "frames-ckw03-unknown-frame",
+        "frames-ckw03-wrong-first-start",
+        "frames-ckw03-zero-quaternion",
+        "frames-ckw05-av-disabled",
+        "frames-ckw05-bad-degree",
+        "frames-ckw05-clock-and-pointing",
+        "frames-ckw05-directory",
+        "frames-ckw05-empty",
+        "frames-ckw05-hermite-window",
+        "frames-ckw05-identifier",
+        "frames-ckw05-interpolation-break",
+        "frames-ckw05-maximum-degree",
+        "frames-ckw05-no-window",
+        "frames-ckw05-rate",
+        "frames-ckw05-rate-sign",
+        "frames-ckw05-segment-trim",
+        "frames-ckw05-subtype-0",
+        "frames-ckw05-subtype-1",
+        "frames-ckw05-subtype-2",
+        "frames-ckw05-subtype-3",
+        "frames-ckw05-trim-no-sample",
+        "frames-ckw05-unknown-frame",
+        "frames-ckw05-zero-quaternion"
+      ],
+      "id": "ci-cp04-3c3e3f368191-wasm",
+      "kind": "ci",
+      "commit": "5759b72e80d904295926aa968ee1c07006abdf51",
+      "url": "https://github.com/rybosome/tspice/actions/runs/45348374307/job/138288412178",
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 8056 live comparisons without unexpected skips."
     }
   ],
   "routines": [
@@ -661,13 +945,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "FramesApi.ckopn -> owner registry and serialized native N-API handler -> tspice_ckopn -> ckopn_c. The independent counterpart is the locked SpiceyPy writer.",
           "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
           ]
         },
         "wasm": {
@@ -676,13 +962,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "FramesApi.ckopn -> owner registry, packed heap data and required WASM export -> tspice_ckopn -> ckopn_c. The independent counterpart is the locked SpiceyPy writer.",
           "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
           ]
         }
       }
@@ -729,13 +1017,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "FramesApi.ckcls -> owner registry and serialized native N-API handler -> tspice_ckcls -> ckcls_c. The independent counterpart is the locked SpiceyPy writer.",
           "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
           ]
         },
         "wasm": {
@@ -744,13 +1034,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "FramesApi.ckcls -> owner registry, packed heap data and required WASM export -> tspice_ckcls -> ckcls_c. The independent counterpart is the locked SpiceyPy writer.",
           "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
           ]
         }
       }
@@ -827,13 +1119,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "FramesApi.ckw01 -> owner registry and serialized native N-API handler -> tspice_ckw01 -> ckw01_c. The independent counterpart is the locked SpiceyPy writer.",
           "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
           ]
         },
         "wasm": {
@@ -842,13 +1136,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "FramesApi.ckw01 -> owner registry, packed heap data and required WASM export -> tspice_ckw01 -> ckw01_c. The independent counterpart is the locked SpiceyPy writer.",
           "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
           ]
         }
       }
@@ -935,13 +1231,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "FramesApi.ckw02 -> owner registry and serialized native N-API handler -> tspice_ckw02 -> ckw02_c. The independent counterpart is the locked SpiceyPy writer.",
           "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
           ]
         },
         "wasm": {
@@ -950,13 +1248,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "FramesApi.ckw02 -> owner registry, packed heap data and required WASM export -> tspice_ckw02 -> ckw02_c. The independent counterpart is the locked SpiceyPy writer.",
           "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
           ]
         }
       }
@@ -1038,13 +1338,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "FramesApi.ckw03 -> owner registry and serialized native N-API handler -> tspice_ckw03 -> ckw03_c. The independent counterpart is the locked SpiceyPy writer.",
           "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
           ]
         },
         "wasm": {
@@ -1053,13 +1355,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "FramesApi.ckw03 -> owner registry, packed heap data and required WASM export -> tspice_ckw03 -> ckw03_c. The independent counterpart is the locked SpiceyPy writer.",
           "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
           ]
         }
       }
@@ -1205,13 +1509,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "FramesApi.ckw05 -> owner registry and serialized native N-API handler -> tspice_ckw05 -> ckw05_c. The independent counterpart is the locked SpiceyPy writer and typed canonical empty-packet route.",
           "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
           ]
         },
         "wasm": {
@@ -1221,13 +1527,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "FramesApi.ckw05 -> owner registry, packed heap data and required WASM export -> tspice_ckw05 -> ckw05_c. The independent counterpart is the locked SpiceyPy writer and typed canonical empty-packet route.",
           "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
           ]
         }
       }

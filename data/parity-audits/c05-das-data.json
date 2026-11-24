@@ -659,7 +659,8 @@
       ],
       "id": "local-cp03-779d6fd6ae41-node",
       "kind": "local",
-      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 779d6fd6ae41c78017a8cf7ccaec5fef3100112c. The native-required lane completed 7054 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45097193130/job/137439518970"
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 779d6fd6ae41c78017a8cf7ccaec5fef3100112c. The native-required lane completed 7054 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45097193130/job/137439518970",
+      "historical": true
     },
     {
       "backend": "node",
@@ -727,7 +728,8 @@
       "kind": "ci",
       "commit": "c4bd798cc20d13e8dfd51e7e83ba740ffe4418ff",
       "url": "https://github.com/rybosome/tspice/actions/runs/45127597533/job/137535439275",
-      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 7054 live comparisons without unexpected skips."
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 7054 live comparisons without unexpected skips.",
+      "historical": true
     },
     {
       "backend": "wasm",
@@ -793,7 +795,8 @@
       ],
       "id": "local-cp03-779d6fd6ae41-wasm",
       "kind": "local",
-      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 779d6fd6ae41c78017a8cf7ccaec5fef3100112c. The native-required lane completed 7054 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45097193130/job/137439518970"
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 779d6fd6ae41c78017a8cf7ccaec5fef3100112c. The native-required lane completed 7054 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45097193130/job/137439518970",
+      "historical": true
     },
     {
       "backend": "wasm",
@@ -861,7 +864,276 @@
       "kind": "ci",
       "commit": "c4bd798cc20d13e8dfd51e7e83ba740ffe4418ff",
       "url": "https://github.com/rybosome/tspice/actions/runs/45127597533/job/137535439275",
-      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 7054 live comparisons without unexpected skips."
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 7054 live comparisons without unexpected skips.",
+      "historical": true
+    },
+    {
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "17d9e8712ec4773c4595d4faf5fdb886815e60561ea00d75e840beba67a5b1c6",
+      "caseIds": [
+        "file-io-dasadc-empty-and-negative",
+        "file-io-dasadc-independent-address-streams",
+        "file-io-dasadc-invalid-bounds",
+        "file-io-dasadc-physical-boundary",
+        "file-io-dasadc-row-slices",
+        "file-io-dasadc-write-access",
+        "file-io-dasadc-zero-stride",
+        "file-io-dasadd-empty-and-negative",
+        "file-io-dasadd-independent-address-streams",
+        "file-io-dasadd-physical-boundary",
+        "file-io-dasadd-write-access",
+        "file-io-dasadi-empty-and-negative",
+        "file-io-dasadi-independent-address-streams",
+        "file-io-dasadi-physical-boundary",
+        "file-io-dasadi-write-access",
+        "file-io-dasrdc-before-first",
+        "file-io-dasrdc-destination-sentinels",
+        "file-io-dasrdc-endpoints",
+        "file-io-dasrdc-invalid-bounds",
+        "file-io-dasrdc-noncontiguous-records",
+        "file-io-dasrdc-past-logical-end",
+        "file-io-dasrdc-persisted-read-claims",
+        "file-io-dasrdc-reversed",
+        "file-io-dasrdc-zero-stride",
+        "file-io-dasrdd-before-first",
+        "file-io-dasrdd-endpoints",
+        "file-io-dasrdd-noncontiguous-records",
+        "file-io-dasrdd-past-logical-end",
+        "file-io-dasrdd-persisted-read-claims",
+        "file-io-dasrdd-reversed",
+        "file-io-dasrdi-before-first",
+        "file-io-dasrdi-endpoints",
+        "file-io-dasrdi-noncontiguous-records",
+        "file-io-dasrdi-past-logical-end",
+        "file-io-dasrdi-persisted-read-claims",
+        "file-io-dasrdi-reversed",
+        "file-io-dasudc-bad-address",
+        "file-io-dasudc-cross-record",
+        "file-io-dasudc-invalid-bounds",
+        "file-io-dasudc-middle-sentinels",
+        "file-io-dasudc-nonzero-column-record-cursor",
+        "file-io-dasudc-read-only",
+        "file-io-dasudc-reversed",
+        "file-io-dasudc-zero-stride",
+        "file-io-dasudd-bad-address",
+        "file-io-dasudd-cross-record",
+        "file-io-dasudd-middle-sentinels",
+        "file-io-dasudd-read-only",
+        "file-io-dasudd-reversed",
+        "file-io-dasudi-bad-address",
+        "file-io-dasudi-cross-record",
+        "file-io-dasudi-middle-sentinels",
+        "file-io-dasudi-read-only",
+        "file-io-dasudi-reversed"
+      ],
+      "id": "local-cp04-3c3e3f368191-node",
+      "kind": "local",
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 3c3e3f368191d553e84ecc599d449055df985b1c. The native-required lane completed 8056 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45336611602/job/138250075470"
+    },
+    {
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "17d9e8712ec4773c4595d4faf5fdb886815e60561ea00d75e840beba67a5b1c6",
+      "caseIds": [
+        "file-io-dasadc-empty-and-negative",
+        "file-io-dasadc-independent-address-streams",
+        "file-io-dasadc-invalid-bounds",
+        "file-io-dasadc-physical-boundary",
+        "file-io-dasadc-row-slices",
+        "file-io-dasadc-write-access",
+        "file-io-dasadc-zero-stride",
+        "file-io-dasadd-empty-and-negative",
+        "file-io-dasadd-independent-address-streams",
+        "file-io-dasadd-physical-boundary",
+        "file-io-dasadd-write-access",
+        "file-io-dasadi-empty-and-negative",
+        "file-io-dasadi-independent-address-streams",
+        "file-io-dasadi-physical-boundary",
+        "file-io-dasadi-write-access",
+        "file-io-dasrdc-before-first",
+        "file-io-dasrdc-destination-sentinels",
+        "file-io-dasrdc-endpoints",
+        "file-io-dasrdc-invalid-bounds",
+        "file-io-dasrdc-noncontiguous-records",
+        "file-io-dasrdc-past-logical-end",
+        "file-io-dasrdc-persisted-read-claims",
+        "file-io-dasrdc-reversed",
+        "file-io-dasrdc-zero-stride",
+        "file-io-dasrdd-before-first",
+        "file-io-dasrdd-endpoints",
+        "file-io-dasrdd-noncontiguous-records",
+        "file-io-dasrdd-past-logical-end",
+        "file-io-dasrdd-persisted-read-claims",
+        "file-io-dasrdd-reversed",
+        "file-io-dasrdi-before-first",
+        "file-io-dasrdi-endpoints",
+        "file-io-dasrdi-noncontiguous-records",
+        "file-io-dasrdi-past-logical-end",
+        "file-io-dasrdi-persisted-read-claims",
+        "file-io-dasrdi-reversed",
+        "file-io-dasudc-bad-address",
+        "file-io-dasudc-cross-record",
+        "file-io-dasudc-invalid-bounds",
+        "file-io-dasudc-middle-sentinels",
+        "file-io-dasudc-nonzero-column-record-cursor",
+        "file-io-dasudc-read-only",
+        "file-io-dasudc-reversed",
+        "file-io-dasudc-zero-stride",
+        "file-io-dasudd-bad-address",
+        "file-io-dasudd-cross-record",
+        "file-io-dasudd-middle-sentinels",
+        "file-io-dasudd-read-only",
+        "file-io-dasudd-reversed",
+        "file-io-dasudi-bad-address",
+        "file-io-dasudi-cross-record",
+        "file-io-dasudi-middle-sentinels",
+        "file-io-dasudi-read-only",
+        "file-io-dasudi-reversed"
+      ],
+      "id": "ci-cp04-3c3e3f368191-node",
+      "kind": "ci",
+      "commit": "5759b72e80d904295926aa968ee1c07006abdf51",
+      "url": "https://github.com/rybosome/tspice/actions/runs/45348374307/job/138288412178",
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 8056 live comparisons without unexpected skips."
+    },
+    {
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "17d9e8712ec4773c4595d4faf5fdb886815e60561ea00d75e840beba67a5b1c6",
+      "caseIds": [
+        "file-io-dasadc-empty-and-negative",
+        "file-io-dasadc-independent-address-streams",
+        "file-io-dasadc-invalid-bounds",
+        "file-io-dasadc-physical-boundary",
+        "file-io-dasadc-row-slices",
+        "file-io-dasadc-write-access",
+        "file-io-dasadc-zero-stride",
+        "file-io-dasadd-empty-and-negative",
+        "file-io-dasadd-independent-address-streams",
+        "file-io-dasadd-physical-boundary",
+        "file-io-dasadd-write-access",
+        "file-io-dasadi-empty-and-negative",
+        "file-io-dasadi-independent-address-streams",
+        "file-io-dasadi-physical-boundary",
+        "file-io-dasadi-write-access",
+        "file-io-dasrdc-before-first",
+        "file-io-dasrdc-destination-sentinels",
+        "file-io-dasrdc-endpoints",
+        "file-io-dasrdc-invalid-bounds",
+        "file-io-dasrdc-noncontiguous-records",
+        "file-io-dasrdc-past-logical-end",
+        "file-io-dasrdc-persisted-read-claims",
+        "file-io-dasrdc-reversed",
+        "file-io-dasrdc-zero-stride",
+        "file-io-dasrdd-before-first",
+        "file-io-dasrdd-endpoints",
+        "file-io-dasrdd-noncontiguous-records",
+        "file-io-dasrdd-past-logical-end",
+        "file-io-dasrdd-persisted-read-claims",
+        "file-io-dasrdd-reversed",
+        "file-io-dasrdi-before-first",
+        "file-io-dasrdi-endpoints",
+        "file-io-dasrdi-noncontiguous-records",
+        "file-io-dasrdi-past-logical-end",
+        "file-io-dasrdi-persisted-read-claims",
+        "file-io-dasrdi-reversed",
+        "file-io-dasudc-bad-address",
+        "file-io-dasudc-cross-record",
+        "file-io-dasudc-invalid-bounds",
+        "file-io-dasudc-middle-sentinels",
+        "file-io-dasudc-nonzero-column-record-cursor",
+        "file-io-dasudc-read-only",
+        "file-io-dasudc-reversed",
+        "file-io-dasudc-zero-stride",
+        "file-io-dasudd-bad-address",
+        "file-io-dasudd-cross-record",
+        "file-io-dasudd-middle-sentinels",
+        "file-io-dasudd-read-only",
+        "file-io-dasudd-reversed",
+        "file-io-dasudi-bad-address",
+        "file-io-dasudi-cross-record",
+        "file-io-dasudi-middle-sentinels",
+        "file-io-dasudi-read-only",
+        "file-io-dasudi-reversed"
+      ],
+      "id": "local-cp04-3c3e3f368191-wasm",
+      "kind": "local",
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 3c3e3f368191d553e84ecc599d449055df985b1c. The native-required lane completed 8056 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45336611602/job/138250075470"
+    },
+    {
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "17d9e8712ec4773c4595d4faf5fdb886815e60561ea00d75e840beba67a5b1c6",
+      "caseIds": [
+        "file-io-dasadc-empty-and-negative",
+        "file-io-dasadc-independent-address-streams",
+        "file-io-dasadc-invalid-bounds",
+        "file-io-dasadc-physical-boundary",
+        "file-io-dasadc-row-slices",
+        "file-io-dasadc-write-access",
+        "file-io-dasadc-zero-stride",
+        "file-io-dasadd-empty-and-negative",
+        "file-io-dasadd-independent-address-streams",
+        "file-io-dasadd-physical-boundary",
+        "file-io-dasadd-write-access",
+        "file-io-dasadi-empty-and-negative",
+        "file-io-dasadi-independent-address-streams",
+        "file-io-dasadi-physical-boundary",
+        "file-io-dasadi-write-access",
+        "file-io-dasrdc-before-first",
+        "file-io-dasrdc-destination-sentinels",
+        "file-io-dasrdc-endpoints",
+        "file-io-dasrdc-invalid-bounds",
+        "file-io-dasrdc-noncontiguous-records",
+        "file-io-dasrdc-past-logical-end",
+        "file-io-dasrdc-persisted-read-claims",
+        "file-io-dasrdc-reversed",
+        "file-io-dasrdc-zero-stride",
+        "file-io-dasrdd-before-first",
+        "file-io-dasrdd-endpoints",
+        "file-io-dasrdd-noncontiguous-records",
+        "file-io-dasrdd-past-logical-end",
+        "file-io-dasrdd-persisted-read-claims",
+        "file-io-dasrdd-reversed",
+        "file-io-dasrdi-before-first",
+        "file-io-dasrdi-endpoints",
+        "file-io-dasrdi-noncontiguous-records",
+        "file-io-dasrdi-past-logical-end",
+        "file-io-dasrdi-persisted-read-claims",
+        "file-io-dasrdi-reversed",
+        "file-io-dasudc-bad-address",
+        "file-io-dasudc-cross-record",
+        "file-io-dasudc-invalid-bounds",
+        "file-io-dasudc-middle-sentinels",
+        "file-io-dasudc-nonzero-column-record-cursor",
+        "file-io-dasudc-read-only",
+        "file-io-dasudc-reversed",
+        "file-io-dasudc-zero-stride",
+        "file-io-dasudd-bad-address",
+        "file-io-dasudd-cross-record",
+        "file-io-dasudd-middle-sentinels",
+        "file-io-dasudd-read-only",
+        "file-io-dasudd-reversed",
+        "file-io-dasudi-bad-address",
+        "file-io-dasudi-cross-record",
+        "file-io-dasudi-middle-sentinels",
+        "file-io-dasudi-read-only",
+        "file-io-dasudi-reversed"
+      ],
+      "id": "ci-cp04-3c3e3f368191-wasm",
+      "kind": "ci",
+      "commit": "5759b72e80d904295926aa968ee1c07006abdf51",
+      "url": "https://github.com/rybosome/tspice/actions/runs/45348374307/job/138288412178",
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 8056 live comparisons without unexpected skips."
     }
   ],
   "routines": [
@@ -956,13 +1228,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "FileIoApi.dasadc -> owner registry, serialized native addon -> tspice_dasadc -> dasadc_c. Reference uses typed binary dasadc_c in SpiceyPy’s own N0067 library.",
           "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
           ]
         },
         "wasm": {
@@ -973,13 +1247,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "FileIoApi.dasadc -> owner registry, scoped WASM buffers and required export -> tspice_dasadc -> dasadc_c. Reference uses typed binary dasadc_c in SpiceyPy’s own N0067 library.",
           "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
           ]
         }
       }
@@ -1047,13 +1323,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "FileIoApi.dasadd -> owner registry, serialized native addon -> tspice_dasadd -> dasadd_c. Reference uses locked sp.dasadd.",
           "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
           ]
         },
         "wasm": {
@@ -1064,13 +1342,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "FileIoApi.dasadd -> owner registry, scoped WASM buffers and required export -> tspice_dasadd -> dasadd_c. Reference uses locked sp.dasadd.",
           "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
           ]
         }
       }
@@ -1138,13 +1418,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "FileIoApi.dasadi -> owner registry, serialized native addon -> tspice_dasadi -> dasadi_c. Reference uses locked sp.dasadi.",
           "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
           ]
         },
         "wasm": {
@@ -1155,13 +1437,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "FileIoApi.dasadi -> owner registry, scoped WASM buffers and required export -> tspice_dasadi -> dasadi_c. Reference uses locked sp.dasadi.",
           "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
           ]
         }
       }
@@ -1270,13 +1554,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "FileIoApi.dasrdc -> owner registry, serialized native addon -> tspice_dasrdc -> dasrdc_c. Reference uses typed binary dasrdc_c in SpiceyPy’s own N0067 library.",
           "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
           ]
         },
         "wasm": {
@@ -1287,13 +1573,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "FileIoApi.dasrdc -> owner registry, scoped WASM buffers and required export -> tspice_dasrdc -> dasrdc_c. Reference uses typed binary dasrdc_c in SpiceyPy’s own N0067 library.",
           "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
           ]
         }
       }
@@ -1374,13 +1662,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "FileIoApi.dasrdd -> owner registry, serialized native addon -> tspice_dasrdd -> dasrdd_c. Reference uses locked sp.dasrdd plus a typed canonical output sentinel for reversed reads.",
           "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
           ]
         },
         "wasm": {
@@ -1391,13 +1681,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "FileIoApi.dasrdd -> owner registry, scoped WASM buffers and required export -> tspice_dasrdd -> dasrdd_c. Reference uses locked sp.dasrdd plus a typed canonical output sentinel for reversed reads.",
           "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
           ]
         }
       }
@@ -1478,13 +1770,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "FileIoApi.dasrdi -> owner registry, serialized native addon -> tspice_dasrdi -> dasrdi_c. Reference uses locked sp.dasrdi plus a typed canonical output sentinel for reversed reads.",
           "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
           ]
         },
         "wasm": {
@@ -1495,13 +1789,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "FileIoApi.dasrdi -> owner registry, scoped WASM buffers and required export -> tspice_dasrdi -> dasrdi_c. Reference uses locked sp.dasrdi plus a typed canonical output sentinel for reversed reads.",
           "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
           ]
         }
       }
@@ -1602,13 +1898,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "FileIoApi.dasudc -> owner registry, serialized native addon -> tspice_dasudc -> dasudc_c. Reference uses typed binary dasudc_c in SpiceyPy’s own N0067 library.",
           "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
           ]
         },
         "wasm": {
@@ -1619,13 +1917,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "FileIoApi.dasudc -> owner registry, scoped WASM buffers and required export -> tspice_dasudc -> dasudc_c. Reference uses typed binary dasudc_c in SpiceyPy’s own N0067 library.",
           "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
           ]
         }
       }
@@ -1684,13 +1984,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "FileIoApi.dasudd -> owner registry, serialized native addon -> tspice_dasudd -> dasudd_c. Reference uses locked sp.dasudd.",
           "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
           ]
         },
         "wasm": {
@@ -1701,13 +2003,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "FileIoApi.dasudd -> owner registry, scoped WASM buffers and required export -> tspice_dasudd -> dasudd_c. Reference uses locked sp.dasudd.",
           "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
           ]
         }
       }
@@ -1766,13 +2070,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "FileIoApi.dasudi -> owner registry, serialized native addon -> tspice_dasudi -> dasudi_c. Reference uses locked sp.dasudi.",
           "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
           ]
         },
         "wasm": {
@@ -1783,13 +2089,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "FileIoApi.dasudi -> owner registry, scoped WASM buffers and required export -> tspice_dasudi -> dasudi_c. Reference uses locked sp.dasudi.",
           "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
           ]
         }
       }

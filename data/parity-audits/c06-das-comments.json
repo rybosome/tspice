@@ -338,7 +338,8 @@
       ],
       "id": "local-cp03-779d6fd6ae41-node",
       "kind": "local",
-      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 779d6fd6ae41c78017a8cf7ccaec5fef3100112c. The native-required lane completed 7054 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45097193130/job/137439518970"
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 779d6fd6ae41c78017a8cf7ccaec5fef3100112c. The native-required lane completed 7054 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45097193130/job/137439518970",
+      "historical": true
     },
     {
       "backend": "node",
@@ -395,7 +396,8 @@
       "kind": "ci",
       "commit": "c4bd798cc20d13e8dfd51e7e83ba740ffe4418ff",
       "url": "https://github.com/rybosome/tspice/actions/runs/45127597533/job/137535439275",
-      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 7054 live comparisons without unexpected skips."
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 7054 live comparisons without unexpected skips.",
+      "historical": true
     },
     {
       "backend": "wasm",
@@ -450,7 +452,8 @@
       ],
       "id": "local-cp03-779d6fd6ae41-wasm",
       "kind": "local",
-      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 779d6fd6ae41c78017a8cf7ccaec5fef3100112c. The native-required lane completed 7054 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45097193130/job/137439518970"
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 779d6fd6ae41c78017a8cf7ccaec5fef3100112c. The native-required lane completed 7054 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45097193130/job/137439518970",
+      "historical": true
     },
     {
       "backend": "wasm",
@@ -507,7 +510,232 @@
       "kind": "ci",
       "commit": "c4bd798cc20d13e8dfd51e7e83ba740ffe4418ff",
       "url": "https://github.com/rybosome/tspice/actions/runs/45127597533/job/137535439275",
-      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 7054 live comparisons without unexpected skips."
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 7054 live comparisons without unexpected skips.",
+      "historical": true
+    },
+    {
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "68a181cf64ae208754720579f722280abee336561847eca597fcc2d9fa066f76",
+      "caseIds": [
+        "file-io-dasac-append-after-boundary",
+        "file-io-dasac-del",
+        "file-io-dasac-dla-logical-data",
+        "file-io-dasac-empty-lines",
+        "file-io-dasac-exact-record",
+        "file-io-dasac-many-records",
+        "file-io-dasac-new",
+        "file-io-dasac-no-rows",
+        "file-io-dasac-printable",
+        "file-io-dasac-read-only",
+        "file-io-dasac-record-split",
+        "file-io-dasac-reserved",
+        "file-io-dasac-right-blanks",
+        "file-io-dasac-scratch",
+        "file-io-dasac-tab",
+        "file-io-dasac-utf8",
+        "file-io-dasac-zero-before-access",
+        "file-io-dasdc-dla-addresses",
+        "file-io-dasdc-empty",
+        "file-io-dasdc-isolated-files",
+        "file-io-dasdc-multiple-records",
+        "file-io-dasdc-populated",
+        "file-io-dasdc-read-only",
+        "file-io-dasdc-repeated",
+        "file-io-dasdc-reserved-only",
+        "file-io-dasec-across-record",
+        "file-io-dasec-blank-order",
+        "file-io-dasec-changing-width",
+        "file-io-dasec-default-width",
+        "file-io-dasec-empty",
+        "file-io-dasec-full-final",
+        "file-io-dasec-interleaved",
+        "file-io-dasec-low-close-partial",
+        "file-io-dasec-narrow-second-row",
+        "file-io-dasec-negative-count",
+        "file-io-dasec-negative-width",
+        "file-io-dasec-partial-final",
+        "file-io-dasec-read-aliases",
+        "file-io-dasec-terminating-boundary",
+        "file-io-dasec-width-before-count",
+        "file-io-dasec-width-one",
+        "file-io-dasec-writer-reopen",
+        "file-io-dasec-zero-count"
+      ],
+      "id": "local-cp04-3c3e3f368191-node",
+      "kind": "local",
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 3c3e3f368191d553e84ecc599d449055df985b1c. The native-required lane completed 8056 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45336611602/job/138250075470"
+    },
+    {
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "68a181cf64ae208754720579f722280abee336561847eca597fcc2d9fa066f76",
+      "caseIds": [
+        "file-io-dasac-append-after-boundary",
+        "file-io-dasac-del",
+        "file-io-dasac-dla-logical-data",
+        "file-io-dasac-empty-lines",
+        "file-io-dasac-exact-record",
+        "file-io-dasac-many-records",
+        "file-io-dasac-new",
+        "file-io-dasac-no-rows",
+        "file-io-dasac-printable",
+        "file-io-dasac-read-only",
+        "file-io-dasac-record-split",
+        "file-io-dasac-reserved",
+        "file-io-dasac-right-blanks",
+        "file-io-dasac-scratch",
+        "file-io-dasac-tab",
+        "file-io-dasac-utf8",
+        "file-io-dasac-zero-before-access",
+        "file-io-dasdc-dla-addresses",
+        "file-io-dasdc-empty",
+        "file-io-dasdc-isolated-files",
+        "file-io-dasdc-multiple-records",
+        "file-io-dasdc-populated",
+        "file-io-dasdc-read-only",
+        "file-io-dasdc-repeated",
+        "file-io-dasdc-reserved-only",
+        "file-io-dasec-across-record",
+        "file-io-dasec-blank-order",
+        "file-io-dasec-changing-width",
+        "file-io-dasec-default-width",
+        "file-io-dasec-empty",
+        "file-io-dasec-full-final",
+        "file-io-dasec-interleaved",
+        "file-io-dasec-low-close-partial",
+        "file-io-dasec-narrow-second-row",
+        "file-io-dasec-negative-count",
+        "file-io-dasec-negative-width",
+        "file-io-dasec-partial-final",
+        "file-io-dasec-read-aliases",
+        "file-io-dasec-terminating-boundary",
+        "file-io-dasec-width-before-count",
+        "file-io-dasec-width-one",
+        "file-io-dasec-writer-reopen",
+        "file-io-dasec-zero-count"
+      ],
+      "id": "ci-cp04-3c3e3f368191-node",
+      "kind": "ci",
+      "commit": "5759b72e80d904295926aa968ee1c07006abdf51",
+      "url": "https://github.com/rybosome/tspice/actions/runs/45348374307/job/138288412178",
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 8056 live comparisons without unexpected skips."
+    },
+    {
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "68a181cf64ae208754720579f722280abee336561847eca597fcc2d9fa066f76",
+      "caseIds": [
+        "file-io-dasac-append-after-boundary",
+        "file-io-dasac-del",
+        "file-io-dasac-dla-logical-data",
+        "file-io-dasac-empty-lines",
+        "file-io-dasac-exact-record",
+        "file-io-dasac-many-records",
+        "file-io-dasac-new",
+        "file-io-dasac-no-rows",
+        "file-io-dasac-printable",
+        "file-io-dasac-read-only",
+        "file-io-dasac-record-split",
+        "file-io-dasac-reserved",
+        "file-io-dasac-right-blanks",
+        "file-io-dasac-scratch",
+        "file-io-dasac-tab",
+        "file-io-dasac-utf8",
+        "file-io-dasac-zero-before-access",
+        "file-io-dasdc-dla-addresses",
+        "file-io-dasdc-empty",
+        "file-io-dasdc-isolated-files",
+        "file-io-dasdc-multiple-records",
+        "file-io-dasdc-populated",
+        "file-io-dasdc-read-only",
+        "file-io-dasdc-repeated",
+        "file-io-dasdc-reserved-only",
+        "file-io-dasec-across-record",
+        "file-io-dasec-blank-order",
+        "file-io-dasec-changing-width",
+        "file-io-dasec-default-width",
+        "file-io-dasec-empty",
+        "file-io-dasec-full-final",
+        "file-io-dasec-interleaved",
+        "file-io-dasec-low-close-partial",
+        "file-io-dasec-narrow-second-row",
+        "file-io-dasec-negative-count",
+        "file-io-dasec-negative-width",
+        "file-io-dasec-partial-final",
+        "file-io-dasec-read-aliases",
+        "file-io-dasec-terminating-boundary",
+        "file-io-dasec-width-before-count",
+        "file-io-dasec-width-one",
+        "file-io-dasec-writer-reopen",
+        "file-io-dasec-zero-count"
+      ],
+      "id": "local-cp04-3c3e3f368191-wasm",
+      "kind": "local",
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 3c3e3f368191d553e84ecc599d449055df985b1c. The native-required lane completed 8056 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45336611602/job/138250075470"
+    },
+    {
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "68a181cf64ae208754720579f722280abee336561847eca597fcc2d9fa066f76",
+      "caseIds": [
+        "file-io-dasac-append-after-boundary",
+        "file-io-dasac-del",
+        "file-io-dasac-dla-logical-data",
+        "file-io-dasac-empty-lines",
+        "file-io-dasac-exact-record",
+        "file-io-dasac-many-records",
+        "file-io-dasac-new",
+        "file-io-dasac-no-rows",
+        "file-io-dasac-printable",
+        "file-io-dasac-read-only",
+        "file-io-dasac-record-split",
+        "file-io-dasac-reserved",
+        "file-io-dasac-right-blanks",
+        "file-io-dasac-scratch",
+        "file-io-dasac-tab",
+        "file-io-dasac-utf8",
+        "file-io-dasac-zero-before-access",
+        "file-io-dasdc-dla-addresses",
+        "file-io-dasdc-empty",
+        "file-io-dasdc-isolated-files",
+        "file-io-dasdc-multiple-records",
+        "file-io-dasdc-populated",
+        "file-io-dasdc-read-only",
+        "file-io-dasdc-repeated",
+        "file-io-dasdc-reserved-only",
+        "file-io-dasec-across-record",
+        "file-io-dasec-blank-order",
+        "file-io-dasec-changing-width",
+        "file-io-dasec-default-width",
+        "file-io-dasec-empty",
+        "file-io-dasec-full-final",
+        "file-io-dasec-interleaved",
+        "file-io-dasec-low-close-partial",
+        "file-io-dasec-narrow-second-row",
+        "file-io-dasec-negative-count",
+        "file-io-dasec-negative-width",
+        "file-io-dasec-partial-final",
+        "file-io-dasec-read-aliases",
+        "file-io-dasec-terminating-boundary",
+        "file-io-dasec-width-before-count",
+        "file-io-dasec-width-one",
+        "file-io-dasec-writer-reopen",
+        "file-io-dasec-zero-count"
+      ],
+      "id": "ci-cp04-3c3e3f368191-wasm",
+      "kind": "ci",
+      "commit": "5759b72e80d904295926aa968ee1c07006abdf51",
+      "url": "https://github.com/rybosome/tspice/actions/runs/45348374307/job/138288412178",
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 8056 live comparisons without unexpected skips."
     }
   ],
   "routines": [
@@ -646,13 +874,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.dasac -> owner-checked native addon under the mutex -> tspice_dasac -> dasac_c. The independent locked library operates on separately created files.",
           "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
           ]
         },
         "wasm": {
@@ -662,13 +892,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.dasac -> owner-checked WASM buffers and compiled export -> tspice_dasac -> dasac_c. The independent locked library operates on separately created files.",
           "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
           ]
         }
       }
@@ -762,13 +994,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.dasdc -> owner-checked native addon under the mutex -> tspice_dasdc -> dasdc_c. The independent locked library operates on separately created files.",
           "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
           ]
         },
         "wasm": {
@@ -778,13 +1012,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.dasdc -> owner-checked WASM buffers and compiled export -> tspice_dasdc -> dasdc_c. The independent locked library operates on separately created files.",
           "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
           ]
         }
       }
@@ -930,13 +1166,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "composed",
           "trace": "raw.dasec -> owner-checked native addon under the mutex -> tspice_dasec -> initialized dasec_, original conversion and exceptional DASIOC record reads. The independent locked library operates on separately created files.",
           "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
           ]
         },
         "wasm": {
@@ -946,13 +1184,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "composed",
           "trace": "raw.dasec -> owner-checked WASM buffers and compiled export -> tspice_dasec -> initialized dasec_, original conversion and exceptional DASIOC record reads. The independent locked library operates on separately created files.",
           "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
           ]
         }
       }

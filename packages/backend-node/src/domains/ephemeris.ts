@@ -4,12 +4,33 @@ import type {
   SpiceStateVector,
   SpiceVector3,
   SpiceWindow,
+  SpkSegmentDescriptor,
   SpkPackedDescriptor,
   SpiceHandle,
   VirtualOutput,
 } from "@rybosome/tspice-backend-contract";
 import {
+  copyTleLines,
+  copyTleTuple,
+  copySpkChebyshevData,
+  snapshotSpkInterpolation,
+  validateSpkWriterFields,
+  packSpk05,
+  packSpk10,
+  packSpk15,
+  packSpk17,
+  copySpk14Packets,
+  validateSpkChebyshevFields,
   assertSpiceInt32,
+  copyOrbitalTuple,
+  validateCorrectionString,
+  copyCorrectionInput,
+  decodeCorrectionResult,
+  createSpkReaders,
+  releaseSpkLoads,
+  spkSegmentBytes,
+  spkInputText,
+  spkStateComponents,
   copySpkPackedDescriptor,
   copySpkPackedDescriptorWords,
   invariant,
@@ -109,10 +130,410 @@ export function createEphemerisApi(
   handles: SpiceHandleRegistry,
   stager: KernelStager,
   outputs: VirtualOutputStager,
+  spk14Degrees = new Map<SpiceHandle, number>(),
 ): EphemerisApi {
   const virtualOutputByHandle = new Map<SpiceHandle, VirtualOutput>();
 
-  return {
+  const readers = createSpkReaders(handles);
+  const api = {
+    [releaseSpkLoads]: (): void => readers.release(api.spkuef),
+    spklef: (file: string | VirtualOutput) =>
+      readers.own(
+        native.spklef(
+          spkInputText(
+            typeof file === "string"
+              ? file
+                ? stager.resolvePathForSpice(file)
+                : ""
+              : resolveSpkPath(outputs, file, "spklef"),
+          ),
+        ),
+      ),
+    spkuef: (handle: SpiceHandle) =>
+      readers.unload(handle, (generation: number) => native.spkuef(generation)),
+    spkpvn: (handle: number, descr: SpkSegmentDescriptor, et: number) => {
+      const { source, registered } = readers.source(handle);
+      requireSpkNumber(et, "spkpvn(et)");
+      const result = native.spkpvn(
+        source,
+        registered,
+        spkSegmentBytes(descr),
+        et,
+      );
+      assertSpiceInt32(result.ref, "spkpvn(ref)");
+      assertSpiceInt32(result.center, "spkpvn(center)");
+      return {
+        ref: result.ref,
+        state: spkStateComponents(result.state),
+        center: result.center,
+      };
+    },
+    spksub: (
+      handle: number,
+      descr: SpkSegmentDescriptor,
+      ident: string,
+      begin: number,
+      end: number,
+      newh: SpiceHandle,
+    ) => {
+      const { source, registered } = readers.source(handle);
+      const writer = handles.lookup(newh, ["SPK"], "spksub(newh)").nativeHandle;
+      requireSpkNumber(begin, "spksub(begin)");
+      requireSpkNumber(end, "spksub(end)");
+      native.spksub(
+        source,
+        registered,
+        spkSegmentBytes(descr),
+        spkInputText(ident),
+        begin,
+        end,
+        writer,
+      );
+    },
+
+    conics: (elts, et) => {
+      const eltsCopy = copyOrbitalTuple(elts, 8, "conics(elts)", true);
+      requireSpkNumber(et, "conics(et)");
+      return copyOrbitalTuple(
+        native.conics(eltsCopy, et),
+        6,
+        "conics(result)",
+        false,
+      );
+    },
+    eqncpv: (et, epoch, eqel, rapol, decpol) => {
+      requireSpkNumber(et, "eqncpv(et)");
+      requireSpkNumber(epoch, "eqncpv(epoch)");
+      const eqelCopy = copyOrbitalTuple(eqel, 9, "eqncpv(eqel)", true);
+      requireSpkNumber(rapol, "eqncpv(rapol)");
+      requireSpkNumber(decpol, "eqncpv(decpol)");
+      return copyOrbitalTuple(
+        native.eqncpv(et, epoch, eqelCopy, rapol, decpol),
+        6,
+        "eqncpv(result)",
+        false,
+      );
+    },
+    oscelt: (state, et, mu) => {
+      const stateCopy = copyOrbitalTuple(state, 6, "oscelt(state)", true);
+      requireSpkNumber(et, "oscelt(et)");
+      requireSpkNumber(mu, "oscelt(mu)");
+      return copyOrbitalTuple(
+        native.oscelt(stateCopy, et, mu),
+        8,
+        "oscelt(result)",
+        false,
+      );
+    },
+    oscltx: (state, et, mu) => {
+      const stateCopy = copyOrbitalTuple(state, 6, "oscltx(state)", true);
+      requireSpkNumber(et, "oscltx(et)");
+      requireSpkNumber(mu, "oscltx(mu)");
+      return copyOrbitalTuple(
+        native.oscltx(stateCopy, et, mu),
+        11,
+        "oscltx(result)",
+        false,
+      );
+    },
+    prop2b: (gm, pvinit, dt) => {
+      requireSpkNumber(gm, "prop2b(gm)");
+      const pvinitCopy = copyOrbitalTuple(pvinit, 6, "prop2b(pvinit)", true);
+      requireSpkNumber(dt, "prop2b(dt)");
+      return copyOrbitalTuple(
+        native.prop2b(gm, pvinitCopy, dt),
+        6,
+        "prop2b(result)",
+        false,
+      );
+    },
+    getelm: (firstYear, lines) => {
+      assertSpiceInt32(firstYear, "firstYear");
+      const out = native.getelm(firstYear, copyTleLines(lines));
+      return {
+        epoch: requireSpkNumber(out.epoch, "TLE epoch"),
+        elems: copyTleTuple(out.elems, 10, "TLE elements", false),
+      };
+    },
+    evsgp4: (et, geophs, elems) => {
+      requireSpkNumber(et, "et");
+      const out = native.evsgp4(
+        et,
+        copyTleTuple(geophs, 8, "geophs", true),
+        copyTleTuple(elems, 10, "elems", true),
+      );
+      return copyTleTuple(out, 6, "TEME state", false);
+    },
+    spkcpo: (target, et, outref, refloc, abcorr, obspos, obsctr, obsref) => {
+      validateCorrectionString(target, "spkcpo(target)");
+      requireSpkNumber(et, "spkcpo(et)");
+      validateCorrectionString(outref, "spkcpo(outref)");
+      validateCorrectionString(refloc, "spkcpo(refloc)");
+      validateCorrectionString(abcorr, "spkcpo(abcorr)");
+      const obsposCopy = copyCorrectionInput(obspos, 3, "spkcpo(obspos)");
+      validateCorrectionString(obsctr, "spkcpo(obsctr)");
+      validateCorrectionString(obsref, "spkcpo(obsref)");
+      return decodeCorrectionResult(
+        native.spkcpo(
+          target,
+          et,
+          outref,
+          refloc,
+          abcorr,
+          obsposCopy,
+          obsctr,
+          obsref,
+        ),
+        7,
+      );
+    },
+    spkcpt: (trgpos, trgctr, trgref, et, outref, refloc, abcorr, obsrvr) => {
+      const trgposCopy = copyCorrectionInput(trgpos, 3, "spkcpt(trgpos)");
+      validateCorrectionString(trgctr, "spkcpt(trgctr)");
+      validateCorrectionString(trgref, "spkcpt(trgref)");
+      requireSpkNumber(et, "spkcpt(et)");
+      validateCorrectionString(outref, "spkcpt(outref)");
+      validateCorrectionString(refloc, "spkcpt(refloc)");
+      validateCorrectionString(abcorr, "spkcpt(abcorr)");
+      validateCorrectionString(obsrvr, "spkcpt(obsrvr)");
+      return decodeCorrectionResult(
+        native.spkcpt(
+          trgposCopy,
+          trgctr,
+          trgref,
+          et,
+          outref,
+          refloc,
+          abcorr,
+          obsrvr,
+        ),
+        7,
+      );
+    },
+    spkcvo: (
+      target,
+      et,
+      outref,
+      refloc,
+      abcorr,
+      obssta,
+      obsepc,
+      obsctr,
+      obsref,
+    ) => {
+      validateCorrectionString(target, "spkcvo(target)");
+      requireSpkNumber(et, "spkcvo(et)");
+      validateCorrectionString(outref, "spkcvo(outref)");
+      validateCorrectionString(refloc, "spkcvo(refloc)");
+      validateCorrectionString(abcorr, "spkcvo(abcorr)");
+      const obsstaCopy = copyCorrectionInput(obssta, 6, "spkcvo(obssta)");
+      requireSpkNumber(obsepc, "spkcvo(obsepc)");
+      validateCorrectionString(obsctr, "spkcvo(obsctr)");
+      validateCorrectionString(obsref, "spkcvo(obsref)");
+      return decodeCorrectionResult(
+        native.spkcvo(
+          target,
+          et,
+          outref,
+          refloc,
+          abcorr,
+          obsstaCopy,
+          obsepc,
+          obsctr,
+          obsref,
+        ),
+        7,
+      );
+    },
+    spkcvt: (
+      trgsta,
+      trgepc,
+      trgctr,
+      trgref,
+      et,
+      outref,
+      refloc,
+      abcorr,
+      obsrvr,
+    ) => {
+      const trgstaCopy = copyCorrectionInput(trgsta, 6, "spkcvt(trgsta)");
+      requireSpkNumber(trgepc, "spkcvt(trgepc)");
+      validateCorrectionString(trgctr, "spkcvt(trgctr)");
+      validateCorrectionString(trgref, "spkcvt(trgref)");
+      requireSpkNumber(et, "spkcvt(et)");
+      validateCorrectionString(outref, "spkcvt(outref)");
+      validateCorrectionString(refloc, "spkcvt(refloc)");
+      validateCorrectionString(abcorr, "spkcvt(abcorr)");
+      validateCorrectionString(obsrvr, "spkcvt(obsrvr)");
+      return decodeCorrectionResult(
+        native.spkcvt(
+          trgstaCopy,
+          trgepc,
+          trgctr,
+          trgref,
+          et,
+          outref,
+          refloc,
+          abcorr,
+          obsrvr,
+        ),
+        7,
+      );
+    },
+    azlcpo: (
+      method,
+      target,
+      et,
+      abcorr,
+      azccw,
+      elplsz,
+      obspos,
+      obsctr,
+      obsref,
+    ) => {
+      validateCorrectionString(method, "azlcpo(method)");
+      validateCorrectionString(target, "azlcpo(target)");
+      requireSpkNumber(et, "azlcpo(et)");
+      validateCorrectionString(abcorr, "azlcpo(abcorr)");
+      if (typeof azccw !== "boolean")
+        throw new TypeError("azlcpo(azccw) must be boolean");
+      if (typeof elplsz !== "boolean")
+        throw new TypeError("azlcpo(elplsz) must be boolean");
+      const obsposCopy = copyCorrectionInput(obspos, 3, "azlcpo(obspos)");
+      validateCorrectionString(obsctr, "azlcpo(obsctr)");
+      validateCorrectionString(obsref, "azlcpo(obsref)");
+      return decodeCorrectionResult(
+        native.azlcpo(
+          method,
+          target,
+          et,
+          abcorr,
+          azccw,
+          elplsz,
+          obsposCopy,
+          obsctr,
+          obsref,
+        ),
+        7,
+      );
+    },
+    spkacs: (target, et, ref, abcorr, observer) => {
+      assertSpiceInt32(target, "spkacs(target)");
+      requireSpkNumber(et, "spkacs(et)");
+      validateCorrectionString(ref, "spkacs(ref)");
+      validateCorrectionString(abcorr, "spkacs(abcorr)");
+      assertSpiceInt32(observer, "spkacs(observer)");
+      return decodeCorrectionResult(
+        native.spkacs(target, et, ref, abcorr, observer),
+        8,
+      );
+    },
+    spkapo: (target, et, ref, observerState, abcorr) => {
+      assertSpiceInt32(target, "spkapo(target)");
+      requireSpkNumber(et, "spkapo(et)");
+      validateCorrectionString(ref, "spkapo(ref)");
+      const observerStateCopy = copyCorrectionInput(
+        observerState,
+        6,
+        "spkapo(observerState)",
+      );
+      validateCorrectionString(abcorr, "spkapo(abcorr)");
+      return decodeCorrectionResult(
+        native.spkapo(target, et, ref, observerStateCopy, abcorr),
+        4,
+      );
+    },
+    spkapp: (target, et, ref, observerState, abcorr) => {
+      assertSpiceInt32(target, "spkapp(target)");
+      requireSpkNumber(et, "spkapp(et)");
+      validateCorrectionString(ref, "spkapp(ref)");
+      const observerStateCopy = copyCorrectionInput(
+        observerState,
+        6,
+        "spkapp(observerState)",
+      );
+      validateCorrectionString(abcorr, "spkapp(abcorr)");
+      return decodeCorrectionResult(
+        native.spkapp(target, et, ref, observerStateCopy, abcorr),
+        7,
+      );
+    },
+    spkaps: (target, et, ref, abcorr, observerState, observerAcceleration) => {
+      assertSpiceInt32(target, "spkaps(target)");
+      requireSpkNumber(et, "spkaps(et)");
+      validateCorrectionString(ref, "spkaps(ref)");
+      validateCorrectionString(abcorr, "spkaps(abcorr)");
+      const observerStateCopy = copyCorrectionInput(
+        observerState,
+        6,
+        "spkaps(observerState)",
+      );
+      const observerAccelerationCopy = copyCorrectionInput(
+        observerAcceleration,
+        3,
+        "spkaps(observerAcceleration)",
+      );
+      return decodeCorrectionResult(
+        native.spkaps(
+          target,
+          et,
+          ref,
+          abcorr,
+          observerStateCopy,
+          observerAccelerationCopy,
+        ),
+        8,
+      );
+    },
+    spkltc: (target, et, ref, abcorr, observerState) => {
+      assertSpiceInt32(target, "spkltc(target)");
+      requireSpkNumber(et, "spkltc(et)");
+      validateCorrectionString(ref, "spkltc(ref)");
+      validateCorrectionString(abcorr, "spkltc(abcorr)");
+      const observerStateCopy = copyCorrectionInput(
+        observerState,
+        6,
+        "spkltc(observerState)",
+      );
+      return decodeCorrectionResult(
+        native.spkltc(target, et, ref, abcorr, observerStateCopy),
+        8,
+      );
+    },
+    stelab: (position, observerVelocity) => {
+      const positionCopy = copyCorrectionInput(position, 3, "stelab(position)");
+      const observerVelocityCopy = copyCorrectionInput(
+        observerVelocity,
+        3,
+        "stelab(observerVelocity)",
+      );
+      return decodeCorrectionResult(
+        native.stelab(positionCopy, observerVelocityCopy),
+        3,
+      );
+    },
+    stlabx: (position, observerVelocity) => {
+      const positionCopy = copyCorrectionInput(position, 3, "stlabx(position)");
+      const observerVelocityCopy = copyCorrectionInput(
+        observerVelocity,
+        3,
+        "stlabx(observerVelocity)",
+      );
+      return decodeCorrectionResult(
+        native.stlabx(positionCopy, observerVelocityCopy),
+        3,
+      );
+    },
+    ltime: (etobs, observer, dir, target) => {
+      requireSpkNumber(etobs, "ltime(etobs)");
+      assertSpiceInt32(observer, "ltime(observer)");
+      validateCorrectionString(dir, "ltime(dir)");
+      assertSpiceInt32(target, "ltime(target)");
+      return decodeCorrectionResult(
+        native.ltime(etobs, observer, dir, target),
+        2,
+      );
+    },
     spkezr: (target, et, ref, abcorr, observer) => {
       requireSpkNumber(et, "spkezr(et)");
       requireSpkString(ref, "spkezr(ref)");
@@ -227,6 +648,11 @@ export function createEphemerisApi(
         typeof out.handle === "number",
         "Expected spksfs().handle to be a number when found",
       );
+      invariant(
+        typeof out.generation === "number",
+        "Missing native SPKSFS generation",
+      );
+      readers.observe(out.handle, out.generation);
       const descr = copySpkPackedDescriptor(out.descr);
       invariant(
         typeof out.ident === "string",
@@ -338,6 +764,398 @@ export function createEphemerisApi(
       }
     },
 
+    spkw02: (
+      handle,
+      body,
+      center,
+      frame,
+      first,
+      last,
+      segid,
+      intlen,
+      n,
+      degree,
+      cdata,
+      btime,
+    ) => {
+      const nativeHandle = handles.lookup(
+        handle,
+        ["SPK"],
+        "spkw02",
+      ).nativeHandle;
+      validateSpkWriterFields(
+        body,
+        center,
+        frame,
+        segid,
+        first,
+        last,
+        intlen,
+        btime,
+      );
+      const data = copySpkChebyshevData(2, n, degree, cdata);
+      native.spkw02(
+        nativeHandle,
+        body,
+        center,
+        frame,
+        first,
+        last,
+        segid,
+        intlen,
+        n,
+        degree,
+        data,
+        btime,
+      );
+    },
+    spkw03: (
+      handle,
+      body,
+      center,
+      frame,
+      first,
+      last,
+      segid,
+      intlen,
+      n,
+      degree,
+      cdata,
+      btime,
+    ) => {
+      const nativeHandle = handles.lookup(
+        handle,
+        ["SPK"],
+        "spkw03",
+      ).nativeHandle;
+      validateSpkWriterFields(
+        body,
+        center,
+        frame,
+        segid,
+        first,
+        last,
+        intlen,
+        btime,
+      );
+      const data = copySpkChebyshevData(3, n, degree, cdata);
+      native.spkw03(
+        nativeHandle,
+        body,
+        center,
+        frame,
+        first,
+        last,
+        segid,
+        intlen,
+        n,
+        degree,
+        data,
+        btime,
+      );
+    },
+    spkw20: (
+      handle,
+      body,
+      center,
+      frame,
+      first,
+      last,
+      segid,
+      intlen,
+      n,
+      degree,
+      cdata,
+      dscale,
+      tscale,
+      initjd,
+      initfr,
+    ) => {
+      const nativeHandle = handles.lookup(
+        handle,
+        ["SPK"],
+        "spkw20",
+      ).nativeHandle;
+      validateSpkWriterFields(
+        body,
+        center,
+        frame,
+        segid,
+        first,
+        last,
+        intlen,
+        dscale,
+        tscale,
+        initjd,
+        initfr,
+      );
+      const data = copySpkChebyshevData(20, n, degree, cdata);
+      native.spkw20(
+        nativeHandle,
+        body,
+        center,
+        frame,
+        first,
+        last,
+        segid,
+        intlen,
+        n,
+        degree,
+        data,
+        dscale,
+        tscale,
+        initjd,
+        initfr,
+      );
+    },
+    spkw09: (
+      handle,
+      body,
+      center,
+      frame,
+      first,
+      last,
+      segid,
+      degree,
+      states,
+      epochs,
+    ) => {
+      const actual = handles.lookup(handle, ["SPK"], "spkw09").nativeHandle;
+      validateSpkWriterFields(body, center, frame, segid, first, last);
+      const input = snapshotSpkInterpolation(9, 1, degree, states, epochs);
+      native.spkw09(
+        actual,
+        body,
+        center,
+        frame,
+        first,
+        last,
+        segid,
+        degree,
+        input.n,
+        input.samples,
+        input.epochs,
+      );
+    },
+    spkw12: (
+      handle,
+      body,
+      center,
+      frame,
+      first,
+      last,
+      segid,
+      degree,
+      states,
+      epoch0,
+      step,
+    ) => {
+      const actual = handles.lookup(handle, ["SPK"], "spkw12").nativeHandle;
+      validateSpkWriterFields(
+        body,
+        center,
+        frame,
+        segid,
+        first,
+        last,
+        epoch0,
+        step,
+      );
+      const input = snapshotSpkInterpolation(12, 1, degree, states);
+      native.spkw12(
+        actual,
+        body,
+        center,
+        frame,
+        first,
+        last,
+        segid,
+        degree,
+        input.n,
+        input.samples,
+        epoch0,
+        step,
+      );
+    },
+    spkw13: (
+      handle,
+      body,
+      center,
+      frame,
+      first,
+      last,
+      segid,
+      degree,
+      states,
+      epochs,
+    ) => {
+      const actual = handles.lookup(handle, ["SPK"], "spkw13").nativeHandle;
+      validateSpkWriterFields(body, center, frame, segid, first, last);
+      const input = snapshotSpkInterpolation(13, 1, degree, states, epochs);
+      native.spkw13(
+        actual,
+        body,
+        center,
+        frame,
+        first,
+        last,
+        segid,
+        degree,
+        input.n,
+        input.samples,
+        input.epochs,
+      );
+    },
+    spkw18: (
+      handle,
+      subtype,
+      body,
+      center,
+      frame,
+      first,
+      last,
+      segid,
+      degree,
+      packets,
+      epochs,
+    ) => {
+      const actual = handles.lookup(handle, ["SPK"], "spkw18").nativeHandle;
+      validateSpkWriterFields(body, center, frame, segid, first, last);
+      const input = snapshotSpkInterpolation(
+        18,
+        subtype,
+        degree,
+        packets,
+        epochs,
+      );
+      native.spkw18(
+        actual,
+        subtype,
+        body,
+        center,
+        frame,
+        first,
+        last,
+        segid,
+        degree,
+        input.n,
+        input.samples,
+        input.epochs,
+      );
+    },
+    spkw05: (
+      handle,
+      body,
+      center,
+      frame,
+      first,
+      last,
+      segid,
+      gm,
+      states,
+      epochs,
+    ) => {
+      const actual = handles.lookup(handle, ["SPK"], "spkw05").nativeHandle;
+      validateSpkChebyshevFields(body, center, frame, segid, first, last);
+      const { n, data } = packSpk05(gm, states, epochs);
+      native.spkw05(actual, body, center, frame, first, last, segid, n, data);
+    },
+    spkw10: (
+      handle,
+      body,
+      center,
+      frame,
+      first,
+      last,
+      segid,
+      consts,
+      elems,
+      epochs,
+    ) => {
+      const actual = handles.lookup(handle, ["SPK"], "spkw10").nativeHandle;
+      validateSpkChebyshevFields(body, center, frame, segid, first, last);
+      const { n, data } = packSpk10(consts, elems, epochs);
+      native.spkw10(actual, body, center, frame, first, last, segid, n, data);
+    },
+    spkw15: (
+      handle,
+      body,
+      center,
+      frame,
+      first,
+      last,
+      segid,
+      epoch,
+      tp,
+      pa,
+      p,
+      ecc,
+      j2flg,
+      pv,
+      gm,
+      j2,
+      radius,
+    ) => {
+      const actual = handles.lookup(handle, ["SPK"], "spkw15").nativeHandle;
+      validateSpkChebyshevFields(body, center, frame, segid, first, last);
+      const { n, data } = packSpk15(
+        epoch,
+        tp,
+        pa,
+        p,
+        ecc,
+        j2flg,
+        pv,
+        gm,
+        j2,
+        radius,
+      );
+      native.spkw15(actual, body, center, frame, first, last, segid, n, data);
+    },
+    spkw17: (
+      handle,
+      body,
+      center,
+      frame,
+      first,
+      last,
+      segid,
+      epoch,
+      eqel,
+      rapol,
+      decpol,
+    ) => {
+      const actual = handles.lookup(handle, ["SPK"], "spkw17").nativeHandle;
+      validateSpkChebyshevFields(body, center, frame, segid, first, last);
+      const { n, data } = packSpk17(epoch, eqel, rapol, decpol);
+      native.spkw17(actual, body, center, frame, first, last, segid, n, data);
+    },
+    spk14b: (handle, segid, body, center, frame, first, last, degree) => {
+      const h = handles.lookup(handle, ["SPK"], "spk14b").nativeHandle;
+      assertSpiceInt32(degree, "degree");
+      validateSpkChebyshevFields(body, center, frame, segid, first, last);
+      if (degree > 357913939)
+        throw new RangeError(
+          "Type 14 record width exceeds signed CSPICE indexing",
+        );
+      native.spk14b(h, segid, body, center, frame, first, last, degree);
+      spk14Degrees.set(handle, degree);
+    },
+    spk14a: (handle, count, records, epochs) => {
+      const h = handles.lookup(handle, ["SPK"], "spk14a").nativeHandle;
+      const { data, times } = copySpk14Packets(
+        spk14Degrees.get(handle),
+        count,
+        records,
+        epochs,
+      );
+      native.spk14a(h, count, data, times);
+    },
+    spk14e: (handle) => {
+      const h = handles.lookup(handle, ["SPK"], "spk14e").nativeHandle;
+      native.spk14e(h);
+      spk14Degrees.delete(handle);
+    },
     spkw08: (
       handle: SpiceHandle,
       body: number,
@@ -401,5 +1219,6 @@ export function createEphemerisApi(
         step,
       );
     },
-  };
+  } satisfies EphemerisApi & { [releaseSpkLoads](): void };
+  return api;
 }

@@ -225,16 +225,54 @@ from .ephemeris import (
     StepEphemerisSpkez,
     StepEphemerisSpkezp,
     StepEphemerisSpkezr,
+    StepEphemerisConics,
+    StepEphemerisEqncpv,
+    StepEphemerisOscelt,
+    StepEphemerisOscltx,
+    StepEphemerisProp2b,
+    StepEphemerisGetelm,
+    StepEphemerisEvsgp4,
+    StepEphemerisSpkcpo,
+    StepEphemerisSpkcpt,
+    StepEphemerisSpkcvo,
+    StepEphemerisSpkcvt,
+    StepEphemerisAzlcpo,
+    StepEphemerisSpkacs,
+    StepEphemerisSpkapo,
+    StepEphemerisSpkapp,
+    StepEphemerisSpkaps,
+    StepEphemerisSpkltc,
+    StepEphemerisStelab,
+    StepEphemerisStlabx,
+    StepEphemerisLtime,
     StepEphemerisSpkgeo,
     StepEphemerisSpkgps,
     StepEphemerisSpkobj,
     StepEphemerisSpkopa,
+    StepEphemerisSpklef,
+    StepEphemerisSpkuef,
+    StepEphemerisSpkpvn,
+    StepEphemerisSpksub,
     StepEphemerisSpkopn,
     StepEphemerisSpkpds,
     StepEphemerisSpkpos,
     StepEphemerisSpksfs,
     StepEphemerisSpkssb,
     StepEphemerisSpkuds,
+    StepEphemerisSpkw02,
+    StepEphemerisSpkw03,
+    StepEphemerisSpkw20,
+    StepEphemerisSpkw09,
+    StepEphemerisSpkw12,
+    StepEphemerisSpkw13,
+    StepEphemerisSpkw18,
+    StepEphemerisSpkw05,
+    StepEphemerisSpkw10,
+    StepEphemerisSpkw15,
+    StepEphemerisSpkw17,
+    StepEphemerisSpk14b,
+    StepEphemerisSpk14a,
+    StepEphemerisSpk14e,
     StepEphemerisSpkw08,
 )
 from .dsk import (
@@ -887,16 +925,54 @@ WorkflowStep: TypeAlias = (
     | StepEphemerisSpkez
     | StepEphemerisSpkezp
     | StepEphemerisSpkezr
+    | StepEphemerisConics
+    | StepEphemerisEqncpv
+    | StepEphemerisOscelt
+    | StepEphemerisOscltx
+    | StepEphemerisProp2b
+    | StepEphemerisGetelm
+    | StepEphemerisEvsgp4
+    | StepEphemerisSpkcpo
+    | StepEphemerisSpkcpt
+    | StepEphemerisSpkcvo
+    | StepEphemerisSpkcvt
+    | StepEphemerisAzlcpo
+    | StepEphemerisSpkacs
+    | StepEphemerisSpkapo
+    | StepEphemerisSpkapp
+    | StepEphemerisSpkaps
+    | StepEphemerisSpkltc
+    | StepEphemerisStelab
+    | StepEphemerisStlabx
+    | StepEphemerisLtime
     | StepEphemerisSpkgeo
     | StepEphemerisSpkgps
     | StepEphemerisSpkobj
     | StepEphemerisSpkopa
+    | StepEphemerisSpklef
+    | StepEphemerisSpkuef
+    | StepEphemerisSpkpvn
+    | StepEphemerisSpksub
     | StepEphemerisSpkopn
     | StepEphemerisSpkpds
     | StepEphemerisSpkpos
     | StepEphemerisSpksfs
     | StepEphemerisSpkssb
     | StepEphemerisSpkuds
+    | StepEphemerisSpkw02
+    | StepEphemerisSpkw03
+    | StepEphemerisSpkw20
+    | StepEphemerisSpkw09
+    | StepEphemerisSpkw12
+    | StepEphemerisSpkw13
+    | StepEphemerisSpkw18
+    | StepEphemerisSpkw05
+    | StepEphemerisSpkw10
+    | StepEphemerisSpkw15
+    | StepEphemerisSpkw17
+    | StepEphemerisSpk14b
+    | StepEphemerisSpk14a
+    | StepEphemerisSpk14e
     | StepEphemerisSpkw08
     | StepFileIoRdtext
     | StepFileIoPutcml

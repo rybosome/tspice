@@ -94,13 +94,33 @@ test("baseline derives breadth and preserves direct/non-direct evidence", (t) =>
   assert.deepEqual(ledger.summary, {
     total: 652,
     eligible: 649,
-    implemented: 523,
-    planned: 126,
+    implemented: 561,
+    planned: 88,
     excluded: 3,
-    caseFiles: 523,
-    scenarios: 3527,
+    caseFiles: 561,
+    scenarios: 4028,
     wasmRawUnsupported: 0,
   });
+  for (const name of [
+    "spklef",
+    "spkuef",
+    "spkpvn",
+    "spksub",
+    "dafps",
+    "dafus",
+    "dafgsr",
+    "dafrfr",
+    "dafrda",
+    "dafgda",
+  ]) {
+    const routine = ledger.routines.find(
+      (entry) => entry.routine === name + "_c",
+    );
+    for (const backend of ["node", "wasm"])
+      assert.ok(
+        routine.mapping[backend].cspiceEntrypoints.includes(name + "_c"),
+      );
+  }
   const functions = cFunctions(
     cTokens(
       fs.readFileSync(
@@ -622,7 +642,7 @@ test("maintained audit separates reviewed findings from verified backend executi
   const f = fixture(t);
   const ledger = f.build();
   assert.equal(ledger.audit.baselineRoutines, 162);
-  assert.equal(ledger.audit.expansionRoutines, 361);
+  assert.equal(ledger.audit.expansionRoutines, 399);
   // Each success route reaches its public C entrypoint. The three guarded paths
   // must also retain the linked numerical routine used to reject invalid input.
   for (const name of [
@@ -1125,4 +1145,23 @@ test("the corrected reader still reaches the canonical record reader", (t) => {
     "unrelated(path,width,line,eof);",
   );
   assert.throws(f.build, /rdtext/);
+});
+
+test("authenticating a descriptor does not establish scientific evaluation or subset writing", (t) => {
+  for (const call of [
+    "spkpvn_c(handle,words,et,ref,state6,center)",
+    "spksub_c(handle,words,ident,begin,end,writer)",
+  ]) {
+    const f = fixture(t);
+    f.edit(
+      "packages/backend-shim-c/src/domains/ephemeris.c",
+      call,
+      call.replace("_c(", "_absent("),
+    );
+    const method = call.split("_c(")[0];
+    assert.throws(
+      f.build,
+      new RegExp("Unexplained non-direct node mapping for " + method),
+    );
+  }
 });

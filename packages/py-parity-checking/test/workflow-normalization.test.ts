@@ -34,7 +34,7 @@ describe("workflow normalization", () => {
 
   it("isolates generated DAF writes across runs and resolves every scratch reader to its writer", () => {
     const file = { kind: "scratch", rel: "nested/generated.bsp" } as const;
-    const workflow: WorkflowStep[] = [
+    const workflow = [
       {
         op: "ephemeris.spkopn",
         file,
@@ -45,7 +45,7 @@ describe("workflow normalization", () => {
       { op: "file-io.dafopw", path: file, handleId: "writer" },
       { op: "file-io.dafopr", path: file, handleId: "reader" },
       { op: "kernels.furnsh", file },
-    ];
+    ] satisfies WorkflowStep[];
     for (const directory of ["first-run", "second-run"]) {
       const scoped = { kind: "scratch", rel: directory + "/" + file.rel };
       const run = normalizeWorkflowDetailed(workflow, "tspice", directory);

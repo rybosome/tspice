@@ -60,6 +60,9 @@ export type EphemerisState = {
   descriptors: Map<string, SpkPackedDescriptor>;
   requestedTargets: Set<number>;
   intCells: Map<string, SpiceIntCell>;
+  openSpk14: Set<SpiceHandle>;
+  directSpks: Map<string, SpiceHandle>;
+  borrowedSpks: Map<string, number>;
   spkHandles: Map<string, SpiceHandle>;
 };
 
@@ -150,6 +153,9 @@ export function createRunTspiceContext(
         descriptors: new Map<string, SpkPackedDescriptor>(),
         requestedTargets: new Set<number>(),
         intCells: new Map<string, SpiceIntCell>(),
+        openSpk14: new Set<SpiceHandle>(),
+        directSpks: new Map(),
+        borrowedSpks: new Map(),
         spkHandles: new Map<string, SpiceHandle>(),
       },
       frames: {
@@ -395,6 +401,10 @@ export function setSpkHandle(
         return;
       }
 
+      if (context.state.ephemeris.openSpk14.has(handle)) {
+        context.spice.raw.spk14e(handle);
+        context.state.ephemeris.openSpk14.delete(handle);
+      }
       if (closeSpkHandleBestEffort(context, handle))
         context.state.ephemeris.spkHandles.delete(handleId);
     },

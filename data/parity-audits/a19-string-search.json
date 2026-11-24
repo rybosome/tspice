@@ -669,7 +669,8 @@
       ],
       "id": "local-cp03-779d6fd6ae41-node",
       "kind": "local",
-      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 779d6fd6ae41c78017a8cf7ccaec5fef3100112c. The native-required lane completed 7054 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45097193130/job/137439518970"
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 779d6fd6ae41c78017a8cf7ccaec5fef3100112c. The native-required lane completed 7054 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45097193130/job/137439518970",
+      "historical": true
     },
     {
       "backend": "node",
@@ -739,7 +740,8 @@
       "kind": "ci",
       "commit": "c4bd798cc20d13e8dfd51e7e83ba740ffe4418ff",
       "url": "https://github.com/rybosome/tspice/actions/runs/45127597533/job/137535439275",
-      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 7054 live comparisons without unexpected skips."
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 7054 live comparisons without unexpected skips.",
+      "historical": true
     },
     {
       "backend": "wasm",
@@ -807,7 +809,8 @@
       ],
       "id": "local-cp03-779d6fd6ae41-wasm",
       "kind": "local",
-      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 779d6fd6ae41c78017a8cf7ccaec5fef3100112c. The native-required lane completed 7054 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45097193130/job/137439518970"
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 779d6fd6ae41c78017a8cf7ccaec5fef3100112c. The native-required lane completed 7054 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45097193130/job/137439518970",
+      "historical": true
     },
     {
       "backend": "wasm",
@@ -877,7 +880,284 @@
       "kind": "ci",
       "commit": "c4bd798cc20d13e8dfd51e7e83ba740ffe4418ff",
       "url": "https://github.com/rybosome/tspice/actions/runs/45127597533/job/137535439275",
-      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 7054 live comparisons without unexpected skips."
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 7054 live comparisons without unexpected skips.",
+      "historical": true
+    },
+    {
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "98311cd05c657fcb9594d45655f93badf5190ea9b7b09df3e6a2d6c1a8db66bd",
+      "caseIds": [
+        "strings-cpos-bom-composed-and-decomposed",
+        "strings-cpos-empty-operands",
+        "strings-cpos-inclusive-positions",
+        "strings-cpos-literal-whitespace",
+        "strings-cpos-set-membership",
+        "strings-cpos-shared-utf8-byte",
+        "strings-cpos-signed-starts",
+        "strings-cpos-utf8-byte-starts",
+        "strings-cposr-bom-composed-and-decomposed",
+        "strings-cposr-empty-operands",
+        "strings-cposr-inclusive-positions",
+        "strings-cposr-literal-whitespace",
+        "strings-cposr-set-membership",
+        "strings-cposr-shared-utf8-byte",
+        "strings-cposr-signed-starts",
+        "strings-cposr-utf8-byte-starts",
+        "strings-esrchc-bom-and-no-unicode-casefold",
+        "strings-esrchc-empty-and-all-empty-tables",
+        "strings-esrchc-empty-versus-blank",
+        "strings-esrchc-first-equivalent-row",
+        "strings-esrchc-growing-and-shrinking-width",
+        "strings-esrchc-literal-punctuation-and-trailing-rows",
+        "strings-esrchc-portable-c-whitespace",
+        "strings-esrchc-wide-utf8-rows",
+        "strings-ncpos-bom-composed-and-decomposed",
+        "strings-ncpos-empty-operands",
+        "strings-ncpos-inclusive-positions",
+        "strings-ncpos-literal-whitespace",
+        "strings-ncpos-set-membership",
+        "strings-ncpos-shared-utf8-byte",
+        "strings-ncpos-signed-starts",
+        "strings-ncpos-utf8-byte-starts",
+        "strings-ncposr-bom-composed-and-decomposed",
+        "strings-ncposr-empty-operands",
+        "strings-ncposr-inclusive-positions",
+        "strings-ncposr-literal-whitespace",
+        "strings-ncposr-set-membership",
+        "strings-ncposr-shared-utf8-byte",
+        "strings-ncposr-signed-starts",
+        "strings-ncposr-utf8-byte-starts",
+        "strings-pos-bom-composed-and-decomposed",
+        "strings-pos-empty-operands",
+        "strings-pos-inclusive-positions",
+        "strings-pos-literal-case-and-spaces",
+        "strings-pos-literal-whitespace",
+        "strings-pos-overlap-and-last-start",
+        "strings-pos-signed-starts",
+        "strings-pos-utf8-byte-starts",
+        "strings-posr-bom-composed-and-decomposed",
+        "strings-posr-empty-operands",
+        "strings-posr-inclusive-positions",
+        "strings-posr-literal-case-and-spaces",
+        "strings-posr-literal-whitespace",
+        "strings-posr-overlap-and-last-start",
+        "strings-posr-signed-starts",
+        "strings-posr-utf8-byte-starts"
+      ],
+      "id": "local-cp04-3c3e3f368191-node",
+      "kind": "local",
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 3c3e3f368191d553e84ecc599d449055df985b1c. The native-required lane completed 8056 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45336611602/job/138250075470"
+    },
+    {
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "98311cd05c657fcb9594d45655f93badf5190ea9b7b09df3e6a2d6c1a8db66bd",
+      "caseIds": [
+        "strings-cpos-bom-composed-and-decomposed",
+        "strings-cpos-empty-operands",
+        "strings-cpos-inclusive-positions",
+        "strings-cpos-literal-whitespace",
+        "strings-cpos-set-membership",
+        "strings-cpos-shared-utf8-byte",
+        "strings-cpos-signed-starts",
+        "strings-cpos-utf8-byte-starts",
+        "strings-cposr-bom-composed-and-decomposed",
+        "strings-cposr-empty-operands",
+        "strings-cposr-inclusive-positions",
+        "strings-cposr-literal-whitespace",
+        "strings-cposr-set-membership",
+        "strings-cposr-shared-utf8-byte",
+        "strings-cposr-signed-starts",
+        "strings-cposr-utf8-byte-starts",
+        "strings-esrchc-bom-and-no-unicode-casefold",
+        "strings-esrchc-empty-and-all-empty-tables",
+        "strings-esrchc-empty-versus-blank",
+        "strings-esrchc-first-equivalent-row",
+        "strings-esrchc-growing-and-shrinking-width",
+        "strings-esrchc-literal-punctuation-and-trailing-rows",
+        "strings-esrchc-portable-c-whitespace",
+        "strings-esrchc-wide-utf8-rows",
+        "strings-ncpos-bom-composed-and-decomposed",
+        "strings-ncpos-empty-operands",
+        "strings-ncpos-inclusive-positions",
+        "strings-ncpos-literal-whitespace",
+        "strings-ncpos-set-membership",
+        "strings-ncpos-shared-utf8-byte",
+        "strings-ncpos-signed-starts",
+        "strings-ncpos-utf8-byte-starts",
+        "strings-ncposr-bom-composed-and-decomposed",
+        "strings-ncposr-empty-operands",
+        "strings-ncposr-inclusive-positions",
+        "strings-ncposr-literal-whitespace",
+        "strings-ncposr-set-membership",
+        "strings-ncposr-shared-utf8-byte",
+        "strings-ncposr-signed-starts",
+        "strings-ncposr-utf8-byte-starts",
+        "strings-pos-bom-composed-and-decomposed",
+        "strings-pos-empty-operands",
+        "strings-pos-inclusive-positions",
+        "strings-pos-literal-case-and-spaces",
+        "strings-pos-literal-whitespace",
+        "strings-pos-overlap-and-last-start",
+        "strings-pos-signed-starts",
+        "strings-pos-utf8-byte-starts",
+        "strings-posr-bom-composed-and-decomposed",
+        "strings-posr-empty-operands",
+        "strings-posr-inclusive-positions",
+        "strings-posr-literal-case-and-spaces",
+        "strings-posr-literal-whitespace",
+        "strings-posr-overlap-and-last-start",
+        "strings-posr-signed-starts",
+        "strings-posr-utf8-byte-starts"
+      ],
+      "id": "ci-cp04-3c3e3f368191-node",
+      "kind": "ci",
+      "commit": "5759b72e80d904295926aa968ee1c07006abdf51",
+      "url": "https://github.com/rybosome/tspice/actions/runs/45348374307/job/138288412178",
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 8056 live comparisons without unexpected skips."
+    },
+    {
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "98311cd05c657fcb9594d45655f93badf5190ea9b7b09df3e6a2d6c1a8db66bd",
+      "caseIds": [
+        "strings-cpos-bom-composed-and-decomposed",
+        "strings-cpos-empty-operands",
+        "strings-cpos-inclusive-positions",
+        "strings-cpos-literal-whitespace",
+        "strings-cpos-set-membership",
+        "strings-cpos-shared-utf8-byte",
+        "strings-cpos-signed-starts",
+        "strings-cpos-utf8-byte-starts",
+        "strings-cposr-bom-composed-and-decomposed",
+        "strings-cposr-empty-operands",
+        "strings-cposr-inclusive-positions",
+        "strings-cposr-literal-whitespace",
+        "strings-cposr-set-membership",
+        "strings-cposr-shared-utf8-byte",
+        "strings-cposr-signed-starts",
+        "strings-cposr-utf8-byte-starts",
+        "strings-esrchc-bom-and-no-unicode-casefold",
+        "strings-esrchc-empty-and-all-empty-tables",
+        "strings-esrchc-empty-versus-blank",
+        "strings-esrchc-first-equivalent-row",
+        "strings-esrchc-growing-and-shrinking-width",
+        "strings-esrchc-literal-punctuation-and-trailing-rows",
+        "strings-esrchc-portable-c-whitespace",
+        "strings-esrchc-wide-utf8-rows",
+        "strings-ncpos-bom-composed-and-decomposed",
+        "strings-ncpos-empty-operands",
+        "strings-ncpos-inclusive-positions",
+        "strings-ncpos-literal-whitespace",
+        "strings-ncpos-set-membership",
+        "strings-ncpos-shared-utf8-byte",
+        "strings-ncpos-signed-starts",
+        "strings-ncpos-utf8-byte-starts",
+        "strings-ncposr-bom-composed-and-decomposed",
+        "strings-ncposr-empty-operands",
+        "strings-ncposr-inclusive-positions",
+        "strings-ncposr-literal-whitespace",
+        "strings-ncposr-set-membership",
+        "strings-ncposr-shared-utf8-byte",
+        "strings-ncposr-signed-starts",
+        "strings-ncposr-utf8-byte-starts",
+        "strings-pos-bom-composed-and-decomposed",
+        "strings-pos-empty-operands",
+        "strings-pos-inclusive-positions",
+        "strings-pos-literal-case-and-spaces",
+        "strings-pos-literal-whitespace",
+        "strings-pos-overlap-and-last-start",
+        "strings-pos-signed-starts",
+        "strings-pos-utf8-byte-starts",
+        "strings-posr-bom-composed-and-decomposed",
+        "strings-posr-empty-operands",
+        "strings-posr-inclusive-positions",
+        "strings-posr-literal-case-and-spaces",
+        "strings-posr-literal-whitespace",
+        "strings-posr-overlap-and-last-start",
+        "strings-posr-signed-starts",
+        "strings-posr-utf8-byte-starts"
+      ],
+      "id": "local-cp04-3c3e3f368191-wasm",
+      "kind": "local",
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 3c3e3f368191d553e84ecc599d449055df985b1c. The native-required lane completed 8056 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45336611602/job/138250075470"
+    },
+    {
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "98311cd05c657fcb9594d45655f93badf5190ea9b7b09df3e6a2d6c1a8db66bd",
+      "caseIds": [
+        "strings-cpos-bom-composed-and-decomposed",
+        "strings-cpos-empty-operands",
+        "strings-cpos-inclusive-positions",
+        "strings-cpos-literal-whitespace",
+        "strings-cpos-set-membership",
+        "strings-cpos-shared-utf8-byte",
+        "strings-cpos-signed-starts",
+        "strings-cpos-utf8-byte-starts",
+        "strings-cposr-bom-composed-and-decomposed",
+        "strings-cposr-empty-operands",
+        "strings-cposr-inclusive-positions",
+        "strings-cposr-literal-whitespace",
+        "strings-cposr-set-membership",
+        "strings-cposr-shared-utf8-byte",
+        "strings-cposr-signed-starts",
+        "strings-cposr-utf8-byte-starts",
+        "strings-esrchc-bom-and-no-unicode-casefold",
+        "strings-esrchc-empty-and-all-empty-tables",
+        "strings-esrchc-empty-versus-blank",
+        "strings-esrchc-first-equivalent-row",
+        "strings-esrchc-growing-and-shrinking-width",
+        "strings-esrchc-literal-punctuation-and-trailing-rows",
+        "strings-esrchc-portable-c-whitespace",
+        "strings-esrchc-wide-utf8-rows",
+        "strings-ncpos-bom-composed-and-decomposed",
+        "strings-ncpos-empty-operands",
+        "strings-ncpos-inclusive-positions",
+        "strings-ncpos-literal-whitespace",
+        "strings-ncpos-set-membership",
+        "strings-ncpos-shared-utf8-byte",
+        "strings-ncpos-signed-starts",
+        "strings-ncpos-utf8-byte-starts",
+        "strings-ncposr-bom-composed-and-decomposed",
+        "strings-ncposr-empty-operands",
+        "strings-ncposr-inclusive-positions",
+        "strings-ncposr-literal-whitespace",
+        "strings-ncposr-set-membership",
+        "strings-ncposr-shared-utf8-byte",
+        "strings-ncposr-signed-starts",
+        "strings-ncposr-utf8-byte-starts",
+        "strings-pos-bom-composed-and-decomposed",
+        "strings-pos-empty-operands",
+        "strings-pos-inclusive-positions",
+        "strings-pos-literal-case-and-spaces",
+        "strings-pos-literal-whitespace",
+        "strings-pos-overlap-and-last-start",
+        "strings-pos-signed-starts",
+        "strings-pos-utf8-byte-starts",
+        "strings-posr-bom-composed-and-decomposed",
+        "strings-posr-empty-operands",
+        "strings-posr-inclusive-positions",
+        "strings-posr-literal-case-and-spaces",
+        "strings-posr-literal-whitespace",
+        "strings-posr-overlap-and-last-start",
+        "strings-posr-signed-starts",
+        "strings-posr-utf8-byte-starts"
+      ],
+      "id": "ci-cp04-3c3e3f368191-wasm",
+      "kind": "ci",
+      "commit": "5759b72e80d904295926aa968ee1c07006abdf51",
+      "url": "https://github.com/rybosome/tspice/actions/runs/45348374307/job/138288412178",
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 8056 live comparisons without unexpected skips."
     }
   ],
   "routines": [
@@ -961,13 +1241,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.cpos -> validated Node adapter and mutex-serialized native handler -> tspice_cpos -> cpos_c. Oracle: independent locked SpiceyPy cpos, calling the canonical entrypoint only with representable one-based starts.",
           "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
           ]
         },
         "wasm": {
@@ -979,13 +1261,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.cpos -> WASM adapter, transactional allocations and typed module export -> tspice_cpos -> cpos_c. Oracle: independent locked SpiceyPy cpos, calling the canonical entrypoint only with representable one-based starts.",
           "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
           ]
         }
       }
@@ -1070,13 +1354,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.cposr -> validated Node adapter and mutex-serialized native handler -> tspice_cposr -> cposr_c. Oracle: independent locked SpiceyPy cposr, calling the canonical entrypoint only with representable one-based starts.",
           "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
           ]
         },
         "wasm": {
@@ -1088,13 +1374,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.cposr -> WASM adapter, transactional allocations and typed module export -> tspice_cposr -> cposr_c. Oracle: independent locked SpiceyPy cposr, calling the canonical entrypoint only with representable one-based starts.",
           "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
           ]
         }
       }
@@ -1179,13 +1467,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.ncpos -> validated Node adapter and mutex-serialized native handler -> tspice_ncpos -> ncpos_c. Oracle: independent locked SpiceyPy ncpos, calling the canonical entrypoint only with representable one-based starts.",
           "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
           ]
         },
         "wasm": {
@@ -1197,13 +1487,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.ncpos -> WASM adapter, transactional allocations and typed module export -> tspice_ncpos -> ncpos_c. Oracle: independent locked SpiceyPy ncpos, calling the canonical entrypoint only with representable one-based starts.",
           "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
           ]
         }
       }
@@ -1288,13 +1580,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.ncposr -> validated Node adapter and mutex-serialized native handler -> tspice_ncposr -> ncposr_c. Oracle: independent locked SpiceyPy ncposr, calling the canonical entrypoint only with representable one-based starts.",
           "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
           ]
         },
         "wasm": {
@@ -1306,13 +1600,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.ncposr -> WASM adapter, transactional allocations and typed module export -> tspice_ncposr -> ncposr_c. Oracle: independent locked SpiceyPy ncposr, calling the canonical entrypoint only with representable one-based starts.",
           "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
           ]
         }
       }
@@ -1397,13 +1693,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.pos -> validated Node adapter and mutex-serialized native handler -> tspice_pos -> pos_c. Oracle: independent locked SpiceyPy pos, calling the canonical entrypoint only with representable one-based starts.",
           "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
           ]
         },
         "wasm": {
@@ -1415,13 +1713,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.pos -> WASM adapter, transactional allocations and typed module export -> tspice_pos -> pos_c. Oracle: independent locked SpiceyPy pos, calling the canonical entrypoint only with representable one-based starts.",
           "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
           ]
         }
       }
@@ -1506,13 +1806,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.posr -> validated Node adapter and mutex-serialized native handler -> tspice_posr -> posr_c. Oracle: independent locked SpiceyPy posr, calling the canonical entrypoint only with representable one-based starts.",
           "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
           ]
         },
         "wasm": {
@@ -1524,13 +1826,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.posr -> WASM adapter, transactional allocations and typed module export -> tspice_posr -> posr_c. Oracle: independent locked SpiceyPy posr, calling the canonical entrypoint only with representable one-based starts.",
           "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
           ]
         }
       }
@@ -1619,13 +1923,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.esrchc -> validated Node adapter and mutex-serialized native handler -> tspice_esrchc -> esrchc_c. Oracle: independent pinned esrchc_c with typed NUL-terminated row table; eligible nonempty ASCII rows also cross-checked with SpiceyPy esrchc.",
           "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
           ]
         },
         "wasm": {
@@ -1637,13 +1943,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.esrchc -> WASM adapter, transactional allocations and typed module export -> tspice_esrchc -> esrchc_c. Oracle: independent pinned esrchc_c with typed NUL-terminated row table; eligible nonempty ASCII rows also cross-checked with SpiceyPy esrchc.",
           "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
           ]
         }
       }

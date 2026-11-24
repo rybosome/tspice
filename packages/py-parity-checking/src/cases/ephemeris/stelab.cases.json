@@ -1,0 +1,137 @@
+[
+  {
+    "caseId": "ephemeris-stelab-oblique",
+    "description": "Compare all three corrected components at three independent oblique observer velocities.",
+    "workflow": [
+      {
+        "op": "ephemeris.stelab",
+        "position": [32000, -12000, 5600],
+        "observerVelocity": [-1.6, 23, -10]
+      },
+      {
+        "op": "ephemeris.stelab",
+        "position": [32000, -12000, 5600],
+        "observerVelocity": [1200, -4000, 6200]
+      },
+      {
+        "op": "ephemeris.stelab",
+        "position": [32000, -12000, 5600],
+        "observerVelocity": [-4300, 200, 800]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-stelab-transverse",
+    "description": "Resolve the sense of stellar rotation with perpendicular axes and both velocity signs.",
+    "workflow": [
+      {
+        "op": "ephemeris.stelab",
+        "position": [17, 0, 0],
+        "observerVelocity": [0, 150000, 0]
+      },
+      {
+        "op": "ephemeris.stelab",
+        "position": [17, 0, 0],
+        "observerVelocity": [0, -150000, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-stelab-no-rotation",
+    "description": "Compare zero direction, zero velocity, and both collinear velocity orientations.",
+    "workflow": [
+      {
+        "op": "ephemeris.stelab",
+        "position": [0, 0, 0],
+        "observerVelocity": [-1.6, 23, -10]
+      },
+      {
+        "op": "ephemeris.stelab",
+        "position": [32000, -12000, 5600],
+        "observerVelocity": [0, 0, 0]
+      },
+      {
+        "op": "ephemeris.stelab",
+        "position": [7, 0, 0],
+        "observerVelocity": [20, 0, 0]
+      },
+      {
+        "op": "ephemeris.stelab",
+        "position": [7, 0, 0],
+        "observerVelocity": [-20, 0, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-stelab-small-and-near-limit",
+    "description": "Compare a tiny correction and a high subluminal transverse speed.",
+    "workflow": [
+      {
+        "op": "ephemeris.stelab",
+        "position": [1, 0, 0],
+        "observerVelocity": [0, 1e-6, 0]
+      },
+      {
+        "op": "ephemeris.stelab",
+        "position": [1, 0, 0],
+        "observerVelocity": [0, 299792.0, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-stelab-excess-speed",
+    "description": "Both a large Cartesian component and the combined velocity norm reach the speed limit.",
+    "workflow": [
+      {
+        "op": "ephemeris.stelab",
+        "position": [32000, -12000, 5600],
+        "observerVelocity": [200000, 200000, 200000]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["VALUEOUTOFRANGE"]
+    }
+  },
+  {
+    "caseId": "ephemeris-stelab-rounded-light-speed",
+    "description": "N0067 scales by the rounded reciprocal of c. An exactly collinear nominal speed c falls below its squared normalized threshold; preserve the unchanged vector.",
+    "workflow": [
+      {
+        "op": "ephemeris.stelab",
+        "position": [1, 0, 0],
+        "observerVelocity": [299792.458, 0, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-stelab-above-light-speed",
+    "description": "An axis component one representable step above c reaches the normalized cutoff.",
+    "workflow": [
+      {
+        "op": "ephemeris.stelab",
+        "position": [32000, -12000, 5600],
+        "observerVelocity": [299792.45800000004, 0, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["VALUEOUTOFRANGE"]
+    }
+  }
+]
