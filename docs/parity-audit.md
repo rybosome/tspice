@@ -528,3 +528,11 @@ E01 adds five direct raw routines to the 162-routine Step 7 baseline. The source
 ## Two-line parsing and SGP4
 
 E02 adds two reviewed ephemeris routines on the Step 7 main baseline. Each registered operation compares all scientific outputs through the canonical function in locked SpiceyPy against the compiled raw Node or WASM facade. Previous executions remain attached to their original source. The new review distinguishes ordinary scientific errors, including missing time kernels, from wrapper-level calendar and computational bounds. [Per-routine audit](../data/parity-audits/e02-tle-propagation.json) [Scientific observations](step8-tle-propagation.md)
+
+## Chebyshev SPK writers
+
+The three new writers use independent cross-file verification of full segment metadata, floating state components and every physical record word. [Scientific evidence](step8-spk-chebyshev.md) [Routine audits](../data/parity-audits/e04-spk-chebyshev.json)
+
+## Interpolated SPK writers
+
+Both backends exchange five independently authored segments with the locked library. See the [physical file and state evidence](step8-spk-interpolation.md) and [routine audits](../data/parity-audits/e05-spk-interpolation.json).

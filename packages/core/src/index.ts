@@ -299,3 +299,12 @@ export {
 export { copyOrbitalTuple } from "./spice-runtime/domains/orbital-elements.js";
 
 export { copyTleLines, copyTleTuple } from "./spice-runtime/domains/tle.js";
+
+export {
+  copySpkChebyshevData,
+  validateSpkWriterFields,
+} from "./spice-runtime/domains/spk-chebyshev.js";
+
+export { validateSpkWriterFields as validateSpkChebyshevFields } from "./spice-runtime/domains/spk-chebyshev.js";
+
+export { snapshotSpkInterpolation } from "./spice-runtime/domains/spk-interpolation.js";

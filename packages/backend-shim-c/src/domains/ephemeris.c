@@ -1,15 +1,14 @@
-#include "tspice_backend_shim.h"
-
-#include "SpiceUsr.h"
-
-#include "../handle_validation.h"
-
 #include <math.h>
 #include <stdlib.h>
-#include "SpiceZfc.h"
 #include <stddef.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <string.h>
+
+#include "../handle_validation.h"
+#include "SpiceUsr.h"
+#include "SpiceZfc.h"
+#include "tspice_backend_shim.h"
 
 static int tspice_ephemeris_invalid_arg(char *err, int errMaxBytes, const char *msg) {
   // Stable ABI boundary: never invoke CSPICE with invalid pointers/lengths.
@@ -978,5 +977,159 @@ int tspice_spkw08_v2(
     return 1;
   }
 
+  return 0;
+}
+
+// N0067 checks count and polynomial degree before reading coefficients.
+// Invalid count/degree calls use an addressable sentinel for their SPICE errors.
+static int check_chebyshev_buffer(int type, int n, int degree, const double* data, int words,
+                                  const char* frame, const char* segid, char* err, int cap) {
+  if (!data || !frame || !segid || words < 0 || words > 33554432)
+    return tspice_ephemeris_invalid_arg(err, cap, "Invalid Chebyshev input buffer");
+  if (n > 0 && degree >= 0 && degree <= (type == 20 ? 50 : 27)) {
+    int stride = (type == 3 ? 6 : 3) * (degree + (type == 20 ? 2 : 1));
+    if ((int64_t)n * stride != words)
+      return tspice_ephemeris_invalid_arg(
+          err, cap, "Chebyshev coefficient length does not match record dimensions");
+    for (int i = 0; i < words; ++i) {
+      if (!isfinite(data[i]))
+        return tspice_ephemeris_invalid_arg(err, cap, "Chebyshev coefficients must be finite");
+    }
+  }
+  return 0;
+}
+
+int tspice_spkw02(int handle, int body, int center, const char* frame, double first, double last,
+                  const char* segid, double intlen, int n, int degree, const double* cdata,
+                  int words, double btime, char* err, int cap) {
+  tspice_init_cspice_error_handling_once();
+  if (check_chebyshev_buffer(2, n, degree, cdata, words, frame, segid, err, cap)) return 1;
+  spkw02_c(handle, body, center, frame, first, last, segid, intlen, n, degree, cdata, btime);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, cap);
+    return 1;
+  }
+  return 0;
+}
+
+int tspice_spkw03(int handle, int body, int center, const char* frame, double first, double last,
+                  const char* segid, double intlen, int n, int degree, const double* cdata,
+                  int words, double btime, char* err, int cap) {
+  tspice_init_cspice_error_handling_once();
+  if (check_chebyshev_buffer(3, n, degree, cdata, words, frame, segid, err, cap)) return 1;
+  spkw03_c(handle, body, center, frame, first, last, segid, intlen, n, degree, cdata, btime);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, cap);
+    return 1;
+  }
+  return 0;
+}
+
+int tspice_spkw20(int handle, int body, int center, const char* frame, double first, double last,
+                  const char* segid, double intlen, int n, int degree, const double* cdata,
+                  int words, double dscale, double tscale, double initjd, double initfr, char* err,
+                  int cap) {
+  tspice_init_cspice_error_handling_once();
+  if (check_chebyshev_buffer(20, n, degree, cdata, words, frame, segid, err, cap)) return 1;
+  spkw20_c(handle, body, center, frame, first, last, segid, intlen, n, degree, cdata, dscale,
+           tscale, initjd, initfr);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, cap);
+    return 1;
+  }
+  return 0;
+}
+
+// The type 12, 13 and 18 routines form degree+1 before validating degree.
+// Only canonical paths with dimensionally complete data may read the buffers.
+static int check_interpolation_storage(int type, int subtype, int degree, int n,
+                                       const double* samples, int words, const double* epochs,
+                                       int epochCount, char* err, int cap) {
+  if (!samples || !epochs || n < 0 || words < 0 || words > 33554432 || epochCount < 0 ||
+      epochCount > 33554432)
+    return tspice_ephemeris_invalid_arg(err, cap, "Invalid interpolation buffer");
+  if (type == 18 && subtype != 0 && subtype != 1) return 0;
+  if (type != 9 && degree == INT32_MAX)
+    return tspice_ephemeris_invalid_arg(err, cap, "Degree exceeds defined N0067 window arithmetic");
+  int stride = type == 18 && subtype == 0 ? 12 : 6;
+  if ((int64_t)n * stride != words || (type != 12 && epochCount != n))
+    return tspice_ephemeris_invalid_arg(err, cap, "Incomplete interpolation state or epoch buffer");
+  for (int i = 0; i < words; ++i)
+    if (!isfinite(samples[i]))
+      return tspice_ephemeris_invalid_arg(err, cap, "Nonfinite SPK sample");
+  for (int i = 0; i < epochCount; ++i)
+    if (!isfinite(epochs[i])) return tspice_ephemeris_invalid_arg(err, cap, "Nonfinite SPK epoch");
+  return 0;
+}
+
+int tspice_spkw09(int handle, int body, int center, const char* frame, double first, double last,
+                  const char* segid, int degree, int n, const double* samples, int sampleWords,
+                  const double* epochs, int epochCount, char* err, int cap) {
+  tspice_init_cspice_error_handling_once();
+  if (!frame || !segid || !isfinite(first) || !isfinite(last))
+    return tspice_ephemeris_invalid_arg(err, cap, "Invalid SPK interpolation arguments");
+  if (check_interpolation_storage(9, 1, degree, n, samples, sampleWords, epochs, epochCount, err,
+                                  cap))
+    return 1;
+  spkw09_c(handle, body, center, frame, first, last, segid, degree, n,
+           (const SpiceDouble(*)[6])samples, epochs);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, cap);
+    return 1;
+  }
+  return 0;
+}
+
+int tspice_spkw12(int handle, int body, int center, const char* frame, double first, double last,
+                  const char* segid, int degree, int n, const double* samples, int sampleWords,
+                  double epoch0, double step, char* err, int cap) {
+  tspice_init_cspice_error_handling_once();
+  if (!frame || !segid || !isfinite(first) || !isfinite(last) || !isfinite(epoch0) ||
+      !isfinite(step))
+    return tspice_ephemeris_invalid_arg(err, cap, "Invalid SPK interpolation arguments");
+  if (check_interpolation_storage(12, 1, degree, n, samples, sampleWords, samples, 0, err, cap))
+    return 1;
+  spkw12_c(handle, body, center, frame, first, last, segid, degree, n,
+           (const SpiceDouble(*)[6])samples, epoch0, step);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, cap);
+    return 1;
+  }
+  return 0;
+}
+
+int tspice_spkw13(int handle, int body, int center, const char* frame, double first, double last,
+                  const char* segid, int degree, int n, const double* samples, int sampleWords,
+                  const double* epochs, int epochCount, char* err, int cap) {
+  tspice_init_cspice_error_handling_once();
+  if (!frame || !segid || !isfinite(first) || !isfinite(last))
+    return tspice_ephemeris_invalid_arg(err, cap, "Invalid SPK interpolation arguments");
+  if (check_interpolation_storage(13, 1, degree, n, samples, sampleWords, epochs, epochCount, err,
+                                  cap))
+    return 1;
+  spkw13_c(handle, body, center, frame, first, last, segid, degree, n,
+           (const SpiceDouble(*)[6])samples, epochs);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, cap);
+    return 1;
+  }
+  return 0;
+}
+
+int tspice_spkw18(int handle, int subtype, int body, int center, const char* frame, double first,
+                  double last, const char* segid, int degree, int n, const double* samples,
+                  int sampleWords, const double* epochs, int epochCount, char* err, int cap) {
+  tspice_init_cspice_error_handling_once();
+  if (!frame || !segid || !isfinite(first) || !isfinite(last))
+    return tspice_ephemeris_invalid_arg(err, cap, "Invalid SPK interpolation arguments");
+  if (check_interpolation_storage(18, subtype, degree, n, samples, sampleWords, epochs, epochCount,
+                                  err, cap))
+    return 1;
+  spkw18_c(handle, (SpiceSPK18Subtype)subtype, body, center, frame, first, last, segid, degree, n,
+           samples, epochs);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, cap);
+    return 1;
+  }
   return 0;
 }

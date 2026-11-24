@@ -211,3 +211,119 @@ class StepEphemerisSpkw08:
     states: list[float]
     epoch1: float
     step: float
+
+
+@dataclass(frozen=True)
+class StepEphemerisSpkw02:
+    op: Literal["ephemeris.spkw02"]
+    handleId: str
+    body: int
+    center: int
+    frame: str
+    first: float
+    last: float
+    segid: str
+    intlen: float
+    n: int
+    degree: int
+    cdata: list[float]
+    btime: float
+
+
+@dataclass(frozen=True)
+class StepEphemerisSpkw03:
+    op: Literal["ephemeris.spkw03"]
+    handleId: str
+    body: int
+    center: int
+    frame: str
+    first: float
+    last: float
+    segid: str
+    intlen: float
+    n: int
+    degree: int
+    cdata: list[float]
+    btime: float
+
+
+@dataclass(frozen=True)
+class StepEphemerisSpkw20:
+    op: Literal["ephemeris.spkw20"]
+    handleId: str
+    body: int
+    center: int
+    frame: str
+    first: float
+    last: float
+    segid: str
+    intlen: float
+    n: int
+    degree: int
+    cdata: list[float]
+    dscale: float
+    tscale: float
+    initjd: float
+    initfr: float
+
+
+@dataclass(frozen=True)
+class StepEphemerisSpkw09:
+    op: Literal["ephemeris.spkw09"]
+    handleId: str
+    body: int
+    center: int
+    frame: str
+    first: float
+    last: float
+    segid: str
+    degree: int
+    states: list[float]
+    epochs: list[float]
+
+
+@dataclass(frozen=True)
+class StepEphemerisSpkw12:
+    op: Literal["ephemeris.spkw12"]
+    handleId: str
+    body: int
+    center: int
+    frame: str
+    first: float
+    last: float
+    segid: str
+    degree: int
+    states: list[float]
+    epoch0: float
+    step: float
+
+
+@dataclass(frozen=True)
+class StepEphemerisSpkw13:
+    op: Literal["ephemeris.spkw13"]
+    handleId: str
+    body: int
+    center: int
+    frame: str
+    first: float
+    last: float
+    segid: str
+    degree: int
+    states: list[float]
+    epochs: list[float]
+
+
+@dataclass(frozen=True)
+class StepEphemerisSpkw18:
+    op: Literal["ephemeris.spkw18"]
+    handleId: str
+    subtype: int
+    body: int
+    center: int
+    frame: str
+    first: float
+    last: float
+    segid: str
+    degree: int
+    packets: list[float]
+    epochs: list[float]

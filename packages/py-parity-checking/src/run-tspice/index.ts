@@ -34,11 +34,21 @@ export function runCaseInTspice(
   try {
     clearKernelState(context);
 
-    // A live WASM module can run the same DAF-writing case again. Its MEMFS
+    // A live WASM module can run the same generated SPK writer case again. Its MEMFS
     // retains created files until disposal, so scope generated SPKs to this run.
     const generatedSpkDirectory =
       spice.raw.kind === "wasm" &&
-      parityCase.workflow.some((step) => step.op === "file-io.dafopw")
+      parityCase.workflow.some(
+        (step) =>
+          step.op === "file-io.dafopw" ||
+          step.op === "ephemeris.spkw02" ||
+          step.op === "ephemeris.spkw03" ||
+          step.op === "ephemeris.spkw09" ||
+          step.op === "ephemeris.spkw12" ||
+          step.op === "ephemeris.spkw13" ||
+          step.op === "ephemeris.spkw18" ||
+          step.op === "ephemeris.spkw20",
+      )
         ? path.basename(context.paths.scratchRoot)
         : undefined;
     const normalized = normalizeWorkflowDetailed(

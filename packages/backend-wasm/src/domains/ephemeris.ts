@@ -17,6 +17,9 @@ import type {
 import {
   copyTleLines,
   copyTleTuple,
+  copySpkChebyshevData,
+  snapshotSpkInterpolation,
+  validateSpkWriterFields,
   assertSpiceInt32,
   copyOrbitalTuple,
   copySpkPackedDescriptor,
@@ -204,6 +207,75 @@ function tspiceCallSpkopa(module: EmscriptenModule, path: string): number {
     );
   } finally {
     module._free(pathPtr);
+  }
+}
+
+function writeInterpolationRecords(
+  module: EmscriptenModule,
+  frame: string,
+  segid: string,
+  samples: Float64Array,
+  epochs: Float64Array | undefined,
+  invoke: (
+    framePtr: number,
+    segidPtr: number,
+    samplesPtr: number,
+    epochsPtr: number,
+    err: number,
+  ) => number,
+): void {
+  const framePtr = writeUtf8CString(module, frame);
+  try {
+    const idPtr = writeUtf8CString(module, segid);
+    try {
+      const sizes = [Math.max(8, samples.byteLength), WASM_ERR_MAX_BYTES];
+      if (epochs !== undefined) sizes.push(Math.max(8, epochs.byteLength));
+      withAllocs(module, sizes, (samplePtr, err, epochPtr = 0) => {
+        module.HEAPF64.set(samples, samplePtr / 8);
+        if (epochs !== undefined) module.HEAPF64.set(epochs, epochPtr / 8);
+        const status = invoke(framePtr, idPtr, samplePtr, epochPtr, err);
+        if (status)
+          throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, status);
+      });
+    } finally {
+      module._free(idPtr);
+    }
+  } finally {
+    module._free(framePtr);
+  }
+}
+
+function writeChebyshevRecord(
+  module: EmscriptenModule,
+  frame: string,
+  segid: string,
+  data: Float64Array,
+  call: (
+    framePtr: number,
+    idPtr: number,
+    dataPtr: number,
+    err: number,
+  ) => number,
+): void {
+  const framePtr = writeUtf8CString(module, frame);
+  try {
+    const idPtr = writeUtf8CString(module, segid);
+    try {
+      withAllocs(
+        module,
+        [Math.max(8, data.byteLength), WASM_ERR_MAX_BYTES],
+        (ptr, err) => {
+          module.HEAPF64.set(data, ptr / 8);
+          const status = call(framePtr, idPtr, ptr, err);
+          if (status)
+            throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, status);
+        },
+      );
+    } finally {
+      module._free(idPtr);
+    }
+  } finally {
+    module._free(framePtr);
   }
 }
 
@@ -1196,6 +1268,362 @@ export function createEphemerisApi(
       }
     },
 
+    spkw02: (
+      handle,
+      body,
+      center,
+      frame,
+      first,
+      last,
+      segid,
+      intlen,
+      n,
+      degree,
+      cdata,
+      btime,
+    ) => {
+      const nativeHandle = handles.lookup(
+        handle,
+        ["SPK"],
+        "spkw02",
+      ).nativeHandle;
+      validateSpkWriterFields(
+        body,
+        center,
+        frame,
+        segid,
+        first,
+        last,
+        intlen,
+        btime,
+      );
+      const data = copySpkChebyshevData(2, n, degree, cdata);
+      writeChebyshevRecord(
+        module,
+        frame,
+        segid,
+        data,
+        (framePtr, idPtr, dataPtr, err) =>
+          module._tspice_spkw02(
+            nativeHandle,
+            body,
+            center,
+            framePtr,
+            first,
+            last,
+            idPtr,
+            intlen,
+            n,
+            degree,
+            dataPtr,
+            data.length,
+            btime,
+            err,
+            WASM_ERR_MAX_BYTES,
+          ),
+      );
+    },
+    spkw03: (
+      handle,
+      body,
+      center,
+      frame,
+      first,
+      last,
+      segid,
+      intlen,
+      n,
+      degree,
+      cdata,
+      btime,
+    ) => {
+      const nativeHandle = handles.lookup(
+        handle,
+        ["SPK"],
+        "spkw03",
+      ).nativeHandle;
+      validateSpkWriterFields(
+        body,
+        center,
+        frame,
+        segid,
+        first,
+        last,
+        intlen,
+        btime,
+      );
+      const data = copySpkChebyshevData(3, n, degree, cdata);
+      writeChebyshevRecord(
+        module,
+        frame,
+        segid,
+        data,
+        (framePtr, idPtr, dataPtr, err) =>
+          module._tspice_spkw03(
+            nativeHandle,
+            body,
+            center,
+            framePtr,
+            first,
+            last,
+            idPtr,
+            intlen,
+            n,
+            degree,
+            dataPtr,
+            data.length,
+            btime,
+            err,
+            WASM_ERR_MAX_BYTES,
+          ),
+      );
+    },
+    spkw20: (
+      handle,
+      body,
+      center,
+      frame,
+      first,
+      last,
+      segid,
+      intlen,
+      n,
+      degree,
+      cdata,
+      dscale,
+      tscale,
+      initjd,
+      initfr,
+    ) => {
+      const nativeHandle = handles.lookup(
+        handle,
+        ["SPK"],
+        "spkw20",
+      ).nativeHandle;
+      validateSpkWriterFields(
+        body,
+        center,
+        frame,
+        segid,
+        first,
+        last,
+        intlen,
+        dscale,
+        tscale,
+        initjd,
+        initfr,
+      );
+      const data = copySpkChebyshevData(20, n, degree, cdata);
+      writeChebyshevRecord(
+        module,
+        frame,
+        segid,
+        data,
+        (framePtr, idPtr, dataPtr, err) =>
+          module._tspice_spkw20(
+            nativeHandle,
+            body,
+            center,
+            framePtr,
+            first,
+            last,
+            idPtr,
+            intlen,
+            n,
+            degree,
+            dataPtr,
+            data.length,
+            dscale,
+            tscale,
+            initjd,
+            initfr,
+            err,
+            WASM_ERR_MAX_BYTES,
+          ),
+      );
+    },
+    spkw09: (
+      handle,
+      body,
+      center,
+      frame,
+      first,
+      last,
+      segid,
+      degree,
+      states,
+      epochs,
+    ) => {
+      const actual = handles.lookup(handle, ["SPK"], "spkw09").nativeHandle;
+      validateSpkWriterFields(body, center, frame, segid, first, last);
+      const input = snapshotSpkInterpolation(9, 1, degree, states, epochs);
+      writeInterpolationRecords(
+        module,
+        frame,
+        segid,
+        input.samples,
+        input.epochs,
+        (framePtr, idPtr, samplesPtr, epochsPtr, err) =>
+          module._tspice_spkw09(
+            actual,
+            body,
+            center,
+            framePtr,
+            first,
+            last,
+            idPtr,
+            degree,
+            input.n,
+            samplesPtr,
+            input.samples.length,
+            epochsPtr,
+            input.epochs.length,
+            err,
+            WASM_ERR_MAX_BYTES,
+          ),
+      );
+    },
+    spkw12: (
+      handle,
+      body,
+      center,
+      frame,
+      first,
+      last,
+      segid,
+      degree,
+      states,
+      epoch0,
+      step,
+    ) => {
+      const actual = handles.lookup(handle, ["SPK"], "spkw12").nativeHandle;
+      validateSpkWriterFields(
+        body,
+        center,
+        frame,
+        segid,
+        first,
+        last,
+        epoch0,
+        step,
+      );
+      const input = snapshotSpkInterpolation(12, 1, degree, states);
+      writeInterpolationRecords(
+        module,
+        frame,
+        segid,
+        input.samples,
+        undefined,
+        (framePtr, idPtr, samplesPtr, _epochsPtr, err) =>
+          module._tspice_spkw12(
+            actual,
+            body,
+            center,
+            framePtr,
+            first,
+            last,
+            idPtr,
+            degree,
+            input.n,
+            samplesPtr,
+            input.samples.length,
+            epoch0,
+            step,
+            err,
+            WASM_ERR_MAX_BYTES,
+          ),
+      );
+    },
+    spkw13: (
+      handle,
+      body,
+      center,
+      frame,
+      first,
+      last,
+      segid,
+      degree,
+      states,
+      epochs,
+    ) => {
+      const actual = handles.lookup(handle, ["SPK"], "spkw13").nativeHandle;
+      validateSpkWriterFields(body, center, frame, segid, first, last);
+      const input = snapshotSpkInterpolation(13, 1, degree, states, epochs);
+      writeInterpolationRecords(
+        module,
+        frame,
+        segid,
+        input.samples,
+        input.epochs,
+        (framePtr, idPtr, samplesPtr, epochsPtr, err) =>
+          module._tspice_spkw13(
+            actual,
+            body,
+            center,
+            framePtr,
+            first,
+            last,
+            idPtr,
+            degree,
+            input.n,
+            samplesPtr,
+            input.samples.length,
+            epochsPtr,
+            input.epochs.length,
+            err,
+            WASM_ERR_MAX_BYTES,
+          ),
+      );
+    },
+    spkw18: (
+      handle,
+      subtype,
+      body,
+      center,
+      frame,
+      first,
+      last,
+      segid,
+      degree,
+      packets,
+      epochs,
+    ) => {
+      const actual = handles.lookup(handle, ["SPK"], "spkw18").nativeHandle;
+      validateSpkWriterFields(body, center, frame, segid, first, last);
+      const input = snapshotSpkInterpolation(
+        18,
+        subtype,
+        degree,
+        packets,
+        epochs,
+      );
+      writeInterpolationRecords(
+        module,
+        frame,
+        segid,
+        input.samples,
+        input.epochs,
+        (framePtr, idPtr, samplesPtr, epochsPtr, err) =>
+          module._tspice_spkw18(
+            actual,
+            subtype,
+            body,
+            center,
+            framePtr,
+            first,
+            last,
+            idPtr,
+            degree,
+            input.n,
+            samplesPtr,
+            input.samples.length,
+            epochsPtr,
+            input.epochs.length,
+            err,
+            WASM_ERR_MAX_BYTES,
+          ),
+      );
+    },
     spkw08: (
       handle: SpiceHandle,
       body: number,

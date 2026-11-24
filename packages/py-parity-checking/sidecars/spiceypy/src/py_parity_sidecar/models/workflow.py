@@ -242,6 +242,13 @@ from .ephemeris import (
     StepEphemerisSpksfs,
     StepEphemerisSpkssb,
     StepEphemerisSpkuds,
+    StepEphemerisSpkw02,
+    StepEphemerisSpkw03,
+    StepEphemerisSpkw20,
+    StepEphemerisSpkw09,
+    StepEphemerisSpkw12,
+    StepEphemerisSpkw13,
+    StepEphemerisSpkw18,
     StepEphemerisSpkw08,
 )
 from .dsk import (
@@ -911,6 +918,13 @@ WorkflowStep: TypeAlias = (
     | StepEphemerisSpksfs
     | StepEphemerisSpkssb
     | StepEphemerisSpkuds
+    | StepEphemerisSpkw02
+    | StepEphemerisSpkw03
+    | StepEphemerisSpkw20
+    | StepEphemerisSpkw09
+    | StepEphemerisSpkw12
+    | StepEphemerisSpkw13
+    | StepEphemerisSpkw18
     | StepEphemerisSpkw08
     | StepFileIoRdtext
     | StepFileIoPutcml

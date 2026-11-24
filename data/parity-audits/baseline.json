@@ -1235,6 +1235,19 @@
       "nextAction": "Verify the combined source on both required lanes and canonical CI."
     },
     {
+      "id": "e04-spk-chebyshev",
+      "routines": [
+        "spkw02_c",
+        "spkw03_c",
+        "spkw20_c"
+      ],
+      "dependsOn": [],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/757"
+      ],
+      "nextAction": "Verify the combined source on both required lanes and canonical CI."
+    },
+    {
       "id": "c07-dla-segments",
       "routines": [
         "dlabbs_c",
@@ -1283,6 +1296,22 @@
       "dependsOn": [],
       "prs": [
         "https://github.com/rybosome/tspice/pull/760"
+      ],
+      "nextAction": "Verify the combined source on both required lanes and canonical CI."
+    },
+    {
+      "id": "e05-spk-interpolation",
+      "routines": [
+        "spkw09_c",
+        "spkw12_c",
+        "spkw13_c",
+        "spkw18_c"
+      ],
+      "dependsOn": [
+        "e04-spk-chebyshev"
+      ],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/761"
       ],
       "nextAction": "Verify the combined source on both required lanes and canonical CI."
     },

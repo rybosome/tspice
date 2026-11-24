@@ -2275,6 +2275,27 @@ export function createFakeBackend(
     spkcls: (_handle: SpiceHandle) => {
       throw new Error("Fake backend: spkcls() is not implemented");
     },
+    spkw02: () => {
+      throw new Error("Fake backend: spkw02() is not implemented");
+    },
+    spkw03: () => {
+      throw new Error("Fake backend: spkw03() is not implemented");
+    },
+    spkw20: () => {
+      throw new Error("Fake backend: spkw20() is not implemented");
+    },
+    spkw09: () => {
+      throw new Error("Fake backend: spkw09() is not implemented");
+    },
+    spkw12: () => {
+      throw new Error("Fake backend: spkw12() is not implemented");
+    },
+    spkw13: () => {
+      throw new Error("Fake backend: spkw13() is not implemented");
+    },
+    spkw18: () => {
+      throw new Error("Fake backend: spkw18() is not implemented");
+    },
     spkw08: (
       _handle: SpiceHandle,
       _body: number,
