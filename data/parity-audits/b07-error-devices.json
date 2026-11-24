@@ -48,7 +48,176 @@
     "packages/tspice/src/transport/caching/policy.ts",
     "scripts/build-backend-wasm.mjs"
   ],
-  "executions": [],
+  "executions": [
+    {
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "e04061b86dbbb43a7f3963c20a6150dde958315e8be7e124cde2fefb0c3dc8e8",
+      "caseIds": [
+        "error-errdev-blank",
+        "error-errdev-empty-setting",
+        "error-errdev-filename",
+        "error-errdev-fixed-storage",
+        "error-errdev-initial-capacities",
+        "error-errdev-leading-space",
+        "error-errdev-length--2147483648",
+        "error-errdev-length-0",
+        "error-errdev-length-1",
+        "error-errdev-null",
+        "error-errdev-screen",
+        "error-errdev-significant-tab",
+        "error-errprt-all-default",
+        "error-errprt-blank",
+        "error-errprt-clear-order",
+        "error-errprt-empty-setting",
+        "error-errprt-initial-capacities",
+        "error-errprt-invalid-list",
+        "error-errprt-length--2147483648",
+        "error-errprt-length-0",
+        "error-errprt-length-1",
+        "error-errprt-ordered",
+        "error-errprt-repeated",
+        "error-errprt-token-limit",
+        "error-trcoff-absent-index",
+        "error-trcoff-active-stack",
+        "error-trcoff-repeat",
+        "error-trcoff-reset-kclear",
+        "error-trcoff-signaled"
+      ],
+      "id": "local-cp03-779d6fd6ae41-node",
+      "kind": "local",
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 779d6fd6ae41c78017a8cf7ccaec5fef3100112c. The native-required lane completed 7054 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45097193130/job/137439518970"
+    },
+    {
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "e04061b86dbbb43a7f3963c20a6150dde958315e8be7e124cde2fefb0c3dc8e8",
+      "caseIds": [
+        "error-errdev-blank",
+        "error-errdev-empty-setting",
+        "error-errdev-filename",
+        "error-errdev-fixed-storage",
+        "error-errdev-initial-capacities",
+        "error-errdev-leading-space",
+        "error-errdev-length--2147483648",
+        "error-errdev-length-0",
+        "error-errdev-length-1",
+        "error-errdev-null",
+        "error-errdev-screen",
+        "error-errdev-significant-tab",
+        "error-errprt-all-default",
+        "error-errprt-blank",
+        "error-errprt-clear-order",
+        "error-errprt-empty-setting",
+        "error-errprt-initial-capacities",
+        "error-errprt-invalid-list",
+        "error-errprt-length--2147483648",
+        "error-errprt-length-0",
+        "error-errprt-length-1",
+        "error-errprt-ordered",
+        "error-errprt-repeated",
+        "error-errprt-token-limit",
+        "error-trcoff-absent-index",
+        "error-trcoff-active-stack",
+        "error-trcoff-repeat",
+        "error-trcoff-reset-kclear",
+        "error-trcoff-signaled"
+      ],
+      "id": "ci-cp03-779d6fd6ae41-node",
+      "kind": "ci",
+      "commit": "c4bd798cc20d13e8dfd51e7e83ba740ffe4418ff",
+      "url": "https://github.com/rybosome/tspice/actions/runs/45127597533/job/137535439275",
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 7054 live comparisons without unexpected skips."
+    },
+    {
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "e04061b86dbbb43a7f3963c20a6150dde958315e8be7e124cde2fefb0c3dc8e8",
+      "caseIds": [
+        "error-errdev-blank",
+        "error-errdev-empty-setting",
+        "error-errdev-filename",
+        "error-errdev-fixed-storage",
+        "error-errdev-initial-capacities",
+        "error-errdev-leading-space",
+        "error-errdev-length--2147483648",
+        "error-errdev-length-0",
+        "error-errdev-length-1",
+        "error-errdev-null",
+        "error-errdev-screen",
+        "error-errdev-significant-tab",
+        "error-errprt-all-default",
+        "error-errprt-blank",
+        "error-errprt-clear-order",
+        "error-errprt-empty-setting",
+        "error-errprt-initial-capacities",
+        "error-errprt-invalid-list",
+        "error-errprt-length--2147483648",
+        "error-errprt-length-0",
+        "error-errprt-length-1",
+        "error-errprt-ordered",
+        "error-errprt-repeated",
+        "error-errprt-token-limit",
+        "error-trcoff-absent-index",
+        "error-trcoff-active-stack",
+        "error-trcoff-repeat",
+        "error-trcoff-reset-kclear",
+        "error-trcoff-signaled"
+      ],
+      "id": "local-cp03-779d6fd6ae41-wasm",
+      "kind": "local",
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 779d6fd6ae41c78017a8cf7ccaec5fef3100112c. The native-required lane completed 7054 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45097193130/job/137439518970"
+    },
+    {
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "e04061b86dbbb43a7f3963c20a6150dde958315e8be7e124cde2fefb0c3dc8e8",
+      "caseIds": [
+        "error-errdev-blank",
+        "error-errdev-empty-setting",
+        "error-errdev-filename",
+        "error-errdev-fixed-storage",
+        "error-errdev-initial-capacities",
+        "error-errdev-leading-space",
+        "error-errdev-length--2147483648",
+        "error-errdev-length-0",
+        "error-errdev-length-1",
+        "error-errdev-null",
+        "error-errdev-screen",
+        "error-errdev-significant-tab",
+        "error-errprt-all-default",
+        "error-errprt-blank",
+        "error-errprt-clear-order",
+        "error-errprt-empty-setting",
+        "error-errprt-initial-capacities",
+        "error-errprt-invalid-list",
+        "error-errprt-length--2147483648",
+        "error-errprt-length-0",
+        "error-errprt-length-1",
+        "error-errprt-ordered",
+        "error-errprt-repeated",
+        "error-errprt-token-limit",
+        "error-trcoff-absent-index",
+        "error-trcoff-active-stack",
+        "error-trcoff-repeat",
+        "error-trcoff-reset-kclear",
+        "error-trcoff-signaled"
+      ],
+      "id": "ci-cp03-779d6fd6ae41-wasm",
+      "kind": "ci",
+      "commit": "c4bd798cc20d13e8dfd51e7e83ba740ffe4418ff",
+      "url": "https://github.com/rybosome/tspice/actions/runs/45127597533/job/137535439275",
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 7054 live comparisons without unexpected skips."
+    }
+  ],
   "routines": [
     {
       "routine": "errdev_c",
@@ -139,16 +308,22 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "ErrorApi.errdev -> native addon under global mutex -> tspice_errdev -> errdev_c. Actual N0067 state observed in dedicated runtime.",
-          "executions": []
+          "executions": [
+            "local-cp03-779d6fd6ae41-node",
+            "ci-cp03-779d6fd6ae41-node"
+          ]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "ErrorApi.errdev -> bounded WASM adapter -> tspice_errdev -> errdev_c. Actual N0067 state observed in dedicated runtime.",
-          "executions": []
+          "executions": [
+            "local-cp03-779d6fd6ae41-wasm",
+            "ci-cp03-779d6fd6ae41-wasm"
+          ]
         }
       }
     },
@@ -240,16 +415,22 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "ErrorApi.errprt -> native addon under global mutex -> tspice_errprt -> errprt_c. Actual N0067 state observed in dedicated runtime.",
-          "executions": []
+          "executions": [
+            "local-cp03-779d6fd6ae41-node",
+            "ci-cp03-779d6fd6ae41-node"
+          ]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "ErrorApi.errprt -> bounded WASM adapter -> tspice_errprt -> errprt_c. Actual N0067 state observed in dedicated runtime.",
-          "executions": []
+          "executions": [
+            "local-cp03-779d6fd6ae41-wasm",
+            "ci-cp03-779d6fd6ae41-wasm"
+          ]
         }
       }
     },
@@ -312,16 +493,22 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "ErrorApi.trcoff -> native addon under global mutex -> tspice_trcoff -> trcoff_c. Actual N0067 state observed in dedicated runtime.",
-          "executions": []
+          "executions": [
+            "local-cp03-779d6fd6ae41-node",
+            "ci-cp03-779d6fd6ae41-node"
+          ]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "ErrorApi.trcoff -> bounded WASM adapter -> tspice_trcoff -> trcoff_c. Actual N0067 state observed in dedicated runtime.",
-          "executions": []
+          "executions": [
+            "local-cp03-779d6fd6ae41-wasm",
+            "ci-cp03-779d6fd6ae41-wasm"
+          ]
         }
       }
     }

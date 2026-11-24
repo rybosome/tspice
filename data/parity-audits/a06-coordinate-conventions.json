@@ -1173,6 +1173,286 @@
       "url": "https://github.com/rybosome/tspice/actions/runs/45048703356/job/137288855808",
       "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 5264 live comparisons without unexpected skips.",
       "historical": true
+    },
+    {
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "85d7ab70a8878a1f1a4339fa8ebd4f4a8232566a822b843ec829b876301c0f36",
+      "caseIds": [
+        "coords-vectors-azlrec-all-direction-flags",
+        "coords-vectors-azlrec-negative-range-unwrapped-angles",
+        "coords-vectors-azlrec-scaled-magnitudes",
+        "coords-vectors-azlrec-zero-and-poles",
+        "coords-vectors-pgrrec-earth-name-and-numeric-id",
+        "coords-vectors-pgrrec-earth-override-cleared",
+        "coords-vectors-pgrrec-invalid-equatorial-radius-error",
+        "coords-vectors-pgrrec-invalid-flattening-error",
+        "coords-vectors-pgrrec-invalid-longitude-override-error",
+        "coords-vectors-pgrrec-missing-prime-meridian-error",
+        "coords-vectors-pgrrec-moon-missing-prime-meridian-error",
+        "coords-vectors-pgrrec-negative-altitude-unrestricted-angles",
+        "coords-vectors-pgrrec-override-and-clear-lifecycle",
+        "coords-vectors-pgrrec-scaled-magnitudes",
+        "coords-vectors-pgrrec-sphere-oblate-prolate",
+        "coords-vectors-pgrrec-spin-sense-and-body-alias",
+        "coords-vectors-pgrrec-sun-moon-east-exceptions",
+        "coords-vectors-pgrrec-unknown-body-error",
+        "coords-vectors-radrec-quadrants",
+        "coords-vectors-radrec-scaled-magnitudes",
+        "coords-vectors-radrec-unrestricted-angles",
+        "coords-vectors-radrec-zero-negative-range-and-poles",
+        "coords-vectors-recazl-all-direction-flags",
+        "coords-vectors-recazl-mixed-quadrants",
+        "coords-vectors-recazl-scaled-magnitudes",
+        "coords-vectors-recazl-zero-and-axes",
+        "coords-vectors-recpgr-earth-name-and-numeric-id",
+        "coords-vectors-recpgr-earth-override-cleared",
+        "coords-vectors-recpgr-finite-input-too-large-error",
+        "coords-vectors-recpgr-invalid-equatorial-radius-error",
+        "coords-vectors-recpgr-invalid-flattening-error",
+        "coords-vectors-recpgr-invalid-longitude-override-error",
+        "coords-vectors-recpgr-missing-prime-meridian-error",
+        "coords-vectors-recpgr-moon-missing-prime-meridian-error",
+        "coords-vectors-recpgr-origin-poles-and-quadrants",
+        "coords-vectors-recpgr-override-and-clear-lifecycle",
+        "coords-vectors-recpgr-scaled-magnitudes",
+        "coords-vectors-recpgr-sphere-oblate-prolate",
+        "coords-vectors-recpgr-spin-sense-and-body-alias",
+        "coords-vectors-recpgr-sun-moon-east-exceptions",
+        "coords-vectors-recpgr-unknown-body-error",
+        "coords-vectors-recrad-mixed-quadrants",
+        "coords-vectors-recrad-near-axis",
+        "coords-vectors-recrad-scaled-magnitudes",
+        "coords-vectors-recrad-zero-and-axes",
+        "coords-vectors-srfrec-missing-radii-error",
+        "coords-vectors-srfrec-negative-axis-radii-error",
+        "coords-vectors-srfrec-nonnumeric-radii-error",
+        "coords-vectors-srfrec-oblate-planetocentric-latitude",
+        "coords-vectors-srfrec-pool-radii-overwrite-lifecycle",
+        "coords-vectors-srfrec-scaled-radii",
+        "coords-vectors-srfrec-signed32-body-boundaries",
+        "coords-vectors-srfrec-spherical-and-unrestricted-angles",
+        "coords-vectors-srfrec-too-few-radii-error",
+        "coords-vectors-srfrec-too-many-radii-error",
+        "coords-vectors-srfrec-triaxial-mixed-and-axes",
+        "coords-vectors-srfrec-zero-axis-radii-error"
+      ],
+      "id": "local-cp03-779d6fd6ae41-node",
+      "kind": "local",
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 779d6fd6ae41c78017a8cf7ccaec5fef3100112c. The native-required lane completed 7054 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45097193130/job/137439518970"
+    },
+    {
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "85d7ab70a8878a1f1a4339fa8ebd4f4a8232566a822b843ec829b876301c0f36",
+      "caseIds": [
+        "coords-vectors-azlrec-all-direction-flags",
+        "coords-vectors-azlrec-negative-range-unwrapped-angles",
+        "coords-vectors-azlrec-scaled-magnitudes",
+        "coords-vectors-azlrec-zero-and-poles",
+        "coords-vectors-pgrrec-earth-name-and-numeric-id",
+        "coords-vectors-pgrrec-earth-override-cleared",
+        "coords-vectors-pgrrec-invalid-equatorial-radius-error",
+        "coords-vectors-pgrrec-invalid-flattening-error",
+        "coords-vectors-pgrrec-invalid-longitude-override-error",
+        "coords-vectors-pgrrec-missing-prime-meridian-error",
+        "coords-vectors-pgrrec-moon-missing-prime-meridian-error",
+        "coords-vectors-pgrrec-negative-altitude-unrestricted-angles",
+        "coords-vectors-pgrrec-override-and-clear-lifecycle",
+        "coords-vectors-pgrrec-scaled-magnitudes",
+        "coords-vectors-pgrrec-sphere-oblate-prolate",
+        "coords-vectors-pgrrec-spin-sense-and-body-alias",
+        "coords-vectors-pgrrec-sun-moon-east-exceptions",
+        "coords-vectors-pgrrec-unknown-body-error",
+        "coords-vectors-radrec-quadrants",
+        "coords-vectors-radrec-scaled-magnitudes",
+        "coords-vectors-radrec-unrestricted-angles",
+        "coords-vectors-radrec-zero-negative-range-and-poles",
+        "coords-vectors-recazl-all-direction-flags",
+        "coords-vectors-recazl-mixed-quadrants",
+        "coords-vectors-recazl-scaled-magnitudes",
+        "coords-vectors-recazl-zero-and-axes",
+        "coords-vectors-recpgr-earth-name-and-numeric-id",
+        "coords-vectors-recpgr-earth-override-cleared",
+        "coords-vectors-recpgr-finite-input-too-large-error",
+        "coords-vectors-recpgr-invalid-equatorial-radius-error",
+        "coords-vectors-recpgr-invalid-flattening-error",
+        "coords-vectors-recpgr-invalid-longitude-override-error",
+        "coords-vectors-recpgr-missing-prime-meridian-error",
+        "coords-vectors-recpgr-moon-missing-prime-meridian-error",
+        "coords-vectors-recpgr-origin-poles-and-quadrants",
+        "coords-vectors-recpgr-override-and-clear-lifecycle",
+        "coords-vectors-recpgr-scaled-magnitudes",
+        "coords-vectors-recpgr-sphere-oblate-prolate",
+        "coords-vectors-recpgr-spin-sense-and-body-alias",
+        "coords-vectors-recpgr-sun-moon-east-exceptions",
+        "coords-vectors-recpgr-unknown-body-error",
+        "coords-vectors-recrad-mixed-quadrants",
+        "coords-vectors-recrad-near-axis",
+        "coords-vectors-recrad-scaled-magnitudes",
+        "coords-vectors-recrad-zero-and-axes",
+        "coords-vectors-srfrec-missing-radii-error",
+        "coords-vectors-srfrec-negative-axis-radii-error",
+        "coords-vectors-srfrec-nonnumeric-radii-error",
+        "coords-vectors-srfrec-oblate-planetocentric-latitude",
+        "coords-vectors-srfrec-pool-radii-overwrite-lifecycle",
+        "coords-vectors-srfrec-scaled-radii",
+        "coords-vectors-srfrec-signed32-body-boundaries",
+        "coords-vectors-srfrec-spherical-and-unrestricted-angles",
+        "coords-vectors-srfrec-too-few-radii-error",
+        "coords-vectors-srfrec-too-many-radii-error",
+        "coords-vectors-srfrec-triaxial-mixed-and-axes",
+        "coords-vectors-srfrec-zero-axis-radii-error"
+      ],
+      "id": "ci-cp03-779d6fd6ae41-node",
+      "kind": "ci",
+      "commit": "c4bd798cc20d13e8dfd51e7e83ba740ffe4418ff",
+      "url": "https://github.com/rybosome/tspice/actions/runs/45127597533/job/137535439275",
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 7054 live comparisons without unexpected skips."
+    },
+    {
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "85d7ab70a8878a1f1a4339fa8ebd4f4a8232566a822b843ec829b876301c0f36",
+      "caseIds": [
+        "coords-vectors-azlrec-all-direction-flags",
+        "coords-vectors-azlrec-negative-range-unwrapped-angles",
+        "coords-vectors-azlrec-scaled-magnitudes",
+        "coords-vectors-azlrec-zero-and-poles",
+        "coords-vectors-pgrrec-earth-name-and-numeric-id",
+        "coords-vectors-pgrrec-earth-override-cleared",
+        "coords-vectors-pgrrec-invalid-equatorial-radius-error",
+        "coords-vectors-pgrrec-invalid-flattening-error",
+        "coords-vectors-pgrrec-invalid-longitude-override-error",
+        "coords-vectors-pgrrec-missing-prime-meridian-error",
+        "coords-vectors-pgrrec-moon-missing-prime-meridian-error",
+        "coords-vectors-pgrrec-negative-altitude-unrestricted-angles",
+        "coords-vectors-pgrrec-override-and-clear-lifecycle",
+        "coords-vectors-pgrrec-scaled-magnitudes",
+        "coords-vectors-pgrrec-sphere-oblate-prolate",
+        "coords-vectors-pgrrec-spin-sense-and-body-alias",
+        "coords-vectors-pgrrec-sun-moon-east-exceptions",
+        "coords-vectors-pgrrec-unknown-body-error",
+        "coords-vectors-radrec-quadrants",
+        "coords-vectors-radrec-scaled-magnitudes",
+        "coords-vectors-radrec-unrestricted-angles",
+        "coords-vectors-radrec-zero-negative-range-and-poles",
+        "coords-vectors-recazl-all-direction-flags",
+        "coords-vectors-recazl-mixed-quadrants",
+        "coords-vectors-recazl-scaled-magnitudes",
+        "coords-vectors-recazl-zero-and-axes",
+        "coords-vectors-recpgr-earth-name-and-numeric-id",
+        "coords-vectors-recpgr-earth-override-cleared",
+        "coords-vectors-recpgr-finite-input-too-large-error",
+        "coords-vectors-recpgr-invalid-equatorial-radius-error",
+        "coords-vectors-recpgr-invalid-flattening-error",
+        "coords-vectors-recpgr-invalid-longitude-override-error",
+        "coords-vectors-recpgr-missing-prime-meridian-error",
+        "coords-vectors-recpgr-moon-missing-prime-meridian-error",
+        "coords-vectors-recpgr-origin-poles-and-quadrants",
+        "coords-vectors-recpgr-override-and-clear-lifecycle",
+        "coords-vectors-recpgr-scaled-magnitudes",
+        "coords-vectors-recpgr-sphere-oblate-prolate",
+        "coords-vectors-recpgr-spin-sense-and-body-alias",
+        "coords-vectors-recpgr-sun-moon-east-exceptions",
+        "coords-vectors-recpgr-unknown-body-error",
+        "coords-vectors-recrad-mixed-quadrants",
+        "coords-vectors-recrad-near-axis",
+        "coords-vectors-recrad-scaled-magnitudes",
+        "coords-vectors-recrad-zero-and-axes",
+        "coords-vectors-srfrec-missing-radii-error",
+        "coords-vectors-srfrec-negative-axis-radii-error",
+        "coords-vectors-srfrec-nonnumeric-radii-error",
+        "coords-vectors-srfrec-oblate-planetocentric-latitude",
+        "coords-vectors-srfrec-pool-radii-overwrite-lifecycle",
+        "coords-vectors-srfrec-scaled-radii",
+        "coords-vectors-srfrec-signed32-body-boundaries",
+        "coords-vectors-srfrec-spherical-and-unrestricted-angles",
+        "coords-vectors-srfrec-too-few-radii-error",
+        "coords-vectors-srfrec-too-many-radii-error",
+        "coords-vectors-srfrec-triaxial-mixed-and-axes",
+        "coords-vectors-srfrec-zero-axis-radii-error"
+      ],
+      "id": "local-cp03-779d6fd6ae41-wasm",
+      "kind": "local",
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 779d6fd6ae41c78017a8cf7ccaec5fef3100112c. The native-required lane completed 7054 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45097193130/job/137439518970"
+    },
+    {
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "85d7ab70a8878a1f1a4339fa8ebd4f4a8232566a822b843ec829b876301c0f36",
+      "caseIds": [
+        "coords-vectors-azlrec-all-direction-flags",
+        "coords-vectors-azlrec-negative-range-unwrapped-angles",
+        "coords-vectors-azlrec-scaled-magnitudes",
+        "coords-vectors-azlrec-zero-and-poles",
+        "coords-vectors-pgrrec-earth-name-and-numeric-id",
+        "coords-vectors-pgrrec-earth-override-cleared",
+        "coords-vectors-pgrrec-invalid-equatorial-radius-error",
+        "coords-vectors-pgrrec-invalid-flattening-error",
+        "coords-vectors-pgrrec-invalid-longitude-override-error",
+        "coords-vectors-pgrrec-missing-prime-meridian-error",
+        "coords-vectors-pgrrec-moon-missing-prime-meridian-error",
+        "coords-vectors-pgrrec-negative-altitude-unrestricted-angles",
+        "coords-vectors-pgrrec-override-and-clear-lifecycle",
+        "coords-vectors-pgrrec-scaled-magnitudes",
+        "coords-vectors-pgrrec-sphere-oblate-prolate",
+        "coords-vectors-pgrrec-spin-sense-and-body-alias",
+        "coords-vectors-pgrrec-sun-moon-east-exceptions",
+        "coords-vectors-pgrrec-unknown-body-error",
+        "coords-vectors-radrec-quadrants",
+        "coords-vectors-radrec-scaled-magnitudes",
+        "coords-vectors-radrec-unrestricted-angles",
+        "coords-vectors-radrec-zero-negative-range-and-poles",
+        "coords-vectors-recazl-all-direction-flags",
+        "coords-vectors-recazl-mixed-quadrants",
+        "coords-vectors-recazl-scaled-magnitudes",
+        "coords-vectors-recazl-zero-and-axes",
+        "coords-vectors-recpgr-earth-name-and-numeric-id",
+        "coords-vectors-recpgr-earth-override-cleared",
+        "coords-vectors-recpgr-finite-input-too-large-error",
+        "coords-vectors-recpgr-invalid-equatorial-radius-error",
+        "coords-vectors-recpgr-invalid-flattening-error",
+        "coords-vectors-recpgr-invalid-longitude-override-error",
+        "coords-vectors-recpgr-missing-prime-meridian-error",
+        "coords-vectors-recpgr-moon-missing-prime-meridian-error",
+        "coords-vectors-recpgr-origin-poles-and-quadrants",
+        "coords-vectors-recpgr-override-and-clear-lifecycle",
+        "coords-vectors-recpgr-scaled-magnitudes",
+        "coords-vectors-recpgr-sphere-oblate-prolate",
+        "coords-vectors-recpgr-spin-sense-and-body-alias",
+        "coords-vectors-recpgr-sun-moon-east-exceptions",
+        "coords-vectors-recpgr-unknown-body-error",
+        "coords-vectors-recrad-mixed-quadrants",
+        "coords-vectors-recrad-near-axis",
+        "coords-vectors-recrad-scaled-magnitudes",
+        "coords-vectors-recrad-zero-and-axes",
+        "coords-vectors-srfrec-missing-radii-error",
+        "coords-vectors-srfrec-negative-axis-radii-error",
+        "coords-vectors-srfrec-nonnumeric-radii-error",
+        "coords-vectors-srfrec-oblate-planetocentric-latitude",
+        "coords-vectors-srfrec-pool-radii-overwrite-lifecycle",
+        "coords-vectors-srfrec-scaled-radii",
+        "coords-vectors-srfrec-signed32-body-boundaries",
+        "coords-vectors-srfrec-spherical-and-unrestricted-angles",
+        "coords-vectors-srfrec-too-few-radii-error",
+        "coords-vectors-srfrec-too-many-radii-error",
+        "coords-vectors-srfrec-triaxial-mixed-and-axes",
+        "coords-vectors-srfrec-zero-axis-radii-error"
+      ],
+      "id": "ci-cp03-779d6fd6ae41-wasm",
+      "kind": "ci",
+      "commit": "c4bd798cc20d13e8dfd51e7e83ba740ffe4418ff",
+      "url": "https://github.com/rybosome/tspice/actions/runs/45127597533/job/137535439275",
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 7054 live comparisons without unexpected skips."
     }
   ],
   "routines": [
@@ -1222,11 +1502,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.azlrec -> typed Node coords-vectors adapter -> native binding azlrec in native/src/domains/coords_vectors.cc (validated inputs, global SPICE mutex) -> tspice_azlrec shared shim -> azlrec_c. Workflow dispatch invokes this actual raw method; Python decode/model/handler invokes locked SpiceyPy azlrec and preserves matching output field order. No test substitute or harness science implementation is used.",
-          "executions": []
+          "executions": [
+            "local-cp03-779d6fd6ae41-node",
+            "ci-cp03-779d6fd6ae41-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -1239,11 +1523,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.azlrec -> typed WASM coords-vectors adapter -> exported _tspice_azlrec (boolean flags encoded 0/1; current buffers copied) -> shared shim -> azlrec_c. Outputs copied before transactional cleanup. Workflow dispatch invokes this actual raw method; Python decode/model/handler invokes locked SpiceyPy azlrec and preserves matching output field order. No test substitute or harness science implementation is used.",
-          "executions": []
+          "executions": [
+            "local-cp03-779d6fd6ae41-wasm",
+            "ci-cp03-779d6fd6ae41-wasm"
+          ]
         }
       }
     },
@@ -1307,11 +1595,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.recazl -> typed Node coords-vectors adapter -> native binding recazl in native/src/domains/coords_vectors.cc (validated inputs, global SPICE mutex) -> tspice_recazl shared shim -> recazl_c. Workflow dispatch invokes this actual raw method; Python decode/model/handler invokes locked SpiceyPy recazl and preserves matching output field order. No test substitute or harness science implementation is used.",
-          "executions": []
+          "executions": [
+            "local-cp03-779d6fd6ae41-node",
+            "ci-cp03-779d6fd6ae41-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -1325,11 +1617,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.recazl -> typed WASM coords-vectors adapter -> exported _tspice_recazl (boolean flags encoded 0/1; current buffers copied) -> shared shim -> recazl_c. Outputs copied before transactional cleanup. Workflow dispatch invokes this actual raw method; Python decode/model/handler invokes locked SpiceyPy recazl and preserves matching output field order. No test substitute or harness science implementation is used.",
-          "executions": []
+          "executions": [
+            "local-cp03-779d6fd6ae41-wasm",
+            "ci-cp03-779d6fd6ae41-wasm"
+          ]
         }
       }
     },
@@ -1435,11 +1731,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.pgrrec -> typed Node coords-vectors adapter -> native binding pgrrec in native/src/domains/coords_vectors.cc (validated inputs, global SPICE mutex) -> tspice_pgrrec shared shim -> pgrrec_c. Workflow dispatch invokes this actual raw method; Python decode/model/handler invokes locked SpiceyPy pgrrec and preserves matching output field order. No test substitute or harness science implementation is used.",
-          "executions": []
+          "executions": [
+            "local-cp03-779d6fd6ae41-node",
+            "ci-cp03-779d6fd6ae41-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -1452,11 +1752,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.pgrrec -> typed WASM coords-vectors adapter -> exported _tspice_pgrrec (boolean flags encoded 0/1; current buffers copied) -> shared shim -> pgrrec_c. Outputs copied before transactional cleanup. Workflow dispatch invokes this actual raw method; Python decode/model/handler invokes locked SpiceyPy pgrrec and preserves matching output field order. No test substitute or harness science implementation is used.",
-          "executions": []
+          "executions": [
+            "local-cp03-779d6fd6ae41-wasm",
+            "ci-cp03-779d6fd6ae41-wasm"
+          ]
         }
       }
     },
@@ -1581,11 +1885,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.recpgr -> typed Node coords-vectors adapter -> native binding recpgr in native/src/domains/coords_vectors.cc (validated inputs, global SPICE mutex) -> tspice_recpgr shared shim -> recpgr_c. Workflow dispatch invokes this actual raw method; Python decode/model/handler invokes locked SpiceyPy recpgr and preserves matching output field order. No test substitute or harness science implementation is used.",
-          "executions": []
+          "executions": [
+            "local-cp03-779d6fd6ae41-node",
+            "ci-cp03-779d6fd6ae41-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -1599,11 +1907,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.recpgr -> typed WASM coords-vectors adapter -> exported _tspice_recpgr (boolean flags encoded 0/1; current buffers copied) -> shared shim -> recpgr_c. Outputs copied before transactional cleanup. Workflow dispatch invokes this actual raw method; Python decode/model/handler invokes locked SpiceyPy recpgr and preserves matching output field order. No test substitute or harness science implementation is used.",
-          "executions": []
+          "executions": [
+            "local-cp03-779d6fd6ae41-wasm",
+            "ci-cp03-779d6fd6ae41-wasm"
+          ]
         }
       }
     },
@@ -1653,11 +1965,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.radrec -> typed Node coords-vectors adapter -> native binding radrec in native/src/domains/coords_vectors.cc (validated inputs, global SPICE mutex) -> tspice_radrec shared shim -> radrec_c. Workflow dispatch invokes this actual raw method; Python decode/model/handler invokes locked SpiceyPy radrec and preserves matching output field order. No test substitute or harness science implementation is used.",
-          "executions": []
+          "executions": [
+            "local-cp03-779d6fd6ae41-node",
+            "ci-cp03-779d6fd6ae41-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -1670,11 +1986,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.radrec -> typed WASM coords-vectors adapter -> exported _tspice_radrec (boolean flags encoded 0/1; current buffers copied) -> shared shim -> radrec_c. Outputs copied before transactional cleanup. Workflow dispatch invokes this actual raw method; Python decode/model/handler invokes locked SpiceyPy radrec and preserves matching output field order. No test substitute or harness science implementation is used.",
-          "executions": []
+          "executions": [
+            "local-cp03-779d6fd6ae41-wasm",
+            "ci-cp03-779d6fd6ae41-wasm"
+          ]
         }
       }
     },
@@ -1738,11 +2058,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.recrad -> typed Node coords-vectors adapter -> native binding recrad in native/src/domains/coords_vectors.cc (validated inputs, global SPICE mutex) -> tspice_recrad shared shim -> recrad_c. Workflow dispatch invokes this actual raw method; Python decode/model/handler invokes locked SpiceyPy recrad and preserves matching output field order. No test substitute or harness science implementation is used.",
-          "executions": []
+          "executions": [
+            "local-cp03-779d6fd6ae41-node",
+            "ci-cp03-779d6fd6ae41-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -1756,11 +2080,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.recrad -> typed WASM coords-vectors adapter -> exported _tspice_recrad (boolean flags encoded 0/1; current buffers copied) -> shared shim -> recrad_c. Outputs copied before transactional cleanup. Workflow dispatch invokes this actual raw method; Python decode/model/handler invokes locked SpiceyPy recrad and preserves matching output field order. No test substitute or harness science implementation is used.",
-          "executions": []
+          "executions": [
+            "local-cp03-779d6fd6ae41-wasm",
+            "ci-cp03-779d6fd6ae41-wasm"
+          ]
         }
       }
     },
@@ -1870,11 +2198,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.srfrec -> typed Node coords-vectors adapter -> native binding srfrec in native/src/domains/coords_vectors.cc (validated inputs, global SPICE mutex) -> tspice_srfrec shared shim -> srfrec_c. Workflow dispatch invokes this actual raw method; Python decode/model/handler invokes locked SpiceyPy srfrec and preserves matching output field order. No test substitute or harness science implementation is used.",
-          "executions": []
+          "executions": [
+            "local-cp03-779d6fd6ae41-node",
+            "ci-cp03-779d6fd6ae41-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -1888,11 +2220,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.srfrec -> typed WASM coords-vectors adapter -> exported _tspice_srfrec (boolean flags encoded 0/1; current buffers copied) -> shared shim -> srfrec_c. Outputs copied before transactional cleanup. Workflow dispatch invokes this actual raw method; Python decode/model/handler invokes locked SpiceyPy srfrec and preserves matching output field order. No test substitute or harness science implementation is used.",
-          "executions": []
+          "executions": [
+            "local-cp03-779d6fd6ae41-wasm",
+            "ci-cp03-779d6fd6ae41-wasm"
+          ]
         }
       }
     }

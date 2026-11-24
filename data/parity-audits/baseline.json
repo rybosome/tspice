@@ -1115,7 +1115,7 @@
       "id": "b07-error-devices",
       "routines": ["errdev_c", "errprt_c", "trcoff_c"],
       "dependsOn": ["b06-error-observation"],
-      "prs": [],
+      "prs": ["https://github.com/rybosome/tspice/pull/779"],
       "nextAction": "Verify the combined source on both required lanes and canonical CI."
     }
   ]

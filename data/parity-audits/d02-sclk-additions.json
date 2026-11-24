@@ -291,6 +291,254 @@
       "url": "https://github.com/rybosome/tspice/actions/runs/43556126707/job/132329262471",
       "observation": "Inspected successful Linux Node 22 native-required job 132329262471 on 09d17ed130821551b86d2e1df7a01137af37b49f: 2,316 registered Node/WASM live comparisons; 2,536 parity-package tests with no skips, including the native-required guard; 88 native wrapper, 617 WASM, 28 core and 150 facade tests passed.",
       "historical": true
+    },
+    {
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "96dc1c4f72d7e97fb684aa9cfd5262b9d69cfcc56e9f5c05999154d73582876f",
+      "caseIds": [
+        "time-sce2t-after-clock",
+        "time-sce2t-before-clock",
+        "time-sce2t-first-half-tick",
+        "time-sce2t-integral-rounding",
+        "time-sce2t-invalid-rate",
+        "time-sce2t-lower-and-upper-clock-rates",
+        "time-sce2t-missing-clock",
+        "time-sce2t-non-tdb-clock-no-lsk",
+        "time-sce2t-non-tdb-clock-with-lsk",
+        "time-sce2t-piecewise-coefficients",
+        "time-sce2t-raw-partition-boundaries",
+        "time-sce2t-unknown-spacecraft",
+        "time-sce2t-unsupported-clock-type",
+        "time-scfmt-above-major-modulus",
+        "time-scfmt-all-output-delimiters",
+        "time-scfmt-exact-and-generous-capacities",
+        "time-scfmt-field-offsets",
+        "time-scfmt-fractional-and-half-ticks",
+        "time-scfmt-invalid-output-delimiter",
+        "time-scfmt-missing-clock",
+        "time-scfmt-negative-capacity",
+        "time-scfmt-negative-ticks",
+        "time-scfmt-nominal-truncation",
+        "time-scfmt-raw-partition-boundaries",
+        "time-scfmt-short-capacity",
+        "time-scfmt-single-field-clock",
+        "time-scfmt-unsupported-clock-type",
+        "time-scfmt-zero-capacity",
+        "time-scpart-clock-cleared",
+        "time-scpart-fractional-boundaries",
+        "time-scpart-missing-clock",
+        "time-scpart-overlapping-resets",
+        "time-scpart-reload-original",
+        "time-scpart-single-and-multiple-partitions",
+        "time-scpart-type-cache-followup",
+        "time-scpart-unequal-cardinalities",
+        "time-sctiks-absent-fields-and-carry",
+        "time-sctiks-below-field-offset",
+        "time-sctiks-blank-string",
+        "time-sctiks-empty-string",
+        "time-sctiks-extra-field",
+        "time-sctiks-invalid-character",
+        "time-sctiks-missing-clock",
+        "time-sctiks-nonzero-field-offsets",
+        "time-sctiks-outside-partition",
+        "time-sctiks-partition-prefix",
+        "time-sctiks-raw-field-separators",
+        "time-sctiks-single-field-clock",
+        "time-sctiks-unsupported-clock-type"
+      ],
+      "id": "local-cp03-779d6fd6ae41-node",
+      "kind": "local",
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 779d6fd6ae41c78017a8cf7ccaec5fef3100112c. The native-required lane completed 7054 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45097193130/job/137439518970"
+    },
+    {
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "96dc1c4f72d7e97fb684aa9cfd5262b9d69cfcc56e9f5c05999154d73582876f",
+      "caseIds": [
+        "time-sce2t-after-clock",
+        "time-sce2t-before-clock",
+        "time-sce2t-first-half-tick",
+        "time-sce2t-integral-rounding",
+        "time-sce2t-invalid-rate",
+        "time-sce2t-lower-and-upper-clock-rates",
+        "time-sce2t-missing-clock",
+        "time-sce2t-non-tdb-clock-no-lsk",
+        "time-sce2t-non-tdb-clock-with-lsk",
+        "time-sce2t-piecewise-coefficients",
+        "time-sce2t-raw-partition-boundaries",
+        "time-sce2t-unknown-spacecraft",
+        "time-sce2t-unsupported-clock-type",
+        "time-scfmt-above-major-modulus",
+        "time-scfmt-all-output-delimiters",
+        "time-scfmt-exact-and-generous-capacities",
+        "time-scfmt-field-offsets",
+        "time-scfmt-fractional-and-half-ticks",
+        "time-scfmt-invalid-output-delimiter",
+        "time-scfmt-missing-clock",
+        "time-scfmt-negative-capacity",
+        "time-scfmt-negative-ticks",
+        "time-scfmt-nominal-truncation",
+        "time-scfmt-raw-partition-boundaries",
+        "time-scfmt-short-capacity",
+        "time-scfmt-single-field-clock",
+        "time-scfmt-unsupported-clock-type",
+        "time-scfmt-zero-capacity",
+        "time-scpart-clock-cleared",
+        "time-scpart-fractional-boundaries",
+        "time-scpart-missing-clock",
+        "time-scpart-overlapping-resets",
+        "time-scpart-reload-original",
+        "time-scpart-single-and-multiple-partitions",
+        "time-scpart-type-cache-followup",
+        "time-scpart-unequal-cardinalities",
+        "time-sctiks-absent-fields-and-carry",
+        "time-sctiks-below-field-offset",
+        "time-sctiks-blank-string",
+        "time-sctiks-empty-string",
+        "time-sctiks-extra-field",
+        "time-sctiks-invalid-character",
+        "time-sctiks-missing-clock",
+        "time-sctiks-nonzero-field-offsets",
+        "time-sctiks-outside-partition",
+        "time-sctiks-partition-prefix",
+        "time-sctiks-raw-field-separators",
+        "time-sctiks-single-field-clock",
+        "time-sctiks-unsupported-clock-type"
+      ],
+      "id": "ci-cp03-779d6fd6ae41-node",
+      "kind": "ci",
+      "commit": "c4bd798cc20d13e8dfd51e7e83ba740ffe4418ff",
+      "url": "https://github.com/rybosome/tspice/actions/runs/45127597533/job/137535439275",
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 7054 live comparisons without unexpected skips."
+    },
+    {
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "96dc1c4f72d7e97fb684aa9cfd5262b9d69cfcc56e9f5c05999154d73582876f",
+      "caseIds": [
+        "time-sce2t-after-clock",
+        "time-sce2t-before-clock",
+        "time-sce2t-first-half-tick",
+        "time-sce2t-integral-rounding",
+        "time-sce2t-invalid-rate",
+        "time-sce2t-lower-and-upper-clock-rates",
+        "time-sce2t-missing-clock",
+        "time-sce2t-non-tdb-clock-no-lsk",
+        "time-sce2t-non-tdb-clock-with-lsk",
+        "time-sce2t-piecewise-coefficients",
+        "time-sce2t-raw-partition-boundaries",
+        "time-sce2t-unknown-spacecraft",
+        "time-sce2t-unsupported-clock-type",
+        "time-scfmt-above-major-modulus",
+        "time-scfmt-all-output-delimiters",
+        "time-scfmt-exact-and-generous-capacities",
+        "time-scfmt-field-offsets",
+        "time-scfmt-fractional-and-half-ticks",
+        "time-scfmt-invalid-output-delimiter",
+        "time-scfmt-missing-clock",
+        "time-scfmt-negative-capacity",
+        "time-scfmt-negative-ticks",
+        "time-scfmt-nominal-truncation",
+        "time-scfmt-raw-partition-boundaries",
+        "time-scfmt-short-capacity",
+        "time-scfmt-single-field-clock",
+        "time-scfmt-unsupported-clock-type",
+        "time-scfmt-zero-capacity",
+        "time-scpart-clock-cleared",
+        "time-scpart-fractional-boundaries",
+        "time-scpart-missing-clock",
+        "time-scpart-overlapping-resets",
+        "time-scpart-reload-original",
+        "time-scpart-single-and-multiple-partitions",
+        "time-scpart-type-cache-followup",
+        "time-scpart-unequal-cardinalities",
+        "time-sctiks-absent-fields-and-carry",
+        "time-sctiks-below-field-offset",
+        "time-sctiks-blank-string",
+        "time-sctiks-empty-string",
+        "time-sctiks-extra-field",
+        "time-sctiks-invalid-character",
+        "time-sctiks-missing-clock",
+        "time-sctiks-nonzero-field-offsets",
+        "time-sctiks-outside-partition",
+        "time-sctiks-partition-prefix",
+        "time-sctiks-raw-field-separators",
+        "time-sctiks-single-field-clock",
+        "time-sctiks-unsupported-clock-type"
+      ],
+      "id": "local-cp03-779d6fd6ae41-wasm",
+      "kind": "local",
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 779d6fd6ae41c78017a8cf7ccaec5fef3100112c. The native-required lane completed 7054 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45097193130/job/137439518970"
+    },
+    {
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "96dc1c4f72d7e97fb684aa9cfd5262b9d69cfcc56e9f5c05999154d73582876f",
+      "caseIds": [
+        "time-sce2t-after-clock",
+        "time-sce2t-before-clock",
+        "time-sce2t-first-half-tick",
+        "time-sce2t-integral-rounding",
+        "time-sce2t-invalid-rate",
+        "time-sce2t-lower-and-upper-clock-rates",
+        "time-sce2t-missing-clock",
+        "time-sce2t-non-tdb-clock-no-lsk",
+        "time-sce2t-non-tdb-clock-with-lsk",
+        "time-sce2t-piecewise-coefficients",
+        "time-sce2t-raw-partition-boundaries",
+        "time-sce2t-unknown-spacecraft",
+        "time-sce2t-unsupported-clock-type",
+        "time-scfmt-above-major-modulus",
+        "time-scfmt-all-output-delimiters",
+        "time-scfmt-exact-and-generous-capacities",
+        "time-scfmt-field-offsets",
+        "time-scfmt-fractional-and-half-ticks",
+        "time-scfmt-invalid-output-delimiter",
+        "time-scfmt-missing-clock",
+        "time-scfmt-negative-capacity",
+        "time-scfmt-negative-ticks",
+        "time-scfmt-nominal-truncation",
+        "time-scfmt-raw-partition-boundaries",
+        "time-scfmt-short-capacity",
+        "time-scfmt-single-field-clock",
+        "time-scfmt-unsupported-clock-type",
+        "time-scfmt-zero-capacity",
+        "time-scpart-clock-cleared",
+        "time-scpart-fractional-boundaries",
+        "time-scpart-missing-clock",
+        "time-scpart-overlapping-resets",
+        "time-scpart-reload-original",
+        "time-scpart-single-and-multiple-partitions",
+        "time-scpart-type-cache-followup",
+        "time-scpart-unequal-cardinalities",
+        "time-sctiks-absent-fields-and-carry",
+        "time-sctiks-below-field-offset",
+        "time-sctiks-blank-string",
+        "time-sctiks-empty-string",
+        "time-sctiks-extra-field",
+        "time-sctiks-invalid-character",
+        "time-sctiks-missing-clock",
+        "time-sctiks-nonzero-field-offsets",
+        "time-sctiks-outside-partition",
+        "time-sctiks-partition-prefix",
+        "time-sctiks-raw-field-separators",
+        "time-sctiks-single-field-clock",
+        "time-sctiks-unsupported-clock-type"
+      ],
+      "id": "ci-cp03-779d6fd6ae41-wasm",
+      "kind": "ci",
+      "commit": "c4bd798cc20d13e8dfd51e7e83ba740ffe4418ff",
+      "url": "https://github.com/rybosome/tspice/actions/runs/45127597533/job/137535439275",
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 7054 live comparisons without unexpected skips."
     }
   ],
   "routines": [
@@ -416,11 +664,15 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "alias",
           "trace": "raw.sce2t -> Node adapter -> native addon under the shared SPICE lock -> shared tspice_sce2t -> chkin_c -> exact linked sce2t_ from SpiceZfc.h -> chkout_c; independent locked ABI on defined output and public wrapper on success.",
-          "executions": []
+          "executions": [
+            "local-cp03-779d6fd6ae41-node",
+            "ci-cp03-779d6fd6ae41-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -428,11 +680,15 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "alias",
           "trace": "raw.sce2t -> WASM adapter -> owned bounded linear-memory buffers and checked export -> shared tspice_sce2t -> chkin_c -> exact linked sce2t_ from SpiceZfc.h -> chkout_c; independent locked ABI on defined output and public wrapper on success.",
-          "executions": []
+          "executions": [
+            "local-cp03-779d6fd6ae41-wasm",
+            "ci-cp03-779d6fd6ae41-wasm"
+          ]
         }
       }
     },
@@ -576,11 +832,15 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.scfmt -> Node adapter -> native addon under the shared SPICE lock -> shared tspice_scfmt -> scfmt_c; independent locked SpiceyPy wrapper with a typed canonical call and non-null sentinel at a nonpositive logical output length.",
-          "executions": []
+          "executions": [
+            "local-cp03-779d6fd6ae41-node",
+            "ci-cp03-779d6fd6ae41-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -588,11 +848,15 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.scfmt -> WASM adapter -> owned bounded linear-memory buffers and checked export -> shared tspice_scfmt -> scfmt_c; independent locked SpiceyPy wrapper with a typed canonical call and non-null sentinel at a nonpositive logical output length.",
-          "executions": []
+          "executions": [
+            "local-cp03-779d6fd6ae41-wasm",
+            "ci-cp03-779d6fd6ae41-wasm"
+          ]
         }
       }
     },
@@ -698,11 +962,15 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.scpart -> Node adapter -> native addon under the shared SPICE lock -> shared tspice_scpart -> scpart_c; independent matching locked SpiceyPy wrapper on supported inputs.",
-          "executions": []
+          "executions": [
+            "local-cp03-779d6fd6ae41-node",
+            "ci-cp03-779d6fd6ae41-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -710,11 +978,15 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.scpart -> WASM adapter -> owned bounded linear-memory buffers and checked export -> shared tspice_scpart -> scpart_c; independent matching locked SpiceyPy wrapper on supported inputs.",
-          "executions": []
+          "executions": [
+            "local-cp03-779d6fd6ae41-wasm",
+            "ci-cp03-779d6fd6ae41-wasm"
+          ]
         }
       }
     },
@@ -810,16 +1082,34 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "raw.sctiks -> Node adapter -> native addon under the shared SPICE lock -> shared tspice_sctiks -> sctiks_c; independent matching locked SpiceyPy wrapper on supported inputs.",
-          "executions": []
+          "executions": [
+            "local-cp03-779d6fd6ae41-node",
+            "ci-cp03-779d6fd6ae41-node"
+          ]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "raw.sctiks -> WASM adapter -> owned bounded linear-memory buffers and checked export -> shared tspice_sctiks -> sctiks_c; independent matching locked SpiceyPy wrapper on supported inputs.",
-          "executions": []
+          "executions": [
+            "local-cp03-779d6fd6ae41-wasm",
+            "ci-cp03-779d6fd6ae41-wasm"
+          ]
         }
       }
     }

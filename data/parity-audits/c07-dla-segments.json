@@ -245,6 +245,194 @@
       "url": "https://github.com/rybosome/tspice/actions/runs/43578704814/job/132398571244",
       "observation": "Inspected successful Linux Node 22 native-required job 132398571244 on 9d9836f41edb8a86c36268acb439b963b1d27fe7: 2,486 registered Node/WASM live comparisons; 2,713 parity-package tests with no skips, including the native-required guard; 87 native wrapper, 677 WASM, 28 core and 150 facade tests passed.",
       "historical": true
+    },
+    {
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "6b60fa77de203fb4deb52742518ab4a18b8481ac10eec5eac2a75da2a754c5ce",
+      "caseIds": [
+        "file-io-dlabbs-empty",
+        "file-io-dlabbs-independent-files",
+        "file-io-dlabbs-mixed",
+        "file-io-dlabbs-one-empty",
+        "file-io-dlabbs-pending",
+        "file-io-dlabbs-repeat",
+        "file-io-dlabbs-synthetic-dsk",
+        "file-io-dlabbs-without-controls",
+        "file-io-dlabns-character-only",
+        "file-io-dlabns-double-only",
+        "file-io-dlabns-first-word-state",
+        "file-io-dlabns-integer-only",
+        "file-io-dlabns-physical-crossing",
+        "file-io-dlabns-read-only",
+        "file-io-dlabns-reopened-writer",
+        "file-io-dlabns-successive-links",
+        "file-io-dlabns-without-header",
+        "file-io-dlaens-empty-last",
+        "file-io-dlaens-logical-ranges",
+        "file-io-dlaens-no-data",
+        "file-io-dlaens-no-segment",
+        "file-io-dlaens-read-only",
+        "file-io-dlaens-recompute-last",
+        "file-io-dlaens-reopened-pending",
+        "file-io-dlaens-three-components",
+        "file-io-dlaens-without-header",
+        "file-io-dlafps-closed-token",
+        "file-io-dlafps-complete-backward",
+        "file-io-dlafps-forward-to-back",
+        "file-io-dlafps-independent-descriptors",
+        "file-io-dlafps-one-end",
+        "file-io-dlafps-reverse-to-forward",
+        "file-io-dlafps-synthetic-dsk",
+        "file-io-dlafps-writer-pending"
+      ],
+      "id": "local-cp03-779d6fd6ae41-node",
+      "kind": "local",
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 779d6fd6ae41c78017a8cf7ccaec5fef3100112c. The native-required lane completed 7054 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45097193130/job/137439518970"
+    },
+    {
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "6b60fa77de203fb4deb52742518ab4a18b8481ac10eec5eac2a75da2a754c5ce",
+      "caseIds": [
+        "file-io-dlabbs-empty",
+        "file-io-dlabbs-independent-files",
+        "file-io-dlabbs-mixed",
+        "file-io-dlabbs-one-empty",
+        "file-io-dlabbs-pending",
+        "file-io-dlabbs-repeat",
+        "file-io-dlabbs-synthetic-dsk",
+        "file-io-dlabbs-without-controls",
+        "file-io-dlabns-character-only",
+        "file-io-dlabns-double-only",
+        "file-io-dlabns-first-word-state",
+        "file-io-dlabns-integer-only",
+        "file-io-dlabns-physical-crossing",
+        "file-io-dlabns-read-only",
+        "file-io-dlabns-reopened-writer",
+        "file-io-dlabns-successive-links",
+        "file-io-dlabns-without-header",
+        "file-io-dlaens-empty-last",
+        "file-io-dlaens-logical-ranges",
+        "file-io-dlaens-no-data",
+        "file-io-dlaens-no-segment",
+        "file-io-dlaens-read-only",
+        "file-io-dlaens-recompute-last",
+        "file-io-dlaens-reopened-pending",
+        "file-io-dlaens-three-components",
+        "file-io-dlaens-without-header",
+        "file-io-dlafps-closed-token",
+        "file-io-dlafps-complete-backward",
+        "file-io-dlafps-forward-to-back",
+        "file-io-dlafps-independent-descriptors",
+        "file-io-dlafps-one-end",
+        "file-io-dlafps-reverse-to-forward",
+        "file-io-dlafps-synthetic-dsk",
+        "file-io-dlafps-writer-pending"
+      ],
+      "id": "ci-cp03-779d6fd6ae41-node",
+      "kind": "ci",
+      "commit": "c4bd798cc20d13e8dfd51e7e83ba740ffe4418ff",
+      "url": "https://github.com/rybosome/tspice/actions/runs/45127597533/job/137535439275",
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 7054 live comparisons without unexpected skips."
+    },
+    {
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "6b60fa77de203fb4deb52742518ab4a18b8481ac10eec5eac2a75da2a754c5ce",
+      "caseIds": [
+        "file-io-dlabbs-empty",
+        "file-io-dlabbs-independent-files",
+        "file-io-dlabbs-mixed",
+        "file-io-dlabbs-one-empty",
+        "file-io-dlabbs-pending",
+        "file-io-dlabbs-repeat",
+        "file-io-dlabbs-synthetic-dsk",
+        "file-io-dlabbs-without-controls",
+        "file-io-dlabns-character-only",
+        "file-io-dlabns-double-only",
+        "file-io-dlabns-first-word-state",
+        "file-io-dlabns-integer-only",
+        "file-io-dlabns-physical-crossing",
+        "file-io-dlabns-read-only",
+        "file-io-dlabns-reopened-writer",
+        "file-io-dlabns-successive-links",
+        "file-io-dlabns-without-header",
+        "file-io-dlaens-empty-last",
+        "file-io-dlaens-logical-ranges",
+        "file-io-dlaens-no-data",
+        "file-io-dlaens-no-segment",
+        "file-io-dlaens-read-only",
+        "file-io-dlaens-recompute-last",
+        "file-io-dlaens-reopened-pending",
+        "file-io-dlaens-three-components",
+        "file-io-dlaens-without-header",
+        "file-io-dlafps-closed-token",
+        "file-io-dlafps-complete-backward",
+        "file-io-dlafps-forward-to-back",
+        "file-io-dlafps-independent-descriptors",
+        "file-io-dlafps-one-end",
+        "file-io-dlafps-reverse-to-forward",
+        "file-io-dlafps-synthetic-dsk",
+        "file-io-dlafps-writer-pending"
+      ],
+      "id": "local-cp03-779d6fd6ae41-wasm",
+      "kind": "local",
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 779d6fd6ae41c78017a8cf7ccaec5fef3100112c. The native-required lane completed 7054 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45097193130/job/137439518970"
+    },
+    {
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "6b60fa77de203fb4deb52742518ab4a18b8481ac10eec5eac2a75da2a754c5ce",
+      "caseIds": [
+        "file-io-dlabbs-empty",
+        "file-io-dlabbs-independent-files",
+        "file-io-dlabbs-mixed",
+        "file-io-dlabbs-one-empty",
+        "file-io-dlabbs-pending",
+        "file-io-dlabbs-repeat",
+        "file-io-dlabbs-synthetic-dsk",
+        "file-io-dlabbs-without-controls",
+        "file-io-dlabns-character-only",
+        "file-io-dlabns-double-only",
+        "file-io-dlabns-first-word-state",
+        "file-io-dlabns-integer-only",
+        "file-io-dlabns-physical-crossing",
+        "file-io-dlabns-read-only",
+        "file-io-dlabns-reopened-writer",
+        "file-io-dlabns-successive-links",
+        "file-io-dlabns-without-header",
+        "file-io-dlaens-empty-last",
+        "file-io-dlaens-logical-ranges",
+        "file-io-dlaens-no-data",
+        "file-io-dlaens-no-segment",
+        "file-io-dlaens-read-only",
+        "file-io-dlaens-recompute-last",
+        "file-io-dlaens-reopened-pending",
+        "file-io-dlaens-three-components",
+        "file-io-dlaens-without-header",
+        "file-io-dlafps-closed-token",
+        "file-io-dlafps-complete-backward",
+        "file-io-dlafps-forward-to-back",
+        "file-io-dlafps-independent-descriptors",
+        "file-io-dlafps-one-end",
+        "file-io-dlafps-reverse-to-forward",
+        "file-io-dlafps-synthetic-dsk",
+        "file-io-dlafps-writer-pending"
+      ],
+      "id": "ci-cp03-779d6fd6ae41-wasm",
+      "kind": "ci",
+      "commit": "c4bd798cc20d13e8dfd51e7e83ba740ffe4418ff",
+      "url": "https://github.com/rybosome/tspice/actions/runs/45127597533/job/137535439275",
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 7054 live comparisons without unexpected skips."
     }
   ],
   "routines": [
@@ -337,11 +525,15 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.dlabbs -> owned native handle under process mutex -> tspice_dlabbs -> dlabbs_c. Checked actual DLA/DAS operand reads precede the canonical call. The independent locked wrapper operates on a different file.",
-          "executions": []
+          "executions": [
+            "local-cp03-779d6fd6ae41-node",
+            "ci-cp03-779d6fd6ae41-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -349,11 +541,15 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.dlabbs -> owned WASM handle and scoped buffers -> tspice_dlabbs -> dlabbs_c. Checked actual DLA/DAS operand reads precede the canonical call. The independent locked wrapper operates on a different file.",
-          "executions": []
+          "executions": [
+            "local-cp03-779d6fd6ae41-wasm",
+            "ci-cp03-779d6fd6ae41-wasm"
+          ]
         }
       }
     },
@@ -445,11 +641,15 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.dlabns -> owned native handle under process mutex -> tspice_dlabns -> dlabns_c. Checked actual DLA/DAS operand reads precede the canonical call. The independent locked wrapper operates on a different file.",
-          "executions": []
+          "executions": [
+            "local-cp03-779d6fd6ae41-node",
+            "ci-cp03-779d6fd6ae41-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -457,11 +657,15 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.dlabns -> owned WASM handle and scoped buffers -> tspice_dlabns -> dlabns_c. Checked actual DLA/DAS operand reads precede the canonical call. The independent locked wrapper operates on a different file.",
-          "executions": []
+          "executions": [
+            "local-cp03-779d6fd6ae41-wasm",
+            "ci-cp03-779d6fd6ae41-wasm"
+          ]
         }
       }
     },
@@ -553,11 +757,15 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.dlaens -> owned native handle under process mutex -> tspice_dlaens -> dlaens_c. Checked actual DLA/DAS operand reads precede the canonical call. The independent locked wrapper operates on a different file.",
-          "executions": []
+          "executions": [
+            "local-cp03-779d6fd6ae41-node",
+            "ci-cp03-779d6fd6ae41-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -565,11 +773,15 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.dlaens -> owned WASM handle and scoped buffers -> tspice_dlaens -> dlaens_c. Checked actual DLA/DAS operand reads precede the canonical call. The independent locked wrapper operates on a different file.",
-          "executions": []
+          "executions": [
+            "local-cp03-779d6fd6ae41-wasm",
+            "ci-cp03-779d6fd6ae41-wasm"
+          ]
         }
       }
     },
@@ -663,11 +875,15 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.dlafps -> owned native handle under process mutex -> tspice_dlafps -> dlafps_c. Checked actual DLA/DAS operand reads precede the canonical call. The independent locked wrapper operates on a different file.",
-          "executions": []
+          "executions": [
+            "local-cp03-779d6fd6ae41-node",
+            "ci-cp03-779d6fd6ae41-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -675,11 +891,15 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.dlafps -> owned WASM handle and scoped buffers -> tspice_dlafps -> dlafps_c. Checked actual DLA/DAS operand reads precede the canonical call. The independent locked wrapper operates on a different file.",
-          "executions": []
+          "executions": [
+            "local-cp03-779d6fd6ae41-wasm",
+            "ci-cp03-779d6fd6ae41-wasm"
+          ]
         }
       }
     }

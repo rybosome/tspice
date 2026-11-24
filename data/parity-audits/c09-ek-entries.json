@@ -450,6 +450,386 @@
       "url": "https://github.com/rybosome/tspice/actions/runs/43581436047/job/132406811773",
       "observation": "Inspected successful Linux Node 22 native-required job 132406811773 on a4e522adc7f3e5756040ce68e68f50b1b2035f5e: 2,458 registered Node/WASM live comparisons; 2,679 parity-package tests with no skips, including the native-required guard; 72 native wrapper, 659 WASM, 28 core and 150 facade tests passed.",
       "historical": true
+    },
+    {
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "c826a56dc2106860ac9117d59cf0dd22f37bc2e08bfbd1a6b40aa080830243c2",
+      "caseIds": [
+        "ek-ekacec-bad-count",
+        "ek-ekacec-empty-vector",
+        "ek-ekacec-fixed-null",
+        "ek-ekacec-invalid-row",
+        "ek-ekacec-invalid-segment",
+        "ek-ekacec-non-nullable",
+        "ek-ekacec-persisted-vector",
+        "ek-ekacec-unknown-column",
+        "ek-ekacec-wrong-type",
+        "ek-ekaced-bad-count",
+        "ek-ekaced-empty-vector",
+        "ek-ekaced-fixed-null",
+        "ek-ekaced-invalid-row",
+        "ek-ekaced-invalid-segment",
+        "ek-ekaced-non-nullable",
+        "ek-ekaced-persisted-vector",
+        "ek-ekaced-scalar-duplicate",
+        "ek-ekaced-unknown-column",
+        "ek-ekaced-wrong-type",
+        "ek-ekacei-bad-count",
+        "ek-ekacei-empty-vector",
+        "ek-ekacei-fixed-null",
+        "ek-ekacei-invalid-row",
+        "ek-ekacei-invalid-segment",
+        "ek-ekacei-non-nullable",
+        "ek-ekacei-persisted-vector",
+        "ek-ekacei-scalar-duplicate",
+        "ek-ekacei-unknown-column",
+        "ek-ekacei-wrong-type",
+        "ek-ekrcec-element-order",
+        "ek-ekrcec-fast-count-segment",
+        "ek-ekrcec-invalid-segment",
+        "ek-ekrcec-null-extents",
+        "ek-ekrcec-past-row",
+        "ek-ekrcec-row-padding",
+        "ek-ekrcec-short-buffer",
+        "ek-ekrcec-short-row",
+        "ek-ekrcec-short-vector-row",
+        "ek-ekrcec-uninitialized-scalar",
+        "ek-ekrcec-unknown-column",
+        "ek-ekrcec-wrong-type",
+        "ek-ekrced-element-order",
+        "ek-ekrced-fast-count-segment",
+        "ek-ekrced-invalid-segment",
+        "ek-ekrced-null-extents",
+        "ek-ekrced-past-row",
+        "ek-ekrced-time",
+        "ek-ekrced-uninitialized-scalar",
+        "ek-ekrced-unknown-column",
+        "ek-ekrced-wrong-type",
+        "ek-ekrcei-element-order",
+        "ek-ekrcei-fast-count-segment",
+        "ek-ekrcei-invalid-segment",
+        "ek-ekrcei-null-extents",
+        "ek-ekrcei-past-row",
+        "ek-ekrcei-uninitialized-scalar",
+        "ek-ekrcei-unknown-column",
+        "ek-ekrcei-wrong-type",
+        "ek-ekucec-fixed-size",
+        "ek-ekucec-invalid-row",
+        "ek-ekucec-invalid-segment",
+        "ek-ekucec-persisted-resize",
+        "ek-ekucec-read-only",
+        "ek-ekucec-scalar-update",
+        "ek-ekucec-unknown-column",
+        "ek-ekucec-wrong-type",
+        "ek-ekuced-fixed-size",
+        "ek-ekuced-invalid-row",
+        "ek-ekuced-invalid-segment",
+        "ek-ekuced-persisted-resize",
+        "ek-ekuced-read-only",
+        "ek-ekuced-scalar-update",
+        "ek-ekuced-unknown-column",
+        "ek-ekuced-wrong-type",
+        "ek-ekucei-fixed-size",
+        "ek-ekucei-invalid-row",
+        "ek-ekucei-invalid-segment",
+        "ek-ekucei-persisted-resize",
+        "ek-ekucei-read-only",
+        "ek-ekucei-scalar-update",
+        "ek-ekucei-unknown-column",
+        "ek-ekucei-wrong-type"
+      ],
+      "id": "local-cp03-779d6fd6ae41-node",
+      "kind": "local",
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 779d6fd6ae41c78017a8cf7ccaec5fef3100112c. The native-required lane completed 7054 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45097193130/job/137439518970"
+    },
+    {
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "c826a56dc2106860ac9117d59cf0dd22f37bc2e08bfbd1a6b40aa080830243c2",
+      "caseIds": [
+        "ek-ekacec-bad-count",
+        "ek-ekacec-empty-vector",
+        "ek-ekacec-fixed-null",
+        "ek-ekacec-invalid-row",
+        "ek-ekacec-invalid-segment",
+        "ek-ekacec-non-nullable",
+        "ek-ekacec-persisted-vector",
+        "ek-ekacec-unknown-column",
+        "ek-ekacec-wrong-type",
+        "ek-ekaced-bad-count",
+        "ek-ekaced-empty-vector",
+        "ek-ekaced-fixed-null",
+        "ek-ekaced-invalid-row",
+        "ek-ekaced-invalid-segment",
+        "ek-ekaced-non-nullable",
+        "ek-ekaced-persisted-vector",
+        "ek-ekaced-scalar-duplicate",
+        "ek-ekaced-unknown-column",
+        "ek-ekaced-wrong-type",
+        "ek-ekacei-bad-count",
+        "ek-ekacei-empty-vector",
+        "ek-ekacei-fixed-null",
+        "ek-ekacei-invalid-row",
+        "ek-ekacei-invalid-segment",
+        "ek-ekacei-non-nullable",
+        "ek-ekacei-persisted-vector",
+        "ek-ekacei-scalar-duplicate",
+        "ek-ekacei-unknown-column",
+        "ek-ekacei-wrong-type",
+        "ek-ekrcec-element-order",
+        "ek-ekrcec-fast-count-segment",
+        "ek-ekrcec-invalid-segment",
+        "ek-ekrcec-null-extents",
+        "ek-ekrcec-past-row",
+        "ek-ekrcec-row-padding",
+        "ek-ekrcec-short-buffer",
+        "ek-ekrcec-short-row",
+        "ek-ekrcec-short-vector-row",
+        "ek-ekrcec-uninitialized-scalar",
+        "ek-ekrcec-unknown-column",
+        "ek-ekrcec-wrong-type",
+        "ek-ekrced-element-order",
+        "ek-ekrced-fast-count-segment",
+        "ek-ekrced-invalid-segment",
+        "ek-ekrced-null-extents",
+        "ek-ekrced-past-row",
+        "ek-ekrced-time",
+        "ek-ekrced-uninitialized-scalar",
+        "ek-ekrced-unknown-column",
+        "ek-ekrced-wrong-type",
+        "ek-ekrcei-element-order",
+        "ek-ekrcei-fast-count-segment",
+        "ek-ekrcei-invalid-segment",
+        "ek-ekrcei-null-extents",
+        "ek-ekrcei-past-row",
+        "ek-ekrcei-uninitialized-scalar",
+        "ek-ekrcei-unknown-column",
+        "ek-ekrcei-wrong-type",
+        "ek-ekucec-fixed-size",
+        "ek-ekucec-invalid-row",
+        "ek-ekucec-invalid-segment",
+        "ek-ekucec-persisted-resize",
+        "ek-ekucec-read-only",
+        "ek-ekucec-scalar-update",
+        "ek-ekucec-unknown-column",
+        "ek-ekucec-wrong-type",
+        "ek-ekuced-fixed-size",
+        "ek-ekuced-invalid-row",
+        "ek-ekuced-invalid-segment",
+        "ek-ekuced-persisted-resize",
+        "ek-ekuced-read-only",
+        "ek-ekuced-scalar-update",
+        "ek-ekuced-unknown-column",
+        "ek-ekuced-wrong-type",
+        "ek-ekucei-fixed-size",
+        "ek-ekucei-invalid-row",
+        "ek-ekucei-invalid-segment",
+        "ek-ekucei-persisted-resize",
+        "ek-ekucei-read-only",
+        "ek-ekucei-scalar-update",
+        "ek-ekucei-unknown-column",
+        "ek-ekucei-wrong-type"
+      ],
+      "id": "ci-cp03-779d6fd6ae41-node",
+      "kind": "ci",
+      "commit": "c4bd798cc20d13e8dfd51e7e83ba740ffe4418ff",
+      "url": "https://github.com/rybosome/tspice/actions/runs/45127597533/job/137535439275",
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 7054 live comparisons without unexpected skips."
+    },
+    {
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "c826a56dc2106860ac9117d59cf0dd22f37bc2e08bfbd1a6b40aa080830243c2",
+      "caseIds": [
+        "ek-ekacec-bad-count",
+        "ek-ekacec-empty-vector",
+        "ek-ekacec-fixed-null",
+        "ek-ekacec-invalid-row",
+        "ek-ekacec-invalid-segment",
+        "ek-ekacec-non-nullable",
+        "ek-ekacec-persisted-vector",
+        "ek-ekacec-unknown-column",
+        "ek-ekacec-wrong-type",
+        "ek-ekaced-bad-count",
+        "ek-ekaced-empty-vector",
+        "ek-ekaced-fixed-null",
+        "ek-ekaced-invalid-row",
+        "ek-ekaced-invalid-segment",
+        "ek-ekaced-non-nullable",
+        "ek-ekaced-persisted-vector",
+        "ek-ekaced-scalar-duplicate",
+        "ek-ekaced-unknown-column",
+        "ek-ekaced-wrong-type",
+        "ek-ekacei-bad-count",
+        "ek-ekacei-empty-vector",
+        "ek-ekacei-fixed-null",
+        "ek-ekacei-invalid-row",
+        "ek-ekacei-invalid-segment",
+        "ek-ekacei-non-nullable",
+        "ek-ekacei-persisted-vector",
+        "ek-ekacei-scalar-duplicate",
+        "ek-ekacei-unknown-column",
+        "ek-ekacei-wrong-type",
+        "ek-ekrcec-element-order",
+        "ek-ekrcec-fast-count-segment",
+        "ek-ekrcec-invalid-segment",
+        "ek-ekrcec-null-extents",
+        "ek-ekrcec-past-row",
+        "ek-ekrcec-row-padding",
+        "ek-ekrcec-short-buffer",
+        "ek-ekrcec-short-row",
+        "ek-ekrcec-short-vector-row",
+        "ek-ekrcec-uninitialized-scalar",
+        "ek-ekrcec-unknown-column",
+        "ek-ekrcec-wrong-type",
+        "ek-ekrced-element-order",
+        "ek-ekrced-fast-count-segment",
+        "ek-ekrced-invalid-segment",
+        "ek-ekrced-null-extents",
+        "ek-ekrced-past-row",
+        "ek-ekrced-time",
+        "ek-ekrced-uninitialized-scalar",
+        "ek-ekrced-unknown-column",
+        "ek-ekrced-wrong-type",
+        "ek-ekrcei-element-order",
+        "ek-ekrcei-fast-count-segment",
+        "ek-ekrcei-invalid-segment",
+        "ek-ekrcei-null-extents",
+        "ek-ekrcei-past-row",
+        "ek-ekrcei-uninitialized-scalar",
+        "ek-ekrcei-unknown-column",
+        "ek-ekrcei-wrong-type",
+        "ek-ekucec-fixed-size",
+        "ek-ekucec-invalid-row",
+        "ek-ekucec-invalid-segment",
+        "ek-ekucec-persisted-resize",
+        "ek-ekucec-read-only",
+        "ek-ekucec-scalar-update",
+        "ek-ekucec-unknown-column",
+        "ek-ekucec-wrong-type",
+        "ek-ekuced-fixed-size",
+        "ek-ekuced-invalid-row",
+        "ek-ekuced-invalid-segment",
+        "ek-ekuced-persisted-resize",
+        "ek-ekuced-read-only",
+        "ek-ekuced-scalar-update",
+        "ek-ekuced-unknown-column",
+        "ek-ekuced-wrong-type",
+        "ek-ekucei-fixed-size",
+        "ek-ekucei-invalid-row",
+        "ek-ekucei-invalid-segment",
+        "ek-ekucei-persisted-resize",
+        "ek-ekucei-read-only",
+        "ek-ekucei-scalar-update",
+        "ek-ekucei-unknown-column",
+        "ek-ekucei-wrong-type"
+      ],
+      "id": "local-cp03-779d6fd6ae41-wasm",
+      "kind": "local",
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 779d6fd6ae41c78017a8cf7ccaec5fef3100112c. The native-required lane completed 7054 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45097193130/job/137439518970"
+    },
+    {
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "c826a56dc2106860ac9117d59cf0dd22f37bc2e08bfbd1a6b40aa080830243c2",
+      "caseIds": [
+        "ek-ekacec-bad-count",
+        "ek-ekacec-empty-vector",
+        "ek-ekacec-fixed-null",
+        "ek-ekacec-invalid-row",
+        "ek-ekacec-invalid-segment",
+        "ek-ekacec-non-nullable",
+        "ek-ekacec-persisted-vector",
+        "ek-ekacec-unknown-column",
+        "ek-ekacec-wrong-type",
+        "ek-ekaced-bad-count",
+        "ek-ekaced-empty-vector",
+        "ek-ekaced-fixed-null",
+        "ek-ekaced-invalid-row",
+        "ek-ekaced-invalid-segment",
+        "ek-ekaced-non-nullable",
+        "ek-ekaced-persisted-vector",
+        "ek-ekaced-scalar-duplicate",
+        "ek-ekaced-unknown-column",
+        "ek-ekaced-wrong-type",
+        "ek-ekacei-bad-count",
+        "ek-ekacei-empty-vector",
+        "ek-ekacei-fixed-null",
+        "ek-ekacei-invalid-row",
+        "ek-ekacei-invalid-segment",
+        "ek-ekacei-non-nullable",
+        "ek-ekacei-persisted-vector",
+        "ek-ekacei-scalar-duplicate",
+        "ek-ekacei-unknown-column",
+        "ek-ekacei-wrong-type",
+        "ek-ekrcec-element-order",
+        "ek-ekrcec-fast-count-segment",
+        "ek-ekrcec-invalid-segment",
+        "ek-ekrcec-null-extents",
+        "ek-ekrcec-past-row",
+        "ek-ekrcec-row-padding",
+        "ek-ekrcec-short-buffer",
+        "ek-ekrcec-short-row",
+        "ek-ekrcec-short-vector-row",
+        "ek-ekrcec-uninitialized-scalar",
+        "ek-ekrcec-unknown-column",
+        "ek-ekrcec-wrong-type",
+        "ek-ekrced-element-order",
+        "ek-ekrced-fast-count-segment",
+        "ek-ekrced-invalid-segment",
+        "ek-ekrced-null-extents",
+        "ek-ekrced-past-row",
+        "ek-ekrced-time",
+        "ek-ekrced-uninitialized-scalar",
+        "ek-ekrced-unknown-column",
+        "ek-ekrced-wrong-type",
+        "ek-ekrcei-element-order",
+        "ek-ekrcei-fast-count-segment",
+        "ek-ekrcei-invalid-segment",
+        "ek-ekrcei-null-extents",
+        "ek-ekrcei-past-row",
+        "ek-ekrcei-uninitialized-scalar",
+        "ek-ekrcei-unknown-column",
+        "ek-ekrcei-wrong-type",
+        "ek-ekucec-fixed-size",
+        "ek-ekucec-invalid-row",
+        "ek-ekucec-invalid-segment",
+        "ek-ekucec-persisted-resize",
+        "ek-ekucec-read-only",
+        "ek-ekucec-scalar-update",
+        "ek-ekucec-unknown-column",
+        "ek-ekucec-wrong-type",
+        "ek-ekuced-fixed-size",
+        "ek-ekuced-invalid-row",
+        "ek-ekuced-invalid-segment",
+        "ek-ekuced-persisted-resize",
+        "ek-ekuced-read-only",
+        "ek-ekuced-scalar-update",
+        "ek-ekuced-unknown-column",
+        "ek-ekuced-wrong-type",
+        "ek-ekucei-fixed-size",
+        "ek-ekucei-invalid-row",
+        "ek-ekucei-invalid-segment",
+        "ek-ekucei-persisted-resize",
+        "ek-ekucei-read-only",
+        "ek-ekucei-scalar-update",
+        "ek-ekucei-unknown-column",
+        "ek-ekucei-wrong-type"
+      ],
+      "id": "ci-cp03-779d6fd6ae41-wasm",
+      "kind": "ci",
+      "commit": "c4bd798cc20d13e8dfd51e7e83ba740ffe4418ff",
+      "url": "https://github.com/rybosome/tspice/actions/runs/45127597533/job/137535439275",
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 7054 live comparisons without unexpected skips."
     }
   ],
   "routines": [
@@ -514,16 +894,34 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "EkApi.ekacec -> serialized native addon -> tspice_ekacec -> ekacec_c on canonical writes; length, class and ownership guards. Recover from real type and ordinal errors, validate the physical input storage, and persist the actual mutation before an independent reader opens the file.",
-          "executions": []
+          "executions": [
+            "local-cp03-779d6fd6ae41-node",
+            "ci-cp03-779d6fd6ae41-node"
+          ]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "EkApi.ekacec -> required WASM export and scoped buffers -> tspice_ekacec -> ekacec_c on canonical writes; length, class and ownership guards. Recover from real type and ordinal errors, validate the physical input storage, and persist the actual mutation before an independent reader opens the file.",
-          "executions": []
+          "executions": [
+            "local-cp03-779d6fd6ae41-wasm",
+            "ci-cp03-779d6fd6ae41-wasm"
+          ]
         }
       }
     },
@@ -593,16 +991,34 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "EkApi.ekaced -> serialized native addon -> tspice_ekaced -> ekaced_c on canonical writes; length, class and ownership guards. Recover from real type and ordinal errors, validate the physical input storage, and persist the actual mutation before an independent reader opens the file.",
-          "executions": []
+          "executions": [
+            "local-cp03-779d6fd6ae41-node",
+            "ci-cp03-779d6fd6ae41-node"
+          ]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "EkApi.ekaced -> required WASM export and scoped buffers -> tspice_ekaced -> ekaced_c on canonical writes; length, class and ownership guards. Recover from real type and ordinal errors, validate the physical input storage, and persist the actual mutation before an independent reader opens the file.",
-          "executions": []
+          "executions": [
+            "local-cp03-779d6fd6ae41-wasm",
+            "ci-cp03-779d6fd6ae41-wasm"
+          ]
         }
       }
     },
@@ -672,16 +1088,34 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "EkApi.ekacei -> serialized native addon -> tspice_ekacei -> ekacei_c on canonical writes; length, class and ownership guards. Recover from real type and ordinal errors, validate the physical input storage, and persist the actual mutation before an independent reader opens the file.",
-          "executions": []
+          "executions": [
+            "local-cp03-779d6fd6ae41-node",
+            "ci-cp03-779d6fd6ae41-node"
+          ]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "EkApi.ekacei -> required WASM export and scoped buffers -> tspice_ekacei -> ekacei_c on canonical writes; length, class and ownership guards. Recover from real type and ordinal errors, validate the physical input storage, and persist the actual mutation before an independent reader opens the file.",
-          "executions": []
+          "executions": [
+            "local-cp03-779d6fd6ae41-wasm",
+            "ci-cp03-779d6fd6ae41-wasm"
+          ]
         }
       }
     },
@@ -775,16 +1209,34 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "composed",
           "trace": "EkApi.ekrcec -> serialized native addon -> tspice_ekrcec -> ekrcec_ initialized SPICELIB reader; canonical C string checks and original physical file.Pinned C readers copy a private logical even after an inner error. Measure actual buffer capacity before invoking initialized, traced SPICELIB; preserve the early C-level checks.",
-          "executions": []
+          "executions": [
+            "local-cp03-779d6fd6ae41-node",
+            "ci-cp03-779d6fd6ae41-node"
+          ]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "composed",
           "trace": "EkApi.ekrcec -> required WASM export and scoped buffers -> tspice_ekrcec -> ekrcec_ initialized SPICELIB reader; canonical C string checks and original physical file.Pinned C readers copy a private logical even after an inner error. Measure actual buffer capacity before invoking initialized, traced SPICELIB; preserve the early C-level checks.",
-          "executions": []
+          "executions": [
+            "local-cp03-779d6fd6ae41-wasm",
+            "ci-cp03-779d6fd6ae41-wasm"
+          ]
         }
       }
     },
@@ -863,16 +1315,34 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "composed",
           "trace": "EkApi.ekrced -> serialized native addon -> tspice_ekrced -> ekrced_ initialized SPICELIB reader; canonical C string checks and original physical file.Pinned C readers copy a private logical even after an inner error. Measure actual buffer capacity before invoking initialized, traced SPICELIB; preserve the early C-level checks.",
-          "executions": []
+          "executions": [
+            "local-cp03-779d6fd6ae41-node",
+            "ci-cp03-779d6fd6ae41-node"
+          ]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "composed",
           "trace": "EkApi.ekrced -> required WASM export and scoped buffers -> tspice_ekrced -> ekrced_ initialized SPICELIB reader; canonical C string checks and original physical file.Pinned C readers copy a private logical even after an inner error. Measure actual buffer capacity before invoking initialized, traced SPICELIB; preserve the early C-level checks.",
-          "executions": []
+          "executions": [
+            "local-cp03-779d6fd6ae41-wasm",
+            "ci-cp03-779d6fd6ae41-wasm"
+          ]
         }
       }
     },
@@ -946,16 +1416,34 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "composed",
           "trace": "EkApi.ekrcei -> serialized native addon -> tspice_ekrcei -> ekrcei_ initialized SPICELIB reader; canonical C string checks and original physical file.Pinned C readers copy a private logical even after an inner error. Measure actual buffer capacity before invoking initialized, traced SPICELIB; preserve the early C-level checks.",
-          "executions": []
+          "executions": [
+            "local-cp03-779d6fd6ae41-node",
+            "ci-cp03-779d6fd6ae41-node"
+          ]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "composed",
           "trace": "EkApi.ekrcei -> required WASM export and scoped buffers -> tspice_ekrcei -> ekrcei_ initialized SPICELIB reader; canonical C string checks and original physical file.Pinned C readers copy a private logical even after an inner error. Measure actual buffer capacity before invoking initialized, traced SPICELIB; preserve the early C-level checks.",
-          "executions": []
+          "executions": [
+            "local-cp03-779d6fd6ae41-wasm",
+            "ci-cp03-779d6fd6ae41-wasm"
+          ]
         }
       }
     },
@@ -1015,16 +1503,34 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "EkApi.ekucec -> serialized native addon -> tspice_ekucec -> ekucec_c on canonical writes; length, class and ownership guards. Recover from real type and ordinal errors, validate the physical input storage, and persist the actual mutation before an independent reader opens the file.",
-          "executions": []
+          "executions": [
+            "local-cp03-779d6fd6ae41-node",
+            "ci-cp03-779d6fd6ae41-node"
+          ]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "EkApi.ekucec -> required WASM export and scoped buffers -> tspice_ekucec -> ekucec_c on canonical writes; length, class and ownership guards. Recover from real type and ordinal errors, validate the physical input storage, and persist the actual mutation before an independent reader opens the file.",
-          "executions": []
+          "executions": [
+            "local-cp03-779d6fd6ae41-wasm",
+            "ci-cp03-779d6fd6ae41-wasm"
+          ]
         }
       }
     },
@@ -1111,16 +1617,34 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "EkApi.ekuced -> serialized native addon -> tspice_ekuced -> ekuced_c on canonical writes; length, class and ownership guards. Recover from real type and ordinal errors, validate the physical input storage, and persist the actual mutation before an independent reader opens the file.",
-          "executions": []
+          "executions": [
+            "local-cp03-779d6fd6ae41-node",
+            "ci-cp03-779d6fd6ae41-node"
+          ]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "EkApi.ekuced -> required WASM export and scoped buffers -> tspice_ekuced -> ekuced_c on canonical writes; length, class and ownership guards. Recover from real type and ordinal errors, validate the physical input storage, and persist the actual mutation before an independent reader opens the file.",
-          "executions": []
+          "executions": [
+            "local-cp03-779d6fd6ae41-wasm",
+            "ci-cp03-779d6fd6ae41-wasm"
+          ]
         }
       }
     },
@@ -1194,16 +1718,34 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "EkApi.ekucei -> serialized native addon -> tspice_ekucei -> ekucei_c on canonical writes; length, class and ownership guards. Recover from real type and ordinal errors, validate the physical input storage, and persist the actual mutation before an independent reader opens the file.",
-          "executions": []
+          "executions": [
+            "local-cp03-779d6fd6ae41-node",
+            "ci-cp03-779d6fd6ae41-node"
+          ]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "EkApi.ekucei -> required WASM export and scoped buffers -> tspice_ekucei -> ekucei_c on canonical writes; length, class and ownership guards. Recover from real type and ordinal errors, validate the physical input storage, and persist the actual mutation before an independent reader opens the file.",
-          "executions": []
+          "executions": [
+            "local-cp03-779d6fd6ae41-wasm",
+            "ci-cp03-779d6fd6ae41-wasm"
+          ]
         }
       }
     }

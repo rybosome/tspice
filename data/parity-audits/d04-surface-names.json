@@ -276,6 +276,242 @@
       "url": "https://github.com/rybosome/tspice/actions/runs/43554777847/job/132325042058",
       "observation": "Inspected successful Linux Node 22 native-required job 132325042058 on 849d5336fee3e093f8c89574c2af792f17b74b76: 2,310 registered Node/WASM live comparisons; 2,530 parity-package tests with no skips, including the native-required guard; 94 native wrapper, 624 WASM, 28 core and 150 facade tests passed.",
       "historical": true
+    },
+    {
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "44b8fa6551d69bfa5ddec14fd3e9428f06f9a2ec8162602aa5060318ae4c6afd",
+      "caseIds": [
+        "ids-names-srfc2s-blank-name",
+        "ids-names-srfc2s-body-scoped-aliases",
+        "ids-names-srfc2s-capacity-prefix",
+        "ids-names-srfc2s-decimal-fallback",
+        "ids-names-srfc2s-maximum-name",
+        "ids-names-srfc2s-missing-variables",
+        "ids-names-srfc2s-pool-clear-reload",
+        "ids-names-srfc2s-short-capacity-0",
+        "ids-names-srfc2s-short-capacity-1",
+        "ids-names-srfc2s-short-capacity-neg3",
+        "ids-names-srfc2s-unequal-lengths",
+        "ids-names-srfc2s-wrong-type",
+        "ids-names-srfcss-blank-name",
+        "ids-names-srfcss-body-lookup",
+        "ids-names-srfcss-body-scoped-aliases",
+        "ids-names-srfcss-capacity-prefix",
+        "ids-names-srfcss-decimal-fallback",
+        "ids-names-srfcss-empty-body",
+        "ids-names-srfcss-maximum-name",
+        "ids-names-srfcss-missing-variables",
+        "ids-names-srfcss-pool-clear-reload",
+        "ids-names-srfcss-short-capacity-0",
+        "ids-names-srfcss-short-capacity-1",
+        "ids-names-srfcss-short-capacity-neg3",
+        "ids-names-srfcss-unequal-lengths",
+        "ids-names-srfcss-wrong-type",
+        "ids-names-srfs2c-blank-name",
+        "ids-names-srfs2c-body-lookup",
+        "ids-names-srfs2c-body-scoped-aliases",
+        "ids-names-srfs2c-empty-body",
+        "ids-names-srfs2c-empty-surface",
+        "ids-names-srfs2c-missing-variables",
+        "ids-names-srfs2c-numeric-parser",
+        "ids-names-srfs2c-pool-clear-reload",
+        "ids-names-srfs2c-precedence-remap",
+        "ids-names-srfs2c-unequal-lengths",
+        "ids-names-srfs2c-wrong-type",
+        "ids-names-srfscc-blank-name",
+        "ids-names-srfscc-body-scoped-aliases",
+        "ids-names-srfscc-empty-surface",
+        "ids-names-srfscc-missing-variables",
+        "ids-names-srfscc-numeric-parser",
+        "ids-names-srfscc-pool-clear-reload",
+        "ids-names-srfscc-precedence-remap",
+        "ids-names-srfscc-unequal-lengths",
+        "ids-names-srfscc-wrong-type"
+      ],
+      "id": "local-cp03-779d6fd6ae41-node",
+      "kind": "local",
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 779d6fd6ae41c78017a8cf7ccaec5fef3100112c. The native-required lane completed 7054 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45097193130/job/137439518970"
+    },
+    {
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "44b8fa6551d69bfa5ddec14fd3e9428f06f9a2ec8162602aa5060318ae4c6afd",
+      "caseIds": [
+        "ids-names-srfc2s-blank-name",
+        "ids-names-srfc2s-body-scoped-aliases",
+        "ids-names-srfc2s-capacity-prefix",
+        "ids-names-srfc2s-decimal-fallback",
+        "ids-names-srfc2s-maximum-name",
+        "ids-names-srfc2s-missing-variables",
+        "ids-names-srfc2s-pool-clear-reload",
+        "ids-names-srfc2s-short-capacity-0",
+        "ids-names-srfc2s-short-capacity-1",
+        "ids-names-srfc2s-short-capacity-neg3",
+        "ids-names-srfc2s-unequal-lengths",
+        "ids-names-srfc2s-wrong-type",
+        "ids-names-srfcss-blank-name",
+        "ids-names-srfcss-body-lookup",
+        "ids-names-srfcss-body-scoped-aliases",
+        "ids-names-srfcss-capacity-prefix",
+        "ids-names-srfcss-decimal-fallback",
+        "ids-names-srfcss-empty-body",
+        "ids-names-srfcss-maximum-name",
+        "ids-names-srfcss-missing-variables",
+        "ids-names-srfcss-pool-clear-reload",
+        "ids-names-srfcss-short-capacity-0",
+        "ids-names-srfcss-short-capacity-1",
+        "ids-names-srfcss-short-capacity-neg3",
+        "ids-names-srfcss-unequal-lengths",
+        "ids-names-srfcss-wrong-type",
+        "ids-names-srfs2c-blank-name",
+        "ids-names-srfs2c-body-lookup",
+        "ids-names-srfs2c-body-scoped-aliases",
+        "ids-names-srfs2c-empty-body",
+        "ids-names-srfs2c-empty-surface",
+        "ids-names-srfs2c-missing-variables",
+        "ids-names-srfs2c-numeric-parser",
+        "ids-names-srfs2c-pool-clear-reload",
+        "ids-names-srfs2c-precedence-remap",
+        "ids-names-srfs2c-unequal-lengths",
+        "ids-names-srfs2c-wrong-type",
+        "ids-names-srfscc-blank-name",
+        "ids-names-srfscc-body-scoped-aliases",
+        "ids-names-srfscc-empty-surface",
+        "ids-names-srfscc-missing-variables",
+        "ids-names-srfscc-numeric-parser",
+        "ids-names-srfscc-pool-clear-reload",
+        "ids-names-srfscc-precedence-remap",
+        "ids-names-srfscc-unequal-lengths",
+        "ids-names-srfscc-wrong-type"
+      ],
+      "id": "ci-cp03-779d6fd6ae41-node",
+      "kind": "ci",
+      "commit": "c4bd798cc20d13e8dfd51e7e83ba740ffe4418ff",
+      "url": "https://github.com/rybosome/tspice/actions/runs/45127597533/job/137535439275",
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 7054 live comparisons without unexpected skips."
+    },
+    {
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "44b8fa6551d69bfa5ddec14fd3e9428f06f9a2ec8162602aa5060318ae4c6afd",
+      "caseIds": [
+        "ids-names-srfc2s-blank-name",
+        "ids-names-srfc2s-body-scoped-aliases",
+        "ids-names-srfc2s-capacity-prefix",
+        "ids-names-srfc2s-decimal-fallback",
+        "ids-names-srfc2s-maximum-name",
+        "ids-names-srfc2s-missing-variables",
+        "ids-names-srfc2s-pool-clear-reload",
+        "ids-names-srfc2s-short-capacity-0",
+        "ids-names-srfc2s-short-capacity-1",
+        "ids-names-srfc2s-short-capacity-neg3",
+        "ids-names-srfc2s-unequal-lengths",
+        "ids-names-srfc2s-wrong-type",
+        "ids-names-srfcss-blank-name",
+        "ids-names-srfcss-body-lookup",
+        "ids-names-srfcss-body-scoped-aliases",
+        "ids-names-srfcss-capacity-prefix",
+        "ids-names-srfcss-decimal-fallback",
+        "ids-names-srfcss-empty-body",
+        "ids-names-srfcss-maximum-name",
+        "ids-names-srfcss-missing-variables",
+        "ids-names-srfcss-pool-clear-reload",
+        "ids-names-srfcss-short-capacity-0",
+        "ids-names-srfcss-short-capacity-1",
+        "ids-names-srfcss-short-capacity-neg3",
+        "ids-names-srfcss-unequal-lengths",
+        "ids-names-srfcss-wrong-type",
+        "ids-names-srfs2c-blank-name",
+        "ids-names-srfs2c-body-lookup",
+        "ids-names-srfs2c-body-scoped-aliases",
+        "ids-names-srfs2c-empty-body",
+        "ids-names-srfs2c-empty-surface",
+        "ids-names-srfs2c-missing-variables",
+        "ids-names-srfs2c-numeric-parser",
+        "ids-names-srfs2c-pool-clear-reload",
+        "ids-names-srfs2c-precedence-remap",
+        "ids-names-srfs2c-unequal-lengths",
+        "ids-names-srfs2c-wrong-type",
+        "ids-names-srfscc-blank-name",
+        "ids-names-srfscc-body-scoped-aliases",
+        "ids-names-srfscc-empty-surface",
+        "ids-names-srfscc-missing-variables",
+        "ids-names-srfscc-numeric-parser",
+        "ids-names-srfscc-pool-clear-reload",
+        "ids-names-srfscc-precedence-remap",
+        "ids-names-srfscc-unequal-lengths",
+        "ids-names-srfscc-wrong-type"
+      ],
+      "id": "local-cp03-779d6fd6ae41-wasm",
+      "kind": "local",
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 779d6fd6ae41c78017a8cf7ccaec5fef3100112c. The native-required lane completed 7054 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45097193130/job/137439518970"
+    },
+    {
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "44b8fa6551d69bfa5ddec14fd3e9428f06f9a2ec8162602aa5060318ae4c6afd",
+      "caseIds": [
+        "ids-names-srfc2s-blank-name",
+        "ids-names-srfc2s-body-scoped-aliases",
+        "ids-names-srfc2s-capacity-prefix",
+        "ids-names-srfc2s-decimal-fallback",
+        "ids-names-srfc2s-maximum-name",
+        "ids-names-srfc2s-missing-variables",
+        "ids-names-srfc2s-pool-clear-reload",
+        "ids-names-srfc2s-short-capacity-0",
+        "ids-names-srfc2s-short-capacity-1",
+        "ids-names-srfc2s-short-capacity-neg3",
+        "ids-names-srfc2s-unequal-lengths",
+        "ids-names-srfc2s-wrong-type",
+        "ids-names-srfcss-blank-name",
+        "ids-names-srfcss-body-lookup",
+        "ids-names-srfcss-body-scoped-aliases",
+        "ids-names-srfcss-capacity-prefix",
+        "ids-names-srfcss-decimal-fallback",
+        "ids-names-srfcss-empty-body",
+        "ids-names-srfcss-maximum-name",
+        "ids-names-srfcss-missing-variables",
+        "ids-names-srfcss-pool-clear-reload",
+        "ids-names-srfcss-short-capacity-0",
+        "ids-names-srfcss-short-capacity-1",
+        "ids-names-srfcss-short-capacity-neg3",
+        "ids-names-srfcss-unequal-lengths",
+        "ids-names-srfcss-wrong-type",
+        "ids-names-srfs2c-blank-name",
+        "ids-names-srfs2c-body-lookup",
+        "ids-names-srfs2c-body-scoped-aliases",
+        "ids-names-srfs2c-empty-body",
+        "ids-names-srfs2c-empty-surface",
+        "ids-names-srfs2c-missing-variables",
+        "ids-names-srfs2c-numeric-parser",
+        "ids-names-srfs2c-pool-clear-reload",
+        "ids-names-srfs2c-precedence-remap",
+        "ids-names-srfs2c-unequal-lengths",
+        "ids-names-srfs2c-wrong-type",
+        "ids-names-srfscc-blank-name",
+        "ids-names-srfscc-body-scoped-aliases",
+        "ids-names-srfscc-empty-surface",
+        "ids-names-srfscc-missing-variables",
+        "ids-names-srfscc-numeric-parser",
+        "ids-names-srfscc-pool-clear-reload",
+        "ids-names-srfscc-precedence-remap",
+        "ids-names-srfscc-unequal-lengths",
+        "ids-names-srfscc-wrong-type"
+      ],
+      "id": "ci-cp03-779d6fd6ae41-wasm",
+      "kind": "ci",
+      "commit": "c4bd798cc20d13e8dfd51e7e83ba740ffe4418ff",
+      "url": "https://github.com/rybosome/tspice/actions/runs/45127597533/job/137535439275",
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 7054 live comparisons without unexpected skips."
     }
   ],
   "routines": [
@@ -411,11 +647,15 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.srfc2s -> IDs/names adapter -> registered native addon under the shared CSPICE lock -> shared tspice_srfc2s -> actual srfc2s_c. Independent comparison uses the independent typed caller buffer and name flag in the locked library.",
-          "executions": []
+          "executions": [
+            "local-cp03-779d6fd6ae41-node",
+            "ci-cp03-779d6fd6ae41-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -423,11 +663,15 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.srfc2s -> IDs/names adapter -> bounded WASM buffers and exported shim -> shared tspice_srfc2s -> actual srfc2s_c. Independent comparison uses the independent typed caller buffer and name flag in the locked library.",
-          "executions": []
+          "executions": [
+            "local-cp03-779d6fd6ae41-wasm",
+            "ci-cp03-779d6fd6ae41-wasm"
+          ]
         }
       }
     },
@@ -573,11 +817,15 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.srfcss -> IDs/names adapter -> registered native addon under the shared CSPICE lock -> shared tspice_srfcss -> actual srfcss_c. Independent comparison uses the independent typed caller buffer and name flag in the locked library.",
-          "executions": []
+          "executions": [
+            "local-cp03-779d6fd6ae41-node",
+            "ci-cp03-779d6fd6ae41-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -585,11 +833,15 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.srfcss -> IDs/names adapter -> bounded WASM buffers and exported shim -> shared tspice_srfcss -> actual srfcss_c. Independent comparison uses the independent typed caller buffer and name flag in the locked library.",
-          "executions": []
+          "executions": [
+            "local-cp03-779d6fd6ae41-wasm",
+            "ci-cp03-779d6fd6ae41-wasm"
+          ]
         }
       }
     },
@@ -704,11 +956,15 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.srfs2c -> IDs/names adapter -> registered native addon under the shared CSPICE lock -> shared tspice_srfs2c -> actual srfs2c_c. Independent comparison uses the locked SpiceyPy wrapper with scoped no_found_check.",
-          "executions": []
+          "executions": [
+            "local-cp03-779d6fd6ae41-node",
+            "ci-cp03-779d6fd6ae41-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -716,11 +972,15 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.srfs2c -> IDs/names adapter -> bounded WASM buffers and exported shim -> shared tspice_srfs2c -> actual srfs2c_c. Independent comparison uses the locked SpiceyPy wrapper with scoped no_found_check.",
-          "executions": []
+          "executions": [
+            "local-cp03-779d6fd6ae41-wasm",
+            "ci-cp03-779d6fd6ae41-wasm"
+          ]
         }
       }
     },
@@ -825,11 +1085,15 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.srfscc -> IDs/names adapter -> registered native addon under the shared CSPICE lock -> shared tspice_srfscc -> actual srfscc_c. Independent comparison uses the locked SpiceyPy wrapper with scoped no_found_check.",
-          "executions": []
+          "executions": [
+            "local-cp03-779d6fd6ae41-node",
+            "ci-cp03-779d6fd6ae41-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -837,11 +1101,15 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.srfscc -> IDs/names adapter -> bounded WASM buffers and exported shim -> shared tspice_srfscc -> actual srfscc_c. Independent comparison uses the locked SpiceyPy wrapper with scoped no_found_check.",
-          "executions": []
+          "executions": [
+            "local-cp03-779d6fd6ae41-wasm",
+            "ci-cp03-779d6fd6ae41-wasm"
+          ]
         }
       }
     }
