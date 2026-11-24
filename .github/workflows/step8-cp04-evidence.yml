@@ -1,0 +1,100 @@
+name: Record observed checkpoint 04 parity evidence
+on:
+  push:
+    branches: [codex/step8-cp04-evidence]
+permissions:
+  contents: write
+  actions: read
+  statuses: write
+  pull-requests: read
+concurrency:
+  group: step8-cp04-observed-evidence
+  cancel-in-progress: false
+jobs:
+  record:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Report evidence recording start
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh api --method POST "repos/$GITHUB_REPOSITORY/statuses/$GITHUB_SHA" \
+            -f state=pending -f context=step8/cp04-evidence \
+            -f target_url="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Collect observed parity results from the successful hosted and PR jobs
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          node .step8-cp04-evidence/collect-observation.mjs > "$RUNNER_TEMP/observation.json"
+      - name: Apply observed full-lane evidence to the exact tested source
+        env:
+          TESTED_SOURCE: 3c3e3f368191d553e84ecc599d449055df985b1c
+        run: |
+          set -euo pipefail
+          tmp="$RUNNER_TEMP/step8-cp04-evidence"
+          cp -r .step8-cp04-evidence "$tmp"
+          cp "$RUNNER_TEMP/observation.json" "$tmp/observation.json"
+          test "$(git rev-parse HEAD^)" = "$TESTED_SOURCE"
+          git checkout --detach "$TESTED_SOURCE"
+          pnpm install --frozen-lockfile
+          node --input-type=module - "$tmp" <<'NODE'
+          import fs from "node:fs";
+          import path from "node:path";
+          import { registeredCases } from "./scripts/coverage-ledger/source-analysis.mjs";
+          const file = path.join(process.argv[2], "observation.json");
+          const record = JSON.parse(fs.readFileSync(file, "utf8"));
+          const observedCaseIds = registeredCases(process.cwd()).map((item) => item.caseId);
+          if (new Set(observedCaseIds).size !== 4028) throw new Error("Checkpoint registry changed");
+          for (const run of [record.hosted, record.canonical]) {
+            if (run.comparisons !== observedCaseIds.length * 2 ||
+                run.unexpectedSkips !== 0 || !run.completedNativeRequired) {
+              throw new Error("Incomplete observed required parity comparisons");
+            }
+            run.observedCaseIds = observedCaseIds;
+          }
+          fs.writeFileSync(file, JSON.stringify(record, null, 2));
+          NODE
+          node "$tmp/record.mjs" "$tmp/observation.json" | tee "$tmp/digests.json"
+          pnpm format
+          pnpm generate:coverage-ledger
+          pnpm check:coverage-ledger
+          pnpm test:coverage-ledger
+          pnpm format:check
+          git diff --check
+          git diff --name-only | awk '/^data\/parity-audits\/.*\.json$/ || /^data\/coverage-ledger\.json$/ || /^docs\/coverage-ledger\.md$/ {next} {print; bad=1} END {exit bad}'
+          git add data/parity-audits data/coverage-ledger.json docs/coverage-ledger.md
+          git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' commit -m 'Record checkpoint 04 source-bound native and WASM parity evidence'
+          git log -1 --format='%H %T %s'
+      - uses: actions/upload-artifact@v4
+        with:
+          name: checkpoint-04-observed-evidence
+          path: |
+            ${{runner.temp}}/step8-cp04-evidence/observation.json
+            ${{runner.temp}}/step8-cp04-evidence/digests.json
+      - name: Preserve the validated evidence head for publication
+        env:
+          TESTED_SOURCE: 3c3e3f368191d553e84ecc599d449055df985b1c
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD^)" = "$TESTED_SOURCE"
+          git push origin HEAD:refs/heads/codex/step8-cp04-evidence-candidate
+      - name: Report evidence recording result
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          JOB_RESULT: ${{ job.status }}
+        run: |
+          state="$JOB_RESULT"
+          if [ "$state" = cancelled ]; then state=error; fi
+          gh api --method POST "repos/$GITHUB_REPOSITORY/statuses/$GITHUB_SHA" \
+            -f state="$state" -f context=step8/cp04-evidence \
+            -f target_url="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"

@@ -1,0 +1,13 @@
+{
+  "sourceRevision": "3c3e3f368191d553e84ecc599d449055df985b1c",
+  "testedTree": "4688c73de2d1e9941c9fb7c50531c40fe79f4fdc",
+  "matrixJobs": 15,
+  "caseCount": 4028,
+  "repository": "rybosome/tspice",
+  "pullRequest": 789,
+  "canonicalRun": 45348374307,
+  "hostedRun": 45336611602,
+  "hostedJob": 138250075470,
+  "browserRun": 45348101778,
+  "browserJob": 138287495520
+}
