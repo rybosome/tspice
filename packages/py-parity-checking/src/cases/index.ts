@@ -302,6 +302,8 @@ import ephemerisEqncpvCasesRaw from "./ephemeris/eqncpv.cases.json" with { type:
 import ephemerisOsceltCasesRaw from "./ephemeris/oscelt.cases.json" with { type: "json" };
 import ephemerisOscltxCasesRaw from "./ephemeris/oscltx.cases.json" with { type: "json" };
 import ephemerisProp2bCasesRaw from "./ephemeris/prop2b.cases.json" with { type: "json" };
+import ephemerisGetelmCasesRaw from "./ephemeris/getelm.cases.json" with { type: "json" };
+import ephemerisEvsgp4CasesRaw from "./ephemeris/evsgp4.cases.json" with { type: "json" };
 import ephemerisSpkgeoCasesRaw from "./ephemeris/spkgeo.cases.json" with { type: "json" };
 import ephemerisSpkgpsCasesRaw from "./ephemeris/spkgps.cases.json" with { type: "json" };
 import ephemerisSpkobjCasesRaw from "./ephemeris/spkobj.cases.json" with { type: "json" };
@@ -801,6 +803,8 @@ export const ephemerisCases: ParityCase[] = [
   ...(ephemerisOsceltCasesRaw as ParityCase[]),
   ...(ephemerisOscltxCasesRaw as ParityCase[]),
   ...(ephemerisProp2bCasesRaw as ParityCase[]),
+  ...(ephemerisGetelmCasesRaw as ParityCase[]),
+  ...(ephemerisEvsgp4CasesRaw as ParityCase[]),
   ...(ephemerisSpkgeoCasesRaw as ParityCase[]),
   ...(ephemerisSpkgpsCasesRaw as ParityCase[]),
   ...(ephemerisSpkobjCasesRaw as ParityCase[]),

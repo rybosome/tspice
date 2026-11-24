@@ -524,3 +524,7 @@ Three canonical controls add 29 isolated workflows, 161 steps and 114 targeted c
 ## Orbital element expansion
 
 E01 adds five direct raw routines to the 162-routine Step 7 baseline. The source review covers 51 workflows, 105 calls and 22 registered scientific-error cases. Extended-element output capacity and the pinned independent wrapper's missing error check are recorded with their exact evidence. [Orbital elements and propagation](step8-orbital-elements.md) [Per-routine audit](../data/parity-audits/e01-orbital-elements.json)
+
+## Two-line parsing and SGP4
+
+E02 adds two reviewed ephemeris routines on the Step 7 main baseline. Each registered operation compares all scientific outputs through the canonical function in locked SpiceyPy against the compiled raw Node or WASM facade. Previous executions remain attached to their original source. The new review distinguishes ordinary scientific errors, including missing time kernels, from wrapper-level calendar and computational bounds. [Per-routine audit](../data/parity-audits/e02-tle-propagation.json) [Scientific observations](step8-tle-propagation.md)

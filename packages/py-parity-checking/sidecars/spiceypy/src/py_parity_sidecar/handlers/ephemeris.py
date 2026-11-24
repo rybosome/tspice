@@ -8,6 +8,8 @@ import spiceypy as sp
 from spiceypy.utils.exceptions import SpiceyError
 from spiceypy.utils.support_types import SPICEINT_CELL
 
+from ..tle_oracle import parse_tle, propagate_tle
+
 from ..window_algebra_oracle import allocate_window
 from ..models import (
     StepEphemerisSpkcls,
@@ -20,6 +22,8 @@ from ..models import (
     StepEphemerisOscelt,
     StepEphemerisOscltx,
     StepEphemerisProp2b,
+    StepEphemerisGetelm,
+    StepEphemerisEvsgp4,
     StepEphemerisSpkgeo,
     StepEphemerisSpkgps,
     StepEphemerisSpkobj,
@@ -247,6 +251,16 @@ def run_ephemeris_step(step: WorkflowStep, context: SidecarRuntimeContext) -> St
     if isinstance(step, StepEphemerisProp2b):
         result = sp.prop2b(step.gm, step.pvinit, step.dt)
         return StepOutput(op=step.op, value=_to_float_list(result, expected_len=6, label="ephemeris.prop2b"))
+
+    if isinstance(step, (StepEphemerisGetelm, StepEphemerisEvsgp4)):
+        try:
+            value = (parse_tle(step.firstYear, step.lines) if isinstance(step, StepEphemerisGetelm)
+                     else propagate_tle(step.et, step.geophs, step.elems))
+            return StepOutput(op=step.op, value=value)
+        except SpiceyError as error:
+            if not step.captureError:
+                raise
+            return StepOutput(op=step.op, value={"short": error.short})
 
     if isinstance(step, StepEphemerisSpkgeo):
         state, lt = _normalize_state_lt(

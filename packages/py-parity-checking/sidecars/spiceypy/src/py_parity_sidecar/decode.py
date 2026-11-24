@@ -228,6 +228,8 @@ from .models import (
     StepEphemerisOscelt,
     StepEphemerisOscltx,
     StepEphemerisProp2b,
+    StepEphemerisGetelm,
+    StepEphemerisEvsgp4,
     StepEphemerisSpkgeo,
     StepEphemerisSpkgps,
     StepEphemerisSpkobj,
@@ -3107,6 +3109,19 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
                 dt=_orbital_number(step.get("dt"), label="ephemeris.prop2b.dt"),
             )
 
+        case "ephemeris.getelm":
+            return StepEphemerisGetelm(
+                op, _expect_int(step.get("firstYear"), label="getelm.firstYear"),
+                _expect_string_list(step.get("lines"), label="getelm.lines"),
+                _expect_bool(step.get("captureError", False), label="getelm.captureError"),
+            )
+        case "ephemeris.evsgp4":
+            return StepEphemerisEvsgp4(
+                op, _expect_number(step.get("et"), label="evsgp4.et"),
+                _expect_number_list(step.get("geophs"), label="evsgp4.geophs"),
+                _expect_number_list(step.get("elems"), label="evsgp4.elems"),
+                _expect_bool(step.get("captureError", False), label="evsgp4.captureError"),
+            )
         case "ephemeris.spkgeo":
             return StepEphemerisSpkgeo(
                 op=op,

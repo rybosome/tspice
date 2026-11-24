@@ -297,3 +297,5 @@ export {
 } from "./spice-runtime/shared/ck-records.js";
 
 export { copyOrbitalTuple } from "./spice-runtime/domains/orbital-elements.js";
+
+export { copyTleLines, copyTleTuple } from "./spice-runtime/domains/tle.js";

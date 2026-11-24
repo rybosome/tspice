@@ -2159,6 +2159,30 @@ export type StepEphemerisProp2b = {
   dt: number;
 };
 
+export type StepEphemerisGetelm = {
+  op: "ephemeris.getelm";
+  captureError?: boolean;
+  firstYear: number;
+  lines: [string, string];
+};
+export type StepEphemerisEvsgp4 = {
+  op: "ephemeris.evsgp4";
+  captureError?: boolean;
+  et: number;
+  geophs: [number, number, number, number, number, number, number, number];
+  elems: [
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+  ];
+};
 export type StepEphemerisSpkgeo = {
   op: "ephemeris.spkgeo";
   target: number;
@@ -3898,6 +3922,8 @@ export type WorkflowStep =
   | StepEphemerisOscelt
   | StepEphemerisOscltx
   | StepEphemerisProp2b
+  | StepEphemerisGetelm
+  | StepEphemerisEvsgp4
   | StepEphemerisSpkgeo
   | StepEphemerisSpkgps
   | StepEphemerisSpkobj
@@ -4586,6 +4612,11 @@ export type StepOutput =
   | { op: "ephemeris.oscelt"; value: SpiceConicElements }
   | { op: "ephemeris.oscltx"; value: SpiceExtendedConicElements }
   | { op: "ephemeris.prop2b"; value: SpiceStateVector }
+  | {
+      op: "ephemeris.getelm";
+      value: { epoch: number; elems: readonly number[] } | { short: string };
+    }
+  | { op: "ephemeris.evsgp4"; value: readonly number[] | { short: string } }
   | {
       op: "ephemeris.spkgeo";
       value: {

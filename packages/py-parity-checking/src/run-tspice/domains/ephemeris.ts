@@ -14,6 +14,8 @@ import type {
   StepEphemerisOscelt,
   StepEphemerisOscltx,
   StepEphemerisProp2b,
+  StepEphemerisGetelm,
+  StepEphemerisEvsgp4,
   StepEphemerisSpkgeo,
   StepEphemerisSpkgps,
   StepEphemerisSpkobj,
@@ -52,6 +54,8 @@ type EphemerisStep =
   | StepEphemerisOscelt
   | StepEphemerisOscltx
   | StepEphemerisProp2b
+  | StepEphemerisGetelm
+  | StepEphemerisEvsgp4
   | StepEphemerisSpkgeo
   | StepEphemerisSpkgps
   | StepEphemerisSpkobj
@@ -247,6 +251,30 @@ export function runEphemerisStep(
         op: step.op,
         value: context.spice.raw.prop2b(step.gm, step.pvinit, step.dt),
       };
+    case "ephemeris.getelm":
+    case "ephemeris.evsgp4": {
+      try {
+        if (step.op === "ephemeris.getelm")
+          return {
+            op: step.op,
+            value: context.spice.raw.getelm(step.firstYear, step.lines),
+          };
+        return {
+          op: step.op,
+          value: context.spice.raw.evsgp4(step.et, step.geophs, step.elems),
+        };
+      } catch (error) {
+        if (
+          !step.captureError ||
+          typeof error !== "object" ||
+          error === null ||
+          !("spiceShort" in error) ||
+          typeof error.spiceShort !== "string"
+        )
+          throw error;
+        return { op: step.op, value: { short: error.spiceShort } };
+      }
+    }
     case "ephemeris.spkgeo": {
       const out = context.spice.raw.spkgeo(
         step.target,

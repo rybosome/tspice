@@ -1005,6 +1005,18 @@
       "nextAction": "Verify the combined source on both required lanes and canonical CI."
     },
     {
+      "id": "e02-tle-propagation",
+      "routines": [
+        "getelm_c",
+        "evsgp4_c"
+      ],
+      "dependsOn": [],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/739"
+      ],
+      "nextAction": "Verify the combined source on both required lanes and canonical CI."
+    },
+    {
       "id": "d03-frame-additions",
       "routines": [
         "bltfrm_c",

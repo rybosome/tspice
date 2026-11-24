@@ -450,6 +450,8 @@ export function dispatchStep(
     case "ephemeris.oscelt":
     case "ephemeris.oscltx":
     case "ephemeris.prop2b":
+    case "ephemeris.getelm":
+    case "ephemeris.evsgp4":
     case "ephemeris.spkgeo":
     case "ephemeris.spkgps":
     case "ephemeris.spkobj":

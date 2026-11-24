@@ -1661,6 +1661,14 @@ export function getNodeBinding(): NativeAddon {
     "Native addon missing prop2b()",
   );
   invariant(
+    typeof native.getelm === "function",
+    "Expected native addon to export getelm",
+  );
+  invariant(
+    typeof native.evsgp4 === "function",
+    "Expected native addon to export evsgp4",
+  );
+  invariant(
     typeof native.spkezr === "function",
     "Expected native addon to export spkezr(target, et, ref, abcorr, observer)",
   );
