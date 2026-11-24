@@ -4,6 +4,7 @@ on:
     branches: [codex/step8-cp04-build]
 permissions:
   contents: write
+  statuses: write
 concurrency:
   group: step8-checkpoint-04-build
   cancel-in-progress: false
@@ -12,6 +13,13 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 150
     steps:
+      - name: Report hosted validation start
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh api --method POST "repos/$GITHUB_REPOSITORY/statuses/$GITHUB_SHA" \
+            -f state=pending -f context=step8/cp04-hosted \
+            -f target_url="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
@@ -48,6 +56,13 @@ jobs:
           done < "$RUNNER_TEMP/step8-input/pinned-sources.txt"
           git status --short
           git log -1 --format='%H %T %s'
+      - name: Reconcile the two native CSPICE source staging hooks
+        run: |
+          set -euo pipefail
+          git apply --check "$RUNNER_TEMP/step8-input/native-staging.patch"
+          git apply --index "$RUNNER_TEMP/step8-input/native-staging.patch"
+          node --check packages/backend-node/native/scripts/write-cspice-stamp.mjs
+          git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' commit -m 'Reconcile native CSPICE source staging'
       - name: Format and rebuild the combined WASM and generated files
         run: |
           set -euo pipefail
@@ -122,3 +137,14 @@ jobs:
           path: |
             ${{runner.temp}}/step8-cp04-validated.bundle
             ${{runner.temp}}/step8-cp04-validated.sha256
+      - name: Report hosted validation result
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          JOB_RESULT: ${{ job.status }}
+        run: |
+          state="$JOB_RESULT"
+          if [ "$state" = cancelled ]; then state=error; fi
+          gh api --method POST "repos/$GITHUB_REPOSITORY/statuses/$GITHUB_SHA" \
+            -f state="$state" -f context=step8/cp04-hosted \
+            -f target_url="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
