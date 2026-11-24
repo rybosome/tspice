@@ -1,0 +1,74 @@
+name: Verify the checkpoint 04 Chromium worker
+on:
+  push:
+    branches: [codex/step8-cp04-browser]
+permissions:
+  actions: read
+  contents: write
+  statuses: write
+jobs:
+  chromium:
+    runs-on: ubuntu-latest
+    timeout-minutes: 16
+    env:
+      TESTED_SOURCE: 3c3e3f368191d553e84ecc599d449055df985b1c
+      TESTED_TREE: 4688c73de2d1e9941c9fb7c50531c40fe79f4fdc
+    steps:
+      - name: Report browser validation start
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh api --method POST "repos/$GITHUB_REPOSITORY/statuses/$GITHUB_SHA" \
+            -f state=pending -f context=step8/cp04-browser \
+            -f target_url="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Verify required lanes and check out their exact source
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh api "repos/$GITHUB_REPOSITORY/actions/jobs/138250075470" | jq -e '
+            .run_id == 45336611602 and
+            ([.steps[] | select(.name == "Execute the required JavaScript lane" or .name == "Execute the required native lane") | .conclusion] == ["success","success"])
+          '
+          test "$(git rev-parse HEAD^)" = "$TESTED_SOURCE"
+          cp -r .step8-cp04-browser "$RUNNER_TEMP/step8-browser"
+          git checkout --detach "$TESTED_SOURCE"
+          test "$(git rev-parse 'HEAD^{tree}')" = "$TESTED_TREE"
+          git log -1 --format='%H %T %s'
+          pnpm install --frozen-lockfile
+          pnpm run build:js
+      - name: Exercise orbital propagation and SPK write, readback, and cleanup in Chromium
+        run: |
+          set -euo pipefail
+          probe=packages/tspice/.step8-browser-probe
+          mkdir -p "$probe"
+          cp "$RUNNER_TEMP/step8-browser/probe.mjs" "$probe/probe.mjs"
+          printf '<!doctype html><meta charset="utf-8"><pre id="result">running</pre><script type="module" src="/bundle.mjs"></script>\n' > "$probe/index.html"
+          cp packages/backend-wasm/emscripten/tspice_backend_wasm.wasm "$probe/"
+          ./packages/tspice/node_modules/.bin/esbuild "$probe/probe.mjs" --bundle --platform=browser --format=esm --conditions=browser --outfile="$probe/bundle.mjs"
+          python3 -m http.server 8328 --bind 127.0.0.1 --directory "$probe" &
+          trap 'kill "$!" 2>/dev/null || true' EXIT
+          node "$RUNNER_TEMP/step8-browser/chrome.mjs"
+      - name: Publish the validated checkpoint source
+        run: |
+          test "$(git rev-parse HEAD)" = "$TESTED_SOURCE"
+          git diff --exit-code
+          git push origin HEAD:refs/heads/codex/step8-cp04-candidate
+      - name: Report browser validation result
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          JOB_RESULT: ${{ job.status }}
+        run: |
+          state="$JOB_RESULT"
+          if [ "$state" = cancelled ]; then state=error; fi
+          gh api --method POST "repos/$GITHUB_REPOSITORY/statuses/$GITHUB_SHA" \
+            -f state="$state" -f context=step8/cp04-browser \
+            -f target_url="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
