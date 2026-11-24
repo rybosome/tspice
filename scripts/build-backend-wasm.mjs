@@ -1,6 +1,7 @@
 import { execFileSync } from "node:child_process";
 import { stageCheckedTextSources } from "./checked-text-sources.mjs";
 import fs from "node:fs";
+import { stageAberrationCache } from "./stage-aberration-cache.mjs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -241,6 +242,10 @@ const cspiceCspiceDir = path.join(cspiceSrcDir, "cspice");
 const cspiceCsupportDir = path.join(cspiceSrcDir, "csupport");
 
 stageCheckedTextSources(
+  path.join(cspiceSourceRoot, "src", "cspice"),
+  cspiceCspiceDir,
+);
+stageAberrationCache(
   path.join(cspiceSourceRoot, "src", "cspice"),
   cspiceCspiceDir,
 );
@@ -652,6 +657,19 @@ const exportedFunctions = [
   "_tspice_oscelt",
   "_tspice_oscltx",
   "_tspice_prop2b",
+  "_tspice_spkcpo",
+  "_tspice_spkcpt",
+  "_tspice_spkcvo",
+  "_tspice_spkcvt",
+  "_tspice_azlcpo",
+  "_tspice_spkacs",
+  "_tspice_spkapo",
+  "_tspice_spkapp",
+  "_tspice_spkaps",
+  "_tspice_spkltc",
+  "_tspice_stelab",
+  "_tspice_stlabx",
+  "_tspice_ltime",
   "_tspice_spkezr",
   "_tspice_spkpos",
   "_tspice_spkez",

@@ -1669,6 +1669,55 @@ export function getNodeBinding(): NativeAddon {
     "Expected native addon to export evsgp4",
   );
   invariant(
+    typeof native.spkcpo === "function",
+    "Native addon missing spkcpo()",
+  );
+  invariant(
+    typeof native.spkcpt === "function",
+    "Native addon missing spkcpt()",
+  );
+  invariant(
+    typeof native.spkcvo === "function",
+    "Native addon missing spkcvo()",
+  );
+  invariant(
+    typeof native.spkcvt === "function",
+    "Native addon missing spkcvt()",
+  );
+  invariant(
+    typeof native.azlcpo === "function",
+    "Native addon missing azlcpo()",
+  );
+  invariant(
+    typeof native.spkacs === "function",
+    "Native addon missing spkacs()",
+  );
+  invariant(
+    typeof native.spkapo === "function",
+    "Native addon missing spkapo()",
+  );
+  invariant(
+    typeof native.spkapp === "function",
+    "Native addon missing spkapp()",
+  );
+  invariant(
+    typeof native.spkaps === "function",
+    "Native addon missing spkaps()",
+  );
+  invariant(
+    typeof native.spkltc === "function",
+    "Native addon missing spkltc()",
+  );
+  invariant(
+    typeof native.stelab === "function",
+    "Native addon missing stelab()",
+  );
+  invariant(
+    typeof native.stlabx === "function",
+    "Native addon missing stlabx()",
+  );
+  invariant(typeof native.ltime === "function", "Native addon missing ltime()");
+  invariant(
     typeof native.spkezr === "function",
     "Expected native addon to export spkezr(target, et, ref, abcorr, observer)",
   );

@@ -232,6 +232,19 @@ from .ephemeris import (
     StepEphemerisProp2b,
     StepEphemerisGetelm,
     StepEphemerisEvsgp4,
+    StepEphemerisSpkcpo,
+    StepEphemerisSpkcpt,
+    StepEphemerisSpkcvo,
+    StepEphemerisSpkcvt,
+    StepEphemerisAzlcpo,
+    StepEphemerisSpkacs,
+    StepEphemerisSpkapo,
+    StepEphemerisSpkapp,
+    StepEphemerisSpkaps,
+    StepEphemerisSpkltc,
+    StepEphemerisStelab,
+    StepEphemerisStlabx,
+    StepEphemerisLtime,
     StepEphemerisSpkgeo,
     StepEphemerisSpkgps,
     StepEphemerisSpkobj,
@@ -915,6 +928,19 @@ WorkflowStep: TypeAlias = (
     | StepEphemerisProp2b
     | StepEphemerisGetelm
     | StepEphemerisEvsgp4
+    | StepEphemerisSpkcpo
+    | StepEphemerisSpkcpt
+    | StepEphemerisSpkcvo
+    | StepEphemerisSpkcvt
+    | StepEphemerisAzlcpo
+    | StepEphemerisSpkacs
+    | StepEphemerisSpkapo
+    | StepEphemerisSpkapp
+    | StepEphemerisSpkaps
+    | StepEphemerisSpkltc
+    | StepEphemerisStelab
+    | StepEphemerisStlabx
+    | StepEphemerisLtime
     | StepEphemerisSpkgeo
     | StepEphemerisSpkgps
     | StepEphemerisSpkobj

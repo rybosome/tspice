@@ -544,3 +544,11 @@ The locked library and both real backends exchange four orbital models, inspect 
 ## Streaming type 14 SPKs
 
 Both backends and an independent writer exchange complete type 14 files, with explicit physical checks of multi-batch records, generic metadata and active writer state. [Scientific evidence](step8-spk-streaming.md) [Routine audits](../data/parity-audits/e07-spk-streaming.json)
+
+## SPK corrections
+
+The 162-routine historical Step 7 baseline is followed by eight reviewed ephemeris routines. [Scientific and boundary evidence](step8-spk-corrections.md) [Per-routine audits](../data/parity-audits/e08-spk-corrections.json)
+
+## Observer-relative SPK geometry
+
+The fixed and moving point workflows distinguish rotating-frame epochs, point motion and local topocentric derivatives. The batch also checks cache behavior across SPK and body-radius replacement. [Scientific review](step8-spk-relative.md) [Routine records](../data/parity-audits/e09-spk-relative-observers.json)

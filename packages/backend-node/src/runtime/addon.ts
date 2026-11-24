@@ -707,6 +707,104 @@ export type NativeAddon = {
   oscelt(state: readonly number[], et: number, mu: number): number[];
   oscltx(state: readonly number[], et: number, mu: number): number[];
   prop2b(gm: number, pvinit: readonly number[], dt: number): number[];
+  spkcpo(
+    target: string,
+    et: number,
+    outref: string,
+    refloc: string,
+    abcorr: string,
+    obspos: readonly number[],
+    obsctr: string,
+    obsref: string,
+  ): number[];
+  spkcpt(
+    trgpos: readonly number[],
+    trgctr: string,
+    trgref: string,
+    et: number,
+    outref: string,
+    refloc: string,
+    abcorr: string,
+    obsrvr: string,
+  ): number[];
+  spkcvo(
+    target: string,
+    et: number,
+    outref: string,
+    refloc: string,
+    abcorr: string,
+    obssta: readonly number[],
+    obsepc: number,
+    obsctr: string,
+    obsref: string,
+  ): number[];
+  spkcvt(
+    trgsta: readonly number[],
+    trgepc: number,
+    trgctr: string,
+    trgref: string,
+    et: number,
+    outref: string,
+    refloc: string,
+    abcorr: string,
+    obsrvr: string,
+  ): number[];
+  azlcpo(
+    method: string,
+    target: string,
+    et: number,
+    abcorr: string,
+    azccw: boolean,
+    elplsz: boolean,
+    obspos: readonly number[],
+    obsctr: string,
+    obsref: string,
+  ): number[];
+  spkacs(
+    target: number,
+    et: number,
+    ref: string,
+    abcorr: string,
+    observer: number,
+  ): number[];
+  spkapo(
+    target: number,
+    et: number,
+    ref: string,
+    observerState: readonly number[],
+    abcorr: string,
+  ): number[];
+  spkapp(
+    target: number,
+    et: number,
+    ref: string,
+    observerState: readonly number[],
+    abcorr: string,
+  ): number[];
+  spkaps(
+    target: number,
+    et: number,
+    ref: string,
+    abcorr: string,
+    observerState: readonly number[],
+    observerAcceleration: readonly number[],
+  ): number[];
+  spkltc(
+    target: number,
+    et: number,
+    ref: string,
+    abcorr: string,
+    observerState: readonly number[],
+  ): number[];
+  stelab(
+    position: readonly number[],
+    observerVelocity: readonly number[],
+  ): number[];
+  stlabx(
+    position: readonly number[],
+    observerVelocity: readonly number[],
+  ): number[];
+  ltime(etobs: number, observer: number, dir: string, target: number): number[];
   spkezr(
     target: string,
     et: number,

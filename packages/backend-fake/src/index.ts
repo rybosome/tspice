@@ -1930,6 +1930,45 @@ export function createFakeBackend(
     prop2b: () => {
       throw new Error("Fake backend does not model prop2b()");
     },
+    spkcpo: () => {
+      throw new Error("Fake backend does not model spkcpo()");
+    },
+    spkcpt: () => {
+      throw new Error("Fake backend does not model spkcpt()");
+    },
+    spkcvo: () => {
+      throw new Error("Fake backend does not model spkcvo()");
+    },
+    spkcvt: () => {
+      throw new Error("Fake backend does not model spkcvt()");
+    },
+    azlcpo: () => {
+      throw new Error("Fake backend does not model azlcpo()");
+    },
+    spkacs: () => {
+      throw new Error("Fake backend does not model spkacs()");
+    },
+    spkapo: () => {
+      throw new Error("Fake backend does not model spkapo()");
+    },
+    spkapp: () => {
+      throw new Error("Fake backend does not model spkapp()");
+    },
+    spkaps: () => {
+      throw new Error("Fake backend does not model spkaps()");
+    },
+    spkltc: () => {
+      throw new Error("Fake backend does not model spkltc()");
+    },
+    stelab: () => {
+      throw new Error("Fake backend does not model stelab()");
+    },
+    stlabx: () => {
+      throw new Error("Fake backend does not model stlabx()");
+    },
+    ltime: () => {
+      throw new Error("Fake backend does not model ltime()");
+    },
     spkezr: (
       target: string,
       et: number,

@@ -452,6 +452,19 @@ export function dispatchStep(
     case "ephemeris.prop2b":
     case "ephemeris.getelm":
     case "ephemeris.evsgp4":
+    case "ephemeris.spkcpo":
+    case "ephemeris.spkcpt":
+    case "ephemeris.spkcvo":
+    case "ephemeris.spkcvt":
+    case "ephemeris.azlcpo":
+    case "ephemeris.spkacs":
+    case "ephemeris.spkapo":
+    case "ephemeris.spkapp":
+    case "ephemeris.spkaps":
+    case "ephemeris.spkltc":
+    case "ephemeris.stelab":
+    case "ephemeris.stlabx":
+    case "ephemeris.ltime":
     case "ephemeris.spkgeo":
     case "ephemeris.spkgps":
     case "ephemeris.spkobj":

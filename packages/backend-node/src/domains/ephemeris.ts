@@ -22,6 +22,9 @@ import {
   validateSpkChebyshevFields,
   assertSpiceInt32,
   copyOrbitalTuple,
+  validateCorrectionString,
+  copyCorrectionInput,
+  decodeCorrectionResult,
   copySpkPackedDescriptor,
   copySpkPackedDescriptorWords,
   invariant,
@@ -198,6 +201,276 @@ export function createEphemerisApi(
         copyTleTuple(elems, 10, "elems", true),
       );
       return copyTleTuple(out, 6, "TEME state", false);
+    },
+    spkcpo: (target, et, outref, refloc, abcorr, obspos, obsctr, obsref) => {
+      validateCorrectionString(target, "spkcpo(target)");
+      requireSpkNumber(et, "spkcpo(et)");
+      validateCorrectionString(outref, "spkcpo(outref)");
+      validateCorrectionString(refloc, "spkcpo(refloc)");
+      validateCorrectionString(abcorr, "spkcpo(abcorr)");
+      const obsposCopy = copyCorrectionInput(obspos, 3, "spkcpo(obspos)");
+      validateCorrectionString(obsctr, "spkcpo(obsctr)");
+      validateCorrectionString(obsref, "spkcpo(obsref)");
+      return decodeCorrectionResult(
+        native.spkcpo(
+          target,
+          et,
+          outref,
+          refloc,
+          abcorr,
+          obsposCopy,
+          obsctr,
+          obsref,
+        ),
+        7,
+      );
+    },
+    spkcpt: (trgpos, trgctr, trgref, et, outref, refloc, abcorr, obsrvr) => {
+      const trgposCopy = copyCorrectionInput(trgpos, 3, "spkcpt(trgpos)");
+      validateCorrectionString(trgctr, "spkcpt(trgctr)");
+      validateCorrectionString(trgref, "spkcpt(trgref)");
+      requireSpkNumber(et, "spkcpt(et)");
+      validateCorrectionString(outref, "spkcpt(outref)");
+      validateCorrectionString(refloc, "spkcpt(refloc)");
+      validateCorrectionString(abcorr, "spkcpt(abcorr)");
+      validateCorrectionString(obsrvr, "spkcpt(obsrvr)");
+      return decodeCorrectionResult(
+        native.spkcpt(
+          trgposCopy,
+          trgctr,
+          trgref,
+          et,
+          outref,
+          refloc,
+          abcorr,
+          obsrvr,
+        ),
+        7,
+      );
+    },
+    spkcvo: (
+      target,
+      et,
+      outref,
+      refloc,
+      abcorr,
+      obssta,
+      obsepc,
+      obsctr,
+      obsref,
+    ) => {
+      validateCorrectionString(target, "spkcvo(target)");
+      requireSpkNumber(et, "spkcvo(et)");
+      validateCorrectionString(outref, "spkcvo(outref)");
+      validateCorrectionString(refloc, "spkcvo(refloc)");
+      validateCorrectionString(abcorr, "spkcvo(abcorr)");
+      const obsstaCopy = copyCorrectionInput(obssta, 6, "spkcvo(obssta)");
+      requireSpkNumber(obsepc, "spkcvo(obsepc)");
+      validateCorrectionString(obsctr, "spkcvo(obsctr)");
+      validateCorrectionString(obsref, "spkcvo(obsref)");
+      return decodeCorrectionResult(
+        native.spkcvo(
+          target,
+          et,
+          outref,
+          refloc,
+          abcorr,
+          obsstaCopy,
+          obsepc,
+          obsctr,
+          obsref,
+        ),
+        7,
+      );
+    },
+    spkcvt: (
+      trgsta,
+      trgepc,
+      trgctr,
+      trgref,
+      et,
+      outref,
+      refloc,
+      abcorr,
+      obsrvr,
+    ) => {
+      const trgstaCopy = copyCorrectionInput(trgsta, 6, "spkcvt(trgsta)");
+      requireSpkNumber(trgepc, "spkcvt(trgepc)");
+      validateCorrectionString(trgctr, "spkcvt(trgctr)");
+      validateCorrectionString(trgref, "spkcvt(trgref)");
+      requireSpkNumber(et, "spkcvt(et)");
+      validateCorrectionString(outref, "spkcvt(outref)");
+      validateCorrectionString(refloc, "spkcvt(refloc)");
+      validateCorrectionString(abcorr, "spkcvt(abcorr)");
+      validateCorrectionString(obsrvr, "spkcvt(obsrvr)");
+      return decodeCorrectionResult(
+        native.spkcvt(
+          trgstaCopy,
+          trgepc,
+          trgctr,
+          trgref,
+          et,
+          outref,
+          refloc,
+          abcorr,
+          obsrvr,
+        ),
+        7,
+      );
+    },
+    azlcpo: (
+      method,
+      target,
+      et,
+      abcorr,
+      azccw,
+      elplsz,
+      obspos,
+      obsctr,
+      obsref,
+    ) => {
+      validateCorrectionString(method, "azlcpo(method)");
+      validateCorrectionString(target, "azlcpo(target)");
+      requireSpkNumber(et, "azlcpo(et)");
+      validateCorrectionString(abcorr, "azlcpo(abcorr)");
+      if (typeof azccw !== "boolean")
+        throw new TypeError("azlcpo(azccw) must be boolean");
+      if (typeof elplsz !== "boolean")
+        throw new TypeError("azlcpo(elplsz) must be boolean");
+      const obsposCopy = copyCorrectionInput(obspos, 3, "azlcpo(obspos)");
+      validateCorrectionString(obsctr, "azlcpo(obsctr)");
+      validateCorrectionString(obsref, "azlcpo(obsref)");
+      return decodeCorrectionResult(
+        native.azlcpo(
+          method,
+          target,
+          et,
+          abcorr,
+          azccw,
+          elplsz,
+          obsposCopy,
+          obsctr,
+          obsref,
+        ),
+        7,
+      );
+    },
+    spkacs: (target, et, ref, abcorr, observer) => {
+      assertSpiceInt32(target, "spkacs(target)");
+      requireSpkNumber(et, "spkacs(et)");
+      validateCorrectionString(ref, "spkacs(ref)");
+      validateCorrectionString(abcorr, "spkacs(abcorr)");
+      assertSpiceInt32(observer, "spkacs(observer)");
+      return decodeCorrectionResult(
+        native.spkacs(target, et, ref, abcorr, observer),
+        8,
+      );
+    },
+    spkapo: (target, et, ref, observerState, abcorr) => {
+      assertSpiceInt32(target, "spkapo(target)");
+      requireSpkNumber(et, "spkapo(et)");
+      validateCorrectionString(ref, "spkapo(ref)");
+      const observerStateCopy = copyCorrectionInput(
+        observerState,
+        6,
+        "spkapo(observerState)",
+      );
+      validateCorrectionString(abcorr, "spkapo(abcorr)");
+      return decodeCorrectionResult(
+        native.spkapo(target, et, ref, observerStateCopy, abcorr),
+        4,
+      );
+    },
+    spkapp: (target, et, ref, observerState, abcorr) => {
+      assertSpiceInt32(target, "spkapp(target)");
+      requireSpkNumber(et, "spkapp(et)");
+      validateCorrectionString(ref, "spkapp(ref)");
+      const observerStateCopy = copyCorrectionInput(
+        observerState,
+        6,
+        "spkapp(observerState)",
+      );
+      validateCorrectionString(abcorr, "spkapp(abcorr)");
+      return decodeCorrectionResult(
+        native.spkapp(target, et, ref, observerStateCopy, abcorr),
+        7,
+      );
+    },
+    spkaps: (target, et, ref, abcorr, observerState, observerAcceleration) => {
+      assertSpiceInt32(target, "spkaps(target)");
+      requireSpkNumber(et, "spkaps(et)");
+      validateCorrectionString(ref, "spkaps(ref)");
+      validateCorrectionString(abcorr, "spkaps(abcorr)");
+      const observerStateCopy = copyCorrectionInput(
+        observerState,
+        6,
+        "spkaps(observerState)",
+      );
+      const observerAccelerationCopy = copyCorrectionInput(
+        observerAcceleration,
+        3,
+        "spkaps(observerAcceleration)",
+      );
+      return decodeCorrectionResult(
+        native.spkaps(
+          target,
+          et,
+          ref,
+          abcorr,
+          observerStateCopy,
+          observerAccelerationCopy,
+        ),
+        8,
+      );
+    },
+    spkltc: (target, et, ref, abcorr, observerState) => {
+      assertSpiceInt32(target, "spkltc(target)");
+      requireSpkNumber(et, "spkltc(et)");
+      validateCorrectionString(ref, "spkltc(ref)");
+      validateCorrectionString(abcorr, "spkltc(abcorr)");
+      const observerStateCopy = copyCorrectionInput(
+        observerState,
+        6,
+        "spkltc(observerState)",
+      );
+      return decodeCorrectionResult(
+        native.spkltc(target, et, ref, abcorr, observerStateCopy),
+        8,
+      );
+    },
+    stelab: (position, observerVelocity) => {
+      const positionCopy = copyCorrectionInput(position, 3, "stelab(position)");
+      const observerVelocityCopy = copyCorrectionInput(
+        observerVelocity,
+        3,
+        "stelab(observerVelocity)",
+      );
+      return decodeCorrectionResult(
+        native.stelab(positionCopy, observerVelocityCopy),
+        3,
+      );
+    },
+    stlabx: (position, observerVelocity) => {
+      const positionCopy = copyCorrectionInput(position, 3, "stlabx(position)");
+      const observerVelocityCopy = copyCorrectionInput(
+        observerVelocity,
+        3,
+        "stlabx(observerVelocity)",
+      );
+      return decodeCorrectionResult(
+        native.stlabx(positionCopy, observerVelocityCopy),
+        3,
+      );
+    },
+    ltime: (etobs, observer, dir, target) => {
+      requireSpkNumber(etobs, "ltime(etobs)");
+      assertSpiceInt32(observer, "ltime(observer)");
+      validateCorrectionString(dir, "ltime(dir)");
+      assertSpiceInt32(target, "ltime(target)");
+      return decodeCorrectionResult(
+        native.ltime(etobs, observer, dir, target),
+        2,
+      );
     },
     spkezr: (target, et, ref, abcorr, observer) => {
       requireSpkNumber(et, "spkezr(et)");

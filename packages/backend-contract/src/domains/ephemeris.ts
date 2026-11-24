@@ -78,6 +78,161 @@ export type Sgp4Geophysics = readonly [
 
 /** Backend contract for SPK/ephemeris computations. */
 export interface EphemerisApi {
+  /** State in km and km/s of a target relative to a point fixed in obsref about obsctr. The selected output frame orientation uses OBSERVER, TARGET or CENTER evaluation locus under light-time correction; NONE evaluates at ET. Return one-way light time in seconds.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkcpo_c.html
+   */
+  spkcpo(
+    target: string,
+    et: number,
+    outref: string,
+    refloc: string,
+    abcorr: string,
+    obspos: Readonly<SpiceVector3>,
+    obsctr: string,
+    obsref: string,
+  ): SpkezrResult;
+
+  /** State in km and km/s of a point fixed in trgref about trgctr relative to an ephemeris observer at ET. Corrected reception and transmission select different target epochs. Refloc selects when the output frame is evaluated.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkcpt_c.html
+   */
+  spkcpt(
+    trgpos: Readonly<SpiceVector3>,
+    trgctr: string,
+    trgref: string,
+    et: number,
+    outref: string,
+    refloc: string,
+    abcorr: string,
+    obsrvr: string,
+  ): SpkezrResult;
+
+  /** State of a target relative to a point with constant supplied velocity in obsref about obsctr. Propagate obssta (km, km/s) from its epoch obsepc, then apply the frame state transform including rotational velocity. Return the apparent six-component state and light time in seconds.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkcvo_c.html
+   */
+  spkcvo(
+    target: string,
+    et: number,
+    outref: string,
+    refloc: string,
+    abcorr: string,
+    obssta: Readonly<SpiceStateVector>,
+    obsepc: number,
+    obsctr: string,
+    obsref: string,
+  ): SpkezrResult;
+
+  /** State of a target point extrapolated at constant velocity in trgref about trgctr from trgsta at trgepc. Reception/transmission solve for the target event; the selected output frame evaluation locus contributes to the velocity. State uses km and km/s; lt is seconds.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkcvt_c.html
+   */
+  spkcvt(
+    trgsta: Readonly<SpiceStateVector>,
+    trgepc: number,
+    trgctr: string,
+    trgref: string,
+    et: number,
+    outref: string,
+    refloc: string,
+    abcorr: string,
+    obsrvr: string,
+  ): SpkezrResult;
+
+  /** Return topocentric range (km), azimuth and elevation (rad), followed by their rates (km/s and rad/s), and one-way lt (s). ELLIPSOID uses the local outward normal in the body-centered obsref. azccw chooses counterclockwise azimuth, elplsz chooses increasing elevation toward +Z. A vertical sight line has undefined angular rates and can signal POINTONZAXIS.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/azlcpo_c.html
+   */
+  azlcpo(
+    method: string,
+    target: string,
+    et: number,
+    abcorr: string,
+    azccw: boolean,
+    elplsz: boolean,
+    obspos: Readonly<SpiceVector3>,
+    obsctr: string,
+    obsref: string,
+  ): SpkezrResult;
+
+  /** Return the inertial target state (km and km/s), one-way light time lt (s), and its derivative dlt (s/s) at observer ET. Target and observer are integer IDs. Stellar correction needs observer ephemeris coverage one second before and after ET.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkacs_c.html
+   */
+  spkacs(
+    target: number,
+    et: number,
+    ref: string,
+    abcorr: string,
+    observer: number,
+  ): SpkezrResult & { dlt: number };
+
+  /** Return the apparent position (km) and light time (s) of a target at observer ET for a supplied barycentric observer state (km and km/s). Both input and output use the specified inertial frame. Reception and transmission evaluate the target at different epochs.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkapo_c.html
+   */
+  spkapo(
+    target: number,
+    et: number,
+    ref: string,
+    observerState: Readonly<SpiceStateVector>,
+    abcorr: string,
+  ): SpkposResult;
+
+  /** Return the legacy apparent state (km and km/s) and light time (s) for the supplied barycentric observer state at ET. The reported legacy velocity is target velocity at its evaluation epoch minus observer velocity. Stellar aberration changes position only.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkapp_c.html
+   */
+  spkapp(
+    target: number,
+    et: number,
+    ref: string,
+    observerState: Readonly<SpiceStateVector>,
+    abcorr: string,
+  ): SpkezrResult;
+
+  /** Compute a corrected inertial state, lt (s) and dlt (s/s) at observer ET from the supplied barycentric observer state (km, km/s) and acceleration (km/s²) in ref. Acceleration contributes to the stellar velocity correction.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkaps_c.html
+   */
+  spkaps(
+    target: number,
+    et: number,
+    ref: string,
+    abcorr: string,
+    observerState: Readonly<SpiceStateVector>,
+    observerAcceleration: Readonly<SpiceVector3>,
+  ): SpkezrResult & { dlt: number };
+
+  /** Compute the Newtonian light-time-corrected state, lt (s) and dlt (s/s) for a barycentric observer state at ET. The stellar attribute of accepted correction flags is ignored. NONE still returns geometric range divided by light speed and its derivative.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkltc_c.html
+   */
+  spkltc(
+    target: number,
+    et: number,
+    ref: string,
+    abcorr: string,
+    observerState: Readonly<SpiceStateVector>,
+  ): SpkezrResult & { dlt: number };
+
+  /** Apply stellar aberration for received radiation to a geometric position (km) using the observer barycentric velocity (km/s). The physical observer speed must be below light speed. N0067 tests the squared velocity after multiplication by the rounded reciprocal of light speed. Return an owned corrected position in the input frame.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/stelab_c.html
+   */
+  stelab(
+    position: Readonly<SpiceVector3>,
+    observerVelocity: Readonly<SpiceVector3>,
+  ): SpiceVector3;
+
+  /** Apply stellar aberration for transmitted radiation to a position (km) using the observer barycentric velocity (km/s). The toolkit applies its stellar rotation with the negated velocity. Return an owned position in the input frame.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/stlabx_c.html
+   */
+  stlabx(
+    position: Readonly<SpiceVector3>,
+    observerVelocity: Readonly<SpiceVector3>,
+  ): SpiceVector3;
+
+  /** Return the target event epoch ettarg (TDB seconds past J2000) and nonnegative elapsed light time elapsd (s) from observer event etobs. Direction -> transmits at the observer, while <- receives there. Requires barycentric SPK coverage at the needed epochs.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ltime_c.html
+   */
+  ltime(
+    etobs: number,
+    observer: number,
+    dir: string,
+    target: number,
+  ): { ettarg: number; elapsd: number };
+
   /**
    * Propagate the eight conic elements to ET (seconds past J2000 TDB).
    * Return an inertial position and velocity in km and km/s. Elliptic, parabolic

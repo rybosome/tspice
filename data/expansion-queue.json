@@ -3854,7 +3854,7 @@
       ],
       "domain": "ephemeris",
       "apiPlacement": "packages/backend-contract/src/domains/ephemeris.ts; raw methods retain canonical names without _c.",
-      "owner": null,
+      "owner": "Codex Step 8 (/root)",
       "status": "in-progress",
       "dependsOn": [],
       "prerequisiteReview": "Reuse state/position types and all supported correction policies. Observe velocity, light-time derivatives and reception/transmission distinctions.",
@@ -3870,21 +3870,34 @@
       "prs": [
         "https://github.com/rybosome/tspice/pull/770"
       ],
-      "validationEvidence": [],
-      "nextAction": "Intake the pinned source after checkpoint 03 lands and passes main CI.",
-      "sourceSnapshot": {
-        "number": 770,
-        "url": "https://github.com/rybosome/tspice/pull/770",
-        "head": "cecd58d92c76f7181b3771f5d39c3b4b154215d1",
-        "base": "73f3fec8788ed926351f891b459ac75d434f6446",
-        "ci": "https://github.com/rybosome/tspice/actions/runs/43590705177",
-        "ciConclusion": "success"
-      },
-      "checkpoint": {
-        "number": 4,
-        "status": "pending intake"
-      },
-      "deliveryNote": "The pinned source head passed its configured CI matrix."
+      "validationEvidence": [
+        {
+          "kind": "local-focused",
+          "result": "85 registered workflows, 291 steps, 178 target calls, 33 genuine expected errors. All 170 compiled registered comparisons, 12 public checks, 25 native, 45 WASM and real Chrome for all eight methods passed. The final Chrome worker also preserved the LT / LT+S / spaced LT+S / LT sequence."
+        },
+        {
+          "kind": "local-focused",
+          "result": "The shared aberration-cache validity correction covers all 35 pinned owners on Node and WASM. All 170 registered comparisons, 14 public checks, 25 native and 45 WASM tests passed on the rebuilt source, including inherited SPKEZR, independent full-state comparisons, the blank-option diagnostic and recovery. Source-bound full lanes and canonical CI require a new run. The final Chrome worker matched all eight independent outputs and the mixed SPKEZR/SPKACS state, diagnostic and recovery sequence."
+        },
+        {
+          "kind": "source-bound-required-lanes",
+          "testedCommit": "2d32c8bfd34738cc0f0e91ab7de3216e69ee84f3",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43589578886/job/132431245235",
+          "result": "Both complete required lanes passed locally on 2d32c8bfd34738cc0f0e91ab7de3216e69ee84f3. JavaScript: 2,614 parity tests and one expected guard skip. Native-required: 2,388 registered Node/WASM live comparisons; 2,615 parity-package tests with no skips, including the native-required guard; 91 native wrapper, 645 WASM, 28 core and 150 facade tests passed. Inspected successful Linux Node 22 native-required job 132431245235 on 2d32c8bfd34738cc0f0e91ab7de3216e69ee84f3: 2,388 registered Node/WASM live comparisons; 2,615 parity-package tests with no skips, including the native-required guard; 91 native wrapper, 645 WASM, 28 core and 150 facade tests passed."
+        },
+        {
+          "kind": "final-head-ci",
+          "testedCommit": "cecd58d92c76f7181b3771f5d39c3b4b154215d1",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43590705177",
+          "result": "Final PR matrix awaiting completion."
+        }
+      ],
+      "nextAction": "Wait for the full metadata-head CI matrix and verify explicit rebaseability before marking the PR ready; do not merge.",
+      "worktree": "/private/tmp/tspice-step8-spk-corrections",
+      "branch": "codex/expand-spk-corrections",
+      "baseCommit": "73f3fec8788ed926351f891b459ac75d434f6446",
+      "progressNote": "Both required local lanes and observed canonical native-required CI passed on the implementation source 2d32c8bf. 2,388 registered Node/WASM live comparisons; 2,615 parity-package tests with no skips, including the native-required guard; 91 native wrapper, 645 WASM, 28 core and 150 facade tests passed.",
+      "priorCheckpoint": "The shared aberration-cache validity correction covers all 35 pinned owners on Node and WASM. All 170 registered comparisons, 14 public checks, 25 native and 45 WASM tests passed on the rebuilt source, including inherited SPKEZR, independent full-state comparisons, the blank-option diagnostic and recovery. Source-bound full lanes and canonical CI require a new run. The final Chrome worker matched all eight independent outputs and the mixed SPKEZR/SPKACS state, diagnostic and recovery sequence."
     },
     {
       "id": "E09-spk-relative-observers",
@@ -3899,9 +3912,11 @@
       ],
       "domain": "ephemeris",
       "apiPlacement": "packages/backend-contract/src/domains/ephemeris.ts; raw methods retain canonical names without _c.",
-      "owner": null,
+      "owner": "Codex Step 8 (/root)",
       "status": "in-progress",
-      "dependsOn": [],
+      "dependsOn": [
+        "E08-spk-corrections"
+      ],
       "prerequisiteReview": "Verify reference-location flags, observer epoch and frame-center dependencies; azlcpo includes azimuth/elevation conventions and rates.",
       "fixtures": "Existing synthetic linked centers/moving frames; authored nonzero observer/target states.",
       "expectedChanges": {
@@ -3915,21 +3930,24 @@
       "prs": [
         "https://github.com/rybosome/tspice/pull/774"
       ],
-      "validationEvidence": [],
-      "nextAction": "Intake the pinned source after checkpoint 03 lands and passes main CI.",
-      "sourceSnapshot": {
-        "number": 774,
-        "url": "https://github.com/rybosome/tspice/pull/774",
-        "head": "c318efa83a01ca9e46b9e682b18cbb46e14ff425",
-        "base": "cecd58d92c76f7181b3771f5d39c3b4b154215d1",
-        "ci": "https://github.com/rybosome/tspice/actions/runs/43592830749",
-        "ciConclusion": "success"
-      },
-      "checkpoint": {
-        "number": 4,
-        "status": "pending intake"
-      },
-      "deliveryNote": "The pinned source head passed its configured CI matrix."
+      "validationEvidence": [
+        {
+          "kind": "local-focused",
+          "result": "79 registered workflows, 393 total steps, 172 target calls and 39 expected toolkit errors. All 158 compiled registered comparisons, 12 public tests, 16 native and 50 WASM focused tests passed. Chrome returned the independent full states/light times and recovered after POINTONZAXIS. The rebuilt combined source passed all 328 registered, 26 public, 41 native and 95 WASM focused checks across E08 and E09. Final Chrome matched independent complete states, inherited SPKEZR and SPKCVO mixed flag behavior, blank diagnostic and recovery."
+        },
+        {
+          "kind": "source-bound-required-lanes",
+          "testedCommit": "e83d49bc7f76e18807f4ad228612cb59f645708f",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43591403319/job/132436703712",
+          "result": "Both complete required lanes passed locally on e83d49bc7f76e18807f4ad228612cb59f645708f. JavaScript: 2,784 parity tests and one expected guard skip. Native-required: 2,546 registered Node/WASM live comparisons; 2,785 parity-package tests with no skips, including the native-required guard; 107 native wrapper, 695 WASM, 28 core and 150 facade tests passed. Inspected successful Linux Node 22 native-required job 132436703712 on e83d49bc7f76e18807f4ad228612cb59f645708f: 2,546 registered Node/WASM live comparisons; 2,785 parity-package tests with no skips, including the native-required guard; 107 native wrapper, 695 WASM, 28 core and 150 facade tests passed."
+        }
+      ],
+      "nextAction": "Wait for the full metadata-head CI matrix and verify explicit rebaseability before marking the PR ready; do not merge.",
+      "worktree": "/private/tmp/tspice-step8-spk-relative",
+      "branch": "codex/expand-spk-relative",
+      "baseCommit": "cecd58d92c76f7181b3771f5d39c3b4b154215d1",
+      "progressNote": "Both required local lanes and observed canonical native-required CI passed on the implementation source e83d49bc. 2,546 registered Node/WASM live comparisons; 2,785 parity-package tests with no skips, including the native-required guard; 107 native wrapper, 695 WASM, 28 core and 150 facade tests passed.",
+      "priorCheckpoint": "79 registered workflows, 393 total steps, 172 target calls and 39 expected toolkit errors. All 158 compiled registered comparisons, 12 public tests, 16 native and 50 WASM focused tests passed. Chrome returned the independent full states/light times and recovered after POINTONZAXIS. The rebuilt combined source passed all 328 registered, 26 public, 41 native and 95 WASM focused checks across E08 and E09. Final Chrome matched independent complete states, inherited SPKEZR and SPKCVO mixed flag behavior, blank diagnostic and recovery."
     },
     {
       "id": "E10-plane-geometry",

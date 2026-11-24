@@ -16,6 +16,19 @@ import type {
   StepEphemerisProp2b,
   StepEphemerisGetelm,
   StepEphemerisEvsgp4,
+  StepEphemerisSpkcpo,
+  StepEphemerisSpkcpt,
+  StepEphemerisSpkcvo,
+  StepEphemerisSpkcvt,
+  StepEphemerisAzlcpo,
+  StepEphemerisSpkacs,
+  StepEphemerisSpkapo,
+  StepEphemerisSpkapp,
+  StepEphemerisSpkaps,
+  StepEphemerisSpkltc,
+  StepEphemerisStelab,
+  StepEphemerisStlabx,
+  StepEphemerisLtime,
   StepEphemerisSpkgeo,
   StepEphemerisSpkgps,
   StepEphemerisSpkobj,
@@ -70,6 +83,19 @@ type EphemerisStep =
   | StepEphemerisProp2b
   | StepEphemerisGetelm
   | StepEphemerisEvsgp4
+  | StepEphemerisSpkcpo
+  | StepEphemerisSpkcpt
+  | StepEphemerisSpkcvo
+  | StepEphemerisSpkcvt
+  | StepEphemerisAzlcpo
+  | StepEphemerisSpkacs
+  | StepEphemerisSpkapo
+  | StepEphemerisSpkapp
+  | StepEphemerisSpkaps
+  | StepEphemerisSpkltc
+  | StepEphemerisStelab
+  | StepEphemerisStlabx
+  | StepEphemerisLtime
   | StepEphemerisSpkgeo
   | StepEphemerisSpkgps
   | StepEphemerisSpkobj
@@ -303,6 +329,155 @@ export function runEphemerisStep(
         return { op: step.op, value: { short: error.spiceShort } };
       }
     }
+    case "ephemeris.spkcpo":
+      return {
+        op: step.op,
+        value: context.spice.raw.spkcpo(
+          step.target,
+          step.et,
+          step.outref,
+          step.refloc,
+          step.abcorr,
+          step.obspos,
+          step.obsctr,
+          step.obsref,
+        ),
+      };
+    case "ephemeris.spkcpt":
+      return {
+        op: step.op,
+        value: context.spice.raw.spkcpt(
+          step.trgpos,
+          step.trgctr,
+          step.trgref,
+          step.et,
+          step.outref,
+          step.refloc,
+          step.abcorr,
+          step.obsrvr,
+        ),
+      };
+    case "ephemeris.spkcvo":
+      return {
+        op: step.op,
+        value: context.spice.raw.spkcvo(
+          step.target,
+          step.et,
+          step.outref,
+          step.refloc,
+          step.abcorr,
+          step.obssta,
+          step.obsepc,
+          step.obsctr,
+          step.obsref,
+        ),
+      };
+    case "ephemeris.spkcvt":
+      return {
+        op: step.op,
+        value: context.spice.raw.spkcvt(
+          step.trgsta,
+          step.trgepc,
+          step.trgctr,
+          step.trgref,
+          step.et,
+          step.outref,
+          step.refloc,
+          step.abcorr,
+          step.obsrvr,
+        ),
+      };
+    case "ephemeris.azlcpo":
+      return {
+        op: step.op,
+        value: context.spice.raw.azlcpo(
+          step.method,
+          step.target,
+          step.et,
+          step.abcorr,
+          step.azccw,
+          step.elplsz,
+          step.obspos,
+          step.obsctr,
+          step.obsref,
+        ),
+      };
+    case "ephemeris.spkacs":
+      return {
+        op: step.op,
+        value: context.spice.raw.spkacs(
+          step.target,
+          step.et,
+          step.ref,
+          step.abcorr,
+          step.observer,
+        ),
+      };
+    case "ephemeris.spkapo":
+      return {
+        op: step.op,
+        value: context.spice.raw.spkapo(
+          step.target,
+          step.et,
+          step.ref,
+          step.observerState,
+          step.abcorr,
+        ),
+      };
+    case "ephemeris.spkapp":
+      return {
+        op: step.op,
+        value: context.spice.raw.spkapp(
+          step.target,
+          step.et,
+          step.ref,
+          step.observerState,
+          step.abcorr,
+        ),
+      };
+    case "ephemeris.spkaps":
+      return {
+        op: step.op,
+        value: context.spice.raw.spkaps(
+          step.target,
+          step.et,
+          step.ref,
+          step.abcorr,
+          step.observerState,
+          step.observerAcceleration,
+        ),
+      };
+    case "ephemeris.spkltc":
+      return {
+        op: step.op,
+        value: context.spice.raw.spkltc(
+          step.target,
+          step.et,
+          step.ref,
+          step.abcorr,
+          step.observerState,
+        ),
+      };
+    case "ephemeris.stelab":
+      return {
+        op: step.op,
+        value: context.spice.raw.stelab(step.position, step.observerVelocity),
+      };
+    case "ephemeris.stlabx":
+      return {
+        op: step.op,
+        value: context.spice.raw.stlabx(step.position, step.observerVelocity),
+      };
+    case "ephemeris.ltime":
+      return {
+        op: step.op,
+        value: context.spice.raw.ltime(
+          step.etobs,
+          step.observer,
+          step.dir,
+          step.target,
+        ),
+      };
     case "ephemeris.spkgeo": {
       const out = context.spice.raw.spkgeo(
         step.target,

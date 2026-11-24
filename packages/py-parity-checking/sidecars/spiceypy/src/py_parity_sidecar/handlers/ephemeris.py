@@ -13,6 +13,8 @@ from ..interpolated_spk_oracle import write_interpolated_spk
 from ..tle_oracle import parse_tle, propagate_tle
 
 from ..window_algebra_oracle import allocate_window
+from .. import relative_observer_oracle
+from .. import correction_oracle
 from ..models import (
     StepEphemerisSpkcls,
     StepEphemerisSpkcov,
@@ -26,6 +28,19 @@ from ..models import (
     StepEphemerisProp2b,
     StepEphemerisGetelm,
     StepEphemerisEvsgp4,
+    StepEphemerisSpkcpo,
+    StepEphemerisSpkcpt,
+    StepEphemerisSpkcvo,
+    StepEphemerisSpkcvt,
+    StepEphemerisAzlcpo,
+    StepEphemerisSpkacs,
+    StepEphemerisSpkapo,
+    StepEphemerisSpkapp,
+    StepEphemerisSpkaps,
+    StepEphemerisSpkltc,
+    StepEphemerisStelab,
+    StepEphemerisStlabx,
+    StepEphemerisLtime,
     StepEphemerisSpkgeo,
     StepEphemerisSpkgps,
     StepEphemerisSpkobj,
@@ -305,6 +320,111 @@ def run_ephemeris_step(step: WorkflowStep, context: SidecarRuntimeContext) -> St
             if not step.captureError:
                 raise
             return StepOutput(op=step.op, value={"short": error.short})
+
+    if isinstance(step, StepEphemerisSpkcpo):
+        result = relative_observer_oracle.evaluate("spkcpo", {
+            "target": step.target,
+            "et": step.et,
+            "outref": step.outref,
+            "refloc": step.refloc,
+            "abcorr": step.abcorr,
+            "obspos": step.obspos,
+            "obsctr": step.obsctr,
+            "obsref": step.obsref,
+        })
+        state, lt = _normalize_state_lt(result,label=step.op)
+        return StepOutput(op=step.op,value={"state": state, "lt":lt})
+
+    if isinstance(step, StepEphemerisSpkcpt):
+        result = relative_observer_oracle.evaluate("spkcpt", {
+            "trgpos": step.trgpos,
+            "trgctr": step.trgctr,
+            "trgref": step.trgref,
+            "et": step.et,
+            "outref": step.outref,
+            "refloc": step.refloc,
+            "abcorr": step.abcorr,
+            "obsrvr": step.obsrvr,
+        })
+        state, lt = _normalize_state_lt(result,label=step.op)
+        return StepOutput(op=step.op,value={"state": state, "lt":lt})
+
+    if isinstance(step, StepEphemerisSpkcvo):
+        result = relative_observer_oracle.evaluate("spkcvo", {
+            "target": step.target,
+            "et": step.et,
+            "outref": step.outref,
+            "refloc": step.refloc,
+            "abcorr": step.abcorr,
+            "obssta": step.obssta,
+            "obsepc": step.obsepc,
+            "obsctr": step.obsctr,
+            "obsref": step.obsref,
+        })
+        state, lt = _normalize_state_lt(result,label=step.op)
+        return StepOutput(op=step.op,value={"state": state, "lt":lt})
+
+    if isinstance(step, StepEphemerisSpkcvt):
+        result = relative_observer_oracle.evaluate("spkcvt", {
+            "trgsta": step.trgsta,
+            "trgepc": step.trgepc,
+            "trgctr": step.trgctr,
+            "trgref": step.trgref,
+            "et": step.et,
+            "outref": step.outref,
+            "refloc": step.refloc,
+            "abcorr": step.abcorr,
+            "obsrvr": step.obsrvr,
+        })
+        state, lt = _normalize_state_lt(result,label=step.op)
+        return StepOutput(op=step.op,value={"state": state, "lt":lt})
+
+    if isinstance(step, StepEphemerisAzlcpo):
+        result = relative_observer_oracle.evaluate("azlcpo", {
+            "method": step.method,
+            "target": step.target,
+            "et": step.et,
+            "abcorr": step.abcorr,
+            "azccw": step.azccw,
+            "elplsz": step.elplsz,
+            "obspos": step.obspos,
+            "obsctr": step.obsctr,
+            "obsref": step.obsref,
+        })
+        state, lt = _normalize_state_lt(result,label=step.op)
+        return StepOutput(op=step.op,value={"state": state, "lt":lt})
+
+    if isinstance(step, StepEphemerisSpkacs):
+        result = correction_oracle.spkacs(step.target, step.et, step.ref, step.abcorr, step.observer)
+        return StepOutput(op=step.op, value={'state': _to_float_list(result[0], expected_len=6, label=step.op), 'lt':float(result[1]), 'dlt':float(result[2])})
+
+    if isinstance(step, StepEphemerisSpkapo):
+        result = sp.spkapo(step.target, step.et, step.ref, step.observerState, correction_oracle.option(step.abcorr))
+        return StepOutput(op=step.op, value={'pos':_to_float_list(result[0], expected_len=3, label=step.op), 'lt':float(result[1])})
+
+    if isinstance(step, StepEphemerisSpkapp):
+        result = correction_oracle.spkapp(step.target, step.et, step.ref, step.observerState, step.abcorr)
+        return StepOutput(op=step.op, value={'state':_to_float_list(result[0], expected_len=6, label=step.op), 'lt':float(result[1])})
+
+    if isinstance(step, StepEphemerisSpkaps):
+        result = correction_oracle.spkaps(step.target, step.et, step.ref, step.abcorr, step.observerState, step.observerAcceleration)
+        return StepOutput(op=step.op, value={'state': _to_float_list(result[0], expected_len=6, label=step.op), 'lt':float(result[1]), 'dlt':float(result[2])})
+
+    if isinstance(step, StepEphemerisSpkltc):
+        result = sp.spkltc(step.target, step.et, step.ref, correction_oracle.option(step.abcorr), step.observerState)
+        return StepOutput(op=step.op, value={'state': _to_float_list(result[0], expected_len=6, label=step.op), 'lt':float(result[1]), 'dlt':float(result[2])})
+
+    if isinstance(step, StepEphemerisStelab):
+        result = sp.stelab(step.position, step.observerVelocity)
+        return StepOutput(op=step.op, value=_to_float_list(result, expected_len=3, label=step.op))
+
+    if isinstance(step, StepEphemerisStlabx):
+        result = sp.stlabx(step.position, step.observerVelocity)
+        return StepOutput(op=step.op, value=_to_float_list(result, expected_len=3, label=step.op))
+
+    if isinstance(step, StepEphemerisLtime):
+        result = correction_oracle.ltime(step.etobs, step.observer, step.dir, step.target)
+        return StepOutput(op=step.op, value={'ettarg':float(result[0]), 'elapsd':float(result[1])})
 
     if isinstance(step, StepEphemerisSpkgeo):
         state, lt = _normalize_state_lt(

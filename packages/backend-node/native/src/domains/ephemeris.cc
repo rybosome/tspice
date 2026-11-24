@@ -355,6 +355,406 @@ static Napi::Value Prop2b(const Napi::CallbackInfo& info) {
   return MakeNumberArray(env, out, 6);
 }
 
+static bool ReadCorrectionScalar(Napi::Env env, const Napi::Value& value, const char* label, double* out) {
+  if (value.IsNumber()) {
+    *out = value.As<Napi::Number>().DoubleValue();
+    if (std::isfinite(*out)) return true;
+  }
+  ThrowSpiceError(Napi::TypeError::New(env, std::string(label) + " must be a finite number"));
+  return false;
+}
+
+template <size_t N>
+static bool ReadCorrectionTuple(Napi::Env env, const Napi::Value& value, const char* label, double (&out)[N]) {
+  if (!value.IsArray() || value.As<Napi::Array>().Length() != N) {
+    ThrowSpiceError(Napi::TypeError::New(env, std::string(label) + " must be an array of length " + std::to_string(N)));
+    return false;
+  }
+  const Napi::Array array = value.As<Napi::Array>();
+  for (uint32_t i = 0; i < N; ++i) {
+    const auto entry = array.Get(i);
+    if (env.IsExceptionPending() || !ReadCorrectionScalar(env, entry, label, &out[i])) return false;
+  }
+  return true;
+}
+
+static bool ReadCorrectionString(Napi::Env env, const Napi::Value& value, const char* label, std::string* out) {
+  if (value.IsString()) {
+    *out = value.As<Napi::String>().Utf8Value();
+    if (!env.IsExceptionPending() && out->find(char(0)) == std::string::npos) return true;
+  }
+  ThrowSpiceError(Napi::TypeError::New(env, std::string(label) + " must be a string without embedded NUL"));
+  return false;
+}
+
+static Napi::Value Spkcpo(const Napi::CallbackInfo& info) {
+  const Napi::Env env = info.Env();
+  if (info.Length() != 8) {
+    ThrowSpiceError(Napi::TypeError::New(env,"spkcpo expects 8 arguments"));
+    return env.Undefined();
+  }
+  std::string target;
+  if (!ReadCorrectionString(env,info[0],"spkcpo(target)",&target)) return env.Undefined();
+  double et;
+  if (!ReadCorrectionScalar(env,info[1],"spkcpo(et)",&et)) return env.Undefined();
+  std::string outref;
+  if (!ReadCorrectionString(env,info[2],"spkcpo(outref)",&outref)) return env.Undefined();
+  std::string refloc;
+  if (!ReadCorrectionString(env,info[3],"spkcpo(refloc)",&refloc)) return env.Undefined();
+  std::string abcorr;
+  if (!ReadCorrectionString(env,info[4],"spkcpo(abcorr)",&abcorr)) return env.Undefined();
+  double obspos[3];
+  if (!ReadCorrectionTuple(env,info[5],"spkcpo(obspos)",obspos)) return env.Undefined();
+  std::string obsctr;
+  if (!ReadCorrectionString(env,info[6],"spkcpo(obsctr)",&obsctr)) return env.Undefined();
+  std::string obsref;
+  if (!ReadCorrectionString(env,info[7],"spkcpo(obsref)",&obsref)) return env.Undefined();
+  double out[7]={0};
+  char err[tspice_backend_node::kErrMaxBytes];
+  tspice_backend_node::CspiceLock lock;
+  if (tspice_spkcpo(target.c_str(), et, outref.c_str(), refloc.c_str(), abcorr.c_str(), obspos, obsctr.c_str(), obsref.c_str(),out,err,sizeof(err))) {
+    ThrowSpiceError(env,"CSPICE failed while calling spkcpo",err);
+    return env.Undefined();
+  }
+  return MakeNumberArray(env,out,7);
+}
+
+static Napi::Value Spkcpt(const Napi::CallbackInfo& info) {
+  const Napi::Env env = info.Env();
+  if (info.Length() != 8) {
+    ThrowSpiceError(Napi::TypeError::New(env,"spkcpt expects 8 arguments"));
+    return env.Undefined();
+  }
+  double trgpos[3];
+  if (!ReadCorrectionTuple(env,info[0],"spkcpt(trgpos)",trgpos)) return env.Undefined();
+  std::string trgctr;
+  if (!ReadCorrectionString(env,info[1],"spkcpt(trgctr)",&trgctr)) return env.Undefined();
+  std::string trgref;
+  if (!ReadCorrectionString(env,info[2],"spkcpt(trgref)",&trgref)) return env.Undefined();
+  double et;
+  if (!ReadCorrectionScalar(env,info[3],"spkcpt(et)",&et)) return env.Undefined();
+  std::string outref;
+  if (!ReadCorrectionString(env,info[4],"spkcpt(outref)",&outref)) return env.Undefined();
+  std::string refloc;
+  if (!ReadCorrectionString(env,info[5],"spkcpt(refloc)",&refloc)) return env.Undefined();
+  std::string abcorr;
+  if (!ReadCorrectionString(env,info[6],"spkcpt(abcorr)",&abcorr)) return env.Undefined();
+  std::string obsrvr;
+  if (!ReadCorrectionString(env,info[7],"spkcpt(obsrvr)",&obsrvr)) return env.Undefined();
+  double out[7]={0};
+  char err[tspice_backend_node::kErrMaxBytes];
+  tspice_backend_node::CspiceLock lock;
+  if (tspice_spkcpt(trgpos, trgctr.c_str(), trgref.c_str(), et, outref.c_str(), refloc.c_str(), abcorr.c_str(), obsrvr.c_str(),out,err,sizeof(err))) {
+    ThrowSpiceError(env,"CSPICE failed while calling spkcpt",err);
+    return env.Undefined();
+  }
+  return MakeNumberArray(env,out,7);
+}
+
+static Napi::Value Spkcvo(const Napi::CallbackInfo& info) {
+  const Napi::Env env = info.Env();
+  if (info.Length() != 9) {
+    ThrowSpiceError(Napi::TypeError::New(env,"spkcvo expects 9 arguments"));
+    return env.Undefined();
+  }
+  std::string target;
+  if (!ReadCorrectionString(env,info[0],"spkcvo(target)",&target)) return env.Undefined();
+  double et;
+  if (!ReadCorrectionScalar(env,info[1],"spkcvo(et)",&et)) return env.Undefined();
+  std::string outref;
+  if (!ReadCorrectionString(env,info[2],"spkcvo(outref)",&outref)) return env.Undefined();
+  std::string refloc;
+  if (!ReadCorrectionString(env,info[3],"spkcvo(refloc)",&refloc)) return env.Undefined();
+  std::string abcorr;
+  if (!ReadCorrectionString(env,info[4],"spkcvo(abcorr)",&abcorr)) return env.Undefined();
+  double obssta[6];
+  if (!ReadCorrectionTuple(env,info[5],"spkcvo(obssta)",obssta)) return env.Undefined();
+  double obsepc;
+  if (!ReadCorrectionScalar(env,info[6],"spkcvo(obsepc)",&obsepc)) return env.Undefined();
+  std::string obsctr;
+  if (!ReadCorrectionString(env,info[7],"spkcvo(obsctr)",&obsctr)) return env.Undefined();
+  std::string obsref;
+  if (!ReadCorrectionString(env,info[8],"spkcvo(obsref)",&obsref)) return env.Undefined();
+  double out[7]={0};
+  char err[tspice_backend_node::kErrMaxBytes];
+  tspice_backend_node::CspiceLock lock;
+  if (tspice_spkcvo(target.c_str(), et, outref.c_str(), refloc.c_str(), abcorr.c_str(), obssta, obsepc, obsctr.c_str(), obsref.c_str(),out,err,sizeof(err))) {
+    ThrowSpiceError(env,"CSPICE failed while calling spkcvo",err);
+    return env.Undefined();
+  }
+  return MakeNumberArray(env,out,7);
+}
+
+static Napi::Value Spkcvt(const Napi::CallbackInfo& info) {
+  const Napi::Env env = info.Env();
+  if (info.Length() != 9) {
+    ThrowSpiceError(Napi::TypeError::New(env,"spkcvt expects 9 arguments"));
+    return env.Undefined();
+  }
+  double trgsta[6];
+  if (!ReadCorrectionTuple(env,info[0],"spkcvt(trgsta)",trgsta)) return env.Undefined();
+  double trgepc;
+  if (!ReadCorrectionScalar(env,info[1],"spkcvt(trgepc)",&trgepc)) return env.Undefined();
+  std::string trgctr;
+  if (!ReadCorrectionString(env,info[2],"spkcvt(trgctr)",&trgctr)) return env.Undefined();
+  std::string trgref;
+  if (!ReadCorrectionString(env,info[3],"spkcvt(trgref)",&trgref)) return env.Undefined();
+  double et;
+  if (!ReadCorrectionScalar(env,info[4],"spkcvt(et)",&et)) return env.Undefined();
+  std::string outref;
+  if (!ReadCorrectionString(env,info[5],"spkcvt(outref)",&outref)) return env.Undefined();
+  std::string refloc;
+  if (!ReadCorrectionString(env,info[6],"spkcvt(refloc)",&refloc)) return env.Undefined();
+  std::string abcorr;
+  if (!ReadCorrectionString(env,info[7],"spkcvt(abcorr)",&abcorr)) return env.Undefined();
+  std::string obsrvr;
+  if (!ReadCorrectionString(env,info[8],"spkcvt(obsrvr)",&obsrvr)) return env.Undefined();
+  double out[7]={0};
+  char err[tspice_backend_node::kErrMaxBytes];
+  tspice_backend_node::CspiceLock lock;
+  if (tspice_spkcvt(trgsta, trgepc, trgctr.c_str(), trgref.c_str(), et, outref.c_str(), refloc.c_str(), abcorr.c_str(), obsrvr.c_str(),out,err,sizeof(err))) {
+    ThrowSpiceError(env,"CSPICE failed while calling spkcvt",err);
+    return env.Undefined();
+  }
+  return MakeNumberArray(env,out,7);
+}
+
+static Napi::Value Azlcpo(const Napi::CallbackInfo& info) {
+  const Napi::Env env = info.Env();
+  if (info.Length() != 9) {
+    ThrowSpiceError(Napi::TypeError::New(env,"azlcpo expects 9 arguments"));
+    return env.Undefined();
+  }
+  std::string method;
+  if (!ReadCorrectionString(env,info[0],"azlcpo(method)",&method)) return env.Undefined();
+  std::string target;
+  if (!ReadCorrectionString(env,info[1],"azlcpo(target)",&target)) return env.Undefined();
+  double et;
+  if (!ReadCorrectionScalar(env,info[2],"azlcpo(et)",&et)) return env.Undefined();
+  std::string abcorr;
+  if (!ReadCorrectionString(env,info[3],"azlcpo(abcorr)",&abcorr)) return env.Undefined();
+  if (!info[4].IsBoolean()) {
+    ThrowSpiceError(Napi::TypeError::New(env,"azccw must be boolean"));
+    return env.Undefined();
+  }
+  const bool azccw=info[4].As<Napi::Boolean>().Value();
+  if (!info[5].IsBoolean()) {
+    ThrowSpiceError(Napi::TypeError::New(env,"elplsz must be boolean"));
+    return env.Undefined();
+  }
+  const bool elplsz=info[5].As<Napi::Boolean>().Value();
+  double obspos[3];
+  if (!ReadCorrectionTuple(env,info[6],"azlcpo(obspos)",obspos)) return env.Undefined();
+  std::string obsctr;
+  if (!ReadCorrectionString(env,info[7],"azlcpo(obsctr)",&obsctr)) return env.Undefined();
+  std::string obsref;
+  if (!ReadCorrectionString(env,info[8],"azlcpo(obsref)",&obsref)) return env.Undefined();
+  double out[7]={0};
+  char err[tspice_backend_node::kErrMaxBytes];
+  tspice_backend_node::CspiceLock lock;
+  if (tspice_azlcpo(method.c_str(), target.c_str(), et, abcorr.c_str(), azccw, elplsz, obspos, obsctr.c_str(), obsref.c_str(),out,err,sizeof(err))) {
+    ThrowSpiceError(env,"CSPICE failed while calling azlcpo",err);
+    return env.Undefined();
+  }
+  return MakeNumberArray(env,out,7);
+}
+
+static Napi::Value Spkacs(const Napi::CallbackInfo& info) {
+  const Napi::Env env = info.Env();
+  if (info.Length() != 5) {
+    ThrowSpiceError(Napi::TypeError::New(env, "spkacs() expects 5 arguments"));
+    return env.Undefined();
+  }
+  int32_t target;
+  if (!ReadInt32Checked(env, info[0], "spkacs(target)", &target)) return env.Undefined();
+  double et;
+  if (!ReadCorrectionScalar(env, info[1], "spkacs(et)", &et)) return env.Undefined();
+  std::string ref;
+  if (!ReadCorrectionString(env, info[2], "spkacs(ref)", &ref)) return env.Undefined();
+  std::string abcorr;
+  if (!ReadCorrectionString(env, info[3], "spkacs(abcorr)", &abcorr)) return env.Undefined();
+  int32_t observer;
+  if (!ReadInt32Checked(env, info[4], "spkacs(observer)", &observer)) return env.Undefined();
+  double out[8] = {0};
+  char err[tspice_backend_node::kErrMaxBytes];
+  tspice_backend_node::CspiceLock lock;
+  if (tspice_spkacs(target, et, ref.c_str(), abcorr.c_str(), observer, out, err, sizeof(err)) != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling spkacs", err);
+    return env.Undefined();
+  }
+  return MakeNumberArray(env, out, 8);
+}
+
+static Napi::Value Spkapo(const Napi::CallbackInfo& info) {
+  const Napi::Env env = info.Env();
+  if (info.Length() != 5) {
+    ThrowSpiceError(Napi::TypeError::New(env, "spkapo() expects 5 arguments"));
+    return env.Undefined();
+  }
+  int32_t target;
+  if (!ReadInt32Checked(env, info[0], "spkapo(target)", &target)) return env.Undefined();
+  double et;
+  if (!ReadCorrectionScalar(env, info[1], "spkapo(et)", &et)) return env.Undefined();
+  std::string ref;
+  if (!ReadCorrectionString(env, info[2], "spkapo(ref)", &ref)) return env.Undefined();
+  double observerState[6];
+  if (!ReadCorrectionTuple(env, info[3], "spkapo(observerState)", observerState)) return env.Undefined();
+  std::string abcorr;
+  if (!ReadCorrectionString(env, info[4], "spkapo(abcorr)", &abcorr)) return env.Undefined();
+  double out[4] = {0};
+  char err[tspice_backend_node::kErrMaxBytes];
+  tspice_backend_node::CspiceLock lock;
+  if (tspice_spkapo(target, et, ref.c_str(), observerState, abcorr.c_str(), out, err, sizeof(err)) != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling spkapo", err);
+    return env.Undefined();
+  }
+  return MakeNumberArray(env, out, 4);
+}
+
+static Napi::Value Spkapp(const Napi::CallbackInfo& info) {
+  const Napi::Env env = info.Env();
+  if (info.Length() != 5) {
+    ThrowSpiceError(Napi::TypeError::New(env, "spkapp() expects 5 arguments"));
+    return env.Undefined();
+  }
+  int32_t target;
+  if (!ReadInt32Checked(env, info[0], "spkapp(target)", &target)) return env.Undefined();
+  double et;
+  if (!ReadCorrectionScalar(env, info[1], "spkapp(et)", &et)) return env.Undefined();
+  std::string ref;
+  if (!ReadCorrectionString(env, info[2], "spkapp(ref)", &ref)) return env.Undefined();
+  double observerState[6];
+  if (!ReadCorrectionTuple(env, info[3], "spkapp(observerState)", observerState)) return env.Undefined();
+  std::string abcorr;
+  if (!ReadCorrectionString(env, info[4], "spkapp(abcorr)", &abcorr)) return env.Undefined();
+  double out[7] = {0};
+  char err[tspice_backend_node::kErrMaxBytes];
+  tspice_backend_node::CspiceLock lock;
+  if (tspice_spkapp(target, et, ref.c_str(), observerState, abcorr.c_str(), out, err, sizeof(err)) != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling spkapp", err);
+    return env.Undefined();
+  }
+  return MakeNumberArray(env, out, 7);
+}
+
+static Napi::Value Spkaps(const Napi::CallbackInfo& info) {
+  const Napi::Env env = info.Env();
+  if (info.Length() != 6) {
+    ThrowSpiceError(Napi::TypeError::New(env, "spkaps() expects 6 arguments"));
+    return env.Undefined();
+  }
+  int32_t target;
+  if (!ReadInt32Checked(env, info[0], "spkaps(target)", &target)) return env.Undefined();
+  double et;
+  if (!ReadCorrectionScalar(env, info[1], "spkaps(et)", &et)) return env.Undefined();
+  std::string ref;
+  if (!ReadCorrectionString(env, info[2], "spkaps(ref)", &ref)) return env.Undefined();
+  std::string abcorr;
+  if (!ReadCorrectionString(env, info[3], "spkaps(abcorr)", &abcorr)) return env.Undefined();
+  double observerState[6];
+  if (!ReadCorrectionTuple(env, info[4], "spkaps(observerState)", observerState)) return env.Undefined();
+  double observerAcceleration[3];
+  if (!ReadCorrectionTuple(env, info[5], "spkaps(observerAcceleration)", observerAcceleration)) return env.Undefined();
+  double out[8] = {0};
+  char err[tspice_backend_node::kErrMaxBytes];
+  tspice_backend_node::CspiceLock lock;
+  if (tspice_spkaps(target, et, ref.c_str(), abcorr.c_str(), observerState, observerAcceleration, out, err, sizeof(err)) != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling spkaps", err);
+    return env.Undefined();
+  }
+  return MakeNumberArray(env, out, 8);
+}
+
+static Napi::Value Spkltc(const Napi::CallbackInfo& info) {
+  const Napi::Env env = info.Env();
+  if (info.Length() != 5) {
+    ThrowSpiceError(Napi::TypeError::New(env, "spkltc() expects 5 arguments"));
+    return env.Undefined();
+  }
+  int32_t target;
+  if (!ReadInt32Checked(env, info[0], "spkltc(target)", &target)) return env.Undefined();
+  double et;
+  if (!ReadCorrectionScalar(env, info[1], "spkltc(et)", &et)) return env.Undefined();
+  std::string ref;
+  if (!ReadCorrectionString(env, info[2], "spkltc(ref)", &ref)) return env.Undefined();
+  std::string abcorr;
+  if (!ReadCorrectionString(env, info[3], "spkltc(abcorr)", &abcorr)) return env.Undefined();
+  double observerState[6];
+  if (!ReadCorrectionTuple(env, info[4], "spkltc(observerState)", observerState)) return env.Undefined();
+  double out[8] = {0};
+  char err[tspice_backend_node::kErrMaxBytes];
+  tspice_backend_node::CspiceLock lock;
+  if (tspice_spkltc(target, et, ref.c_str(), abcorr.c_str(), observerState, out, err, sizeof(err)) != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling spkltc", err);
+    return env.Undefined();
+  }
+  return MakeNumberArray(env, out, 8);
+}
+
+static Napi::Value Stelab(const Napi::CallbackInfo& info) {
+  const Napi::Env env = info.Env();
+  if (info.Length() != 2) {
+    ThrowSpiceError(Napi::TypeError::New(env, "stelab() expects 2 arguments"));
+    return env.Undefined();
+  }
+  double position[3];
+  if (!ReadCorrectionTuple(env, info[0], "stelab(position)", position)) return env.Undefined();
+  double observerVelocity[3];
+  if (!ReadCorrectionTuple(env, info[1], "stelab(observerVelocity)", observerVelocity)) return env.Undefined();
+  double out[3] = {0};
+  char err[tspice_backend_node::kErrMaxBytes];
+  tspice_backend_node::CspiceLock lock;
+  if (tspice_stelab(position, observerVelocity, out, err, sizeof(err)) != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling stelab", err);
+    return env.Undefined();
+  }
+  return MakeNumberArray(env, out, 3);
+}
+
+static Napi::Value Stlabx(const Napi::CallbackInfo& info) {
+  const Napi::Env env = info.Env();
+  if (info.Length() != 2) {
+    ThrowSpiceError(Napi::TypeError::New(env, "stlabx() expects 2 arguments"));
+    return env.Undefined();
+  }
+  double position[3];
+  if (!ReadCorrectionTuple(env, info[0], "stlabx(position)", position)) return env.Undefined();
+  double observerVelocity[3];
+  if (!ReadCorrectionTuple(env, info[1], "stlabx(observerVelocity)", observerVelocity)) return env.Undefined();
+  double out[3] = {0};
+  char err[tspice_backend_node::kErrMaxBytes];
+  tspice_backend_node::CspiceLock lock;
+  if (tspice_stlabx(position, observerVelocity, out, err, sizeof(err)) != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling stlabx", err);
+    return env.Undefined();
+  }
+  return MakeNumberArray(env, out, 3);
+}
+
+static Napi::Value Ltime(const Napi::CallbackInfo& info) {
+  const Napi::Env env = info.Env();
+  if (info.Length() != 4) {
+    ThrowSpiceError(Napi::TypeError::New(env, "ltime() expects 4 arguments"));
+    return env.Undefined();
+  }
+  double etobs;
+  if (!ReadCorrectionScalar(env, info[0], "ltime(etobs)", &etobs)) return env.Undefined();
+  int32_t observer;
+  if (!ReadInt32Checked(env, info[1], "ltime(observer)", &observer)) return env.Undefined();
+  std::string dir;
+  if (!ReadCorrectionString(env, info[2], "ltime(dir)", &dir)) return env.Undefined();
+  int32_t target;
+  if (!ReadInt32Checked(env, info[3], "ltime(target)", &target)) return env.Undefined();
+  double out[2] = {0};
+  char err[tspice_backend_node::kErrMaxBytes];
+  tspice_backend_node::CspiceLock lock;
+  if (tspice_ltime(etobs, observer, dir.c_str(), target, out, err, sizeof(err)) != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling ltime", err);
+    return env.Undefined();
+  }
+  return MakeNumberArray(env, out, 2);
+}
+
 static Napi::Object Spkezr(const Napi::CallbackInfo& info) {
   Napi::Env env = info.Env();
 
@@ -1311,6 +1711,19 @@ void RegisterEphemeris(Napi::Env env, Napi::Object exports) {
   if (!SetExportChecked(env, exports, "oscelt", Napi::Function::New(env, Oscelt), __func__)) return;
   if (!SetExportChecked(env, exports, "oscltx", Napi::Function::New(env, Oscltx), __func__)) return;
   if (!SetExportChecked(env, exports, "prop2b", Napi::Function::New(env, Prop2b), __func__)) return;
+  if (!SetExportChecked(env, exports, "spkcpo", Napi::Function::New(env, Spkcpo), __func__)) return;
+  if (!SetExportChecked(env, exports, "spkcpt", Napi::Function::New(env, Spkcpt), __func__)) return;
+  if (!SetExportChecked(env, exports, "spkcvo", Napi::Function::New(env, Spkcvo), __func__)) return;
+  if (!SetExportChecked(env, exports, "spkcvt", Napi::Function::New(env, Spkcvt), __func__)) return;
+  if (!SetExportChecked(env, exports, "azlcpo", Napi::Function::New(env, Azlcpo), __func__)) return;
+  if (!SetExportChecked(env, exports, "spkacs", Napi::Function::New(env, Spkacs), __func__)) return;
+  if (!SetExportChecked(env, exports, "spkapo", Napi::Function::New(env, Spkapo), __func__)) return;
+  if (!SetExportChecked(env, exports, "spkapp", Napi::Function::New(env, Spkapp), __func__)) return;
+  if (!SetExportChecked(env, exports, "spkaps", Napi::Function::New(env, Spkaps), __func__)) return;
+  if (!SetExportChecked(env, exports, "spkltc", Napi::Function::New(env, Spkltc), __func__)) return;
+  if (!SetExportChecked(env, exports, "stelab", Napi::Function::New(env, Stelab), __func__)) return;
+  if (!SetExportChecked(env, exports, "stlabx", Napi::Function::New(env, Stlabx), __func__)) return;
+  if (!SetExportChecked(env, exports, "ltime", Napi::Function::New(env, Ltime), __func__)) return;
   if (!SetExportChecked(env, exports, "spkezr", Napi::Function::New(env, Spkezr), __func__)) return;
   if (!SetExportChecked(env, exports, "spkpos", Napi::Function::New(env, Spkpos), __func__)) return;
   if (!SetExportChecked(env, exports, "spkopn", Napi::Function::New(env, Spkopn), __func__)) return;

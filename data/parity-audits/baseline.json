@@ -1405,6 +1405,24 @@
       "nextAction": "Verify the combined source on both required lanes and canonical CI."
     },
     {
+      "id": "e08-spk-corrections",
+      "routines": [
+        "ltime_c",
+        "spkacs_c",
+        "spkapo_c",
+        "spkapp_c",
+        "spkaps_c",
+        "spkltc_c",
+        "stelab_c",
+        "stlabx_c"
+      ],
+      "dependsOn": [],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/770"
+      ],
+      "nextAction": "Verify the combined source on both required lanes and canonical CI."
+    },
+    {
       "id": "c14-text-command-state",
       "routines": [
         "rdtext_c",
@@ -1413,6 +1431,23 @@
       "dependsOn": [],
       "prs": [
         "https://github.com/rybosome/tspice/pull/772"
+      ],
+      "nextAction": "Verify the combined source on both required lanes and canonical CI."
+    },
+    {
+      "id": "e09-spk-relative-observers",
+      "routines": [
+        "azlcpo_c",
+        "spkcpo_c",
+        "spkcpt_c",
+        "spkcvo_c",
+        "spkcvt_c"
+      ],
+      "dependsOn": [
+        "e08-spk-corrections"
+      ],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/774"
       ],
       "nextAction": "Verify the combined source on both required lanes and canonical CI."
     },

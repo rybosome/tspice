@@ -316,3 +316,9 @@ export {
 } from "./spice-runtime/domains/spk-analytic.js";
 
 export { copySpk14Packets } from "./spice-runtime/domains/spk-streaming.js";
+
+export {
+  validateCorrectionString,
+  copyCorrectionInput,
+  decodeCorrectionResult,
+} from "./spice-runtime/domains/spk-corrections.js";

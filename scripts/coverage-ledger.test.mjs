@@ -94,11 +94,11 @@ test("baseline derives breadth and preserves direct/non-direct evidence", (t) =>
   assert.deepEqual(ledger.summary, {
     total: 652,
     eligible: 649,
-    implemented: 544,
-    planned: 105,
+    implemented: 557,
+    planned: 92,
     excluded: 3,
-    caseFiles: 544,
-    scenarios: 3837,
+    caseFiles: 557,
+    scenarios: 4001,
     wasmRawUnsupported: 0,
   });
   const functions = cFunctions(
@@ -622,7 +622,7 @@ test("maintained audit separates reviewed findings from verified backend executi
   const f = fixture(t);
   const ledger = f.build();
   assert.equal(ledger.audit.baselineRoutines, 162);
-  assert.equal(ledger.audit.expansionRoutines, 382);
+  assert.equal(ledger.audit.expansionRoutines, 395);
   // Each success route reaches its public C entrypoint. The three guarded paths
   // must also retain the linked numerical routine used to reject invalid input.
   for (const name of [

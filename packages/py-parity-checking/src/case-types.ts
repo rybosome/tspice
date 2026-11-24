@@ -5,6 +5,9 @@ import type {
   SpiceConicElements,
   SpiceEquinoctialElements,
   SpiceExtendedConicElements,
+  SpiceVector3,
+  SpkezrResult,
+  SpkposResult,
   FoundDlaDescriptor,
   KernelKindInput,
 } from "@rybosome/tspice-backend-contract";
@@ -2123,6 +2126,135 @@ export type StepEphemerisSpkezr = {
   observer: string;
 };
 
+export type StepEphemerisSpkcpo = {
+  op: "ephemeris.spkcpo";
+  target: string;
+  et: number;
+  outref: string;
+  refloc: string;
+  abcorr: string;
+  obspos: SpiceVector3;
+  obsctr: string;
+  obsref: string;
+};
+
+export type StepEphemerisSpkcpt = {
+  op: "ephemeris.spkcpt";
+  trgpos: SpiceVector3;
+  trgctr: string;
+  trgref: string;
+  et: number;
+  outref: string;
+  refloc: string;
+  abcorr: string;
+  obsrvr: string;
+};
+
+export type StepEphemerisSpkcvo = {
+  op: "ephemeris.spkcvo";
+  target: string;
+  et: number;
+  outref: string;
+  refloc: string;
+  abcorr: string;
+  obssta: SpiceStateVector;
+  obsepc: number;
+  obsctr: string;
+  obsref: string;
+};
+
+export type StepEphemerisSpkcvt = {
+  op: "ephemeris.spkcvt";
+  trgsta: SpiceStateVector;
+  trgepc: number;
+  trgctr: string;
+  trgref: string;
+  et: number;
+  outref: string;
+  refloc: string;
+  abcorr: string;
+  obsrvr: string;
+};
+
+export type StepEphemerisAzlcpo = {
+  op: "ephemeris.azlcpo";
+  method: string;
+  target: string;
+  et: number;
+  abcorr: string;
+  azccw: boolean;
+  elplsz: boolean;
+  obspos: SpiceVector3;
+  obsctr: string;
+  obsref: string;
+};
+
+export type StepEphemerisSpkacs = {
+  op: "ephemeris.spkacs";
+  target: number;
+  et: number;
+  ref: string;
+  abcorr: string;
+  observer: number;
+};
+
+export type StepEphemerisSpkapo = {
+  op: "ephemeris.spkapo";
+  target: number;
+  et: number;
+  ref: string;
+  observerState: SpiceStateVector;
+  abcorr: string;
+};
+
+export type StepEphemerisSpkapp = {
+  op: "ephemeris.spkapp";
+  target: number;
+  et: number;
+  ref: string;
+  observerState: SpiceStateVector;
+  abcorr: string;
+};
+
+export type StepEphemerisSpkaps = {
+  op: "ephemeris.spkaps";
+  target: number;
+  et: number;
+  ref: string;
+  abcorr: string;
+  observerState: SpiceStateVector;
+  observerAcceleration: SpiceVector3;
+};
+
+export type StepEphemerisSpkltc = {
+  op: "ephemeris.spkltc";
+  target: number;
+  et: number;
+  ref: string;
+  abcorr: string;
+  observerState: SpiceStateVector;
+};
+
+export type StepEphemerisStelab = {
+  op: "ephemeris.stelab";
+  position: SpiceVector3;
+  observerVelocity: SpiceVector3;
+};
+
+export type StepEphemerisStlabx = {
+  op: "ephemeris.stlabx";
+  position: SpiceVector3;
+  observerVelocity: SpiceVector3;
+};
+
+export type StepEphemerisLtime = {
+  op: "ephemeris.ltime";
+  etobs: number;
+  observer: number;
+  dir: string;
+  target: number;
+};
+
 export type StepEphemerisConics = {
   op: "ephemeris.conics";
   elts: SpiceConicElements;
@@ -4119,6 +4251,19 @@ export type WorkflowStep =
   | StepEphemerisProp2b
   | StepEphemerisGetelm
   | StepEphemerisEvsgp4
+  | StepEphemerisSpkcpo
+  | StepEphemerisSpkcpt
+  | StepEphemerisSpkcvo
+  | StepEphemerisSpkcvt
+  | StepEphemerisAzlcpo
+  | StepEphemerisSpkacs
+  | StepEphemerisSpkapo
+  | StepEphemerisSpkapp
+  | StepEphemerisSpkaps
+  | StepEphemerisSpkltc
+  | StepEphemerisStelab
+  | StepEphemerisStlabx
+  | StepEphemerisLtime
   | StepEphemerisSpkgeo
   | StepEphemerisSpkgps
   | StepEphemerisSpkobj
@@ -4826,6 +4971,19 @@ export type StepOutput =
       value: { epoch: number; elems: readonly number[] } | { short: string };
     }
   | { op: "ephemeris.evsgp4"; value: readonly number[] | { short: string } }
+  | { op: "ephemeris.spkcpo"; value: SpkezrResult }
+  | { op: "ephemeris.spkcpt"; value: SpkezrResult }
+  | { op: "ephemeris.spkcvo"; value: SpkezrResult }
+  | { op: "ephemeris.spkcvt"; value: SpkezrResult }
+  | { op: "ephemeris.azlcpo"; value: SpkezrResult }
+  | { op: "ephemeris.spkacs"; value: SpkezrResult & { dlt: number } }
+  | { op: "ephemeris.spkapo"; value: SpkposResult }
+  | { op: "ephemeris.spkapp"; value: SpkezrResult }
+  | { op: "ephemeris.spkaps"; value: SpkezrResult & { dlt: number } }
+  | { op: "ephemeris.spkltc"; value: SpkezrResult & { dlt: number } }
+  | { op: "ephemeris.stelab"; value: SpiceVector3 }
+  | { op: "ephemeris.stlabx"; value: SpiceVector3 }
+  | { op: "ephemeris.ltime"; value: { ettarg: number; elapsd: number } }
   | {
       op: "ephemeris.spkgeo";
       value: {

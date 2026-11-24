@@ -886,6 +886,33 @@ All take a live owned SPK writer and return void. [File layouts, runtime boundar
 
 All operations return void. [Packet shape, degree and lifecycle bounds, independent file reads](step8-spk-streaming.md)
 
+### Observer-relative SPK geometry
+
+| Public operation                                                             | Linked N0067 entry | Observation                                                                                                                                                                                                             |
+| ---------------------------------------------------------------------------- | ------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `spkcpo(target, et, outref, refloc, abcorr, obspos, obsctr, obsref)`         | `spkcpo_c`         | Return the six-component target state as observed from the supplied position fixed in the observer frame. Correct the target event and evaluate the output frame at the requested locus.                                |
+| `spkcpt(trgpos, trgctr, trgref, et, outref, refloc, abcorr, obsrvr)`         | `spkcpt_c`         | Return the apparent state of the supplied target point fixed in its local frame relative to an ephemeris observer. Evaluate the point at the corrected target epoch.                                                    |
+| `spkcvo(target, et, outref, refloc, abcorr, obssta, obsepc, obsctr, obsref)` | `spkcvo_c`         | Propagate the observer state from its own supplied epoch with constant velocity in the observer frame. Apply its six-dimensional frame transform, observer-center motion, aberration correction and output frame locus. |
+| `spkcvt(trgsta, trgepc, trgctr, trgref, et, outref, refloc, abcorr, obsrvr)` | `spkcvt_c`         | Propagate the local target state at its own epoch to the apparent target event. Transform both position and velocity, accounting for the source and output frames and target center.                                    |
+| `azlcpo(method, target, et, abcorr, azccw, elplsz, obspos, obsctr, obsref)`  | `azlcpo_c`         | Return topocentric range, azimuth, elevation and their three time derivatives relative to the ellipsoid-based local frame, plus one-way light time. azccw sets the azimuth direction and elplsz the elevation sign.     |
+
+The five methods each return an owned six-component `state` and scalar one-way `lt` in seconds. [Epochs, axes, units, error behavior and validation](step8-spk-relative.md)
+
+### SPK corrections and signal time
+
+| Method                                                                 | Direct canonical call | Output                                      |
+| ---------------------------------------------------------------------- | --------------------- | ------------------------------------------- |
+| `spkacs(target, et, ref, abcorr, observer)`                            | `spkacs_c`            | State, light time and light-time derivative |
+| `spkapo(target, et, ref, observerState, abcorr)`                       | `spkapo_c`            | Position and light time                     |
+| `spkapp(target, et, ref, observerState, abcorr)`                       | `spkapp_c`            | Legacy state and light time                 |
+| `spkaps(target, et, ref, abcorr, observerState, observerAcceleration)` | `spkaps_c`            | State, light time and light-time derivative |
+| `spkltc(target, et, ref, abcorr, observerState)`                       | `spkltc_c`            | State, light time and light-time derivative |
+| `stelab(position, observerVelocity)`                                   | `stelab_c`            | Corrected position                          |
+| `stlabx(position, observerVelocity)`                                   | `stlabx_c`            | Corrected position                          |
+| `ltime(etobs, observer, dir, target)`                                  | `ltime_c`             | Target epoch and elapsed signal time        |
+
+[Units, source guards, independent ABI and observed scientific behavior](step8-spk-corrections.md)
+
 ## Domain: `file-io` readers (`FileIoApi`)
 
 | Raw method | Linked N0067 entry | Result or effect                                                                                                                                                                                                                                                |
