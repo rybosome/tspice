@@ -3,6 +3,7 @@ import {
   releaseClientTextReaders,
   createSpice,
   createSpiceAsync,
+  disposeOwnedBackend,
   type CreateSpiceAsyncOptions,
   type CreateSpiceOptions,
 } from "../spice.js";
@@ -426,6 +427,12 @@ function createBuilder(state: BuilderState): SpiceClientsBuilder {
           releaseClientEkLoads(baseSpice);
           // Close this client’s remaining shared text-reader claims before deleting staged paths.
           releaseClientTextReaders(baseSpice);
+          // Release instance-owned native handles and signal claims before clearing kernels.
+          try {
+            disposeOwnedBackend(baseSpice);
+          } catch {
+            /* continue best-effort cleanup */
+          }
           // In-process: best-effort kernel cleanup.
           try {
             raw.kit.kclear();
@@ -503,6 +510,12 @@ function createBuilder(state: BuilderState): SpiceClientsBuilder {
           releaseClientEkLoads(baseSpice);
           // Close this client’s remaining shared text-reader claims before deleting staged paths.
           releaseClientTextReaders(baseSpice);
+          // Release instance-owned native handles and signal claims before clearing kernels.
+          try {
+            disposeOwnedBackend(baseSpice);
+          } catch {
+            /* continue best-effort cleanup */
+          }
           // In-process: best-effort kernel cleanup.
           try {
             await spice.kit.kclear();

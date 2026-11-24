@@ -52,6 +52,7 @@ export function createNodeBackend(): SpiceBackend & { kind: "node" } {
     ids: new Set<number>(),
     windows: new Set<number>(),
   };
+  const spk14Degrees = new Map<SpiceHandle, number>();
   const timeApi = createTimeApi(native);
   const fileIoApi = createFileIoApi(native, spiceHandles, stager, outputs);
 
@@ -70,7 +71,13 @@ export function createNodeBackend(): SpiceBackend & { kind: "node" } {
         outputs,
         pckDestinations,
       ),
-      ...createEphemerisApi(native, spiceHandles, stager, outputs),
+      ...createEphemerisApi(
+        native,
+        spiceHandles,
+        stager,
+        outputs,
+        spk14Degrees,
+      ),
       ...createGeometryApi(native),
       ...createGeometryGfApi(native),
       ...createStringsApi(native),
@@ -126,9 +133,17 @@ export function createNodeBackend(): SpiceBackend & { kind: "node" } {
           ) {
             // Ensure VirtualOutputStager bookkeeping stays consistent.
             try {
-              if (entry.kind === "SPK") backend.raw.spkcls(handle);
-              else if (entry.kind === "PCK-WRITER") backend.raw.pckcls(handle);
-              else backend.raw.ckcls(handle);
+              if (entry.kind === "SPK") {
+                if (spk14Degrees.has(handle)) {
+                  native.spk14FinishIfActive(entry.nativeHandle);
+                  spk14Degrees.delete(handle);
+                }
+                backend.raw.spkcls(handle);
+              } else if (entry.kind === "PCK-WRITER") {
+                backend.raw.pckcls(handle);
+              } else {
+                backend.raw.ckcls(handle);
+              }
             } catch (error) {
               if (
                 typeof error !== "object" ||

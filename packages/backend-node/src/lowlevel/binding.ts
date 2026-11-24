@@ -1737,6 +1737,38 @@ export function getNodeBinding(): NativeAddon {
     "Expected native addon to export spkw18",
   );
   invariant(
+    typeof native.spkw05 === "function",
+    "Expected native addon to export spkw05",
+  );
+  invariant(
+    typeof native.spkw10 === "function",
+    "Expected native addon to export spkw10",
+  );
+  invariant(
+    typeof native.spkw15 === "function",
+    "Expected native addon to export spkw15",
+  );
+  invariant(
+    typeof native.spkw17 === "function",
+    "Expected native addon to export spkw17",
+  );
+  invariant(
+    typeof native.spk14b === "function",
+    "Expected native addon to export spk14b",
+  );
+  invariant(
+    typeof native.spk14a === "function",
+    "Expected native addon to export spk14a",
+  );
+  invariant(
+    typeof native.spk14e === "function",
+    "Expected native addon to export spk14e",
+  );
+  invariant(
+    typeof native.spk14FinishIfActive === "function",
+    "Expected native addon to export spk14FinishIfActive",
+  );
+  invariant(
     typeof native.spkw08 === "function",
     "Expected native addon to export spkw08(handle, body, center, frame, first, last, segid, degree, states, epoch1, step)",
   );

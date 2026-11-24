@@ -308,3 +308,11 @@ export {
 export { validateSpkWriterFields as validateSpkChebyshevFields } from "./spice-runtime/domains/spk-chebyshev.js";
 
 export { snapshotSpkInterpolation } from "./spice-runtime/domains/spk-interpolation.js";
+export {
+  packSpk05,
+  packSpk10,
+  packSpk15,
+  packSpk17,
+} from "./spice-runtime/domains/spk-analytic.js";
+
+export { copySpk14Packets } from "./spice-runtime/domains/spk-streaming.js";

@@ -321,6 +321,13 @@ import ephemerisSpkw09CasesRaw from "./ephemeris/spkw09.cases.json" with { type:
 import ephemerisSpkw12CasesRaw from "./ephemeris/spkw12.cases.json" with { type: "json" };
 import ephemerisSpkw13CasesRaw from "./ephemeris/spkw13.cases.json" with { type: "json" };
 import ephemerisSpkw18CasesRaw from "./ephemeris/spkw18.cases.json" with { type: "json" };
+import ephemerisSpkw05CasesRaw from "./ephemeris/spkw05.cases.json" with { type: "json" };
+import ephemerisSpkw10CasesRaw from "./ephemeris/spkw10.cases.json" with { type: "json" };
+import ephemerisSpkw15CasesRaw from "./ephemeris/spkw15.cases.json" with { type: "json" };
+import ephemerisSpkw17CasesRaw from "./ephemeris/spkw17.cases.json" with { type: "json" };
+import ephemerisSpk14bCasesRaw from "./ephemeris/spk14b.cases.json" with { type: "json" };
+import ephemerisSpk14aCasesRaw from "./ephemeris/spk14a.cases.json" with { type: "json" };
+import ephemerisSpk14eCasesRaw from "./ephemeris/spk14e.cases.json" with { type: "json" };
 import ephemerisSpkw08CasesRaw from "./ephemeris/spkw08.cases.json" with { type: "json" };
 import { errorCases } from "./error/index.js";
 import { framesCases } from "./frames/index.js";
@@ -829,6 +836,13 @@ export const ephemerisCases: ParityCase[] = [
   ...(ephemerisSpkw12CasesRaw as ParityCase[]),
   ...(ephemerisSpkw13CasesRaw as ParityCase[]),
   ...(ephemerisSpkw18CasesRaw as ParityCase[]),
+  ...(ephemerisSpkw05CasesRaw as ParityCase[]),
+  ...(ephemerisSpkw10CasesRaw as ParityCase[]),
+  ...(ephemerisSpkw15CasesRaw as ParityCase[]),
+  ...(ephemerisSpkw17CasesRaw as ParityCase[]),
+  ...(ephemerisSpk14bCasesRaw as ParityCase[]),
+  ...(ephemerisSpk14aCasesRaw as ParityCase[]),
+  ...(ephemerisSpk14eCasesRaw as ParityCase[]),
   ...(ephemerisSpkw08CasesRaw as ParityCase[]),
 ];
 export const ekCases: ParityCase[] = [

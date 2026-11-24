@@ -935,6 +935,68 @@ export type NativeAddon = {
     packets: Float64Array,
     epochs: Float64Array,
   ): void;
+  spkw05(
+    handle: number,
+    body: number,
+    center: number,
+    frame: string,
+    first: number,
+    last: number,
+    segid: string,
+    n: number,
+    data: Float64Array,
+  ): void;
+  spkw10(
+    handle: number,
+    body: number,
+    center: number,
+    frame: string,
+    first: number,
+    last: number,
+    segid: string,
+    n: number,
+    data: Float64Array,
+  ): void;
+  spkw15(
+    handle: number,
+    body: number,
+    center: number,
+    frame: string,
+    first: number,
+    last: number,
+    segid: string,
+    n: number,
+    data: Float64Array,
+  ): void;
+  spkw17(
+    handle: number,
+    body: number,
+    center: number,
+    frame: string,
+    first: number,
+    last: number,
+    segid: string,
+    n: number,
+    data: Float64Array,
+  ): void;
+  spk14b(
+    handle: number,
+    segid: string,
+    body: number,
+    center: number,
+    frame: string,
+    first: number,
+    last: number,
+    degree: number,
+  ): void;
+  spk14a(
+    handle: number,
+    count: number,
+    records: Float64Array,
+    epochs: Float64Array,
+  ): void;
+  spk14e(handle: number): void;
+  spk14FinishIfActive(handle: number): void;
   spkw08(
     handle: number,
     body: number,

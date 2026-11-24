@@ -865,6 +865,27 @@ The audit retains the real cookbook fixture and adds a repository-authored two-p
 The input arrays retain row-major order. Output extent and the expected input
 lengths depend on each routine's dimension order. [Shapes, signed dimensions and independent observations](step8-general-matrices.md)
 
+### Analytic SPK writers
+
+| Raw method                                                                                                  | CSPICE route | Record                                                                                                                                                                                                                                                  |
+| ----------------------------------------------------------------------------------------------------------- | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `spkw05(handle, body, center, frame, first, last, segid, gm, states, epochs)`                               | `spkw05_c`   | Type 5 stores Cartesian states, increasing TDB sample epochs and central GM. Evaluation propagates neighbouring Keplerian states, blends with a derivative contribution to velocity, and extrapolates from the terminal state.                          |
+| `spkw10(handle, body, center, frame, first, last, segid, consts, elems, epochs)`                            | `spkw10_c`   | Type 10 stores eight geophysical constants and generic fourteen-word packets containing ten TLE values and four generated nutation quantities, indexed by increasing reference epoch. Near-Earth and deep-space samples evaluate in J2000 with the LSK. |
+| `spkw15(handle, body, center, frame, first, last, segid, epoch, tp, pa, p, ecc, j2flg, pv, gm, j2, radius)` | `spkw15_c`   | Type 15 normalizes three directions and writes a 16-word precessing-conic record using semilatus rectum, eccentricity, J2 flag and physical constants. Its evaluator applies distinct modes for secular node regression and apsidal precession.         |
+| `spkw17(handle, body, center, frame, first, last, segid, epoch, eqel, rapol, decpol)`                       | `spkw17_c`   | Type 17 writes the epoch, nine equinoctial elements and two pole angles. Its Cartesian evaluator applies all terms in the tilted reference plane and includes angular rates in the returned velocity.                                                   |
+
+All take a live owned SPK writer and return void. [File layouts, runtime boundaries and numerical comparisons](step8-spk-analytic.md)
+
+### Streaming SPK writers
+
+| Public operation                                                  | Linked N0067 entry | Segment action                                                                                                                                                                                                                                |
+| ----------------------------------------------------------------- | ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `spk14b(handle, segid, body, center, frame, first, last, degree)` | `spk14b_c`         | Begin a streamed type 14 generic DAF segment on an owned open SPK writer. Its descriptor and single logical constant define coverage, reference frame and fixed packet width 2+6*(degree+1).                                                  |
+| `spk14a(handle, count, records, epochs)`                          | `spk14a_c`         | Append complete time-tagged Chebyshev records to the actual open stream. References have variable spacings and must be strictly increasing within and across calls; the six polynomials independently encode Cartesian position and velocity. |
+| `spk14e(handle)`                                                  | `spk14e_c`         | Finish a type 14 generic segment. The metadata and reference directory become readable after file close. The same file handle can immediately start another segment; ending an empty stream yields legitimate metadata-only coverage.         |
+
+All operations return void. [Packet shape, degree and lifecycle bounds, independent file reads](step8-spk-streaming.md)
+
 ## Domain: `file-io` readers (`FileIoApi`)
 
 | Raw method | Linked N0067 entry | Result or effect                                                                                                                                                                                                                                                |

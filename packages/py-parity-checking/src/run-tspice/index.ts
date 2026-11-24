@@ -47,6 +47,13 @@ export function runCaseInTspice(
           step.op === "ephemeris.spkw12" ||
           step.op === "ephemeris.spkw13" ||
           step.op === "ephemeris.spkw18" ||
+          step.op === "ephemeris.spkw05" ||
+          step.op === "ephemeris.spkw10" ||
+          step.op === "ephemeris.spkw15" ||
+          step.op === "ephemeris.spkw17" ||
+          step.op === "ephemeris.spk14b" ||
+          step.op === "ephemeris.spk14a" ||
+          step.op === "ephemeris.spk14e" ||
           step.op === "ephemeris.spkw20",
       )
         ? path.basename(context.paths.scratchRoot)

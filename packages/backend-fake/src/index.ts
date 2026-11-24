@@ -2296,6 +2296,27 @@ export function createFakeBackend(
     spkw18: () => {
       throw new Error("Fake backend: spkw18() is not implemented");
     },
+    spkw05: () => {
+      throw new Error("Fake backend: spkw05() is not implemented");
+    },
+    spkw10: () => {
+      throw new Error("Fake backend: spkw10() is not implemented");
+    },
+    spkw15: () => {
+      throw new Error("Fake backend: spkw15() is not implemented");
+    },
+    spkw17: () => {
+      throw new Error("Fake backend: spkw17() is not implemented");
+    },
+    spk14b: () => {
+      throw new Error("Fake backend: spk14b() is not implemented");
+    },
+    spk14a: () => {
+      throw new Error("Fake backend: spk14a() is not implemented");
+    },
+    spk14e: () => {
+      throw new Error("Fake backend: spk14e() is not implemented");
+    },
     spkw08: (
       _handle: SpiceHandle,
       _body: number,

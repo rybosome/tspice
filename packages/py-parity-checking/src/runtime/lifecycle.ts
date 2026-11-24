@@ -63,6 +63,10 @@ export function finalizeCaseLifecycle(context: RunTspiceContext): void {
     resetBestEffort(context);
     for (const [id, handle] of context.state.ephemeris.spkHandles) {
       try {
+        if (context.state.ephemeris.openSpk14.has(handle)) {
+          context.spice.raw.spk14e(handle);
+          context.state.ephemeris.openSpk14.delete(handle);
+        }
         context.spice.raw.spkcls(handle);
         context.state.ephemeris.spkHandles.delete(id);
       } catch {

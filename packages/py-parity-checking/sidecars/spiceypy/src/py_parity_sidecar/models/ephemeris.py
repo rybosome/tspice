@@ -327,3 +327,99 @@ class StepEphemerisSpkw18:
     degree: int
     packets: list[float]
     epochs: list[float]
+
+
+@dataclass(frozen=True)
+class StepEphemerisSpkw05:
+    op: Literal["ephemeris.spkw05"]
+    handleId: str
+    body: int
+    center: int
+    frame: str
+    first: float
+    last: float
+    segid: str
+    gm: float
+    states: list[float]
+    epochs: list[float]
+
+
+@dataclass(frozen=True)
+class StepEphemerisSpkw10:
+    op: Literal["ephemeris.spkw10"]
+    handleId: str
+    body: int
+    center: int
+    frame: str
+    first: float
+    last: float
+    segid: str
+    consts: list[float]
+    elems: list[float]
+    epochs: list[float]
+
+
+@dataclass(frozen=True)
+class StepEphemerisSpkw15:
+    op: Literal["ephemeris.spkw15"]
+    handleId: str
+    body: int
+    center: int
+    frame: str
+    first: float
+    last: float
+    segid: str
+    epoch: float
+    tp: tuple[float,float,float]
+    pa: tuple[float,float,float]
+    p: float
+    ecc: float
+    j2flg: float
+    pv: tuple[float,float,float]
+    gm: float
+    j2: float
+    radius: float
+
+
+@dataclass(frozen=True)
+class StepEphemerisSpkw17:
+    op: Literal["ephemeris.spkw17"]
+    handleId: str
+    body: int
+    center: int
+    frame: str
+    first: float
+    last: float
+    segid: str
+    epoch: float
+    eqel: list[float]
+    rapol: float
+    decpol: float
+
+
+@dataclass(frozen=True)
+class StepEphemerisSpk14b:
+    op: Literal["ephemeris.spk14b"]
+    handleId: str
+    segid: str
+    body: int
+    center: int
+    frame: str
+    first: float
+    last: float
+    degree: int
+
+
+@dataclass(frozen=True)
+class StepEphemerisSpk14a:
+    op: Literal["ephemeris.spk14a"]
+    handleId: str
+    count: int
+    records: list[float]
+    epochs: list[float]
+
+
+@dataclass(frozen=True)
+class StepEphemerisSpk14e:
+    op: Literal["ephemeris.spk14e"]
+    handleId: str

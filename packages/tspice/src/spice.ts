@@ -23,6 +23,18 @@ const ownedReaderCleanup = new WeakMap<Spice | SpiceAsync, () => void>();
 export function releaseClientTextReaders(spice: Spice | SpiceAsync): void {
   ownedReaderCleanup.get(spice)?.();
 }
+
+const ownedDisposers = new WeakMap<Spice | SpiceAsync, () => void>();
+
+/** Release the in-process backend created by an owning client. */
+export function disposeOwnedBackend(spice: Spice | SpiceAsync): void {
+  const dispose = ownedDisposers.get(spice);
+  if (dispose) {
+    ownedDisposers.delete(spice);
+    dispose();
+  }
+}
+
 export type CreateSpiceOptions = CreateBackendOptions & {
   /**
    * If provided, `createSpice()` will wrap this backend instead of creating a new one.
@@ -140,6 +152,9 @@ export async function createSpice(options: CreateSpiceOptions): Promise<Spice> {
     ownedReaderCleanup.set(spice, () =>
       Reflect.apply(release, backend.raw, []),
     );
+
+  if (!options.backendInstance && backend.disposeAll)
+    ownedDisposers.set(spice, backend.disposeAll.bind(backend));
   return spice;
 }
 
@@ -191,5 +206,7 @@ export async function createSpiceAsync(
   };
   ekDisposers.set(asyncSpice, () => releaseClientEkLoads(sync));
   ownedReaderCleanup.set(asyncSpice, () => releaseClientTextReaders(sync));
+  const dispose = ownedDisposers.get(sync);
+  if (dispose) ownedDisposers.set(asyncSpice, dispose);
   return asyncSpice;
 }

@@ -14,6 +14,12 @@ import {
   copySpkChebyshevData,
   snapshotSpkInterpolation,
   validateSpkWriterFields,
+  packSpk05,
+  packSpk10,
+  packSpk15,
+  packSpk17,
+  copySpk14Packets,
+  validateSpkChebyshevFields,
   assertSpiceInt32,
   copyOrbitalTuple,
   copySpkPackedDescriptor,
@@ -115,6 +121,7 @@ export function createEphemerisApi(
   handles: SpiceHandleRegistry,
   stager: KernelStager,
   outputs: VirtualOutputStager,
+  spk14Degrees = new Map<SpiceHandle, number>(),
 ): EphemerisApi {
   const virtualOutputByHandle = new Map<SpiceHandle, VirtualOutput>();
 
@@ -695,6 +702,119 @@ export function createEphemerisApi(
         input.samples,
         input.epochs,
       );
+    },
+    spkw05: (
+      handle,
+      body,
+      center,
+      frame,
+      first,
+      last,
+      segid,
+      gm,
+      states,
+      epochs,
+    ) => {
+      const actual = handles.lookup(handle, ["SPK"], "spkw05").nativeHandle;
+      validateSpkChebyshevFields(body, center, frame, segid, first, last);
+      const { n, data } = packSpk05(gm, states, epochs);
+      native.spkw05(actual, body, center, frame, first, last, segid, n, data);
+    },
+    spkw10: (
+      handle,
+      body,
+      center,
+      frame,
+      first,
+      last,
+      segid,
+      consts,
+      elems,
+      epochs,
+    ) => {
+      const actual = handles.lookup(handle, ["SPK"], "spkw10").nativeHandle;
+      validateSpkChebyshevFields(body, center, frame, segid, first, last);
+      const { n, data } = packSpk10(consts, elems, epochs);
+      native.spkw10(actual, body, center, frame, first, last, segid, n, data);
+    },
+    spkw15: (
+      handle,
+      body,
+      center,
+      frame,
+      first,
+      last,
+      segid,
+      epoch,
+      tp,
+      pa,
+      p,
+      ecc,
+      j2flg,
+      pv,
+      gm,
+      j2,
+      radius,
+    ) => {
+      const actual = handles.lookup(handle, ["SPK"], "spkw15").nativeHandle;
+      validateSpkChebyshevFields(body, center, frame, segid, first, last);
+      const { n, data } = packSpk15(
+        epoch,
+        tp,
+        pa,
+        p,
+        ecc,
+        j2flg,
+        pv,
+        gm,
+        j2,
+        radius,
+      );
+      native.spkw15(actual, body, center, frame, first, last, segid, n, data);
+    },
+    spkw17: (
+      handle,
+      body,
+      center,
+      frame,
+      first,
+      last,
+      segid,
+      epoch,
+      eqel,
+      rapol,
+      decpol,
+    ) => {
+      const actual = handles.lookup(handle, ["SPK"], "spkw17").nativeHandle;
+      validateSpkChebyshevFields(body, center, frame, segid, first, last);
+      const { n, data } = packSpk17(epoch, eqel, rapol, decpol);
+      native.spkw17(actual, body, center, frame, first, last, segid, n, data);
+    },
+    spk14b: (handle, segid, body, center, frame, first, last, degree) => {
+      const h = handles.lookup(handle, ["SPK"], "spk14b").nativeHandle;
+      assertSpiceInt32(degree, "degree");
+      validateSpkChebyshevFields(body, center, frame, segid, first, last);
+      if (degree > 357913939)
+        throw new RangeError(
+          "Type 14 record width exceeds signed CSPICE indexing",
+        );
+      native.spk14b(h, segid, body, center, frame, first, last, degree);
+      spk14Degrees.set(handle, degree);
+    },
+    spk14a: (handle, count, records, epochs) => {
+      const h = handles.lookup(handle, ["SPK"], "spk14a").nativeHandle;
+      const { data, times } = copySpk14Packets(
+        spk14Degrees.get(handle),
+        count,
+        records,
+        epochs,
+      );
+      native.spk14a(h, count, data, times);
+    },
+    spk14e: (handle) => {
+      const h = handles.lookup(handle, ["SPK"], "spk14e").nativeHandle;
+      native.spk14e(h);
+      spk14Degrees.delete(handle);
     },
     spkw08: (
       handle: SpiceHandle,

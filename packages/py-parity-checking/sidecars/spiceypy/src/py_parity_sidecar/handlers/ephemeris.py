@@ -43,6 +43,13 @@ from ..models import (
     StepEphemerisSpkw12,
     StepEphemerisSpkw13,
     StepEphemerisSpkw18,
+    StepEphemerisSpkw05,
+    StepEphemerisSpkw10,
+    StepEphemerisSpkw15,
+    StepEphemerisSpkw17,
+    StepEphemerisSpk14b,
+    StepEphemerisSpk14a,
+    StepEphemerisSpk14e,
     StepEphemerisSpkw08,
     StepOutput,
     WorkflowStep,
@@ -409,6 +416,24 @@ def run_ephemeris_step(step: WorkflowStep, context: SidecarRuntimeContext) -> St
 
     if isinstance(step, (StepEphemerisSpkw09, StepEphemerisSpkw12, StepEphemerisSpkw13, StepEphemerisSpkw18)):
         write_interpolated_spk(_require_spk_handle(context, step.handleId), step)
+        return StepOutput(op=step.op, value=None)
+
+    if isinstance(step,(StepEphemerisSpkw05,StepEphemerisSpkw10,StepEphemerisSpkw15,StepEphemerisSpkw17)):
+        from ..analytic_spk_oracle import write_analytic
+        handle = _require_spk_handle(context, step.handleId)
+        state = context.state.ephemeris
+        if isinstance(step, StepEphemerisSpkw10):
+            from ..streaming_spk_oracle import check_generic_begin
+            check_generic_begin(state, handle, step.segid, streaming=False)
+            state.spk14_last = None
+        elif handle in state.spk14_degrees:
+            raise ValueError("Finish the active type 14 stream first")
+        write_analytic(handle, step)
+        return StepOutput(op=step.op,value=None)
+
+    if isinstance(step, (StepEphemerisSpk14b, StepEphemerisSpk14a, StepEphemerisSpk14e)):
+        from ..streaming_spk_oracle import stream
+        stream(context.state.ephemeris, _require_spk_handle(context, step.handleId), step)
         return StepOutput(op=step.op, value=None)
 
     if isinstance(step, StepEphemerisSpkw08):
