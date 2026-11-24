@@ -252,7 +252,9 @@ async function main() {
   // override with only headers and libraries uses the pinned source cache.
   let sourceDir = path.join(cspiceDir, "src", "cspice");
   const requiredSources = ["rdtext.c", "spkacs.c"];
-  if (requiredSources.some((file) => !fs.existsSync(path.join(sourceDir, file)))) {
+  if (
+    requiredSources.some((file) => !fs.existsSync(path.join(sourceDir, file)))
+  ) {
     const root = getRepoRoot();
     execFileSync(
       process.execPath,
