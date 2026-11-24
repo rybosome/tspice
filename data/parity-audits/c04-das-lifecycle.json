@@ -1249,6 +1249,242 @@
       "url": "https://github.com/rybosome/tspice/actions/runs/45127597533/job/137535439275",
       "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 7054 live comparisons without unexpected skips.",
       "historical": true
+    },
+    {
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "b0bd872209fd6c3cca84b07cc16be64e79fff7f2ab23aa9c3d75907ba3c2e16c",
+      "caseIds": [
+        "file-io-dashfn-full-logical-path",
+        "file-io-dashfn-reader",
+        "file-io-dashfn-short",
+        "file-io-dashfn-unnamed",
+        "file-io-dashfn-width",
+        "file-io-dashfs-authored-mesh",
+        "file-io-dashfs-dsk-with-comments",
+        "file-io-dashfs-full-ek",
+        "file-io-dashfs-two-claims",
+        "file-io-dashfs-zero",
+        "file-io-daslla-authored-mesh",
+        "file-io-daslla-dsk-with-comments",
+        "file-io-daslla-full-ek",
+        "file-io-daslla-two-claims",
+        "file-io-daslla-zero",
+        "file-io-dasllc-clean-writer",
+        "file-io-dasllc-flush",
+        "file-io-dasllc-read-claim",
+        "file-io-dasllc-scratch",
+        "file-io-dasonw-blank-type",
+        "file-io-dasonw-empty-name",
+        "file-io-dasonw-empty-type",
+        "file-io-dasonw-existing-file",
+        "file-io-dasonw-negative-records",
+        "file-io-dasonw-record-and-persistence",
+        "file-io-dasonw-two-new-files",
+        "file-io-dasonw-type-and-name-width",
+        "file-io-dasops-cleanup-on-failure",
+        "file-io-dasops-scratch-metadata",
+        "file-io-dasops-two-claims",
+        "file-io-dasopw-missing",
+        "file-io-dasopw-read-conflict",
+        "file-io-dasopw-reopen-modify",
+        "file-io-dasopw-write-conflict",
+        "file-io-dasrfr-authored-mesh",
+        "file-io-dasrfr-dsk-with-comments",
+        "file-io-dasrfr-full-ek",
+        "file-io-dasrfr-idwlen-short",
+        "file-io-dasrfr-ifnlen-short",
+        "file-io-dasrfr-independent-widths",
+        "file-io-dasrfr-two-claims",
+        "file-io-dasrfr-zero",
+        "file-io-daswbr-flush",
+        "file-io-daswbr-ordinary",
+        "file-io-daswbr-reader",
+        "file-io-daswbr-scratch"
+      ],
+      "id": "local-cp04-3c3e3f368191-node",
+      "kind": "local",
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 3c3e3f368191d553e84ecc599d449055df985b1c. The native-required lane completed 8056 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45336611602/job/138250075470"
+    },
+    {
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "b0bd872209fd6c3cca84b07cc16be64e79fff7f2ab23aa9c3d75907ba3c2e16c",
+      "caseIds": [
+        "file-io-dashfn-full-logical-path",
+        "file-io-dashfn-reader",
+        "file-io-dashfn-short",
+        "file-io-dashfn-unnamed",
+        "file-io-dashfn-width",
+        "file-io-dashfs-authored-mesh",
+        "file-io-dashfs-dsk-with-comments",
+        "file-io-dashfs-full-ek",
+        "file-io-dashfs-two-claims",
+        "file-io-dashfs-zero",
+        "file-io-daslla-authored-mesh",
+        "file-io-daslla-dsk-with-comments",
+        "file-io-daslla-full-ek",
+        "file-io-daslla-two-claims",
+        "file-io-daslla-zero",
+        "file-io-dasllc-clean-writer",
+        "file-io-dasllc-flush",
+        "file-io-dasllc-read-claim",
+        "file-io-dasllc-scratch",
+        "file-io-dasonw-blank-type",
+        "file-io-dasonw-empty-name",
+        "file-io-dasonw-empty-type",
+        "file-io-dasonw-existing-file",
+        "file-io-dasonw-negative-records",
+        "file-io-dasonw-record-and-persistence",
+        "file-io-dasonw-two-new-files",
+        "file-io-dasonw-type-and-name-width",
+        "file-io-dasops-cleanup-on-failure",
+        "file-io-dasops-scratch-metadata",
+        "file-io-dasops-two-claims",
+        "file-io-dasopw-missing",
+        "file-io-dasopw-read-conflict",
+        "file-io-dasopw-reopen-modify",
+        "file-io-dasopw-write-conflict",
+        "file-io-dasrfr-authored-mesh",
+        "file-io-dasrfr-dsk-with-comments",
+        "file-io-dasrfr-full-ek",
+        "file-io-dasrfr-idwlen-short",
+        "file-io-dasrfr-ifnlen-short",
+        "file-io-dasrfr-independent-widths",
+        "file-io-dasrfr-two-claims",
+        "file-io-dasrfr-zero",
+        "file-io-daswbr-flush",
+        "file-io-daswbr-ordinary",
+        "file-io-daswbr-reader",
+        "file-io-daswbr-scratch"
+      ],
+      "id": "ci-cp04-3c3e3f368191-node",
+      "kind": "ci",
+      "commit": "5759b72e80d904295926aa968ee1c07006abdf51",
+      "url": "https://github.com/rybosome/tspice/actions/runs/45348374307/job/138288412178",
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 8056 live comparisons without unexpected skips."
+    },
+    {
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "b0bd872209fd6c3cca84b07cc16be64e79fff7f2ab23aa9c3d75907ba3c2e16c",
+      "caseIds": [
+        "file-io-dashfn-full-logical-path",
+        "file-io-dashfn-reader",
+        "file-io-dashfn-short",
+        "file-io-dashfn-unnamed",
+        "file-io-dashfn-width",
+        "file-io-dashfs-authored-mesh",
+        "file-io-dashfs-dsk-with-comments",
+        "file-io-dashfs-full-ek",
+        "file-io-dashfs-two-claims",
+        "file-io-dashfs-zero",
+        "file-io-daslla-authored-mesh",
+        "file-io-daslla-dsk-with-comments",
+        "file-io-daslla-full-ek",
+        "file-io-daslla-two-claims",
+        "file-io-daslla-zero",
+        "file-io-dasllc-clean-writer",
+        "file-io-dasllc-flush",
+        "file-io-dasllc-read-claim",
+        "file-io-dasllc-scratch",
+        "file-io-dasonw-blank-type",
+        "file-io-dasonw-empty-name",
+        "file-io-dasonw-empty-type",
+        "file-io-dasonw-existing-file",
+        "file-io-dasonw-negative-records",
+        "file-io-dasonw-record-and-persistence",
+        "file-io-dasonw-two-new-files",
+        "file-io-dasonw-type-and-name-width",
+        "file-io-dasops-cleanup-on-failure",
+        "file-io-dasops-scratch-metadata",
+        "file-io-dasops-two-claims",
+        "file-io-dasopw-missing",
+        "file-io-dasopw-read-conflict",
+        "file-io-dasopw-reopen-modify",
+        "file-io-dasopw-write-conflict",
+        "file-io-dasrfr-authored-mesh",
+        "file-io-dasrfr-dsk-with-comments",
+        "file-io-dasrfr-full-ek",
+        "file-io-dasrfr-idwlen-short",
+        "file-io-dasrfr-ifnlen-short",
+        "file-io-dasrfr-independent-widths",
+        "file-io-dasrfr-two-claims",
+        "file-io-dasrfr-zero",
+        "file-io-daswbr-flush",
+        "file-io-daswbr-ordinary",
+        "file-io-daswbr-reader",
+        "file-io-daswbr-scratch"
+      ],
+      "id": "local-cp04-3c3e3f368191-wasm",
+      "kind": "local",
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 3c3e3f368191d553e84ecc599d449055df985b1c. The native-required lane completed 8056 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45336611602/job/138250075470"
+    },
+    {
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "b0bd872209fd6c3cca84b07cc16be64e79fff7f2ab23aa9c3d75907ba3c2e16c",
+      "caseIds": [
+        "file-io-dashfn-full-logical-path",
+        "file-io-dashfn-reader",
+        "file-io-dashfn-short",
+        "file-io-dashfn-unnamed",
+        "file-io-dashfn-width",
+        "file-io-dashfs-authored-mesh",
+        "file-io-dashfs-dsk-with-comments",
+        "file-io-dashfs-full-ek",
+        "file-io-dashfs-two-claims",
+        "file-io-dashfs-zero",
+        "file-io-daslla-authored-mesh",
+        "file-io-daslla-dsk-with-comments",
+        "file-io-daslla-full-ek",
+        "file-io-daslla-two-claims",
+        "file-io-daslla-zero",
+        "file-io-dasllc-clean-writer",
+        "file-io-dasllc-flush",
+        "file-io-dasllc-read-claim",
+        "file-io-dasllc-scratch",
+        "file-io-dasonw-blank-type",
+        "file-io-dasonw-empty-name",
+        "file-io-dasonw-empty-type",
+        "file-io-dasonw-existing-file",
+        "file-io-dasonw-negative-records",
+        "file-io-dasonw-record-and-persistence",
+        "file-io-dasonw-two-new-files",
+        "file-io-dasonw-type-and-name-width",
+        "file-io-dasops-cleanup-on-failure",
+        "file-io-dasops-scratch-metadata",
+        "file-io-dasops-two-claims",
+        "file-io-dasopw-missing",
+        "file-io-dasopw-read-conflict",
+        "file-io-dasopw-reopen-modify",
+        "file-io-dasopw-write-conflict",
+        "file-io-dasrfr-authored-mesh",
+        "file-io-dasrfr-dsk-with-comments",
+        "file-io-dasrfr-full-ek",
+        "file-io-dasrfr-idwlen-short",
+        "file-io-dasrfr-ifnlen-short",
+        "file-io-dasrfr-independent-widths",
+        "file-io-dasrfr-two-claims",
+        "file-io-dasrfr-zero",
+        "file-io-daswbr-flush",
+        "file-io-daswbr-ordinary",
+        "file-io-daswbr-reader",
+        "file-io-daswbr-scratch"
+      ],
+      "id": "ci-cp04-3c3e3f368191-wasm",
+      "kind": "ci",
+      "commit": "5759b72e80d904295926aa968ee1c07006abdf51",
+      "url": "https://github.com/rybosome/tspice/actions/runs/45348374307/job/138288412178",
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 8056 live comparisons without unexpected skips."
     }
   ],
   "routines": [
@@ -1318,11 +1554,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "FileIoApi.dasonw -> serialized native addon and owner handle registry -> tspice_dasonw -> dasonw_c. Independent reference uses locked sp.dasonw.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -1335,11 +1575,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "FileIoApi.dasonw -> WASM export, scoped allocation and owner handle registry -> tspice_dasonw -> dasonw_c. Independent reference uses locked sp.dasonw.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
+          ]
         }
       }
     },
@@ -1398,11 +1642,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "FileIoApi.dasops -> serialized native addon and owner handle registry -> tspice_dasops -> dasops_c. Independent reference uses locked sp.dasops.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -1416,11 +1664,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "FileIoApi.dasops -> WASM export, scoped allocation and owner handle registry -> tspice_dasops -> dasops_c. Independent reference uses locked sp.dasops.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
+          ]
         }
       }
     },
@@ -1470,11 +1722,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "FileIoApi.dasopw -> serialized native addon and owner handle registry -> tspice_dasopw -> dasopw_c. Independent reference uses locked sp.dasopw.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -1487,11 +1743,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "FileIoApi.dasopw -> WASM export, scoped allocation and owner handle registry -> tspice_dasopw -> dasopw_c. Independent reference uses locked sp.dasopw.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
+          ]
         }
       }
     },
@@ -1552,11 +1812,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "FileIoApi.dashfn -> serialized native addon and owner handle registry -> tspice_dashfn -> dashfn_c. Independent reference uses typed symbol from the locked SpiceyPy library.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -1569,11 +1833,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "FileIoApi.dashfn -> WASM export, scoped allocation and owner handle registry -> tspice_dashfn -> dashfn_c. Independent reference uses typed symbol from the locked SpiceyPy library.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
+          ]
         }
       }
     },
@@ -1644,11 +1912,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "FileIoApi.dashfs -> serialized native addon and owner handle registry -> tspice_dashfs -> dashfs_c. Independent reference uses locked sp.dashfs.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -1661,11 +1933,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "FileIoApi.dashfs -> WASM export, scoped allocation and owner handle registry -> tspice_dashfs -> dashfs_c. Independent reference uses locked sp.dashfs.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
+          ]
         }
       }
     },
@@ -1736,11 +2012,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "FileIoApi.daslla -> serialized native addon and owner handle registry -> tspice_daslla -> daslla_c. Independent reference uses locked sp.daslla.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -1753,11 +2033,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "FileIoApi.daslla -> WASM export, scoped allocation and owner handle registry -> tspice_daslla -> daslla_c. Independent reference uses locked sp.daslla.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
+          ]
         }
       }
     },
@@ -1833,11 +2117,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "FileIoApi.dasllc -> serialized native addon and owner handle registry -> tspice_dasllc -> dasllc_c. Independent reference uses locked sp.dasllc.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -1851,11 +2139,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "FileIoApi.dasllc -> WASM export, scoped allocation and owner handle registry -> tspice_dasllc -> dasllc_c. Independent reference uses locked sp.dasllc.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
+          ]
         }
       }
     },
@@ -1941,11 +2233,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "FileIoApi.dasrfr -> serialized native addon and owner handle registry -> tspice_dasrfr -> dasrfr_c. Independent reference uses typed symbol from the locked SpiceyPy library.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -1958,11 +2254,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "FileIoApi.dasrfr -> WASM export, scoped allocation and owner handle registry -> tspice_dasrfr -> dasrfr_c. Independent reference uses typed symbol from the locked SpiceyPy library.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
+          ]
         }
       }
     },
@@ -2018,11 +2318,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "FileIoApi.daswbr -> serialized native addon and owner handle registry -> tspice_daswbr -> daswbr_c. Independent reference uses locked sp.daswbr.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -2035,11 +2339,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "FileIoApi.daswbr -> WASM export, scoped allocation and owner handle registry -> tspice_daswbr -> daswbr_c. Independent reference uses locked sp.daswbr.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
+          ]
         }
       }
     }

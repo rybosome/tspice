@@ -565,6 +565,138 @@
       "url": "https://github.com/rybosome/tspice/actions/runs/45127597533/job/137535439275",
       "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 7054 live comparisons without unexpected skips.",
       "historical": true
+    },
+    {
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "a5fe7ce26f6f6e075e92cb769151255cf9bf4f53af332448452cf10465372b0a",
+      "caseIds": [
+        "coords-vectors-clight-constant-repeat-after-reset",
+        "coords-vectors-clight-constant-value",
+        "coords-vectors-dpmax-constant-repeat-after-reset",
+        "coords-vectors-dpmax-constant-value",
+        "coords-vectors-dpmin-constant-repeat-after-reset",
+        "coords-vectors-dpmin-constant-value",
+        "coords-vectors-intmax-constant-repeat-after-reset",
+        "coords-vectors-intmax-constant-value",
+        "coords-vectors-intmin-constant-repeat-after-reset",
+        "coords-vectors-intmin-constant-value",
+        "time-b1900-constant-repeat-after-reset",
+        "time-b1900-constant-value",
+        "time-j1950-constant-repeat-after-reset",
+        "time-j1950-constant-value",
+        "time-j2100-constant-repeat-after-reset",
+        "time-j2100-constant-value",
+        "time-jyear-constant-repeat-after-reset",
+        "time-jyear-constant-value",
+        "time-tyear-constant-repeat-after-reset",
+        "time-tyear-constant-value"
+      ],
+      "id": "local-cp04-3c3e3f368191-node",
+      "kind": "local",
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 3c3e3f368191d553e84ecc599d449055df985b1c. The native-required lane completed 8056 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45336611602/job/138250075470"
+    },
+    {
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "a5fe7ce26f6f6e075e92cb769151255cf9bf4f53af332448452cf10465372b0a",
+      "caseIds": [
+        "coords-vectors-clight-constant-repeat-after-reset",
+        "coords-vectors-clight-constant-value",
+        "coords-vectors-dpmax-constant-repeat-after-reset",
+        "coords-vectors-dpmax-constant-value",
+        "coords-vectors-dpmin-constant-repeat-after-reset",
+        "coords-vectors-dpmin-constant-value",
+        "coords-vectors-intmax-constant-repeat-after-reset",
+        "coords-vectors-intmax-constant-value",
+        "coords-vectors-intmin-constant-repeat-after-reset",
+        "coords-vectors-intmin-constant-value",
+        "time-b1900-constant-repeat-after-reset",
+        "time-b1900-constant-value",
+        "time-j1950-constant-repeat-after-reset",
+        "time-j1950-constant-value",
+        "time-j2100-constant-repeat-after-reset",
+        "time-j2100-constant-value",
+        "time-jyear-constant-repeat-after-reset",
+        "time-jyear-constant-value",
+        "time-tyear-constant-repeat-after-reset",
+        "time-tyear-constant-value"
+      ],
+      "id": "ci-cp04-3c3e3f368191-node",
+      "kind": "ci",
+      "commit": "5759b72e80d904295926aa968ee1c07006abdf51",
+      "url": "https://github.com/rybosome/tspice/actions/runs/45348374307/job/138288412178",
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 8056 live comparisons without unexpected skips."
+    },
+    {
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "a5fe7ce26f6f6e075e92cb769151255cf9bf4f53af332448452cf10465372b0a",
+      "caseIds": [
+        "coords-vectors-clight-constant-repeat-after-reset",
+        "coords-vectors-clight-constant-value",
+        "coords-vectors-dpmax-constant-repeat-after-reset",
+        "coords-vectors-dpmax-constant-value",
+        "coords-vectors-dpmin-constant-repeat-after-reset",
+        "coords-vectors-dpmin-constant-value",
+        "coords-vectors-intmax-constant-repeat-after-reset",
+        "coords-vectors-intmax-constant-value",
+        "coords-vectors-intmin-constant-repeat-after-reset",
+        "coords-vectors-intmin-constant-value",
+        "time-b1900-constant-repeat-after-reset",
+        "time-b1900-constant-value",
+        "time-j1950-constant-repeat-after-reset",
+        "time-j1950-constant-value",
+        "time-j2100-constant-repeat-after-reset",
+        "time-j2100-constant-value",
+        "time-jyear-constant-repeat-after-reset",
+        "time-jyear-constant-value",
+        "time-tyear-constant-repeat-after-reset",
+        "time-tyear-constant-value"
+      ],
+      "id": "local-cp04-3c3e3f368191-wasm",
+      "kind": "local",
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 3c3e3f368191d553e84ecc599d449055df985b1c. The native-required lane completed 8056 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45336611602/job/138250075470"
+    },
+    {
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "a5fe7ce26f6f6e075e92cb769151255cf9bf4f53af332448452cf10465372b0a",
+      "caseIds": [
+        "coords-vectors-clight-constant-repeat-after-reset",
+        "coords-vectors-clight-constant-value",
+        "coords-vectors-dpmax-constant-repeat-after-reset",
+        "coords-vectors-dpmax-constant-value",
+        "coords-vectors-dpmin-constant-repeat-after-reset",
+        "coords-vectors-dpmin-constant-value",
+        "coords-vectors-intmax-constant-repeat-after-reset",
+        "coords-vectors-intmax-constant-value",
+        "coords-vectors-intmin-constant-repeat-after-reset",
+        "coords-vectors-intmin-constant-value",
+        "time-b1900-constant-repeat-after-reset",
+        "time-b1900-constant-value",
+        "time-j1950-constant-repeat-after-reset",
+        "time-j1950-constant-value",
+        "time-j2100-constant-repeat-after-reset",
+        "time-j2100-constant-value",
+        "time-jyear-constant-repeat-after-reset",
+        "time-jyear-constant-value",
+        "time-tyear-constant-repeat-after-reset",
+        "time-tyear-constant-value"
+      ],
+      "id": "ci-cp04-3c3e3f368191-wasm",
+      "kind": "ci",
+      "commit": "5759b72e80d904295926aa968ee1c07006abdf51",
+      "url": "https://github.com/rybosome/tspice/actions/runs/45348374307/job/138288412178",
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 8056 live comparisons without unexpected skips."
     }
   ],
   "routines": [
@@ -604,11 +736,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.b1900 -> Node adapter -> registered native handler under g_cspice_mutex -> tspice_b1900 shared shim -> b1900_c; scalar returned unchanged.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -621,11 +757,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.b1900 -> WASM adapter -> typed/build-configured/binary _tspice_b1900 -> tspice_b1900 shared shim -> b1900_c; scalar returned unchanged.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
+          ]
         }
       }
     },
@@ -665,11 +805,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.j1950 -> Node adapter -> registered native handler under g_cspice_mutex -> tspice_j1950 shared shim -> j1950_c; scalar returned unchanged.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -682,11 +826,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.j1950 -> WASM adapter -> typed/build-configured/binary _tspice_j1950 -> tspice_j1950 shared shim -> j1950_c; scalar returned unchanged.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
+          ]
         }
       }
     },
@@ -726,11 +874,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.j2100 -> Node adapter -> registered native handler under g_cspice_mutex -> tspice_j2100 shared shim -> j2100_c; scalar returned unchanged.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -743,11 +895,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.j2100 -> WASM adapter -> typed/build-configured/binary _tspice_j2100 -> tspice_j2100 shared shim -> j2100_c; scalar returned unchanged.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
+          ]
         }
       }
     },
@@ -787,11 +943,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.jyear -> Node adapter -> registered native handler under g_cspice_mutex -> tspice_jyear shared shim -> jyear_c; scalar returned unchanged.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -804,11 +964,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.jyear -> WASM adapter -> typed/build-configured/binary _tspice_jyear -> tspice_jyear shared shim -> jyear_c; scalar returned unchanged.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
+          ]
         }
       }
     },
@@ -848,11 +1012,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.tyear -> Node adapter -> registered native handler under g_cspice_mutex -> tspice_tyear shared shim -> tyear_c; scalar returned unchanged.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -865,11 +1033,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.tyear -> WASM adapter -> typed/build-configured/binary _tspice_tyear -> tspice_tyear shared shim -> tyear_c; scalar returned unchanged.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
+          ]
         }
       }
     },
@@ -909,11 +1081,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.clight -> Node adapter -> registered native handler under g_cspice_mutex -> tspice_clight shared shim -> clight_c; scalar returned unchanged.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -926,11 +1102,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.clight -> WASM adapter -> typed/build-configured/binary _tspice_clight -> tspice_clight shared shim -> clight_c; scalar returned unchanged.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
+          ]
         }
       }
     },
@@ -970,11 +1150,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.dpmax -> Node adapter -> registered native handler under g_cspice_mutex -> tspice_dpmax shared shim -> dpmax_c; scalar returned unchanged.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -987,11 +1171,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.dpmax -> WASM adapter -> typed/build-configured/binary _tspice_dpmax -> tspice_dpmax shared shim -> dpmax_c; scalar returned unchanged.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
+          ]
         }
       }
     },
@@ -1031,11 +1219,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.dpmin -> Node adapter -> registered native handler under g_cspice_mutex -> tspice_dpmin shared shim -> dpmin_c; scalar returned unchanged.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -1048,11 +1240,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.dpmin -> WASM adapter -> typed/build-configured/binary _tspice_dpmin -> tspice_dpmin shared shim -> dpmin_c; scalar returned unchanged.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
+          ]
         }
       }
     },
@@ -1092,11 +1288,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.intmax -> Node adapter -> registered native handler under g_cspice_mutex -> tspice_intmax shared shim -> intmax_c; scalar returned unchanged.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -1109,11 +1309,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.intmax -> WASM adapter -> typed/build-configured/binary _tspice_intmax -> tspice_intmax shared shim -> intmax_c; scalar returned unchanged.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
+          ]
         }
       }
     },
@@ -1153,11 +1357,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.intmin -> Node adapter -> registered native handler under g_cspice_mutex -> tspice_intmin shared shim -> intmin_c; scalar returned unchanged.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -1170,11 +1378,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.intmin -> WASM adapter -> typed/build-configured/binary _tspice_intmin -> tspice_intmin shared shim -> intmin_c; scalar returned unchanged.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
+          ]
         }
       }
     }

@@ -682,6 +682,210 @@
       "url": "https://github.com/rybosome/tspice/actions/runs/45127597533/job/137535439275",
       "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 7054 live comparisons without unexpected skips.",
       "historical": true
+    },
+    {
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "790c61b1016a065f6d8810f92f62e9eb129a41e6bee4f0c0ad4b1b345c5fa48c",
+      "caseIds": [
+        "ek-ekappr-growth",
+        "ek-ekappr-negative-segment",
+        "ek-ekappr-past-segment",
+        "ek-ekappr-populated-file",
+        "ek-ekappr-read-only",
+        "ek-ekappr-segment-isolation",
+        "ek-ekbseg-bad-index",
+        "ek-ekbseg-bad-name",
+        "ek-ekbseg-blank-table",
+        "ek-ekbseg-fixed-schema",
+        "ek-ekbseg-hundred-columns",
+        "ek-ekbseg-long-column",
+        "ek-ekbseg-missing-type",
+        "ek-ekbseg-mixed-count",
+        "ek-ekbseg-multiple",
+        "ek-ekbseg-non-ascii-column",
+        "ek-ekbseg-reader",
+        "ek-ekbseg-schema",
+        "ek-ekdelr-empty-segment",
+        "ek-ekdelr-negative-record",
+        "ek-ekdelr-negative-segment",
+        "ek-ekdelr-newly-empty",
+        "ek-ekdelr-past-record",
+        "ek-ekdelr-past-segment",
+        "ek-ekdelr-populated-file",
+        "ek-ekdelr-read-only",
+        "ek-ekinsr-locations",
+        "ek-ekinsr-negative-record",
+        "ek-ekinsr-negative-segment",
+        "ek-ekinsr-past-record",
+        "ek-ekinsr-past-segment",
+        "ek-ekinsr-populated-file",
+        "ek-ekinsr-read-only",
+        "ek-ekinsr-second-segment",
+        "ek-ekops-cleanup-on-scientific-error",
+        "ek-ekops-empty",
+        "ek-ekops-independent",
+        "ek-ekops-scratch-vs-named"
+      ],
+      "id": "local-cp04-3c3e3f368191-node",
+      "kind": "local",
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 3c3e3f368191d553e84ecc599d449055df985b1c. The native-required lane completed 8056 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45336611602/job/138250075470"
+    },
+    {
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "790c61b1016a065f6d8810f92f62e9eb129a41e6bee4f0c0ad4b1b345c5fa48c",
+      "caseIds": [
+        "ek-ekappr-growth",
+        "ek-ekappr-negative-segment",
+        "ek-ekappr-past-segment",
+        "ek-ekappr-populated-file",
+        "ek-ekappr-read-only",
+        "ek-ekappr-segment-isolation",
+        "ek-ekbseg-bad-index",
+        "ek-ekbseg-bad-name",
+        "ek-ekbseg-blank-table",
+        "ek-ekbseg-fixed-schema",
+        "ek-ekbseg-hundred-columns",
+        "ek-ekbseg-long-column",
+        "ek-ekbseg-missing-type",
+        "ek-ekbseg-mixed-count",
+        "ek-ekbseg-multiple",
+        "ek-ekbseg-non-ascii-column",
+        "ek-ekbseg-reader",
+        "ek-ekbseg-schema",
+        "ek-ekdelr-empty-segment",
+        "ek-ekdelr-negative-record",
+        "ek-ekdelr-negative-segment",
+        "ek-ekdelr-newly-empty",
+        "ek-ekdelr-past-record",
+        "ek-ekdelr-past-segment",
+        "ek-ekdelr-populated-file",
+        "ek-ekdelr-read-only",
+        "ek-ekinsr-locations",
+        "ek-ekinsr-negative-record",
+        "ek-ekinsr-negative-segment",
+        "ek-ekinsr-past-record",
+        "ek-ekinsr-past-segment",
+        "ek-ekinsr-populated-file",
+        "ek-ekinsr-read-only",
+        "ek-ekinsr-second-segment",
+        "ek-ekops-cleanup-on-scientific-error",
+        "ek-ekops-empty",
+        "ek-ekops-independent",
+        "ek-ekops-scratch-vs-named"
+      ],
+      "id": "ci-cp04-3c3e3f368191-node",
+      "kind": "ci",
+      "commit": "5759b72e80d904295926aa968ee1c07006abdf51",
+      "url": "https://github.com/rybosome/tspice/actions/runs/45348374307/job/138288412178",
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 8056 live comparisons without unexpected skips."
+    },
+    {
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "790c61b1016a065f6d8810f92f62e9eb129a41e6bee4f0c0ad4b1b345c5fa48c",
+      "caseIds": [
+        "ek-ekappr-growth",
+        "ek-ekappr-negative-segment",
+        "ek-ekappr-past-segment",
+        "ek-ekappr-populated-file",
+        "ek-ekappr-read-only",
+        "ek-ekappr-segment-isolation",
+        "ek-ekbseg-bad-index",
+        "ek-ekbseg-bad-name",
+        "ek-ekbseg-blank-table",
+        "ek-ekbseg-fixed-schema",
+        "ek-ekbseg-hundred-columns",
+        "ek-ekbseg-long-column",
+        "ek-ekbseg-missing-type",
+        "ek-ekbseg-mixed-count",
+        "ek-ekbseg-multiple",
+        "ek-ekbseg-non-ascii-column",
+        "ek-ekbseg-reader",
+        "ek-ekbseg-schema",
+        "ek-ekdelr-empty-segment",
+        "ek-ekdelr-negative-record",
+        "ek-ekdelr-negative-segment",
+        "ek-ekdelr-newly-empty",
+        "ek-ekdelr-past-record",
+        "ek-ekdelr-past-segment",
+        "ek-ekdelr-populated-file",
+        "ek-ekdelr-read-only",
+        "ek-ekinsr-locations",
+        "ek-ekinsr-negative-record",
+        "ek-ekinsr-negative-segment",
+        "ek-ekinsr-past-record",
+        "ek-ekinsr-past-segment",
+        "ek-ekinsr-populated-file",
+        "ek-ekinsr-read-only",
+        "ek-ekinsr-second-segment",
+        "ek-ekops-cleanup-on-scientific-error",
+        "ek-ekops-empty",
+        "ek-ekops-independent",
+        "ek-ekops-scratch-vs-named"
+      ],
+      "id": "local-cp04-3c3e3f368191-wasm",
+      "kind": "local",
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 3c3e3f368191d553e84ecc599d449055df985b1c. The native-required lane completed 8056 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45336611602/job/138250075470"
+    },
+    {
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "790c61b1016a065f6d8810f92f62e9eb129a41e6bee4f0c0ad4b1b345c5fa48c",
+      "caseIds": [
+        "ek-ekappr-growth",
+        "ek-ekappr-negative-segment",
+        "ek-ekappr-past-segment",
+        "ek-ekappr-populated-file",
+        "ek-ekappr-read-only",
+        "ek-ekappr-segment-isolation",
+        "ek-ekbseg-bad-index",
+        "ek-ekbseg-bad-name",
+        "ek-ekbseg-blank-table",
+        "ek-ekbseg-fixed-schema",
+        "ek-ekbseg-hundred-columns",
+        "ek-ekbseg-long-column",
+        "ek-ekbseg-missing-type",
+        "ek-ekbseg-mixed-count",
+        "ek-ekbseg-multiple",
+        "ek-ekbseg-non-ascii-column",
+        "ek-ekbseg-reader",
+        "ek-ekbseg-schema",
+        "ek-ekdelr-empty-segment",
+        "ek-ekdelr-negative-record",
+        "ek-ekdelr-negative-segment",
+        "ek-ekdelr-newly-empty",
+        "ek-ekdelr-past-record",
+        "ek-ekdelr-past-segment",
+        "ek-ekdelr-populated-file",
+        "ek-ekdelr-read-only",
+        "ek-ekinsr-locations",
+        "ek-ekinsr-negative-record",
+        "ek-ekinsr-negative-segment",
+        "ek-ekinsr-past-record",
+        "ek-ekinsr-past-segment",
+        "ek-ekinsr-populated-file",
+        "ek-ekinsr-read-only",
+        "ek-ekinsr-second-segment",
+        "ek-ekops-cleanup-on-scientific-error",
+        "ek-ekops-empty",
+        "ek-ekops-independent",
+        "ek-ekops-scratch-vs-named"
+      ],
+      "id": "ci-cp04-3c3e3f368191-wasm",
+      "kind": "ci",
+      "commit": "5759b72e80d904295926aa968ee1c07006abdf51",
+      "url": "https://github.com/rybosome/tspice/actions/runs/45348374307/job/138288412178",
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 8056 live comparisons without unexpected skips."
     }
   ],
   "routines": [
@@ -749,11 +953,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "EkApi.ekops -> owner registry, serialized native addon -> tspice_ekops -> ekops_c. Verified against locked SpiceyPy ekops.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -764,11 +972,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "EkApi.ekops -> owner registry, required WASM export and scoped buffers -> tspice_ekops -> ekops_c. Verified against locked SpiceyPy ekops.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
+          ]
         }
       }
     },
@@ -889,11 +1101,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "EkApi.ekbseg -> owner registry, serialized native addon -> tspice_ekbseg -> ekbseg_c. Verified against locked SpiceyPy ekbseg and correctly strided typed fallback.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -904,11 +1120,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "EkApi.ekbseg -> owner registry, required WASM export and scoped buffers -> tspice_ekbseg -> ekbseg_c. Verified against locked SpiceyPy ekbseg and correctly strided typed fallback.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
+          ]
         }
       }
     },
@@ -986,11 +1206,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "EkApi.ekappr -> owner registry, serialized native addon -> tspice_ekappr -> ekappr_c. Verified against locked SpiceyPy ekappr.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -1001,11 +1225,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "EkApi.ekappr -> owner registry, required WASM export and scoped buffers -> tspice_ekappr -> ekappr_c. Verified against locked SpiceyPy ekappr.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
+          ]
         }
       }
     },
@@ -1093,11 +1321,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "EkApi.ekinsr -> owner registry, serialized native addon -> tspice_ekinsr -> ekinsr_c. Verified against locked SpiceyPy ekinsr.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -1108,11 +1340,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "EkApi.ekinsr -> owner registry, required WASM export and scoped buffers -> tspice_ekinsr -> ekinsr_c. Verified against locked SpiceyPy ekinsr.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
+          ]
         }
       }
     },
@@ -1200,11 +1436,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "EkApi.ekdelr -> owner registry, serialized native addon -> tspice_ekdelr -> ekdelr_c. Verified against locked SpiceyPy ekdelr.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -1215,11 +1455,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "EkApi.ekdelr -> owner registry, required WASM export and scoped buffers -> tspice_ekdelr -> ekdelr_c. Verified against locked SpiceyPy ekdelr.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
+          ]
         }
       }
     }

@@ -1247,6 +1247,246 @@
       "url": "https://github.com/rybosome/tspice/actions/runs/45127597533/job/137535439275",
       "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 7054 live comparisons without unexpected skips.",
       "historical": true
+    },
+    {
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "70e8532083c6512c5d01f342259f053ac85a1795d70ebd55ef3766942f7b2b65",
+      "caseIds": [
+        "coords-vectors-brcktd-collapsed-interval",
+        "coords-vectors-brcktd-finite-extrema",
+        "coords-vectors-brcktd-fractional-bounds",
+        "coords-vectors-brcktd-ordered-bounds",
+        "coords-vectors-brcktd-reversed-bounds",
+        "coords-vectors-brckti-collapsed-interval",
+        "coords-vectors-brckti-ordered-bounds",
+        "coords-vectors-brckti-reversed-bounds",
+        "coords-vectors-brckti-signed32-extrema",
+        "coords-vectors-convrt-angular-units",
+        "coords-vectors-convrt-astrometric-table",
+        "coords-vectors-convrt-case-and-trailing-blanks",
+        "coords-vectors-convrt-empty-input-error",
+        "coords-vectors-convrt-empty-output-error",
+        "coords-vectors-convrt-english-distances",
+        "coords-vectors-convrt-incompatible-error",
+        "coords-vectors-convrt-leading-blank-error",
+        "coords-vectors-convrt-metric-aliases",
+        "coords-vectors-convrt-scaled-magnitudes",
+        "coords-vectors-convrt-time-units",
+        "coords-vectors-convrt-unknown-input-error",
+        "coords-vectors-convrt-unknown-output-error",
+        "coords-vectors-convrt-unsupported-singular-error",
+        "coords-vectors-convrt-zero-and-finite-identity",
+        "coords-vectors-maxd-all-portable-arities",
+        "coords-vectors-maxd-empty-singleton-and-mixed",
+        "coords-vectors-maxd-finite-extrema",
+        "coords-vectors-maxd-repeated-values",
+        "coords-vectors-maxi-all-portable-arities",
+        "coords-vectors-maxi-empty-singleton-and-mixed",
+        "coords-vectors-maxi-repeated-values",
+        "coords-vectors-maxi-signed32-extrema",
+        "coords-vectors-mind-all-portable-arities",
+        "coords-vectors-mind-empty-singleton-and-mixed",
+        "coords-vectors-mind-finite-extrema",
+        "coords-vectors-mind-repeated-values",
+        "coords-vectors-mini-all-portable-arities",
+        "coords-vectors-mini-empty-singleton-and-mixed",
+        "coords-vectors-mini-repeated-values",
+        "coords-vectors-mini-signed32-extrema",
+        "coords-vectors-sumad-empty-singleton-and-mixed",
+        "coords-vectors-sumad-finite-extrema",
+        "coords-vectors-sumad-longer-than-variadic-limit",
+        "coords-vectors-sumad-ordered-cancellation",
+        "coords-vectors-sumai-empty-singleton-and-mixed",
+        "coords-vectors-sumai-longer-than-variadic-limit",
+        "coords-vectors-sumai-safe-prefix-signed32-extrema"
+      ],
+      "id": "local-cp04-3c3e3f368191-node",
+      "kind": "local",
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 3c3e3f368191d553e84ecc599d449055df985b1c. The native-required lane completed 8056 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45336611602/job/138250075470"
+    },
+    {
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "70e8532083c6512c5d01f342259f053ac85a1795d70ebd55ef3766942f7b2b65",
+      "caseIds": [
+        "coords-vectors-brcktd-collapsed-interval",
+        "coords-vectors-brcktd-finite-extrema",
+        "coords-vectors-brcktd-fractional-bounds",
+        "coords-vectors-brcktd-ordered-bounds",
+        "coords-vectors-brcktd-reversed-bounds",
+        "coords-vectors-brckti-collapsed-interval",
+        "coords-vectors-brckti-ordered-bounds",
+        "coords-vectors-brckti-reversed-bounds",
+        "coords-vectors-brckti-signed32-extrema",
+        "coords-vectors-convrt-angular-units",
+        "coords-vectors-convrt-astrometric-table",
+        "coords-vectors-convrt-case-and-trailing-blanks",
+        "coords-vectors-convrt-empty-input-error",
+        "coords-vectors-convrt-empty-output-error",
+        "coords-vectors-convrt-english-distances",
+        "coords-vectors-convrt-incompatible-error",
+        "coords-vectors-convrt-leading-blank-error",
+        "coords-vectors-convrt-metric-aliases",
+        "coords-vectors-convrt-scaled-magnitudes",
+        "coords-vectors-convrt-time-units",
+        "coords-vectors-convrt-unknown-input-error",
+        "coords-vectors-convrt-unknown-output-error",
+        "coords-vectors-convrt-unsupported-singular-error",
+        "coords-vectors-convrt-zero-and-finite-identity",
+        "coords-vectors-maxd-all-portable-arities",
+        "coords-vectors-maxd-empty-singleton-and-mixed",
+        "coords-vectors-maxd-finite-extrema",
+        "coords-vectors-maxd-repeated-values",
+        "coords-vectors-maxi-all-portable-arities",
+        "coords-vectors-maxi-empty-singleton-and-mixed",
+        "coords-vectors-maxi-repeated-values",
+        "coords-vectors-maxi-signed32-extrema",
+        "coords-vectors-mind-all-portable-arities",
+        "coords-vectors-mind-empty-singleton-and-mixed",
+        "coords-vectors-mind-finite-extrema",
+        "coords-vectors-mind-repeated-values",
+        "coords-vectors-mini-all-portable-arities",
+        "coords-vectors-mini-empty-singleton-and-mixed",
+        "coords-vectors-mini-repeated-values",
+        "coords-vectors-mini-signed32-extrema",
+        "coords-vectors-sumad-empty-singleton-and-mixed",
+        "coords-vectors-sumad-finite-extrema",
+        "coords-vectors-sumad-longer-than-variadic-limit",
+        "coords-vectors-sumad-ordered-cancellation",
+        "coords-vectors-sumai-empty-singleton-and-mixed",
+        "coords-vectors-sumai-longer-than-variadic-limit",
+        "coords-vectors-sumai-safe-prefix-signed32-extrema"
+      ],
+      "id": "ci-cp04-3c3e3f368191-node",
+      "kind": "ci",
+      "commit": "5759b72e80d904295926aa968ee1c07006abdf51",
+      "url": "https://github.com/rybosome/tspice/actions/runs/45348374307/job/138288412178",
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 8056 live comparisons without unexpected skips."
+    },
+    {
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "70e8532083c6512c5d01f342259f053ac85a1795d70ebd55ef3766942f7b2b65",
+      "caseIds": [
+        "coords-vectors-brcktd-collapsed-interval",
+        "coords-vectors-brcktd-finite-extrema",
+        "coords-vectors-brcktd-fractional-bounds",
+        "coords-vectors-brcktd-ordered-bounds",
+        "coords-vectors-brcktd-reversed-bounds",
+        "coords-vectors-brckti-collapsed-interval",
+        "coords-vectors-brckti-ordered-bounds",
+        "coords-vectors-brckti-reversed-bounds",
+        "coords-vectors-brckti-signed32-extrema",
+        "coords-vectors-convrt-angular-units",
+        "coords-vectors-convrt-astrometric-table",
+        "coords-vectors-convrt-case-and-trailing-blanks",
+        "coords-vectors-convrt-empty-input-error",
+        "coords-vectors-convrt-empty-output-error",
+        "coords-vectors-convrt-english-distances",
+        "coords-vectors-convrt-incompatible-error",
+        "coords-vectors-convrt-leading-blank-error",
+        "coords-vectors-convrt-metric-aliases",
+        "coords-vectors-convrt-scaled-magnitudes",
+        "coords-vectors-convrt-time-units",
+        "coords-vectors-convrt-unknown-input-error",
+        "coords-vectors-convrt-unknown-output-error",
+        "coords-vectors-convrt-unsupported-singular-error",
+        "coords-vectors-convrt-zero-and-finite-identity",
+        "coords-vectors-maxd-all-portable-arities",
+        "coords-vectors-maxd-empty-singleton-and-mixed",
+        "coords-vectors-maxd-finite-extrema",
+        "coords-vectors-maxd-repeated-values",
+        "coords-vectors-maxi-all-portable-arities",
+        "coords-vectors-maxi-empty-singleton-and-mixed",
+        "coords-vectors-maxi-repeated-values",
+        "coords-vectors-maxi-signed32-extrema",
+        "coords-vectors-mind-all-portable-arities",
+        "coords-vectors-mind-empty-singleton-and-mixed",
+        "coords-vectors-mind-finite-extrema",
+        "coords-vectors-mind-repeated-values",
+        "coords-vectors-mini-all-portable-arities",
+        "coords-vectors-mini-empty-singleton-and-mixed",
+        "coords-vectors-mini-repeated-values",
+        "coords-vectors-mini-signed32-extrema",
+        "coords-vectors-sumad-empty-singleton-and-mixed",
+        "coords-vectors-sumad-finite-extrema",
+        "coords-vectors-sumad-longer-than-variadic-limit",
+        "coords-vectors-sumad-ordered-cancellation",
+        "coords-vectors-sumai-empty-singleton-and-mixed",
+        "coords-vectors-sumai-longer-than-variadic-limit",
+        "coords-vectors-sumai-safe-prefix-signed32-extrema"
+      ],
+      "id": "local-cp04-3c3e3f368191-wasm",
+      "kind": "local",
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 3c3e3f368191d553e84ecc599d449055df985b1c. The native-required lane completed 8056 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45336611602/job/138250075470"
+    },
+    {
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "70e8532083c6512c5d01f342259f053ac85a1795d70ebd55ef3766942f7b2b65",
+      "caseIds": [
+        "coords-vectors-brcktd-collapsed-interval",
+        "coords-vectors-brcktd-finite-extrema",
+        "coords-vectors-brcktd-fractional-bounds",
+        "coords-vectors-brcktd-ordered-bounds",
+        "coords-vectors-brcktd-reversed-bounds",
+        "coords-vectors-brckti-collapsed-interval",
+        "coords-vectors-brckti-ordered-bounds",
+        "coords-vectors-brckti-reversed-bounds",
+        "coords-vectors-brckti-signed32-extrema",
+        "coords-vectors-convrt-angular-units",
+        "coords-vectors-convrt-astrometric-table",
+        "coords-vectors-convrt-case-and-trailing-blanks",
+        "coords-vectors-convrt-empty-input-error",
+        "coords-vectors-convrt-empty-output-error",
+        "coords-vectors-convrt-english-distances",
+        "coords-vectors-convrt-incompatible-error",
+        "coords-vectors-convrt-leading-blank-error",
+        "coords-vectors-convrt-metric-aliases",
+        "coords-vectors-convrt-scaled-magnitudes",
+        "coords-vectors-convrt-time-units",
+        "coords-vectors-convrt-unknown-input-error",
+        "coords-vectors-convrt-unknown-output-error",
+        "coords-vectors-convrt-unsupported-singular-error",
+        "coords-vectors-convrt-zero-and-finite-identity",
+        "coords-vectors-maxd-all-portable-arities",
+        "coords-vectors-maxd-empty-singleton-and-mixed",
+        "coords-vectors-maxd-finite-extrema",
+        "coords-vectors-maxd-repeated-values",
+        "coords-vectors-maxi-all-portable-arities",
+        "coords-vectors-maxi-empty-singleton-and-mixed",
+        "coords-vectors-maxi-repeated-values",
+        "coords-vectors-maxi-signed32-extrema",
+        "coords-vectors-mind-all-portable-arities",
+        "coords-vectors-mind-empty-singleton-and-mixed",
+        "coords-vectors-mind-finite-extrema",
+        "coords-vectors-mind-repeated-values",
+        "coords-vectors-mini-all-portable-arities",
+        "coords-vectors-mini-empty-singleton-and-mixed",
+        "coords-vectors-mini-repeated-values",
+        "coords-vectors-mini-signed32-extrema",
+        "coords-vectors-sumad-empty-singleton-and-mixed",
+        "coords-vectors-sumad-finite-extrema",
+        "coords-vectors-sumad-longer-than-variadic-limit",
+        "coords-vectors-sumad-ordered-cancellation",
+        "coords-vectors-sumai-empty-singleton-and-mixed",
+        "coords-vectors-sumai-longer-than-variadic-limit",
+        "coords-vectors-sumai-safe-prefix-signed32-extrema"
+      ],
+      "id": "ci-cp04-3c3e3f368191-wasm",
+      "kind": "ci",
+      "commit": "5759b72e80d904295926aa968ee1c07006abdf51",
+      "url": "https://github.com/rybosome/tspice/actions/runs/45348374307/job/138288412178",
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 8056 live comparisons without unexpected skips."
     }
   ],
   "routines": [
@@ -1303,11 +1543,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.brcktd -> typed Node adapter -> native binding in native/src/domains/coords_vectors.cc under global SPICE mutex -> shared tspice_brcktd -> actual brcktd_c. Workflow dispatch calls this actual raw method; independent Python handler calls locked sp.brcktd, whose wrapper calls brcktd_c and returns its result.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -1322,11 +1566,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.brcktd -> typed WASM adapter -> exported _tspice_brcktd, checked heap buffers and post-read transactional cleanup -> shared tspice_brcktd -> actual brcktd_c. Workflow dispatch calls this actual raw method; independent Python handler calls locked sp.brcktd, whose wrapper calls brcktd_c and returns its result.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
+          ]
         }
       }
     },
@@ -1378,11 +1626,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.brckti -> typed Node adapter -> native binding in native/src/domains/coords_vectors.cc under global SPICE mutex -> shared tspice_brckti -> actual brckti_c. Workflow dispatch calls this actual raw method; independent Python handler calls locked sp.brckti, whose wrapper calls brckti_c and returns its result.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -1397,11 +1649,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.brckti -> typed WASM adapter -> exported _tspice_brckti, checked heap buffers and post-read transactional cleanup -> shared tspice_brckti -> actual brckti_c. Workflow dispatch calls this actual raw method; independent Python handler calls locked sp.brckti, whose wrapper calls brckti_c and returns its result.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
+          ]
         }
       }
     },
@@ -1508,11 +1764,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.convrt -> typed Node adapter -> native binding in native/src/domains/coords_vectors.cc under global SPICE mutex -> shared tspice_convrt -> actual convrt_c. Workflow dispatch calls this actual raw method; independent Python handler calls locked sp.convrt, whose wrapper calls convrt_c and returns its result.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -1527,11 +1787,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.convrt -> typed WASM adapter -> exported _tspice_convrt, checked heap buffers and post-read transactional cleanup -> shared tspice_convrt -> actual convrt_c. Workflow dispatch calls this actual raw method; independent Python handler calls locked sp.convrt, whose wrapper calls convrt_c and returns its result.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
+          ]
         }
       }
     },
@@ -1597,11 +1861,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.sumad -> typed Node adapter -> native binding in native/src/domains/coords_vectors.cc under global SPICE mutex -> shared tspice_sumad -> actual sumad_c. Workflow dispatch calls this actual raw method; independent Python handler calls locked sp.sumad, whose wrapper calls sumad_c and returns its result.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -1617,11 +1885,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.sumad -> typed WASM adapter -> exported _tspice_sumad, checked heap buffers and post-read transactional cleanup -> shared tspice_sumad -> actual sumad_c. Workflow dispatch calls this actual raw method; independent Python handler calls locked sp.sumad, whose wrapper calls sumad_c and returns its result.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
+          ]
         }
       }
     },
@@ -1682,11 +1954,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.sumai -> typed Node adapter -> native binding in native/src/domains/coords_vectors.cc under global SPICE mutex -> shared tspice_sumai -> actual sumai_c. Safety-prefix checks complete before the canonical call. Python handler uses scalar_math_oracle.sumai to check the defined-input precondition, then returns sp.sumai -> actual sumai_c; the computed guard prefix is not returned.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -1702,11 +1978,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.sumai -> typed WASM adapter -> exported _tspice_sumai, checked heap buffers and post-read transactional cleanup -> shared tspice_sumai -> actual sumai_c. Safety-prefix checks complete before the canonical call. Python handler uses scalar_math_oracle.sumai to check the defined-input precondition, then returns sp.sumai -> actual sumai_c; the computed guard prefix is not returned.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
+          ]
         }
       }
     },
@@ -1772,11 +2052,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.maxd -> typed Node adapter -> native binding in native/src/domains/coords_vectors.cc under global SPICE mutex -> shared tspice_maxd -> actual maxd_c. The shared C switch has 31 explicit canonical calls with exact count and ordered scalar arguments. Independent Python handler calls scalar_math_oracle.maxd using ctypes.CDLL(libspice._name), fixed argtypes=[c_int], correct return type and individually boxed c_double/c_int varargs. No top-level SpiceyPy wrapper exists and no Python/JS min/max substitutes for the oracle result.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -1792,11 +2076,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.maxd -> typed WASM adapter -> exported _tspice_maxd, checked heap buffers and post-read transactional cleanup -> shared tspice_maxd -> actual maxd_c. The shared C switch has 31 explicit canonical calls with exact count and ordered scalar arguments. Independent Python handler calls scalar_math_oracle.maxd using ctypes.CDLL(libspice._name), fixed argtypes=[c_int], correct return type and individually boxed c_double/c_int varargs. No top-level SpiceyPy wrapper exists and no Python/JS min/max substitutes for the oracle result.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
+          ]
         }
       }
     },
@@ -1862,11 +2150,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.maxi -> typed Node adapter -> native binding in native/src/domains/coords_vectors.cc under global SPICE mutex -> shared tspice_maxi -> actual maxi_c. The shared C switch has 31 explicit canonical calls with exact count and ordered scalar arguments. Independent Python handler calls scalar_math_oracle.maxi using ctypes.CDLL(libspice._name), fixed argtypes=[c_int], correct return type and individually boxed c_double/c_int varargs. No top-level SpiceyPy wrapper exists and no Python/JS min/max substitutes for the oracle result.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -1882,11 +2174,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.maxi -> typed WASM adapter -> exported _tspice_maxi, checked heap buffers and post-read transactional cleanup -> shared tspice_maxi -> actual maxi_c. The shared C switch has 31 explicit canonical calls with exact count and ordered scalar arguments. Independent Python handler calls scalar_math_oracle.maxi using ctypes.CDLL(libspice._name), fixed argtypes=[c_int], correct return type and individually boxed c_double/c_int varargs. No top-level SpiceyPy wrapper exists and no Python/JS min/max substitutes for the oracle result.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
+          ]
         }
       }
     },
@@ -1952,11 +2248,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.mind -> typed Node adapter -> native binding in native/src/domains/coords_vectors.cc under global SPICE mutex -> shared tspice_mind -> actual mind_c. The shared C switch has 31 explicit canonical calls with exact count and ordered scalar arguments. Independent Python handler calls scalar_math_oracle.mind using ctypes.CDLL(libspice._name), fixed argtypes=[c_int], correct return type and individually boxed c_double/c_int varargs. No top-level SpiceyPy wrapper exists and no Python/JS min/max substitutes for the oracle result.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -1972,11 +2272,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.mind -> typed WASM adapter -> exported _tspice_mind, checked heap buffers and post-read transactional cleanup -> shared tspice_mind -> actual mind_c. The shared C switch has 31 explicit canonical calls with exact count and ordered scalar arguments. Independent Python handler calls scalar_math_oracle.mind using ctypes.CDLL(libspice._name), fixed argtypes=[c_int], correct return type and individually boxed c_double/c_int varargs. No top-level SpiceyPy wrapper exists and no Python/JS min/max substitutes for the oracle result.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
+          ]
         }
       }
     },
@@ -2042,11 +2346,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.mini -> typed Node adapter -> native binding in native/src/domains/coords_vectors.cc under global SPICE mutex -> shared tspice_mini -> actual mini_c. The shared C switch has 31 explicit canonical calls with exact count and ordered scalar arguments. Independent Python handler calls scalar_math_oracle.mini using ctypes.CDLL(libspice._name), fixed argtypes=[c_int], correct return type and individually boxed c_double/c_int varargs. No top-level SpiceyPy wrapper exists and no Python/JS min/max substitutes for the oracle result.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -2062,11 +2370,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.mini -> typed WASM adapter -> exported _tspice_mini, checked heap buffers and post-read transactional cleanup -> shared tspice_mini -> actual mini_c. The shared C switch has 31 explicit canonical calls with exact count and ordered scalar arguments. Independent Python handler calls scalar_math_oracle.mini using ctypes.CDLL(libspice._name), fixed argtypes=[c_int], correct return type and individually boxed c_double/c_int varargs. No top-level SpiceyPy wrapper exists and no Python/JS min/max substitutes for the oracle result.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
+          ]
         }
       }
     }

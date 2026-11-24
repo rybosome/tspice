@@ -837,6 +837,398 @@
       "url": "https://github.com/rybosome/tspice/actions/runs/43591403319/job/132436703712",
       "observation": "Inspected successful Linux Node 22 native-required job 132436703712 on e83d49bc7f76e18807f4ad228612cb59f645708f: 2,546 registered Node/WASM live comparisons; 2,785 parity-package tests with no skips, including the native-required guard; 107 native wrapper, 695 WASM, 28 core and 150 facade tests passed.",
       "historical": true
+    },
+    {
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "e5a461ca0e9f83f2e60389ef64b25a30aa14878340bcc34ebe9a19635cfc85a0",
+      "caseIds": [
+        "ephemeris-ltime-coincident",
+        "ephemeris-ltime-missing-observer",
+        "ephemeris-ltime-missing-target",
+        "ephemeris-ltime-reception",
+        "ephemeris-ltime-reverse-bodies",
+        "ephemeris-ltime-shift-outside-segment",
+        "ephemeris-ltime-transmission",
+        "ephemeris-ltime-unknown-direction",
+        "ephemeris-spkacs-coincident-observer",
+        "ephemeris-spkacs-correction-spelling-transition",
+        "ephemeris-spkacs-coverage-gap",
+        "ephemeris-spkacs-geometric",
+        "ephemeris-spkacs-kernel-priority",
+        "ephemeris-spkacs-observer-stencil-edge",
+        "ephemeris-spkacs-reception",
+        "ephemeris-spkacs-rotated-frame",
+        "ephemeris-spkacs-shifted-coverage",
+        "ephemeris-spkacs-transmission",
+        "ephemeris-spkacs-unknown-frame",
+        "ephemeris-spkacs-unknown-observer",
+        "ephemeris-spkacs-unknown-option",
+        "ephemeris-spkapo-barycentric-origin",
+        "ephemeris-spkapo-correction-spelling-transition",
+        "ephemeris-spkapo-coverage-gap",
+        "ephemeris-spkapo-geometric",
+        "ephemeris-spkapo-kernel-priority",
+        "ephemeris-spkapo-observer-light-speed",
+        "ephemeris-spkapo-reception",
+        "ephemeris-spkapo-rotated-frame",
+        "ephemeris-spkapo-shifted-coverage",
+        "ephemeris-spkapo-transmission",
+        "ephemeris-spkapo-unknown-frame",
+        "ephemeris-spkapo-unknown-option",
+        "ephemeris-spkapp-barycentric-origin",
+        "ephemeris-spkapp-correction-spelling-transition",
+        "ephemeris-spkapp-coverage-gap",
+        "ephemeris-spkapp-geometric",
+        "ephemeris-spkapp-kernel-priority",
+        "ephemeris-spkapp-observer-light-speed",
+        "ephemeris-spkapp-reception",
+        "ephemeris-spkapp-rotated-frame",
+        "ephemeris-spkapp-shifted-coverage",
+        "ephemeris-spkapp-transmission",
+        "ephemeris-spkapp-unknown-frame",
+        "ephemeris-spkapp-unknown-option",
+        "ephemeris-spkaps-acceleration",
+        "ephemeris-spkaps-barycentric-origin",
+        "ephemeris-spkaps-coincident-observer",
+        "ephemeris-spkaps-correction-spelling-transition",
+        "ephemeris-spkaps-coverage-gap",
+        "ephemeris-spkaps-geometric",
+        "ephemeris-spkaps-kernel-priority",
+        "ephemeris-spkaps-reception",
+        "ephemeris-spkaps-rotated-frame",
+        "ephemeris-spkaps-shifted-coverage",
+        "ephemeris-spkaps-transmission",
+        "ephemeris-spkaps-transverse-light-speed",
+        "ephemeris-spkaps-unknown-frame",
+        "ephemeris-spkaps-unknown-option",
+        "ephemeris-spkltc-barycentric-origin",
+        "ephemeris-spkltc-coincident-observer",
+        "ephemeris-spkltc-correction-spelling-transition",
+        "ephemeris-spkltc-coverage-gap",
+        "ephemeris-spkltc-geometric",
+        "ephemeris-spkltc-kernel-priority",
+        "ephemeris-spkltc-reception",
+        "ephemeris-spkltc-rotated-frame",
+        "ephemeris-spkltc-shifted-coverage",
+        "ephemeris-spkltc-transmission",
+        "ephemeris-spkltc-unknown-frame",
+        "ephemeris-spkltc-unknown-option",
+        "ephemeris-stelab-above-light-speed",
+        "ephemeris-stelab-excess-speed",
+        "ephemeris-stelab-no-rotation",
+        "ephemeris-stelab-oblique",
+        "ephemeris-stelab-rounded-light-speed",
+        "ephemeris-stelab-small-and-near-limit",
+        "ephemeris-stelab-transverse",
+        "ephemeris-stlabx-above-light-speed",
+        "ephemeris-stlabx-excess-speed",
+        "ephemeris-stlabx-no-rotation",
+        "ephemeris-stlabx-oblique",
+        "ephemeris-stlabx-rounded-light-speed",
+        "ephemeris-stlabx-small-and-near-limit",
+        "ephemeris-stlabx-transverse"
+      ],
+      "id": "local-cp04-3c3e3f368191-node",
+      "kind": "local",
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 3c3e3f368191d553e84ecc599d449055df985b1c. The native-required lane completed 8056 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45336611602/job/138250075470"
+    },
+    {
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "e5a461ca0e9f83f2e60389ef64b25a30aa14878340bcc34ebe9a19635cfc85a0",
+      "caseIds": [
+        "ephemeris-ltime-coincident",
+        "ephemeris-ltime-missing-observer",
+        "ephemeris-ltime-missing-target",
+        "ephemeris-ltime-reception",
+        "ephemeris-ltime-reverse-bodies",
+        "ephemeris-ltime-shift-outside-segment",
+        "ephemeris-ltime-transmission",
+        "ephemeris-ltime-unknown-direction",
+        "ephemeris-spkacs-coincident-observer",
+        "ephemeris-spkacs-correction-spelling-transition",
+        "ephemeris-spkacs-coverage-gap",
+        "ephemeris-spkacs-geometric",
+        "ephemeris-spkacs-kernel-priority",
+        "ephemeris-spkacs-observer-stencil-edge",
+        "ephemeris-spkacs-reception",
+        "ephemeris-spkacs-rotated-frame",
+        "ephemeris-spkacs-shifted-coverage",
+        "ephemeris-spkacs-transmission",
+        "ephemeris-spkacs-unknown-frame",
+        "ephemeris-spkacs-unknown-observer",
+        "ephemeris-spkacs-unknown-option",
+        "ephemeris-spkapo-barycentric-origin",
+        "ephemeris-spkapo-correction-spelling-transition",
+        "ephemeris-spkapo-coverage-gap",
+        "ephemeris-spkapo-geometric",
+        "ephemeris-spkapo-kernel-priority",
+        "ephemeris-spkapo-observer-light-speed",
+        "ephemeris-spkapo-reception",
+        "ephemeris-spkapo-rotated-frame",
+        "ephemeris-spkapo-shifted-coverage",
+        "ephemeris-spkapo-transmission",
+        "ephemeris-spkapo-unknown-frame",
+        "ephemeris-spkapo-unknown-option",
+        "ephemeris-spkapp-barycentric-origin",
+        "ephemeris-spkapp-correction-spelling-transition",
+        "ephemeris-spkapp-coverage-gap",
+        "ephemeris-spkapp-geometric",
+        "ephemeris-spkapp-kernel-priority",
+        "ephemeris-spkapp-observer-light-speed",
+        "ephemeris-spkapp-reception",
+        "ephemeris-spkapp-rotated-frame",
+        "ephemeris-spkapp-shifted-coverage",
+        "ephemeris-spkapp-transmission",
+        "ephemeris-spkapp-unknown-frame",
+        "ephemeris-spkapp-unknown-option",
+        "ephemeris-spkaps-acceleration",
+        "ephemeris-spkaps-barycentric-origin",
+        "ephemeris-spkaps-coincident-observer",
+        "ephemeris-spkaps-correction-spelling-transition",
+        "ephemeris-spkaps-coverage-gap",
+        "ephemeris-spkaps-geometric",
+        "ephemeris-spkaps-kernel-priority",
+        "ephemeris-spkaps-reception",
+        "ephemeris-spkaps-rotated-frame",
+        "ephemeris-spkaps-shifted-coverage",
+        "ephemeris-spkaps-transmission",
+        "ephemeris-spkaps-transverse-light-speed",
+        "ephemeris-spkaps-unknown-frame",
+        "ephemeris-spkaps-unknown-option",
+        "ephemeris-spkltc-barycentric-origin",
+        "ephemeris-spkltc-coincident-observer",
+        "ephemeris-spkltc-correction-spelling-transition",
+        "ephemeris-spkltc-coverage-gap",
+        "ephemeris-spkltc-geometric",
+        "ephemeris-spkltc-kernel-priority",
+        "ephemeris-spkltc-reception",
+        "ephemeris-spkltc-rotated-frame",
+        "ephemeris-spkltc-shifted-coverage",
+        "ephemeris-spkltc-transmission",
+        "ephemeris-spkltc-unknown-frame",
+        "ephemeris-spkltc-unknown-option",
+        "ephemeris-stelab-above-light-speed",
+        "ephemeris-stelab-excess-speed",
+        "ephemeris-stelab-no-rotation",
+        "ephemeris-stelab-oblique",
+        "ephemeris-stelab-rounded-light-speed",
+        "ephemeris-stelab-small-and-near-limit",
+        "ephemeris-stelab-transverse",
+        "ephemeris-stlabx-above-light-speed",
+        "ephemeris-stlabx-excess-speed",
+        "ephemeris-stlabx-no-rotation",
+        "ephemeris-stlabx-oblique",
+        "ephemeris-stlabx-rounded-light-speed",
+        "ephemeris-stlabx-small-and-near-limit",
+        "ephemeris-stlabx-transverse"
+      ],
+      "id": "ci-cp04-3c3e3f368191-node",
+      "kind": "ci",
+      "commit": "5759b72e80d904295926aa968ee1c07006abdf51",
+      "url": "https://github.com/rybosome/tspice/actions/runs/45348374307/job/138288412178",
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 8056 live comparisons without unexpected skips."
+    },
+    {
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "e5a461ca0e9f83f2e60389ef64b25a30aa14878340bcc34ebe9a19635cfc85a0",
+      "caseIds": [
+        "ephemeris-ltime-coincident",
+        "ephemeris-ltime-missing-observer",
+        "ephemeris-ltime-missing-target",
+        "ephemeris-ltime-reception",
+        "ephemeris-ltime-reverse-bodies",
+        "ephemeris-ltime-shift-outside-segment",
+        "ephemeris-ltime-transmission",
+        "ephemeris-ltime-unknown-direction",
+        "ephemeris-spkacs-coincident-observer",
+        "ephemeris-spkacs-correction-spelling-transition",
+        "ephemeris-spkacs-coverage-gap",
+        "ephemeris-spkacs-geometric",
+        "ephemeris-spkacs-kernel-priority",
+        "ephemeris-spkacs-observer-stencil-edge",
+        "ephemeris-spkacs-reception",
+        "ephemeris-spkacs-rotated-frame",
+        "ephemeris-spkacs-shifted-coverage",
+        "ephemeris-spkacs-transmission",
+        "ephemeris-spkacs-unknown-frame",
+        "ephemeris-spkacs-unknown-observer",
+        "ephemeris-spkacs-unknown-option",
+        "ephemeris-spkapo-barycentric-origin",
+        "ephemeris-spkapo-correction-spelling-transition",
+        "ephemeris-spkapo-coverage-gap",
+        "ephemeris-spkapo-geometric",
+        "ephemeris-spkapo-kernel-priority",
+        "ephemeris-spkapo-observer-light-speed",
+        "ephemeris-spkapo-reception",
+        "ephemeris-spkapo-rotated-frame",
+        "ephemeris-spkapo-shifted-coverage",
+        "ephemeris-spkapo-transmission",
+        "ephemeris-spkapo-unknown-frame",
+        "ephemeris-spkapo-unknown-option",
+        "ephemeris-spkapp-barycentric-origin",
+        "ephemeris-spkapp-correction-spelling-transition",
+        "ephemeris-spkapp-coverage-gap",
+        "ephemeris-spkapp-geometric",
+        "ephemeris-spkapp-kernel-priority",
+        "ephemeris-spkapp-observer-light-speed",
+        "ephemeris-spkapp-reception",
+        "ephemeris-spkapp-rotated-frame",
+        "ephemeris-spkapp-shifted-coverage",
+        "ephemeris-spkapp-transmission",
+        "ephemeris-spkapp-unknown-frame",
+        "ephemeris-spkapp-unknown-option",
+        "ephemeris-spkaps-acceleration",
+        "ephemeris-spkaps-barycentric-origin",
+        "ephemeris-spkaps-coincident-observer",
+        "ephemeris-spkaps-correction-spelling-transition",
+        "ephemeris-spkaps-coverage-gap",
+        "ephemeris-spkaps-geometric",
+        "ephemeris-spkaps-kernel-priority",
+        "ephemeris-spkaps-reception",
+        "ephemeris-spkaps-rotated-frame",
+        "ephemeris-spkaps-shifted-coverage",
+        "ephemeris-spkaps-transmission",
+        "ephemeris-spkaps-transverse-light-speed",
+        "ephemeris-spkaps-unknown-frame",
+        "ephemeris-spkaps-unknown-option",
+        "ephemeris-spkltc-barycentric-origin",
+        "ephemeris-spkltc-coincident-observer",
+        "ephemeris-spkltc-correction-spelling-transition",
+        "ephemeris-spkltc-coverage-gap",
+        "ephemeris-spkltc-geometric",
+        "ephemeris-spkltc-kernel-priority",
+        "ephemeris-spkltc-reception",
+        "ephemeris-spkltc-rotated-frame",
+        "ephemeris-spkltc-shifted-coverage",
+        "ephemeris-spkltc-transmission",
+        "ephemeris-spkltc-unknown-frame",
+        "ephemeris-spkltc-unknown-option",
+        "ephemeris-stelab-above-light-speed",
+        "ephemeris-stelab-excess-speed",
+        "ephemeris-stelab-no-rotation",
+        "ephemeris-stelab-oblique",
+        "ephemeris-stelab-rounded-light-speed",
+        "ephemeris-stelab-small-and-near-limit",
+        "ephemeris-stelab-transverse",
+        "ephemeris-stlabx-above-light-speed",
+        "ephemeris-stlabx-excess-speed",
+        "ephemeris-stlabx-no-rotation",
+        "ephemeris-stlabx-oblique",
+        "ephemeris-stlabx-rounded-light-speed",
+        "ephemeris-stlabx-small-and-near-limit",
+        "ephemeris-stlabx-transverse"
+      ],
+      "id": "local-cp04-3c3e3f368191-wasm",
+      "kind": "local",
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 3c3e3f368191d553e84ecc599d449055df985b1c. The native-required lane completed 8056 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45336611602/job/138250075470"
+    },
+    {
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "e5a461ca0e9f83f2e60389ef64b25a30aa14878340bcc34ebe9a19635cfc85a0",
+      "caseIds": [
+        "ephemeris-ltime-coincident",
+        "ephemeris-ltime-missing-observer",
+        "ephemeris-ltime-missing-target",
+        "ephemeris-ltime-reception",
+        "ephemeris-ltime-reverse-bodies",
+        "ephemeris-ltime-shift-outside-segment",
+        "ephemeris-ltime-transmission",
+        "ephemeris-ltime-unknown-direction",
+        "ephemeris-spkacs-coincident-observer",
+        "ephemeris-spkacs-correction-spelling-transition",
+        "ephemeris-spkacs-coverage-gap",
+        "ephemeris-spkacs-geometric",
+        "ephemeris-spkacs-kernel-priority",
+        "ephemeris-spkacs-observer-stencil-edge",
+        "ephemeris-spkacs-reception",
+        "ephemeris-spkacs-rotated-frame",
+        "ephemeris-spkacs-shifted-coverage",
+        "ephemeris-spkacs-transmission",
+        "ephemeris-spkacs-unknown-frame",
+        "ephemeris-spkacs-unknown-observer",
+        "ephemeris-spkacs-unknown-option",
+        "ephemeris-spkapo-barycentric-origin",
+        "ephemeris-spkapo-correction-spelling-transition",
+        "ephemeris-spkapo-coverage-gap",
+        "ephemeris-spkapo-geometric",
+        "ephemeris-spkapo-kernel-priority",
+        "ephemeris-spkapo-observer-light-speed",
+        "ephemeris-spkapo-reception",
+        "ephemeris-spkapo-rotated-frame",
+        "ephemeris-spkapo-shifted-coverage",
+        "ephemeris-spkapo-transmission",
+        "ephemeris-spkapo-unknown-frame",
+        "ephemeris-spkapo-unknown-option",
+        "ephemeris-spkapp-barycentric-origin",
+        "ephemeris-spkapp-correction-spelling-transition",
+        "ephemeris-spkapp-coverage-gap",
+        "ephemeris-spkapp-geometric",
+        "ephemeris-spkapp-kernel-priority",
+        "ephemeris-spkapp-observer-light-speed",
+        "ephemeris-spkapp-reception",
+        "ephemeris-spkapp-rotated-frame",
+        "ephemeris-spkapp-shifted-coverage",
+        "ephemeris-spkapp-transmission",
+        "ephemeris-spkapp-unknown-frame",
+        "ephemeris-spkapp-unknown-option",
+        "ephemeris-spkaps-acceleration",
+        "ephemeris-spkaps-barycentric-origin",
+        "ephemeris-spkaps-coincident-observer",
+        "ephemeris-spkaps-correction-spelling-transition",
+        "ephemeris-spkaps-coverage-gap",
+        "ephemeris-spkaps-geometric",
+        "ephemeris-spkaps-kernel-priority",
+        "ephemeris-spkaps-reception",
+        "ephemeris-spkaps-rotated-frame",
+        "ephemeris-spkaps-shifted-coverage",
+        "ephemeris-spkaps-transmission",
+        "ephemeris-spkaps-transverse-light-speed",
+        "ephemeris-spkaps-unknown-frame",
+        "ephemeris-spkaps-unknown-option",
+        "ephemeris-spkltc-barycentric-origin",
+        "ephemeris-spkltc-coincident-observer",
+        "ephemeris-spkltc-correction-spelling-transition",
+        "ephemeris-spkltc-coverage-gap",
+        "ephemeris-spkltc-geometric",
+        "ephemeris-spkltc-kernel-priority",
+        "ephemeris-spkltc-reception",
+        "ephemeris-spkltc-rotated-frame",
+        "ephemeris-spkltc-shifted-coverage",
+        "ephemeris-spkltc-transmission",
+        "ephemeris-spkltc-unknown-frame",
+        "ephemeris-spkltc-unknown-option",
+        "ephemeris-stelab-above-light-speed",
+        "ephemeris-stelab-excess-speed",
+        "ephemeris-stelab-no-rotation",
+        "ephemeris-stelab-oblique",
+        "ephemeris-stelab-rounded-light-speed",
+        "ephemeris-stelab-small-and-near-limit",
+        "ephemeris-stelab-transverse",
+        "ephemeris-stlabx-above-light-speed",
+        "ephemeris-stlabx-excess-speed",
+        "ephemeris-stlabx-no-rotation",
+        "ephemeris-stlabx-oblique",
+        "ephemeris-stlabx-rounded-light-speed",
+        "ephemeris-stlabx-small-and-near-limit",
+        "ephemeris-stlabx-transverse"
+      ],
+      "id": "ci-cp04-3c3e3f368191-wasm",
+      "kind": "ci",
+      "commit": "5759b72e80d904295926aa968ee1c07006abdf51",
+      "url": "https://github.com/rybosome/tspice/actions/runs/45348374307/job/138288412178",
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 8056 live comparisons without unexpected skips."
     }
   ],
   "routines": [
@@ -983,11 +1375,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "EphemerisApi through serialized native addon and shared tspice_spkacs to the named spkacs_c canonical entry point. Check both real SPKGEO stencil calls and the nested stellar-state components with initialized buffers before the public canonical call.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -997,11 +1393,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "EphemerisApi through owned WASM buffers and shared tspice_spkacs to the named spkacs_c canonical entry point. Check both real SPKGEO stencil calls and the nested stellar-state components with initialized buffers before the public canonical call.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
+          ]
         }
       }
     },
@@ -1123,11 +1523,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "EphemerisApi through serialized native addon and shared tspice_spkapo to the named spkapo_c canonical entry point. Independent locked public wrapper calls the original CSPICE function.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -1137,11 +1541,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "EphemerisApi through owned WASM buffers and shared tspice_spkapo to the named spkapo_c canonical entry point. Independent locked public wrapper calls the original CSPICE function.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
+          ]
         }
       }
     },
@@ -1282,11 +1690,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "EphemerisApi through serialized native addon and shared tspice_spkapp to the named spkapp_c canonical entry point. Use the canonical five-character option normalization, checked original nonstellar SPKAPP path and checked STELAB/STLABX before replaying the actual public entry point.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -1296,11 +1708,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "EphemerisApi through owned WASM buffers and shared tspice_spkapp to the named spkapp_c canonical entry point. Use the canonical five-character option normalization, checked original nonstellar SPKAPP path and checked STELAB/STLABX before replaying the actual public entry point.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
+          ]
         }
       }
     },
@@ -1451,11 +1867,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "EphemerisApi through serialized native addon and shared tspice_spkaps to the named spkaps_c canonical entry point. Use a private exact three-word oracle binding, compare safely with the padded high-level wrapper and check actual SPKLTC and ZZSTELAB before public canonical execution.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -1465,11 +1885,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "EphemerisApi through owned WASM buffers and shared tspice_spkaps to the named spkaps_c canonical entry point. Use a private exact three-word oracle binding, compare safely with the padded high-level wrapper and check actual SPKLTC and ZZSTELAB before public canonical execution.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
+          ]
         }
       }
     },
@@ -1591,11 +2015,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "EphemerisApi through serialized native addon and shared tspice_spkltc to the named spkltc_c canonical entry point. Independent locked public wrapper calls the original CSPICE function.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -1605,11 +2033,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "EphemerisApi through owned WASM buffers and shared tspice_spkltc to the named spkltc_c canonical entry point. Independent locked public wrapper calls the original CSPICE function.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
+          ]
         }
       }
     },
@@ -1670,11 +2102,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "EphemerisApi through serialized native addon and shared tspice_stelab to the named stelab_c canonical entry point. Independent locked public wrapper calls the original CSPICE function.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -1683,11 +2119,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "EphemerisApi through owned WASM buffers and shared tspice_stelab to the named stelab_c canonical entry point. Independent locked public wrapper calls the original CSPICE function.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
+          ]
         }
       }
     },
@@ -1748,11 +2188,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "EphemerisApi through serialized native addon and shared tspice_stlabx to the named stlabx_c canonical entry point. Independent locked public wrapper calls the original CSPICE function.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -1761,11 +2205,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "EphemerisApi through owned WASM buffers and shared tspice_stlabx to the named stlabx_c canonical entry point. Independent locked public wrapper calls the original CSPICE function.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
+          ]
         }
       }
     },
@@ -1862,11 +2310,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "EphemerisApi through serialized native addon and shared tspice_ltime to the named ltime_c canonical entry point. Check both original barycentric SPKGEO calls in observer-first order with initialized output before calling canonical LTIME; preserve nested trace and original delta/error semantics.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -1876,11 +2328,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "EphemerisApi through owned WASM buffers and shared tspice_ltime to the named ltime_c canonical entry point. Check both original barycentric SPKGEO calls in observer-first order with initialized output before calling canonical LTIME; preserve nested trace and original delta/error semantics.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
+          ]
         }
       }
     }

@@ -189,6 +189,150 @@
       "url": "https://github.com/rybosome/tspice/actions/runs/43568124187/job/132366361966",
       "observation": "Inspected successful Linux Node 22 native-required job 132366361966 on bd92b9f7c8ca4b3c01617b316830fecfa2d31e39: 2,264 registered Node/WASM live comparisons; 2,484 parity-package tests with no skips, including the native-required guard; 70 native wrapper, 611 WASM, 28 core and 150 facade tests passed.",
       "historical": true
+    },
+    {
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "48c4ed057f8bf93f462a8a0263ba3f28e2b3502bd6808d7195b9dc73cf882833",
+      "caseIds": [
+        "ephemeris-evsgp4-change-orbit",
+        "ephemeris-evsgp4-earth-constants",
+        "ephemeris-evsgp4-eccentric-halfday",
+        "ephemeris-evsgp4-error-recovery",
+        "ephemeris-evsgp4-negative-eccentricity",
+        "ephemeris-evsgp4-no-leapseconds",
+        "ephemeris-evsgp4-nonresonant-deep",
+        "ephemeris-evsgp4-relay-resonance",
+        "ephemeris-evsgp4-suborbital",
+        "ephemeris-evsgp4-survey-state",
+        "ephemeris-getelm-bad-angle",
+        "ephemeris-getelm-bad-motion",
+        "ephemeris-getelm-blank-rows",
+        "ephemeris-getelm-century-pivot",
+        "ephemeris-getelm-civil-survey",
+        "ephemeris-getelm-error-recovery",
+        "ephemeris-getelm-inclination-endpoints",
+        "ephemeris-getelm-lsk-unloaded",
+        "ephemeris-getelm-mean-motion-boundaries",
+        "ephemeris-getelm-mismatched-id",
+        "ephemeris-getelm-mixed-orbits",
+        "ephemeris-getelm-optional-checksum",
+        "ephemeris-getelm-unparseable-field"
+      ],
+      "id": "local-cp04-3c3e3f368191-node",
+      "kind": "local",
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 3c3e3f368191d553e84ecc599d449055df985b1c. The native-required lane completed 8056 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45336611602/job/138250075470"
+    },
+    {
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "48c4ed057f8bf93f462a8a0263ba3f28e2b3502bd6808d7195b9dc73cf882833",
+      "caseIds": [
+        "ephemeris-evsgp4-change-orbit",
+        "ephemeris-evsgp4-earth-constants",
+        "ephemeris-evsgp4-eccentric-halfday",
+        "ephemeris-evsgp4-error-recovery",
+        "ephemeris-evsgp4-negative-eccentricity",
+        "ephemeris-evsgp4-no-leapseconds",
+        "ephemeris-evsgp4-nonresonant-deep",
+        "ephemeris-evsgp4-relay-resonance",
+        "ephemeris-evsgp4-suborbital",
+        "ephemeris-evsgp4-survey-state",
+        "ephemeris-getelm-bad-angle",
+        "ephemeris-getelm-bad-motion",
+        "ephemeris-getelm-blank-rows",
+        "ephemeris-getelm-century-pivot",
+        "ephemeris-getelm-civil-survey",
+        "ephemeris-getelm-error-recovery",
+        "ephemeris-getelm-inclination-endpoints",
+        "ephemeris-getelm-lsk-unloaded",
+        "ephemeris-getelm-mean-motion-boundaries",
+        "ephemeris-getelm-mismatched-id",
+        "ephemeris-getelm-mixed-orbits",
+        "ephemeris-getelm-optional-checksum",
+        "ephemeris-getelm-unparseable-field"
+      ],
+      "id": "ci-cp04-3c3e3f368191-node",
+      "kind": "ci",
+      "commit": "5759b72e80d904295926aa968ee1c07006abdf51",
+      "url": "https://github.com/rybosome/tspice/actions/runs/45348374307/job/138288412178",
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 8056 live comparisons without unexpected skips."
+    },
+    {
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "48c4ed057f8bf93f462a8a0263ba3f28e2b3502bd6808d7195b9dc73cf882833",
+      "caseIds": [
+        "ephemeris-evsgp4-change-orbit",
+        "ephemeris-evsgp4-earth-constants",
+        "ephemeris-evsgp4-eccentric-halfday",
+        "ephemeris-evsgp4-error-recovery",
+        "ephemeris-evsgp4-negative-eccentricity",
+        "ephemeris-evsgp4-no-leapseconds",
+        "ephemeris-evsgp4-nonresonant-deep",
+        "ephemeris-evsgp4-relay-resonance",
+        "ephemeris-evsgp4-suborbital",
+        "ephemeris-evsgp4-survey-state",
+        "ephemeris-getelm-bad-angle",
+        "ephemeris-getelm-bad-motion",
+        "ephemeris-getelm-blank-rows",
+        "ephemeris-getelm-century-pivot",
+        "ephemeris-getelm-civil-survey",
+        "ephemeris-getelm-error-recovery",
+        "ephemeris-getelm-inclination-endpoints",
+        "ephemeris-getelm-lsk-unloaded",
+        "ephemeris-getelm-mean-motion-boundaries",
+        "ephemeris-getelm-mismatched-id",
+        "ephemeris-getelm-mixed-orbits",
+        "ephemeris-getelm-optional-checksum",
+        "ephemeris-getelm-unparseable-field"
+      ],
+      "id": "local-cp04-3c3e3f368191-wasm",
+      "kind": "local",
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 3c3e3f368191d553e84ecc599d449055df985b1c. The native-required lane completed 8056 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45336611602/job/138250075470"
+    },
+    {
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "48c4ed057f8bf93f462a8a0263ba3f28e2b3502bd6808d7195b9dc73cf882833",
+      "caseIds": [
+        "ephemeris-evsgp4-change-orbit",
+        "ephemeris-evsgp4-earth-constants",
+        "ephemeris-evsgp4-eccentric-halfday",
+        "ephemeris-evsgp4-error-recovery",
+        "ephemeris-evsgp4-negative-eccentricity",
+        "ephemeris-evsgp4-no-leapseconds",
+        "ephemeris-evsgp4-nonresonant-deep",
+        "ephemeris-evsgp4-relay-resonance",
+        "ephemeris-evsgp4-suborbital",
+        "ephemeris-evsgp4-survey-state",
+        "ephemeris-getelm-bad-angle",
+        "ephemeris-getelm-bad-motion",
+        "ephemeris-getelm-blank-rows",
+        "ephemeris-getelm-century-pivot",
+        "ephemeris-getelm-civil-survey",
+        "ephemeris-getelm-error-recovery",
+        "ephemeris-getelm-inclination-endpoints",
+        "ephemeris-getelm-lsk-unloaded",
+        "ephemeris-getelm-mean-motion-boundaries",
+        "ephemeris-getelm-mismatched-id",
+        "ephemeris-getelm-mixed-orbits",
+        "ephemeris-getelm-optional-checksum",
+        "ephemeris-getelm-unparseable-field"
+      ],
+      "id": "ci-cp04-3c3e3f368191-wasm",
+      "kind": "ci",
+      "commit": "5759b72e80d904295926aa968ee1c07006abdf51",
+      "url": "https://github.com/rybosome/tspice/actions/runs/45348374307/job/138288412178",
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 8056 live comparisons without unexpected skips."
     }
   ],
   "routines": [
@@ -285,11 +429,15 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.getelm -> validated Node adapter, actual mutex-protected N-API entry point -> tspice_getelm -> getelm_c. The independent oracle calls the actual operation from locked SpiceyPy.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -297,11 +445,15 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.getelm -> validated module-local WASM adapter, actual generated export -> tspice_getelm -> getelm_c. The independent oracle calls the actual operation from locked SpiceyPy.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
+          ]
         }
       },
       "semantics": "Parse the supplied pair to TDB seconds after J2000 and ten model elements, preserving the signed exponents, angle/rate conversions and repeated epoch. The fractional UTC day uses the loaded leap-seconds kernel and firstYear selects the two-digit century.",
@@ -406,11 +558,15 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.evsgp4 -> validated Node adapter, actual mutex-protected N-API entry point -> tspice_evsgp4 -> evsgp4_c. The independent oracle calls the actual operation from locked SpiceyPy.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -418,11 +574,15 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.evsgp4 -> validated module-local WASM adapter, actual generated export -> tspice_evsgp4 -> evsgp4_c. The independent oracle calls the actual operation from locked SpiceyPy.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
+          ]
         }
       },
       "semantics": "Initialize from the complete Earth constants and elements at the UTC Julian date corresponding to the elements TDB epoch, then return all six TEME state components (km and km/s) at the requested TDB epoch. Initialization is repeated even after a different prior orbit.",

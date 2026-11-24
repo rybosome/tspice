@@ -303,6 +303,262 @@
       "url": "https://github.com/rybosome/tspice/actions/runs/43562566636/job/132349271728",
       "observation": "Inspected successful Linux Node 22 native-required job 132349271728 on b72ef2e9b9015fb011159ceb1dcf2ef695a09981: 2,320 registered Node/WASM live comparisons; 2,537 parity-package tests with no skips, including the native-required guard; 83 native wrapper, 622 WASM, 28 core and 150 facade tests passed.",
       "historical": true
+    },
+    {
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "8fec42ed393358e49f507183534416e69775f64464cb3f49e91260160f2da600",
+      "caseIds": [
+        "ephemeris-conics-circular-equatorial",
+        "ephemeris-conics-hyperbola",
+        "ephemeris-conics-inclined-ellipse",
+        "ephemeris-conics-negative-eccentricity",
+        "ephemeris-conics-negative-periapse",
+        "ephemeris-conics-parabola",
+        "ephemeris-conics-retrograde",
+        "ephemeris-conics-unit-scale",
+        "ephemeris-conics-zero-gm",
+        "ephemeris-conics-zero-periapse",
+        "ephemeris-eqncpv-above-limit",
+        "ephemeris-eqncpv-combined-eccentricity",
+        "ephemeris-eqncpv-distinct-pole",
+        "ephemeris-eqncpv-eccentric-inclined",
+        "ephemeris-eqncpv-eccentricity-limit",
+        "ephemeris-eqncpv-negative-semiaxis",
+        "ephemeris-eqncpv-retrograde-rates",
+        "ephemeris-eqncpv-simple-circular",
+        "ephemeris-eqncpv-zero-semiaxis",
+        "ephemeris-oscelt-circle-equatorial",
+        "ephemeris-oscelt-hyperbolic",
+        "ephemeris-oscelt-inclined",
+        "ephemeris-oscelt-negative-gm",
+        "ephemeris-oscelt-parabolic-equatorial",
+        "ephemeris-oscelt-physical-units",
+        "ephemeris-oscelt-polar",
+        "ephemeris-oscelt-radial",
+        "ephemeris-oscelt-zero-gm",
+        "ephemeris-oscelt-zero-position",
+        "ephemeris-oscelt-zero-velocity",
+        "ephemeris-oscltx-circle-equatorial",
+        "ephemeris-oscltx-hyperbolic",
+        "ephemeris-oscltx-inclined",
+        "ephemeris-oscltx-negative-gm",
+        "ephemeris-oscltx-parabolic-equatorial",
+        "ephemeris-oscltx-physical-units",
+        "ephemeris-oscltx-polar",
+        "ephemeris-oscltx-radial",
+        "ephemeris-oscltx-zero-gm",
+        "ephemeris-oscltx-zero-position",
+        "ephemeris-oscltx-zero-velocity",
+        "ephemeris-prop2b-circular",
+        "ephemeris-prop2b-hyperbola",
+        "ephemeris-prop2b-inclined-ellipse",
+        "ephemeris-prop2b-parabola",
+        "ephemeris-prop2b-physical-units",
+        "ephemeris-prop2b-radial-motion",
+        "ephemeris-prop2b-retrograde",
+        "ephemeris-prop2b-zero-gm",
+        "ephemeris-prop2b-zero-position",
+        "ephemeris-prop2b-zero-velocity"
+      ],
+      "id": "local-cp04-3c3e3f368191-node",
+      "kind": "local",
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 3c3e3f368191d553e84ecc599d449055df985b1c. The native-required lane completed 8056 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45336611602/job/138250075470"
+    },
+    {
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "8fec42ed393358e49f507183534416e69775f64464cb3f49e91260160f2da600",
+      "caseIds": [
+        "ephemeris-conics-circular-equatorial",
+        "ephemeris-conics-hyperbola",
+        "ephemeris-conics-inclined-ellipse",
+        "ephemeris-conics-negative-eccentricity",
+        "ephemeris-conics-negative-periapse",
+        "ephemeris-conics-parabola",
+        "ephemeris-conics-retrograde",
+        "ephemeris-conics-unit-scale",
+        "ephemeris-conics-zero-gm",
+        "ephemeris-conics-zero-periapse",
+        "ephemeris-eqncpv-above-limit",
+        "ephemeris-eqncpv-combined-eccentricity",
+        "ephemeris-eqncpv-distinct-pole",
+        "ephemeris-eqncpv-eccentric-inclined",
+        "ephemeris-eqncpv-eccentricity-limit",
+        "ephemeris-eqncpv-negative-semiaxis",
+        "ephemeris-eqncpv-retrograde-rates",
+        "ephemeris-eqncpv-simple-circular",
+        "ephemeris-eqncpv-zero-semiaxis",
+        "ephemeris-oscelt-circle-equatorial",
+        "ephemeris-oscelt-hyperbolic",
+        "ephemeris-oscelt-inclined",
+        "ephemeris-oscelt-negative-gm",
+        "ephemeris-oscelt-parabolic-equatorial",
+        "ephemeris-oscelt-physical-units",
+        "ephemeris-oscelt-polar",
+        "ephemeris-oscelt-radial",
+        "ephemeris-oscelt-zero-gm",
+        "ephemeris-oscelt-zero-position",
+        "ephemeris-oscelt-zero-velocity",
+        "ephemeris-oscltx-circle-equatorial",
+        "ephemeris-oscltx-hyperbolic",
+        "ephemeris-oscltx-inclined",
+        "ephemeris-oscltx-negative-gm",
+        "ephemeris-oscltx-parabolic-equatorial",
+        "ephemeris-oscltx-physical-units",
+        "ephemeris-oscltx-polar",
+        "ephemeris-oscltx-radial",
+        "ephemeris-oscltx-zero-gm",
+        "ephemeris-oscltx-zero-position",
+        "ephemeris-oscltx-zero-velocity",
+        "ephemeris-prop2b-circular",
+        "ephemeris-prop2b-hyperbola",
+        "ephemeris-prop2b-inclined-ellipse",
+        "ephemeris-prop2b-parabola",
+        "ephemeris-prop2b-physical-units",
+        "ephemeris-prop2b-radial-motion",
+        "ephemeris-prop2b-retrograde",
+        "ephemeris-prop2b-zero-gm",
+        "ephemeris-prop2b-zero-position",
+        "ephemeris-prop2b-zero-velocity"
+      ],
+      "id": "ci-cp04-3c3e3f368191-node",
+      "kind": "ci",
+      "commit": "5759b72e80d904295926aa968ee1c07006abdf51",
+      "url": "https://github.com/rybosome/tspice/actions/runs/45348374307/job/138288412178",
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 8056 live comparisons without unexpected skips."
+    },
+    {
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "8fec42ed393358e49f507183534416e69775f64464cb3f49e91260160f2da600",
+      "caseIds": [
+        "ephemeris-conics-circular-equatorial",
+        "ephemeris-conics-hyperbola",
+        "ephemeris-conics-inclined-ellipse",
+        "ephemeris-conics-negative-eccentricity",
+        "ephemeris-conics-negative-periapse",
+        "ephemeris-conics-parabola",
+        "ephemeris-conics-retrograde",
+        "ephemeris-conics-unit-scale",
+        "ephemeris-conics-zero-gm",
+        "ephemeris-conics-zero-periapse",
+        "ephemeris-eqncpv-above-limit",
+        "ephemeris-eqncpv-combined-eccentricity",
+        "ephemeris-eqncpv-distinct-pole",
+        "ephemeris-eqncpv-eccentric-inclined",
+        "ephemeris-eqncpv-eccentricity-limit",
+        "ephemeris-eqncpv-negative-semiaxis",
+        "ephemeris-eqncpv-retrograde-rates",
+        "ephemeris-eqncpv-simple-circular",
+        "ephemeris-eqncpv-zero-semiaxis",
+        "ephemeris-oscelt-circle-equatorial",
+        "ephemeris-oscelt-hyperbolic",
+        "ephemeris-oscelt-inclined",
+        "ephemeris-oscelt-negative-gm",
+        "ephemeris-oscelt-parabolic-equatorial",
+        "ephemeris-oscelt-physical-units",
+        "ephemeris-oscelt-polar",
+        "ephemeris-oscelt-radial",
+        "ephemeris-oscelt-zero-gm",
+        "ephemeris-oscelt-zero-position",
+        "ephemeris-oscelt-zero-velocity",
+        "ephemeris-oscltx-circle-equatorial",
+        "ephemeris-oscltx-hyperbolic",
+        "ephemeris-oscltx-inclined",
+        "ephemeris-oscltx-negative-gm",
+        "ephemeris-oscltx-parabolic-equatorial",
+        "ephemeris-oscltx-physical-units",
+        "ephemeris-oscltx-polar",
+        "ephemeris-oscltx-radial",
+        "ephemeris-oscltx-zero-gm",
+        "ephemeris-oscltx-zero-position",
+        "ephemeris-oscltx-zero-velocity",
+        "ephemeris-prop2b-circular",
+        "ephemeris-prop2b-hyperbola",
+        "ephemeris-prop2b-inclined-ellipse",
+        "ephemeris-prop2b-parabola",
+        "ephemeris-prop2b-physical-units",
+        "ephemeris-prop2b-radial-motion",
+        "ephemeris-prop2b-retrograde",
+        "ephemeris-prop2b-zero-gm",
+        "ephemeris-prop2b-zero-position",
+        "ephemeris-prop2b-zero-velocity"
+      ],
+      "id": "local-cp04-3c3e3f368191-wasm",
+      "kind": "local",
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 3c3e3f368191d553e84ecc599d449055df985b1c. The native-required lane completed 8056 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45336611602/job/138250075470"
+    },
+    {
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "8fec42ed393358e49f507183534416e69775f64464cb3f49e91260160f2da600",
+      "caseIds": [
+        "ephemeris-conics-circular-equatorial",
+        "ephemeris-conics-hyperbola",
+        "ephemeris-conics-inclined-ellipse",
+        "ephemeris-conics-negative-eccentricity",
+        "ephemeris-conics-negative-periapse",
+        "ephemeris-conics-parabola",
+        "ephemeris-conics-retrograde",
+        "ephemeris-conics-unit-scale",
+        "ephemeris-conics-zero-gm",
+        "ephemeris-conics-zero-periapse",
+        "ephemeris-eqncpv-above-limit",
+        "ephemeris-eqncpv-combined-eccentricity",
+        "ephemeris-eqncpv-distinct-pole",
+        "ephemeris-eqncpv-eccentric-inclined",
+        "ephemeris-eqncpv-eccentricity-limit",
+        "ephemeris-eqncpv-negative-semiaxis",
+        "ephemeris-eqncpv-retrograde-rates",
+        "ephemeris-eqncpv-simple-circular",
+        "ephemeris-eqncpv-zero-semiaxis",
+        "ephemeris-oscelt-circle-equatorial",
+        "ephemeris-oscelt-hyperbolic",
+        "ephemeris-oscelt-inclined",
+        "ephemeris-oscelt-negative-gm",
+        "ephemeris-oscelt-parabolic-equatorial",
+        "ephemeris-oscelt-physical-units",
+        "ephemeris-oscelt-polar",
+        "ephemeris-oscelt-radial",
+        "ephemeris-oscelt-zero-gm",
+        "ephemeris-oscelt-zero-position",
+        "ephemeris-oscelt-zero-velocity",
+        "ephemeris-oscltx-circle-equatorial",
+        "ephemeris-oscltx-hyperbolic",
+        "ephemeris-oscltx-inclined",
+        "ephemeris-oscltx-negative-gm",
+        "ephemeris-oscltx-parabolic-equatorial",
+        "ephemeris-oscltx-physical-units",
+        "ephemeris-oscltx-polar",
+        "ephemeris-oscltx-radial",
+        "ephemeris-oscltx-zero-gm",
+        "ephemeris-oscltx-zero-position",
+        "ephemeris-oscltx-zero-velocity",
+        "ephemeris-prop2b-circular",
+        "ephemeris-prop2b-hyperbola",
+        "ephemeris-prop2b-inclined-ellipse",
+        "ephemeris-prop2b-parabola",
+        "ephemeris-prop2b-physical-units",
+        "ephemeris-prop2b-radial-motion",
+        "ephemeris-prop2b-retrograde",
+        "ephemeris-prop2b-zero-gm",
+        "ephemeris-prop2b-zero-position",
+        "ephemeris-prop2b-zero-velocity"
+      ],
+      "id": "ci-cp04-3c3e3f368191-wasm",
+      "kind": "ci",
+      "commit": "5759b72e80d904295926aa968ee1c07006abdf51",
+      "url": "https://github.com/rybosome/tspice/actions/runs/45348374307/job/138288412178",
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 8056 live comparisons without unexpected skips."
     }
   ],
   "routines": [
@@ -372,16 +628,34 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "raw.conics -> EphemerisApi adapter -> serialized Node native addon -> shared tspice_conics -> conics_c. Independent oracle uses actual sp.conics.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
+          ]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "raw.conics -> EphemerisApi adapter -> WASM owned input/output buffers -> shared tspice_conics -> conics_c. Independent oracle uses actual sp.conics.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
+          ]
         }
       }
     },
@@ -446,16 +720,34 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "raw.eqncpv -> EphemerisApi adapter -> serialized Node native addon -> shared tspice_eqncpv -> eqncpv_c. Independent oracle uses actual sp.eqncpv.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
+          ]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "raw.eqncpv -> EphemerisApi adapter -> WASM owned input/output buffers -> shared tspice_eqncpv -> eqncpv_c. Independent oracle uses actual sp.eqncpv.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
+          ]
         }
       }
     },
@@ -530,16 +822,34 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "raw.oscelt -> EphemerisApi adapter -> serialized Node native addon -> shared tspice_oscelt -> oscelt_c. Independent oracle uses actual sp.oscelt.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
+          ]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "raw.oscelt -> EphemerisApi adapter -> WASM owned input/output buffers -> shared tspice_oscelt -> oscelt_c. Independent oracle uses actual sp.oscelt.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
+          ]
         }
       }
     },
@@ -638,11 +948,15 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.oscltx -> EphemerisApi adapter -> serialized Node native addon -> shared tspice_oscltx -> oscltx_c. Independent oracle uses actual sp.oscltx followed immediately by its CSPICE error check.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -650,11 +964,15 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.oscltx -> EphemerisApi adapter -> WASM owned input/output buffers -> shared tspice_oscltx -> oscltx_c. Independent oracle uses actual sp.oscltx followed immediately by its CSPICE error check.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
+          ]
         }
       }
     },
@@ -724,16 +1042,34 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "raw.prop2b -> EphemerisApi adapter -> serialized Node native addon -> shared tspice_prop2b -> prop2b_c. Independent oracle uses actual sp.prop2b.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
+          ]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "raw.prop2b -> EphemerisApi adapter -> WASM owned input/output buffers -> shared tspice_prop2b -> prop2b_c. Independent oracle uses actual sp.prop2b.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
+          ]
         }
       }
     }

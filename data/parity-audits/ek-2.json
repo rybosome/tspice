@@ -14042,6 +14042,198 @@
       "url": "https://github.com/rybosome/tspice/actions/runs/43590225785/job/132433199612",
       "observation": "Inspected successful Linux Node 22 native-required job 132433199612 on b9cd0f5a96c78e67a8e720f565e6350da2a21db1: 2,446 registered Node/WASM live comparisons; 2,679 parity-package tests with no skips, including the native-required guard; 89 native wrapper, 666 WASM, 28 core and 152 facade tests passed.",
       "historical": true
+    },
+    {
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "cf7b5c89c74b511d40fb592e1b277e32e86a3b90888f59b899457dfdf704b807",
+      "caseIds": [
+        "ek-ekcls-audit-finalized-output-reopens",
+        "ek-ekcls-audit-read-claim-survives-kclear",
+        "ek-ekcls-double-close-error",
+        "ek-ekcls-happy-close-and-reopen",
+        "ek-ekifld-audit-full-workspace-and-data",
+        "ek-ekifld-audit-invalid-column",
+        "ek-ekifld-audit-invalid-declaration",
+        "ek-ekifld-audit-invalid-table",
+        "ek-ekifld-audit-long-table",
+        "ek-ekifld-audit-read-only-claim",
+        "ek-ekifld-audit-second-segment-number",
+        "ek-ekifld-happy-segment-initialization-observable",
+        "ek-ekifld-invalid-nrows-error",
+        "ek-eknseg-audit-physical-versus-logical",
+        "ek-eknseg-closed-handle-error",
+        "ek-eknseg-happy-on-open-handle",
+        "ek-ekntab-audit-logical-table-load-state",
+        "ek-ekntab-audit-raw-open-does-not-load",
+        "ek-ekntab-happy-empty-state",
+        "ek-ekntab-happy-with-loaded-table",
+        "ek-ekopn-audit-existing-file",
+        "ek-ekopn-audit-long-header-and-comment-reservation",
+        "ek-ekopn-duplicate-path-error",
+        "ek-ekopn-happy-open-new-file",
+        "ek-ekopr-audit-duplicate-read-claims",
+        "ek-ekopr-happy-reopen-created-file",
+        "ek-ekopr-missing-file-error",
+        "ek-ekopw-audit-append-finalize-and-reopen",
+        "ek-ekopw-audit-conflicting-read-claim",
+        "ek-ekopw-happy-open-created-file-for-write",
+        "ek-ekopw-missing-file-error",
+        "ek-ektnam-audit-all-loaded-names",
+        "ek-ektnam-audit-no-loaded-files",
+        "ek-ektnam-happy-first-table",
+        "ek-ektnam-out-of-range-error"
+      ],
+      "id": "local-cp04-3c3e3f368191-node",
+      "kind": "local",
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 3c3e3f368191d553e84ecc599d449055df985b1c. The native-required lane completed 8056 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45336611602/job/138250075470"
+    },
+    {
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "cf7b5c89c74b511d40fb592e1b277e32e86a3b90888f59b899457dfdf704b807",
+      "caseIds": [
+        "ek-ekcls-audit-finalized-output-reopens",
+        "ek-ekcls-audit-read-claim-survives-kclear",
+        "ek-ekcls-double-close-error",
+        "ek-ekcls-happy-close-and-reopen",
+        "ek-ekifld-audit-full-workspace-and-data",
+        "ek-ekifld-audit-invalid-column",
+        "ek-ekifld-audit-invalid-declaration",
+        "ek-ekifld-audit-invalid-table",
+        "ek-ekifld-audit-long-table",
+        "ek-ekifld-audit-read-only-claim",
+        "ek-ekifld-audit-second-segment-number",
+        "ek-ekifld-happy-segment-initialization-observable",
+        "ek-ekifld-invalid-nrows-error",
+        "ek-eknseg-audit-physical-versus-logical",
+        "ek-eknseg-closed-handle-error",
+        "ek-eknseg-happy-on-open-handle",
+        "ek-ekntab-audit-logical-table-load-state",
+        "ek-ekntab-audit-raw-open-does-not-load",
+        "ek-ekntab-happy-empty-state",
+        "ek-ekntab-happy-with-loaded-table",
+        "ek-ekopn-audit-existing-file",
+        "ek-ekopn-audit-long-header-and-comment-reservation",
+        "ek-ekopn-duplicate-path-error",
+        "ek-ekopn-happy-open-new-file",
+        "ek-ekopr-audit-duplicate-read-claims",
+        "ek-ekopr-happy-reopen-created-file",
+        "ek-ekopr-missing-file-error",
+        "ek-ekopw-audit-append-finalize-and-reopen",
+        "ek-ekopw-audit-conflicting-read-claim",
+        "ek-ekopw-happy-open-created-file-for-write",
+        "ek-ekopw-missing-file-error",
+        "ek-ektnam-audit-all-loaded-names",
+        "ek-ektnam-audit-no-loaded-files",
+        "ek-ektnam-happy-first-table",
+        "ek-ektnam-out-of-range-error"
+      ],
+      "id": "ci-cp04-3c3e3f368191-node",
+      "kind": "ci",
+      "commit": "5759b72e80d904295926aa968ee1c07006abdf51",
+      "url": "https://github.com/rybosome/tspice/actions/runs/45348374307/job/138288412178",
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 8056 live comparisons without unexpected skips."
+    },
+    {
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "cf7b5c89c74b511d40fb592e1b277e32e86a3b90888f59b899457dfdf704b807",
+      "caseIds": [
+        "ek-ekcls-audit-finalized-output-reopens",
+        "ek-ekcls-audit-read-claim-survives-kclear",
+        "ek-ekcls-double-close-error",
+        "ek-ekcls-happy-close-and-reopen",
+        "ek-ekifld-audit-full-workspace-and-data",
+        "ek-ekifld-audit-invalid-column",
+        "ek-ekifld-audit-invalid-declaration",
+        "ek-ekifld-audit-invalid-table",
+        "ek-ekifld-audit-long-table",
+        "ek-ekifld-audit-read-only-claim",
+        "ek-ekifld-audit-second-segment-number",
+        "ek-ekifld-happy-segment-initialization-observable",
+        "ek-ekifld-invalid-nrows-error",
+        "ek-eknseg-audit-physical-versus-logical",
+        "ek-eknseg-closed-handle-error",
+        "ek-eknseg-happy-on-open-handle",
+        "ek-ekntab-audit-logical-table-load-state",
+        "ek-ekntab-audit-raw-open-does-not-load",
+        "ek-ekntab-happy-empty-state",
+        "ek-ekntab-happy-with-loaded-table",
+        "ek-ekopn-audit-existing-file",
+        "ek-ekopn-audit-long-header-and-comment-reservation",
+        "ek-ekopn-duplicate-path-error",
+        "ek-ekopn-happy-open-new-file",
+        "ek-ekopr-audit-duplicate-read-claims",
+        "ek-ekopr-happy-reopen-created-file",
+        "ek-ekopr-missing-file-error",
+        "ek-ekopw-audit-append-finalize-and-reopen",
+        "ek-ekopw-audit-conflicting-read-claim",
+        "ek-ekopw-happy-open-created-file-for-write",
+        "ek-ekopw-missing-file-error",
+        "ek-ektnam-audit-all-loaded-names",
+        "ek-ektnam-audit-no-loaded-files",
+        "ek-ektnam-happy-first-table",
+        "ek-ektnam-out-of-range-error"
+      ],
+      "id": "local-cp04-3c3e3f368191-wasm",
+      "kind": "local",
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 3c3e3f368191d553e84ecc599d449055df985b1c. The native-required lane completed 8056 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45336611602/job/138250075470"
+    },
+    {
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "cf7b5c89c74b511d40fb592e1b277e32e86a3b90888f59b899457dfdf704b807",
+      "caseIds": [
+        "ek-ekcls-audit-finalized-output-reopens",
+        "ek-ekcls-audit-read-claim-survives-kclear",
+        "ek-ekcls-double-close-error",
+        "ek-ekcls-happy-close-and-reopen",
+        "ek-ekifld-audit-full-workspace-and-data",
+        "ek-ekifld-audit-invalid-column",
+        "ek-ekifld-audit-invalid-declaration",
+        "ek-ekifld-audit-invalid-table",
+        "ek-ekifld-audit-long-table",
+        "ek-ekifld-audit-read-only-claim",
+        "ek-ekifld-audit-second-segment-number",
+        "ek-ekifld-happy-segment-initialization-observable",
+        "ek-ekifld-invalid-nrows-error",
+        "ek-eknseg-audit-physical-versus-logical",
+        "ek-eknseg-closed-handle-error",
+        "ek-eknseg-happy-on-open-handle",
+        "ek-ekntab-audit-logical-table-load-state",
+        "ek-ekntab-audit-raw-open-does-not-load",
+        "ek-ekntab-happy-empty-state",
+        "ek-ekntab-happy-with-loaded-table",
+        "ek-ekopn-audit-existing-file",
+        "ek-ekopn-audit-long-header-and-comment-reservation",
+        "ek-ekopn-duplicate-path-error",
+        "ek-ekopn-happy-open-new-file",
+        "ek-ekopr-audit-duplicate-read-claims",
+        "ek-ekopr-happy-reopen-created-file",
+        "ek-ekopr-missing-file-error",
+        "ek-ekopw-audit-append-finalize-and-reopen",
+        "ek-ekopw-audit-conflicting-read-claim",
+        "ek-ekopw-happy-open-created-file-for-write",
+        "ek-ekopw-missing-file-error",
+        "ek-ektnam-audit-all-loaded-names",
+        "ek-ektnam-audit-no-loaded-files",
+        "ek-ektnam-happy-first-table",
+        "ek-ektnam-out-of-range-error"
+      ],
+      "id": "ci-cp04-3c3e3f368191-wasm",
+      "kind": "ci",
+      "commit": "5759b72e80d904295926aa968ee1c07006abdf51",
+      "url": "https://github.com/rybosome/tspice/actions/runs/45348374307/job/138288412178",
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 8056 live comparisons without unexpected skips."
     }
   ],
   "routines": [
@@ -14141,11 +14333,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.ekopn -> Node typed adapter -> registered N-API handler -> shared tspice_ekopn -> ekopn_c. Registered workflow dispatches that raw method. Python invokes actual locked SpiceyPy ekopn; adapters normalize only handles/path identity and scalar enum representations, with actual workspace fully observed.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -14169,11 +14365,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.ekopn -> WASM typed helper -> configured compiled _tspice_ekopn export -> shared tspice_ekopn -> ekopn_c. Registered workflow dispatches that raw method. Python invokes actual locked SpiceyPy ekopn; adapters normalize only handles/path identity and scalar enum representations, with actual workspace fully observed.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
+          ]
         }
       }
     },
@@ -14253,11 +14453,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.ekopr -> Node typed adapter -> registered N-API handler -> shared tspice_ekopr -> ekopr_c. Registered workflow dispatches that raw method. Python invokes actual locked SpiceyPy ekopr; adapters normalize only handles/path identity and scalar enum representations, with actual workspace fully observed.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -14281,11 +14485,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.ekopr -> WASM typed helper -> configured compiled _tspice_ekopr export -> shared tspice_ekopr -> ekopr_c. Registered workflow dispatches that raw method. Python invokes actual locked SpiceyPy ekopr; adapters normalize only handles/path identity and scalar enum representations, with actual workspace fully observed.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
+          ]
         }
       }
     },
@@ -14373,11 +14581,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.ekopw -> Node typed adapter -> registered N-API handler -> shared tspice_ekopw -> ekopw_c. Registered workflow dispatches that raw method. Python invokes actual locked SpiceyPy ekopw; adapters normalize only handles/path identity and scalar enum representations, with actual workspace fully observed.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -14401,11 +14613,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.ekopw -> WASM typed helper -> configured compiled _tspice_ekopw export -> shared tspice_ekopw -> ekopw_c. Registered workflow dispatches that raw method. Python invokes actual locked SpiceyPy ekopw; adapters normalize only handles/path identity and scalar enum representations, with actual workspace fully observed.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
+          ]
         }
       }
     },
@@ -14511,11 +14727,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.ekcls -> Node typed adapter -> registered N-API handler -> shared tspice_ekcls -> ekcls_c. Registered workflow dispatches that raw method. Python invokes actual locked SpiceyPy ekcls; adapters normalize only handles/path identity and scalar enum representations, with actual workspace fully observed.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -14539,11 +14759,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.ekcls -> WASM typed helper -> configured compiled _tspice_ekcls export -> shared tspice_ekcls -> ekcls_c. Registered workflow dispatches that raw method. Python invokes actual locked SpiceyPy ekcls; adapters normalize only handles/path identity and scalar enum representations, with actual workspace fully observed.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
+          ]
         }
       }
     },
@@ -14631,11 +14855,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.ekntab -> Node typed adapter -> registered N-API handler -> shared tspice_ekntab -> ekntab_c. Registered workflow dispatches that raw method. Python invokes actual locked SpiceyPy ekntab; adapters normalize only handles/path identity and scalar enum representations, with actual workspace fully observed.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -14659,11 +14887,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.ekntab -> WASM typed helper -> configured compiled _tspice_ekntab export -> shared tspice_ekntab -> ekntab_c. Registered workflow dispatches that raw method. Python invokes actual locked SpiceyPy ekntab; adapters normalize only handles/path identity and scalar enum representations, with actual workspace fully observed.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
+          ]
         }
       }
     },
@@ -14751,11 +14983,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.ektnam -> Node typed adapter -> registered N-API handler -> shared tspice_ektnam -> ektnam_c. Registered workflow dispatches that raw method. Python invokes actual locked SpiceyPy ektnam; adapters normalize only handles/path identity and scalar enum representations, with actual workspace fully observed.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -14779,11 +15015,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.ektnam -> WASM typed helper -> configured compiled _tspice_ektnam export -> shared tspice_ektnam -> ektnam_c. Registered workflow dispatches that raw method. Python invokes actual locked SpiceyPy ektnam; adapters normalize only handles/path identity and scalar enum representations, with actual workspace fully observed.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
+          ]
         }
       }
     },
@@ -14863,11 +15103,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.eknseg -> Node typed adapter -> registered N-API handler -> shared tspice_eknseg -> eknseg_c. Registered workflow dispatches that raw method. Python invokes actual locked SpiceyPy eknseg; adapters normalize only handles/path identity and scalar enum representations, with actual workspace fully observed.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -14891,11 +15135,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.eknseg -> WASM typed helper -> configured compiled _tspice_eknseg export -> shared tspice_eknseg -> eknseg_c. Registered workflow dispatches that raw method. Python invokes actual locked SpiceyPy eknseg; adapters normalize only handles/path identity and scalar enum representations, with actual workspace fully observed.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
+          ]
         }
       }
     },
@@ -15036,11 +15284,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.ekifld -> Node typed adapter -> registered N-API handler -> shared tspice_ekifld -> ekifld_c. Registered workflow dispatches that raw method. Python invokes actual locked SpiceyPy ekifld; adapters normalize only handles/path identity and scalar enum representations, with actual workspace fully observed.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -15064,11 +15316,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.ekifld -> WASM typed helper -> configured compiled _tspice_ekifld export -> shared tspice_ekifld -> ekifld_c. Registered workflow dispatches that raw method. Python invokes actual locked SpiceyPy ekifld; adapters normalize only handles/path identity and scalar enum representations, with actual workspace fully observed.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
+          ]
         }
       }
     }

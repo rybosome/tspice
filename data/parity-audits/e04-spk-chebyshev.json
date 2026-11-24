@@ -1384,6 +1384,270 @@
       "url": "https://github.com/rybosome/tspice/actions/runs/43588439235/job/132427833156",
       "observation": "Inspected successful Linux Node 22 native-required job 132427833156 on 860084ffebc5682073ff7b97cc74727cd8267bb4: 2,526 registered Node/WASM live comparisons; 2,765 parity-package tests with no skips, including the native-required guard; 84 native wrapper, 651 WASM, 28 core and 150 facade tests passed.",
       "historical": true
+    },
+    {
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "410f4aeac1d1eca56ac6853648b0fea951cb5591ad80d5db86ce1d99e7a5c5c1",
+      "caseIds": [
+        "ephemeris-spkw02-above-max-degree",
+        "ephemeris-spkw02-append-priority",
+        "ephemeris-spkw02-constant-and-single-instant",
+        "ephemeris-spkw02-early-descriptor",
+        "ephemeris-spkw02-empty-frame",
+        "ephemeris-spkw02-late-descriptor",
+        "ephemeris-spkw02-long-identifier",
+        "ephemeris-spkw02-maximum-degree",
+        "ephemeris-spkw02-negative-degree",
+        "ephemeris-spkw02-no-records",
+        "ephemeris-spkw02-nonprinting-identifier",
+        "ephemeris-spkw02-reversed-descriptor",
+        "ephemeris-spkw02-subsecond-records",
+        "ephemeris-spkw02-trailing-blanks",
+        "ephemeris-spkw02-two-record-boundaries",
+        "ephemeris-spkw02-unknown-frame",
+        "ephemeris-spkw02-zero-interval",
+        "ephemeris-spkw03-above-max-degree",
+        "ephemeris-spkw03-append-priority",
+        "ephemeris-spkw03-constant-and-single-instant",
+        "ephemeris-spkw03-early-descriptor",
+        "ephemeris-spkw03-empty-frame",
+        "ephemeris-spkw03-late-descriptor",
+        "ephemeris-spkw03-long-identifier",
+        "ephemeris-spkw03-maximum-degree",
+        "ephemeris-spkw03-negative-degree",
+        "ephemeris-spkw03-no-records",
+        "ephemeris-spkw03-nonprinting-identifier",
+        "ephemeris-spkw03-reversed-descriptor",
+        "ephemeris-spkw03-subsecond-records",
+        "ephemeris-spkw03-trailing-blanks",
+        "ephemeris-spkw03-two-record-boundaries",
+        "ephemeris-spkw03-unknown-frame",
+        "ephemeris-spkw03-zero-interval",
+        "ephemeris-spkw20-above-max-degree",
+        "ephemeris-spkw20-append-priority",
+        "ephemeris-spkw20-constant-and-single-instant",
+        "ephemeris-spkw20-early-descriptor",
+        "ephemeris-spkw20-empty-frame",
+        "ephemeris-spkw20-late-descriptor",
+        "ephemeris-spkw20-long-identifier",
+        "ephemeris-spkw20-maximum-degree",
+        "ephemeris-spkw20-negative-degree",
+        "ephemeris-spkw20-negative-time-scale",
+        "ephemeris-spkw20-no-records",
+        "ephemeris-spkw20-nonprinting-identifier",
+        "ephemeris-spkw20-reversed-descriptor",
+        "ephemeris-spkw20-split-julian-epoch",
+        "ephemeris-spkw20-trailing-blanks",
+        "ephemeris-spkw20-two-record-boundaries",
+        "ephemeris-spkw20-unknown-frame",
+        "ephemeris-spkw20-zero-distance-scale",
+        "ephemeris-spkw20-zero-interval"
+      ],
+      "id": "local-cp04-3c3e3f368191-node",
+      "kind": "local",
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 3c3e3f368191d553e84ecc599d449055df985b1c. The native-required lane completed 8056 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45336611602/job/138250075470"
+    },
+    {
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "410f4aeac1d1eca56ac6853648b0fea951cb5591ad80d5db86ce1d99e7a5c5c1",
+      "caseIds": [
+        "ephemeris-spkw02-above-max-degree",
+        "ephemeris-spkw02-append-priority",
+        "ephemeris-spkw02-constant-and-single-instant",
+        "ephemeris-spkw02-early-descriptor",
+        "ephemeris-spkw02-empty-frame",
+        "ephemeris-spkw02-late-descriptor",
+        "ephemeris-spkw02-long-identifier",
+        "ephemeris-spkw02-maximum-degree",
+        "ephemeris-spkw02-negative-degree",
+        "ephemeris-spkw02-no-records",
+        "ephemeris-spkw02-nonprinting-identifier",
+        "ephemeris-spkw02-reversed-descriptor",
+        "ephemeris-spkw02-subsecond-records",
+        "ephemeris-spkw02-trailing-blanks",
+        "ephemeris-spkw02-two-record-boundaries",
+        "ephemeris-spkw02-unknown-frame",
+        "ephemeris-spkw02-zero-interval",
+        "ephemeris-spkw03-above-max-degree",
+        "ephemeris-spkw03-append-priority",
+        "ephemeris-spkw03-constant-and-single-instant",
+        "ephemeris-spkw03-early-descriptor",
+        "ephemeris-spkw03-empty-frame",
+        "ephemeris-spkw03-late-descriptor",
+        "ephemeris-spkw03-long-identifier",
+        "ephemeris-spkw03-maximum-degree",
+        "ephemeris-spkw03-negative-degree",
+        "ephemeris-spkw03-no-records",
+        "ephemeris-spkw03-nonprinting-identifier",
+        "ephemeris-spkw03-reversed-descriptor",
+        "ephemeris-spkw03-subsecond-records",
+        "ephemeris-spkw03-trailing-blanks",
+        "ephemeris-spkw03-two-record-boundaries",
+        "ephemeris-spkw03-unknown-frame",
+        "ephemeris-spkw03-zero-interval",
+        "ephemeris-spkw20-above-max-degree",
+        "ephemeris-spkw20-append-priority",
+        "ephemeris-spkw20-constant-and-single-instant",
+        "ephemeris-spkw20-early-descriptor",
+        "ephemeris-spkw20-empty-frame",
+        "ephemeris-spkw20-late-descriptor",
+        "ephemeris-spkw20-long-identifier",
+        "ephemeris-spkw20-maximum-degree",
+        "ephemeris-spkw20-negative-degree",
+        "ephemeris-spkw20-negative-time-scale",
+        "ephemeris-spkw20-no-records",
+        "ephemeris-spkw20-nonprinting-identifier",
+        "ephemeris-spkw20-reversed-descriptor",
+        "ephemeris-spkw20-split-julian-epoch",
+        "ephemeris-spkw20-trailing-blanks",
+        "ephemeris-spkw20-two-record-boundaries",
+        "ephemeris-spkw20-unknown-frame",
+        "ephemeris-spkw20-zero-distance-scale",
+        "ephemeris-spkw20-zero-interval"
+      ],
+      "id": "ci-cp04-3c3e3f368191-node",
+      "kind": "ci",
+      "commit": "5759b72e80d904295926aa968ee1c07006abdf51",
+      "url": "https://github.com/rybosome/tspice/actions/runs/45348374307/job/138288412178",
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 8056 live comparisons without unexpected skips."
+    },
+    {
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "410f4aeac1d1eca56ac6853648b0fea951cb5591ad80d5db86ce1d99e7a5c5c1",
+      "caseIds": [
+        "ephemeris-spkw02-above-max-degree",
+        "ephemeris-spkw02-append-priority",
+        "ephemeris-spkw02-constant-and-single-instant",
+        "ephemeris-spkw02-early-descriptor",
+        "ephemeris-spkw02-empty-frame",
+        "ephemeris-spkw02-late-descriptor",
+        "ephemeris-spkw02-long-identifier",
+        "ephemeris-spkw02-maximum-degree",
+        "ephemeris-spkw02-negative-degree",
+        "ephemeris-spkw02-no-records",
+        "ephemeris-spkw02-nonprinting-identifier",
+        "ephemeris-spkw02-reversed-descriptor",
+        "ephemeris-spkw02-subsecond-records",
+        "ephemeris-spkw02-trailing-blanks",
+        "ephemeris-spkw02-two-record-boundaries",
+        "ephemeris-spkw02-unknown-frame",
+        "ephemeris-spkw02-zero-interval",
+        "ephemeris-spkw03-above-max-degree",
+        "ephemeris-spkw03-append-priority",
+        "ephemeris-spkw03-constant-and-single-instant",
+        "ephemeris-spkw03-early-descriptor",
+        "ephemeris-spkw03-empty-frame",
+        "ephemeris-spkw03-late-descriptor",
+        "ephemeris-spkw03-long-identifier",
+        "ephemeris-spkw03-maximum-degree",
+        "ephemeris-spkw03-negative-degree",
+        "ephemeris-spkw03-no-records",
+        "ephemeris-spkw03-nonprinting-identifier",
+        "ephemeris-spkw03-reversed-descriptor",
+        "ephemeris-spkw03-subsecond-records",
+        "ephemeris-spkw03-trailing-blanks",
+        "ephemeris-spkw03-two-record-boundaries",
+        "ephemeris-spkw03-unknown-frame",
+        "ephemeris-spkw03-zero-interval",
+        "ephemeris-spkw20-above-max-degree",
+        "ephemeris-spkw20-append-priority",
+        "ephemeris-spkw20-constant-and-single-instant",
+        "ephemeris-spkw20-early-descriptor",
+        "ephemeris-spkw20-empty-frame",
+        "ephemeris-spkw20-late-descriptor",
+        "ephemeris-spkw20-long-identifier",
+        "ephemeris-spkw20-maximum-degree",
+        "ephemeris-spkw20-negative-degree",
+        "ephemeris-spkw20-negative-time-scale",
+        "ephemeris-spkw20-no-records",
+        "ephemeris-spkw20-nonprinting-identifier",
+        "ephemeris-spkw20-reversed-descriptor",
+        "ephemeris-spkw20-split-julian-epoch",
+        "ephemeris-spkw20-trailing-blanks",
+        "ephemeris-spkw20-two-record-boundaries",
+        "ephemeris-spkw20-unknown-frame",
+        "ephemeris-spkw20-zero-distance-scale",
+        "ephemeris-spkw20-zero-interval"
+      ],
+      "id": "local-cp04-3c3e3f368191-wasm",
+      "kind": "local",
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 3c3e3f368191d553e84ecc599d449055df985b1c. The native-required lane completed 8056 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45336611602/job/138250075470"
+    },
+    {
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "410f4aeac1d1eca56ac6853648b0fea951cb5591ad80d5db86ce1d99e7a5c5c1",
+      "caseIds": [
+        "ephemeris-spkw02-above-max-degree",
+        "ephemeris-spkw02-append-priority",
+        "ephemeris-spkw02-constant-and-single-instant",
+        "ephemeris-spkw02-early-descriptor",
+        "ephemeris-spkw02-empty-frame",
+        "ephemeris-spkw02-late-descriptor",
+        "ephemeris-spkw02-long-identifier",
+        "ephemeris-spkw02-maximum-degree",
+        "ephemeris-spkw02-negative-degree",
+        "ephemeris-spkw02-no-records",
+        "ephemeris-spkw02-nonprinting-identifier",
+        "ephemeris-spkw02-reversed-descriptor",
+        "ephemeris-spkw02-subsecond-records",
+        "ephemeris-spkw02-trailing-blanks",
+        "ephemeris-spkw02-two-record-boundaries",
+        "ephemeris-spkw02-unknown-frame",
+        "ephemeris-spkw02-zero-interval",
+        "ephemeris-spkw03-above-max-degree",
+        "ephemeris-spkw03-append-priority",
+        "ephemeris-spkw03-constant-and-single-instant",
+        "ephemeris-spkw03-early-descriptor",
+        "ephemeris-spkw03-empty-frame",
+        "ephemeris-spkw03-late-descriptor",
+        "ephemeris-spkw03-long-identifier",
+        "ephemeris-spkw03-maximum-degree",
+        "ephemeris-spkw03-negative-degree",
+        "ephemeris-spkw03-no-records",
+        "ephemeris-spkw03-nonprinting-identifier",
+        "ephemeris-spkw03-reversed-descriptor",
+        "ephemeris-spkw03-subsecond-records",
+        "ephemeris-spkw03-trailing-blanks",
+        "ephemeris-spkw03-two-record-boundaries",
+        "ephemeris-spkw03-unknown-frame",
+        "ephemeris-spkw03-zero-interval",
+        "ephemeris-spkw20-above-max-degree",
+        "ephemeris-spkw20-append-priority",
+        "ephemeris-spkw20-constant-and-single-instant",
+        "ephemeris-spkw20-early-descriptor",
+        "ephemeris-spkw20-empty-frame",
+        "ephemeris-spkw20-late-descriptor",
+        "ephemeris-spkw20-long-identifier",
+        "ephemeris-spkw20-maximum-degree",
+        "ephemeris-spkw20-negative-degree",
+        "ephemeris-spkw20-negative-time-scale",
+        "ephemeris-spkw20-no-records",
+        "ephemeris-spkw20-nonprinting-identifier",
+        "ephemeris-spkw20-reversed-descriptor",
+        "ephemeris-spkw20-split-julian-epoch",
+        "ephemeris-spkw20-trailing-blanks",
+        "ephemeris-spkw20-two-record-boundaries",
+        "ephemeris-spkw20-unknown-frame",
+        "ephemeris-spkw20-zero-distance-scale",
+        "ephemeris-spkw20-zero-interval"
+      ],
+      "id": "ci-cp04-3c3e3f368191-wasm",
+      "kind": "ci",
+      "commit": "5759b72e80d904295926aa968ee1c07006abdf51",
+      "url": "https://github.com/rybosome/tspice/actions/runs/45348374307/job/138288412178",
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 8056 live comparisons without unexpected skips."
     }
   ],
   "routines": [
@@ -1518,11 +1782,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Client SPK handle lookup and owned typed coefficient snapshot -> native addon mutex -> tspice_spkw02 -> spkw02_c. Independent ordinary locked SpiceyPy 6.0.3 writer, SPKSFS/SPKUDS/DAFGDA and SPKGEO in a separate process.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -1536,11 +1804,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Client SPK handle lookup and owned typed coefficient snapshot -> WASM two string and two scoped buffer allocations -> tspice_spkw02 -> spkw02_c. Independent ordinary locked SpiceyPy 6.0.3 writer, SPKSFS/SPKUDS/DAFGDA and SPKGEO in a separate process.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
+          ]
         }
       }
     },
@@ -1675,11 +1947,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Client SPK handle lookup and owned typed coefficient snapshot -> native addon mutex -> tspice_spkw03 -> spkw03_c. Independent ordinary locked SpiceyPy 6.0.3 writer, SPKSFS/SPKUDS/DAFGDA and SPKGEO in a separate process.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -1693,11 +1969,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Client SPK handle lookup and owned typed coefficient snapshot -> WASM two string and two scoped buffer allocations -> tspice_spkw03 -> spkw03_c. Independent ordinary locked SpiceyPy 6.0.3 writer, SPKSFS/SPKUDS/DAFGDA and SPKGEO in a separate process.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
+          ]
         }
       }
     },
@@ -1842,11 +2122,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Client SPK handle lookup and owned typed coefficient snapshot -> native addon mutex -> tspice_spkw20 -> spkw20_c. Independent ordinary locked SpiceyPy 6.0.3 writer, SPKSFS/SPKUDS/DAFGDA and SPKGEO in a separate process.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -1860,11 +2144,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Client SPK handle lookup and owned typed coefficient snapshot -> WASM two string and two scoped buffer allocations -> tspice_spkw20 -> spkw20_c. Independent ordinary locked SpiceyPy 6.0.3 writer, SPKSFS/SPKUDS/DAFGDA and SPKGEO in a separate process.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
+          ]
         }
       }
     }

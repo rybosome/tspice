@@ -418,6 +418,190 @@
       "url": "https://github.com/rybosome/tspice/actions/runs/45127597533/job/137535439275",
       "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 7054 live comparisons without unexpected skips.",
       "historical": true
+    },
+    {
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "d9ee3b032f68a548c5adf9eddac6bcd9a9968f8cda4d6d428f5f0922c1d3d6e2",
+      "caseIds": [
+        "error-errch-blank-and-utf8",
+        "error-errch-capacity",
+        "error-errch-empty-marker",
+        "error-errch-empty-value",
+        "error-errch-positions",
+        "error-errch-repeat",
+        "error-errdp-capacity",
+        "error-errdp-empty-marker",
+        "error-errdp-format",
+        "error-errdp-positions",
+        "error-errdp-repeat",
+        "error-errint-capacity",
+        "error-errint-empty-marker",
+        "error-errint-limits",
+        "error-errint-positions",
+        "error-errint-repeat",
+        "error-qcktrc-byte-capacity",
+        "error-qcktrc-empty",
+        "error-qcktrc-length--3",
+        "error-qcktrc-length-1",
+        "error-qcktrc-nested",
+        "error-qcktrc-overflow",
+        "error-return-nested",
+        "error-return-recovery",
+        "error-trcdep-depth-overflow",
+        "error-trcdep-nested",
+        "error-trcnam-byte-capacity",
+        "error-trcnam-length--3",
+        "error-trcnam-length-1",
+        "error-trcnam-nested",
+        "error-trcnam-overflow",
+        "error-trcnam-range--1",
+        "error-trcnam-range-1"
+      ],
+      "id": "local-cp04-3c3e3f368191-node",
+      "kind": "local",
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 3c3e3f368191d553e84ecc599d449055df985b1c. The native-required lane completed 8056 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45336611602/job/138250075470"
+    },
+    {
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "d9ee3b032f68a548c5adf9eddac6bcd9a9968f8cda4d6d428f5f0922c1d3d6e2",
+      "caseIds": [
+        "error-errch-blank-and-utf8",
+        "error-errch-capacity",
+        "error-errch-empty-marker",
+        "error-errch-empty-value",
+        "error-errch-positions",
+        "error-errch-repeat",
+        "error-errdp-capacity",
+        "error-errdp-empty-marker",
+        "error-errdp-format",
+        "error-errdp-positions",
+        "error-errdp-repeat",
+        "error-errint-capacity",
+        "error-errint-empty-marker",
+        "error-errint-limits",
+        "error-errint-positions",
+        "error-errint-repeat",
+        "error-qcktrc-byte-capacity",
+        "error-qcktrc-empty",
+        "error-qcktrc-length--3",
+        "error-qcktrc-length-1",
+        "error-qcktrc-nested",
+        "error-qcktrc-overflow",
+        "error-return-nested",
+        "error-return-recovery",
+        "error-trcdep-depth-overflow",
+        "error-trcdep-nested",
+        "error-trcnam-byte-capacity",
+        "error-trcnam-length--3",
+        "error-trcnam-length-1",
+        "error-trcnam-nested",
+        "error-trcnam-overflow",
+        "error-trcnam-range--1",
+        "error-trcnam-range-1"
+      ],
+      "id": "ci-cp04-3c3e3f368191-node",
+      "kind": "ci",
+      "commit": "5759b72e80d904295926aa968ee1c07006abdf51",
+      "url": "https://github.com/rybosome/tspice/actions/runs/45348374307/job/138288412178",
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 8056 live comparisons without unexpected skips."
+    },
+    {
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "d9ee3b032f68a548c5adf9eddac6bcd9a9968f8cda4d6d428f5f0922c1d3d6e2",
+      "caseIds": [
+        "error-errch-blank-and-utf8",
+        "error-errch-capacity",
+        "error-errch-empty-marker",
+        "error-errch-empty-value",
+        "error-errch-positions",
+        "error-errch-repeat",
+        "error-errdp-capacity",
+        "error-errdp-empty-marker",
+        "error-errdp-format",
+        "error-errdp-positions",
+        "error-errdp-repeat",
+        "error-errint-capacity",
+        "error-errint-empty-marker",
+        "error-errint-limits",
+        "error-errint-positions",
+        "error-errint-repeat",
+        "error-qcktrc-byte-capacity",
+        "error-qcktrc-empty",
+        "error-qcktrc-length--3",
+        "error-qcktrc-length-1",
+        "error-qcktrc-nested",
+        "error-qcktrc-overflow",
+        "error-return-nested",
+        "error-return-recovery",
+        "error-trcdep-depth-overflow",
+        "error-trcdep-nested",
+        "error-trcnam-byte-capacity",
+        "error-trcnam-length--3",
+        "error-trcnam-length-1",
+        "error-trcnam-nested",
+        "error-trcnam-overflow",
+        "error-trcnam-range--1",
+        "error-trcnam-range-1"
+      ],
+      "id": "local-cp04-3c3e3f368191-wasm",
+      "kind": "local",
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 3c3e3f368191d553e84ecc599d449055df985b1c. The native-required lane completed 8056 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45336611602/job/138250075470"
+    },
+    {
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "d9ee3b032f68a548c5adf9eddac6bcd9a9968f8cda4d6d428f5f0922c1d3d6e2",
+      "caseIds": [
+        "error-errch-blank-and-utf8",
+        "error-errch-capacity",
+        "error-errch-empty-marker",
+        "error-errch-empty-value",
+        "error-errch-positions",
+        "error-errch-repeat",
+        "error-errdp-capacity",
+        "error-errdp-empty-marker",
+        "error-errdp-format",
+        "error-errdp-positions",
+        "error-errdp-repeat",
+        "error-errint-capacity",
+        "error-errint-empty-marker",
+        "error-errint-limits",
+        "error-errint-positions",
+        "error-errint-repeat",
+        "error-qcktrc-byte-capacity",
+        "error-qcktrc-empty",
+        "error-qcktrc-length--3",
+        "error-qcktrc-length-1",
+        "error-qcktrc-nested",
+        "error-qcktrc-overflow",
+        "error-return-nested",
+        "error-return-recovery",
+        "error-trcdep-depth-overflow",
+        "error-trcdep-nested",
+        "error-trcnam-byte-capacity",
+        "error-trcnam-length--3",
+        "error-trcnam-length-1",
+        "error-trcnam-nested",
+        "error-trcnam-overflow",
+        "error-trcnam-range--1",
+        "error-trcnam-range-1"
+      ],
+      "id": "ci-cp04-3c3e3f368191-wasm",
+      "kind": "ci",
+      "commit": "5759b72e80d904295926aa968ee1c07006abdf51",
+      "url": "https://github.com/rybosome/tspice/actions/runs/45348374307/job/138288412178",
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 8056 live comparisons without unexpected skips."
     }
   ],
   "routines": [
@@ -473,11 +657,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "ErrorApi.errch -> serialized native addon -> tspice_errch -> errch_c. Independent locked library and exact exposed state are observed.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -486,11 +674,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "ErrorApi.errch -> scoped WASM adapter -> tspice_errch -> errch_c. Independent locked library and exact exposed state are observed.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
+          ]
         }
       }
     },
@@ -541,11 +733,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "ErrorApi.errdp -> serialized native addon -> tspice_errdp -> errdp_c. Independent locked library and exact exposed state are observed.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -554,11 +750,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "ErrorApi.errdp -> scoped WASM adapter -> tspice_errdp -> errdp_c. Independent locked library and exact exposed state are observed.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
+          ]
         }
       }
     },
@@ -609,11 +809,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "ErrorApi.errint -> serialized native addon -> tspice_errint -> errint_c. Independent locked library and exact exposed state are observed.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -622,11 +826,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "ErrorApi.errint -> scoped WASM adapter -> tspice_errint -> errint_c. Independent locked library and exact exposed state are observed.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
+          ]
         }
       }
     },
@@ -696,11 +904,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "ErrorApi.qcktrc -> serialized native addon -> tspice_qcktrc -> qcktrc_c. Independent locked library and exact exposed state are observed.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -710,11 +922,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "ErrorApi.qcktrc -> scoped WASM adapter -> tspice_qcktrc -> qcktrc_c. Independent locked library and exact exposed state are observed.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
+          ]
         }
       }
     },
@@ -764,11 +980,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "ErrorApi.return -> serialized native addon -> tspice_return -> return_c. Independent locked library and exact exposed state are observed.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -778,11 +998,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "ErrorApi.return -> scoped WASM adapter -> tspice_return -> return_c. Independent locked library and exact exposed state are observed.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
+          ]
         }
       }
     },
@@ -818,11 +1042,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "ErrorApi.trcdep -> serialized native addon -> tspice_trcdep -> trcdep_c. Independent locked library and exact exposed state are observed.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -831,11 +1059,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "ErrorApi.trcdep -> scoped WASM adapter -> tspice_trcdep -> trcdep_c. Independent locked library and exact exposed state are observed.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
+          ]
         }
       }
     },
@@ -910,11 +1142,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "ErrorApi.trcnam -> serialized native addon -> tspice_trcnam -> trcnam_c. Independent locked library and exact exposed state are observed.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -924,11 +1160,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "ErrorApi.trcnam -> scoped WASM adapter -> tspice_trcnam -> trcnam_c. Independent locked library and exact exposed state are observed.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
+          ]
         }
       }
     }

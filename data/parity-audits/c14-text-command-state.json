@@ -313,6 +313,126 @@
       "url": "https://github.com/rybosome/tspice/actions/runs/45127597533/job/137535439275",
       "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 7054 live comparisons without unexpected skips.",
       "historical": true
+    },
+    {
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "e97ef9e2a3f5f1e6350b5c3312cb810308755a2213d6fce6bd05f2dde11e8262",
+      "caseIds": [
+        "file-io-putcml-empty-argv",
+        "file-io-putcml-exact-argv",
+        "file-io-putcml-persists",
+        "file-io-putcml-repeated",
+        "file-io-putcml-single-empty",
+        "file-io-rdtext-across-kclear",
+        "file-io-rdtext-byte-capacity",
+        "file-io-rdtext-empty-file",
+        "file-io-rdtext-empty-path",
+        "file-io-rdtext-empty-path-width-order",
+        "file-io-rdtext-empty-record",
+        "file-io-rdtext-independent-files",
+        "file-io-rdtext-minimum-width",
+        "file-io-rdtext-negative-width",
+        "file-io-rdtext-records-and-restart",
+        "file-io-rdtext-rightmost-controls",
+        "file-io-rdtext-unterminated-tail"
+      ],
+      "id": "local-cp04-3c3e3f368191-node",
+      "kind": "local",
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 3c3e3f368191d553e84ecc599d449055df985b1c. The native-required lane completed 8056 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45336611602/job/138250075470"
+    },
+    {
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "e97ef9e2a3f5f1e6350b5c3312cb810308755a2213d6fce6bd05f2dde11e8262",
+      "caseIds": [
+        "file-io-putcml-empty-argv",
+        "file-io-putcml-exact-argv",
+        "file-io-putcml-persists",
+        "file-io-putcml-repeated",
+        "file-io-putcml-single-empty",
+        "file-io-rdtext-across-kclear",
+        "file-io-rdtext-byte-capacity",
+        "file-io-rdtext-empty-file",
+        "file-io-rdtext-empty-path",
+        "file-io-rdtext-empty-path-width-order",
+        "file-io-rdtext-empty-record",
+        "file-io-rdtext-independent-files",
+        "file-io-rdtext-minimum-width",
+        "file-io-rdtext-negative-width",
+        "file-io-rdtext-records-and-restart",
+        "file-io-rdtext-rightmost-controls",
+        "file-io-rdtext-unterminated-tail"
+      ],
+      "id": "ci-cp04-3c3e3f368191-node",
+      "kind": "ci",
+      "commit": "5759b72e80d904295926aa968ee1c07006abdf51",
+      "url": "https://github.com/rybosome/tspice/actions/runs/45348374307/job/138288412178",
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 8056 live comparisons without unexpected skips."
+    },
+    {
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "e97ef9e2a3f5f1e6350b5c3312cb810308755a2213d6fce6bd05f2dde11e8262",
+      "caseIds": [
+        "file-io-putcml-empty-argv",
+        "file-io-putcml-exact-argv",
+        "file-io-putcml-persists",
+        "file-io-putcml-repeated",
+        "file-io-putcml-single-empty",
+        "file-io-rdtext-across-kclear",
+        "file-io-rdtext-byte-capacity",
+        "file-io-rdtext-empty-file",
+        "file-io-rdtext-empty-path",
+        "file-io-rdtext-empty-path-width-order",
+        "file-io-rdtext-empty-record",
+        "file-io-rdtext-independent-files",
+        "file-io-rdtext-minimum-width",
+        "file-io-rdtext-negative-width",
+        "file-io-rdtext-records-and-restart",
+        "file-io-rdtext-rightmost-controls",
+        "file-io-rdtext-unterminated-tail"
+      ],
+      "id": "local-cp04-3c3e3f368191-wasm",
+      "kind": "local",
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 3c3e3f368191d553e84ecc599d449055df985b1c. The native-required lane completed 8056 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45336611602/job/138250075470"
+    },
+    {
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "e97ef9e2a3f5f1e6350b5c3312cb810308755a2213d6fce6bd05f2dde11e8262",
+      "caseIds": [
+        "file-io-putcml-empty-argv",
+        "file-io-putcml-exact-argv",
+        "file-io-putcml-persists",
+        "file-io-putcml-repeated",
+        "file-io-putcml-single-empty",
+        "file-io-rdtext-across-kclear",
+        "file-io-rdtext-byte-capacity",
+        "file-io-rdtext-empty-file",
+        "file-io-rdtext-empty-path",
+        "file-io-rdtext-empty-path-width-order",
+        "file-io-rdtext-empty-record",
+        "file-io-rdtext-independent-files",
+        "file-io-rdtext-minimum-width",
+        "file-io-rdtext-negative-width",
+        "file-io-rdtext-records-and-restart",
+        "file-io-rdtext-rightmost-controls",
+        "file-io-rdtext-unterminated-tail"
+      ],
+      "id": "ci-cp04-3c3e3f368191-wasm",
+      "kind": "ci",
+      "commit": "5759b72e80d904295926aa968ee1c07006abdf51",
+      "url": "https://github.com/rybosome/tspice/actions/runs/45348374307/job/138288412178",
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 8056 live comparisons without unexpected skips."
     }
   ],
   "routines": [
@@ -412,11 +532,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "FileIoApi.rdtext -> mutex-serialized native addon -> tspice_rdtext -> rdtext_c. Read one formatted physical record, advancing the cursor even after truncation. Return exact UTF-8 string bytes and EOF. EOF releases the unit and permits restart. Independently owned clients share an actual native file cursor until its last lease closes.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -425,11 +549,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "FileIoApi.rdtext -> scoped WASM allocations and required export -> tspice_rdtext -> rdtext_c. Read one formatted physical record, advancing the cursor even after truncation. Return exact UTF-8 string bytes and EOF. EOF releases the unit and permits restart. Independently owned clients share an actual native file cursor until its last lease closes.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
+          ]
         }
       }
     },
@@ -494,11 +622,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "FileIoApi.putcml -> mutex-serialized native addon -> tspice_putcml -> putcml_c. Initialize process-local or WASM-instance-local arguments exactly once, returning void. Observe the actual count and privately copied argument bytes immediately and retain canonical repeated-call errors across reset and kernel clear.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -507,11 +639,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "FileIoApi.putcml -> scoped WASM allocations and required export -> tspice_putcml -> putcml_c. Initialize process-local or WASM-instance-local arguments exactly once, returning void. Observe the actual count and privately copied argument bytes immediately and retain canonical repeated-call errors across reset and kernel clear.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
+          ]
         }
       }
     }

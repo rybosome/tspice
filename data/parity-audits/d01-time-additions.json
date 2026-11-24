@@ -106,11 +106,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.etcal through TimeApi, the serialized native addon and shared tspice_etcal to actual etcal_c. The locked oracle calls the exact ETCAL_C export with an initialized bounded string buffer.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -119,11 +123,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.etcal through TimeApi, the regenerated, checked WASM export and shared tspice_etcal to actual etcal_c. The locked oracle calls the exact ETCAL_C export with an initialized bounded string buffer.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
+          ]
         }
       }
     },
@@ -216,11 +224,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.utc2et through TimeApi, the serialized native addon and shared tspice_utc2et to actual utc2et_c. The locked oracle calls sp.utc2et on defined legacy time strings.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -230,11 +242,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.utc2et through TimeApi, the regenerated, checked WASM export and shared tspice_utc2et to actual utc2et_c. The locked oracle calls sp.utc2et on defined legacy time strings.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
+          ]
         }
       }
     },
@@ -296,11 +312,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.tparch through TimeApi, the serialized native addon and shared tspice_tparch to actual tparch_c. The locked oracle calls sp.tparch with subsequent real TPARSE/UTC2ET behavior.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -309,11 +329,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.tparch through TimeApi, the regenerated, checked WASM export and shared tspice_tparch to actual tparch_c. The locked oracle calls sp.tparch with subsequent real TPARSE/UTC2ET behavior.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
+          ]
         }
       }
     },
@@ -397,11 +421,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.tsetyr through TimeApi, the serialized native addon and shared tspice_tsetyr to actual tsetyr_c. The locked oracle calls sp.tsetyr with subsequent real TPARSE/UTC2ET behavior.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -411,11 +439,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.tsetyr through TimeApi, the regenerated, checked WASM export and shared tspice_tsetyr to actual tsetyr_c. The locked oracle calls sp.tsetyr with subsequent real TPARSE/UTC2ET behavior.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
+          ]
         }
       }
     },
@@ -528,11 +560,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.et2lst through TimeApi, the serialized native addon and shared tspice_et2lst to actual et2lst_c. The locked oracle calls independent bounded PGRREC/SPKEZ prerequisites and the exact ET2LST_C export.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -542,11 +578,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.et2lst through TimeApi, the regenerated, checked WASM export and shared tspice_et2lst to actual et2lst_c. The locked oracle calls independent bounded PGRREC/SPKEZ prerequisites and the exact ET2LST_C export.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
+          ]
         }
       }
     }
@@ -967,6 +1007,210 @@
       "url": "https://github.com/rybosome/tspice/actions/runs/45127597533/job/137535439275",
       "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 7054 live comparisons without unexpected skips.",
       "historical": true
+    },
+    {
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "8916e1b7ca5908f00e73823187ff55f108935ebbd483cffa4c8ac196541acbe7",
+      "caseIds": [
+        "time-et2lst-east-west",
+        "time-et2lst-frame-missing",
+        "time-et2lst-missing-rotation",
+        "time-et2lst-missing-spk",
+        "time-et2lst-planetographic",
+        "time-et2lst-short-ampm",
+        "time-et2lst-short-time",
+        "time-et2lst-sun",
+        "time-et2lst-time-change",
+        "time-et2lst-time-widths",
+        "time-et2lst-unknown-coordinates",
+        "time-etcal-capacity",
+        "time-etcal-day-transitions",
+        "time-etcal-historical-dates",
+        "time-etcal-short-0",
+        "time-etcal-short-1",
+        "time-etcal-tdb-milliseconds",
+        "time-tparch-empty",
+        "time-tparch-normalize",
+        "time-tparch-other-value",
+        "time-tparch-permissive-utc",
+        "time-tparch-strict-tparse",
+        "time-tparch-strict-utc",
+        "time-tsetyr-lower-1",
+        "time-tsetyr-lower-1950",
+        "time-tsetyr-lower-1969",
+        "time-tsetyr-lower-2000",
+        "time-tsetyr-lower-2050",
+        "time-tsetyr-successive",
+        "time-tsetyr-utc-window",
+        "time-utc2et-empty",
+        "time-utc2et-epochs",
+        "time-utc2et-fractional",
+        "time-utc2et-label",
+        "time-utc2et-leap-second",
+        "time-utc2et-missing-lsk",
+        "time-utc2et-text",
+        "time-utc2et-timezone"
+      ],
+      "id": "local-cp04-3c3e3f368191-node",
+      "kind": "local",
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 3c3e3f368191d553e84ecc599d449055df985b1c. The native-required lane completed 8056 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45336611602/job/138250075470"
+    },
+    {
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "8916e1b7ca5908f00e73823187ff55f108935ebbd483cffa4c8ac196541acbe7",
+      "caseIds": [
+        "time-et2lst-east-west",
+        "time-et2lst-frame-missing",
+        "time-et2lst-missing-rotation",
+        "time-et2lst-missing-spk",
+        "time-et2lst-planetographic",
+        "time-et2lst-short-ampm",
+        "time-et2lst-short-time",
+        "time-et2lst-sun",
+        "time-et2lst-time-change",
+        "time-et2lst-time-widths",
+        "time-et2lst-unknown-coordinates",
+        "time-etcal-capacity",
+        "time-etcal-day-transitions",
+        "time-etcal-historical-dates",
+        "time-etcal-short-0",
+        "time-etcal-short-1",
+        "time-etcal-tdb-milliseconds",
+        "time-tparch-empty",
+        "time-tparch-normalize",
+        "time-tparch-other-value",
+        "time-tparch-permissive-utc",
+        "time-tparch-strict-tparse",
+        "time-tparch-strict-utc",
+        "time-tsetyr-lower-1",
+        "time-tsetyr-lower-1950",
+        "time-tsetyr-lower-1969",
+        "time-tsetyr-lower-2000",
+        "time-tsetyr-lower-2050",
+        "time-tsetyr-successive",
+        "time-tsetyr-utc-window",
+        "time-utc2et-empty",
+        "time-utc2et-epochs",
+        "time-utc2et-fractional",
+        "time-utc2et-label",
+        "time-utc2et-leap-second",
+        "time-utc2et-missing-lsk",
+        "time-utc2et-text",
+        "time-utc2et-timezone"
+      ],
+      "id": "ci-cp04-3c3e3f368191-node",
+      "kind": "ci",
+      "commit": "5759b72e80d904295926aa968ee1c07006abdf51",
+      "url": "https://github.com/rybosome/tspice/actions/runs/45348374307/job/138288412178",
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 8056 live comparisons without unexpected skips."
+    },
+    {
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "8916e1b7ca5908f00e73823187ff55f108935ebbd483cffa4c8ac196541acbe7",
+      "caseIds": [
+        "time-et2lst-east-west",
+        "time-et2lst-frame-missing",
+        "time-et2lst-missing-rotation",
+        "time-et2lst-missing-spk",
+        "time-et2lst-planetographic",
+        "time-et2lst-short-ampm",
+        "time-et2lst-short-time",
+        "time-et2lst-sun",
+        "time-et2lst-time-change",
+        "time-et2lst-time-widths",
+        "time-et2lst-unknown-coordinates",
+        "time-etcal-capacity",
+        "time-etcal-day-transitions",
+        "time-etcal-historical-dates",
+        "time-etcal-short-0",
+        "time-etcal-short-1",
+        "time-etcal-tdb-milliseconds",
+        "time-tparch-empty",
+        "time-tparch-normalize",
+        "time-tparch-other-value",
+        "time-tparch-permissive-utc",
+        "time-tparch-strict-tparse",
+        "time-tparch-strict-utc",
+        "time-tsetyr-lower-1",
+        "time-tsetyr-lower-1950",
+        "time-tsetyr-lower-1969",
+        "time-tsetyr-lower-2000",
+        "time-tsetyr-lower-2050",
+        "time-tsetyr-successive",
+        "time-tsetyr-utc-window",
+        "time-utc2et-empty",
+        "time-utc2et-epochs",
+        "time-utc2et-fractional",
+        "time-utc2et-label",
+        "time-utc2et-leap-second",
+        "time-utc2et-missing-lsk",
+        "time-utc2et-text",
+        "time-utc2et-timezone"
+      ],
+      "id": "local-cp04-3c3e3f368191-wasm",
+      "kind": "local",
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 3c3e3f368191d553e84ecc599d449055df985b1c. The native-required lane completed 8056 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45336611602/job/138250075470"
+    },
+    {
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "8916e1b7ca5908f00e73823187ff55f108935ebbd483cffa4c8ac196541acbe7",
+      "caseIds": [
+        "time-et2lst-east-west",
+        "time-et2lst-frame-missing",
+        "time-et2lst-missing-rotation",
+        "time-et2lst-missing-spk",
+        "time-et2lst-planetographic",
+        "time-et2lst-short-ampm",
+        "time-et2lst-short-time",
+        "time-et2lst-sun",
+        "time-et2lst-time-change",
+        "time-et2lst-time-widths",
+        "time-et2lst-unknown-coordinates",
+        "time-etcal-capacity",
+        "time-etcal-day-transitions",
+        "time-etcal-historical-dates",
+        "time-etcal-short-0",
+        "time-etcal-short-1",
+        "time-etcal-tdb-milliseconds",
+        "time-tparch-empty",
+        "time-tparch-normalize",
+        "time-tparch-other-value",
+        "time-tparch-permissive-utc",
+        "time-tparch-strict-tparse",
+        "time-tparch-strict-utc",
+        "time-tsetyr-lower-1",
+        "time-tsetyr-lower-1950",
+        "time-tsetyr-lower-1969",
+        "time-tsetyr-lower-2000",
+        "time-tsetyr-lower-2050",
+        "time-tsetyr-successive",
+        "time-tsetyr-utc-window",
+        "time-utc2et-empty",
+        "time-utc2et-epochs",
+        "time-utc2et-fractional",
+        "time-utc2et-label",
+        "time-utc2et-leap-second",
+        "time-utc2et-missing-lsk",
+        "time-utc2et-text",
+        "time-utc2et-timezone"
+      ],
+      "id": "ci-cp04-3c3e3f368191-wasm",
+      "kind": "ci",
+      "commit": "5759b72e80d904295926aa968ee1c07006abdf51",
+      "url": "https://github.com/rybosome/tspice/actions/runs/45348374307/job/138288412178",
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 8056 live comparisons without unexpected skips."
     }
   ],
   "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."

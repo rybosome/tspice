@@ -420,6 +420,374 @@
       "url": "https://github.com/rybosome/tspice/actions/runs/43591403319/job/132436703712",
       "observation": "Inspected successful Linux Node 22 native-required job 132436703712 on e83d49bc7f76e18807f4ad228612cb59f645708f: 2,546 registered Node/WASM live comparisons; 2,785 parity-package tests with no skips, including the native-required guard; 107 native wrapper, 695 WASM, 28 core and 150 facade tests passed.",
       "historical": true
+    },
+    {
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "5834835a498d364698ae51e093553d0631453c224741ef114ce2080741d2943c",
+      "caseIds": [
+        "ephemeris-azlcpo-bad-correction",
+        "ephemeris-azlcpo-bad-method",
+        "ephemeris-azlcpo-direction-and-rates",
+        "ephemeris-azlcpo-ellipsoid-sites",
+        "ephemeris-azlcpo-frame-center",
+        "ephemeris-azlcpo-frame-rotation",
+        "ephemeris-azlcpo-invalid-radii",
+        "ephemeris-azlcpo-method-spelling",
+        "ephemeris-azlcpo-missing-target",
+        "ephemeris-azlcpo-north-and-south-poles",
+        "ephemeris-azlcpo-reception-transmission",
+        "ephemeris-azlcpo-undefined-rates",
+        "ephemeris-azlcpo-unknown-center",
+        "ephemeris-azlcpo-unknown-frame",
+        "ephemeris-spkcpo-bad-locus",
+        "ephemeris-spkcpo-bad-option",
+        "ephemeris-spkcpo-coincidence",
+        "ephemeris-spkcpo-gap",
+        "ephemeris-spkcpo-inertial-directions",
+        "ephemeris-spkcpo-missing-input-frame",
+        "ephemeris-spkcpo-priority",
+        "ephemeris-spkcpo-rotating-input",
+        "ephemeris-spkcpo-rotating-output-center",
+        "ephemeris-spkcpo-rotating-output-observer",
+        "ephemeris-spkcpo-rotating-output-target",
+        "ephemeris-spkcpo-spelling-transition",
+        "ephemeris-spkcpo-unknown-center",
+        "ephemeris-spkcpo-unknown-ephemeris-body",
+        "ephemeris-spkcpo-unknown-output",
+        "ephemeris-spkcpt-bad-locus",
+        "ephemeris-spkcpt-bad-option",
+        "ephemeris-spkcpt-checked-stellar-target",
+        "ephemeris-spkcpt-coincidence",
+        "ephemeris-spkcpt-gap",
+        "ephemeris-spkcpt-inertial-directions",
+        "ephemeris-spkcpt-missing-input-frame",
+        "ephemeris-spkcpt-priority",
+        "ephemeris-spkcpt-rotating-input",
+        "ephemeris-spkcpt-rotating-output-center",
+        "ephemeris-spkcpt-rotating-output-observer",
+        "ephemeris-spkcpt-rotating-output-target",
+        "ephemeris-spkcpt-spelling-transition",
+        "ephemeris-spkcpt-unknown-center",
+        "ephemeris-spkcpt-unknown-ephemeris-body",
+        "ephemeris-spkcpt-unknown-output",
+        "ephemeris-spkcvo-bad-locus",
+        "ephemeris-spkcvo-bad-option",
+        "ephemeris-spkcvo-coincidence",
+        "ephemeris-spkcvo-gap",
+        "ephemeris-spkcvo-inertial-directions",
+        "ephemeris-spkcvo-missing-input-frame",
+        "ephemeris-spkcvo-priority",
+        "ephemeris-spkcvo-rotating-input",
+        "ephemeris-spkcvo-rotating-output-center",
+        "ephemeris-spkcvo-rotating-output-observer",
+        "ephemeris-spkcvo-rotating-output-target",
+        "ephemeris-spkcvo-singular-stellar",
+        "ephemeris-spkcvo-spelling-transition",
+        "ephemeris-spkcvo-state-epoch",
+        "ephemeris-spkcvo-unknown-center",
+        "ephemeris-spkcvo-unknown-ephemeris-body",
+        "ephemeris-spkcvo-unknown-output",
+        "ephemeris-spkcvt-bad-locus",
+        "ephemeris-spkcvt-bad-option",
+        "ephemeris-spkcvt-checked-stellar-target",
+        "ephemeris-spkcvt-coincidence",
+        "ephemeris-spkcvt-gap",
+        "ephemeris-spkcvt-inertial-directions",
+        "ephemeris-spkcvt-missing-input-frame",
+        "ephemeris-spkcvt-priority",
+        "ephemeris-spkcvt-rotating-input",
+        "ephemeris-spkcvt-rotating-output-center",
+        "ephemeris-spkcvt-rotating-output-observer",
+        "ephemeris-spkcvt-rotating-output-target",
+        "ephemeris-spkcvt-spelling-transition",
+        "ephemeris-spkcvt-state-epoch",
+        "ephemeris-spkcvt-unknown-center",
+        "ephemeris-spkcvt-unknown-ephemeris-body",
+        "ephemeris-spkcvt-unknown-output"
+      ],
+      "id": "local-cp04-3c3e3f368191-node",
+      "kind": "local",
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 3c3e3f368191d553e84ecc599d449055df985b1c. The native-required lane completed 8056 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45336611602/job/138250075470"
+    },
+    {
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "5834835a498d364698ae51e093553d0631453c224741ef114ce2080741d2943c",
+      "caseIds": [
+        "ephemeris-azlcpo-bad-correction",
+        "ephemeris-azlcpo-bad-method",
+        "ephemeris-azlcpo-direction-and-rates",
+        "ephemeris-azlcpo-ellipsoid-sites",
+        "ephemeris-azlcpo-frame-center",
+        "ephemeris-azlcpo-frame-rotation",
+        "ephemeris-azlcpo-invalid-radii",
+        "ephemeris-azlcpo-method-spelling",
+        "ephemeris-azlcpo-missing-target",
+        "ephemeris-azlcpo-north-and-south-poles",
+        "ephemeris-azlcpo-reception-transmission",
+        "ephemeris-azlcpo-undefined-rates",
+        "ephemeris-azlcpo-unknown-center",
+        "ephemeris-azlcpo-unknown-frame",
+        "ephemeris-spkcpo-bad-locus",
+        "ephemeris-spkcpo-bad-option",
+        "ephemeris-spkcpo-coincidence",
+        "ephemeris-spkcpo-gap",
+        "ephemeris-spkcpo-inertial-directions",
+        "ephemeris-spkcpo-missing-input-frame",
+        "ephemeris-spkcpo-priority",
+        "ephemeris-spkcpo-rotating-input",
+        "ephemeris-spkcpo-rotating-output-center",
+        "ephemeris-spkcpo-rotating-output-observer",
+        "ephemeris-spkcpo-rotating-output-target",
+        "ephemeris-spkcpo-spelling-transition",
+        "ephemeris-spkcpo-unknown-center",
+        "ephemeris-spkcpo-unknown-ephemeris-body",
+        "ephemeris-spkcpo-unknown-output",
+        "ephemeris-spkcpt-bad-locus",
+        "ephemeris-spkcpt-bad-option",
+        "ephemeris-spkcpt-checked-stellar-target",
+        "ephemeris-spkcpt-coincidence",
+        "ephemeris-spkcpt-gap",
+        "ephemeris-spkcpt-inertial-directions",
+        "ephemeris-spkcpt-missing-input-frame",
+        "ephemeris-spkcpt-priority",
+        "ephemeris-spkcpt-rotating-input",
+        "ephemeris-spkcpt-rotating-output-center",
+        "ephemeris-spkcpt-rotating-output-observer",
+        "ephemeris-spkcpt-rotating-output-target",
+        "ephemeris-spkcpt-spelling-transition",
+        "ephemeris-spkcpt-unknown-center",
+        "ephemeris-spkcpt-unknown-ephemeris-body",
+        "ephemeris-spkcpt-unknown-output",
+        "ephemeris-spkcvo-bad-locus",
+        "ephemeris-spkcvo-bad-option",
+        "ephemeris-spkcvo-coincidence",
+        "ephemeris-spkcvo-gap",
+        "ephemeris-spkcvo-inertial-directions",
+        "ephemeris-spkcvo-missing-input-frame",
+        "ephemeris-spkcvo-priority",
+        "ephemeris-spkcvo-rotating-input",
+        "ephemeris-spkcvo-rotating-output-center",
+        "ephemeris-spkcvo-rotating-output-observer",
+        "ephemeris-spkcvo-rotating-output-target",
+        "ephemeris-spkcvo-singular-stellar",
+        "ephemeris-spkcvo-spelling-transition",
+        "ephemeris-spkcvo-state-epoch",
+        "ephemeris-spkcvo-unknown-center",
+        "ephemeris-spkcvo-unknown-ephemeris-body",
+        "ephemeris-spkcvo-unknown-output",
+        "ephemeris-spkcvt-bad-locus",
+        "ephemeris-spkcvt-bad-option",
+        "ephemeris-spkcvt-checked-stellar-target",
+        "ephemeris-spkcvt-coincidence",
+        "ephemeris-spkcvt-gap",
+        "ephemeris-spkcvt-inertial-directions",
+        "ephemeris-spkcvt-missing-input-frame",
+        "ephemeris-spkcvt-priority",
+        "ephemeris-spkcvt-rotating-input",
+        "ephemeris-spkcvt-rotating-output-center",
+        "ephemeris-spkcvt-rotating-output-observer",
+        "ephemeris-spkcvt-rotating-output-target",
+        "ephemeris-spkcvt-spelling-transition",
+        "ephemeris-spkcvt-state-epoch",
+        "ephemeris-spkcvt-unknown-center",
+        "ephemeris-spkcvt-unknown-ephemeris-body",
+        "ephemeris-spkcvt-unknown-output"
+      ],
+      "id": "ci-cp04-3c3e3f368191-node",
+      "kind": "ci",
+      "commit": "5759b72e80d904295926aa968ee1c07006abdf51",
+      "url": "https://github.com/rybosome/tspice/actions/runs/45348374307/job/138288412178",
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 8056 live comparisons without unexpected skips."
+    },
+    {
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "5834835a498d364698ae51e093553d0631453c224741ef114ce2080741d2943c",
+      "caseIds": [
+        "ephemeris-azlcpo-bad-correction",
+        "ephemeris-azlcpo-bad-method",
+        "ephemeris-azlcpo-direction-and-rates",
+        "ephemeris-azlcpo-ellipsoid-sites",
+        "ephemeris-azlcpo-frame-center",
+        "ephemeris-azlcpo-frame-rotation",
+        "ephemeris-azlcpo-invalid-radii",
+        "ephemeris-azlcpo-method-spelling",
+        "ephemeris-azlcpo-missing-target",
+        "ephemeris-azlcpo-north-and-south-poles",
+        "ephemeris-azlcpo-reception-transmission",
+        "ephemeris-azlcpo-undefined-rates",
+        "ephemeris-azlcpo-unknown-center",
+        "ephemeris-azlcpo-unknown-frame",
+        "ephemeris-spkcpo-bad-locus",
+        "ephemeris-spkcpo-bad-option",
+        "ephemeris-spkcpo-coincidence",
+        "ephemeris-spkcpo-gap",
+        "ephemeris-spkcpo-inertial-directions",
+        "ephemeris-spkcpo-missing-input-frame",
+        "ephemeris-spkcpo-priority",
+        "ephemeris-spkcpo-rotating-input",
+        "ephemeris-spkcpo-rotating-output-center",
+        "ephemeris-spkcpo-rotating-output-observer",
+        "ephemeris-spkcpo-rotating-output-target",
+        "ephemeris-spkcpo-spelling-transition",
+        "ephemeris-spkcpo-unknown-center",
+        "ephemeris-spkcpo-unknown-ephemeris-body",
+        "ephemeris-spkcpo-unknown-output",
+        "ephemeris-spkcpt-bad-locus",
+        "ephemeris-spkcpt-bad-option",
+        "ephemeris-spkcpt-checked-stellar-target",
+        "ephemeris-spkcpt-coincidence",
+        "ephemeris-spkcpt-gap",
+        "ephemeris-spkcpt-inertial-directions",
+        "ephemeris-spkcpt-missing-input-frame",
+        "ephemeris-spkcpt-priority",
+        "ephemeris-spkcpt-rotating-input",
+        "ephemeris-spkcpt-rotating-output-center",
+        "ephemeris-spkcpt-rotating-output-observer",
+        "ephemeris-spkcpt-rotating-output-target",
+        "ephemeris-spkcpt-spelling-transition",
+        "ephemeris-spkcpt-unknown-center",
+        "ephemeris-spkcpt-unknown-ephemeris-body",
+        "ephemeris-spkcpt-unknown-output",
+        "ephemeris-spkcvo-bad-locus",
+        "ephemeris-spkcvo-bad-option",
+        "ephemeris-spkcvo-coincidence",
+        "ephemeris-spkcvo-gap",
+        "ephemeris-spkcvo-inertial-directions",
+        "ephemeris-spkcvo-missing-input-frame",
+        "ephemeris-spkcvo-priority",
+        "ephemeris-spkcvo-rotating-input",
+        "ephemeris-spkcvo-rotating-output-center",
+        "ephemeris-spkcvo-rotating-output-observer",
+        "ephemeris-spkcvo-rotating-output-target",
+        "ephemeris-spkcvo-singular-stellar",
+        "ephemeris-spkcvo-spelling-transition",
+        "ephemeris-spkcvo-state-epoch",
+        "ephemeris-spkcvo-unknown-center",
+        "ephemeris-spkcvo-unknown-ephemeris-body",
+        "ephemeris-spkcvo-unknown-output",
+        "ephemeris-spkcvt-bad-locus",
+        "ephemeris-spkcvt-bad-option",
+        "ephemeris-spkcvt-checked-stellar-target",
+        "ephemeris-spkcvt-coincidence",
+        "ephemeris-spkcvt-gap",
+        "ephemeris-spkcvt-inertial-directions",
+        "ephemeris-spkcvt-missing-input-frame",
+        "ephemeris-spkcvt-priority",
+        "ephemeris-spkcvt-rotating-input",
+        "ephemeris-spkcvt-rotating-output-center",
+        "ephemeris-spkcvt-rotating-output-observer",
+        "ephemeris-spkcvt-rotating-output-target",
+        "ephemeris-spkcvt-spelling-transition",
+        "ephemeris-spkcvt-state-epoch",
+        "ephemeris-spkcvt-unknown-center",
+        "ephemeris-spkcvt-unknown-ephemeris-body",
+        "ephemeris-spkcvt-unknown-output"
+      ],
+      "id": "local-cp04-3c3e3f368191-wasm",
+      "kind": "local",
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 3c3e3f368191d553e84ecc599d449055df985b1c. The native-required lane completed 8056 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45336611602/job/138250075470"
+    },
+    {
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "5834835a498d364698ae51e093553d0631453c224741ef114ce2080741d2943c",
+      "caseIds": [
+        "ephemeris-azlcpo-bad-correction",
+        "ephemeris-azlcpo-bad-method",
+        "ephemeris-azlcpo-direction-and-rates",
+        "ephemeris-azlcpo-ellipsoid-sites",
+        "ephemeris-azlcpo-frame-center",
+        "ephemeris-azlcpo-frame-rotation",
+        "ephemeris-azlcpo-invalid-radii",
+        "ephemeris-azlcpo-method-spelling",
+        "ephemeris-azlcpo-missing-target",
+        "ephemeris-azlcpo-north-and-south-poles",
+        "ephemeris-azlcpo-reception-transmission",
+        "ephemeris-azlcpo-undefined-rates",
+        "ephemeris-azlcpo-unknown-center",
+        "ephemeris-azlcpo-unknown-frame",
+        "ephemeris-spkcpo-bad-locus",
+        "ephemeris-spkcpo-bad-option",
+        "ephemeris-spkcpo-coincidence",
+        "ephemeris-spkcpo-gap",
+        "ephemeris-spkcpo-inertial-directions",
+        "ephemeris-spkcpo-missing-input-frame",
+        "ephemeris-spkcpo-priority",
+        "ephemeris-spkcpo-rotating-input",
+        "ephemeris-spkcpo-rotating-output-center",
+        "ephemeris-spkcpo-rotating-output-observer",
+        "ephemeris-spkcpo-rotating-output-target",
+        "ephemeris-spkcpo-spelling-transition",
+        "ephemeris-spkcpo-unknown-center",
+        "ephemeris-spkcpo-unknown-ephemeris-body",
+        "ephemeris-spkcpo-unknown-output",
+        "ephemeris-spkcpt-bad-locus",
+        "ephemeris-spkcpt-bad-option",
+        "ephemeris-spkcpt-checked-stellar-target",
+        "ephemeris-spkcpt-coincidence",
+        "ephemeris-spkcpt-gap",
+        "ephemeris-spkcpt-inertial-directions",
+        "ephemeris-spkcpt-missing-input-frame",
+        "ephemeris-spkcpt-priority",
+        "ephemeris-spkcpt-rotating-input",
+        "ephemeris-spkcpt-rotating-output-center",
+        "ephemeris-spkcpt-rotating-output-observer",
+        "ephemeris-spkcpt-rotating-output-target",
+        "ephemeris-spkcpt-spelling-transition",
+        "ephemeris-spkcpt-unknown-center",
+        "ephemeris-spkcpt-unknown-ephemeris-body",
+        "ephemeris-spkcpt-unknown-output",
+        "ephemeris-spkcvo-bad-locus",
+        "ephemeris-spkcvo-bad-option",
+        "ephemeris-spkcvo-coincidence",
+        "ephemeris-spkcvo-gap",
+        "ephemeris-spkcvo-inertial-directions",
+        "ephemeris-spkcvo-missing-input-frame",
+        "ephemeris-spkcvo-priority",
+        "ephemeris-spkcvo-rotating-input",
+        "ephemeris-spkcvo-rotating-output-center",
+        "ephemeris-spkcvo-rotating-output-observer",
+        "ephemeris-spkcvo-rotating-output-target",
+        "ephemeris-spkcvo-singular-stellar",
+        "ephemeris-spkcvo-spelling-transition",
+        "ephemeris-spkcvo-state-epoch",
+        "ephemeris-spkcvo-unknown-center",
+        "ephemeris-spkcvo-unknown-ephemeris-body",
+        "ephemeris-spkcvo-unknown-output",
+        "ephemeris-spkcvt-bad-locus",
+        "ephemeris-spkcvt-bad-option",
+        "ephemeris-spkcvt-checked-stellar-target",
+        "ephemeris-spkcvt-coincidence",
+        "ephemeris-spkcvt-gap",
+        "ephemeris-spkcvt-inertial-directions",
+        "ephemeris-spkcvt-missing-input-frame",
+        "ephemeris-spkcvt-priority",
+        "ephemeris-spkcvt-rotating-input",
+        "ephemeris-spkcvt-rotating-output-center",
+        "ephemeris-spkcvt-rotating-output-observer",
+        "ephemeris-spkcvt-rotating-output-target",
+        "ephemeris-spkcvt-spelling-transition",
+        "ephemeris-spkcvt-state-epoch",
+        "ephemeris-spkcvt-unknown-center",
+        "ephemeris-spkcvt-unknown-ephemeris-body",
+        "ephemeris-spkcvt-unknown-output"
+      ],
+      "id": "ci-cp04-3c3e3f368191-wasm",
+      "kind": "ci",
+      "commit": "5759b72e80d904295926aa968ee1c07006abdf51",
+      "url": "https://github.com/rybosome/tspice/actions/runs/45348374307/job/138288412178",
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 8056 live comparisons without unexpected skips."
     }
   ],
   "routines": [
@@ -557,11 +925,15 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Raw spkcpo with one owned point/state snapshot through the Node addon mutex to tspice_spkcpo and spkcpo_c. The independent sidecar checks potentially failing intermediate calls and uses the locked public CSPICE wrapper on success.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -569,11 +941,15 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Raw spkcpo with one owned point/state snapshot through the actual WASM export and scoped heap storage to tspice_spkcpo and spkcpo_c. The independent sidecar checks potentially failing intermediate calls and uses the locked public CSPICE wrapper on success.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
+          ]
         }
       }
     },
@@ -721,11 +1097,15 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Raw spkcpt with one owned point/state snapshot through the Node addon mutex to tspice_spkcpt and spkcpt_c. The independent sidecar checks potentially failing intermediate calls and uses the locked public CSPICE wrapper on success.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -733,11 +1113,15 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Raw spkcpt with one owned point/state snapshot through the actual WASM export and scoped heap storage to tspice_spkcpt and spkcpt_c. The independent sidecar checks potentially failing intermediate calls and uses the locked public CSPICE wrapper on success.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
+          ]
         }
       }
     },
@@ -885,11 +1269,15 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Raw spkcvo with one owned point/state snapshot through the Node addon mutex to tspice_spkcvo and spkcvo_c. The independent sidecar checks potentially failing intermediate calls and uses the locked public CSPICE wrapper on success.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -897,11 +1285,15 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Raw spkcvo with one owned point/state snapshot through the actual WASM export and scoped heap storage to tspice_spkcvo and spkcvo_c. The independent sidecar checks potentially failing intermediate calls and uses the locked public CSPICE wrapper on success.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
+          ]
         }
       }
     },
@@ -1054,11 +1446,15 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Raw spkcvt with one owned point/state snapshot through the Node addon mutex to tspice_spkcvt and spkcvt_c. The independent sidecar checks potentially failing intermediate calls and uses the locked public CSPICE wrapper on success.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -1066,11 +1462,15 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Raw spkcvt with one owned point/state snapshot through the actual WASM export and scoped heap storage to tspice_spkcvt and spkcvt_c. The independent sidecar checks potentially failing intermediate calls and uses the locked public CSPICE wrapper on success.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
+          ]
         }
       }
     },
@@ -1194,11 +1594,15 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Raw azlcpo with one owned point/state snapshot through the Node addon mutex to tspice_azlcpo and azlcpo_c. The independent sidecar checks potentially failing intermediate calls and uses the locked public CSPICE wrapper on success.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -1206,11 +1610,15 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Raw azlcpo with one owned point/state snapshot through the actual WASM export and scoped heap storage to tspice_azlcpo and azlcpo_c. The independent sidecar checks potentially failing intermediate calls and uses the locked public CSPICE wrapper on success.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
+          ]
         }
       }
     }

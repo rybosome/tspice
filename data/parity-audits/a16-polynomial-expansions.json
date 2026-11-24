@@ -1001,6 +1001,242 @@
       "url": "https://github.com/rybosome/tspice/actions/runs/45127597533/job/137535439275",
       "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 7054 live comparisons without unexpected skips.",
       "historical": true
+    },
+    {
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "24dcc6ac5ee06d21f7ef86f40a1825933a62724066b466ae33f05c62658ff45b",
+      "caseIds": [
+        "coords-vectors-chbder-constant-and-zero",
+        "coords-vectors-chbder-derivative-order-and-zero-tail",
+        "coords-vectors-chbder-distinct-basis-and-coefficient-order",
+        "coords-vectors-chbder-domain-endpoints",
+        "coords-vectors-chbder-negative-radius-orientation",
+        "coords-vectors-chbder-scaled-coefficients",
+        "coords-vectors-chbder-scaled-domain-radius",
+        "coords-vectors-chbder-shifted-scaled-domain",
+        "coords-vectors-chbigr-constant-and-zero",
+        "coords-vectors-chbigr-distinct-basis-and-coefficient-order",
+        "coords-vectors-chbigr-domain-endpoints",
+        "coords-vectors-chbigr-empty-degree-error",
+        "coords-vectors-chbigr-integral-midpoint-normalization",
+        "coords-vectors-chbigr-negative-radius-error",
+        "coords-vectors-chbigr-scaled-coefficients",
+        "coords-vectors-chbigr-scaled-domain-radius",
+        "coords-vectors-chbigr-shifted-scaled-domain",
+        "coords-vectors-chbigr-zero-radius-error",
+        "coords-vectors-chbint-constant-and-zero",
+        "coords-vectors-chbint-distinct-basis-and-coefficient-order",
+        "coords-vectors-chbint-domain-endpoints",
+        "coords-vectors-chbint-negative-radius-orientation",
+        "coords-vectors-chbint-scaled-coefficients",
+        "coords-vectors-chbint-scaled-domain-radius",
+        "coords-vectors-chbint-shifted-scaled-domain",
+        "coords-vectors-chbval-constant-and-zero",
+        "coords-vectors-chbval-distinct-basis-and-coefficient-order",
+        "coords-vectors-chbval-domain-endpoints",
+        "coords-vectors-chbval-negative-radius-orientation",
+        "coords-vectors-chbval-scaled-coefficients",
+        "coords-vectors-chbval-scaled-domain-radius",
+        "coords-vectors-chbval-shifted-scaled-domain",
+        "coords-vectors-polyds-coefficient-order-and-signed-abscissa",
+        "coords-vectors-polyds-constant-and-empty",
+        "coords-vectors-polyds-derivative-order-and-zero-tail",
+        "coords-vectors-polyds-higher-degree-and-highest-coefficient",
+        "coords-vectors-polyds-negative-order-no-write",
+        "coords-vectors-polyds-scaled-coefficients",
+        "coords-vectors-rquad-all-zero-error",
+        "coords-vectors-rquad-complex-conjugate-fields",
+        "coords-vectors-rquad-constant-only-error",
+        "coords-vectors-rquad-linear-equations",
+        "coords-vectors-rquad-real-root-order-and-leading-sign",
+        "coords-vectors-rquad-repeated-and-zero-roots",
+        "coords-vectors-rquad-scaled-coefficients",
+        "coords-vectors-rquad-unequal-root-magnitudes"
+      ],
+      "id": "local-cp04-3c3e3f368191-node",
+      "kind": "local",
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 3c3e3f368191d553e84ecc599d449055df985b1c. The native-required lane completed 8056 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45336611602/job/138250075470"
+    },
+    {
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "24dcc6ac5ee06d21f7ef86f40a1825933a62724066b466ae33f05c62658ff45b",
+      "caseIds": [
+        "coords-vectors-chbder-constant-and-zero",
+        "coords-vectors-chbder-derivative-order-and-zero-tail",
+        "coords-vectors-chbder-distinct-basis-and-coefficient-order",
+        "coords-vectors-chbder-domain-endpoints",
+        "coords-vectors-chbder-negative-radius-orientation",
+        "coords-vectors-chbder-scaled-coefficients",
+        "coords-vectors-chbder-scaled-domain-radius",
+        "coords-vectors-chbder-shifted-scaled-domain",
+        "coords-vectors-chbigr-constant-and-zero",
+        "coords-vectors-chbigr-distinct-basis-and-coefficient-order",
+        "coords-vectors-chbigr-domain-endpoints",
+        "coords-vectors-chbigr-empty-degree-error",
+        "coords-vectors-chbigr-integral-midpoint-normalization",
+        "coords-vectors-chbigr-negative-radius-error",
+        "coords-vectors-chbigr-scaled-coefficients",
+        "coords-vectors-chbigr-scaled-domain-radius",
+        "coords-vectors-chbigr-shifted-scaled-domain",
+        "coords-vectors-chbigr-zero-radius-error",
+        "coords-vectors-chbint-constant-and-zero",
+        "coords-vectors-chbint-distinct-basis-and-coefficient-order",
+        "coords-vectors-chbint-domain-endpoints",
+        "coords-vectors-chbint-negative-radius-orientation",
+        "coords-vectors-chbint-scaled-coefficients",
+        "coords-vectors-chbint-scaled-domain-radius",
+        "coords-vectors-chbint-shifted-scaled-domain",
+        "coords-vectors-chbval-constant-and-zero",
+        "coords-vectors-chbval-distinct-basis-and-coefficient-order",
+        "coords-vectors-chbval-domain-endpoints",
+        "coords-vectors-chbval-negative-radius-orientation",
+        "coords-vectors-chbval-scaled-coefficients",
+        "coords-vectors-chbval-scaled-domain-radius",
+        "coords-vectors-chbval-shifted-scaled-domain",
+        "coords-vectors-polyds-coefficient-order-and-signed-abscissa",
+        "coords-vectors-polyds-constant-and-empty",
+        "coords-vectors-polyds-derivative-order-and-zero-tail",
+        "coords-vectors-polyds-higher-degree-and-highest-coefficient",
+        "coords-vectors-polyds-negative-order-no-write",
+        "coords-vectors-polyds-scaled-coefficients",
+        "coords-vectors-rquad-all-zero-error",
+        "coords-vectors-rquad-complex-conjugate-fields",
+        "coords-vectors-rquad-constant-only-error",
+        "coords-vectors-rquad-linear-equations",
+        "coords-vectors-rquad-real-root-order-and-leading-sign",
+        "coords-vectors-rquad-repeated-and-zero-roots",
+        "coords-vectors-rquad-scaled-coefficients",
+        "coords-vectors-rquad-unequal-root-magnitudes"
+      ],
+      "id": "ci-cp04-3c3e3f368191-node",
+      "kind": "ci",
+      "commit": "5759b72e80d904295926aa968ee1c07006abdf51",
+      "url": "https://github.com/rybosome/tspice/actions/runs/45348374307/job/138288412178",
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 8056 live comparisons without unexpected skips."
+    },
+    {
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "24dcc6ac5ee06d21f7ef86f40a1825933a62724066b466ae33f05c62658ff45b",
+      "caseIds": [
+        "coords-vectors-chbder-constant-and-zero",
+        "coords-vectors-chbder-derivative-order-and-zero-tail",
+        "coords-vectors-chbder-distinct-basis-and-coefficient-order",
+        "coords-vectors-chbder-domain-endpoints",
+        "coords-vectors-chbder-negative-radius-orientation",
+        "coords-vectors-chbder-scaled-coefficients",
+        "coords-vectors-chbder-scaled-domain-radius",
+        "coords-vectors-chbder-shifted-scaled-domain",
+        "coords-vectors-chbigr-constant-and-zero",
+        "coords-vectors-chbigr-distinct-basis-and-coefficient-order",
+        "coords-vectors-chbigr-domain-endpoints",
+        "coords-vectors-chbigr-empty-degree-error",
+        "coords-vectors-chbigr-integral-midpoint-normalization",
+        "coords-vectors-chbigr-negative-radius-error",
+        "coords-vectors-chbigr-scaled-coefficients",
+        "coords-vectors-chbigr-scaled-domain-radius",
+        "coords-vectors-chbigr-shifted-scaled-domain",
+        "coords-vectors-chbigr-zero-radius-error",
+        "coords-vectors-chbint-constant-and-zero",
+        "coords-vectors-chbint-distinct-basis-and-coefficient-order",
+        "coords-vectors-chbint-domain-endpoints",
+        "coords-vectors-chbint-negative-radius-orientation",
+        "coords-vectors-chbint-scaled-coefficients",
+        "coords-vectors-chbint-scaled-domain-radius",
+        "coords-vectors-chbint-shifted-scaled-domain",
+        "coords-vectors-chbval-constant-and-zero",
+        "coords-vectors-chbval-distinct-basis-and-coefficient-order",
+        "coords-vectors-chbval-domain-endpoints",
+        "coords-vectors-chbval-negative-radius-orientation",
+        "coords-vectors-chbval-scaled-coefficients",
+        "coords-vectors-chbval-scaled-domain-radius",
+        "coords-vectors-chbval-shifted-scaled-domain",
+        "coords-vectors-polyds-coefficient-order-and-signed-abscissa",
+        "coords-vectors-polyds-constant-and-empty",
+        "coords-vectors-polyds-derivative-order-and-zero-tail",
+        "coords-vectors-polyds-higher-degree-and-highest-coefficient",
+        "coords-vectors-polyds-negative-order-no-write",
+        "coords-vectors-polyds-scaled-coefficients",
+        "coords-vectors-rquad-all-zero-error",
+        "coords-vectors-rquad-complex-conjugate-fields",
+        "coords-vectors-rquad-constant-only-error",
+        "coords-vectors-rquad-linear-equations",
+        "coords-vectors-rquad-real-root-order-and-leading-sign",
+        "coords-vectors-rquad-repeated-and-zero-roots",
+        "coords-vectors-rquad-scaled-coefficients",
+        "coords-vectors-rquad-unequal-root-magnitudes"
+      ],
+      "id": "local-cp04-3c3e3f368191-wasm",
+      "kind": "local",
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 3c3e3f368191d553e84ecc599d449055df985b1c. The native-required lane completed 8056 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45336611602/job/138250075470"
+    },
+    {
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "24dcc6ac5ee06d21f7ef86f40a1825933a62724066b466ae33f05c62658ff45b",
+      "caseIds": [
+        "coords-vectors-chbder-constant-and-zero",
+        "coords-vectors-chbder-derivative-order-and-zero-tail",
+        "coords-vectors-chbder-distinct-basis-and-coefficient-order",
+        "coords-vectors-chbder-domain-endpoints",
+        "coords-vectors-chbder-negative-radius-orientation",
+        "coords-vectors-chbder-scaled-coefficients",
+        "coords-vectors-chbder-scaled-domain-radius",
+        "coords-vectors-chbder-shifted-scaled-domain",
+        "coords-vectors-chbigr-constant-and-zero",
+        "coords-vectors-chbigr-distinct-basis-and-coefficient-order",
+        "coords-vectors-chbigr-domain-endpoints",
+        "coords-vectors-chbigr-empty-degree-error",
+        "coords-vectors-chbigr-integral-midpoint-normalization",
+        "coords-vectors-chbigr-negative-radius-error",
+        "coords-vectors-chbigr-scaled-coefficients",
+        "coords-vectors-chbigr-scaled-domain-radius",
+        "coords-vectors-chbigr-shifted-scaled-domain",
+        "coords-vectors-chbigr-zero-radius-error",
+        "coords-vectors-chbint-constant-and-zero",
+        "coords-vectors-chbint-distinct-basis-and-coefficient-order",
+        "coords-vectors-chbint-domain-endpoints",
+        "coords-vectors-chbint-negative-radius-orientation",
+        "coords-vectors-chbint-scaled-coefficients",
+        "coords-vectors-chbint-scaled-domain-radius",
+        "coords-vectors-chbint-shifted-scaled-domain",
+        "coords-vectors-chbval-constant-and-zero",
+        "coords-vectors-chbval-distinct-basis-and-coefficient-order",
+        "coords-vectors-chbval-domain-endpoints",
+        "coords-vectors-chbval-negative-radius-orientation",
+        "coords-vectors-chbval-scaled-coefficients",
+        "coords-vectors-chbval-scaled-domain-radius",
+        "coords-vectors-chbval-shifted-scaled-domain",
+        "coords-vectors-polyds-coefficient-order-and-signed-abscissa",
+        "coords-vectors-polyds-constant-and-empty",
+        "coords-vectors-polyds-derivative-order-and-zero-tail",
+        "coords-vectors-polyds-higher-degree-and-highest-coefficient",
+        "coords-vectors-polyds-negative-order-no-write",
+        "coords-vectors-polyds-scaled-coefficients",
+        "coords-vectors-rquad-all-zero-error",
+        "coords-vectors-rquad-complex-conjugate-fields",
+        "coords-vectors-rquad-constant-only-error",
+        "coords-vectors-rquad-linear-equations",
+        "coords-vectors-rquad-real-root-order-and-leading-sign",
+        "coords-vectors-rquad-repeated-and-zero-roots",
+        "coords-vectors-rquad-scaled-coefficients",
+        "coords-vectors-rquad-unequal-root-magnitudes"
+      ],
+      "id": "ci-cp04-3c3e3f368191-wasm",
+      "kind": "ci",
+      "commit": "5759b72e80d904295926aa968ee1c07006abdf51",
+      "url": "https://github.com/rybosome/tspice/actions/runs/45348374307/job/138288412178",
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 8056 live comparisons without unexpected skips."
     }
   ],
   "routines": [
@@ -1088,11 +1324,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.chbder -> typed Node adapter -> actual native binding with owned input/work/output storage and global SPICE mutex -> shared tspice_chbder -> canonical chbder_c. Independent Python calls actual locked SpiceyPy chbder with inferred degree in its proper argument position and forwards every output field.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -1107,11 +1347,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.chbder -> typed WASM adapter -> exported _tspice_chbder with checked coefficient/output/workspace buffers and copied results -> shared tspice_chbder -> canonical chbder_c. Independent Python calls actual locked SpiceyPy chbder with inferred degree in its proper argument position and forwards every output field.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
+          ]
         }
       }
     },
@@ -1223,11 +1467,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.chbigr -> typed Node adapter -> actual native binding with owned input/work/output storage and global SPICE mutex -> shared tspice_chbigr -> canonical chbigr_c. Independent Python calls actual locked SpiceyPy chbigr with inferred degree in its proper argument position and forwards every output field.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -1243,11 +1491,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.chbigr -> typed WASM adapter -> exported _tspice_chbigr with checked coefficient/output/workspace buffers and copied results -> shared tspice_chbigr -> canonical chbigr_c. Independent Python calls actual locked SpiceyPy chbigr with inferred degree in its proper argument position and forwards every output field.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
+          ]
         }
       }
     },
@@ -1330,11 +1582,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.chbint -> typed Node adapter -> actual native binding with owned input/work/output storage and global SPICE mutex -> shared tspice_chbint -> canonical chbint_c. Independent Python calls actual locked SpiceyPy chbint with inferred degree in its proper argument position and forwards every output field.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -1349,11 +1605,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.chbint -> typed WASM adapter -> exported _tspice_chbint with checked coefficient/output/workspace buffers and copied results -> shared tspice_chbint -> canonical chbint_c. Independent Python calls actual locked SpiceyPy chbint with inferred degree in its proper argument position and forwards every output field.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
+          ]
         }
       }
     },
@@ -1436,11 +1696,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.chbval -> typed Node adapter -> actual native binding with owned input/work/output storage and global SPICE mutex -> shared tspice_chbval -> canonical chbval_c. Independent Python calls actual locked SpiceyPy chbval with inferred degree in its proper argument position and forwards every output field.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -1455,11 +1719,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.chbval -> typed WASM adapter -> exported _tspice_chbval with checked coefficient/output/workspace buffers and copied results -> shared tspice_chbval -> canonical chbval_c. Independent Python calls actual locked SpiceyPy chbval with inferred degree in its proper argument position and forwards every output field.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
+          ]
         }
       }
     },
@@ -1555,11 +1823,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.polyds -> typed Node adapter -> actual native binding with owned input/work/output storage and global SPICE mutex -> shared tspice_polyds -> canonical polyds_c. Independent Python uses actual locked SpiceyPy for nonnegative order and an exact typed CDLL(libspice._name).polyds_c no-write call for negative order.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -1575,11 +1847,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.polyds -> typed WASM adapter -> exported _tspice_polyds with checked coefficient/output/workspace buffers and copied results -> shared tspice_polyds -> canonical polyds_c. Independent Python uses actual locked SpiceyPy for nonnegative order and an exact typed CDLL(libspice._name).polyds_c no-write call for negative order.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
+          ]
         }
       }
     },
@@ -1667,11 +1943,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.rquad -> typed Node adapter -> actual native binding with owned input/work/output storage and global SPICE mutex -> shared tspice_rquad -> canonical rquad_c. Independent Python calls actual locked SpiceyPy rquad with actual signed scalar coefficients and forwards every output field.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-node",
+            "ci-cp04-3c3e3f368191-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -1685,11 +1965,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.rquad -> typed WASM adapter -> exported _tspice_rquad with checked coefficient/output/workspace buffers and copied results -> shared tspice_rquad -> canonical rquad_c. Independent Python calls actual locked SpiceyPy rquad with actual signed scalar coefficients and forwards every output field.",
-          "executions": []
+          "executions": [
+            "local-cp04-3c3e3f368191-wasm",
+            "ci-cp04-3c3e3f368191-wasm"
+          ]
         }
       }
     }
