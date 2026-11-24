@@ -1,0 +1,340 @@
+[
+  {
+    "caseId": "ephemeris-spkpvn-negative-center",
+    "description": "Read the five-word descriptor with noncanonical NaN payload and compare all six components, center and frame.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-ephemeris.bsp"
+      },
+      {
+        "op": "ephemeris.spklef",
+        "file": "kernels/audit-ephemeris.bsp",
+        "id": "load"
+      },
+      {
+        "op": "ephemeris.spksfs",
+        "body": -100011,
+        "et": 0,
+        "descrId": "sel"
+      },
+      {
+        "op": "ephemeris.spkpvn",
+        "source": "load",
+        "descriptor": "sel",
+        "et": -999.5,
+        "mode": "direct"
+      },
+      {
+        "op": "ephemeris.spkpvn",
+        "source": "load",
+        "descriptor": "sel",
+        "et": -5,
+        "mode": "direct"
+      },
+      {
+        "op": "ephemeris.spkpvn",
+        "source": "load",
+        "descriptor": "sel",
+        "et": 0,
+        "mode": "direct"
+      },
+      {
+        "op": "ephemeris.spkpvn",
+        "source": "load",
+        "descriptor": "sel",
+        "et": 125,
+        "mode": "direct"
+      },
+      {
+        "op": "ephemeris.spkpvn",
+        "source": "load",
+        "descriptor": "sel",
+        "et": 999.75,
+        "mode": "direct"
+      },
+      {
+        "op": "ephemeris.spkuef",
+        "id": "load"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkpvn-borrowed",
+    "description": "Search with KEEPER alone and evaluate its borrowed physical handle without unloading it.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-ephemeris.bsp"
+      },
+      {
+        "op": "ephemeris.spksfs",
+        "body": 100001,
+        "et": 125,
+        "descrId": "sel"
+      },
+      {
+        "op": "ephemeris.spkpvn",
+        "source": "sel",
+        "descriptor": "sel",
+        "et": 100,
+        "mode": "borrowed"
+      },
+      {
+        "op": "ephemeris.spkpvn",
+        "source": "sel",
+        "descriptor": "sel",
+        "et": 125.25,
+        "mode": "borrowed"
+      },
+      {
+        "op": "ephemeris.spkpvn",
+        "source": "sel",
+        "descriptor": "sel",
+        "et": 1000,
+        "mode": "borrowed"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkpvn-daf-summary",
+    "description": "Evaluate the genuine C01 summary on a separately owned DAF reader without an SPKLEF token.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-ephemeris.bsp"
+      },
+      {
+        "op": "file-io.dafopr",
+        "path": "kernels/audit-ephemeris.bsp",
+        "handleId": "daf"
+      },
+      {
+        "op": "file-io.dafbfs",
+        "handleId": "daf"
+      },
+      {
+        "op": "file-io.daffna",
+        "handleId": "daf"
+      },
+      {
+        "op": "ephemeris.spkpvn",
+        "source": "daf",
+        "descriptor": "sel",
+        "et": -1000,
+        "mode": "daf"
+      },
+      {
+        "op": "ephemeris.spkpvn",
+        "source": "daf",
+        "descriptor": "sel",
+        "et": -500.5,
+        "mode": "daf"
+      },
+      {
+        "op": "ephemeris.spkpvn",
+        "source": "daf",
+        "descriptor": "sel",
+        "et": 0,
+        "mode": "daf"
+      },
+      {
+        "op": "file-io.dafcls",
+        "handleId": "daf"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkpvn-other-center",
+    "description": "State is relative to the segment center rather than the solar-system barycenter.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-ephemeris.bsp"
+      },
+      {
+        "op": "ephemeris.spklef",
+        "file": "kernels/audit-ephemeris.bsp",
+        "id": "load"
+      },
+      {
+        "op": "ephemeris.spksfs",
+        "body": -100003,
+        "et": 0,
+        "descrId": "sel"
+      },
+      {
+        "op": "ephemeris.spkpvn",
+        "source": "load",
+        "descriptor": "sel",
+        "et": -4.75,
+        "mode": "direct"
+      },
+      {
+        "op": "ephemeris.spkpvn",
+        "source": "load",
+        "descriptor": "sel",
+        "et": 21.5,
+        "mode": "direct"
+      },
+      {
+        "op": "ephemeris.spkuef",
+        "id": "load"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkpvn-priority-handle",
+    "description": "Hold a lower-priority descriptor while a higher-priority file is active and evaluate both independently.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-ephemeris.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-ephemeris-priority.bsp"
+      },
+      {
+        "op": "ephemeris.spklef",
+        "file": "kernels/audit-ephemeris.bsp",
+        "id": "load"
+      },
+      {
+        "op": "ephemeris.spksfs",
+        "body": 100001,
+        "et": 125,
+        "descrId": "old"
+      },
+      {
+        "op": "ephemeris.spklef",
+        "file": "kernels/audit-ephemeris-priority.bsp",
+        "id": "higher"
+      },
+      {
+        "op": "ephemeris.spksfs",
+        "body": 100001,
+        "et": 125,
+        "descrId": "new"
+      },
+      {
+        "op": "ephemeris.spkpvn",
+        "source": "load",
+        "descriptor": "old",
+        "et": 125,
+        "mode": "direct"
+      },
+      {
+        "op": "ephemeris.spkpvn",
+        "source": "higher",
+        "descriptor": "new",
+        "et": 125,
+        "mode": "direct"
+      },
+      {
+        "op": "ephemeris.spkuef",
+        "id": "higher"
+      },
+      {
+        "op": "ephemeris.spkuef",
+        "id": "load"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkpvn-negative-early",
+    "description": "Compare both inclusive negative-epoch endpoints and an interior path.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-ephemeris.bsp"
+      },
+      {
+        "op": "ephemeris.spklef",
+        "file": "kernels/audit-ephemeris.bsp",
+        "id": "load"
+      },
+      {
+        "op": "ephemeris.spksfs",
+        "body": 100001,
+        "et": -1,
+        "descrId": "sel"
+      },
+      {
+        "op": "ephemeris.spkpvn",
+        "source": "load",
+        "descriptor": "sel",
+        "et": -1000,
+        "mode": "direct"
+      },
+      {
+        "op": "ephemeris.spkpvn",
+        "source": "load",
+        "descriptor": "sel",
+        "et": -123.5,
+        "mode": "direct"
+      },
+      {
+        "op": "ephemeris.spkpvn",
+        "source": "load",
+        "descriptor": "sel",
+        "et": 0,
+        "mode": "direct"
+      },
+      {
+        "op": "ephemeris.spkuef",
+        "id": "load"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkpvn-type8-before-coverage",
+    "description": "Let the genuine type 8 record reader report its out-of-coverage epoch diagnostic.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-ephemeris.bsp"
+      },
+      {
+        "op": "ephemeris.spklef",
+        "file": "kernels/audit-ephemeris.bsp",
+        "id": "load"
+      },
+      {
+        "op": "ephemeris.spksfs",
+        "body": -100011,
+        "et": 0,
+        "descrId": "sel"
+      },
+      {
+        "op": "ephemeris.spkpvn",
+        "source": "load",
+        "descriptor": "sel",
+        "et": -1001,
+        "mode": "direct"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["TIMEOUTOFBOUNDS"]
+    }
+  }
+]

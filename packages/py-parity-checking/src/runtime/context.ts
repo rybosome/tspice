@@ -61,6 +61,8 @@ export type EphemerisState = {
   requestedTargets: Set<number>;
   intCells: Map<string, SpiceIntCell>;
   openSpk14: Set<SpiceHandle>;
+  directSpks: Map<string, SpiceHandle>;
+  borrowedSpks: Map<string, number>;
   spkHandles: Map<string, SpiceHandle>;
 };
 
@@ -152,6 +154,8 @@ export function createRunTspiceContext(
         requestedTargets: new Set<number>(),
         intCells: new Map<string, SpiceIntCell>(),
         openSpk14: new Set<SpiceHandle>(),
+        directSpks: new Map(),
+        borrowedSpks: new Map(),
         spkHandles: new Map<string, SpiceHandle>(),
       },
       frames: {

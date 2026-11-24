@@ -1640,6 +1640,10 @@ export function getNodeBinding(): NativeAddon {
     typeof native.wnvald === "function",
     "Expected native addon to export wnvald(size, n, window)",
   );
+  invariant(typeof native.spklef === "function", "Missing native spklef");
+  invariant(typeof native.spkuef === "function", "Missing native spkuef");
+  invariant(typeof native.spkpvn === "function", "Missing native spkpvn");
+  invariant(typeof native.spksub === "function", "Missing native spksub");
   invariant(
     typeof native.conics === "function",
     "Native addon missing conics()",

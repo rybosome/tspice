@@ -1,4 +1,4 @@
-import { releaseTextReaders } from "@rybosome/tspice-core";
+import { releaseSpkLoads, releaseTextReaders } from "@rybosome/tspice-core";
 import type { SpiceBackend } from "@rybosome/tspice-backend-contract";
 
 import type { CreateBackendOptions } from "./backend.js";
@@ -35,6 +35,11 @@ export function disposeOwnedBackend(spice: Spice | SpiceAsync): void {
   }
 }
 
+const ownedSpkCleanup = new WeakMap<Spice | SpiceAsync, () => void>();
+/** Release this facade's outstanding SPK registrations at client disposal. */
+export function releaseClientSpkLoads(spice: Spice | SpiceAsync): void {
+  ownedSpkCleanup.get(spice)?.();
+}
 export type CreateSpiceOptions = CreateBackendOptions & {
   /**
    * If provided, `createSpice()` will wrap this backend instead of creating a new one.
@@ -155,6 +160,10 @@ export async function createSpice(options: CreateSpiceOptions): Promise<Spice> {
 
   if (!options.backendInstance && backend.disposeAll)
     ownedDisposers.set(spice, backend.disposeAll.bind(backend));
+
+  const releaseSpk: unknown = Reflect.get(backend.raw, releaseSpkLoads);
+  if (typeof releaseSpk === "function")
+    ownedSpkCleanup.set(spice, () => Reflect.apply(releaseSpk, backend.raw, []));
   return spice;
 }
 
@@ -208,5 +217,6 @@ export async function createSpiceAsync(
   ownedReaderCleanup.set(asyncSpice, () => releaseClientTextReaders(sync));
   const dispose = ownedDisposers.get(sync);
   if (dispose) ownedDisposers.set(asyncSpice, dispose);
+  ownedSpkCleanup.set(asyncSpice, () => releaseClientSpkLoads(sync));
   return asyncSpice;
 }

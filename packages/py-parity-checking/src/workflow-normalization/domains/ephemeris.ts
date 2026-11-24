@@ -122,6 +122,8 @@ export const ephemerisNormalizer: DomainNormalizer = {
           file: ensurePublishedGeneratedSpkPath(context, step.file),
         };
 
+      case "ephemeris.spklef":
+        return { ...step, file: resolveMappedSpkPath(context, step.file) };
       case "ephemeris.spkopa":
         return normalizeSpkFileStep(context, step);
 

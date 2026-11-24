@@ -2344,6 +2344,29 @@ export type StepEphemerisSpkopa = {
   handleId: string;
 };
 
+export type StepEphemerisSpklef = {
+  op: "ephemeris.spklef";
+  file: PathRefLike;
+  id: string;
+};
+export type StepEphemerisSpkuef = { op: "ephemeris.spkuef"; id: string };
+export type StepEphemerisSpkpvn = {
+  op: "ephemeris.spkpvn";
+  source: string;
+  descriptor: string;
+  et: number;
+  mode: string;
+};
+export type StepEphemerisSpksub = {
+  op: "ephemeris.spksub";
+  source: string;
+  descriptor: string;
+  ident: string;
+  begin: number;
+  end: number;
+  writer: string;
+  mode: string;
+};
 export type StepEphemerisSpkopn = {
   op: "ephemeris.spkopn";
   file: PathRefLike;
@@ -4268,6 +4291,10 @@ export type WorkflowStep =
   | StepEphemerisSpkgps
   | StepEphemerisSpkobj
   | StepEphemerisSpkopa
+  | StepEphemerisSpklef
+  | StepEphemerisSpkuef
+  | StepEphemerisSpkpvn
+  | StepEphemerisSpksub
   | StepEphemerisSpkopn
   | StepEphemerisSpkpds
   | StepEphemerisSpkpos
@@ -4997,6 +5024,13 @@ export type StepOutput =
     }
   | { op: "ephemeris.spkobj"; value: { ids: number[] } }
   | { op: "ephemeris.spkopa"; value: { handleId: string } }
+  | { op: "ephemeris.spklef"; value: { id: string } }
+  | { op: "ephemeris.spkuef"; value: null }
+  | {
+      op: "ephemeris.spkpvn";
+      value: { ref: number; state: number[]; center: number };
+    }
+  | { op: "ephemeris.spksub"; value: null }
   | { op: "ephemeris.spkopn"; value: { handleId: string } }
   | {
       op: "ephemeris.spkpds";

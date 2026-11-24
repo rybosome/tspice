@@ -552,3 +552,7 @@ The 162-routine historical Step 7 baseline is followed by eight reviewed ephemer
 ## Observer-relative SPK geometry
 
 The fixed and moving point workflows distinguish rotating-frame epochs, point motion and local topocentric derivatives. The batch also checks cache behavior across SPK and body-radius replacement. [Scientific review](step8-spk-relative.md) [Routine records](../data/parity-audits/e09-spk-relative-observers.json)
+
+## SPK segment evaluation and physical subset files
+
+E03 checks SPK registration priority, file identity, complete native states, type-specific boundaries and independent persisted subsets in both producer/reader directions. [Scientific review](step8-spk-lowlevel.md) · [Per-routine evidence](../data/parity-audits/e03-spk-lowlevel.json)

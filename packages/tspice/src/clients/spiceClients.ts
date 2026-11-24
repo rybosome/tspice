@@ -1,6 +1,7 @@
 import {
   releaseClientEkLoads,
   releaseClientTextReaders,
+  releaseClientSpkLoads,
   createSpice,
   createSpiceAsync,
   disposeOwnedBackend,
@@ -427,6 +428,8 @@ function createBuilder(state: BuilderState): SpiceClientsBuilder {
           releaseClientEkLoads(baseSpice);
           // Close this client’s remaining shared text-reader claims before deleting staged paths.
           releaseClientTextReaders(baseSpice);
+          // Close this client’s remaining direct SPK registrations before clearing kernels.
+          releaseClientSpkLoads(baseSpice);
           // Release instance-owned native handles and signal claims before clearing kernels.
           try {
             disposeOwnedBackend(baseSpice);
@@ -510,6 +513,8 @@ function createBuilder(state: BuilderState): SpiceClientsBuilder {
           releaseClientEkLoads(baseSpice);
           // Close this client’s remaining shared text-reader claims before deleting staged paths.
           releaseClientTextReaders(baseSpice);
+          // Close this client’s remaining direct SPK registrations before clearing kernels.
+          releaseClientSpkLoads(baseSpice);
           // Release instance-owned native handles and signal claims before clearing kernels.
           try {
             disposeOwnedBackend(baseSpice);

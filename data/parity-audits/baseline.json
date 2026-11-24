@@ -1452,6 +1452,23 @@
       "nextAction": "Verify the combined source on both required lanes and canonical CI."
     },
     {
+      "id": "e03-spk-lowlevel",
+      "routines": [
+        "spklef_c",
+        "spkuef_c",
+        "spkpvn_c",
+        "spksub_c"
+      ],
+      "dependsOn": [
+        "c01-daf-navigation",
+        "c02-daf-records"
+      ],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/777"
+      ],
+      "nextAction": "Verify the combined source on both required lanes and canonical CI."
+    },
+    {
       "id": "b07-error-devices",
       "routines": [
         "errdev_c",

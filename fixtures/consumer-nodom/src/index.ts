@@ -2,6 +2,7 @@ import {
   spiceClients,
   type Spice,
   type SpiceAsync,
+  type SpiceSync,
   type SpiceConicElements,
   type SpiceEquinoctialElements,
   type SpiceExtendedConicElements,
@@ -962,8 +963,6 @@ export async function typecheckFrameMetadata() {
   }
 }
 
-import type { SpiceSync } from "@rybosome/tspice";
-
 function localClock(spice: SpiceSync, utc: string): string {
   spice.raw.tparch("YES");
   spice.raw.tsetyr(1969);
@@ -1583,3 +1582,29 @@ export async function relativeSpkConsumer(
   );
   return [a.state, b.lt, c.state, d.lt, e.state[5]];
 }
+
+function copySegment(
+  spice: SpiceSync,
+  path: string,
+  target: number,
+  et: number,
+  output: string,
+) {
+  const r = spice.raw,
+    source = r.spklef(path);
+  try {
+    const segment = r.spksfs(target, et);
+    if (!segment.found) return;
+    const observation = r.spkpvn(source, segment.descr, et);
+    const writer = r.spkopn(output, "SUBSET", 0);
+    try {
+      r.spksub(source, segment.descr, "SAMPLE", et, et, writer);
+    } finally {
+      r.spkcls(writer);
+    }
+    return observation;
+  } finally {
+    r.spkuef(source);
+  }
+}
+void copySegment;

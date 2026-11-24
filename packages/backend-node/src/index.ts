@@ -122,6 +122,10 @@ export function createNodeBackend(): SpiceBackend & { kind: "node" } {
 
       for (const [handle, entry] of entries) {
         try {
+          if (entry.kind === "SPK-LOAD") {
+            backend.raw.spkuef(handle);
+            continue;
+          }
           if (entry.kind === "PCK-LOADED") {
             backend.raw.pckuof(handle);
             continue;
