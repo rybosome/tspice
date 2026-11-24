@@ -138,7 +138,8 @@
         "ephemeris-spkcvt-unknown-ephemeris-body",
         "ephemeris-spkcvt-unknown-output"
       ],
-      "observation": "Both complete required lanes passed locally on e83d49bc7f76e18807f4ad228612cb59f645708f. JavaScript: 2,784 parity tests and one expected guard skip. Native-required: 2,546 registered Node/WASM live comparisons; 2,785 parity-package tests with no skips, including the native-required guard; 107 native wrapper, 695 WASM, 28 core and 150 facade tests passed."
+      "observation": "Both complete required lanes passed locally on e83d49bc7f76e18807f4ad228612cb59f645708f. JavaScript: 2,784 parity tests and one expected guard skip. Native-required: 2,546 registered Node/WASM live comparisons; 2,785 parity-package tests with no skips, including the native-required guard; 107 native wrapper, 695 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "local-e09-e83d49bc-wasm",
@@ -229,7 +230,8 @@
         "ephemeris-spkcvt-unknown-ephemeris-body",
         "ephemeris-spkcvt-unknown-output"
       ],
-      "observation": "Both complete required lanes passed locally on e83d49bc7f76e18807f4ad228612cb59f645708f. JavaScript: 2,784 parity tests and one expected guard skip. Native-required: 2,546 registered Node/WASM live comparisons; 2,785 parity-package tests with no skips, including the native-required guard; 107 native wrapper, 695 WASM, 28 core and 150 facade tests passed."
+      "observation": "Both complete required lanes passed locally on e83d49bc7f76e18807f4ad228612cb59f645708f. JavaScript: 2,784 parity tests and one expected guard skip. Native-required: 2,546 registered Node/WASM live comparisons; 2,785 parity-package tests with no skips, including the native-required guard; 107 native wrapper, 695 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "ci-e09-e83d49bc-node",
@@ -322,7 +324,8 @@
       ],
       "commit": "e83d49bc7f76e18807f4ad228612cb59f645708f",
       "url": "https://github.com/rybosome/tspice/actions/runs/43591403319/job/132436703712",
-      "observation": "Inspected successful Linux Node 22 native-required job 132436703712 on e83d49bc7f76e18807f4ad228612cb59f645708f: 2,546 registered Node/WASM live comparisons; 2,785 parity-package tests with no skips, including the native-required guard; 107 native wrapper, 695 WASM, 28 core and 150 facade tests passed."
+      "observation": "Inspected successful Linux Node 22 native-required job 132436703712 on e83d49bc7f76e18807f4ad228612cb59f645708f: 2,546 registered Node/WASM live comparisons; 2,785 parity-package tests with no skips, including the native-required guard; 107 native wrapper, 695 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "ci-e09-e83d49bc-wasm",
@@ -415,7 +418,8 @@
       ],
       "commit": "e83d49bc7f76e18807f4ad228612cb59f645708f",
       "url": "https://github.com/rybosome/tspice/actions/runs/43591403319/job/132436703712",
-      "observation": "Inspected successful Linux Node 22 native-required job 132436703712 on e83d49bc7f76e18807f4ad228612cb59f645708f: 2,546 registered Node/WASM live comparisons; 2,785 parity-package tests with no skips, including the native-required guard; 107 native wrapper, 695 WASM, 28 core and 150 facade tests passed."
+      "observation": "Inspected successful Linux Node 22 native-required job 132436703712 on e83d49bc7f76e18807f4ad228612cb59f645708f: 2,546 registered Node/WASM live comparisons; 2,785 parity-package tests with no skips, including the native-required guard; 107 native wrapper, 695 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     }
   ],
   "routines": [
@@ -548,16 +552,28 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "Raw spkcpo with one owned point/state snapshot through the Node addon mutex to tspice_spkcpo and spkcpo_c. The independent sidecar checks potentially failing intermediate calls and uses the locked public CSPICE wrapper on success.",
-          "executions": ["local-e09-e83d49bc-node", "ci-e09-e83d49bc-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "Raw spkcpo with one owned point/state snapshot through the actual WASM export and scoped heap storage to tspice_spkcpo and spkcpo_c. The independent sidecar checks potentially failing intermediate calls and uses the locked public CSPICE wrapper on success.",
-          "executions": ["local-e09-e83d49bc-wasm", "ci-e09-e83d49bc-wasm"]
+          "executions": []
         }
       }
     },
@@ -700,16 +716,28 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "Raw spkcpt with one owned point/state snapshot through the Node addon mutex to tspice_spkcpt and spkcpt_c. The independent sidecar checks potentially failing intermediate calls and uses the locked public CSPICE wrapper on success.",
-          "executions": ["local-e09-e83d49bc-node", "ci-e09-e83d49bc-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "Raw spkcpt with one owned point/state snapshot through the actual WASM export and scoped heap storage to tspice_spkcpt and spkcpt_c. The independent sidecar checks potentially failing intermediate calls and uses the locked public CSPICE wrapper on success.",
-          "executions": ["local-e09-e83d49bc-wasm", "ci-e09-e83d49bc-wasm"]
+          "executions": []
         }
       }
     },
@@ -852,16 +880,28 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "Raw spkcvo with one owned point/state snapshot through the Node addon mutex to tspice_spkcvo and spkcvo_c. The independent sidecar checks potentially failing intermediate calls and uses the locked public CSPICE wrapper on success.",
-          "executions": ["local-e09-e83d49bc-node", "ci-e09-e83d49bc-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "Raw spkcvo with one owned point/state snapshot through the actual WASM export and scoped heap storage to tspice_spkcvo and spkcvo_c. The independent sidecar checks potentially failing intermediate calls and uses the locked public CSPICE wrapper on success.",
-          "executions": ["local-e09-e83d49bc-wasm", "ci-e09-e83d49bc-wasm"]
+          "executions": []
         }
       }
     },
@@ -1009,16 +1049,28 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "Raw spkcvt with one owned point/state snapshot through the Node addon mutex to tspice_spkcvt and spkcvt_c. The independent sidecar checks potentially failing intermediate calls and uses the locked public CSPICE wrapper on success.",
-          "executions": ["local-e09-e83d49bc-node", "ci-e09-e83d49bc-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "Raw spkcvt with one owned point/state snapshot through the actual WASM export and scoped heap storage to tspice_spkcvt and spkcvt_c. The independent sidecar checks potentially failing intermediate calls and uses the locked public CSPICE wrapper on success.",
-          "executions": ["local-e09-e83d49bc-wasm", "ci-e09-e83d49bc-wasm"]
+          "executions": []
         }
       }
     },
@@ -1137,16 +1189,28 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "Raw azlcpo with one owned point/state snapshot through the Node addon mutex to tspice_azlcpo and azlcpo_c. The independent sidecar checks potentially failing intermediate calls and uses the locked public CSPICE wrapper on success.",
-          "executions": ["local-e09-e83d49bc-node", "ci-e09-e83d49bc-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "Raw azlcpo with one owned point/state snapshot through the actual WASM export and scoped heap storage to tspice_azlcpo and azlcpo_c. The independent sidecar checks potentially failing intermediate calls and uses the locked public CSPICE wrapper on success.",
-          "executions": ["local-e09-e83d49bc-wasm", "ci-e09-e83d49bc-wasm"]
+          "executions": []
         }
       }
     }

@@ -785,7 +785,8 @@
         "ephemeris-spkw17-unknown-frame",
         "ephemeris-spkw17-zero-semiaxis"
       ],
-      "observation": "Both complete required lanes passed locally on 860084ffebc5682073ff7b97cc74727cd8267bb4. JavaScript: 2,764 parity tests and one expected guard skip. Native-required: 2,526 registered Node/WASM live comparisons; 2,765 parity-package tests with no skips, including the native-required guard; 84 native wrapper, 651 WASM, 28 core and 150 facade tests passed."
+      "observation": "Both complete required lanes passed locally on 860084ffebc5682073ff7b97cc74727cd8267bb4. JavaScript: 2,764 parity tests and one expected guard skip. Native-required: 2,526 registered Node/WASM live comparisons; 2,765 parity-package tests with no skips, including the native-required guard; 84 native wrapper, 651 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "local-e07-860084ff-wasm",
@@ -865,7 +866,8 @@
         "ephemeris-spkw17-unknown-frame",
         "ephemeris-spkw17-zero-semiaxis"
       ],
-      "observation": "Both complete required lanes passed locally on 860084ffebc5682073ff7b97cc74727cd8267bb4. JavaScript: 2,764 parity tests and one expected guard skip. Native-required: 2,526 registered Node/WASM live comparisons; 2,765 parity-package tests with no skips, including the native-required guard; 84 native wrapper, 651 WASM, 28 core and 150 facade tests passed."
+      "observation": "Both complete required lanes passed locally on 860084ffebc5682073ff7b97cc74727cd8267bb4. JavaScript: 2,764 parity tests and one expected guard skip. Native-required: 2,526 registered Node/WASM live comparisons; 2,765 parity-package tests with no skips, including the native-required guard; 84 native wrapper, 651 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "ci-e07-860084ff-node",
@@ -947,7 +949,8 @@
       ],
       "commit": "860084ffebc5682073ff7b97cc74727cd8267bb4",
       "url": "https://github.com/rybosome/tspice/actions/runs/43588439235/job/132427833156",
-      "observation": "Inspected successful Linux Node 22 native-required job 132427833156 on 860084ffebc5682073ff7b97cc74727cd8267bb4: 2,526 registered Node/WASM live comparisons; 2,765 parity-package tests with no skips, including the native-required guard; 84 native wrapper, 651 WASM, 28 core and 150 facade tests passed."
+      "observation": "Inspected successful Linux Node 22 native-required job 132427833156 on 860084ffebc5682073ff7b97cc74727cd8267bb4: 2,526 registered Node/WASM live comparisons; 2,765 parity-package tests with no skips, including the native-required guard; 84 native wrapper, 651 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "ci-e07-860084ff-wasm",
@@ -1029,7 +1032,8 @@
       ],
       "commit": "860084ffebc5682073ff7b97cc74727cd8267bb4",
       "url": "https://github.com/rybosome/tspice/actions/runs/43588439235/job/132427833156",
-      "observation": "Inspected successful Linux Node 22 native-required job 132427833156 on 860084ffebc5682073ff7b97cc74727cd8267bb4: 2,526 registered Node/WASM live comparisons; 2,765 parity-package tests with no skips, including the native-required guard; 84 native wrapper, 651 WASM, 28 core and 150 facade tests passed."
+      "observation": "Inspected successful Linux Node 22 native-required job 132427833156 on 860084ffebc5682073ff7b97cc74727cd8267bb4: 2,526 registered Node/WASM live comparisons; 2,765 parity-package tests with no skips, including the native-required guard; 84 native wrapper, 651 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     }
   ],
   "routines": [
@@ -1145,11 +1149,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Public raw.spkw05 -> owned SPK lookup, finite complete snapshots -> registered Node native addon with mutex -> tspice_spkw05 -> spkw05_c. Independently decoded Python calls the ordinary locked SpiceyPy 6.0.3 writer; standalone reader opens backend output and returns physical DAF contents and states.",
-          "executions": ["local-e07-860084ff-node", "ci-e07-860084ff-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1160,11 +1165,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Public raw.spkw05 -> owned SPK lookup, finite complete snapshots -> WASM export and four checked allocations -> tspice_spkw05 -> spkw05_c. Independently decoded Python calls the ordinary locked SpiceyPy 6.0.3 writer; standalone reader opens backend output and returns physical DAF contents and states.",
-          "executions": ["local-e07-860084ff-wasm", "ci-e07-860084ff-wasm"]
+          "executions": []
         }
       }
     },
@@ -1280,11 +1286,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Public raw.spkw10 -> owned SPK lookup, finite complete snapshots -> registered Node native addon with mutex -> tspice_spkw10 -> spkw10_c. Independently decoded Python calls the ordinary locked SpiceyPy 6.0.3 writer; standalone reader opens backend output and returns physical DAF contents and states.",
-          "executions": ["local-e07-860084ff-node", "ci-e07-860084ff-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1295,11 +1302,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Public raw.spkw10 -> owned SPK lookup, finite complete snapshots -> WASM export and four checked allocations -> tspice_spkw10 -> spkw10_c. Independently decoded Python calls the ordinary locked SpiceyPy 6.0.3 writer; standalone reader opens backend output and returns physical DAF contents and states.",
-          "executions": ["local-e07-860084ff-wasm", "ci-e07-860084ff-wasm"]
+          "executions": []
         }
       }
     },
@@ -1457,11 +1465,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Public raw.spkw15 -> owned SPK lookup, finite complete snapshots -> registered Node native addon with mutex -> tspice_spkw15 -> spkw15_c. Independently decoded Python calls the ordinary locked SpiceyPy 6.0.3 writer; standalone reader opens backend output and returns physical DAF contents and states.",
-          "executions": ["local-e07-860084ff-node", "ci-e07-860084ff-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1471,11 +1480,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Public raw.spkw15 -> owned SPK lookup, finite complete snapshots -> WASM export and four checked allocations -> tspice_spkw15 -> spkw15_c. Independently decoded Python calls the ordinary locked SpiceyPy 6.0.3 writer; standalone reader opens backend output and returns physical DAF contents and states.",
-          "executions": ["local-e07-860084ff-wasm", "ci-e07-860084ff-wasm"]
+          "executions": []
         }
       }
     },
@@ -1601,11 +1611,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Public raw.spkw17 -> owned SPK lookup, finite complete snapshots -> registered Node native addon with mutex -> tspice_spkw17 -> spkw17_c. Independently decoded Python calls the ordinary locked SpiceyPy 6.0.3 writer; standalone reader opens backend output and returns physical DAF contents and states.",
-          "executions": ["local-e07-860084ff-node", "ci-e07-860084ff-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1616,11 +1627,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Public raw.spkw17 -> owned SPK lookup, finite complete snapshots -> WASM export and four checked allocations -> tspice_spkw17 -> spkw17_c. Independently decoded Python calls the ordinary locked SpiceyPy 6.0.3 writer; standalone reader opens backend output and returns physical DAF contents and states.",
-          "executions": ["local-e07-860084ff-wasm", "ci-e07-860084ff-wasm"]
+          "executions": []
         }
       }
     }

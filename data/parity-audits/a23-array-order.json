@@ -730,7 +730,8 @@
       ],
       "id": "local-cp03-779d6fd6ae41-node",
       "kind": "local",
-      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 779d6fd6ae41c78017a8cf7ccaec5fef3100112c. The native-required lane completed 7054 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45097193130/job/137439518970"
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 779d6fd6ae41c78017a8cf7ccaec5fef3100112c. The native-required lane completed 7054 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45097193130/job/137439518970",
+      "historical": true
     },
     {
       "backend": "node",
@@ -807,7 +808,8 @@
       "kind": "ci",
       "commit": "c4bd798cc20d13e8dfd51e7e83ba740ffe4418ff",
       "url": "https://github.com/rybosome/tspice/actions/runs/45127597533/job/137535439275",
-      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 7054 live comparisons without unexpected skips."
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 7054 live comparisons without unexpected skips.",
+      "historical": true
     },
     {
       "backend": "wasm",
@@ -882,7 +884,8 @@
       ],
       "id": "local-cp03-779d6fd6ae41-wasm",
       "kind": "local",
-      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 779d6fd6ae41c78017a8cf7ccaec5fef3100112c. The native-required lane completed 7054 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45097193130/job/137439518970"
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 779d6fd6ae41c78017a8cf7ccaec5fef3100112c. The native-required lane completed 7054 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45097193130/job/137439518970",
+      "historical": true
     },
     {
       "backend": "wasm",
@@ -959,7 +962,8 @@
       "kind": "ci",
       "commit": "c4bd798cc20d13e8dfd51e7e83ba740ffe4418ff",
       "url": "https://github.com/rybosome/tspice/actions/runs/45127597533/job/137535439275",
-      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 7054 live comparisons without unexpected skips."
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 7054 live comparisons without unexpected skips.",
+      "historical": true
     }
   ],
   "routines": [
@@ -1026,14 +1030,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.isordv -> Node adapter with owned typed arrays -> native binding and shared mutex -> tspice_isordv -> isordv_c. Independent locked SpiceyPy library exposes the same canonical C entry. Typed ctypes calls use private buffers and check toolkit status. An ordinary SpiceyPy wrapper control cross-checks this routine on compatible nonempty inputs.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1044,14 +1046,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.isordv -> WASM adapter -> owned bounded allocations, typed heap views and registered export -> tspice_isordv -> isordv_c. Independent locked SpiceyPy library exposes the same canonical C entry. Typed ctypes calls use private buffers and check toolkit status. An ordinary SpiceyPy wrapper control cross-checks this routine on compatible nonempty inputs.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1117,14 +1117,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.orderc -> Node adapter with owned typed arrays -> native binding and shared mutex -> tspice_orderc -> orderc_c. Independent locked SpiceyPy library exposes the same canonical C entry. Typed ctypes calls use private buffers and check toolkit status. An ordinary SpiceyPy wrapper control cross-checks this routine on compatible nonempty inputs.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1135,14 +1133,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.orderc -> WASM adapter -> owned bounded allocations, typed heap views and registered export -> tspice_orderc -> orderc_c. Independent locked SpiceyPy library exposes the same canonical C entry. Typed ctypes calls use private buffers and check toolkit status. An ordinary SpiceyPy wrapper control cross-checks this routine on compatible nonempty inputs.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1194,14 +1190,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.orderd -> Node adapter with owned typed arrays -> native binding and shared mutex -> tspice_orderd -> orderd_c. Independent locked SpiceyPy library exposes the same canonical C entry. Typed ctypes calls use private buffers and check toolkit status. An ordinary SpiceyPy wrapper control cross-checks this routine on compatible nonempty inputs.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1211,14 +1205,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.orderd -> WASM adapter -> owned bounded allocations, typed heap views and registered export -> tspice_orderd -> orderd_c. Independent locked SpiceyPy library exposes the same canonical C entry. Typed ctypes calls use private buffers and check toolkit status. An ordinary SpiceyPy wrapper control cross-checks this routine on compatible nonempty inputs.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1270,14 +1262,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.orderi -> Node adapter with owned typed arrays -> native binding and shared mutex -> tspice_orderi -> orderi_c. Independent locked SpiceyPy library exposes the same canonical C entry. Typed ctypes calls use private buffers and check toolkit status. An ordinary SpiceyPy wrapper control cross-checks this routine on compatible nonempty inputs.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1287,14 +1277,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.orderi -> WASM adapter -> owned bounded allocations, typed heap views and registered export -> tspice_orderi -> orderi_c. Independent locked SpiceyPy library exposes the same canonical C entry. Typed ctypes calls use private buffers and check toolkit status. An ordinary SpiceyPy wrapper control cross-checks this routine on compatible nonempty inputs.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1370,14 +1358,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.reordc -> Node adapter with owned typed arrays -> native binding and shared mutex -> tspice_reordc -> reordc_c. Independent locked SpiceyPy library exposes the same canonical C entry. Typed ctypes calls use private buffers and check toolkit status. An ordinary SpiceyPy wrapper control cross-checks this routine on compatible nonempty inputs.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1388,14 +1374,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.reordc -> WASM adapter -> owned bounded allocations, typed heap views and registered export -> tspice_reordc -> reordc_c. Independent locked SpiceyPy library exposes the same canonical C entry. Typed ctypes calls use private buffers and check toolkit status. An ordinary SpiceyPy wrapper control cross-checks this routine on compatible nonempty inputs.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1457,14 +1441,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.reordd -> Node adapter with owned typed arrays -> native binding and shared mutex -> tspice_reordd -> reordd_c. Independent locked SpiceyPy library exposes the same canonical C entry. Typed ctypes calls use private buffers and check toolkit status. An ordinary SpiceyPy wrapper control cross-checks this routine on compatible nonempty inputs.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1474,14 +1456,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.reordd -> WASM adapter -> owned bounded allocations, typed heap views and registered export -> tspice_reordd -> reordd_c. Independent locked SpiceyPy library exposes the same canonical C entry. Typed ctypes calls use private buffers and check toolkit status. An ordinary SpiceyPy wrapper control cross-checks this routine on compatible nonempty inputs.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1543,14 +1523,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.reordi -> Node adapter with owned typed arrays -> native binding and shared mutex -> tspice_reordi -> reordi_c. Independent locked SpiceyPy library exposes the same canonical C entry. Typed ctypes calls use private buffers and check toolkit status. An ordinary SpiceyPy wrapper control cross-checks this routine on compatible nonempty inputs.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1560,14 +1538,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.reordi -> WASM adapter -> owned bounded allocations, typed heap views and registered export -> tspice_reordi -> reordi_c. Independent locked SpiceyPy library exposes the same canonical C entry. Typed ctypes calls use private buffers and check toolkit status. An ordinary SpiceyPy wrapper control cross-checks this routine on compatible nonempty inputs.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1629,14 +1605,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.reordl -> Node adapter with owned typed arrays -> native binding and shared mutex -> tspice_reordl -> reordl_c. Independent locked SpiceyPy library exposes the same canonical C entry. Typed ctypes calls use private buffers and check toolkit status. An ordinary SpiceyPy wrapper control cross-checks this routine on compatible nonempty inputs.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1646,14 +1620,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.reordl -> WASM adapter -> owned bounded allocations, typed heap views and registered export -> tspice_reordl -> reordl_c. Independent locked SpiceyPy library exposes the same canonical C entry. Typed ctypes calls use private buffers and check toolkit status. An ordinary SpiceyPy wrapper control cross-checks this routine on compatible nonempty inputs.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1705,14 +1677,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.shellc -> Node adapter with owned typed arrays -> native binding and shared mutex -> tspice_shellc -> shellc_c. Independent locked SpiceyPy library exposes the same canonical C entry. Typed ctypes calls use private buffers and check toolkit status. An ordinary SpiceyPy wrapper control cross-checks this routine on compatible nonempty inputs.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1722,14 +1692,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.shellc -> WASM adapter -> owned bounded allocations, typed heap views and registered export -> tspice_shellc -> shellc_c. Independent locked SpiceyPy library exposes the same canonical C entry. Typed ctypes calls use private buffers and check toolkit status. An ordinary SpiceyPy wrapper control cross-checks this routine on compatible nonempty inputs.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1781,14 +1749,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.shelld -> Node adapter with owned typed arrays -> native binding and shared mutex -> tspice_shelld -> shelld_c. Independent locked SpiceyPy library exposes the same canonical C entry. Typed ctypes calls use private buffers and check toolkit status. An ordinary SpiceyPy wrapper control cross-checks this routine on compatible nonempty inputs.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1798,14 +1764,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.shelld -> WASM adapter -> owned bounded allocations, typed heap views and registered export -> tspice_shelld -> shelld_c. Independent locked SpiceyPy library exposes the same canonical C entry. Typed ctypes calls use private buffers and check toolkit status. An ordinary SpiceyPy wrapper control cross-checks this routine on compatible nonempty inputs.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1857,14 +1821,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.shelli -> Node adapter with owned typed arrays -> native binding and shared mutex -> tspice_shelli -> shelli_c. Independent locked SpiceyPy library exposes the same canonical C entry. Typed ctypes calls use private buffers and check toolkit status. An ordinary SpiceyPy wrapper control cross-checks this routine on compatible nonempty inputs.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1874,14 +1836,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.shelli -> WASM adapter -> owned bounded allocations, typed heap views and registered export -> tspice_shelli -> shelli_c. Independent locked SpiceyPy library exposes the same canonical C entry. Typed ctypes calls use private buffers and check toolkit status. An ordinary SpiceyPy wrapper control cross-checks this routine on compatible nonempty inputs.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
-          ]
+          "executions": []
         }
       }
     }

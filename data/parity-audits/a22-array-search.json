@@ -657,7 +657,8 @@
       ],
       "id": "local-cp03-779d6fd6ae41-node",
       "kind": "local",
-      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 779d6fd6ae41c78017a8cf7ccaec5fef3100112c. The native-required lane completed 7054 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45097193130/job/137439518970"
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 779d6fd6ae41c78017a8cf7ccaec5fef3100112c. The native-required lane completed 7054 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45097193130/job/137439518970",
+      "historical": true
     },
     {
       "backend": "node",
@@ -726,7 +727,8 @@
       "kind": "ci",
       "commit": "c4bd798cc20d13e8dfd51e7e83ba740ffe4418ff",
       "url": "https://github.com/rybosome/tspice/actions/runs/45127597533/job/137535439275",
-      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 7054 live comparisons without unexpected skips."
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 7054 live comparisons without unexpected skips.",
+      "historical": true
     },
     {
       "backend": "wasm",
@@ -793,7 +795,8 @@
       ],
       "id": "local-cp03-779d6fd6ae41-wasm",
       "kind": "local",
-      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 779d6fd6ae41c78017a8cf7ccaec5fef3100112c. The native-required lane completed 7054 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45097193130/job/137439518970"
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 779d6fd6ae41c78017a8cf7ccaec5fef3100112c. The native-required lane completed 7054 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45097193130/job/137439518970",
+      "historical": true
     },
     {
       "backend": "wasm",
@@ -862,7 +865,8 @@
       "kind": "ci",
       "commit": "c4bd798cc20d13e8dfd51e7e83ba740ffe4418ff",
       "url": "https://github.com/rybosome/tspice/actions/runs/45127597533/job/137535439275",
-      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 7054 live comparisons without unexpected skips."
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 7054 live comparisons without unexpected skips.",
+      "historical": true
     }
   ],
   "routines": [
@@ -934,14 +938,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.bschoc -> typed NativeAddon method -> registered C++ adapter, owned argument buffers and global SPICE mutex -> tspice_bschoc -> bschoc_c. Independently invoke SpiceyPy 6.0.3 sp.bschoc with original physical inputs and explicit count, byte stride, order vector.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -951,14 +953,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.bschoc -> typed WASM adapter -> bounded transactional allocations, typed heap views and compiled export -> tspice_bschoc -> bschoc_c. Independently invoke SpiceyPy 6.0.3 sp.bschoc with original physical inputs and explicit count, byte stride, order vector.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1025,14 +1025,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.bschoi -> typed NativeAddon method -> registered C++ adapter, owned argument buffers and global SPICE mutex -> tspice_bschoi -> bschoi_c. Independently invoke SpiceyPy 6.0.3 sp.bschoi with original physical inputs and explicit count, order vector.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1042,14 +1040,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.bschoi -> typed WASM adapter -> bounded transactional allocations, typed heap views and compiled export -> tspice_bschoi -> bschoi_c. Independently invoke SpiceyPy 6.0.3 sp.bschoi with original physical inputs and explicit count, order vector.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1125,14 +1121,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.bsrchc -> typed NativeAddon method -> registered C++ adapter, owned argument buffers and global SPICE mutex -> tspice_bsrchc -> bsrchc_c. Independently invoke SpiceyPy 6.0.3 sp.bsrchc with original physical inputs and explicit count, byte stride.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1143,14 +1137,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.bsrchc -> typed WASM adapter -> bounded transactional allocations, typed heap views and compiled export -> tspice_bsrchc -> bsrchc_c. Independently invoke SpiceyPy 6.0.3 sp.bsrchc with original physical inputs and explicit count, byte stride.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1207,14 +1199,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.bsrchd -> typed NativeAddon method -> registered C++ adapter, owned argument buffers and global SPICE mutex -> tspice_bsrchd -> bsrchd_c. Independently invoke SpiceyPy 6.0.3 sp.bsrchd with original physical inputs and explicit count.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1224,14 +1214,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.bsrchd -> typed WASM adapter -> bounded transactional allocations, typed heap views and compiled export -> tspice_bsrchd -> bsrchd_c. Independently invoke SpiceyPy 6.0.3 sp.bsrchd with original physical inputs and explicit count.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1288,14 +1276,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.bsrchi -> typed NativeAddon method -> registered C++ adapter, owned argument buffers and global SPICE mutex -> tspice_bsrchi -> bsrchi_c. Independently invoke SpiceyPy 6.0.3 sp.bsrchi with original physical inputs and explicit count.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1305,14 +1291,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.bsrchi -> typed WASM adapter -> bounded transactional allocations, typed heap views and compiled export -> tspice_bsrchi -> bsrchi_c. Independently invoke SpiceyPy 6.0.3 sp.bsrchi with original physical inputs and explicit count.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1374,14 +1358,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.isrchc -> typed NativeAddon method -> registered C++ adapter, owned argument buffers and global SPICE mutex -> tspice_isrchc -> isrchc_c. Independently invoke SpiceyPy 6.0.3 sp.isrchc with original physical inputs and explicit count, byte stride.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1391,14 +1373,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.isrchc -> typed WASM adapter -> bounded transactional allocations, typed heap views and compiled export -> tspice_isrchc -> isrchc_c. Independently invoke SpiceyPy 6.0.3 sp.isrchc with original physical inputs and explicit count, byte stride.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1455,14 +1435,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.isrchd -> typed NativeAddon method -> registered C++ adapter, owned argument buffers and global SPICE mutex -> tspice_isrchd -> isrchd_c. Independently invoke SpiceyPy 6.0.3 sp.isrchd with original physical inputs and explicit count.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1472,14 +1450,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.isrchd -> typed WASM adapter -> bounded transactional allocations, typed heap views and compiled export -> tspice_isrchd -> isrchd_c. Independently invoke SpiceyPy 6.0.3 sp.isrchd with original physical inputs and explicit count.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1536,14 +1512,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.isrchi -> typed NativeAddon method -> registered C++ adapter, owned argument buffers and global SPICE mutex -> tspice_isrchi -> isrchi_c. Independently invoke SpiceyPy 6.0.3 sp.isrchi with original physical inputs and explicit count.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1553,14 +1527,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.isrchi -> typed WASM adapter -> bounded transactional allocations, typed heap views and compiled export -> tspice_isrchi -> isrchi_c. Independently invoke SpiceyPy 6.0.3 sp.isrchi with original physical inputs and explicit count.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
-          ]
+          "executions": []
         }
       }
     }

@@ -11758,64 +11758,42 @@
       "scenarios": [
         {
           "caseId": "dsk-dskobj-happy-apophis-fixture",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Returns body IDs from checked-in DSK fixture Complete returned fields or full integer-set snapshots reach live assertions."
         },
         {
           "caseId": "dsk-dskobj-non-dsk-file-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Representative dskobj error when path does not reference a DSK Actual CSPICE error required: INVALIDARCHTYPE."
         },
         {
           "caseId": "dsk-dskobj-audit-union-duplicates-and-repeat",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Actual caller-owned cell union preserves initial IDs, adds missing IDs, sorts/deduplicates repeated segment IDs and remains idempotent on a second call; every snapshot is compared. Complete returned fields or full integer-set snapshots reach live assertions."
         },
         {
           "caseId": "dsk-dskobj-audit-empty-zero-capacity",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "A valid empty DSK and an actual zero-capacity output cell return an empty set; Python must not substitute a default large cell. Complete returned fields or full integer-set snapshots reach live assertions."
         },
         {
           "caseId": "dsk-dskobj-audit-small-capacity",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "A real two-ID result overflows capacity1 and must signal actual CELLTOOSMALL; contents after toolkit failure are not assumed unchanged. Actual CSPICE error required: CELLTOOSMALL."
         },
         {
           "caseId": "dsk-dskobj-audit-missing-file",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Missing scratch path reaches the actual CSPICE query and requires FILENOTFOUND, not a fixture read failure. Actual CSPICE error required: FILENOTFOUND."
         },
         {
           "caseId": "dsk-dskobj-audit-wrong-das-file-type",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "An actual closed DAS/DLA file has the right architecture but wrong type; query must reach INVALIDFILETYPE. Actual CSPICE error required: INVALIDFILETYPE."
         },
         {
           "caseId": "dsk-dskobj-audit-transient-capacity-before-deduplication",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "CSPICE temporarily appends segment IDs before deduplicating: capacity 3 can fail even though the final unique union would have only three IDs. Preserve this raw behavior. Actual CSPICE error required: CELLTOOSMALL."
         }
       ],
@@ -11938,87 +11916,57 @@
       "scenarios": [
         {
           "caseId": "dsk-dsksrf-happy-apophis-fixture",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Returns surface IDs for the known fixture body ID Complete returned fields or full integer-set snapshots reach live assertions."
         },
         {
           "caseId": "dsk-dsksrf-non-dsk-file-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Representative dsksrf error when path does not reference a DSK Actual CSPICE error required: INVALIDARCHTYPE."
         },
         {
           "caseId": "dsk-dsksrf-audit-union-duplicates-and-repeat",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Actual caller-owned cell union preserves initial IDs, adds missing IDs, sorts/deduplicates repeated segment IDs and remains idempotent on a second call; every snapshot is compared. Complete returned fields or full integer-set snapshots reach live assertions."
         },
         {
           "caseId": "dsk-dsksrf-audit-empty-zero-capacity",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "A valid empty DSK and an actual zero-capacity output cell return an empty set; Python must not substitute a default large cell. Complete returned fields or full integer-set snapshots reach live assertions."
         },
         {
           "caseId": "dsk-dsksrf-audit-small-capacity",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "A real two-ID result overflows capacity1 and must signal actual CELLTOOSMALL; contents after toolkit failure are not assumed unchanged. Actual CSPICE error required: CELLTOOSMALL."
         },
         {
           "caseId": "dsk-dsksrf-audit-missing-file",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Missing scratch path reaches the actual CSPICE query and requires FILENOTFOUND, not a fixture read failure. Actual CSPICE error required: FILENOTFOUND."
         },
         {
           "caseId": "dsk-dsksrf-audit-wrong-das-file-type",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "An actual closed DAS/DLA file has the right architecture but wrong type; query must reach INVALIDFILETYPE. Actual CSPICE error required: INVALIDFILETYPE."
         },
         {
           "caseId": "dsk-dsksrf-audit-absent-body-preserves-set",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "No matching body is a successful unchanged input union, not an error or an empty replacement. Complete returned fields or full integer-set snapshots reach live assertions."
         },
         {
           "caseId": "dsk-dsksrf-audit-fractional-body",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Strict body ID int32 precondition prevents WASM FFI coercion; this is a contract error before the scientific call. Explicit contract/workflow precondition; not claimed as a CSPICE error-path comparison."
         },
         {
           "caseId": "dsk-dsksrf-audit-overflow-body",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Strict body ID int32 precondition prevents WASM FFI coercion; this is a contract error before the scientific call. Explicit contract/workflow precondition; not claimed as a CSPICE error-path comparison."
         },
         {
           "caseId": "dsk-dsksrf-audit-transient-capacity-before-deduplication",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "CSPICE temporarily appends segment IDs before deduplicating: capacity 3 can fail even though the final unique union would have only three IDs. Preserve this raw behavior. Actual CSPICE error required: CELLTOOSMALL."
         }
       ],
@@ -12144,36 +12092,22 @@
       "scenarios": [
         {
           "caseId": "dsk-dskgd-happy-open-write-read-close-roundtrip",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Writes a minimal type-2 DSK, reopens it, then reads descriptor via dskgd Complete returned fields or full integer-set snapshots reach live assertions."
         },
         {
           "caseId": "dsk-dskgd-closed-handle-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Representative dskgd error when using a closed DAS handle Explicit contract/workflow precondition; not claimed as a CSPICE error-path comparison."
         },
         {
           "caseId": "dsk-dskgd-audit-nonzero-rectangular-descriptor",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "All six integer fields, ten coordinate parameters, nonzero asymmetric coordinate bounds and nontrivial ET interval reach full descriptor comparison. Complete returned fields or full integer-set snapshots reach live assertions."
         },
         {
           "caseId": "dsk-dskgd-audit-planetodetic-descriptor",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Planetodetic coordinate code 4, nonzero equatorial radius/flattening, radian bounds and a different built-in frame distinguish corpar/layout/frame values. Complete returned fields or full integer-set snapshots reach live assertions."
         }
       ],
@@ -12277,36 +12211,22 @@
       "scenarios": [
         {
           "caseId": "dsk-dskb02-happy-apophis-fixture",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Reads type-2 bookkeeping from first segment in checked-in DSK fixture Complete returned fields or full integer-set snapshots reach live assertions."
         },
         {
           "caseId": "dsk-dskb02-closed-handle-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Representative dskb02 error when using a closed DAS handle Explicit contract/workflow precondition; not claimed as a CSPICE error-path comparison."
         },
         {
           "caseId": "dsk-dskb02-audit-asymmetric-vertex-bounds",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Nonzero unequal xyz axis bounds prove the actual C 3x2 layout and SpiceyPy normalization; full voxel counts/origin/extent/list sizes are compared. Complete returned fields or full integer-set snapshots reach live assertions."
         },
         {
           "caseId": "dsk-dskb02-audit-different-mesh-without-vertex-lists",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Five-vertex/six-plate pyramid and disabled optional lists distinguish nv/np, vtxnpl, voxel scale/grid and all six vertex-bound values. Complete returned fields or full integer-set snapshots reach live assertions."
         }
       ],

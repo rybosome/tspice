@@ -14623,27 +14623,17 @@
       "scenarios": [
         {
           "caseId": "file-io-dlafns-next-segment-search-success",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "dlafns advances from first DSK segment and reports end of traversal Compare all eight linked descriptor fields only when found, plus end/restart flags."
         },
         {
           "caseId": "file-io-dlafns-closed-handle-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Representative dlafns error when handle is closed before traversal Contract/workflow precondition; not claimed as a CSPICE error path."
         },
         {
           "caseId": "file-io-dlafns-audit-positive-second-segment-and-end",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Advance through a real second segment and end, restart, and compare every linked descriptor field. Supplemental content parity reads all geometry/metadata. Compare all eight linked descriptor fields only when found, plus end/restart flags."
         }
       ],
@@ -14750,48 +14740,32 @@
       "scenarios": [
         {
           "caseId": "file-io-dlaopn-create-empty-file-success",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "dlaopn creates an empty DLA file and dlabfs reports no segments"
         },
         {
           "caseId": "file-io-dlaopn-negative-ncomch-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Representative dlaopn error for invalid ncomch Contract/workflow precondition; not claimed as a CSPICE error path."
         },
         {
           "caseId": "file-io-dlaopn-existing-file-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Representative dlaopn error when the output file already exists Actual CSPICE error required: FILEOPENFAIL."
         },
         {
           "caseId": "file-io-dlaopn-audit-mixed-type-comments-and-reopen",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Four-character type truncation and case-aware header semantics, comment reservation and reopened valid empty DLA. Independent DAS header readback checks original type/name/comment records."
         },
         {
           "caseId": "file-io-dlaopn-audit-blank-type",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Actual CSPICE rejects invalid file type with BLANKFILETYPE. Actual CSPICE error required: BLANKFILETYPE."
         },
         {
           "caseId": "file-io-dlaopn-audit-control-type",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Actual CSPICE rejects invalid file type with ILLEGALCHARACTER. Actual CSPICE error required: ILLEGALCHARACTER."
         }
       ],
@@ -14895,75 +14869,52 @@
       "scenarios": [
         {
           "caseId": "file-io-dskmi2-minimal-mesh-success",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "dskmi2 builds a complete deterministic type-2 spatial index Every returned double/integer reaches the live comparator; no summary truncation."
         },
         {
           "caseId": "file-io-dskmi2-invalid-nv-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Representative dskmi2 error for invalid nv Contract/workflow precondition; not claimed as a CSPICE error path."
         },
         {
           "caseId": "file-io-dskmi2-non-integer-corscl-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Representative dskmi2 error for non-integer corscl Contract/workflow precondition; not claimed as a CSPICE error path."
         },
         {
           "caseId": "file-io-dskmi2-audit-vertex-mapping-disabled",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Full 10-double/120000-int outputs distinguish absent optional vertex-plate lists and preserve all active voxel pointers. Every returned double/integer reaches the live comparator; no summary truncation."
         },
         {
           "caseId": "file-io-dskmi2-audit-coarser-grid",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "A different fine/coarse scale on noncoplanar geometry distinguishes voxel size/origin and full integer index contents. Every returned double/integer reaches the live comparator; no summary truncation."
         },
         {
           "caseId": "file-io-dskmi2-audit-two-vertices",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Valid array shapes reach actual CSPICE BADVERTEXCOUNT. Actual CSPICE error required: BADVERTEXCOUNT."
         },
         {
           "caseId": "file-io-dskmi2-audit-zero-fine-scale",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Require named actual CSPICE BADFINEVOXELSCALE rather than matching incidental failures. Actual CSPICE error required: BADFINEVOXELSCALE."
         },
         {
           "caseId": "file-io-dskmi2-audit-zero-coarse-scale",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Require named actual CSPICE BADCOARSEVOXSCALE rather than matching incidental failures. Actual CSPICE error required: BADCOARSEVOXSCALE."
         },
         {
           "caseId": "file-io-dskmi2-audit-small-index",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Require named actual CSPICE INTINDEXTOOSMALL rather than matching incidental failures. Actual CSPICE error required: INTINDEXTOOSMALL."
         },
         {
           "caseId": "file-io-dskmi2-audit-small-workspace",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Require named actual CSPICE WORKSPACETOOSMALL rather than matching incidental failures. Actual CSPICE error required: WORKSPACETOOSMALL."
         }
       ],
@@ -15071,34 +15022,22 @@
       "scenarios": [
         {
           "caseId": "file-io-dskopn-write-and-identify-success",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "dskopn creates a writable DSK later identified by getfat"
         },
         {
           "caseId": "file-io-dskopn-negative-ncomch-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Representative dskopn error for invalid ncomch Contract/workflow precondition; not claimed as a CSPICE error path."
         },
         {
           "caseId": "file-io-dskopn-existing-file-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Representative dskopn error when the output file already exists Actual CSPICE error required: FILEOPENFAIL."
         },
         {
           "caseId": "file-io-dskopn-audit-empty-file-header",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "An empty DSK is still a valid DAS/DSK after close; read its actual type and genuine empty DLA miss."
         }
       ],
@@ -15200,62 +15139,42 @@
       "scenarios": [
         {
           "caseId": "file-io-dskw02-write-and-traverse-success",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "dskw02 writes a segment that can be traversed via dlabfs/dlafns Consumed writer output is closed and read independently; supplemental content assertions verify scientific data and metadata."
         },
         {
           "caseId": "file-io-dskw02-closed-handle-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Representative dskw02 error when writing with a closed handle Contract/workflow precondition; not claimed as a CSPICE error path."
         },
         {
           "caseId": "file-io-dskw02-dlaopn-handle-kind-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Representative dskw02 error when called with a handle opened by dlaopn Contract/workflow precondition; not claimed as a CSPICE error path."
         },
         {
           "caseId": "file-io-dskw02-audit-two-meshes-and-metadata",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Write distinct 3D meshes, bodies/surfaces, coordinate bounds and ET intervals; compare full spatial indices and both DLA descriptors plus independent content readback. Consumed writer output is closed and read independently; supplemental content assertions verify scientific data and metadata."
         },
         {
           "caseId": "file-io-dskw02-audit-unknown-frame",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Valid compiled index reaches actual writer FRAMEIDNOTFOUND; failure cleanup closes the outstanding writer. Actual CSPICE error required: FRAMEIDNOTFOUND."
         },
         {
           "caseId": "file-io-dskw02-audit-backward-times",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Valid compiled index reaches actual writer TIMESOUTOFORDER; failure cleanup closes the outstanding writer. Actual CSPICE error required: TIMESOUTOFORDER."
         },
         {
           "caseId": "file-io-dskw02-audit-zero-rectangle-extent",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Valid compiled index reaches actual writer BOUNDSOUTOFORDER; failure cleanup closes the outstanding writer. Actual CSPICE error required: BOUNDSOUTOFORDER."
         },
         {
           "caseId": "file-io-dskw02-audit-unsupported-class",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Valid compiled index reaches actual writer NOTSUPPORTED; failure cleanup closes the outstanding writer. Actual CSPICE error required: NOTSUPPORTED."
         }
       ],
@@ -15361,29 +15280,17 @@
       "scenarios": [
         {
           "caseId": "file-io-exists-fixture-present-success",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "exists reports true for fixture path after furnsh staging"
         },
         {
           "caseId": "file-io-exists-missing-file-success",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "exists reports false for a missing fixture-relative file"
         },
         {
           "caseId": "file-io-exists-audit-create-open-close-lifecycle",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Observe false before creation and true both while open and after actual close; scratch is removed after finalization."
         }
       ],
@@ -15490,27 +15397,17 @@
       "scenarios": [
         {
           "caseId": "file-io-getfat-dsk-success",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "getfat identifies a deterministic DSK fixture"
         },
         {
           "caseId": "file-io-getfat-missing-file-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Representative getfat missing-file error Actual CSPICE error required: FILENOTFOUND."
         },
         {
           "caseId": "file-io-getfat-audit-text-and-daf-types",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Observe distinct KPL/LSK and DAF/SPK type pairs on actual closed files, including a valid empty DAF."
         }
       ],

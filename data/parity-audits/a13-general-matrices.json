@@ -996,7 +996,8 @@
       ],
       "id": "local-cp03-779d6fd6ae41-node",
       "kind": "local",
-      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 779d6fd6ae41c78017a8cf7ccaec5fef3100112c. The native-required lane completed 7054 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45097193130/job/137439518970"
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 779d6fd6ae41c78017a8cf7ccaec5fef3100112c. The native-required lane completed 7054 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45097193130/job/137439518970",
+      "historical": true
     },
     {
       "backend": "node",
@@ -1070,7 +1071,8 @@
       "kind": "ci",
       "commit": "c4bd798cc20d13e8dfd51e7e83ba740ffe4418ff",
       "url": "https://github.com/rybosome/tspice/actions/runs/45127597533/job/137535439275",
-      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 7054 live comparisons without unexpected skips."
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 7054 live comparisons without unexpected skips.",
+      "historical": true
     },
     {
       "backend": "wasm",
@@ -1142,7 +1144,8 @@
       ],
       "id": "local-cp03-779d6fd6ae41-wasm",
       "kind": "local",
-      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 779d6fd6ae41c78017a8cf7ccaec5fef3100112c. The native-required lane completed 7054 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45097193130/job/137439518970"
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 779d6fd6ae41c78017a8cf7ccaec5fef3100112c. The native-required lane completed 7054 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45097193130/job/137439518970",
+      "historical": true
     },
     {
       "backend": "wasm",
@@ -1216,7 +1219,8 @@
       "kind": "ci",
       "commit": "c4bd798cc20d13e8dfd51e7e83ba740ffe4418ff",
       "url": "https://github.com/rybosome/tspice/actions/runs/45127597533/job/137535439275",
-      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 7054 live comparisons without unexpected skips."
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 7054 live comparisons without unexpected skips.",
+      "historical": true
     }
   ],
   "routines": [
@@ -1289,14 +1293,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.mequg -> finite shape-checked, owned Node snapshots and mutex-serialized native addon -> tspice_mequg -> mequg_c. Independent oracle: exact locked C copy ABI.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1309,14 +1311,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.mequg -> module-local shape-checked snapshots, transactional allocation and typed WASM export -> tspice_mequg -> mequg_c. Independent oracle: exact locked C copy ABI.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1408,14 +1408,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.mtxmg -> finite shape-checked, owned Node snapshots and mutex-serialized native addon -> tspice_mtxmg -> mtxmg_c. Independent oracle: locked SpiceyPy wrapper on positive shapes, exact locked C ABI on degenerate shapes.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1428,14 +1426,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.mtxmg -> module-local shape-checked snapshots, transactional allocation and typed WASM export -> tspice_mtxmg -> mtxmg_c. Independent oracle: locked SpiceyPy wrapper on positive shapes, exact locked C ABI on degenerate shapes.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1516,14 +1512,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.mtxvg -> finite shape-checked, owned Node snapshots and mutex-serialized native addon -> tspice_mtxvg -> mtxvg_c. Independent oracle: locked SpiceyPy wrapper on positive shapes, exact locked C ABI on degenerate shapes.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1536,14 +1530,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.mtxvg -> module-local shape-checked snapshots, transactional allocation and typed WASM export -> tspice_mtxvg -> mtxvg_c. Independent oracle: locked SpiceyPy wrapper on positive shapes, exact locked C ABI on degenerate shapes.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1635,14 +1627,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.mxmg -> finite shape-checked, owned Node snapshots and mutex-serialized native addon -> tspice_mxmg -> mxmg_c. Independent oracle: locked SpiceyPy wrapper on positive shapes, exact locked C ABI on degenerate shapes.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1655,14 +1645,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.mxmg -> module-local shape-checked snapshots, transactional allocation and typed WASM export -> tspice_mxmg -> mxmg_c. Independent oracle: locked SpiceyPy wrapper on positive shapes, exact locked C ABI on degenerate shapes.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1748,14 +1736,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.mxmtg -> finite shape-checked, owned Node snapshots and mutex-serialized native addon -> tspice_mxmtg -> mxmtg_c. Independent oracle: locked SpiceyPy wrapper on positive shapes, exact locked C ABI on degenerate shapes.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1768,14 +1754,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.mxmtg -> module-local shape-checked snapshots, transactional allocation and typed WASM export -> tspice_mxmtg -> mxmtg_c. Independent oracle: locked SpiceyPy wrapper on positive shapes, exact locked C ABI on degenerate shapes.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1856,14 +1840,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.mxvg -> finite shape-checked, owned Node snapshots and mutex-serialized native addon -> tspice_mxvg -> mxvg_c. Independent oracle: locked SpiceyPy wrapper on positive shapes, exact locked C ABI on degenerate shapes.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1876,14 +1858,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.mxvg -> module-local shape-checked snapshots, transactional allocation and typed WASM export -> tspice_mxvg -> mxvg_c. Independent oracle: locked SpiceyPy wrapper on positive shapes, exact locked C ABI on degenerate shapes.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1964,14 +1944,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vtmvg -> finite shape-checked, owned Node snapshots and mutex-serialized native addon -> tspice_vtmvg -> vtmvg_c. Independent oracle: locked SpiceyPy wrapper on positive shapes, exact locked C ABI on degenerate shapes.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1984,14 +1962,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vtmvg -> module-local shape-checked snapshots, transactional allocation and typed WASM export -> tspice_vtmvg -> vtmvg_c. Independent oracle: locked SpiceyPy wrapper on positive shapes, exact locked C ABI on degenerate shapes.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -2072,14 +2048,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.xposeg -> finite shape-checked, owned Node snapshots and mutex-serialized native addon -> tspice_xposeg -> xposeg_c. Independent oracle: locked SpiceyPy wrapper on positive shapes, exact locked C ABI on degenerate shapes.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -2092,14 +2066,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.xposeg -> module-local shape-checked snapshots, transactional allocation and typed WASM export -> tspice_xposeg -> xposeg_c. Independent oracle: locked SpiceyPy wrapper on positive shapes, exact locked C ABI on degenerate shapes.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
-          ]
+          "executions": []
         }
       }
     }

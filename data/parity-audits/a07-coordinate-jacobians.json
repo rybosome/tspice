@@ -1259,7 +1259,8 @@
       ],
       "id": "local-cp03-779d6fd6ae41-node",
       "kind": "local",
-      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 779d6fd6ae41c78017a8cf7ccaec5fef3100112c. The native-required lane completed 7054 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45097193130/job/137439518970"
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 779d6fd6ae41c78017a8cf7ccaec5fef3100112c. The native-required lane completed 7054 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45097193130/job/137439518970",
+      "historical": true
     },
     {
       "backend": "node",
@@ -1353,7 +1354,8 @@
       "kind": "ci",
       "commit": "c4bd798cc20d13e8dfd51e7e83ba740ffe4418ff",
       "url": "https://github.com/rybosome/tspice/actions/runs/45127597533/job/137535439275",
-      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 7054 live comparisons without unexpected skips."
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 7054 live comparisons without unexpected skips.",
+      "historical": true
     },
     {
       "backend": "wasm",
@@ -1445,7 +1447,8 @@
       ],
       "id": "local-cp03-779d6fd6ae41-wasm",
       "kind": "local",
-      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 779d6fd6ae41c78017a8cf7ccaec5fef3100112c. The native-required lane completed 7054 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45097193130/job/137439518970"
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 779d6fd6ae41c78017a8cf7ccaec5fef3100112c. The native-required lane completed 7054 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45097193130/job/137439518970",
+      "historical": true
     },
     {
       "backend": "wasm",
@@ -1539,7 +1542,8 @@
       "kind": "ci",
       "commit": "c4bd798cc20d13e8dfd51e7e83ba740ffe4418ff",
       "url": "https://github.com/rybosome/tspice/actions/runs/45127597533/job/137535439275",
-      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 7054 live comparisons without unexpected skips."
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 7054 live comparisons without unexpected skips.",
+      "historical": true
     }
   ],
   "routines": [
@@ -1598,14 +1602,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "CoordsVectorsApi.dazldr -> serialized native N-API and checked inputs -> tspice_dazldr -> dazldr_c -> checked owned nine-number result. Scientific oracle calls locked SpiceyPy dazldr.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1617,14 +1619,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "CoordsVectorsApi.dazldr -> validated WASM call and scoped allocations -> tspice_dazldr -> dazldr_c -> checked owned nine-number result. Scientific oracle calls locked SpiceyPy dazldr.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1678,14 +1678,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "CoordsVectorsApi.dcyldr -> serialized native N-API and checked inputs -> tspice_dcyldr -> dcyldr_c -> checked owned nine-number result. Scientific oracle calls locked SpiceyPy dcyldr.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1697,14 +1695,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "CoordsVectorsApi.dcyldr -> validated WASM call and scoped allocations -> tspice_dcyldr -> dcyldr_c -> checked owned nine-number result. Scientific oracle calls locked SpiceyPy dcyldr.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1788,14 +1784,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "CoordsVectorsApi.dgeodr -> serialized native N-API and checked inputs -> tspice_dgeodr -> dgeodr_c -> checked owned nine-number result. N0067 input/diagnostic preflight and independent locked callee documented in the source review.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1808,14 +1802,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "CoordsVectorsApi.dgeodr -> validated WASM call and scoped allocations -> tspice_dgeodr -> dgeodr_c -> checked owned nine-number result. N0067 input/diagnostic preflight and independent locked callee documented in the source review.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1869,14 +1861,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "CoordsVectorsApi.dlatdr -> serialized native N-API and checked inputs -> tspice_dlatdr -> dlatdr_c -> checked owned nine-number result. Scientific oracle calls locked SpiceyPy dlatdr.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1888,14 +1878,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "CoordsVectorsApi.dlatdr -> validated WASM call and scoped allocations -> tspice_dlatdr -> dlatdr_c -> checked owned nine-number result. Scientific oracle calls locked SpiceyPy dlatdr.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -2022,14 +2010,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "CoordsVectorsApi.dpgrdr -> serialized native N-API and checked inputs -> tspice_dpgrdr -> dpgrdr_c -> checked owned nine-number result. N0067 input/diagnostic preflight and independent locked callee documented in the source review.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -2042,14 +2028,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "CoordsVectorsApi.dpgrdr -> validated WASM call and scoped allocations -> tspice_dpgrdr -> dpgrdr_c -> checked owned nine-number result. N0067 input/diagnostic preflight and independent locked callee documented in the source review.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -2108,14 +2092,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "CoordsVectorsApi.drdazl -> serialized native N-API and checked inputs -> tspice_drdazl -> drdazl_c -> checked owned nine-number result. Scientific oracle calls locked SpiceyPy drdazl.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -2127,14 +2109,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "CoordsVectorsApi.drdazl -> validated WASM call and scoped allocations -> tspice_drdazl -> drdazl_c -> checked owned nine-number result. Scientific oracle calls locked SpiceyPy drdazl.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -2188,14 +2168,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "CoordsVectorsApi.drdcyl -> serialized native N-API and checked inputs -> tspice_drdcyl -> drdcyl_c -> checked owned nine-number result. Scientific oracle calls locked SpiceyPy drdcyl.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -2207,14 +2185,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "CoordsVectorsApi.drdcyl -> validated WASM call and scoped allocations -> tspice_drdcyl -> drdcyl_c -> checked owned nine-number result. Scientific oracle calls locked SpiceyPy drdcyl.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -2268,14 +2244,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "CoordsVectorsApi.drdgeo -> serialized native N-API and checked inputs -> tspice_drdgeo -> drdgeo_c -> checked owned nine-number result. Scientific oracle calls locked SpiceyPy drdgeo.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -2287,14 +2261,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "CoordsVectorsApi.drdgeo -> validated WASM call and scoped allocations -> tspice_drdgeo -> drdgeo_c -> checked owned nine-number result. Scientific oracle calls locked SpiceyPy drdgeo.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -2348,14 +2320,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "CoordsVectorsApi.drdlat -> serialized native N-API and checked inputs -> tspice_drdlat -> drdlat_c -> checked owned nine-number result. Scientific oracle calls locked SpiceyPy drdlat.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -2367,14 +2337,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "CoordsVectorsApi.drdlat -> validated WASM call and scoped allocations -> tspice_drdlat -> drdlat_c -> checked owned nine-number result. Scientific oracle calls locked SpiceyPy drdlat.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -2473,14 +2441,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "CoordsVectorsApi.drdpgr -> serialized native N-API and checked inputs -> tspice_drdpgr -> drdpgr_c -> checked owned nine-number result. N0067 input/diagnostic preflight and independent locked callee documented in the source review.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -2493,14 +2459,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "CoordsVectorsApi.drdpgr -> validated WASM call and scoped allocations -> tspice_drdpgr -> drdpgr_c -> checked owned nine-number result. N0067 input/diagnostic preflight and independent locked callee documented in the source review.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -2554,14 +2518,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "CoordsVectorsApi.drdsph -> serialized native N-API and checked inputs -> tspice_drdsph -> drdsph_c -> checked owned nine-number result. Scientific oracle calls locked SpiceyPy drdsph.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -2573,14 +2535,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "CoordsVectorsApi.drdsph -> validated WASM call and scoped allocations -> tspice_drdsph -> drdsph_c -> checked owned nine-number result. Scientific oracle calls locked SpiceyPy drdsph.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -2634,14 +2594,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "CoordsVectorsApi.dsphdr -> serialized native N-API and checked inputs -> tspice_dsphdr -> dsphdr_c -> checked owned nine-number result. Scientific oracle calls locked SpiceyPy dsphdr.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -2653,14 +2611,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "CoordsVectorsApi.dsphdr -> validated WASM call and scoped allocations -> tspice_dsphdr -> dsphdr_c -> checked owned nine-number result. Scientific oracle calls locked SpiceyPy dsphdr.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
-          ]
+          "executions": []
         }
       }
     }

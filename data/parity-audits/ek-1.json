@@ -18922,52 +18922,32 @@
       "scenarios": [
         {
           "caseId": "ek-ekacli-happy-integer-column-visible-via-ekgi",
-          "coverage": [
-            "success",
-            "state"
-          ],
+          "coverage": ["success", "state"],
           "observes": "ekacli-written integers are observable through ekfind and ekgi. The actual raw operation writes/finalizes real files. Its void result alone is not success evidence: complete typed getter values after close/reload reach recursive parity and independent authored literal assertions. "
         },
         {
           "caseId": "ek-ekacli-missing-column-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "ekacli errors when writing to a column not declared in the segment. The actual raw operation writes/finalizes real files. Its void result alone is not success evidence: complete typed getter values after close/reload reach recursive parity and independent authored literal assertions. "
         },
         {
           "caseId": "ek-ekacli-audit-fixed-vectors-and-null",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Actual complete INTEGER column write/finalize/close/reload, with fixed-vectors-and-null; compare all concrete values, SQL NULL and absent elements. The fixed NULL row occupies its full declared backing; variable NULL rows have no logical values.. The actual raw operation writes/finalizes real files. Its void result alone is not success evidence: complete typed getter values after close/reload reach recursive parity and independent authored literal assertions. "
         },
         {
           "caseId": "ek-ekacli-audit-variable-vectors-and-null",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Actual complete INTEGER column write/finalize/close/reload, with variable-vectors-and-null; compare all concrete values, SQL NULL and absent elements. The fixed NULL row occupies its full declared backing; variable NULL rows have no logical values.. The actual raw operation writes/finalizes real files. Its void result alone is not success evidence: complete typed getter values after close/reload reach recursive parity and independent authored literal assertions. "
         },
         {
           "caseId": "ek-ekacli-audit-all-null-variable",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Actual complete INTEGER column write/finalize/close/reload, with all-null-variable; compare all concrete values, SQL NULL and absent elements. The fixed NULL row occupies its full declared backing; variable NULL rows have no logical values.. The actual raw operation writes/finalizes real files. Its void result alone is not success evidence: complete typed getter values after close/reload reach recursive parity and independent authored literal assertions. "
         },
         {
           "caseId": "ek-ekacli-audit-wrong-column-type",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Valid array backing reaches actual WRONGDATATYPE for a different declared column type.. The actual raw operation writes/finalizes real files. Its void result alone is not success evidence: complete typed getter values after close/reload reach recursive parity and independent authored literal assertions. "
         }
       ],
@@ -19014,9 +18994,7 @@
             "packages/backend-node/test/fixtures/ek-column-shim.c",
             "packages/py-parity-checking/test/ek-column-recovery.test.ts"
           ],
-          "caseIds": [
-            "ek-ekacli-happy-integer-column-visible-via-ekgi"
-          ]
+          "caseIds": ["ek-ekacli-happy-integer-column-visible-via-ekgi"]
         }
       ],
       "backends": {
@@ -19086,52 +19064,32 @@
       "scenarios": [
         {
           "caseId": "ek-ekacld-happy-double-column-visible-via-ekgd",
-          "coverage": [
-            "success",
-            "state"
-          ],
+          "coverage": ["success", "state"],
           "observes": "ekacld-written doubles are observable through ekfind and ekgd. The actual raw operation writes/finalizes real files. Its void result alone is not success evidence: complete typed getter values after close/reload reach recursive parity and independent authored literal assertions. "
         },
         {
           "caseId": "ek-ekacld-missing-column-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "ekacld errors when writing to a column not declared in the segment. The actual raw operation writes/finalizes real files. Its void result alone is not success evidence: complete typed getter values after close/reload reach recursive parity and independent authored literal assertions. "
         },
         {
           "caseId": "ek-ekacld-audit-fixed-vectors-and-null",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Actual complete DOUBLE PRECISION column write/finalize/close/reload, with fixed-vectors-and-null; compare all concrete values, SQL NULL and absent elements. The fixed NULL row occupies its full declared backing; variable NULL rows have no logical values.. The actual raw operation writes/finalizes real files. Its void result alone is not success evidence: complete typed getter values after close/reload reach recursive parity and independent authored literal assertions. "
         },
         {
           "caseId": "ek-ekacld-audit-variable-vectors-and-null",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Actual complete DOUBLE PRECISION column write/finalize/close/reload, with variable-vectors-and-null; compare all concrete values, SQL NULL and absent elements. The fixed NULL row occupies its full declared backing; variable NULL rows have no logical values.. The actual raw operation writes/finalizes real files. Its void result alone is not success evidence: complete typed getter values after close/reload reach recursive parity and independent authored literal assertions. "
         },
         {
           "caseId": "ek-ekacld-audit-all-null-variable",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Actual complete DOUBLE PRECISION column write/finalize/close/reload, with all-null-variable; compare all concrete values, SQL NULL and absent elements. The fixed NULL row occupies its full declared backing; variable NULL rows have no logical values.. The actual raw operation writes/finalizes real files. Its void result alone is not success evidence: complete typed getter values after close/reload reach recursive parity and independent authored literal assertions. "
         },
         {
           "caseId": "ek-ekacld-audit-wrong-column-type",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Valid array backing reaches actual WRONGDATATYPE for a different declared column type.. The actual raw operation writes/finalizes real files. Its void result alone is not success evidence: complete typed getter values after close/reload reach recursive parity and independent authored literal assertions. "
         }
       ],
@@ -19178,9 +19136,7 @@
             "packages/backend-node/test/fixtures/ek-column-shim.c",
             "packages/py-parity-checking/test/ek-column-recovery.test.ts"
           ],
-          "caseIds": [
-            "ek-ekacld-happy-double-column-visible-via-ekgd"
-          ]
+          "caseIds": ["ek-ekacld-happy-double-column-visible-via-ekgd"]
         }
       ],
       "backends": {
@@ -19250,70 +19206,42 @@
       "scenarios": [
         {
           "caseId": "ek-ekaclc-happy-char-column-visible-via-ekgc",
-          "coverage": [
-            "success",
-            "state"
-          ],
+          "coverage": ["success", "state"],
           "observes": "ekaclc-written strings are observable through ekfind and ekgc. The actual raw operation writes/finalizes real files. Its void result alone is not success evidence: complete typed getter values after close/reload reach recursive parity and independent authored literal assertions. "
         },
         {
           "caseId": "ek-ekaclc-missing-column-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "ekaclc errors when writing to a column not declared in the segment. The actual raw operation writes/finalizes real files. Its void result alone is not success evidence: complete typed getter values after close/reload reach recursive parity and independent authored literal assertions. "
         },
         {
           "caseId": "ek-ekaclc-audit-fixed-vectors-and-null",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Actual complete CHARACTER*(40) column write/finalize/close/reload, with fixed-vectors-and-null; compare all concrete values, SQL NULL and absent elements. The fixed NULL row occupies its full declared backing; variable NULL rows have no logical values.. The actual raw operation writes/finalizes real files. Its void result alone is not success evidence: complete typed getter values after close/reload reach recursive parity and independent authored literal assertions. "
         },
         {
           "caseId": "ek-ekaclc-audit-variable-vectors-and-null",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Actual complete CHARACTER*(40) column write/finalize/close/reload, with variable-vectors-and-null; compare all concrete values, SQL NULL and absent elements. The fixed NULL row occupies its full declared backing; variable NULL rows have no logical values.. The actual raw operation writes/finalizes real files. Its void result alone is not success evidence: complete typed getter values after close/reload reach recursive parity and independent authored literal assertions. "
         },
         {
           "caseId": "ek-ekaclc-audit-all-null-variable",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Actual complete CHARACTER*(40) column write/finalize/close/reload, with all-null-variable; compare all concrete values, SQL NULL and absent elements. The fixed NULL row occupies its full declared backing; variable NULL rows have no logical values.. The actual raw operation writes/finalizes real files. Its void result alone is not success evidence: complete typed getter values after close/reload reach recursive parity and independent authored literal assertions. "
         },
         {
           "caseId": "ek-ekaclc-audit-wrong-column-type",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Valid array backing reaches actual WRONGDATATYPE for a different declared column type.. The actual raw operation writes/finalizes real files. Its void result alone is not success evidence: complete typed getter values after close/reload reach recursive parity and independent authored literal assertions. "
         },
         {
           "caseId": "ek-ekaclc-audit-blank-strings",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "All three actual empty strings are concrete non-NULL values; two-byte minimum slots avoid STRINGTOOSHORT without changing observable data.. The actual raw operation writes/finalizes real files. Its void result alone is not success evidence: complete typed getter values after close/reload reach recursive parity and independent authored literal assertions. "
         },
         {
           "caseId": "ek-ekaclc-audit-single-character-slots",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Six literal single-character values survive fixed-width padding; a minimal two-byte C slot previously read every value back as blank in N0067 ZZEKAC06.. The actual raw operation writes/finalizes real files. Its void result alone is not success evidence: complete typed getter values after close/reload reach recursive parity and independent authored literal assertions. "
         }
       ],
@@ -19362,9 +19290,7 @@
             "packages/backend-node/test/fixtures/ek-column-shim.c",
             "packages/py-parity-checking/test/ek-column-recovery.test.ts"
           ],
-          "caseIds": [
-            "ek-ekaclc-happy-char-column-visible-via-ekgc"
-          ]
+          "caseIds": ["ek-ekaclc-happy-char-column-visible-via-ekgc"]
         },
         {
           "id": "ekaclc-cspice-character-boundaries",
@@ -19453,34 +19379,22 @@
       "scenarios": [
         {
           "caseId": "ek-ekffld-happy-finalize-and-count-segments",
-          "coverage": [
-            "success",
-            "state"
-          ],
+          "coverage": ["success", "state"],
           "observes": "ekffld finalizes fast-write data so segment count becomes observable. The actual raw operation writes/finalizes real files. Its void result alone is not success evidence: complete typed getter values after close/reload reach recursive parity and independent authored literal assertions. "
         },
         {
           "caseId": "ek-ekffld-missing-segment-id-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "ekffld errors when segmentId does not resolve in workflow state. The actual raw operation writes/finalizes real files. Its void result alone is not success evidence: complete typed getter values after close/reload reach recursive parity and independent authored literal assertions. This case stops in workflow label lookup; actual raw error evidence is supplied separately by WRONGSEGMENT and public storage/recovery tests."
         },
         {
           "caseId": "ek-ekffld-audit-persisted-multitype-columns",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Actual finalized indexed integer, double and UTF-8 character columns persist through close/reload; all rows and selected column ordering reach assertions.. The actual raw operation writes/finalizes real files. Its void result alone is not success evidence: complete typed getter values after close/reload reach recursive parity and independent authored literal assertions. "
         },
         {
           "caseId": "ek-ekffld-audit-wrong-active-segment",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Valid row-length backing for another existing segment reaches actual WRONGSEGMENT; a missing harness label alone cannot establish a raw error path.. The actual raw operation writes/finalizes real files. Its void result alone is not success evidence: complete typed getter values after close/reload reach recursive parity and independent authored literal assertions. "
         }
       ],
@@ -19525,9 +19439,7 @@
             "packages/backend-node/test/fixtures/ek-column-shim.c",
             "packages/py-parity-checking/test/ek-column-recovery.test.ts"
           ],
-          "caseIds": [
-            "ek-ekffld-happy-finalize-and-count-segments"
-          ]
+          "caseIds": ["ek-ekffld-happy-finalize-and-count-segments"]
         }
       ],
       "backends": {
@@ -19597,45 +19509,27 @@
       "scenarios": [
         {
           "caseId": "ek-ekfind-happy-query-loaded-fixture",
-          "coverage": [
-            "success",
-            "state"
-          ],
+          "coverage": ["success", "state"],
           "observes": "ekfind returns nmrows for a valid query over the fixed EK fixture. Actual raw query/getter return reaches StepOutput.value with complete discriminant, value/string or diagnostic; recursive comparison and authored literal tests distinguish concrete, NULL, missing and actual errors. "
         },
         {
           "caseId": "ek-ekfind-query-error-shape-success",
-          "coverage": [
-            "success",
-            "state"
-          ],
+          "coverage": ["success", "state"],
           "observes": "ekfind parse errors are returned in-value instead of throwing. Actual raw query/getter return reaches StepOutput.value with complete discriminant, value/string or diagnostic; recursive comparison and authored literal tests distinguish concrete, NULL, missing and actual errors. "
         },
         {
           "caseId": "ek-ekfind-audit-zero-rows-and-replacement",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Distinguish successful zero rows from errors, then replace selection and observe exact first/last descending keys30/10.. Actual raw query/getter return reaches StepOutput.value with complete discriminant, value/string or diagnostic; recursive comparison and authored literal tests distinguish concrete, NULL, missing and actual errors. "
         },
         {
           "caseId": "ek-ekfind-audit-full-parse-diagnostic",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Actual273-character name-resolution diagnostic is returned as ok:false, not thrown/truncated; then a new valid query and concrete data prove recovery.. Actual raw query/getter return reaches StepOutput.value with complete discriminant, value/string or diagnostic; recursive comparison and authored literal tests distinguish concrete, NULL, missing and actual errors. "
         },
         {
           "caseId": "ek-ekfind-audit-syntax-and-column-order",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Syntax failure stays an ok:false result, followed by reordered SELECT columns, vector element1 and leading blanks in character data.. Actual raw query/getter return reaches StepOutput.value with complete discriminant, value/string or diagnostic; recursive comparison and authored literal tests distinguish concrete, NULL, missing and actual errors. "
         }
       ],
@@ -19752,59 +19646,37 @@
       "scenarios": [
         {
           "caseId": "ek-ekgc-happy-read-two-rows",
-          "coverage": [
-            "success",
-            "state"
-          ],
+          "coverage": ["success", "state"],
           "observes": "ekgc reads string query results from the loaded EK fixture. Actual raw query/getter return reaches StepOutput.value with complete discriminant, value/string or diagnostic; recursive comparison and authored literal tests distinguish concrete, NULL, missing and actual errors. "
         },
         {
           "caseId": "ek-ekgc-invalid-row-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "ekgc reports row-index errors for out-of-range query rows. Actual raw query/getter return reaches StepOutput.value with complete discriminant, value/string or diagnostic; recursive comparison and authored literal tests distinguish concrete, NULL, missing and actual errors. "
         },
         {
           "caseId": "ek-ekgc-audit-vectors-nulls-and-missing",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Compare every vector element, true missing elements, NULL with large nonnegative element index, last-row value and a valid fetch after misses. Actual pinned N0067 returns NULL before checking the NULL entry element bound.. Actual raw query/getter return reaches StepOutput.value with complete discriminant, value/string or diagnostic; recursive comparison and authored literal tests distinguish concrete, NULL, missing and actual errors. "
         },
         {
           "caseId": "ek-ekgc-audit-wrong-selected-type",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Actual wrong-type retrieval must retain INVALIDTYPE rather than coerce it to missing.. Actual raw query/getter return reaches StepOutput.value with complete discriminant, value/string or diagnostic; recursive comparison and authored literal tests distinguish concrete, NULL, missing and actual errors. "
         },
         {
           "caseId": "ek-ekgc-audit-invalid-selected-index",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Out-of-range SELECT index must remain actual INVALIDINDEX even when the row is valid.. Actual raw query/getter return reaches StepOutput.value with complete discriminant, value/string or diagnostic; recursive comparison and authored literal tests distinguish concrete, NULL, missing and actual errors. "
         },
         {
           "caseId": "ek-ekgc-audit-empty-result-row",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Zero selected rows make row0 invalid, distinct from a missing vector element.. Actual raw query/getter return reaches StepOutput.value with complete discriminant, value/string or diagnostic; recursive comparison and authored literal tests distinguish concrete, NULL, missing and actual errors. "
         },
         {
           "caseId": "ek-ekgc-audit-full-1024-character-value",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Compare all1024 characters through real raw return and an explicitly sized actual SpiceyPy buffer.. Actual raw query/getter return reaches StepOutput.value with complete discriminant, value/string or diagnostic; recursive comparison and authored literal tests distinguish concrete, NULL, missing and actual errors. "
         }
       ],
@@ -19925,65 +19797,42 @@
       "scenarios": [
         {
           "caseId": "ek-ekgd-happy-read-double-results",
-          "coverage": [
-            "success",
-            "state"
-          ],
+          "coverage": ["success", "state"],
           "observes": "ekgd reads double-precision query results from a workflow-created table. Actual raw query/getter return reaches StepOutput.value with complete discriminant, value/string or diagnostic; recursive comparison and authored literal tests distinguish concrete, NULL, missing and actual errors. "
         },
         {
           "caseId": "ek-ekgd-valid-row-out-of-range-element-found-false",
-          "coverage": [
-            "success",
-            "state"
-          ],
+          "coverage": ["success", "state"],
           "observes": "ekgd returns found=false when elment is out-of-range for a valid query row. Actual raw query/getter return reaches StepOutput.value with complete discriminant, value/string or diagnostic; recursive comparison and authored literal tests distinguish concrete, NULL, missing and actual errors. "
         },
         {
           "caseId": "ek-ekgd-invalid-selidx-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "ekgd reports invalid-select-index errors for out-of-range selidx values. Actual raw query/getter return reaches StepOutput.value with complete discriminant, value/string or diagnostic; recursive comparison and authored literal tests distinguish concrete, NULL, missing and actual errors. "
         },
         {
           "caseId": "ek-ekgd-invalid-row-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "ekgd reports row-index errors for out-of-range query rows. Actual raw query/getter return reaches StepOutput.value with complete discriminant, value/string or diagnostic; recursive comparison and authored literal tests distinguish concrete, NULL, missing and actual errors. "
         },
         {
           "caseId": "ek-ekgd-audit-vectors-nulls-and-missing",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Compare every vector element, true missing elements, NULL with large nonnegative element index, last-row value and a valid fetch after misses. Actual pinned N0067 returns NULL before checking the NULL entry element bound.. Actual raw query/getter return reaches StepOutput.value with complete discriminant, value/string or diagnostic; recursive comparison and authored literal tests distinguish concrete, NULL, missing and actual errors. "
         },
         {
           "caseId": "ek-ekgd-audit-wrong-selected-type",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Actual wrong-type retrieval must retain INVALIDTYPE rather than coerce it to missing.. Actual raw query/getter return reaches StepOutput.value with complete discriminant, value/string or diagnostic; recursive comparison and authored literal tests distinguish concrete, NULL, missing and actual errors. "
         },
         {
           "caseId": "ek-ekgd-audit-invalid-selected-index",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Out-of-range SELECT index must remain actual INVALIDINDEX even when the row is valid.. Actual raw query/getter return reaches StepOutput.value with complete discriminant, value/string or diagnostic; recursive comparison and authored literal tests distinguish concrete, NULL, missing and actual errors. "
         },
         {
           "caseId": "ek-ekgd-audit-empty-result-row",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Zero selected rows make row0 invalid, distinct from a missing vector element.. Actual raw query/getter return reaches StepOutput.value with complete discriminant, value/string or diagnostic; recursive comparison and authored literal tests distinguish concrete, NULL, missing and actual errors. "
         }
       ],
@@ -20102,65 +19951,42 @@
       "scenarios": [
         {
           "caseId": "ek-ekgi-happy-read-integer-results",
-          "coverage": [
-            "success",
-            "state"
-          ],
+          "coverage": ["success", "state"],
           "observes": "ekgi reads integer query results from a workflow-created table. Actual raw query/getter return reaches StepOutput.value with complete discriminant, value/string or diagnostic; recursive comparison and authored literal tests distinguish concrete, NULL, missing and actual errors. "
         },
         {
           "caseId": "ek-ekgi-valid-row-out-of-range-element-found-false",
-          "coverage": [
-            "success",
-            "state"
-          ],
+          "coverage": ["success", "state"],
           "observes": "ekgi returns found=false when elment is out-of-range for a valid query row. Actual raw query/getter return reaches StepOutput.value with complete discriminant, value/string or diagnostic; recursive comparison and authored literal tests distinguish concrete, NULL, missing and actual errors. "
         },
         {
           "caseId": "ek-ekgi-invalid-selidx-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "ekgi reports invalid-select-index errors for out-of-range selidx values. Actual raw query/getter return reaches StepOutput.value with complete discriminant, value/string or diagnostic; recursive comparison and authored literal tests distinguish concrete, NULL, missing and actual errors. "
         },
         {
           "caseId": "ek-ekgi-invalid-row-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "ekgi reports row-index errors for out-of-range query rows. Actual raw query/getter return reaches StepOutput.value with complete discriminant, value/string or diagnostic; recursive comparison and authored literal tests distinguish concrete, NULL, missing and actual errors. "
         },
         {
           "caseId": "ek-ekgi-audit-vectors-nulls-and-missing",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Compare every vector element, true missing elements, NULL with large nonnegative element index, last-row value and a valid fetch after misses. Actual pinned N0067 returns NULL before checking the NULL entry element bound.. Actual raw query/getter return reaches StepOutput.value with complete discriminant, value/string or diagnostic; recursive comparison and authored literal tests distinguish concrete, NULL, missing and actual errors. "
         },
         {
           "caseId": "ek-ekgi-audit-wrong-selected-type",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Actual wrong-type retrieval must retain INVALIDTYPE rather than coerce it to missing.. Actual raw query/getter return reaches StepOutput.value with complete discriminant, value/string or diagnostic; recursive comparison and authored literal tests distinguish concrete, NULL, missing and actual errors. "
         },
         {
           "caseId": "ek-ekgi-audit-invalid-selected-index",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Out-of-range SELECT index must remain actual INVALIDINDEX even when the row is valid.. Actual raw query/getter return reaches StepOutput.value with complete discriminant, value/string or diagnostic; recursive comparison and authored literal tests distinguish concrete, NULL, missing and actual errors. "
         },
         {
           "caseId": "ek-ekgi-audit-empty-result-row",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Zero selected rows make row0 invalid, distinct from a missing vector element.. Actual raw query/getter return reaches StepOutput.value with complete discriminant, value/string or diagnostic; recursive comparison and authored literal tests distinguish concrete, NULL, missing and actual errors. "
         }
       ],

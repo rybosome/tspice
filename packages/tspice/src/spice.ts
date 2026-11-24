@@ -163,7 +163,9 @@ export async function createSpice(options: CreateSpiceOptions): Promise<Spice> {
 
   const releaseSpk: unknown = Reflect.get(backend.raw, releaseSpkLoads);
   if (typeof releaseSpk === "function")
-    ownedSpkCleanup.set(spice, () => Reflect.apply(releaseSpk, backend.raw, []));
+    ownedSpkCleanup.set(spice, () =>
+      Reflect.apply(releaseSpk, backend.raw, []),
+    );
   return spice;
 }
 

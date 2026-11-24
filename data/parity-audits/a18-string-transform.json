@@ -1990,7 +1990,8 @@
       ],
       "id": "local-cp03-779d6fd6ae41-node",
       "kind": "local",
-      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 779d6fd6ae41c78017a8cf7ccaec5fef3100112c. The native-required lane completed 7054 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45097193130/job/137439518970"
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 779d6fd6ae41c78017a8cf7ccaec5fef3100112c. The native-required lane completed 7054 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45097193130/job/137439518970",
+      "historical": true
     },
     {
       "backend": "node",
@@ -2068,7 +2069,8 @@
       "kind": "ci",
       "commit": "c4bd798cc20d13e8dfd51e7e83ba740ffe4418ff",
       "url": "https://github.com/rybosome/tspice/actions/runs/45127597533/job/137535439275",
-      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 7054 live comparisons without unexpected skips."
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 7054 live comparisons without unexpected skips.",
+      "historical": true
     },
     {
       "backend": "wasm",
@@ -2144,7 +2146,8 @@
       ],
       "id": "local-cp03-779d6fd6ae41-wasm",
       "kind": "local",
-      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 779d6fd6ae41c78017a8cf7ccaec5fef3100112c. The native-required lane completed 7054 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45097193130/job/137439518970"
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 779d6fd6ae41c78017a8cf7ccaec5fef3100112c. The native-required lane completed 7054 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45097193130/job/137439518970",
+      "historical": true
     },
     {
       "backend": "wasm",
@@ -2222,7 +2225,8 @@
       "kind": "ci",
       "commit": "c4bd798cc20d13e8dfd51e7e83ba740ffe4418ff",
       "url": "https://github.com/rybosome/tspice/actions/runs/45127597533/job/137535439275",
-      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 7054 live comparisons without unexpected skips."
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 7054 live comparisons without unexpected skips.",
+      "historical": true
     }
   ],
   "routines": [
@@ -2317,14 +2321,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.cmprss -> typed Node domain -> registered native addon under global SPICE mutex -> shared tspice_cmprss -> canonical cmprss_c. Independent sidecar uses typed independent ctypes cmprss_c from the locked library, checked SPICE status and byte-exact output.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -2339,14 +2341,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.cmprss -> typed WASM domain -> checked transactional buffers -> exported _tspice_cmprss -> shared tspice_cmprss -> canonical cmprss_c. Independent sidecar uses typed independent ctypes cmprss_c from the locked library, checked SPICE status and byte-exact output.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -2407,14 +2407,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.eqstr -> typed Node domain -> registered native addon under global SPICE mutex -> shared tspice_eqstr -> canonical eqstr_c. Independent sidecar uses locked SpiceyPy eqstr wrapper calling canonical eqstr_c with exact scalar output.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -2428,14 +2426,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.eqstr -> typed WASM domain -> checked transactional buffers -> exported _tspice_eqstr -> shared tspice_eqstr -> canonical eqstr_c. Independent sidecar uses locked SpiceyPy eqstr wrapper calling canonical eqstr_c with exact scalar output.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -2486,14 +2482,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.iswhsp -> typed Node domain -> registered native addon under global SPICE mutex -> shared tspice_iswhsp -> canonical iswhsp_c. Independent sidecar uses locked SpiceyPy iswhsp wrapper calling canonical iswhsp_c with exact scalar output.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -2507,14 +2501,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.iswhsp -> typed WASM domain -> checked transactional buffers -> exported _tspice_iswhsp -> shared tspice_iswhsp -> canonical iswhsp_c. Independent sidecar uses locked SpiceyPy iswhsp wrapper calling canonical iswhsp_c with exact scalar output.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -2565,14 +2557,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.lastnb -> typed Node domain -> registered native addon under global SPICE mutex -> shared tspice_lastnb -> canonical lastnb_c. Independent sidecar uses locked SpiceyPy lastnb wrapper calling canonical lastnb_c with exact scalar output.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -2586,14 +2576,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.lastnb -> typed WASM domain -> checked transactional buffers -> exported _tspice_lastnb -> shared tspice_lastnb -> canonical lastnb_c. Independent sidecar uses locked SpiceyPy lastnb wrapper calling canonical lastnb_c with exact scalar output.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -2691,14 +2679,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.lcase -> typed Node domain -> registered native addon under global SPICE mutex -> shared tspice_lcase -> canonical lcase_c. Independent sidecar uses typed independent ctypes lcase_c from the locked library, checked SPICE status and byte-exact output.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -2713,14 +2699,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.lcase -> typed WASM domain -> checked transactional buffers -> exported _tspice_lcase -> shared tspice_lcase -> canonical lcase_c. Independent sidecar uses typed independent ctypes lcase_c from the locked library, checked SPICE status and byte-exact output.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -2818,14 +2802,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.ucase -> typed Node domain -> registered native addon under global SPICE mutex -> shared tspice_ucase -> canonical ucase_c. Independent sidecar uses typed independent ctypes ucase_c from the locked library, checked SPICE status and byte-exact output.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -2840,14 +2822,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.ucase -> typed WASM domain -> checked transactional buffers -> exported _tspice_ucase -> shared tspice_ucase -> canonical ucase_c. Independent sidecar uses typed independent ctypes ucase_c from the locked library, checked SPICE status and byte-exact output.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -2928,14 +2908,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.matchi -> typed Node domain -> registered native addon under global SPICE mutex -> shared tspice_matchi -> canonical matchi_c. Independent sidecar uses locked SpiceyPy matchi wrapper calling canonical matchi_c with exact scalar output.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -2949,14 +2927,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.matchi -> typed WASM domain -> checked transactional buffers -> exported _tspice_matchi -> shared tspice_matchi -> canonical matchi_c. Independent sidecar uses locked SpiceyPy matchi wrapper calling canonical matchi_c with exact scalar output.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -3037,14 +3013,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.matchw -> typed Node domain -> registered native addon under global SPICE mutex -> shared tspice_matchw -> canonical matchw_c. Independent sidecar uses locked SpiceyPy matchw wrapper calling canonical matchw_c with exact scalar output.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -3058,14 +3032,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.matchw -> typed WASM domain -> checked transactional buffers -> exported _tspice_matchw -> shared tspice_matchw -> canonical matchw_c. Independent sidecar uses locked SpiceyPy matchw wrapper calling canonical matchw_c with exact scalar output.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
-          ]
+          "executions": []
         }
       }
     }

@@ -15759,41 +15759,27 @@
       "scenarios": [
         {
           "caseId": "frames-namfrm-found-success",
-          "coverage": [
-            "success"
-          ],
+          "coverage": ["success"],
           "observes": "namfrm resolves J2000 -> frame code. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
         },
         {
           "caseId": "frames-namfrm-not-found-success",
-          "coverage": [
-            "success"
-          ],
+          "coverage": ["success"],
           "observes": "namfrm miss returns found=false via code=0 sentinel. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
         },
         {
           "caseId": "frames-namfrm-audit-builtins-case-and-blanks",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Case/outer blanks are insignificant for known names, while a real miss yields found:false; every actual code reaches comparison.. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
         },
         {
           "caseId": "frames-namfrm-audit-loaded-negative-frame-lifecycle",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Observe unknown/negative static ID/dynamic ID/unknown transitions across actual frame load/unload without confusing loaded state and cached builtins.. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
         },
         {
           "caseId": "frames-namfrm-audit-empty-name",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Actual empty C string signals EMPTYSTRING rather than a normal unknown-name miss.. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
         }
       ],
@@ -15895,41 +15881,27 @@
       "scenarios": [
         {
           "caseId": "frames-frmnam-found-success",
-          "coverage": [
-            "success"
-          ],
+          "coverage": ["success"],
           "observes": "frmnam resolves frame code 1 -> J2000. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
         },
         {
           "caseId": "frames-frmnam-not-found-success",
-          "coverage": [
-            "success"
-          ],
+          "coverage": ["success"],
           "observes": "frmnam miss returns found=false. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
         },
         {
           "caseId": "frames-frmnam-audit-builtins-zero-and-limits",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe real names and empty-name misses at zero and both signed int32 limits; these are valid identifiers, not fabricated numeric errors.. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
         },
         {
           "caseId": "frames-frmnam-audit-full32-byte-name",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "All32 actual frame-name characters reach raw result and exact comparison; no truncation to shorter buffers.. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
         },
         {
           "caseId": "frames-frmnam-audit-loaded-negative-frame-lifecycle",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Negative frame code resolves its complete26-character authored name only while its frame definition is loaded.. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
         }
       ],
@@ -15973,9 +15945,7 @@
             "packages/backend-wasm/src/domains/frames.ts",
             "packages/py-parity-checking/test/frame-utility-inputs.test.ts"
           ],
-          "caseIds": [
-            "frames-frmnam-found-success"
-          ]
+          "caseIds": ["frames-frmnam-found-success"]
         }
       ],
       "backends": {
@@ -16045,33 +16015,22 @@
       "scenarios": [
         {
           "caseId": "frames-cidfrm-found-success",
-          "coverage": [
-            "success"
-          ],
+          "coverage": ["success"],
           "observes": "cidfrm resolves EARTH center -> frame mapping. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
         },
         {
           "caseId": "frames-cidfrm-not-found-success",
-          "coverage": [
-            "success"
-          ],
+          "coverage": ["success"],
           "observes": "cidfrm miss returns found=false. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
         },
         {
           "caseId": "frames-cidfrm-audit-builtin-preferred-and-missing",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare each preferred frame code/name pair, plus genuine unknown centers with found:false.. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
         },
         {
           "caseId": "frames-cidfrm-audit-authored-preference-lifecycle",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "OBJECT_1234567_FRAME selects the actual negative-code fixed frame while loaded, then disappears; frame center and class ID are deliberately distinct.. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
         }
       ],
@@ -16114,9 +16073,7 @@
             "packages/backend-wasm/src/domains/frames.ts",
             "packages/py-parity-checking/test/frame-utility-inputs.test.ts"
           ],
-          "caseIds": [
-            "frames-cidfrm-found-success"
-          ]
+          "caseIds": ["frames-cidfrm-found-success"]
         },
         {
           "id": "cidfrm-oracle-found-before-error",
@@ -16200,41 +16157,27 @@
       "scenarios": [
         {
           "caseId": "frames-cnmfrm-found-success",
-          "coverage": [
-            "success"
-          ],
+          "coverage": ["success"],
           "observes": "cnmfrm resolves EARTH center name -> frame mapping. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
         },
         {
           "caseId": "frames-cnmfrm-not-found-success",
-          "coverage": [
-            "success"
-          ],
+          "coverage": ["success"],
           "observes": "cnmfrm miss returns found=false. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
         },
         {
           "caseId": "frames-cnmfrm-audit-case-blanks-and-misses",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Resolve body-name case/blanks into full preferred frame pair; unknown names return found:false.. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
         },
         {
           "caseId": "frames-cnmfrm-audit-authored-preference-lifecycle",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Authored NAIF body-name mapping and preferred frame load/unload produce real not-found/found/not-found states.. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
         },
         {
           "caseId": "frames-cnmfrm-audit-empty-name",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Actual EMPTYSTRING must remain a toolkit error; default SpiceyPy found exceptions must not mask it.. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
         }
       ],
@@ -16277,9 +16220,7 @@
             "packages/backend-wasm/src/domains/frames.ts",
             "packages/backend-wasm/test/frame-utility-allocations.test.ts"
           ],
-          "caseIds": [
-            "frames-cnmfrm-found-success"
-          ]
+          "caseIds": ["frames-cnmfrm-found-success"]
         },
         {
           "id": "cnmfrm-oracle-found-before-error",
@@ -16364,49 +16305,32 @@
       "scenarios": [
         {
           "caseId": "frames-frinfo-found-success",
-          "coverage": [
-            "success"
-          ],
+          "coverage": ["success"],
           "observes": "frinfo resolves built-in J2000 frame metadata. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
         },
         {
           "caseId": "frames-frinfo-not-found-success",
-          "coverage": [
-            "success"
-          ],
+          "coverage": ["success"],
           "observes": "frinfo miss returns found=false. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
         },
         {
           "caseId": "frames-frinfo-audit-builtins-and-missing",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare all center/class/class-ID fields for inertial and body-fixed frames, with a true unknown frame miss.. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
         },
         {
           "caseId": "frames-frinfo-audit-distinct-frame-class-ids",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "The negative static frame has center1234567/class4/classID-1800999, distinct from framecode-1800102; dynamic class5 and unload state distinguish every field.. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
         },
         {
           "caseId": "frames-frinfo-audit-invalid-name-dimension",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Actual malformed NAME dimension signals INVALIDDIMENSION, not found:false.. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
         },
         {
           "caseId": "frames-frinfo-audit-missing-center",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Valid name/class/class-ID with missing center reaches actual KERNELVARNOTFOUND.. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
         }
       ],
@@ -16451,9 +16375,7 @@
             "packages/backend-wasm/src/domains/frames.ts",
             "packages/py-parity-checking/test/frame-utility-inputs.test.ts"
           ],
-          "caseIds": [
-            "frames-frinfo-found-success"
-          ]
+          "caseIds": ["frames-frinfo-found-success"]
         },
         {
           "id": "frinfo-oracle-found-before-error",
@@ -16539,49 +16461,32 @@
       "scenarios": [
         {
           "caseId": "frames-ccifrm-found-success",
-          "coverage": [
-            "success"
-          ],
+          "coverage": ["success"],
           "observes": "ccifrm resolves built-in frame class/class-id mapping. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
         },
         {
           "caseId": "frames-ccifrm-not-found-success",
-          "coverage": [
-            "success"
-          ],
+          "coverage": ["success"],
           "observes": "ccifrm miss returns found=false. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
         },
         {
           "caseId": "frames-ccifrm-audit-builtin-class-pairs",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare complete frame code/name/center triples for class/class-ID lookup and a real missing pair.. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
         },
         {
           "caseId": "frames-ccifrm-audit-authored-distinct-class-id",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Actual class ID maps to a different negative frame code and authored center; all fields and unload disappearance reach assertions.. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
         },
         {
           "caseId": "frames-ccifrm-audit-invalid-class-type",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "String-valued CLASS reaches actual INVALIDFRAMEDEF; it must not be coerced into missing.. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
         },
         {
           "caseId": "frames-ccifrm-audit-missing-class-id",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "A matching frame CLASS without CLASS_ID reaches actual INVALIDFRAMEDEF.. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
         }
       ],
@@ -16626,9 +16531,7 @@
             "packages/backend-wasm/src/domains/frames.ts",
             "packages/py-parity-checking/test/frame-utility-inputs.test.ts"
           ],
-          "caseIds": [
-            "frames-ccifrm-found-success"
-          ]
+          "caseIds": ["frames-ccifrm-found-success"]
         },
         {
           "id": "ccifrm-oracle-found-before-error",
@@ -16714,41 +16617,27 @@
       "scenarios": [
         {
           "caseId": "frames-pxform-identity-success",
-          "coverage": [
-            "success"
-          ],
+          "coverage": ["success"],
           "observes": "pxform identity transform for J2000->J2000. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
         },
         {
           "caseId": "frames-pxform-unknown-frame-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Representative pxform UNKNOWNFRAME error. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
         },
         {
           "caseId": "frames-pxform-audit-static-dynamic-and-composite",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "All 9 rotation components compare in row-major order for nontrivial static, inverse, three dynamic epochs and composed frames. Dynamic velocity derivatives are nonzero and independently finite-difference checked.. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
         },
         {
           "caseId": "frames-pxform-audit-missing-orientation-data",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Known frames without required orientation kernels signal actual FRAMEDATANOTFOUND.. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
         },
         {
           "caseId": "frames-pxform-audit-unload-removes-frame",
-          "coverage": [
-            "error",
-            "edge",
-            "state"
-          ],
+          "coverage": ["error", "edge", "state"],
           "observes": "A successful transform before unload does not allow cached use of an unloaded custom frame; actual UNKNOWNFRAME follows.. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
         }
       ],
@@ -16791,9 +16680,7 @@
             "packages/backend-wasm/src/domains/frames.ts",
             "packages/backend-wasm/test/frame-utility-allocations.test.ts"
           ],
-          "caseIds": [
-            "frames-pxform-identity-success"
-          ]
+          "caseIds": ["frames-pxform-identity-success"]
         },
         {
           "id": "pxform-typed-input-and-state-matrix",
@@ -16805,9 +16692,7 @@
             "packages/backend-wasm/src/domains/frames.ts",
             "packages/py-parity-checking/test/frame-utility-inputs.test.ts"
           ],
-          "caseIds": [
-            "frames-pxform-identity-success"
-          ]
+          "caseIds": ["frames-pxform-identity-success"]
         }
       ],
       "backends": {
@@ -16877,41 +16762,27 @@
       "scenarios": [
         {
           "caseId": "frames-sxform-identity-success",
-          "coverage": [
-            "success"
-          ],
+          "coverage": ["success"],
           "observes": "sxform identity transform for J2000->J2000. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
         },
         {
           "caseId": "frames-sxform-unknown-frame-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Representative sxform UNKNOWNFRAME error. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
         },
         {
           "caseId": "frames-sxform-audit-static-dynamic-and-composite",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "All 36 state-transform components compare in row-major order for nontrivial static, inverse, three dynamic epochs and composed frames. Dynamic velocity derivatives are nonzero and independently finite-difference checked.. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
         },
         {
           "caseId": "frames-sxform-audit-missing-orientation-data",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Known frames without required orientation kernels signal actual FRAMEDATANOTFOUND.. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
         },
         {
           "caseId": "frames-sxform-audit-unload-removes-frame",
-          "coverage": [
-            "error",
-            "edge",
-            "state"
-          ],
+          "coverage": ["error", "edge", "state"],
           "observes": "A successful transform before unload does not allow cached use of an unloaded custom frame; actual UNKNOWNFRAME follows.. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
         }
       ],
@@ -16954,9 +16825,7 @@
             "packages/backend-wasm/src/domains/frames.ts",
             "packages/backend-wasm/test/frame-utility-allocations.test.ts"
           ],
-          "caseIds": [
-            "frames-sxform-identity-success"
-          ]
+          "caseIds": ["frames-sxform-identity-success"]
         },
         {
           "id": "sxform-typed-input-and-state-matrix",
@@ -16968,9 +16837,7 @@
             "packages/backend-wasm/src/domains/frames.ts",
             "packages/py-parity-checking/test/frame-utility-inputs.test.ts"
           ],
-          "caseIds": [
-            "frames-sxform-identity-success"
-          ]
+          "caseIds": ["frames-sxform-identity-success"]
         }
       ],
       "backends": {

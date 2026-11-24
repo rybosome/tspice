@@ -105,7 +105,8 @@
         "ephemeris-prop2b-zero-position",
         "ephemeris-prop2b-zero-velocity"
       ],
-      "observation": "Both complete required lanes passed locally on b72ef2e9b9015fb011159ceb1dcf2ef695a09981. JavaScript: 2,536 parity tests and one expected guard skip. Native-required: 2,320 registered Node/WASM live comparisons; 2,537 parity-package tests with no skips, including the native-required guard; 83 native wrapper, 622 WASM, 28 core and 150 facade tests passed."
+      "observation": "Both complete required lanes passed locally on b72ef2e9b9015fb011159ceb1dcf2ef695a09981. JavaScript: 2,536 parity tests and one expected guard skip. Native-required: 2,320 registered Node/WASM live comparisons; 2,537 parity-package tests with no skips, including the native-required guard; 83 native wrapper, 622 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "local-e01-b72ef2e9-wasm",
@@ -168,7 +169,8 @@
         "ephemeris-prop2b-zero-position",
         "ephemeris-prop2b-zero-velocity"
       ],
-      "observation": "Both complete required lanes passed locally on b72ef2e9b9015fb011159ceb1dcf2ef695a09981. JavaScript: 2,536 parity tests and one expected guard skip. Native-required: 2,320 registered Node/WASM live comparisons; 2,537 parity-package tests with no skips, including the native-required guard; 83 native wrapper, 622 WASM, 28 core and 150 facade tests passed."
+      "observation": "Both complete required lanes passed locally on b72ef2e9b9015fb011159ceb1dcf2ef695a09981. JavaScript: 2,536 parity tests and one expected guard skip. Native-required: 2,320 registered Node/WASM live comparisons; 2,537 parity-package tests with no skips, including the native-required guard; 83 native wrapper, 622 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "ci-e01-b72ef2e9-node",
@@ -233,7 +235,8 @@
       ],
       "commit": "b72ef2e9b9015fb011159ceb1dcf2ef695a09981",
       "url": "https://github.com/rybosome/tspice/actions/runs/43562566636/job/132349271728",
-      "observation": "Inspected successful Linux Node 22 native-required job 132349271728 on b72ef2e9b9015fb011159ceb1dcf2ef695a09981: 2,320 registered Node/WASM live comparisons; 2,537 parity-package tests with no skips, including the native-required guard; 83 native wrapper, 622 WASM, 28 core and 150 facade tests passed."
+      "observation": "Inspected successful Linux Node 22 native-required job 132349271728 on b72ef2e9b9015fb011159ceb1dcf2ef695a09981: 2,320 registered Node/WASM live comparisons; 2,537 parity-package tests with no skips, including the native-required guard; 83 native wrapper, 622 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "ci-e01-b72ef2e9-wasm",
@@ -298,7 +301,8 @@
       ],
       "commit": "b72ef2e9b9015fb011159ceb1dcf2ef695a09981",
       "url": "https://github.com/rybosome/tspice/actions/runs/43562566636/job/132349271728",
-      "observation": "Inspected successful Linux Node 22 native-required job 132349271728 on b72ef2e9b9015fb011159ceb1dcf2ef695a09981: 2,320 registered Node/WASM live comparisons; 2,537 parity-package tests with no skips, including the native-required guard; 83 native wrapper, 622 WASM, 28 core and 150 facade tests passed."
+      "observation": "Inspected successful Linux Node 22 native-required job 132349271728 on b72ef2e9b9015fb011159ceb1dcf2ef695a09981: 2,320 registered Node/WASM live comparisons; 2,537 parity-package tests with no skips, including the native-required guard; 83 native wrapper, 622 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     }
   ],
   "routines": [
@@ -368,16 +372,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.conics -> EphemerisApi adapter -> serialized Node native addon -> shared tspice_conics -> conics_c. Independent oracle uses actual sp.conics.",
-          "executions": ["local-e01-b72ef2e9-node", "ci-e01-b72ef2e9-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.conics -> EphemerisApi adapter -> WASM owned input/output buffers -> shared tspice_conics -> conics_c. Independent oracle uses actual sp.conics.",
-          "executions": ["local-e01-b72ef2e9-wasm", "ci-e01-b72ef2e9-wasm"]
+          "executions": []
         }
       }
     },
@@ -442,16 +446,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.eqncpv -> EphemerisApi adapter -> serialized Node native addon -> shared tspice_eqncpv -> eqncpv_c. Independent oracle uses actual sp.eqncpv.",
-          "executions": ["local-e01-b72ef2e9-node", "ci-e01-b72ef2e9-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.eqncpv -> EphemerisApi adapter -> WASM owned input/output buffers -> shared tspice_eqncpv -> eqncpv_c. Independent oracle uses actual sp.eqncpv.",
-          "executions": ["local-e01-b72ef2e9-wasm", "ci-e01-b72ef2e9-wasm"]
+          "executions": []
         }
       }
     },
@@ -526,16 +530,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.oscelt -> EphemerisApi adapter -> serialized Node native addon -> shared tspice_oscelt -> oscelt_c. Independent oracle uses actual sp.oscelt.",
-          "executions": ["local-e01-b72ef2e9-node", "ci-e01-b72ef2e9-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.oscelt -> EphemerisApi adapter -> WASM owned input/output buffers -> shared tspice_oscelt -> oscelt_c. Independent oracle uses actual sp.oscelt.",
-          "executions": ["local-e01-b72ef2e9-wasm", "ci-e01-b72ef2e9-wasm"]
+          "executions": []
         }
       }
     },
@@ -629,16 +633,28 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.oscltx -> EphemerisApi adapter -> serialized Node native addon -> shared tspice_oscltx -> oscltx_c. Independent oracle uses actual sp.oscltx followed immediately by its CSPICE error check.",
-          "executions": ["local-e01-b72ef2e9-node", "ci-e01-b72ef2e9-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.oscltx -> EphemerisApi adapter -> WASM owned input/output buffers -> shared tspice_oscltx -> oscltx_c. Independent oracle uses actual sp.oscltx followed immediately by its CSPICE error check.",
-          "executions": ["local-e01-b72ef2e9-wasm", "ci-e01-b72ef2e9-wasm"]
+          "executions": []
         }
       }
     },
@@ -708,16 +724,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.prop2b -> EphemerisApi adapter -> serialized Node native addon -> shared tspice_prop2b -> prop2b_c. Independent oracle uses actual sp.prop2b.",
-          "executions": ["local-e01-b72ef2e9-node", "ci-e01-b72ef2e9-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.prop2b -> EphemerisApi adapter -> WASM owned input/output buffers -> shared tspice_prop2b -> prop2b_c. Independent oracle uses actual sp.prop2b.",
-          "executions": ["local-e01-b72ef2e9-wasm", "ci-e01-b72ef2e9-wasm"]
+          "executions": []
         }
       }
     }

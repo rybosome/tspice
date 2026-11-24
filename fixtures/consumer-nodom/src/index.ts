@@ -1498,7 +1498,6 @@ async function writeInterpolatedStates(): Promise<void> {
 }
 void writeInterpolatedStates;
 
-import type { Spice, SpiceAsync } from "@rybosome/tspice";
 type SpiceVector3 = [number, number, number];
 type SpiceStateVector = [...SpiceVector3, ...SpiceVector3];
 

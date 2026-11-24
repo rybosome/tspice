@@ -817,7 +817,8 @@
       ],
       "id": "local-cp03-779d6fd6ae41-node",
       "kind": "local",
-      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 779d6fd6ae41c78017a8cf7ccaec5fef3100112c. The native-required lane completed 7054 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45097193130/job/137439518970"
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 779d6fd6ae41c78017a8cf7ccaec5fef3100112c. The native-required lane completed 7054 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45097193130/job/137439518970",
+      "historical": true
     },
     {
       "backend": "node",
@@ -870,7 +871,8 @@
       "kind": "ci",
       "commit": "c4bd798cc20d13e8dfd51e7e83ba740ffe4418ff",
       "url": "https://github.com/rybosome/tspice/actions/runs/45127597533/job/137535439275",
-      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 7054 live comparisons without unexpected skips."
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 7054 live comparisons without unexpected skips.",
+      "historical": true
     },
     {
       "backend": "wasm",
@@ -921,7 +923,8 @@
       ],
       "id": "local-cp03-779d6fd6ae41-wasm",
       "kind": "local",
-      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 779d6fd6ae41c78017a8cf7ccaec5fef3100112c. The native-required lane completed 7054 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45097193130/job/137439518970"
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 779d6fd6ae41c78017a8cf7ccaec5fef3100112c. The native-required lane completed 7054 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45097193130/job/137439518970",
+      "historical": true
     },
     {
       "backend": "wasm",
@@ -974,7 +977,8 @@
       "kind": "ci",
       "commit": "c4bd798cc20d13e8dfd51e7e83ba740ffe4418ff",
       "url": "https://github.com/rybosome/tspice/actions/runs/45127597533/job/137535439275",
-      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 7054 live comparisons without unexpected skips."
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 7054 live comparisons without unexpected skips.",
+      "historical": true
     }
   ],
   "routines": [
@@ -1064,14 +1068,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.ducrss -> typed Node adapter with exact six-number validation -> actual native ducrss binding with fixed local buffers/global SPICE mutex -> shared tspice_ducrss -> canonical ducrss_c. Independent Python calls the actual locked SpiceyPy ducrss wrapper and forwards every output entry/scalar.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1086,14 +1088,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.ducrss -> typed WASM adapter with exact six-number validation -> exported _tspice_ducrss with transactional buffers and copied output -> shared tspice_ducrss -> canonical ducrss_c. Independent Python calls the actual locked SpiceyPy ducrss wrapper and forwards every output entry/scalar.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1167,14 +1167,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.dvcrss -> typed Node adapter with exact six-number validation -> actual native dvcrss binding with fixed local buffers/global SPICE mutex -> shared tspice_dvcrss -> canonical dvcrss_c. Independent Python calls the actual locked SpiceyPy dvcrss wrapper and forwards every output entry/scalar.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1188,14 +1186,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.dvcrss -> typed WASM adapter with exact six-number validation -> exported _tspice_dvcrss with transactional buffers and copied output -> shared tspice_dvcrss -> canonical dvcrss_c. Independent Python calls the actual locked SpiceyPy dvcrss wrapper and forwards every output entry/scalar.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1269,14 +1265,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.dvdot -> typed Node adapter with exact six-number validation -> actual native dvdot binding with fixed local buffers/global SPICE mutex -> shared tspice_dvdot -> canonical dvdot_c. Independent Python calls the actual locked SpiceyPy dvdot wrapper and forwards every output entry/scalar.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1290,14 +1284,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.dvdot -> typed WASM adapter with exact six-number validation -> exported _tspice_dvdot with transactional buffers and copied output -> shared tspice_dvdot -> canonical dvdot_c. Independent Python calls the actual locked SpiceyPy dvdot wrapper and forwards every output entry/scalar.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1371,14 +1363,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.dvhat -> typed Node adapter with exact six-number validation -> actual native dvhat binding with fixed local buffers/global SPICE mutex -> shared tspice_dvhat -> canonical dvhat_c. Independent Python calls the actual locked SpiceyPy dvhat wrapper and forwards every output entry/scalar.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1392,14 +1382,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.dvhat -> typed WASM adapter with exact six-number validation -> exported _tspice_dvhat with transactional buffers and copied output -> shared tspice_dvhat -> canonical dvhat_c. Independent Python calls the actual locked SpiceyPy dvhat wrapper and forwards every output entry/scalar.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1468,14 +1456,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.dvnorm -> typed Node adapter with exact six-number validation -> actual native dvnorm binding with fixed local buffers/global SPICE mutex -> shared tspice_dvnorm -> canonical dvnorm_c. Independent Python calls the actual locked SpiceyPy dvnorm wrapper and forwards every output entry/scalar.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1489,14 +1475,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.dvnorm -> typed WASM adapter with exact six-number validation -> exported _tspice_dvnorm with transactional buffers and copied output -> shared tspice_dvnorm -> canonical dvnorm_c. Independent Python calls the actual locked SpiceyPy dvnorm wrapper and forwards every output entry/scalar.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1639,14 +1623,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.dvsep -> typed Node adapter with exact six-number validation -> actual native dvsep binding with fixed local buffers/global SPICE mutex -> shared tspice_dvsep -> canonical dvsep_c. Independent Python calls the actual locked SpiceyPy dvsep wrapper and forwards every output entry/scalar.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1661,14 +1643,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.dvsep -> typed WASM adapter with exact six-number validation -> exported _tspice_dvsep with transactional buffers and copied output -> shared tspice_dvsep -> canonical dvsep_c. Independent Python calls the actual locked SpiceyPy dvsep wrapper and forwards every output entry/scalar.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
-          ]
+          "executions": []
         }
       }
     }

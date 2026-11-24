@@ -1061,7 +1061,8 @@
       ],
       "id": "local-cp03-779d6fd6ae41-node",
       "kind": "local",
-      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 779d6fd6ae41c78017a8cf7ccaec5fef3100112c. The native-required lane completed 7054 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45097193130/job/137439518970"
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 779d6fd6ae41c78017a8cf7ccaec5fef3100112c. The native-required lane completed 7054 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45097193130/job/137439518970",
+      "historical": true
     },
     {
       "backend": "node",
@@ -1122,7 +1123,8 @@
       "kind": "ci",
       "commit": "c4bd798cc20d13e8dfd51e7e83ba740ffe4418ff",
       "url": "https://github.com/rybosome/tspice/actions/runs/45127597533/job/137535439275",
-      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 7054 live comparisons without unexpected skips."
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 7054 live comparisons without unexpected skips.",
+      "historical": true
     },
     {
       "backend": "wasm",
@@ -1181,7 +1183,8 @@
       ],
       "id": "local-cp03-779d6fd6ae41-wasm",
       "kind": "local",
-      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 779d6fd6ae41c78017a8cf7ccaec5fef3100112c. The native-required lane completed 7054 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45097193130/job/137439518970"
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 779d6fd6ae41c78017a8cf7ccaec5fef3100112c. The native-required lane completed 7054 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45097193130/job/137439518970",
+      "historical": true
     },
     {
       "backend": "wasm",
@@ -1242,7 +1245,8 @@
       "kind": "ci",
       "commit": "c4bd798cc20d13e8dfd51e7e83ba740ffe4418ff",
       "url": "https://github.com/rybosome/tspice/actions/runs/45127597533/job/137535439275",
-      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 7054 live comparisons without unexpected skips."
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 7054 live comparisons without unexpected skips.",
+      "historical": true
     }
   ],
   "routines": [
@@ -1298,14 +1302,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.brcktd -> typed Node adapter -> native binding in native/src/domains/coords_vectors.cc under global SPICE mutex -> shared tspice_brcktd -> actual brcktd_c. Workflow dispatch calls this actual raw method; independent Python handler calls locked sp.brcktd, whose wrapper calls brcktd_c and returns its result.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1319,14 +1321,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.brcktd -> typed WASM adapter -> exported _tspice_brcktd, checked heap buffers and post-read transactional cleanup -> shared tspice_brcktd -> actual brcktd_c. Workflow dispatch calls this actual raw method; independent Python handler calls locked sp.brcktd, whose wrapper calls brcktd_c and returns its result.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1377,14 +1377,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.brckti -> typed Node adapter -> native binding in native/src/domains/coords_vectors.cc under global SPICE mutex -> shared tspice_brckti -> actual brckti_c. Workflow dispatch calls this actual raw method; independent Python handler calls locked sp.brckti, whose wrapper calls brckti_c and returns its result.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1398,14 +1396,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.brckti -> typed WASM adapter -> exported _tspice_brckti, checked heap buffers and post-read transactional cleanup -> shared tspice_brckti -> actual brckti_c. Workflow dispatch calls this actual raw method; independent Python handler calls locked sp.brckti, whose wrapper calls brckti_c and returns its result.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1511,14 +1507,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.convrt -> typed Node adapter -> native binding in native/src/domains/coords_vectors.cc under global SPICE mutex -> shared tspice_convrt -> actual convrt_c. Workflow dispatch calls this actual raw method; independent Python handler calls locked sp.convrt, whose wrapper calls convrt_c and returns its result.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1532,14 +1526,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.convrt -> typed WASM adapter -> exported _tspice_convrt, checked heap buffers and post-read transactional cleanup -> shared tspice_convrt -> actual convrt_c. Workflow dispatch calls this actual raw method; independent Python handler calls locked sp.convrt, whose wrapper calls convrt_c and returns its result.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1604,14 +1596,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.sumad -> typed Node adapter -> native binding in native/src/domains/coords_vectors.cc under global SPICE mutex -> shared tspice_sumad -> actual sumad_c. Workflow dispatch calls this actual raw method; independent Python handler calls locked sp.sumad, whose wrapper calls sumad_c and returns its result.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1626,14 +1616,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.sumad -> typed WASM adapter -> exported _tspice_sumad, checked heap buffers and post-read transactional cleanup -> shared tspice_sumad -> actual sumad_c. Workflow dispatch calls this actual raw method; independent Python handler calls locked sp.sumad, whose wrapper calls sumad_c and returns its result.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1693,14 +1681,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.sumai -> typed Node adapter -> native binding in native/src/domains/coords_vectors.cc under global SPICE mutex -> shared tspice_sumai -> actual sumai_c. Safety-prefix checks complete before the canonical call. Python handler uses scalar_math_oracle.sumai to check the defined-input precondition, then returns sp.sumai -> actual sumai_c; the computed guard prefix is not returned.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1715,14 +1701,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.sumai -> typed WASM adapter -> exported _tspice_sumai, checked heap buffers and post-read transactional cleanup -> shared tspice_sumai -> actual sumai_c. Safety-prefix checks complete before the canonical call. Python handler uses scalar_math_oracle.sumai to check the defined-input precondition, then returns sp.sumai -> actual sumai_c; the computed guard prefix is not returned.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1787,14 +1771,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.maxd -> typed Node adapter -> native binding in native/src/domains/coords_vectors.cc under global SPICE mutex -> shared tspice_maxd -> actual maxd_c. The shared C switch has 31 explicit canonical calls with exact count and ordered scalar arguments. Independent Python handler calls scalar_math_oracle.maxd using ctypes.CDLL(libspice._name), fixed argtypes=[c_int], correct return type and individually boxed c_double/c_int varargs. No top-level SpiceyPy wrapper exists and no Python/JS min/max substitutes for the oracle result.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1809,14 +1791,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.maxd -> typed WASM adapter -> exported _tspice_maxd, checked heap buffers and post-read transactional cleanup -> shared tspice_maxd -> actual maxd_c. The shared C switch has 31 explicit canonical calls with exact count and ordered scalar arguments. Independent Python handler calls scalar_math_oracle.maxd using ctypes.CDLL(libspice._name), fixed argtypes=[c_int], correct return type and individually boxed c_double/c_int varargs. No top-level SpiceyPy wrapper exists and no Python/JS min/max substitutes for the oracle result.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1881,14 +1861,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.maxi -> typed Node adapter -> native binding in native/src/domains/coords_vectors.cc under global SPICE mutex -> shared tspice_maxi -> actual maxi_c. The shared C switch has 31 explicit canonical calls with exact count and ordered scalar arguments. Independent Python handler calls scalar_math_oracle.maxi using ctypes.CDLL(libspice._name), fixed argtypes=[c_int], correct return type and individually boxed c_double/c_int varargs. No top-level SpiceyPy wrapper exists and no Python/JS min/max substitutes for the oracle result.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1903,14 +1881,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.maxi -> typed WASM adapter -> exported _tspice_maxi, checked heap buffers and post-read transactional cleanup -> shared tspice_maxi -> actual maxi_c. The shared C switch has 31 explicit canonical calls with exact count and ordered scalar arguments. Independent Python handler calls scalar_math_oracle.maxi using ctypes.CDLL(libspice._name), fixed argtypes=[c_int], correct return type and individually boxed c_double/c_int varargs. No top-level SpiceyPy wrapper exists and no Python/JS min/max substitutes for the oracle result.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1975,14 +1951,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.mind -> typed Node adapter -> native binding in native/src/domains/coords_vectors.cc under global SPICE mutex -> shared tspice_mind -> actual mind_c. The shared C switch has 31 explicit canonical calls with exact count and ordered scalar arguments. Independent Python handler calls scalar_math_oracle.mind using ctypes.CDLL(libspice._name), fixed argtypes=[c_int], correct return type and individually boxed c_double/c_int varargs. No top-level SpiceyPy wrapper exists and no Python/JS min/max substitutes for the oracle result.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1997,14 +1971,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.mind -> typed WASM adapter -> exported _tspice_mind, checked heap buffers and post-read transactional cleanup -> shared tspice_mind -> actual mind_c. The shared C switch has 31 explicit canonical calls with exact count and ordered scalar arguments. Independent Python handler calls scalar_math_oracle.mind using ctypes.CDLL(libspice._name), fixed argtypes=[c_int], correct return type and individually boxed c_double/c_int varargs. No top-level SpiceyPy wrapper exists and no Python/JS min/max substitutes for the oracle result.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -2069,14 +2041,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.mini -> typed Node adapter -> native binding in native/src/domains/coords_vectors.cc under global SPICE mutex -> shared tspice_mini -> actual mini_c. The shared C switch has 31 explicit canonical calls with exact count and ordered scalar arguments. Independent Python handler calls scalar_math_oracle.mini using ctypes.CDLL(libspice._name), fixed argtypes=[c_int], correct return type and individually boxed c_double/c_int varargs. No top-level SpiceyPy wrapper exists and no Python/JS min/max substitutes for the oracle result.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-node",
-            "ci-cp03-779d6fd6ae41-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -2091,14 +2061,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.mini -> typed WASM adapter -> exported _tspice_mini, checked heap buffers and post-read transactional cleanup -> shared tspice_mini -> actual mini_c. The shared C switch has 31 explicit canonical calls with exact count and ordered scalar arguments. Independent Python handler calls scalar_math_oracle.mini using ctypes.CDLL(libspice._name), fixed argtypes=[c_int], correct return type and individually boxed c_double/c_int varargs. No top-level SpiceyPy wrapper exists and no Python/JS min/max substitutes for the oracle result.",
-          "executions": [
-            "local-cp03-779d6fd6ae41-wasm",
-            "ci-cp03-779d6fd6ae41-wasm"
-          ]
+          "executions": []
         }
       }
     }
