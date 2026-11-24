@@ -56,13 +56,15 @@ jobs:
           done < "$RUNNER_TEMP/step8-input/pinned-sources.txt"
           git status --short
           git log -1 --format='%H %T %s'
-      - name: Reconcile the two native CSPICE source staging hooks
+      - name: Apply checkpoint integration fixes
         run: |
           set -euo pipefail
           git apply --check "$RUNNER_TEMP/step8-input/native-staging.patch"
           git apply --index "$RUNNER_TEMP/step8-input/native-staging.patch"
+          git apply --check "$RUNNER_TEMP/step8-input/normalization-types.patch"
+          git apply --index "$RUNNER_TEMP/step8-input/normalization-types.patch"
           node --check packages/backend-node/native/scripts/write-cspice-stamp.mjs
-          git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' commit -m 'Reconcile native CSPICE source staging'
+          git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' commit -m 'Reconcile native source staging and parity fixture typing'
       - name: Format and rebuild the combined WASM and generated files
         run: |
           set -euo pipefail
@@ -90,6 +92,10 @@ jobs:
           git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' commit -m 'Rebuild Step 8 checkpoint 04 artifacts' -m "Hosted-Run: $GITHUB_RUN_ID"
           git log -1 --format='%H %T %s'
           test -z "$(git status --porcelain)"
+      - name: Retain the rebuilt candidate for recovery
+        run: |
+          set -euo pipefail
+          git push origin "HEAD:refs/heads/codex/step8-cp04-rebuild-$GITHUB_RUN_ID"
       - name: Validate the combined ledger and docs
         run: |
           set -euo pipefail
