@@ -1,0 +1,54 @@
+name: Export the exact checkpoint 04 main merge for checkpoint 05
+on:
+  push:
+    branches: [codex/step8-cp05-restore]
+permissions:
+  contents: read
+  statuses: write
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Report transfer start
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh api --method POST "repos/$GITHUB_REPOSITORY/statuses/$GITHUB_SHA" \
+            -f state=pending -f context=step8/cp05-restore \
+            -f target_url="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Export the signed main merge and its exact evidence-bearing tree
+        run: |
+          set -euo pipefail
+          merge=d46d951b6baac75e52fe33a4cf6c5d40de6b387e
+          intake=c4e0e3af8e1420fb4048b982756bb28010e6cc34
+          test "$(git rev-parse HEAD^)" = "$merge"
+          test "$(git rev-parse "$merge^{tree}")" = "4588f1cdedccb96c160c0ce990e6d1b16ebaf7dc"
+          git merge-base --is-ancestor "$intake" "$merge"
+          git bundle create "$RUNNER_TEMP/cp04-main.bundle" "$merge" "^$intake" || {
+            git branch codex/step8-cp05-baseline "$merge"
+            git bundle create "$RUNNER_TEMP/cp04-main.bundle" refs/heads/codex/step8-cp05-baseline "^$intake"
+          }
+          git bundle verify "$RUNNER_TEMP/cp04-main.bundle"
+          sha256sum "$RUNNER_TEMP/cp04-main.bundle" | tee "$RUNNER_TEMP/cp04-main.sha256"
+          base64 -w 180 "$RUNNER_TEMP/cp04-main.bundle" | sed 's/^/CP05_BUNDLE /'
+      - uses: actions/upload-artifact@v4
+        with:
+          name: step8-cp05-baseline
+          path: |
+            ${{ runner.temp }}/cp04-main.bundle
+            ${{ runner.temp }}/cp04-main.sha256
+      - name: Report transfer result
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RESULT: ${{ job.status }}
+        run: |
+          state="$RESULT"
+          if [ "$state" = cancelled ]; then state=error; fi
+          gh api --method POST "repos/$GITHUB_REPOSITORY/statuses/$GITHUB_SHA" \
+            -f state="$state" -f context=step8/cp05-restore \
+            -f target_url="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
